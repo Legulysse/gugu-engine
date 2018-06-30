@@ -2,5 +2,5 @@
 
 A minimalist C++ game engine, mainly based of SMFL.
 
-Author : Legulysse
+Author : Legulysse  
 Contributor : Diccy

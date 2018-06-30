@@ -1,0 +1,42 @@
+<ElementSpriteGroup ImageSet="Box9_Default.imageset.xml" >
+
+    <Component Type="Sprite" SubImage="TopLeft_02">
+        <Position XRel="0" XAbs="0" YRel="0" YAbs="0" />
+        <Size XRel="0" XAbs="16" YRel="0" YAbs="16" />
+    </Component>
+    <Component Type="Tile" SubImage="Top">
+        <Position XRel="0" XAbs="16" YRel="0" YAbs="0" />
+        <Size XRel="1" XAbs="-32" YRel="0" YAbs="16" />
+    </Component>
+    <Component Type="Sprite" SubImage="TopRight_02">
+        <Position XRel="1" XAbs="-16" YRel="0" YAbs="0" />
+        <Size XRel="0" XAbs="16" YRel="0" YAbs="16" />
+    </Component>
+    
+    <Component Type="Tile" SubImage="Left">
+        <Position XRel="0" XAbs="0" YRel="0" YAbs="16" />
+        <Size XRel="0" XAbs="16" YRel="1" YAbs="-32" />
+    </Component>
+    <Component Type="Sprite" SubImage="Center">
+        <Position XRel="0" XAbs="16" YRel="0" YAbs="16" />
+        <Size XRel="1" XAbs="-32" YRel="1" YAbs="-32" />
+    </Component>
+    <Component Type="Tile" SubImage="Right">
+        <Position XRel="1" XAbs="-16" YRel="0" YAbs="16" />
+        <Size XRel="0" XAbs="16" YRel="1" YAbs="-32" />
+    </Component>
+    
+    <Component Type="Sprite" SubImage="BottomLeft_02">
+        <Position XRel="0" XAbs="0" YRel="1" YAbs="-16" />
+        <Size XRel="0" XAbs="16" YRel="0" YAbs="16" />
+    </Component>
+    <Component Type="Tile" SubImage="Bottom">
+        <Position XRel="0" XAbs="16" YRel="1" YAbs="-16" />
+        <Size XRel="1" XAbs="-32" YRel="0" YAbs="16" />
+    </Component>
+    <Component Type="Sprite" SubImage="BottomRight_02">
+        <Position XRel="1" XAbs="-16" YRel="1" YAbs="-16" />
+        <Size XRel="0" XAbs="16" YRel="0" YAbs="16" />
+    </Component>
+    
+</ElementSpriteGroup>

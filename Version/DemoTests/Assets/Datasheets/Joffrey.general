@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<Datasheet base="Robert.general">
+    <Data name="name" value="Joffrey" />
+    <Data name="speed" value="30" />
+    <Data name="sprite" />
+    <Data name="stats list">
+        <Child value="5" />
+    </Data>
+    <Data name="factions list">
+        <Child />
+    </Data>
+    <Data name="more sprites">
+        <Child>
+            <Data name="imageset" value="Eddard.imageset.xml" />
+            <Data name="animset" value="Eddard.animset.xml" />
+        </Child>
+    </Data>
+    <Data name="weapon" value="Crossbow" />
+    <Data name="available weapons">
+        <Child value="Crossbow" />
+    </Data>
+</Datasheet>

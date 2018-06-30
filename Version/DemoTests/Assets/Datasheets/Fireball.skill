@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<Datasheet>
+    <Data name="name" value="Fireball" />
+    <Data name="single restriction base"/>
+    <Data name="single restriction faction" type="restrictionFaction">
+        <Data name="faction" value="Yumeda.faction"/>
+    </Data>
+    <Data name="restrictions">
+        <Child />
+        <Child type="restrictionFaction">
+            <Data name="faction" value="Yumeda.faction"/>
+        </Child>
+        <Child type="restrictionTroop" />
+    </Data>
+</Datasheet>

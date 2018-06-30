@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ImageSet Texture="Box9_Default.png">
+	<SubImage Name="Bottom" X="8" Y="0" W="4" H="16" />
+	<SubImage Name="BottomLeft_01" X="32" Y="32" W="16" H="16" />
+	<SubImage Name="BottomLeft_02" X="48" Y="32" W="16" H="16" />
+	<SubImage Name="BottomLeft_03" X="16" Y="32" W="16" H="16" />
+	<SubImage Name="BottomLeft_04" X="64" Y="32" W="16" H="16" />
+	<SubImage Name="BottomRight_01" X="0" Y="48" W="16" H="16" />
+	<SubImage Name="BottomRight_02" X="32" Y="48" W="16" H="16" />
+	<SubImage Name="BottomRight_03" X="48" Y="48" W="16" H="16" />
+	<SubImage Name="BottomRight_04" X="16" Y="48" W="16" H="16" />
+	<SubImage Name="Center" X="0" Y="0" W="4" H="4" />
+	<SubImage Name="Left" X="64" Y="16" W="16" H="4" />
+	<SubImage Name="Right" X="0" Y="16" W="16" H="4" />
+	<SubImage Name="Top" X="4" Y="0" W="4" H="16" />
+	<SubImage Name="TopLeft_01" X="12" Y="0" W="16" H="16" />
+	<SubImage Name="TopLeft_02" X="28" Y="0" W="16" H="16" />
+	<SubImage Name="TopLeft_03" X="44" Y="0" W="16" H="16" />
+	<SubImage Name="TopLeft_04" X="32" Y="16" W="16" H="16" />
+	<SubImage Name="TopRight_01" X="48" Y="16" W="16" H="16" />
+	<SubImage Name="TopRight_02" X="16" Y="16" W="16" H="16" />
+	<SubImage Name="TopRight_03" X="60" Y="0" W="16" H="16" />
+	<SubImage Name="TopRight_04" X="0" Y="32" W="16" H="16" />
+</ImageSet>

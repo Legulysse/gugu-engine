@@ -1,0 +1,16 @@
+<ElementSpriteGroup ImageSet="uipack_rpg.imageset.xml" >
+
+    <Component Type="Sprite" SubImage="barYellow_horizontalLeft">
+        <Position XRel="0" XAbs="0" YRel="0" YAbs="0" />
+        <Size XRel="0" XAbs="9" YRel="0" YAbs="18" />
+    </Component>
+    <Component Type="Tile" SubImage="barYellow_horizontalMid">
+        <Position XRel="0" XAbs="9" YRel="0" YAbs="0" />
+        <Size XRel="1" XAbs="-18" YRel="0" YAbs="18" />
+    </Component>
+    <Component Type="Sprite" SubImage="barYellow_horizontalRight">
+        <Position XRel="1" XAbs="-9" YRel="0" YAbs="0" />
+        <Size XRel="0" XAbs="9" YRel="0" YAbs="18" />
+    </Component>
+    
+</ElementSpriteGroup>

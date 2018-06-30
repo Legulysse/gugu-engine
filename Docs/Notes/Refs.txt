@@ -1,0 +1,39 @@
+
+ * General Ressources
+
+http://www.redblobgames.com/
+http://www.gamasutra.com/
+http://gafferongames.com/
+http://gdcvault.com/
+http://gameaccessibilityguidelines.com/
+https://forums.unrealengine.com/showthread.php?57471-Community-List-Free-Software-Tools-amp-Resources-List
+
+
+ * Editors/Tools
+ 
+http://www.mapeditor.org/
+http://www.hexographer.com/
+
+
+ * Blog entries
+
+http://gamasutra.com/blogs/NathanLovato/20150814/251219/21_Free_Learning_Resources_for_Game_Developers.php
+
+
+ * Assets 
+ 
+http://kenney.nl/assets
+http://opengameart.org/content/free-keyboard-and-controllers-prompts-pack
+
+
+ * Shaders
+ 
+http://iquilezles.org/
+http://iquilezles.org/www/articles/palettes/palettes.htm
+
+
+ * Market
+ 
+https://medium.com/@galyonkin/some-things-you-should-know-about-steam-5eaffcf33218
+
+

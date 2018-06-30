@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<Binding namespace="demoproject">
+
+    <!-- Enums -->
+    
+    <Enum name="weaponType" code="EWeaponType">
+        <Value name="Unknown" />
+        <Value name="Sword" />
+        <Value name="Mace" />
+        <Value name="Axe" />
+        <Value name="Crossbow" />
+    </Enum>
+    
+    <!-- Assets -->
+    
+    <Class name="spriteInfo" code="DS_SpriteInfo">
+        <Data type="string"                     name="imageset"         code="m_imageSet" />
+        <Data type="string"                     name="animset"          code="m_animSet" />
+    </Class>
+    
+    <!-- Entity -->
+    
+    <Class name="entity" code="DS_Entity">
+        <Data type="string"                     name="name"             code="m_name"    default="Plop" />
+        <Data type="int"                        name="life"             code="m_life"      default="0" />
+    </Class>
+    
+    <Class name="general" code="DS_General" base="entity">
+        <Data type="float"                      name="speed"                code="m_speed" />
+        <Data type="bool"                       name="is monarch"           code="m_isMonarch" />
+        <Data type="reference:faction"          name="faction"              code="m_faction" />
+        <Data type="instance:spriteInfo"        name="sprite"               code="m_sprite" />
+        <Data type="array:string"               name="names list"           code="m_names" />
+        <Data type="array:int"                  name="stats list"           code="m_stats" />
+        <Data type="array:reference:faction"    name="factions list"        code="m_factions" />
+        <Data type="array:instance:spriteInfo"  name="more sprites"         code="m_sprites" />
+        <Data type="weaponType"                 name="weapon"               code="m_weapon"    default="Sword" />
+        <Data type="array:weaponType"           name="available weapons"    code="m_availableWeapons" />
+    </Class>
+    
+    <!-- Faction -->
+    
+    <Class name="faction" code="DS_Faction">
+        <Data type="string"                     name="name"             code="m_name" />
+        <Data type="reference:entity"           name="leader"           code="m_leader" />
+    </Class>
+    
+    <!-- Troop -->
+    
+    <Class name="troop" code="DS_Troop">
+        <Data type="string"                     name="name"             code="m_name" />
+    </Class>
+    
+    <!-- Skill -->
+    
+    <Class name="restriction" code="DS_Restriction">
+    </Class>
+    
+    <Class name="restrictionFaction" code="DS_RestrictionFaction" base="restriction">
+        <Data type="reference:faction"          name="faction"          code="m_faction" />
+    </Class>
+    
+    <Class name="restrictionTroop" code="DS_RestrictionTroop" base="restriction">
+        <Data type="reference:troop"            name="troop"            code="m_troop" />
+    </Class>
+    
+    <Class name="skill" code="DS_Skill">
+        <Data type="string"                     name="name"                         code="m_name" />
+        <Data type="instance:restriction"       name="empty restriction"            code="m_emptyRestriction" />
+        <Data type="instance:restriction"       name="single restriction base"      code="m_singleRestrictionBase" />
+        <Data type="instance:restriction"       name="single restriction faction"   code="m_singleRestrictionFaction" />
+        <Data type="array:instance:restriction" name="restrictions"                 code="m_restrictions" />
+    </Class>
+    
+</Binding>

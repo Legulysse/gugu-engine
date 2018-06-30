@@ -1,0 +1,32 @@
+
+*** ElementUIContainer
+
+* Definition
+
+Element de base représentant un Container d'Items.
+Par exemple, une liste déroulante ou un inventaire.
+Il gère lui-même l'affichage et le positionnement des items qu'il contient.
+
+* Methods
+
+void AddItem(ElementUIItem*)
+void SetStackHorizontal(bool)
+void SetStackVertical(bool)
+void SetScrollHorizontal(bool)
+void SetScrollVertical(bool)
+
+* Members
+
+std::vector<ElementUIItem*> m_aItems
+Element* m_pElementContent
+
+
+*** ElementUIItem
+
+* Definition
+
+Element de base représentant un Item placé dans un Container.
+
+* Members
+
+Element* m_pElementContent

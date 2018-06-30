@@ -1,0 +1,129 @@
+
+ *** Next Version ?
+
+> World/Level
+- Resources
+> Animations
+- Sockets
+- HitBoxes
+> Iteration UI
+- Gerer les UDim sous la forme d'un Component, ajouter des flags genre KeepRatio
+- UIGrid, UIStack, UISlider
+- UILayout
+> Misc
+- Itération Actor & Component ?
+- ResourceContext ?
+> Editor
+- Refonte ? (point d'entrée à la Unreal avec liste des assets en hierarchie, les tools s'ouvrent selon la resource choisie)
+- Iteration Animset/Imageset editor ?
+- Level editor ?
+- Datasheet editor ?
+
+
+ * Engine
+ 
+- Parser la config via un xml
+- Option pour désactiver les logs ?
+- Développer un peu la Console ? (commandes engine, gestion de l'historique et du haut/bas)
+
+
+ * Audio
+ 
+- Check 256 total tracks
+- Ajout parametre nb music layers et gérer l'index de Layer sur un PlayMusic
+- Brancher le volume de Group (renommer en layers ?)
+- Utiliser des tableaux de pointeurs pour cleaner les inits et les includes
+- MusicCue (list musics, param transition, param random order)
+- SoundCue : param preload all ? (actuellement, loader un SoundCue va loader tous les sons référencés)
+
+
+ * Animations 2D
+ 
+- Système de sockets
+- Hit Boxes
+
+
+ * Animations Skeleton
+ 
+- Todo
+
+
+ * Datasheets
+ 
+- Option pour que les arrays hérités se concatènent au lieu de s'overrider
+- Vector2, Vector3, UDim
+- Enums de valeurs associées à un membre (pour l'editeur) (trouver meilleur nom)
+- Chaines localisées
+- Gestion de nom d'extension de fichier custom pour les Class, par defaut le name (dans le meme esprit il faudrait que code=name par defaut)
+- Option pour générer un fichier par classe/enum
+- Option pour encapsuler dans un namespace
+
+
+ * Elements
+
+- Gerer les UDim sous la forme d'un Component
+- Gestion des Layout UI
+- Gestion des Templates de composants UI (binome UITemplate/UISkin ?)
+- Gestion d'un UIContainer (pour faire des stacks qui s'auto agrandissent, des listes, des grilles)
+- Particules (FX)
+
+
+ * Utility
+ 
+- Classes ComponentHolder et Component (classes template ?)
+
+
+ * Resources
+
+- Gestion des Contextes (Mods)
+
+
+ * Inputs
+ 
+- Ajouter une notion de InputContext pour regrouper des inputs
+- Brancher des fonctions pour encapsuler toutes les interactions possibles (sf::key down, mouse, pad) et pas uniquement les Bindings déclarés
+ 
+
+ * World
+
+- Binome Actors / SceneGraph via les Components
+- Clean classes Actor <-> ActorComponent et Entity <-> Component (Design Pattern ? Visiblement non)
+- Scenes
+- Prefabs
+
+
+ * Scripting
+
+- Todo Python (Bousk ?)
+
+
+ * 3D
+
+- Tester BGFX : https://github.com/bkaradzic/bgfx
+- Tester Aether3D : http://twiren.kapsi.fi/aether3d.html
+ 
+
+ * Editor
+
+- Qt 5.x, Qt Creator 3.x
+- Flow : Au lancemant, si pas de config file, popup pour le generer (pareil pour un user config ?)
+- Flow : export vers frames individuelles d'un animset
+- Flow : Maintenir l'ordre des ToolPanels dans le TabWidget lorsqu'on manipule des attach/detach
+- Flow : Auto-attach un ToolPanel lorsqu'on le ferme
+- Flow : Afficher plus d'infos sur chaque frame d'animation dans la liste (genre subimage et temps)
+- Flow : Gérer un flag "dirty"
+- Flow : Warning à la fermeture selon le flag "dirty"
+- Flow : Mémoriser les positions/tailles des fenetres à la fermeture
+- Flow : Ctrl+Z
+- Flow : GenerateFromRange : afficher la liste des SubImages, et pouvoir selectionner directement les elements qu'on veut (en mode multi-select, si on veut un range on fait un maj+click)
+- Ergo : Pouvoir descendre le long de la spritesheet avec la molette, Ctrl + Molette pour zoomer, et Shift + Molette pour se déplacer latéralement sur la spritesheet
+- Ergo : Snap configurable sur l'ImageSet editor
+- Ergo : Afficher grille custom
+- Ergo : Raccourcis
+- Ergo : Si on clique sur une image dans la spritesheet de l'ImageSet, il faudrait que ça l'encadre et le curseur se place sur ses coordonnées dans le tableau de gauche
+- Ergo : Pouvoir toggle l'affichage de cadres (bleus clair ?) sur toutes les SubImage de la spritesheet
+- Ergo : Pouvoir changer les couleurs des gizmos
+- Ergo : Centrer la vue sur l'ImageSet lorsqu'on selectionne une subimage
+- Bug : Au bout d'un certain temps, il arrive que les textures soient fuckées et que le processeur s'emballe (images blanches, ou bouillie de pixel, ou UV fuckés)
+- Optim : le Generate From Indexes prend facilement 2s sur une découpe 8*20
+

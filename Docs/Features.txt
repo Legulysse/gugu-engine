@@ -1,0 +1,26 @@
+
+
+*** Elements - Scene Graph 2D
+
+- Base class Element defines abstract 2D entities with position, origin, scale, size, children.
+- Each Element inherits the cumulated Transformation matrix of its parents.
+- ElementSprite for basic sprites.
+- ElementText handles multiline and editable texts.
+- ElementTile for sprites repeating themselves instead of stretching.
+
+
+*** Datasheets - C++ classes from xml
+
+- Declaration of custom xml entities, with auto-generated C++ parser and classes, allowing the definition of C++ Objects loaded from xml files.
+
+
+*** Audio
+
+- Automatic handling of sounds played simultaneously, based on a locked amount of concurrent sounds forcing a rotation on available channels.
+- SoundCues allow the declaration of groups of similar sounds under a single name, allowing random sound selection on each Play().
+- MusicLayers allow cross-fading transitions between two musics.
+
+
+*** Editor
+
+- ImageSet and AnimSet edition tools.

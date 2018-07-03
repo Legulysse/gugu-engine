@@ -27,8 +27,8 @@ public:
     Demo();
     virtual ~Demo();
 
-	virtual	void AppStart() override;
-    virtual	void AppStop() override;
+    virtual void AppStart() override;
+    virtual void AppStop() override;
 
 protected:
 
@@ -51,4 +51,4 @@ private:
     gugu::ElementButton* m_buttonExit;
 };
 
-}	//namespace demoproject
+}   //namespace demoproject

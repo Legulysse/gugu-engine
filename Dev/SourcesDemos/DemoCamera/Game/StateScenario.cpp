@@ -50,13 +50,13 @@ void StateScenario::Init()
 
     //Root UI
     m_menu = GetGameWindow()->GetUINode()->AddChild<Element>();
-	m_menu->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
-	
+    m_menu->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    
     ElementSprite* pSeparator = m_menu->AddChild<ElementSprite>();
     pSeparator->SetTexture("Separator.png");
-	pSeparator->SetUnifiedOrigin(UDim2::POSITION_CENTER);
-	pSeparator->SetUnifiedPosition(UDim2::POSITION_CENTER);
-	pSeparator->SetUnifiedSize(UDim2(UDim(0.f, 6.f), UDim(1.f, 0.f)));
+    pSeparator->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+    pSeparator->SetUnifiedPosition(UDim2::POSITION_CENTER);
+    pSeparator->SetUnifiedSize(UDim2(UDim(0.f, 6.f), UDim(1.f, 0.f)));
 
     //Init Level
     GetGame()->CreateScenario();
@@ -66,7 +66,7 @@ void StateScenario::Release()
 {
     GetGame()->ClearScenario();
 
-	SafeDelete(m_menu);
+    SafeDelete(m_menu);
 }
 
 void StateScenario::Enter(State* _pStateFrom)
@@ -87,16 +87,16 @@ void StateScenario::Update(const DeltaTime& dt)
 
 bool StateScenario::OnSFEvent(const sf::Event& _oSFEvent)
 {
-	if(!EventListener::OnSFEvent(_oSFEvent))
-		return false;
-
-	ManagerConfig* pConfig = GetConfig();
-
-	if (pConfig->IsInputReleased("Exit", _oSFEvent))
-	{
-		GetOwner()->ChangeState(new StateMenuMain);
+    if(!EventListener::OnSFEvent(_oSFEvent))
         return false;
-	}
+
+    ManagerConfig* pConfig = GetConfig();
+
+    if (pConfig->IsInputReleased("Exit", _oSFEvent))
+    {
+        GetOwner()->ChangeState(new StateMenuMain);
+        return false;
+    }
 
     if (_oSFEvent.type == sf::Event::MouseButtonPressed)
     {
@@ -132,7 +132,7 @@ bool StateScenario::OnSFEvent(const sf::Event& _oSFEvent)
         }
     }
 
-	return true;
+    return true;
 }
 
 }   //namespace demoproject

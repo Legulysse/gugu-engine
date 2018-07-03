@@ -55,4 +55,4 @@ private:
 
 TraceGroup* GetTraceGroupMain();
 
-}	// namespace gugu
+}   // namespace gugu

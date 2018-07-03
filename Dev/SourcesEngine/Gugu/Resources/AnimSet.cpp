@@ -230,9 +230,9 @@ void AnimSet::SetImageSet(ImageSet* _pImageSet)
     m_imageSet = _pImageSet;
 }
 
-EResourceType::Type	AnimSet::GetResourceType() const
+EResourceType::Type AnimSet::GetResourceType() const
 {
-	return EResourceType::AnimSet;
+    return EResourceType::AnimSet;
 }
 
 bool AnimSet::LoadFromFile()
@@ -300,7 +300,7 @@ bool AnimSet::LoadFromFile()
 
                 sf::Vector2f kMove;
                 if (XmlReadVector2(oNodeFrame.child("Move"), kMove))
-					pNewFrame->SetMoveOffset(kMove);
+                    pNewFrame->SetMoveOffset(kMove);
             }
         }
     }
@@ -347,4 +347,4 @@ bool AnimSet::SaveToFile()
     return docSave.save_file(GetFileInfoRef().GetPathName().c_str());
 }
 
-}	// namespace gugu
+}   // namespace gugu

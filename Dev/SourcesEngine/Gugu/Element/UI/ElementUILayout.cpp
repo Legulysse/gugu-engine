@@ -82,4 +82,4 @@ bool ElementUILayout::LoadFromXml(const pugi::xml_node& _oNodeElement)
     return true;
 }
 
-}	// namespace gugu
+}   // namespace gugu

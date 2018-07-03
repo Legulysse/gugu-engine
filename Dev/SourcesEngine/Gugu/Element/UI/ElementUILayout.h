@@ -16,10 +16,10 @@ class ElementUILayout : public Element
 {
 public:
 
-	ElementUILayout();
-	virtual ~ElementUILayout();
+    ElementUILayout();
+    virtual ~ElementUILayout();
 
-	bool LoadFromFile(const std::string& _strPath);
+    bool LoadFromFile(const std::string& _strPath);
     
     virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement) override;
 
@@ -32,4 +32,4 @@ protected:
     bool m_blockEvents;
 };
 
-}	// namespace gugu
+}   // namespace gugu

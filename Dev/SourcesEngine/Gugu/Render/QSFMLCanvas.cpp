@@ -45,23 +45,23 @@ QSFMLCanvas::QSFMLCanvas(QWidget* Parent, const QPoint& Position, const QSize& S
     // Setup the timer
     myTimer.setInterval(FrameTime);
 
-	m_window = nullptr;
+    m_window = nullptr;
 }
 
 QSFMLCanvas::~QSFMLCanvas()
 {
-	SafeDelete(m_callbackResize);
+    SafeDelete(m_callbackResize);
 }
 
 void QSFMLCanvas::SetWindow(gugu::Window* _pWindow)
 {
-	m_window = _pWindow;
+    m_window = _pWindow;
 }
 
 void QSFMLCanvas::SetCallbackResize(Action* _pAction)
 {
-	SafeDelete(m_callbackResize);
-	m_callbackResize = _pAction;
+    SafeDelete(m_callbackResize);
+    m_callbackResize = _pAction;
 }
 
 void QSFMLCanvas::OnInit()
@@ -124,11 +124,11 @@ void QSFMLCanvas::paintEvent(QPaintEvent*)
 
 void QSFMLCanvas::resizeEvent(QResizeEvent* _pEvent)
 {
-	if (m_window)
-		m_window->ComputeSize(_pEvent->size().width(), _pEvent->size().height());
+    if (m_window)
+        m_window->ComputeSize(_pEvent->size().width(), _pEvent->size().height());
 
-	if (m_callbackResize)
-		m_callbackResize->Call();
+    if (m_callbackResize)
+        m_callbackResize->Call();
 }
 
 }   // namespace gugu

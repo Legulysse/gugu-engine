@@ -11,7 +11,7 @@
 
 namespace gugu
 {
-	class Element;
+    class Element;
     class ElementSpriteAnimated;
 }
 
@@ -32,12 +32,12 @@ public:
 
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 
-	void OnButtonClick(int _iButtonID);
+    void OnButtonClick(int _iButtonID);
 
 private:
 
     gugu::Element* m_root;
-	gugu::Element* m_menu;
+    gugu::Element* m_menu;
 };
 
 }   //namespace demoproject

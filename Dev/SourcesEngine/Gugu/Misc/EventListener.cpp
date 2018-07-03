@@ -69,7 +69,7 @@ bool EventListener::IsRegistered(HandlerEvents* _pHandler) const
 
 bool EventListener::OnSFEvent(const sf::Event& _oSFEvent)
 {
-	return true;
+    return true;
 }
 
 }   // namespace gugu

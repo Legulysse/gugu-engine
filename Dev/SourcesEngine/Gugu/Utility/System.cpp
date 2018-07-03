@@ -14,8 +14,8 @@
 #include <ctime>
 
 #if defined(GUGU_OS_WIN32)
-	#include <windows.h>
-	#include <shellapi.h>
+    #include <windows.h>
+    #include <shellapi.h>
 #elif defined(GUGU_OS_LINUX)
     #include <dirent.h>
 #endif
@@ -37,13 +37,13 @@ std::string ToString(const char* _strValue)
 
 void WriteInConsole(const std::string& _strLine)
 {
-	std::cout << _strLine << std::endl;
+    std::cout << _strLine << std::endl;
 }
 
 void WriteInFile(const std::string& _strFileName, const std::string& _strLine)
 {
-	std::ofstream oFile;
-	oFile.open(_strFileName.c_str(), std::ios::out | std::ios::app);
+    std::ofstream oFile;
+    oFile.open(_strFileName.c_str(), std::ios::out | std::ios::app);
 
     if(oFile)
     {
@@ -152,7 +152,7 @@ void StdStringToLower(const std::string& _strValue, std::string& _strResult)
 
 void StdStringToLowerSelf(std::string& _strValue)
 {
-	std::transform(_strValue.begin(), _strValue.end(), _strValue.begin(), ::tolower);
+    std::transform(_strValue.begin(), _strValue.end(), _strValue.begin(), ::tolower);
 }
 
 std::string StdStringToUpper(const std::string& _strValue)
@@ -170,18 +170,18 @@ void StdStringToUpper(const std::string& _strValue, std::string& _strResult)
 
 void StdStringToUpperSelf(std::string& _strValue)
 {
-	std::transform(_strValue.begin(), _strValue.end(), _strValue.begin(), ::toupper);
+    std::transform(_strValue.begin(), _strValue.end(), _strValue.begin(), ::toupper);
 }
 
 bool StdStringStartsWith(const std::string& _strValue, const std::string& _strSub)
 {
-	return _strValue.find(_strSub) == 0;
+    return _strValue.find(_strSub) == 0;
 }
 
 bool StdStringEndsWith(const std::string& _strValue, const std::string& _strSub)
 {
-	size_t i = _strValue.rfind(_strSub);
-	return (i != std::string::npos) && (i == (_strValue.length() - _strSub.length()));
+    size_t i = _strValue.rfind(_strSub);
+    return (i != std::string::npos) && (i == (_strValue.length() - _strSub.length()));
 }
 
 std::string StringFormat(const std::string& _tValue)
@@ -253,7 +253,7 @@ void OpenWebBrowser(const std::string& _strURL)
 {
 #ifdef GUGU_OS_WIN32
 
-	ShellExecuteA(nullptr, "open", _strURL.c_str(), nullptr, nullptr, SW_SHOWNORMAL);	//ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
+    ShellExecuteA(nullptr, "open", _strURL.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 
 #endif
 }
@@ -335,13 +335,13 @@ void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles,
     NormalizePath(_strPath, true, strPathNormalized);
 
     dirent* sdirent = nullptr;
-	DIR* flux = nullptr;
+    DIR* flux = nullptr;
 
     if ((flux = opendir(strPathNormalized.c_str())) != nullptr)
-	{
-		while ((sdirent = readdir(flux)) != nullptr)
-		{
-		    std::string strFile(sdirent->d_name);
+    {
+        while ((sdirent = readdir(flux)) != nullptr)
+        {
+            std::string strFile(sdirent->d_name);
             if (strFile[0] != '.')
             {
                 if (sdirent->d_type == DT_DIR)
@@ -354,9 +354,9 @@ void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles,
                     _vecFiles.push_back(FileInfo(strPathNormalized, strFile));
                 }
             }
-		}
-		closedir(flux);
-	}
+        }
+        closedir(flux);
+    }
 
 #endif
 }

@@ -17,7 +17,7 @@ namespace gugu
 
 namespace sf
 {
-	class RenderWindow;
+    class RenderWindow;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -29,16 +29,16 @@ class World
 {
 public:
 
-	World();
-	virtual ~World();
+    World();
+    virtual ~World();
 
     void ResetWorld();
 
     Level* GetMainLevel() const;
     Level* GetPersistentLevel() const;
 
-	void Step(const DeltaTime& dt);
-	void Update(const DeltaTime& dt);
+    void Step(const DeltaTime& dt);
+    void Update(const DeltaTime& dt);
 
 protected:
 

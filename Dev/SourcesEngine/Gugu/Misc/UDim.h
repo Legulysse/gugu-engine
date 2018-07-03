@@ -14,17 +14,17 @@ class UDim
 {
 public:
 
-	float relative;
-	float absolute;
+    float relative;
+    float absolute;
 
     UDim();
     UDim(const UDim& _kRight);
-	UDim(float _fRel, float _fAbs);
+    UDim(float _fRel, float _fAbs);
 
     UDim& operator+=(float _fAbs);
     const UDim operator+(float _fAbs) const;
 
-	float GetComputedDimension(float _fReference) const;
+    float GetComputedDimension(float _fReference) const;
 
     static const UDim ZERO;
     static const UDim HALF;
@@ -35,20 +35,20 @@ class UDim2
 {
 public:
 
-	UDim x;
-	UDim y;
+    UDim x;
+    UDim y;
 
     UDim2();
     UDim2(const UDim2& _kRight);
-	UDim2(UDim _X, UDim _Y);
-	UDim2(float _fRelX, float _fRelY);
-	UDim2(float _fRelX, float _fAbsX, float _fRelY, float _fAbsY);
+    UDim2(UDim _X, UDim _Y);
+    UDim2(float _fRelX, float _fRelY);
+    UDim2(float _fRelX, float _fAbsX, float _fRelY, float _fAbsY);
 
     UDim2& operator+=(const sf::Vector2f& _kAbs);
     const UDim2 operator+(const sf::Vector2f& _kAbs) const;
 
-	sf::Vector2f GetComputedDimension(float _fReferenceX, float _fReferenceY) const;
-	sf::Vector2f GetComputedDimension(sf::Vector2f _kReferenceSize) const;
+    sf::Vector2f GetComputedDimension(float _fReferenceX, float _fReferenceY) const;
+    sf::Vector2f GetComputedDimension(sf::Vector2f _kReferenceSize) const;
 
     static const UDim2 POSITION_TOP_LEFT;
     static const UDim2 POSITION_TOP_CENTER;
@@ -64,7 +64,7 @@ public:
     static const UDim2 SIZE_SQUARE_QUARTER;
     static const UDim2 SIZE_HORIZONTAL_HALF;
     static const UDim2 SIZE_VERTICAL_HALF;
-	static const UDim2 SIZE_FULL;
+    static const UDim2 SIZE_FULL;
 };
 
-}	// namespace gugu
+}   // namespace gugu

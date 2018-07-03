@@ -10,9 +10,9 @@
 
 #if defined(GUGU_ENV_VISUAL )
 
-	#define _CRTDBG_MAP_ALLOC
-	#include <stdlib.h>
-	#include <crtdbg.h>
+    #define _CRTDBG_MAP_ALLOC
+    #include <stdlib.h>
+    #include <crtdbg.h>
 
 #endif
 
@@ -24,28 +24,28 @@ using namespace gugu;
 
 int main(int argc, char* argv[])
 {
-	#if defined(GUGU_ENV_VISUAL )
+    #if defined(GUGU_ENV_VISUAL )
 
-		_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+        _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 
-	#endif
+    #endif
 
 
-	//Init engine
-	EngineConfig config;
-	config.applicationName = "GuguEngine Demo Camera";
-	config.pathAssets = "Assets";
-	config.defaultFont = "Spaceranger.ttf";
+    //Init engine
+    EngineConfig config;
+    config.applicationName = "GuguEngine Demo Camera";
+    config.pathAssets = "Assets";
+    config.defaultFont = "Spaceranger.ttf";
     config.gameWindow = EGameWindow::Sfml;
-	config.showFPS = true;
+    config.showFPS = true;
     
     GetEngine()->Init(config);
 
     //--------
     
-	Game* pGame = new Game;
-	pGame->PushStateNow(new StateMenuMain);
-	GetEngine()->SetApplication(pGame);
+    Game* pGame = new Game;
+    pGame->PushStateNow(new StateMenuMain);
+    GetEngine()->SetApplication(pGame);
 
     //--------
 

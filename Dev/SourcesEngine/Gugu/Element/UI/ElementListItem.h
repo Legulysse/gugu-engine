@@ -26,17 +26,17 @@ public:
     ElementListItem();
     virtual ~ElementListItem();
 
-    void		SetList		(ElementList* _pList);
-    void		SetElement	(Element* _pElement);
-    Element*	GetElement	() const;
+    void        SetList     (ElementList* _pList);
+    void        SetElement  (Element* _pElement);
+    Element*    GetElement  () const;
 
-    void		SetSelected	(bool _bIsSelected);
-    bool		IsSelected	() const;
+    void        SetSelected (bool _bIsSelected);
+    bool        IsSelected  () const;
 
-    void		OnListResized	(sf::Vector2f _oListSize);
+    void        OnListResized   (sf::Vector2f _oListSize);
     
-	void		SetOnSelected	(Action* _pAction);
-	void		SetOnDeselected	(Action* _pAction);
+    void        SetOnSelected   (Action* _pAction);
+    void        SetOnDeselected (Action* _pAction);
 
     virtual void OnMouseEnter() override;
     virtual void OnMouseLeave() override;
@@ -52,8 +52,8 @@ protected:
     Element*        m_elementImpl;
     bool            m_isSelected;
 
-	Action*			m_actionOnSelected;
-	Action*			m_actionOnDeselected;
+    Action*         m_actionOnSelected;
+    Action*         m_actionOnDeselected;
 };
 
 }

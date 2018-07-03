@@ -29,29 +29,29 @@ namespace gugu {
     
 ElementList::ElementList()
 {
-	m_currentIndexTop = 0;
-	m_displayedItemCount = 0;
+    m_currentIndexTop = 0;
+    m_displayedItemCount = 0;
     m_allowSelection = true;
     m_multipleSelection = false;
     
-	ElementSprite* pSprite;
+    ElementSprite* pSprite;
 
     pSprite = new ElementSprite;
-	pSprite->SetParent(this, false);
-	pSprite->SetSize(30.f, 30.f);
+    pSprite->SetParent(this, false);
+    pSprite->SetSize(30.f, 30.f);
     pSprite->SetVisible(false);
     m_scrollBackground = pSprite;
 
-	pSprite = new ElementSprite;
-	pSprite->SetParent(this, false);
-	pSprite->SetSize(30.f, 30.f);
+    pSprite = new ElementSprite;
+    pSprite->SetParent(this, false);
+    pSprite->SetSize(30.f, 30.f);
     m_scrollSlider = pSprite;
 
     m_scrollButtonTop = new ElementSprite;
-	m_scrollButtonTop->SetParent(this, false);
+    m_scrollButtonTop->SetParent(this, false);
 
     m_scrollButtonBottom = new ElementSprite;
-	m_scrollButtonBottom->SetParent(this, false);
+    m_scrollButtonBottom->SetParent(this, false);
 
     AddInteractionFlag(EInteraction::Scroll);
     m_scrollButtonTop->AddInteractionFlag(EInteraction::Click);
@@ -69,24 +69,24 @@ ElementList::ElementList()
 
 ElementList::~ElementList()
 {
-	ClearStdVector(m_items);
+    ClearStdVector(m_items);
 
-	SafeDelete(m_scrollSlider);
+    SafeDelete(m_scrollSlider);
     SafeDelete(m_scrollBackground);
-	SafeDelete(m_scrollButtonTop);
+    SafeDelete(m_scrollButtonTop);
     SafeDelete(m_scrollButtonBottom);
 }
 
 void ElementList::SetImageSet(const std::string& _strImageSetPath)
 {
     m_scrollBackground->SetVisible(true);
-	m_scrollBackground->SetSubImage(_strImageSetPath, "Background");
-	m_scrollSlider->SetSubImage(_strImageSetPath, "Slider");
+    m_scrollBackground->SetSubImage(_strImageSetPath, "Background");
+    m_scrollSlider->SetSubImage(_strImageSetPath, "Slider");
     m_scrollButtonTop->SetSubImage(_strImageSetPath, "ButtonTop");
     m_scrollButtonBottom->SetSubImage(_strImageSetPath, "ButtonBottom");
 
     RecomputeScrollBar();
-	RecomputeItems();
+    RecomputeItems();
 }
 
 void ElementList::SetAllowSelection(bool _bAllow)
@@ -101,15 +101,15 @@ void ElementList::SetMultipleSelection(bool _bMultiple)
 
 void ElementList::AddItem(ElementListItem* _pNewItem)
 {
-	_pNewItem->SetParent(this, false);
+    _pNewItem->SetParent(this, false);
     _pNewItem->SetList(this);
 
     sf::Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
     _pNewItem->OnListResized(kListSize);
 
-	m_items.push_back(_pNewItem);
+    m_items.push_back(_pNewItem);
 
-	RecomputeItems();
+    RecomputeItems();
 }
 
 void ElementList::RemoveItem(int _iIndex)
@@ -132,15 +132,15 @@ void ElementList::RemoveItem(ElementListItem* _pItem)
 
     m_currentIndexTop = Clamp(m_currentIndexTop, 0, (int)m_items.size() - 1);
 
-	RecomputeItems();
+    RecomputeItems();
 }
 
 void ElementList::RemoveAllItems()
 {
-	ClearStdVector(m_items);
+    ClearStdVector(m_items);
     m_currentIndexTop = 0;
 
-	RecomputeItems();
+    RecomputeItems();
 }
 
 void ElementList::GetItems(std::vector<ElementListItem*>& _vecItems) const
@@ -241,19 +241,19 @@ void ElementList::GetSelectedElements(std::vector<Element*>& _vecElements) const
 
 void ElementList::OnMouseScrolled(int _iDelta)
 {
-	ScrollItems(-_iDelta);
+    ScrollItems(-_iDelta);
 }
 
 void ElementList::OnScrollDrag()
 {
-	if (m_items.size() != 0)
-	{
+    if (m_items.size() != 0)
+    {
         float fScrollAreaSize = Max(0.f, GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y /* - m_pScrollSlider->GetSize().y*/);
         float fGap = Clamp(m_scrollSlider->GetPosition().y - m_scrollButtonTop->GetSize().y, 0.f, fScrollAreaSize);
         
         int iDesiredIndex = (int)(fGap / (fScrollAreaSize / (float)m_items.size()));
         ScrollItems(iDesiredIndex - m_currentIndexTop);
-	}
+    }
     else
     {
         //TODO: Maybe disable the drag interaction when items list is empty
@@ -270,7 +270,7 @@ int ElementList::ScrollItems(int _iDelta)
         int iOldIndexTop    = m_currentIndexTop;
         m_currentIndexTop  = Clamp(m_currentIndexTop + _iDelta, 0, (int)m_items.size() - 1);
 
-	    RecomputeItems();   //This may change m_iCurrentIndexTop
+        RecomputeItems();   //This may change m_iCurrentIndexTop
 
         iComputedDelta = m_currentIndexTop - iOldIndexTop;
     }
@@ -290,10 +290,10 @@ void ElementList::RecomputeScrollBar()
 
 void ElementList::RecomputeItems()
 {
-	Element* pElement = nullptr;
-	float fSizeItems = 0.f;
+    Element* pElement = nullptr;
+    float fSizeItems = 0.f;
 
-	m_displayedItemCount = 0;
+    m_displayedItemCount = 0;
 
     if (m_items.size() == 0)
     {
@@ -346,21 +346,21 @@ void ElementList::RecomputeItems()
         }
     }
 
-	//Compute scroll size/position
+    //Compute scroll size/position
     m_scrollSlider->SetPosition(GetSize().x - m_scrollSlider->GetSize().x, m_scrollSlider->GetPosition().y);
 
-	if (m_displayedItemCount < (int)m_items.size())
-	{
-		float fItemSize = (GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y) / m_items.size();
+    if (m_displayedItemCount < (int)m_items.size())
+    {
+        float fItemSize = (GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y) / m_items.size();
 
-		m_scrollSlider->SetSizeY(m_displayedItemCount * fItemSize);
+        m_scrollSlider->SetSizeY(m_displayedItemCount * fItemSize);
         m_scrollSlider->SetPosition(m_scrollSlider->GetPosition().x, m_scrollButtonTop->GetSize().y + Clamp(m_currentIndexTop * fItemSize, 0.f, GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y - m_scrollSlider->GetSize().y));
-	}
-	else
-	{
-		m_scrollSlider->SetSizeY(GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y);
+    }
+    else
+    {
+        m_scrollSlider->SetSizeY(GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y);
         m_scrollSlider->SetPosition(m_scrollSlider->GetPosition().x, m_scrollButtonTop->GetSize().y);
-	}
+    }
 }
 
 void ElementList::GetPropagationList(std::vector<Element*>& _vecPropagationList)
@@ -369,10 +369,10 @@ void ElementList::GetPropagationList(std::vector<Element*>& _vecPropagationList)
     _vecPropagationList.push_back(m_scrollSlider);
     _vecPropagationList.push_back(m_scrollButtonBottom);
 
-	for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
-	{
+    for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
+    {
         _vecPropagationList.push_back(m_items[i]);
-	}
+    }
 }
 
 void ElementList::SetSizeImpl(sf::Vector2f _kOldSize)
@@ -381,20 +381,20 @@ void ElementList::SetSizeImpl(sf::Vector2f _kOldSize)
 
     sf::Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
     
-	for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
-	{
+    for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
+    {
         m_items[i]->OnListResized(kListSize);
-	}
+    }
 
-	RecomputeItems();
+    RecomputeItems();
 }
 
 void ElementList::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-	for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
-	{
+    for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
+    {
         m_items[i]->Render(_kRenderPass, _kTransformSelf);
-	}
+    }
 
     m_scrollBackground->Render(_kRenderPass, _kTransformSelf);
     m_scrollSlider->Render(_kRenderPass, _kTransformSelf);
@@ -402,4 +402,4 @@ void ElementList::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTran
     m_scrollButtonBottom->Render(_kRenderPass, _kTransformSelf);
 }
 
-}	// namespace gugu
+}   // namespace gugu

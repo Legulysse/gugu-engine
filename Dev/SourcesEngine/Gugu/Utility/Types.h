@@ -19,11 +19,11 @@ typedef unsigned int uint32;
 
 // 64 bits integer types
 #if defined(_MSC_VER)
-	typedef signed   __int64 int64;
-	typedef unsigned __int64 uint64;
+    typedef signed   __int64 int64;
+    typedef unsigned __int64 uint64;
 #else
-	typedef signed   long long int64;
-	typedef unsigned long long uint64;
+    typedef signed   long long int64;
+    typedef unsigned long long uint64;
 #endif
     
-}	// namespace gugu
+}   // namespace gugu

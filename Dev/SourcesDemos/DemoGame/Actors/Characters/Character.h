@@ -27,21 +27,21 @@ public:
 
     Character();
     virtual ~Character();
-	
-    void	InitCharacter(bool bPlayer, float _fSpeed);
+    
+    void    InitCharacter(bool bPlayer, float _fSpeed);
 
     void            Move        (sf::Vector2f _kDirection, const gugu::DeltaTime& dt);
     sf::Vector2f    GetPosition () const;
 
-	void			Attack(const sf::Vector2f& _kCoords);
+    void            Attack(const sf::Vector2f& _kCoords);
 
     bool TestCollision(class Projectile* _pProjectile);
 
-	virtual void Step(const gugu::DeltaTime& dt) override;
+    virtual void Step(const gugu::DeltaTime& dt) override;
 
 public:
 
-	float m_walkSpeed;		        // Distance walked per second
+    float m_walkSpeed;              // Distance walked per second
 
     float m_maxLife;                // Max Life
 
@@ -49,12 +49,12 @@ public:
     float m_staminaRecovery;        // Stamina recovery per second
     float m_staminaRecoveryDelay;   // Delay in seconds before stamina recovery
 
-	float m_attackSpeed;	        // Nb attacks per second
+    float m_attackSpeed;            // Nb attacks per second
     float m_attackStaminaCost;      // Stamina cost per attack
 
 public:
 
-	gugu::ElementSpriteAnimated* m_sprite;
+    gugu::ElementSpriteAnimated* m_sprite;
     class ElementBar* m_lifeBar;
 
     float m_currentLife;

@@ -25,13 +25,13 @@ public:
     ControllerPlayer();
     virtual ~ControllerPlayer();
     
-	void InitController(Character* _pCharacter, int _playerIndex);
+    void InitController(Character* _pCharacter, int _playerIndex);
 
     virtual void Step(const gugu::DeltaTime& dt) override;
 
 public:
 
-	int m_playerIndex;
+    int m_playerIndex;
     Character* m_character;
 };
 

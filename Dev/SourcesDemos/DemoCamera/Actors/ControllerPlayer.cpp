@@ -22,7 +22,7 @@ namespace demoproject {
 
 ControllerPlayer::ControllerPlayer()
 {
-	m_playerIndex = -1;
+    m_playerIndex = -1;
     m_character = nullptr;
 }
 
@@ -38,50 +38,50 @@ void ControllerPlayer::InitController(Character* _pCharacter, int _playerIndex)
 
 void ControllerPlayer::Step(const DeltaTime& dt)
 {
-	Actor::Step(dt);
+    Actor::Step(dt);
 
-	ManagerConfig* pConfig = GetConfig();
+    ManagerConfig* pConfig = GetConfig();
 
     sf::Vector2f kDirection;
 
-	if (m_playerIndex == 0)
-	{
-		if (pConfig->IsInputDown("Player_1_Up"))
-		{
-			kDirection.y += -1.f;
-		}
-		if (pConfig->IsInputDown("Player_1_Down"))
-		{
-			kDirection.y += 1.f;
-		}
-		if (pConfig->IsInputDown("Player_1_Left"))
-		{
-			kDirection.x += -1.f;
-		}
-		if (pConfig->IsInputDown("Player_1_Right"))
-		{
-			kDirection.x += 1.f;
-		}
-	}
-	else if (m_playerIndex == 1)
-	{
-		if (pConfig->IsInputDown("Player_2_Up"))
-		{
-			kDirection.y += -1.f;
-		}
-		if (pConfig->IsInputDown("Player_2_Down"))
-		{
-			kDirection.y += 1.f;
-		}
-		if (pConfig->IsInputDown("Player_2_Left"))
-		{
-			kDirection.x += -1.f;
-		}
-		if (pConfig->IsInputDown("Player_2_Right"))
-		{
-			kDirection.x += 1.f;
-		}
-	}
+    if (m_playerIndex == 0)
+    {
+        if (pConfig->IsInputDown("Player_1_Up"))
+        {
+            kDirection.y += -1.f;
+        }
+        if (pConfig->IsInputDown("Player_1_Down"))
+        {
+            kDirection.y += 1.f;
+        }
+        if (pConfig->IsInputDown("Player_1_Left"))
+        {
+            kDirection.x += -1.f;
+        }
+        if (pConfig->IsInputDown("Player_1_Right"))
+        {
+            kDirection.x += 1.f;
+        }
+    }
+    else if (m_playerIndex == 1)
+    {
+        if (pConfig->IsInputDown("Player_2_Up"))
+        {
+            kDirection.y += -1.f;
+        }
+        if (pConfig->IsInputDown("Player_2_Down"))
+        {
+            kDirection.y += 1.f;
+        }
+        if (pConfig->IsInputDown("Player_2_Left"))
+        {
+            kDirection.x += -1.f;
+        }
+        if (pConfig->IsInputDown("Player_2_Right"))
+        {
+            kDirection.x += 1.f;
+        }
+    }
 
     m_character->Move(kDirection, dt);
 

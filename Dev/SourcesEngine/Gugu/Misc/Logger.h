@@ -16,8 +16,8 @@ namespace gugu {
     
 namespace ELog {
     enum Type
-	{
-		Debug,
+    {
+        Debug,
         Info,
         Warning,
         Error,
@@ -81,4 +81,4 @@ public:
     void Print(ELog::Type _eLogLevel, ELogEngine::Type _eLogEngineCategory, const std::string& _strText);
 };
 
-}	// namespace gugu
+}   // namespace gugu

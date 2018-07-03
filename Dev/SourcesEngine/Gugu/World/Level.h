@@ -23,17 +23,17 @@ namespace gugu {
 
 class Level
 {
-	friend class Actor;
+    friend class Actor;
 
 public:
 
     Level();
-	virtual ~Level();
+    virtual ~Level();
 
-	virtual void Step(const DeltaTime& dt);
-	virtual void Update(const DeltaTime& dt);
-	
-	//Render
+    virtual void Step(const DeltaTime& dt);
+    virtual void Update(const DeltaTime& dt);
+    
+    //Render
     Element* GetRootNode() const;
     
     //Sub Levels

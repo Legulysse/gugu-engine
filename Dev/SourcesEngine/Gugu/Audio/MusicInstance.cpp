@@ -109,7 +109,7 @@ void MusicInstance::Play()
     if (m_sfMusic && m_sfMusic->getStatus() != sf::Sound::Playing)
     {
         m_sfMusic->play();
-	}
+    }
 }
 
 void MusicInstance::Pause()
@@ -158,4 +158,4 @@ bool MusicInstance::IsFinished() const
     return true;
 }
 
-}	// namespace gugu
+}   // namespace gugu

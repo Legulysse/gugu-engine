@@ -10,27 +10,27 @@ class Singleton
 {
 protected:
 
-			Singleton	()	{}
-	virtual ~Singleton	()	{}
+            Singleton   ()  {}
+    virtual ~Singleton  ()  {}
 
 public:
 
     static T* GetInstance()
     {
         if(!m_instance)
-	    {
-		    m_instance = new T;
-	    }
+        {
+            m_instance = new T;
+        }
         return m_instance;
     }
 
     static void DeleteInstance()
     {
         if(m_instance)
-	    {
-		    delete m_instance ;
-		    m_instance = 0;
-	    }
+        {
+            delete m_instance ;
+            m_instance = 0;
+        }
     }
 
 protected:

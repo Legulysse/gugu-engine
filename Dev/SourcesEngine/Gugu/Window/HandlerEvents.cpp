@@ -79,9 +79,9 @@ bool HandlerEvents::IsEventListenerRegistered(EventListener* _pEventListener) co
 
 void HandlerEvents::ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<InteractiveElementEntry>& _vecRootElements)
 {
-	BeginEvent(_vecRootElements);
-	ProcessEvent(_oSFEvent);
-	FinishEvent();
+    BeginEvent(_vecRootElements);
+    ProcessEvent(_oSFEvent);
+    FinishEvent();
 }
 
 void HandlerEvents::BeginEvent(const std::vector<InteractiveElementEntry>& _vecRootElements)
@@ -171,10 +171,10 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
 
     if (!PropagateToListeners(_oSFEvent))
     {
-        return;		//the event has been closed by a listener
+        return;     //the event has been closed by a listener
     }
 
-	sf::Vector2i oMouseCoords = GetGameWindow()->GetMousePixelCoords();
+    sf::Vector2i oMouseCoords = GetGameWindow()->GetMousePixelCoords();
     bool bContinue = true;
 
     if (_oSFEvent.type == sf::Event::MouseMoved)

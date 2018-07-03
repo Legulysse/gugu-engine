@@ -210,4 +210,4 @@ bool Camera::IsMouseOverElement(const sf::Vector2i& _kMouseCoords, Element* _pEl
     return _pElement->IsPicked(GetPickedPosition(_kMouseCoords));
 }
 
-}	// namespace gugu
+}   // namespace gugu

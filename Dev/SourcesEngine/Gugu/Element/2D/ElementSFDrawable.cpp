@@ -20,24 +20,24 @@ namespace gugu {
     
 ElementSFDrawable::ElementSFDrawable()
 {
-	m_sfDrawable = nullptr;
+    m_sfDrawable = nullptr;
 }
 
 ElementSFDrawable::~ElementSFDrawable()
 {
-	SafeDelete(m_sfDrawable);
+    SafeDelete(m_sfDrawable);
 }
 
 void ElementSFDrawable::SetSFDrawable(sf::Drawable* _pSFDrawable)
 {
-	SafeDelete(m_sfDrawable);
+    SafeDelete(m_sfDrawable);
 
-	m_sfDrawable = _pSFDrawable;
+    m_sfDrawable = _pSFDrawable;
 }
 
 sf::Drawable* ElementSFDrawable::GetSFDrawable() const
 {
-	return m_sfDrawable;
+    return m_sfDrawable;
 }
 
 void ElementSFDrawable::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
@@ -54,4 +54,4 @@ void ElementSFDrawable::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& 
     }
 }
 
-}	// namespace gugu
+}   // namespace gugu

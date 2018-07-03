@@ -35,20 +35,20 @@ FileInfo::FileInfo(const std::string& _strPathName)
 
 void FileInfo::SetPathName(const std::string& _strPathName)
 {
-	std::string strPathNameNormalized;
-	NormalizePath(_strPathName, false, strPathNameNormalized);
+    std::string strPathNameNormalized;
+    NormalizePath(_strPathName, false, strPathNameNormalized);
 
-	size_t iPos = strPathNameNormalized.find_last_of("/");
-	if (iPos != std::string::npos)
-	{
-		m_path = strPathNameNormalized.substr(0, iPos + 1);
-		m_name = strPathNameNormalized.substr(iPos + 1);
-	}
-	else
-	{
-		m_path = "";
-		m_name = strPathNameNormalized;
-	}
+    size_t iPos = strPathNameNormalized.find_last_of("/");
+    if (iPos != std::string::npos)
+    {
+        m_path = strPathNameNormalized.substr(0, iPos + 1);
+        m_name = strPathNameNormalized.substr(iPos + 1);
+    }
+    else
+    {
+        m_path = "";
+        m_name = strPathNameNormalized;
+    }
 }
 
 void FileInfo::SetPathName(const std::string& _strPath, const std::string& _strName)

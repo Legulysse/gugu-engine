@@ -25,11 +25,11 @@ class Game : public gugu::Application, public gugu::StateMachine, public gugu::E
 {
 public:
 
-	Game();
-	virtual ~Game();
+    Game();
+    virtual ~Game();
 
-    virtual	void AppStart() override;
-    virtual	void AppStop() override;
+    virtual void AppStart() override;
+    virtual void AppStop() override;
 
     virtual void AppStep(const gugu::DeltaTime& dt) override;
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;

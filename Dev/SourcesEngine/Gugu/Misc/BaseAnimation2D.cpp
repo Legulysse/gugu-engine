@@ -25,7 +25,7 @@ BaseAnimation2D::BaseAnimation2D()
     m_animation = nullptr;
 
     m_originFromAnimation = false;
-	m_moveFromAnimation = false;
+    m_moveFromAnimation = false;
 
     m_animLoop = true;
     m_animPause = false;
@@ -42,7 +42,7 @@ BaseAnimation2D::~BaseAnimation2D()
 
 void BaseAnimation2D::ChangeAnimSet(const std::string& _strFilePath)
 {
-	ChangeAnimSet(GetResources()->GetAnimSet(_strFilePath));
+    ChangeAnimSet(GetResources()->GetAnimSet(_strFilePath));
 }
 
 void BaseAnimation2D::ChangeAnimSet(AnimSet* _pAnimSet)
@@ -76,7 +76,7 @@ void BaseAnimation2D::RestartAnimation()
     {
         m_animPause            = false;
 
-        m_animIndexCurrent	= 0;
+        m_animIndexCurrent  = 0;
         m_animDurationCurrent  = 0.f;
 
         SetCurrentFrame(m_animIndexCurrent);
@@ -85,10 +85,10 @@ void BaseAnimation2D::RestartAnimation()
 
 void BaseAnimation2D::StopAnimation()
 {
-    m_animation		    = nullptr;
-    m_animPause			= false;
+    m_animation         = nullptr;
+    m_animPause         = false;
 
-    m_animIndexCurrent	= 0;
+    m_animIndexCurrent  = 0;
     m_animDurationCurrent  = 0.f;
 
     //TODO: Call InitCurrentAnimationFrame() and force empty Sprites ?

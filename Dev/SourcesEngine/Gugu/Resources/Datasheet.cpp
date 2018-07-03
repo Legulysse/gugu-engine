@@ -29,7 +29,7 @@ Datasheet::~Datasheet()
 {
 }
 
-EResourceType::Type	Datasheet::GetResourceType() const
+EResourceType::Type Datasheet::GetResourceType() const
 {
     return EResourceType::Datasheet;
 }
@@ -200,35 +200,35 @@ Datasheet* Datasheet::InstanciateDatasheet(DatasheetParserContext& _kContext, co
 {
     Datasheet* pDatasheet = GetResources()->InstanciateDatasheet(_strType);
     if (pDatasheet)
-	{
+    {
         pDatasheet->ParseMembers(_kContext);
         return pDatasheet;
-	}
+    }
     else
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasheet : {0}", _strType));
     }
 
-	return nullptr;
+    return nullptr;
 }
 
 bool Datasheet::InstanciateDatasheet(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, Datasheet*& _pInstance)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
-	{
-		//Check type overload
-		pugi::xml_attribute pAttributeType = pNode.attribute("type");
-		std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
+    {
+        //Check type overload
+        pugi::xml_attribute pAttributeType = pNode.attribute("type");
+        std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
 
-		pugi::xml_node* pNodeParent = _kContext.currentNode;
-		_kContext.currentNode = &pNode;
+        pugi::xml_node* pNodeParent = _kContext.currentNode;
+        _kContext.currentNode = &pNode;
 
         _pInstance = InstanciateDatasheet(_kContext, strType);
 
-		_kContext.currentNode = pNodeParent;
+        _kContext.currentNode = pNodeParent;
 
-		return true;
+        return true;
     }
 
     return false;
@@ -243,10 +243,10 @@ bool Datasheet::InstanciateDatasheets(DatasheetParserContext& _kContext, const s
 
         pugi::xml_node pNodeChild = pNode.child("Child");
         while (pNodeChild)
-		{
-			//Check type overload
-			pugi::xml_attribute pAttributeType = pNodeChild.attribute("type");
-			std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
+        {
+            //Check type overload
+            pugi::xml_attribute pAttributeType = pNodeChild.attribute("type");
+            std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
 
             _kContext.currentNode = &pNodeChild;
             Datasheet* pInstance = InstanciateDatasheet(_kContext, strType);
@@ -266,25 +266,25 @@ bool Datasheet::InstanciateDatasheets(DatasheetParserContext& _kContext, const s
 
 Datasheet* Datasheet::ResolveDatasheetLink(const std::string& _strName)
 {
-	return GetResources()->GetDatasheet(_strName);
+    return GetResources()->GetDatasheet(_strName);
 }
 
 bool Datasheet::ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, Datasheet*& _pNewDatasheet)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
-	if (pNode)
-	{
-		pugi::xml_attribute pAttributeValue = pNode.attribute("value");
-		if (pAttributeValue)
-		{
-			std::string strSheetName = pAttributeValue.as_string("");
-			_pNewDatasheet = ResolveDatasheetLink(strSheetName);
-		}
+    if (pNode)
+    {
+        pugi::xml_attribute pAttributeValue = pNode.attribute("value");
+        if (pAttributeValue)
+        {
+            std::string strSheetName = pAttributeValue.as_string("");
+            _pNewDatasheet = ResolveDatasheetLink(strSheetName);
+        }
 
         return true;
-	}
+    }
 
-	return false;
+    return false;
 }
 
 bool Datasheet::ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<Datasheet*>& _vecDatasheets)
@@ -298,9 +298,9 @@ bool Datasheet::ResolveDatasheetLinks(DatasheetParserContext& _kContext, const s
             pugi::xml_attribute pAttributeValue = pNodeChild.attribute("value");
             if (pAttributeValue)
             {
-				Datasheet* pDatasheet = ResolveDatasheetLink(pAttributeValue.as_string());
-				if (pDatasheet)
-					_vecDatasheets.push_back(pDatasheet);   //TODO: Allow null datasheets in datasheet arrays ?
+                Datasheet* pDatasheet = ResolveDatasheetLink(pAttributeValue.as_string());
+                if (pDatasheet)
+                    _vecDatasheets.push_back(pDatasheet);   //TODO: Allow null datasheets in datasheet arrays ?
             }
             pNodeChild = pNodeChild.next_sibling("Child");
         }

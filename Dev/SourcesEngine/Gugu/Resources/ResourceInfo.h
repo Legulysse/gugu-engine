@@ -22,16 +22,16 @@ class ResourceInfo
 {
 public:
 
-	ResourceInfo();
-	~ResourceInfo();
+    ResourceInfo();
+    ~ResourceInfo();
 
-	static bool Compare (const ResourceInfo* pLeft, const ResourceInfo* pRight);
+    static bool Compare (const ResourceInfo* pLeft, const ResourceInfo* pRight);
 
 public:
 
-	std::string resourceID;
-	FileInfo fileInfo;
-	Resource* resource;
+    std::string resourceID;
+    FileInfo fileInfo;
+    Resource* resource;
 };
 
-}	// namespace gugu
+}   // namespace gugu

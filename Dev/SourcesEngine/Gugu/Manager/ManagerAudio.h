@@ -48,7 +48,7 @@ public:
     bool    PlaySound       (const std::string& _strFile, float _fVolume = 1.f, int _iGroup = 0);     // Volume range [0, 1]
     bool    PlaySound       (const SoundParameters& _kParameters);
 
-	bool    PlayMusic       (const std::string& _strFile, float _fVolume = 1.f, float _fFade = 2.f);   // Volume range [0, 1]
+    bool    PlayMusic       (const std::string& _strFile, float _fVolume = 1.f, float _fFade = 2.f);   // Volume range [0, 1]
     bool    PlayMusic       (const MusicParameters& _kParameters);
     bool    PlayMusicList   (const std::vector<MusicParameters>& _vecPlaylist);
     bool    StopMusic       (float _fFade = 2.f);
@@ -58,9 +58,9 @@ public:
 
 private:
 
-	std::vector<SoundInstance>  m_soundInstances;
-	std::vector<MusicInstance>  m_musicInstances;
-	std::vector<MusicLayer>     m_musicLayers;
+    std::vector<SoundInstance>  m_soundInstances;
+    std::vector<MusicInstance>  m_musicInstances;
+    std::vector<MusicLayer>     m_musicLayers;
 
     size_t                      m_soundIndex;
 };

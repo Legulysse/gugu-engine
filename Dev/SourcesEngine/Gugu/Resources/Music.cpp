@@ -38,9 +38,9 @@ bool Music::LoadSFMusic(sf::Music* _pMusic)
     return true;
 }
 
-EResourceType::Type	Music::GetResourceType() const
+EResourceType::Type Music::GetResourceType() const
 {
-	return EResourceType::Music;
+    return EResourceType::Music;
 }
 
 bool Music::LoadFromFile()
@@ -48,4 +48,4 @@ bool Music::LoadFromFile()
     return true;
 }
 
-}	// namespace gugu
+}   // namespace gugu

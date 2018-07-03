@@ -59,10 +59,10 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
             links { "GuguEngine-s", "SFML-s", "PugiXml-s" }
             
         filter { "system:windows" }
-			links { "jpeg", "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
+			links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
             
         filter { "system:linux" }
-            links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "jpeg", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
+            links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
 		
         -- Target
         filter { "configurations:Debug" }
@@ -152,10 +152,10 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
             links { "SFML-s" }
             
         filter { "system:windows" }
-			links { "jpeg", "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
+			links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
             
         filter { "system:linux" }
-            links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "jpeg", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
+            links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
 		
         -- Target
         filter { "configurations:Debug" }

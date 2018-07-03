@@ -33,20 +33,20 @@ sf::SoundBuffer* Sound::GetSFSoundBuffer() const
     return m_sfSoundBuffer;
 }
 
-EResourceType::Type	Sound::GetResourceType() const
+EResourceType::Type Sound::GetResourceType() const
 {
-	return EResourceType::Sound;
+    return EResourceType::Sound;
 }
 
 bool Sound::LoadFromFile()
 {
-	m_sfSoundBuffer = new sf::SoundBuffer;
-	if (!m_sfSoundBuffer->loadFromFile(GetFileInfoRef().GetPathName()))
-	{
+    m_sfSoundBuffer = new sf::SoundBuffer;
+    if (!m_sfSoundBuffer->loadFromFile(GetFileInfoRef().GetPathName()))
+    {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Sound not found : {0}", GetFileInfoRef().GetPathName()));
         return false;
-	}
+    }
     return true;
 }
 
-}	// namespace gugu
+}   // namespace gugu

@@ -25,7 +25,7 @@ namespace demoproject {
 
 Character::Character()
 {
-	m_walkSpeed = 100.f;
+    m_walkSpeed = 100.f;
 
     m_maxLife = 100.f;
 
@@ -41,7 +41,7 @@ Character::Character()
 
     m_currentLife = m_maxLife;
     m_currentStamina = m_maxStamina;
-	m_attackCooldown = 0.f;
+    m_attackCooldown = 0.f;
     m_staminaRecoveryCooldown = 0.f;
 
     m_isDead = false;
@@ -49,14 +49,14 @@ Character::Character()
 
 Character::~Character()
 {
-	SafeDelete(m_sprite);
+    SafeDelete(m_sprite);
 }
 
 void Character::InitCharacter(bool bPlayer, float _fSpeed)
 {
-	m_walkSpeed = _fSpeed;
+    m_walkSpeed = _fSpeed;
 
-	m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
+    m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
 
     if (bPlayer)
     {
@@ -70,7 +70,7 @@ void Character::InitCharacter(bool bPlayer, float _fSpeed)
             m_sprite->ChangeAnimSet("Lady.animset.xml");
     }
 
-	m_sprite->StartAnimation("IdleDown");
+    m_sprite->StartAnimation("IdleDown");
     m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
 
     if (bPlayer)
@@ -121,17 +121,17 @@ void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
 void Character::Attack(const sf::Vector2f& _kCoords)
 {
     if (m_attackCooldown <= 0.f && m_currentStamina > 0.f)   // Allow action when we have at least 1 stamina point (allow negative values)
-	{
+    {
         m_currentStamina -= m_attackStaminaCost;
         m_staminaRecoveryCooldown = m_staminaRecoveryDelay;
 
         m_attackCooldown = (m_attackSpeed > 0.f) ? 1.f / m_attackSpeed : 1.f;
 
-		Projectile* newProjectile = new Projectile();
-		m_level->AddActor(newProjectile);
+        Projectile* newProjectile = new Projectile();
+        m_level->AddActor(newProjectile);
 
-		newProjectile->InitProjectile(this, GetPosition(), _kCoords);
-	}
+        newProjectile->InitProjectile(this, GetPosition(), _kCoords);
+    }
 }
 
 bool Character::TestCollision(class Projectile* _pProjectile)
@@ -156,7 +156,7 @@ bool Character::TestCollision(class Projectile* _pProjectile)
 
 void Character::Step(const DeltaTime& dt)
 {
-	Actor::Step(dt);
+    Actor::Step(dt);
 
     // Stamina
     if (m_staminaRecoveryCooldown > 0.f)
@@ -172,9 +172,9 @@ void Character::Step(const DeltaTime& dt)
 
     // Attack
     if (m_attackCooldown > 0.f)
-	{
+    {
         m_attackCooldown -= dt.s();
-	}
+    }
 
     // UI
     if (m_lifeBar)

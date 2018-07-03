@@ -7,21 +7,21 @@ namespace gugu {
 
 namespace EResourceType
 {
-	enum Type
-	{
-		Unknown = 0,
+    enum Type
+    {
+        Unknown = 0,
 
         Texture,
-		Font,
-		Sound,
-		Music,
-		SoundCue,
-		ImageSet,
-		AnimSet,
-		Datasheet,
+        Font,
+        Sound,
+        Music,
+        SoundCue,
+        ImageSet,
+        AnimSet,
+        Datasheet,
 
-		Custom,
-	};
+        Custom,
+    };
 }
 
 }   // namespace gugu

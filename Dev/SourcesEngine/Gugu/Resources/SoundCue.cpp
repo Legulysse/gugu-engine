@@ -51,9 +51,9 @@ bool SoundCue::GetRandomSound(SoundParameters& _kParameters) const
     return true;
 }
 
-EResourceType::Type	SoundCue::GetResourceType() const
+EResourceType::Type SoundCue::GetResourceType() const
 {
-	return EResourceType::SoundCue;
+    return EResourceType::SoundCue;
 }
 
 bool SoundCue::LoadFromFile()
@@ -95,4 +95,4 @@ bool SoundCue::LoadFromFile()
     return true;
 }
 
-}	// namespace gugu
+}   // namespace gugu

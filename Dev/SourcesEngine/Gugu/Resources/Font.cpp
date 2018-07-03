@@ -36,20 +36,20 @@ sf::Font* Font::GetSFFont() const
     return m_sfFont;
 }
 
-EResourceType::Type	Font::GetResourceType() const
+EResourceType::Type Font::GetResourceType() const
 {
-	return EResourceType::Font;
+    return EResourceType::Font;
 }
 
 bool Font::LoadFromFile()
 {
-	m_sfFont = new sf::Font;
-	if (!m_sfFont->loadFromFile(GetFileInfoRef().GetPathName()))
-	{
+    m_sfFont = new sf::Font;
+    if (!m_sfFont->loadFromFile(GetFileInfoRef().GetPathName()))
+    {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Font not found : {0}", GetFileInfoRef().GetPathName()));
         return false;
-	}
+    }
     return true;
 }
 
-}	// namespace gugu
+}   // namespace gugu

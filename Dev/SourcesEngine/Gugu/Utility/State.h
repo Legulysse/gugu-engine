@@ -20,20 +20,20 @@ public:
     virtual void Init();
     virtual void Release();
 
-	virtual void Enter	(State* _pStateFrom);
-    virtual void Exit	(State* _pStateTo);
+    virtual void Enter  (State* _pStateFrom);
+    virtual void Exit   (State* _pStateTo);
 
     virtual void Step(const DeltaTime& dt);
     virtual void Update(const DeltaTime& dt);
 
-	void			SetOwner(StateMachine* _pOwner);
-	StateMachine*	GetOwner() const;
+    void            SetOwner(StateMachine* _pOwner);
+    StateMachine*   GetOwner() const;
 
     bool            IsTopState() const;
 
 private:
 
-	StateMachine* m_owner;
+    StateMachine* m_owner;
 };
 
 }   // namespace gugu

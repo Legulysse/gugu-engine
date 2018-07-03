@@ -25,15 +25,15 @@ ElementListItem::ElementListItem()
     m_list = nullptr;
     m_elementImpl = nullptr;
     m_isSelected = false;
-	
-	m_actionOnSelected = nullptr;
-	m_actionOnDeselected = nullptr;
+    
+    m_actionOnSelected = nullptr;
+    m_actionOnDeselected = nullptr;
 }
 
 ElementListItem::~ElementListItem()
 {
-	SafeDelete(m_actionOnSelected);
-	SafeDelete(m_actionOnDeselected);
+    SafeDelete(m_actionOnSelected);
+    SafeDelete(m_actionOnDeselected);
 
     SafeDelete(m_elementImpl);
 }
@@ -61,12 +61,12 @@ Element* ElementListItem::GetElement() const
 void ElementListItem::SetSelected(bool _bIsSelected)
 {
     m_isSelected = _bIsSelected;
-	
-	if (m_isSelected && m_actionOnSelected)
-		m_actionOnSelected->Call();
+    
+    if (m_isSelected && m_actionOnSelected)
+        m_actionOnSelected->Call();
 
-	if (!m_isSelected && m_actionOnDeselected)
-		m_actionOnDeselected->Call();
+    if (!m_isSelected && m_actionOnDeselected)
+        m_actionOnDeselected->Call();
 }
 
 bool ElementListItem::IsSelected() const
@@ -85,14 +85,14 @@ void ElementListItem::OnListResized(sf::Vector2f _oListSize)
 
 void ElementListItem::SetOnSelected(Action* _pAction)
 {
-	SafeDelete(m_actionOnSelected);
-	m_actionOnSelected = _pAction;
+    SafeDelete(m_actionOnSelected);
+    m_actionOnSelected = _pAction;
 }
 
 void ElementListItem::SetOnDeselected(Action* _pAction)
 {
-	SafeDelete(m_actionOnDeselected);
-	m_actionOnDeselected = _pAction;
+    SafeDelete(m_actionOnDeselected);
+    m_actionOnDeselected = _pAction;
 }
 
 void ElementListItem::OnMouseEnter()

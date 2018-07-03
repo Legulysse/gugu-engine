@@ -66,17 +66,17 @@ void ElementSpriteAnimated::InitCurrentAnimationFrame()
         {
             SetOrigin(pCurrentFrame->GetOrigin());
         }
-		
+        
         if (m_moveFromAnimation)
         {
-			sf::Vector2f kMove = pCurrentFrame->GetMoveOffset();
-			if (m_flipY)
-				kMove.x = -kMove.x;
-			if (m_flipX)
-				kMove.y = -kMove.y;
+            sf::Vector2f kMove = pCurrentFrame->GetMoveOffset();
+            if (m_flipY)
+                kMove.x = -kMove.x;
+            if (m_flipX)
+                kMove.y = -kMove.y;
             Move(kMove);
         }
     }
 }
 
-}	// namespace gugu
+}   // namespace gugu

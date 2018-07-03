@@ -30,4 +30,4 @@ bool ResourceInfo::Compare(const ResourceInfo* pLeft, const ResourceInfo* pRight
     return pLeft->fileInfo < pRight->fileInfo;
 }
 
-}	// namespace gugu
+}   // namespace gugu

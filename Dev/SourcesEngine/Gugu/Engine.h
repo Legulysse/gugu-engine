@@ -26,7 +26,7 @@ namespace gugu
     class Renderer;
     class Window;
     class World;
-	class Level;
+    class Level;
     class LoggerEngine;
     class TraceGroup;
     class Action;
@@ -56,7 +56,7 @@ struct EngineConfig
     bool useAssetsFullPaths;
     std::string pathAssets;
     std::string pathScreenshots;
-	std::string defaultFont;
+    std::string defaultFont;
 
     // Graphics
     EGameWindow::Type gameWindow;
@@ -128,29 +128,29 @@ public:
     void Step(const DeltaTime& dt);
     void Stop();
 
-    void			SetApplication(Application* application);
-    Application*	GetApplication() const;
+    void            SetApplication(Application* application);
+    Application*    GetApplication() const;
 
     void            AddWindow       (Window* window);
     void            RemoveWindow    (Window* window);
-	void            SetGameWindow   (Window* window);
-	Window*         GetGameWindow   () const;
+    void            SetGameWindow   (Window* window);
+    Window*         GetGameWindow   () const;
     
-    bool	        SetTimer	(const std::string& name, uint32 delay, uint32 ticks, bool tickNow, Action* action);
-    void	        ClearTimer	(const std::string& name);
-    const Timer*	GetTimer	(const std::string& name) const;
-    void	        TickTimers	(const DeltaTime& dt);
+    bool            SetTimer    (const std::string& name, uint32 delay, uint32 ticks, bool tickNow, Action* action);
+    void            ClearTimer  (const std::string& name);
+    const Timer*    GetTimer    (const std::string& name) const;
+    void            TickTimers  (const DeltaTime& dt);
 
     void            ComputeCommandLine(const std::string& commandLine);
 
-	World*			    GetWorld() const;
-	void				OnLevelReleased(Level* level);
+    World*              GetWorld() const;
+    void                OnLevelReleased(Level* level);
 
-	Renderer*	        GetDefaultRenderer() const;
+    Renderer*           GetDefaultRenderer() const;
 
     ManagerConfig*      GetManagerConfig() const;
-    ManagerAudio*	    GetManagerAudio() const;
-    ManagerNetwork*	    GetManagerNetwork() const;
+    ManagerAudio*       GetManagerAudio() const;
+    ManagerNetwork*     GetManagerNetwork() const;
     ManagerResources*   GetManagerResources() const;
 
     LoggerEngine*       GetLogEngine() const;
@@ -164,18 +164,18 @@ private:
 
     std::map<std::string, Timer*> m_timers;
 
-	World*				m_world;
+    World*              m_world;
 
     ManagerConfig*      m_managerConfig;
-    ManagerAudio*		m_managerAudio;
-    ManagerNetwork*		m_managerNetwork;
+    ManagerAudio*       m_managerAudio;
+    ManagerNetwork*     m_managerNetwork;
     ManagerResources*   m_managerResources;
 
     LoggerEngine*       m_logEngine;
     TraceGroup*         m_traceGroupMain;
     int                 m_traceLifetime;
 
-    Application*		m_application;
+    Application*        m_application;
 
     bool                m_stopLoop;
     DeltaTime           m_dtSinceLastStep;

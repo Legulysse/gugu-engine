@@ -27,8 +27,8 @@ public:
     Demo();
     virtual ~Demo();
 
-	virtual	void AppStart() override;
-    virtual	void AppStop() override;
+    virtual void AppStart() override;
+    virtual void AppStop() override;
 
     virtual void AppStep(const gugu::DeltaTime& dt) override;
 
@@ -39,4 +39,4 @@ protected:
     gugu::ElementSpriteAnimated* m_movingAnimationB;
 };
 
-}	//namespace demoproject
+}   //namespace demoproject

@@ -25,8 +25,8 @@ class ElementTile : public Element
 {
 public:
 
-	ElementTile();
-	virtual ~ElementTile();
+    ElementTile();
+    virtual ~ElementTile();
 
     void SetTexture(const std::string& _strTexturePath);  //TODO: Rename as textureID
     void SetTexture(Texture* _pTexture);
@@ -63,4 +63,4 @@ protected:
     bool m_flipTextureY;
 };
 
-}	// namespace gugu
+}   // namespace gugu

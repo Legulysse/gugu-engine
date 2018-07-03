@@ -72,4 +72,4 @@ void SoundInstance::Play()
     m_sfSound.play();
 }
 
-}	// namespace gugu
+}   // namespace gugu

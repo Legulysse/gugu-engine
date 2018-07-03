@@ -47,7 +47,7 @@ T ClampUnordered(T _tValue, T _tLimitA, T _tLimitB)
 template <typename T>
 T Distance(T _tValue1, T _tValue2)
 {
-	return std::max(_tValue1, _tValue2) - std::min(_tValue1, _tValue2);
+    return std::max(_tValue1, _tValue2) - std::min(_tValue1, _tValue2);
 }
 
 template <typename T>
@@ -61,7 +61,7 @@ T Power(const T& n, const int& p)
 {
     if (p >= 0)
     {
-		return (T)std::pow((double)n, p);
+        return (T)std::pow((double)n, p);
     }
     else
     {
@@ -92,12 +92,12 @@ sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector)
 template <typename T>
 sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians)
 {
-	sf::Vector2<T> kResult;
-	float fCos = std::cos(_fRadians);
-	float fSin = std::sin(_fRadians);
-	kResult.x = _kVector.x * fCos - _kVector.y * fSin; 
-	kResult.y = _kVector.x * fSin + _kVector.y * fCos;
-	return kResult;
+    sf::Vector2<T> kResult;
+    float fCos = std::cos(_fRadians);
+    float fSin = std::sin(_fRadians);
+    kResult.x = _kVector.x * fCos - _kVector.y * fSin; 
+    kResult.y = _kVector.x * fSin + _kVector.y * fCos;
+    return kResult;
 }
 
 }   // namespace gugu

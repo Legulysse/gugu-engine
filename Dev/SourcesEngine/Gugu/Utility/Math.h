@@ -20,16 +20,16 @@ namespace gugu {
 
 namespace Math
 {
-	const float	Pi			= 3.14159265358979323846f;		// Pi
-	const float PiDivTwo	= 1.57079632679489661923f;		// Pi / 2
-	const float	PiDivFour	= 0.785398163397448309616f;		// Pi / 4
-	const float	OneDivPi	= 0.318309886183790671538f;		// 1 / Pi
-	const float	TwoDivPi	= 0.636619772367581343076f;		// 2 / Pi
+    const float Pi          = 3.14159265358979323846f;      // Pi
+    const float PiDivTwo    = 1.57079632679489661923f;      // Pi / 2
+    const float PiDivFour   = 0.785398163397448309616f;     // Pi / 4
+    const float OneDivPi    = 0.318309886183790671538f;     // 1 / Pi
+    const float TwoDivPi    = 0.636619772367581343076f;     // 2 / Pi
 
     const float DegreesToRadians = 0.0174532925199f;    // Pi / 180
     const float RadiansToDegrees = 57.2957795131f;      // 180 / Pi
 
-	const float Epsilon		= 0.001f;
+    const float Epsilon     = 0.001f;
 }
 
 //--------------------------------

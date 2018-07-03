@@ -46,19 +46,20 @@ class ElementText : public Element
 {
 public:
 
-	ElementText();
-	virtual ~ElementText();
+    ElementText();
+    virtual ~ElementText();
 
-	void SetText		(const std::string& _strValue /* , bool _bResize = true */);
+    void SetText        (const std::string& _strValue /* , bool _bResize = true */);
 
-	void SetFont		(const std::string& _strFontPath);
-	void SetFont		(Font* _pFont);
-	void SetFontSize	(uint32 _uiSize);
-	void SetFontColor	(const sf::Color& _oColor);
+    void SetFont        (const std::string& _strFontPath);
+    void SetFont        (Font* _pFont);
+    void SetFontSize    (uint32 _uiSize);
+    void SetFontColor   (const sf::Color& _oColor);
+    //TODO: Add accessors for all sf::Text methods (LineSpacing, LetterSpacing, Style, etc)
 
     void SetResizeRule  (ETextResizeRule::Type _eResizeRule);
-	void SetMultiline	(bool _bIsMultiline);
-	void SetEditable	(bool _bIsEditable);
+    void SetMultiline   (bool _bIsMultiline);
+    void SetEditable    (bool _bIsEditable);
 
     void StartEdition   ();
     void StopEdition    ();
@@ -69,9 +70,9 @@ public:
     virtual bool OnMouseDeselected() override;
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 
-	std::string GetValue() const;
+    std::string GetValue() const;
 
-	void SetOnValidate	    (Action* _pAction);
+    void SetOnValidate      (Action* _pAction);
 
     void SetDebugBoundsVisible(bool _bShowDebugBounds);
     
@@ -80,7 +81,7 @@ private:
     void StartEditionImpl   ();
     void StopEditionImpl    ();
 
-	void Recompute();
+    void Recompute();
 
     virtual void DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void SetSizeImpl(sf::Vector2f _kOldSize) override;
@@ -89,23 +90,23 @@ protected:
 
     Font* m_font;
 
-	sf::Text* m_sfText;
-	sf::Text* m_sfTextCursor;
+    sf::Text* m_sfText;
+    sf::Text* m_sfTextCursor;
 
-	std::string m_textValue;
+    std::string m_textValue;
 
     ETextResizeRule::Type m_resizeRule;
-	bool m_isMultiline;
-	bool m_isEditable;
+    bool m_isMultiline;
+    bool m_isEditable;
     
     bool m_skipRecomputeOnResize;
     bool m_isEditing;
     bool m_isTickDisplayed;
     float m_timeSinceTick;
 
-	std::vector<sf::Text*> m_components;
+    //std::vector<sf::Text*> m_components;
 
-	Action* m_actionOnValidate;
+    Action* m_actionOnValidate;
 
     bool m_showDebugBounds;
 };

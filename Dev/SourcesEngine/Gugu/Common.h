@@ -13,21 +13,21 @@
 // Operating System
 
 #if defined(_WIN32) || defined(__WIN32__)
-	#define GUGU_OS_WIN32
+    #define GUGU_OS_WIN32
 
-	#ifndef WIN32_LEAN_AND_MEAN
-		#define WIN32_LEAN_AND_MEAN
-	#endif
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
 
-	#ifndef NOMINMAX
-		#define NOMINMAX
-	#endif
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
 
 #elif defined(linux) || defined(__linux)
-	#define GUGU_OS_LINUX
+    #define GUGU_OS_LINUX
 
 #elif defined(__APPLE__) || defined(MACOSX) || defined(macintosh) || defined(Macintosh)
-	#define GUGU_OS_MAC
+    #define GUGU_OS_MAC
 
 #endif
 
@@ -35,7 +35,7 @@
 // Development Environment
 
 #if defined(_MSC_VER)
-	#define GUGU_ENV_VISUAL
+    #define GUGU_ENV_VISUAL
 #endif
 
 //--------------------------------

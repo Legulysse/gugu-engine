@@ -198,4 +198,4 @@ MusicInstance* MusicLayer::GetCurrentMusicInstance() const
     return (m_currentInstance->IsSet()) ? m_currentInstance : nullptr;
 }
 
-}	// namespace gugu
+}   // namespace gugu

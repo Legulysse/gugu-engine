@@ -26,7 +26,7 @@ public:
     ControllerPlayer();
     virtual ~ControllerPlayer();
     
-    void InitControllerPlayer	(Character* _pCharacter);
+    void InitControllerPlayer   (Character* _pCharacter);
 
     virtual void Step(const gugu::DeltaTime& dt) override;
 

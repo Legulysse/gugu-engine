@@ -32,19 +32,19 @@ class Application
 {
 public:
 
-            Application			();
-    virtual ~Application		();
+            Application         ();
+    virtual ~Application        ();
 
-	virtual	void AppStart		();
-	virtual	void AppStop		();
+    virtual void AppStart       ();
+    virtual void AppStop        ();
 
-    virtual void AppStep		(const DeltaTime& dt);
-    virtual void AppUpdate		(const DeltaTime& dt);
+    virtual void AppStep        (const DeltaTime& dt);
+    virtual void AppUpdate      (const DeltaTime& dt);
 
     virtual void ComputeCommandLine (const std::string& _strCommand, const std::vector<std::string>& _vecArgs);
 
-	virtual NetPacketGame*	ReadGamePacket		(sf::Packet* _pSFPacket);
-	virtual void			PlayerAddedToGame	(ClientInfo* pClient);
+    virtual NetPacketGame*  ReadGamePacket      (sf::Packet* _pSFPacket);
+    virtual void            PlayerAddedToGame   (ClientInfo* pClient);
 };
 
 Application* GetApplication();

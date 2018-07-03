@@ -47,16 +47,16 @@ Window::Window()
     m_handlerEvents = nullptr;
 
     m_rootNode     = nullptr;
-    m_rootUINode		= nullptr;
+    m_rootUINode        = nullptr;
     m_consoleNode  = nullptr;
     m_consoleTextEntry = nullptr;
     m_mouseNode    = nullptr;
 
     m_showStats        = false;
-	m_showFPS			= false;
+    m_showFPS           = false;
     m_isMouseVisible  = true;
 
-	m_backgroundColor = sf::Color(128,128,128,255);
+    m_backgroundColor = sf::Color(128,128,128,255);
 }
 
 Window::~Window()
@@ -66,12 +66,12 @@ Window::~Window()
     m_statFrameTimes.clear();
     m_sfWindow->close();
 
-	m_levelBindings.clear();
+    m_levelBindings.clear();
 
     ClearStdVector(m_cameras);
     SafeDelete(m_mainCamera);
-	SafeDelete(m_rootNode);
-	SafeDelete(m_sfWindow);
+    SafeDelete(m_rootNode);
+    SafeDelete(m_sfWindow);
 }
 
 sf::RenderWindow* Window::Create(const EngineConfig& config)
@@ -90,11 +90,11 @@ sf::RenderWindow* Window::Create(const EngineConfig& config)
     m_sfWindow->setVerticalSyncEnabled(config.enableVerticalSync);
 
     if (GetResources()->HasResource(config.applicationIcon))
-	{
-		sf::Image oImgIcon;
+    {
+        sf::Image oImgIcon;
         oImgIcon.loadFromFile(GetResources()->GetResourcePathName(config.applicationIcon));
 
-		m_sfWindow->setIcon(16, 16, oImgIcon.getPixelsPtr());
+        m_sfWindow->setIcon(16, 16, oImgIcon.getPixelsPtr());
     }
 
     Init(m_sfWindow, config);
@@ -105,7 +105,7 @@ sf::RenderWindow* Window::Create(const EngineConfig& config)
 void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
 {
     m_sfWindow = _pSFWindow;
-	m_backgroundColor = config.backgroundColor;
+    m_backgroundColor = config.backgroundColor;
 
     m_sfWindow->setKeyRepeatEnabled(false);
 
@@ -116,7 +116,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     //Handlers
     m_handlerEvents = new HandlerEvents;
 
-	//Root node
+    //Root node
     m_rootNode = new Element;
     m_rootNode->SetSize((float)config.windowWidth, (float)config.windowHeight);
 
@@ -129,7 +129,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     //Mouse Node
     m_mouseNode = m_rootNode->AddChild<ElementSprite>();
     //m_pMouseNode->SetUnifiedSize(UDim2::USIZE_FULL);
-	SetMouseVisible(false);
+    SetMouseVisible(false);
 
     //Console Node
     m_consoleNode = m_rootNode->AddChild<Element>();
@@ -146,18 +146,18 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     pSFTextureConsole->create(8, 8);
     pSFTextureConsole->update(oImgConsole);
 
-	Font* pFont = GetResources()->GetDefaultFont();
+    Font* pFont = GetResources()->GetDefaultFont();
 
     ElementSprite* pConsoleBackground = m_consoleNode->AddChild<ElementSprite>();
     pConsoleBackground->SetTexture(pTextureConsole);
     pConsoleBackground->SetUnifiedSize(UDim2(1.f, 0.f, 0.f, 200.f));
 
-	m_consoleTextEntry = pConsoleBackground->AddChild<ElementText>();
+    m_consoleTextEntry = pConsoleBackground->AddChild<ElementText>();
     m_consoleTextEntry->SetResizeRule(ETextResizeRule::FixedSize);
     m_consoleTextEntry->SetFont(pFont);
     m_consoleTextEntry->SetText("");
-	m_consoleTextEntry->SetMultiline(false);
-	//m_pConsoleTextEntry->SetEditable(true);
+    m_consoleTextEntry->SetMultiline(false);
+    //m_pConsoleTextEntry->SetEditable(true);
     m_consoleTextEntry->SetFontColor(sf::Color(220, 220, 220));
     m_consoleTextEntry->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT);
     m_consoleTextEntry->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
@@ -174,7 +174,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
 
 void Window::Step(const DeltaTime& dt)
 {
-	m_rootNode->Step(dt);
+    m_rootNode->Step(dt);
 }
 
 void Window::Update(const DeltaTime& dt)
@@ -206,12 +206,12 @@ Camera* Window::CreateCamera()
 
 Camera* Window::AddCamera(Camera* _pCamera)
 {
-	if (!_pCamera || StdVectorContains(m_cameras, _pCamera))
-		return nullptr;
+    if (!_pCamera || StdVectorContains(m_cameras, _pCamera))
+        return nullptr;
 
     _pCamera->SetWindow(this);
-	_pCamera->ComputeViewSize();
-	m_cameras.push_back(_pCamera);
+    _pCamera->ComputeViewSize();
+    m_cameras.push_back(_pCamera);
 
     return _pCamera;
 }
@@ -252,53 +252,53 @@ Camera* Window::GetMainCamera() const
 
 void Window::BindLevel(Level* _pLevel)
 {
-	BindLevel(_pLevel, m_mainCamera, m_renderer);
+    BindLevel(_pLevel, m_mainCamera, m_renderer);
 }
 
 void Window::BindLevel(Level* _pLevel, Camera* _pCamera)
 {
-	BindLevel(_pLevel, _pCamera, m_renderer);
+    BindLevel(_pLevel, _pCamera, m_renderer);
 }
 
 void Window::BindLevel(Level* _pLevel, Renderer* _pRenderer)
 {
-	BindLevel(_pLevel, m_mainCamera, _pRenderer);
+    BindLevel(_pLevel, m_mainCamera, _pRenderer);
 }
 
 void Window::BindLevel(Level* _pLevel, Camera* _pCamera, Renderer* _pRenderer)
 {
-	if (!_pLevel || !_pCamera || !_pRenderer)
-		return;
+    if (!_pLevel || !_pCamera || !_pRenderer)
+        return;
 
     _pCamera->SetLevel(_pLevel);
 
-	LevelBinding kBinding;
-	kBinding.level = _pLevel;
-	kBinding.camera = _pCamera;
-	kBinding.renderer = _pRenderer;
-	m_levelBindings.push_back(kBinding);
+    LevelBinding kBinding;
+    kBinding.level = _pLevel;
+    kBinding.camera = _pCamera;
+    kBinding.renderer = _pRenderer;
+    m_levelBindings.push_back(kBinding);
 }
 
 void Window::OnLevelReleased(Level* _pLevel)
 {
     auto iteBinding = m_levelBindings.begin();
-	while (iteBinding != m_levelBindings.end())
-	{
-		if (iteBinding->level == _pLevel)
-		{
+    while (iteBinding != m_levelBindings.end())
+    {
+        if (iteBinding->level == _pLevel)
+        {
             //TODO: flag auto-delete on Camera ?
             // I cant delete cameras like that, I have to check if they are in used and if its not the MainCamera
             //Camera* pCamera = iteBinding->m_pCamera;
             //StdVectorRemove(m_vecCameras, pCamera);
             //SafeDelete(pCamera);
 
-			iteBinding = m_levelBindings.erase(iteBinding);
-		}
-		else
-		{
-			++iteBinding;
-		}
-	}
+            iteBinding = m_levelBindings.erase(iteBinding);
+        }
+        else
+        {
+            ++iteBinding;
+        }
+    }
 }
 
 void Window::Render(const DeltaTime& dt)
@@ -536,7 +536,7 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
 
 void Window::DrawFPS(const DeltaTime& _kTimeSinceLastFrame)
 {
-	if (!GetResources()->GetDefaultFont())
+    if (!GetResources()->GetDefaultFont())
         return;
 
     sf::Font* pFont = GetResources()->GetDefaultFont()->GetSFFont();
@@ -571,19 +571,19 @@ void Window::ComputeSize(int _iWidth, int _iHeight)
 {
     sf::View kView;
     kView.setSize((float)_iWidth, (float)_iHeight);
-	kView.setCenter((float)_iWidth / 2.f, (float)_iHeight / 2.f);
+    kView.setCenter((float)_iWidth / 2.f, (float)_iHeight / 2.f);
 
     m_sfWindow->setView(kView);
 
-	m_rootNode->SetSize((float)_iWidth, (float)_iHeight);
-	//m_pMouseNode->SetSize((float)_iWidth, (float)_iHeight);
+    m_rootNode->SetSize((float)_iWidth, (float)_iHeight);
+    //m_pMouseNode->SetSize((float)_iWidth, (float)_iHeight);
     //m_pConsoleNode->SetSize((float)_iWidth, (float)_iHeight);
 
     m_mainCamera->ComputeViewSize();
-	for (size_t i = 0; i < m_cameras.size(); ++i)
-	{
-		m_cameras[i]->ComputeViewSize();
-	}
+    for (size_t i = 0; i < m_cameras.size(); ++i)
+    {
+        m_cameras[i]->ComputeViewSize();
+    }
 }
 
 bool Window::ProcessEvents()
@@ -642,27 +642,27 @@ bool Window::ProcessEvents()
 bool Window::ProcessEvent(const sf::Event& _oEvent)
 {
     if (_oEvent.type == sf::Event::MouseMoved)
-	{
+    {
         m_mouseNode->SetPosition(GetMousePosition());
-	}
-	else if (_oEvent.type == sf::Event::MouseLeft)
-	{
-		if (m_isMouseVisible)
-			m_mouseNode->SetVisible(false);
-	}
-	else if (_oEvent.type == sf::Event::MouseEntered)
-	{
-		if (m_isMouseVisible)
-			m_mouseNode->SetVisible(true);
-	}
-	else if (_oEvent.type == sf::Event::Resized)
-	{
+    }
+    else if (_oEvent.type == sf::Event::MouseLeft)
+    {
+        if (m_isMouseVisible)
+            m_mouseNode->SetVisible(false);
+    }
+    else if (_oEvent.type == sf::Event::MouseEntered)
+    {
+        if (m_isMouseVisible)
+            m_mouseNode->SetVisible(true);
+    }
+    else if (_oEvent.type == sf::Event::Resized)
+    {
         ComputeSize(_oEvent.size.width, _oEvent.size.height);
-	}
-	else if (_oEvent.type == sf::Event::KeyReleased)
+    }
+    else if (_oEvent.type == sf::Event::KeyReleased)
     {
         if (_oEvent.key.code == sf::Keyboard::Quote)
-    	{
+        {
             if (!m_consoleNode->IsVisible())
             {
                 //Todo: Make sure the Console gets events before anything else, eventually blocking everything
@@ -677,7 +677,7 @@ bool Window::ProcessEvent(const sf::Event& _oEvent)
 
             return false;
         }
-	}
+    }
 
     return true;
 }
@@ -704,13 +704,13 @@ ElementSprite* Window::GetMouseNode() const
 
 void Window::SetSystemMouseVisible(bool _bIsVisible)
 {
-	m_sfWindow->setMouseCursorVisible(_bIsVisible);
+    m_sfWindow->setMouseCursorVisible(_bIsVisible);
 }
 
 void Window::SetMouseVisible(bool _bIsVisible)
 {
-	m_isMouseVisible = _bIsVisible;
-	m_mouseNode->SetVisible(m_isMouseVisible);
+    m_isMouseVisible = _bIsVisible;
+    m_mouseNode->SetVisible(m_isMouseVisible);
 }
 
 void Window::SetMouseTexture(const std::string& _strFile)
@@ -768,7 +768,7 @@ void Window::SetShowStats(bool _bShowStats)
 
 void Window::SetShowFPS(bool _bShowFPS)
 {
-	m_showFPS = _bShowFPS;
+    m_showFPS = _bShowFPS;
 }
 
 void Window::ToggleShowStats()

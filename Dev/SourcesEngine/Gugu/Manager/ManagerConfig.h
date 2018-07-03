@@ -25,7 +25,7 @@ namespace gugu {
 
 struct InputKeyBindings
 {
-	std::vector<sf::Event> bindings;
+    std::vector<sf::Event> bindings;
 };
 
 class ManagerConfig
@@ -38,24 +38,24 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-	void RegisterInput	(const std::string& _strInputName, const sf::Event& _oSFEvent);							//Will add a new key to the specified input.
-	bool ModifyInput	(const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex = 0);	//Will modify the existing key associated to the given input. Return false if input, with given index, doesn't exists.
+    void RegisterInput  (const std::string& _strInputName, const sf::Event& _oSFEvent);                         //Will add a new key to the specified input.
+    bool ModifyInput    (const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex = 0);    //Will modify the existing key associated to the given input. Return false if input, with given index, doesn't exists.
 
-	void LoadInputFile	(const std::string& _strPath);
+    void LoadInputFile  (const std::string& _strPath);
 
-	bool IsInput			(const std::string& _strInputName, const sf::Event& _oSFEvent) const;
-	bool IsInputPressed		(const std::string& _strInputName, const sf::Event& _oSFEvent) const;
-	bool IsInputReleased	(const std::string& _strInputName, const sf::Event& _oSFEvent) const;
-	bool IsInputDown		(const std::string& _strInputName) const;
-	bool IsShiftDown		() const;
+    bool IsInput            (const std::string& _strInputName, const sf::Event& _oSFEvent) const;
+    bool IsInputPressed     (const std::string& _strInputName, const sf::Event& _oSFEvent) const;
+    bool IsInputReleased    (const std::string& _strInputName, const sf::Event& _oSFEvent) const;
+    bool IsInputDown        (const std::string& _strInputName) const;
+    bool IsShiftDown        () const;
 
-    bool IsKeyDown		    (sf::Keyboard::Key _eKey) const;
+    bool IsKeyDown          (sf::Keyboard::Key _eKey) const;
 
-	sf::Event	BuildEventKey	(sf::Keyboard::Key _eKey);
+    sf::Event   BuildEventKey   (sf::Keyboard::Key _eKey);
 
 private:
 
-	void FillListKeyCodes();
+    void FillListKeyCodes();
     bool ReadKeyCode(const std::string& _strValue, sf::Keyboard::Key& _eKey) const;
 
 private:

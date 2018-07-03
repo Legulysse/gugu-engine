@@ -25,10 +25,10 @@ class SoundCue : public Resource
 {
 public:
 
-	SoundCue();
-	virtual ~SoundCue();
+    SoundCue();
+    virtual ~SoundCue();
     
-    virtual EResourceType::Type	GetResourceType() const override;
+    virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool    LoadFromFile() override;
 
@@ -41,4 +41,4 @@ protected:
     std::vector<SoundParameters> m_audioFiles;
 };
 
-}	// namespace gugu
+}   // namespace gugu

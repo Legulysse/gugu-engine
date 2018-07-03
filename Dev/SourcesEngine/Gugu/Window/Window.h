@@ -47,36 +47,36 @@ public:
     sf::RenderWindow*   Create  (const EngineConfig& config);
     virtual void        Init    (sf::RenderWindow* _pSFWindow, const EngineConfig& config);
 
-	void		Step			(const DeltaTime& dt);
-	void		Update			(const DeltaTime& dt);
+    void        Step            (const DeltaTime& dt);
+    void        Update          (const DeltaTime& dt);
 
     void        SetRenderer    (Renderer* _pRenderer);     //Assign a Renderer (no ownership transmission)
     Renderer*   GetRenderer    () const;
 
-    Camera*		CreateCamera    ();
-    Camera*		AddCamera       (Camera* _pCamera);
-    void		RemoveCamera    (Camera* _pCamera);
-    void		DeleteCamera    (Camera* _pCamera);
+    Camera*     CreateCamera    ();
+    Camera*     AddCamera       (Camera* _pCamera);
+    void        RemoveCamera    (Camera* _pCamera);
+    void        DeleteCamera    (Camera* _pCamera);
     void        DeleteAllCameras();
 
-    Camera*     GetCamera	    (size_t _iIndex) const;
-    Camera*     GetMainCamera	() const;
-	
-	void		BindLevel		(Level* _pLevel);
-	void		BindLevel		(Level* _pLevel, Camera* _pCamera);
-	void		BindLevel		(Level* _pLevel, Renderer* _pRenderer);
-	void		BindLevel		(Level* _pLevel, Camera* _pCamera, Renderer* _pRenderer);
-	void		OnLevelReleased	(Level* _pLevel);
+    Camera*     GetCamera       (size_t _iIndex) const;
+    Camera*     GetMainCamera   () const;
+    
+    void        BindLevel       (Level* _pLevel);
+    void        BindLevel       (Level* _pLevel, Camera* _pCamera);
+    void        BindLevel       (Level* _pLevel, Renderer* _pRenderer);
+    void        BindLevel       (Level* _pLevel, Camera* _pCamera, Renderer* _pRenderer);
+    void        OnLevelReleased (Level* _pLevel);
 
     void        Refresh         (const DeltaTime& dt);
     
     sf::Vector2u    GetSize     () const;
 
-	void			SetSystemMouseVisible	(bool _bIsVisible);
-	void			SetMouseVisible			(bool _bIsVisible);
-    void			SetMouseTexture         (const std::string& _strTexture);
+    void            SetSystemMouseVisible   (bool _bIsVisible);
+    void            SetMouseVisible         (bool _bIsVisible);
+    void            SetMouseTexture         (const std::string& _strTexture);
 
-    sf::Vector2i	GetMousePixelCoords		() const;   //Exact mouse position
+    sf::Vector2i    GetMousePixelCoords     () const;   //Exact mouse position
     sf::Vector2f    GetMousePosition        () const;   //GetMouseCoords() converted to float
     
     Element*            GetRootNode     () const;   //Should not be used directly, prefer using UINode
@@ -93,10 +93,10 @@ public:
 
     bool Screenshot() const;
 
-    void SetShowStats	(bool _bShowStats);
-    void SetShowFPS		(bool _bShowFPS);
-    void ToggleShowStats	();
-    void ToggleShowFPS		();
+    void SetShowStats   (bool _bShowStats);
+    void SetShowFPS     (bool _bShowFPS);
+    void ToggleShowStats    ();
+    void ToggleShowFPS      ();
 
     virtual void ComputeSize    (int _iWidth, int _iHeight);
 
@@ -116,31 +116,31 @@ private:
 protected:
 
     //TODO: It should be better to directly use Cameras to store and handle their attachment to Windows and Levels
-	struct LevelBinding
-	{
-		Level* level;
-		Camera* camera;
-		Renderer* renderer;
-	};
+    struct LevelBinding
+    {
+        Level* level;
+        Camera* camera;
+        Renderer* renderer;
+    };
 
     sf::RenderWindow*   m_sfWindow;
     Renderer*           m_renderer;
 
-    Camera*					    m_mainCamera;
-    std::vector<Camera*>		m_cameras;
-	std::vector<LevelBinding>	m_levelBindings;
+    Camera*                     m_mainCamera;
+    std::vector<Camera*>        m_cameras;
+    std::vector<LevelBinding>   m_levelBindings;
 
     HandlerEvents*      m_handlerEvents;
 
-    Element*		    m_rootNode;             //Root for all Window Elements
-	Element*	        m_rootUINode;			//Root for the interface content
-	Element*	        m_consoleNode;          //Root for the console
+    Element*            m_rootNode;             //Root for all Window Elements
+    Element*            m_rootUINode;           //Root for the interface content
+    Element*            m_consoleNode;          //Root for the console
     ElementText*        m_consoleTextEntry;
-	ElementSprite*	    m_mouseNode;            //Root for the mouse
+    ElementSprite*      m_mouseNode;            //Root for the mouse
 
-	bool			    m_isMouseVisible;
+    bool                m_isMouseVisible;
 
-	sf::Color			m_backgroundColor;
+    sf::Color           m_backgroundColor;
 
     // Stats
     bool                m_showStats;

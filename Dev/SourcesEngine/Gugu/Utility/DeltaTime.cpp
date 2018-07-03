@@ -25,12 +25,12 @@ DeltaTime::DeltaTime(sf::Time _kTime)
 
 float DeltaTime::GetSeconds() const
 {
-	return s();
+    return s();
 }
 
 int DeltaTime::GetMilliseconds() const
 {
-	return ms();
+    return ms();
 }
 
 float DeltaTime::s() const

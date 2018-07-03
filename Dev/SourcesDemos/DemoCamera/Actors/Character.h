@@ -27,10 +27,10 @@ public:
 
     Character();
     virtual ~Character();
-	
-	void	InitCharacter		(int index);
+    
+    void    InitCharacter       (int index);
 
-	//
+    //
     void            Move        (sf::Vector2f _kDirection, const gugu::DeltaTime& dt);
     sf::Vector2f    GetPosition () const;
 

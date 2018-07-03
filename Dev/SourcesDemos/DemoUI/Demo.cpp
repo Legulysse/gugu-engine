@@ -29,13 +29,13 @@ void Demo::AppStart()
     RegisterHandlerEvents(GetGameWindow());
 
     // Set Mouse aspect
-	GetGameWindow()->SetSystemMouseVisible(false);
-	GetGameWindow()->SetMouseVisible(true);
-	GetGameWindow()->SetMouseTexture("Mouse.png");
+    GetGameWindow()->SetSystemMouseVisible(false);
+    GetGameWindow()->SetMouseVisible(true);
+    GetGameWindow()->SetMouseTexture("Mouse.png");
     
     // Register Inputs
-	ManagerConfig* pConfig = GetConfig();
-	pConfig->RegisterInput("CloseGame", pConfig->BuildEventKey(sf::Keyboard::Escape));
+    ManagerConfig* pConfig = GetConfig();
+    pConfig->RegisterInput("CloseGame", pConfig->BuildEventKey(sf::Keyboard::Escape));
 }
 
 void Demo::AppStop()

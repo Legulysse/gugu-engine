@@ -28,13 +28,13 @@ namespace gugu {
 
 ManagerNetwork::ManagerNetwork()
 {
-	m_selector	= new sf::SocketSelector;
-	m_listener	= new sf::TcpListener;
-	m_clientInfoSelf = nullptr;
+    m_selector  = new sf::SocketSelector;
+    m_listener  = new sf::TcpListener;
+    m_clientInfoSelf = nullptr;
 
-	m_isListening = false;
-	m_isRunningMultiplayerGame = false;
-	m_lastNetTurnProcessed = 0;
+    m_isListening = false;
+    m_isRunningMultiplayerGame = false;
+    m_lastNetTurnProcessed = 0;
     m_nbTurnsOffset = 2;
 
     m_receptionThread = nullptr;
@@ -45,12 +45,12 @@ ManagerNetwork::ManagerNetwork()
 
 ManagerNetwork::~ManagerNetwork()
 {
-	StopListening();
-	DisconnectAll();
+    StopListening();
+    DisconnectAll();
 
-	SafeDelete(m_clientInfoSelf);
-	SafeDelete(m_selector);
-	SafeDelete(m_listener);
+    SafeDelete(m_clientInfoSelf);
+    SafeDelete(m_selector);
+    SafeDelete(m_listener);
 
     SafeDelete(m_logNetwork);
 }
@@ -64,7 +64,7 @@ void ManagerNetwork::StartListening(sf::Uint16 _uiPort)
 
         m_listeningPort = _uiPort;
 
-		if (m_listener->listen(m_listeningPort) == sf::Socket::Done)
+        if (m_listener->listen(m_listeningPort) == sf::Socket::Done)
         {
             m_selector->add(*m_listener);
 
@@ -92,9 +92,9 @@ void ManagerNetwork::StopListening()
         StopReceptionThread();
 
         for (auto iteCurrent = m_gamePackets.begin(); iteCurrent != m_gamePackets.end(); ++iteCurrent)
-		{
-			ClearStdList((*iteCurrent).second);
-		}
+        {
+            ClearStdList((*iteCurrent).second);
+        }
 
         m_selector->clear();
         m_listener->close();
@@ -105,7 +105,7 @@ void ManagerNetwork::StopListening()
 
 bool ManagerNetwork::IsListening() const
 {
-	return m_isListening;
+    return m_isListening;
 }
 
 void ManagerNetwork::StartReceptionThread()
@@ -117,8 +117,8 @@ void ManagerNetwork::StartReceptionThread()
     if (IsListening())
     {
         if (!m_receptionThread)
-	        m_receptionThread = new sf::Thread(&ReceptionThread);
-	    m_receptionThread->launch();
+            m_receptionThread = new sf::Thread(&ReceptionThread);
+        m_receptionThread->launch();
     }
 
     //Unlock();
@@ -126,7 +126,7 @@ void ManagerNetwork::StartReceptionThread()
 
 void ManagerNetwork::StopReceptionThread()
 {
-	//LogConsole("Wait thread");
+    //LogConsole("Wait thread");
 
     if (m_receptionThread)
     {
@@ -134,12 +134,12 @@ void ManagerNetwork::StopReceptionThread()
         SafeDelete(m_receptionThread);
     }
 
-	//LogConsole("thread closed");
+    //LogConsole("thread closed");
 }
 
 void ReceptionThread()
 {
-	//LogConsole("Start reception thread");
+    //LogConsole("Start reception thread");
 
     //while (GetNetwork()->IsListening())
     {
@@ -181,50 +181,50 @@ void ManagerNetwork::ProcessWaitingPackets()
 void ManagerNetwork::StepReception()
 {
     if (!m_selector->wait(sf::milliseconds(4)))
-		return;
+        return;
 
-	//Check if a new client is connecting
-	if (m_selector->isReady(*m_listener))
-	{
-		//Accept him
-		sf::TcpSocket* pSocketNewClient = new sf::TcpSocket;
-		m_listener->accept(*pSocketNewClient);
+    //Check if a new client is connecting
+    if (m_selector->isReady(*m_listener))
+    {
+        //Accept him
+        sf::TcpSocket* pSocketNewClient = new sf::TcpSocket;
+        m_listener->accept(*pSocketNewClient);
 
-		sf::IpAddress Address = pSocketNewClient->getRemoteAddress();
+        sf::IpAddress Address = pSocketNewClient->getRemoteAddress();
         GetLogNetwork()->Print(ELog::Info, StringFormat("New client : {0}", Address.toString()));
 
-		//Add him to clients list & selector
-		ClientInfo* pClient = new ClientInfo(Address, 0);
-		pClient->m_socket = pSocketNewClient;
-		m_clients.push_back(pClient);
+        //Add him to clients list & selector
+        ClientInfo* pClient = new ClientInfo(Address, 0);
+        pClient->m_socket = pSocketNewClient;
+        m_clients.push_back(pClient);
 
-		m_selector->add(*pSocketNewClient);
-	}
+        m_selector->add(*pSocketNewClient);
+    }
 
     auto iteCLient = m_clients.begin();
     auto iteCLientEnd = m_clients.end();
-	while (iteCLient != iteCLientEnd)
-	{
-		ClientInfo* pClient = *iteCLient;
-	    ++iteCLient;
+    while (iteCLient != iteCLientEnd)
+    {
+        ClientInfo* pClient = *iteCLient;
+        ++iteCLient;
 
-		sf::TcpSocket& oSocket = *pClient->m_socket;
+        sf::TcpSocket& oSocket = *pClient->m_socket;
 
-		if (!m_selector->isReady(oSocket))
-			continue;
+        if (!m_selector->isReady(oSocket))
+            continue;
 
-		sf::Packet oSFPacket;
-		if (oSocket.receive(oSFPacket) == sf::Socket::Done)
-		{
-			sf::Uint32 iType;
-			oSFPacket >> iType;
+        sf::Packet oSFPacket;
+        if (oSocket.receive(oSFPacket) == sf::Socket::Done)
+        {
+            sf::Uint32 iType;
+            oSFPacket >> iType;
 
-			ENetPacket::Type eType;
-			eType = static_cast< ENetPacket::Type >(iType);
+            ENetPacket::Type eType;
+            eType = static_cast< ENetPacket::Type >(iType);
 
-			if(eType != ENetPacket::Undefined)
-			{
-			    NetPacket* pReceivedPacket = nullptr;
+            if(eType != ENetPacket::Undefined)
+            {
+                NetPacket* pReceivedPacket = nullptr;
 
                 if(eType == ENetPacket::Ping || eType == ENetPacket::Pong || eType == ENetPacket::ClientDisconnection)
                 {
@@ -232,28 +232,28 @@ void ManagerNetwork::StepReception()
                 }
                 else if(eType == ENetPacket::ClientInfos)
                 {
-					pReceivedPacket = new NetPacketClientConnection(oSFPacket);
-				}
-				else if (eType == ENetPacket::JoinGame)
-				{
+                    pReceivedPacket = new NetPacketClientConnection(oSFPacket);
+                }
+                else if (eType == ENetPacket::JoinGame)
+                {
                     pReceivedPacket = new NetPacket(eType);
-				}
-				else if (eType == ENetPacket::AddPlayer)
-				{
+                }
+                else if (eType == ENetPacket::AddPlayer)
+                {
                     pReceivedPacket = new NetPacketAddPlayer(oSFPacket);
-				}
-				else if(eType == ENetPacket::TurnReady)
-				{
-					pReceivedPacket = new NetPacketTurnReady(oSFPacket);
-				}
-				else if(eType == ENetPacket::Game)
-				{
-					if (GetApplication())
-						pReceivedPacket = GetApplication()->ReadGamePacket(&oSFPacket);
-				}
+                }
+                else if(eType == ENetPacket::TurnReady)
+                {
+                    pReceivedPacket = new NetPacketTurnReady(oSFPacket);
+                }
+                else if(eType == ENetPacket::Game)
+                {
+                    if (GetApplication())
+                        pReceivedPacket = GetApplication()->ReadGamePacket(&oSFPacket);
+                }
 
-				if(pReceivedPacket)
-				{
+                if(pReceivedPacket)
+                {
                     /*if(!ReceiveNetPacket(pReceivedPacket, pClient))
                     {
                         SafeDelete(pReceivedPacket);
@@ -263,73 +263,73 @@ void ManagerNetwork::StepReception()
                     oItem.packet = pReceivedPacket;
                     oItem.sender = pClient;
                     m_waitingPackets.push(oItem);
-				}
-			}
-			else
-			{
+                }
+            }
+            else
+            {
                 GetLogNetwork()->Print(ELog::Info, "Error : Unknown Packet received.");
-			}
-		}
-		else
-		{
-			Disconnect(pClient);
-		}
-	}
+            }
+        }
+        else
+        {
+            Disconnect(pClient);
+        }
+    }
 }
 
 void ManagerNetwork::ConnectToClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort)
 {
-	if((sf::IpAddress::LocalHost == _oIPAddress || sf::IpAddress::getLocalAddress() == _oIPAddress) && m_listeningPort == _uiPort)
-	{
-		GetLogNetwork()->Print(ELog::Info, "Don't connect to yourself !!");
-		return;
-	}
+    if((sf::IpAddress::LocalHost == _oIPAddress || sf::IpAddress::getLocalAddress() == _oIPAddress) && m_listeningPort == _uiPort)
+    {
+        GetLogNetwork()->Print(ELog::Info, "Don't connect to yourself !!");
+        return;
+    }
 
-	if(FindClient(_oIPAddress, _uiPort))
-	{
+    if(FindClient(_oIPAddress, _uiPort))
+    {
         GetLogNetwork()->Print(ELog::Info, "Already connected");
         return;
-	}
+    }
 
-	ClientInfo* pClient = new ClientInfo(_oIPAddress, _uiPort);
-	pClient->m_socket = new sf::TcpSocket;
+    ClientInfo* pClient = new ClientInfo(_oIPAddress, _uiPort);
+    pClient->m_socket = new sf::TcpSocket;
 
     GetLogNetwork()->Print(ELog::Info, StringFormat("Try connection to {0}:{1}", pClient->m_ipAddress.toString(), pClient->m_port));
 
     if (pClient->m_socket->connect(pClient->m_ipAddress, pClient->m_port, sf::milliseconds(100)) == sf::Socket::Done)
-	{
-		m_clients.push_back(pClient);
-		m_selector->add(*pClient->m_socket);
+    {
+        m_clients.push_back(pClient);
+        m_selector->add(*pClient->m_socket);
 
         GetLogNetwork()->Print(ELog::Info, StringFormat("Connected to {0}:{1}", pClient->m_ipAddress.toString(), pClient->m_port));
 
-		NetPacketClientConnection oPacket(sf::IpAddress::getLocalAddress(), m_listeningPort);
-		SendNetPacket(pClient, oPacket);
+        NetPacketClientConnection oPacket(sf::IpAddress::getLocalAddress(), m_listeningPort);
+        SendNetPacket(pClient, oPacket);
 
-		GetLogNetwork()->Print(ELog::Info, "Sent Connection Infos");
-	}
-	else
-	{
-		SafeDelete(pClient);
+        GetLogNetwork()->Print(ELog::Info, "Sent Connection Infos");
+    }
+    else
+    {
+        SafeDelete(pClient);
 
-		GetLogNetwork()->Print(ELog::Info, "Connection failed");
-	}
+        GetLogNetwork()->Print(ELog::Info, "Connection failed");
+    }
 }
 
 void ManagerNetwork::DisconnectAll()
 {
-	auto iteClient = m_clients.begin();
-	auto iteClientEnd = m_clients.end();
-	while(iteClient != iteClientEnd)
-	{
-		ClientInfo* pClient = *iteClient;
-	    ++iteClient;
+    auto iteClient = m_clients.begin();
+    auto iteClientEnd = m_clients.end();
+    while(iteClient != iteClientEnd)
+    {
+        ClientInfo* pClient = *iteClient;
+        ++iteClient;
 
-		Disconnect(pClient);
-	}
-	m_clients.clear();
+        Disconnect(pClient);
+    }
+    m_clients.clear();
 
-	GetLogNetwork()->Print(ELog::Info, "Disconnected from all clients");
+    GetLogNetwork()->Print(ELog::Info, "Disconnected from all clients");
 }
 
 /*void ManagerNetwork::Disconnect(sf::TcpSocket* _pSocket)
@@ -347,10 +347,10 @@ void ManagerNetwork::Disconnect(ClientInfo* _pClient)
     sf::TcpSocket* pSocket = _pClient->m_socket;
 
     m_selector->remove(*pSocket);
-	pSocket->disconnect();
+    pSocket->disconnect();
 
-	m_clients.remove(_pClient);
-	SafeDelete(_pClient);
+    m_clients.remove(_pClient);
+    SafeDelete(_pClient);
 
     GetLogNetwork()->Print(ELog::Info, "Disconnected from client");
 }
@@ -388,10 +388,10 @@ void ManagerNetwork::SendNetPacketToAll(NetPacket* _pPacket, bool _bIncludeSelf)
     for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
     {
         ClientInfo* pClient = *iteCurrent;
-		if (pClient->m_port != 0)
-		{
-			SendNetPacket(pClient, *_pPacket);
-		}
+        if (pClient->m_port != 0)
+        {
+            SendNetPacket(pClient, *_pPacket);
+        }
     }
 
     if(!_bIncludeSelf || !ReceiveNetPacket(_pPacket, m_clientInfoSelf))
@@ -403,10 +403,10 @@ void ManagerNetwork::SendNetPacketToAllPlayers(NetPacket* _pPacket, bool _bInclu
     for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
     {
         ClientInfo* pClient = *iteCurrent;
-		if (pClient->m_playerID > -1 && pClient->m_port != 0)
-		{
-			SendNetPacket(pClient, *_pPacket);
-		}
+        if (pClient->m_playerID > -1 && pClient->m_port != 0)
+        {
+            SendNetPacket(pClient, *_pPacket);
+        }
     }
 
     if(!_bIncludeSelf || m_clientInfoSelf->m_playerID == -1 || !ReceiveNetPacket(_pPacket, m_clientInfoSelf))
@@ -415,15 +415,15 @@ void ManagerNetwork::SendNetPacketToAllPlayers(NetPacket* _pPacket, bool _bInclu
 
 void ManagerNetwork::SendGamePacketToAllPlayers(NetPacketGame* _pPacket, bool _bIncludeSelf)
 {
-	_pPacket->m_turn = m_lastNetTurnProcessed + m_nbTurnsOffset + 1;	//m_uiLastNetTurnProcessed + 1 is being processed, and we want this action to be processed X turns later.
+    _pPacket->m_turn = m_lastNetTurnProcessed + m_nbTurnsOffset + 1;    //m_uiLastNetTurnProcessed + 1 is being processed, and we want this action to be processed X turns later.
 
     for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
     {
         ClientInfo* pClient = *iteCurrent;
-		if (pClient->m_playerID > -1 && pClient->m_port != 0)
-		{
-			SendNetPacket(pClient, *_pPacket);
-		}
+        if (pClient->m_playerID > -1 && pClient->m_port != 0)
+        {
+            SendNetPacket(pClient, *_pPacket);
+        }
     }
 
     if(!_bIncludeSelf || !ReceiveNetPacket(_pPacket, m_clientInfoSelf))
@@ -432,16 +432,16 @@ void ManagerNetwork::SendGamePacketToAllPlayers(NetPacketGame* _pPacket, bool _b
 
 bool ManagerNetwork::SendNetPacket(ClientInfo* _pClient, NetPacket& _oPacket)
 {
-	sf::Packet oSFPacket;
-	_oPacket.FillSFPacket(oSFPacket);
+    sf::Packet oSFPacket;
+    _oPacket.FillSFPacket(oSFPacket);
 
-	if(_pClient && _pClient->m_socket && _pClient->m_socket->send(oSFPacket) != sf::Socket::Done)
-	{
-		GetLogNetwork()->Print(ELog::Info, "Could not send a packet !");
-		return false;
-	}
+    if(_pClient && _pClient->m_socket && _pClient->m_socket->send(oSFPacket) != sf::Socket::Done)
+    {
+        GetLogNetwork()->Print(ELog::Info, "Could not send a packet !");
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 //return true if packet is stored
@@ -453,8 +453,8 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
     {
         GetLogNetwork()->Print(ELog::Info, ">  pinged !");
 
-		NetPacket oPacket(ENetPacket::Pong);
-		SendNetPacket(_pSender, oPacket);
+        NetPacket oPacket(ENetPacket::Pong);
+        SendNetPacket(_pSender, oPacket);
     }
     else if(eType == ENetPacket::Pong)
     {
@@ -462,9 +462,9 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
     }
     else if(eType == ENetPacket::ClientDisconnection)
     {
-		GetLogNetwork()->Print(ELog::Info, "> got : disconnected !!");
+        GetLogNetwork()->Print(ELog::Info, "> got : disconnected !!");
 
-		Disconnect(_pSender);
+        Disconnect(_pSender);
     }
     else if(eType == ENetPacket::ClientInfos)
     {
@@ -476,87 +476,87 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
             _pSender->m_port = pPacket->m_port;
         }
     }
-	else if (eType == ENetPacket::JoinGame)
+    else if (eType == ENetPacket::JoinGame)
     {
-		GetLogNetwork()->Print(ELog::Info, "> A client wants to become a player.");
+        GetLogNetwork()->Print(ELog::Info, "> A client wants to become a player.");
 
-		if (_pSender != m_clientInfoSelf && _pSender->m_playerID == -1 && IsHost())
-		{
-			//Store used IDs
-			std::set<sf::Int32> oSetIDs;
+        if (_pSender != m_clientInfoSelf && _pSender->m_playerID == -1 && IsHost())
+        {
+            //Store used IDs
+            std::set<sf::Int32> oSetIDs;
             for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
             {
                 ClientInfo* pClient = *iteCurrent;
-				if (pClient->m_playerID >= 0)
-				{
-					oSetIDs.insert(pClient->m_playerID);
-				}
-			}
+                if (pClient->m_playerID >= 0)
+                {
+                    oSetIDs.insert(pClient->m_playerID);
+                }
+            }
 
-			//Parse IDs to get the first available one
-			sf::Int32 iNewID = 1;
+            //Parse IDs to get the first available one
+            sf::Int32 iNewID = 1;
             for (auto iteID = oSetIDs.begin(); iteID != oSetIDs.end(); ++iteID)
-			{
-				if (*iteID > iNewID)
-					break;
+            {
+                if (*iteID > iNewID)
+                    break;
 
-				iNewID = *iteID + 1;
-			}
+                iNewID = *iteID + 1;
+            }
 
-			//Set this ID to the new player, and inform everyone
-			_pSender->m_playerID = iNewID;
+            //Set this ID to the new player, and inform everyone
+            _pSender->m_playerID = iNewID;
 
-			NetPacketAddPlayer* pPacketNewPlayer = new NetPacketAddPlayer(_pSender->m_ipAddress, _pSender->m_port, iNewID);
-			SendNetPacketToAllPlayers(pPacketNewPlayer, true);
+            NetPacketAddPlayer* pPacketNewPlayer = new NetPacketAddPlayer(_pSender->m_ipAddress, _pSender->m_port, iNewID);
+            SendNetPacketToAllPlayers(pPacketNewPlayer, true);
 
-			//Inform this new player of existing players
+            //Inform this new player of existing players
             for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
             {
                 ClientInfo* pClient = *iteCurrent;
-				if (pClient->m_playerID >= 0 && pClient->m_playerID != _pSender->m_playerID)
-				{
-					NetPacketAddPlayer oPacketOldPlayer(pClient->m_ipAddress, pClient->m_port, pClient->m_playerID);
-					SendNetPacket(_pSender, oPacketOldPlayer);
-				}
-			}
+                if (pClient->m_playerID >= 0 && pClient->m_playerID != _pSender->m_playerID)
+                {
+                    NetPacketAddPlayer oPacketOldPlayer(pClient->m_ipAddress, pClient->m_port, pClient->m_playerID);
+                    SendNetPacket(_pSender, oPacketOldPlayer);
+                }
+            }
 
-			//Inform him I am the host, and the player 0
-			NetPacketAddPlayer oPacketHostPlayer(m_clientInfoSelf->m_ipAddress, m_clientInfoSelf->m_port, m_clientInfoSelf->m_playerID);
-			SendNetPacket(_pSender, oPacketHostPlayer);
-		}
-	}
+            //Inform him I am the host, and the player 0
+            NetPacketAddPlayer oPacketHostPlayer(m_clientInfoSelf->m_ipAddress, m_clientInfoSelf->m_port, m_clientInfoSelf->m_playerID);
+            SendNetPacket(_pSender, oPacketHostPlayer);
+        }
+    }
     else if(eType == ENetPacket::AddPlayer)
     {
         NetPacketAddPlayer* pPacket = static_cast<NetPacketAddPlayer*>( _pPacketReceived );
 
-		if (m_clientInfoSelf->m_ipAddress == pPacket->m_ipAddress && m_clientInfoSelf->m_port == pPacket->m_port)
-		{
-			m_clientInfoSelf->m_playerID = pPacket->m_playerID;
+        if (m_clientInfoSelf->m_ipAddress == pPacket->m_ipAddress && m_clientInfoSelf->m_port == pPacket->m_port)
+        {
+            m_clientInfoSelf->m_playerID = pPacket->m_playerID;
 
             GetLogNetwork()->Print(ELog::Info, StringFormat("> I am now the player {0}", m_clientInfoSelf->m_playerID));
-		}
-		else
-		{
-			ConnectToClient(pPacket->m_ipAddress, pPacket->m_port);	//Ensure connection
+        }
+        else
+        {
+            ConnectToClient(pPacket->m_ipAddress, pPacket->m_port); //Ensure connection
 
             for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
             {
                 ClientInfo* pClient = *iteCurrent;
-				if (pClient->m_ipAddress == pPacket->m_ipAddress && pClient->m_port == pPacket->m_port)
-				{
-					pClient->m_playerID = pPacket->m_playerID;
+                if (pClient->m_ipAddress == pPacket->m_ipAddress && pClient->m_port == pPacket->m_port)
+                {
+                    pClient->m_playerID = pPacket->m_playerID;
 
-					if (pClient->m_playerID == 0)
-						pClient->m_isHost = true;
+                    if (pClient->m_playerID == 0)
+                        pClient->m_isHost = true;
 
-					GetLogNetwork()->Print(ELog::Info, "> Client " + pClient->m_ipAddress.toString() + ":" + ToString(pClient->m_port) + " is now player " + ToString(pClient->m_playerID));
+                    GetLogNetwork()->Print(ELog::Info, "> Client " + pClient->m_ipAddress.toString() + ":" + ToString(pClient->m_port) + " is now player " + ToString(pClient->m_playerID));
 
-					if (GetApplication())
-						GetApplication()->PlayerAddedToGame(pClient);
-				}
-			}
-		}
-	}
+                    if (GetApplication())
+                        GetApplication()->PlayerAddedToGame(pClient);
+                }
+            }
+        }
+    }
     else if(eType == ENetPacket::TurnReady)
     {
         NetPacketTurnReady* pPacket = static_cast<NetPacketTurnReady*>( _pPacketReceived );
@@ -587,93 +587,93 @@ void ManagerNetwork::StoreGamePacket(NetPacketGame* _pPacket)
 
 void ManagerNetwork::HostGame(bool _bJoin)
 {
-	m_clientInfoSelf->m_isHost = true;
+    m_clientInfoSelf->m_isHost = true;
 
-	if(_bJoin)
-	{
+    if(_bJoin)
+    {
         m_clientInfoSelf->m_playerID = 0;
-	}
+    }
 }
 
 void ManagerNetwork::JoinGame(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort)
 {
-	//Ask potential host if he is hosting a game
-	//send a request to join game
-	//ask/receive a game id
-	//ask/receive the list of other players
+    //Ask potential host if he is hosting a game
+    //send a request to join game
+    //ask/receive a game id
+    //ask/receive the list of other players
 
-	ClientInfo* pClient = FindClient(_oIPAddress, _uiPort);
-	if(pClient)
-	{
-		NetPacket oPacket(ENetPacket::JoinGame);
-		SendNetPacket(pClient, oPacket);
-	}
+    ClientInfo* pClient = FindClient(_oIPAddress, _uiPort);
+    if(pClient)
+    {
+        NetPacket oPacket(ENetPacket::JoinGame);
+        SendNetPacket(pClient, oPacket);
+    }
 }
 
 bool ManagerNetwork::IsHost() const
 {
-	if(m_clientInfoSelf)
+    if(m_clientInfoSelf)
         return m_clientInfoSelf->m_isHost;
-	return false;
+    return false;
 }
 
 sf::Int32 ManagerNetwork::GetPlayerID() const
 {
-	if(m_clientInfoSelf)
+    if(m_clientInfoSelf)
         return m_clientInfoSelf->m_playerID;
-	return -1;
+    return -1;
 }
 
 void ManagerNetwork::StartMultiplayerGame()
 {
-	if(IsListening())
-	{
-		m_isRunningMultiplayerGame = true;
-	}
+    if(IsListening())
+    {
+        m_isRunningMultiplayerGame = true;
+    }
 }
 
 bool ManagerNetwork::IsRunningMultiplayerGame() const
 {
-	return m_isRunningMultiplayerGame;
+    return m_isRunningMultiplayerGame;
 }
 
 bool ManagerNetwork::IsReadyForTurn() const
 {
-	if (IsRunningMultiplayerGame() && m_lastNetTurnProcessed >= m_nbTurnsOffset)
-	{
+    if (IsRunningMultiplayerGame() && m_lastNetTurnProcessed >= m_nbTurnsOffset)
+    {
         for (auto iteClient = m_clients.begin(); iteClient != m_clients.end(); ++iteClient)
-		{
-			if ((*iteClient)->m_lastTurnReceived < m_lastNetTurnProcessed)
-			{
-				return false;
-			}
-		}
-	}
+        {
+            if ((*iteClient)->m_lastTurnReceived < m_lastNetTurnProcessed)
+            {
+                return false;
+            }
+        }
+    }
 
-	return true;
+    return true;
 }
 
 void ManagerNetwork::SetTurnPlayed()
 {
-	if(IsRunningMultiplayerGame())
-	{
-		++m_lastNetTurnProcessed;
+    if(IsRunningMultiplayerGame())
+    {
+        ++m_lastNetTurnProcessed;
 
-		NetPacketTurnReady* pPacket = new NetPacketTurnReady(m_lastNetTurnProcessed);
-		SendNetPacketToAll(pPacket, false);
-	}
+        NetPacketTurnReady* pPacket = new NetPacketTurnReady(m_lastNetTurnProcessed);
+        SendNetPacketToAll(pPacket, false);
+    }
 }
 
 std::list<NetPacketGame*>* ManagerNetwork::GetTurnGamePackets()
 {
-	if (m_gamePackets.count(m_lastNetTurnProcessed + 1) == 0)
-	{
-		return nullptr;
-	}
+    if (m_gamePackets.count(m_lastNetTurnProcessed + 1) == 0)
+    {
+        return nullptr;
+    }
 
     m_gamePackets[ m_lastNetTurnProcessed + 1 ].sort(ComparePlayerID);
 
-	return &m_gamePackets[ m_lastNetTurnProcessed + 1 ];
+    return &m_gamePackets[ m_lastNetTurnProcessed + 1 ];
 }
 
 bool ManagerNetwork::ComparePlayerID(NetPacketGame* _pLeft, NetPacketGame* _pRight)

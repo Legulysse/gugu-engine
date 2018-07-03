@@ -17,8 +17,8 @@ class HexGrid : public BaseGrid
 {
 public:
 
-	HexGrid();
-	virtual ~HexGrid();
+    HexGrid();
+    virtual ~HexGrid();
 
 };
 

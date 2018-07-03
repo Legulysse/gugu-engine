@@ -54,4 +54,4 @@ protected:
     int m_group;
 };
 
-}	// namespace gugu
+}   // namespace gugu

@@ -35,7 +35,7 @@ ManagerResources::ManagerResources()
 {
     m_pathAssets = "";
     m_pathScreenshots = "";
-	m_defaultFont = "";
+    m_defaultFont = "";
     m_useFullPath = false;
 }
 
@@ -45,12 +45,12 @@ ManagerResources::~ManagerResources()
 
 void ManagerResources::Init(const EngineConfig& config)
 {
-	m_pathAssets = config.pathAssets;
-	m_pathScreenshots = config.pathScreenshots;
-	m_useFullPath = config.useAssetsFullPaths;
-	m_defaultFont = config.defaultFont;
+    m_pathAssets = config.pathAssets;
+    m_pathScreenshots = config.pathScreenshots;
+    m_useFullPath = config.useAssetsFullPaths;
+    m_defaultFont = config.defaultFont;
 
-	ParseDirectory(m_pathAssets);
+    ParseDirectory(m_pathAssets);
 }
 
 void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
@@ -62,7 +62,7 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
     std::vector<FileInfo> vecFiles;
     GetFilesList(_strPathRoot, vecFiles, true);
 
-	int iCount = 0;
+    int iCount = 0;
     for (size_t i = 0; i < vecFiles.size(); ++i)
     {
         const FileInfo& kFileInfos = vecFiles[i];
@@ -444,9 +444,9 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
     ResourceInfo* pInfo = new ResourceInfo;
     pInfo->resourceID = strResourceID;
     pInfo->fileInfo = _oFileInfo;
-	pInfo->resource = _pNewResource;
+    pInfo->resource = _pNewResource;
 
-	_pNewResource->Init(pInfo);
+    _pNewResource->Init(pInfo);
 
     m_resources.insert(iteResource, std::make_pair(strResourceID, pInfo));
 
@@ -555,7 +555,7 @@ Texture* ManagerResources::GetCustomTexture(const std::string& _strName)
 
 Font* ManagerResources::GetDefaultFont()
 {
-	return GetFont(m_defaultFont);
+    return GetFont(m_defaultFont);
 }
 
 void ManagerResources::GetLoadedTextureInfos(std::vector<const ResourceInfo*>& _vecInfos) const

@@ -25,7 +25,7 @@ namespace sf
 // Macros
 
 #define GUGU_RENDERPASS_INVALID 0x0000
-#define GUGU_RENDERPASS_DEFAULT 0x0001  //The Console is rendered with this flag	//TODO: passe specifique pour les infos de debug et la console
+#define GUGU_RENDERPASS_DEFAULT 0x0001  //The Console is rendered with this flag    //TODO: passe specifique pour les infos de debug et la console
 
 ////////////////////////////////////////////////////////////////
 // File Declarations
@@ -39,20 +39,20 @@ struct FrameInfos
 
 struct RenderPass
 {
-	RenderPass()
-	{
+    RenderPass()
+    {
         frameInfos = nullptr;
-		target = nullptr;
-		pass = 0;
+        target = nullptr;
+        pass = 0;
 
         statRenderedSprites = 0;
         statRenderedTexts = 0;
         statRenderedDrawables = 0;
-	}
+    }
 
     FrameInfos* frameInfos;
-	sf::RenderTarget* target;
-	int pass;
+    sf::RenderTarget* target;
+    int pass;
     sf::FloatRect rectViewport;  // Pre-computed viewport
 
     int statRenderedSprites;

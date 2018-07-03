@@ -54,26 +54,26 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-	std::string	GetPathAssets       () const;
-	std::string	GetPathScreenshots  () const;
+    std::string GetPathAssets       () const;
+    std::string GetPathScreenshots  () const;
     
-	bool	    HasResource         (const std::string& _strName) const;
-	bool	    HasResource         (const std::string& _strName, FileInfo& _oFileInfo) const;
-	bool	    IsResourceLoaded    (const std::string& _strName) const;
-	bool	    IsResourceLoaded	(const std::string& _strName, FileInfo& _oFileInfo) const;
+    bool        HasResource         (const std::string& _strName) const;
+    bool        HasResource         (const std::string& _strName, FileInfo& _oFileInfo) const;
+    bool        IsResourceLoaded    (const std::string& _strName) const;
+    bool        IsResourceLoaded    (const std::string& _strName, FileInfo& _oFileInfo) const;
 
-	FileInfo	GetResourceFileInfo (const std::string& _strName) const;
-	std::string	GetResourcePathName (const std::string& _strName) const;
+    FileInfo    GetResourceFileInfo (const std::string& _strName) const;
+    std::string GetResourcePathName (const std::string& _strName) const;
 
-	void		ParseDirectory	(const std::string& _strPath);
+    void        ParseDirectory  (const std::string& _strPath);
     void        PreloadAll      ();
     void        SaveAll         ();
 
     Texture*    GetTexture      (const std::string& _strName);
     Font*       GetFont         (const std::string& _strName);
-	Sound*	    GetSound	    (const std::string& _strName);
-	Music*		GetMusic		(const std::string& _strName);
-	SoundCue*	GetSoundCue		(const std::string& _strName);
+    Sound*      GetSound        (const std::string& _strName);
+    Music*      GetMusic        (const std::string& _strName);
+    SoundCue*   GetSoundCue     (const std::string& _strName);
     ImageSet*   GetImageSet     (const std::string& _strName);
     AnimSet*    GetAnimSet      (const std::string& _strName);
     Datasheet*  GetDatasheet    (const std::string& _strName);
@@ -91,10 +91,10 @@ public:
     std::string GetResourceID   (const FileInfo& _oFileInfo) const;
 
     bool        RegisterResourceInfo(std::string _strResourceID, const FileInfo& _kFileInfos);
-	bool        AddResource     (Resource* _pNewResource, const FileInfo& _oFileInfo);
-	bool        MoveResource	(Resource* _pResource, const FileInfo& _oFileInfo);
-	bool        RemoveResource	(Resource* _pResource);
-	bool        DeleteResource	(Resource* _pResource);
+    bool        AddResource     (Resource* _pNewResource, const FileInfo& _oFileInfo);
+    bool        MoveResource    (Resource* _pResource, const FileInfo& _oFileInfo);
+    bool        RemoveResource  (Resource* _pResource);
+    bool        DeleteResource  (Resource* _pResource);
 
     void        GetLoadedImageSetInfos  (std::vector<const ResourceInfo*>& _vecInfos) const;
     void        GetLoadedAnimSetInfos   (std::vector<const ResourceInfo*>& _vecInfos) const;
@@ -107,7 +107,7 @@ public:
     //TODO: Refactor with ResourceContext
     Texture*        GetCustomTexture(const std::string& _strName);
 
-	Font*			GetDefaultFont		();
+    Font*           GetDefaultFont      ();
     
     void                RegisterDatasheetFactory    (DelegateStatic1P<const std::string&, Datasheet*>* _pDatasheetFactory);
     Datasheet*          InstanciateDatasheet        (const std::string& _strType);
@@ -125,8 +125,8 @@ private:
     typedef std::string ResourceMapKey;
 
     std::string                     m_pathAssets;
-	std::string                     m_pathScreenshots;
-	std::string                     m_defaultFont;
+    std::string                     m_pathScreenshots;
+    std::string                     m_defaultFont;
     bool                            m_useFullPath; //TODO: some kind of enum RessourceIDPolicy
 
     std::map<ResourceMapKey, ResourceInfo*> m_resources;

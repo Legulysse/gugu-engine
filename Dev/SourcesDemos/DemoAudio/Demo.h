@@ -23,32 +23,32 @@ class Demo : public gugu::Application, public gugu::EventListener
 {
 public:
 
-	Demo();
-	virtual ~Demo();
+    Demo();
+    virtual ~Demo();
 
-    virtual	void AppStart() override;
-    virtual	void AppStop() override;
+    virtual void AppStart() override;
+    virtual void AppStop() override;
 
 protected:
 
-	enum EButton
-	{
-		Exit,
-		SoundBubbles,
-		TrackColors,
-		TrackAbyss,
-		TrackMighty3310Fight,
-		TrackMighty3310Boss,
+    enum EButton
+    {
+        Exit,
+        SoundBubbles,
+        TrackColors,
+        TrackAbyss,
+        TrackMighty3310Fight,
+        TrackMighty3310Boss,
         TrackMighty3310Final,
         PlaylistMighty3310,
-		StopAll,
-	};
+        StopAll,
+    };
 
-	void OnButtonClick(int _eButton);
+    void OnButtonClick(int _eButton);
 
 protected:
 
-	gugu::Element* m_root;
+    gugu::Element* m_root;
 };
 
 }   //namespace demoproject

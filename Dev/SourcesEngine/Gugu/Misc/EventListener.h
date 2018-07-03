@@ -11,7 +11,7 @@ namespace gugu
 
 namespace sf
 {
-	class Event;
+    class Event;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ public:
     bool IsRegistered(Window* _pWindow) const;
     bool IsRegistered(HandlerEvents* _pHandler) const;
 
-	virtual bool OnSFEvent(const sf::Event& _oSFEvent);     //Return true : allow event to be propagated.
+    virtual bool OnSFEvent(const sf::Event& _oSFEvent);     //Return true : allow event to be propagated.
 
 private:
 

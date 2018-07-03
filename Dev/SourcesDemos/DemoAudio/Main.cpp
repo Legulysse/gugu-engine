@@ -14,19 +14,19 @@ using namespace gugu;
 
 int main(int argc, char* argv[])
 {
-	//Init engine
-	EngineConfig config;
-	config.applicationName = "GuguEngine Demo Audio";
-	config.pathAssets = "Assets";
-	config.defaultFont = "Spaceranger.ttf";
-	config.windowWidth = 800;
-	config.windowHeight = 600;
+    //Init engine
+    EngineConfig config;
+    config.applicationName = "GuguEngine Demo Audio";
+    config.pathAssets = "Assets";
+    config.defaultFont = "Spaceranger.ttf";
+    config.windowWidth = 800;
+    config.windowHeight = 600;
     
     GetEngine()->Init(config);
 
     //--------
 
-	GetEngine()->SetApplication(new Demo);
+    GetEngine()->SetApplication(new Demo);
     
     //--------
 

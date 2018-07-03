@@ -23,17 +23,17 @@ class ElementList : public Element
 {
 public:
 
-	ElementList();
-	virtual ~ElementList();
+    ElementList();
+    virtual ~ElementList();
 
     void SetImageSet        (const std::string& _strImageSetPath);
     
     void SetAllowSelection      (bool _bAllow);
     void SetMultipleSelection   (bool _bMultiple);
 
-	void AddItem            (ElementListItem* _pNewItem);
-	void RemoveItem         (int _iIndex);
-	void RemoveItem         (ElementListItem* _pItem);
+    void AddItem            (ElementListItem* _pNewItem);
+    void RemoveItem         (int _iIndex);
+    void RemoveItem         (ElementListItem* _pItem);
     void RemoveAllItems     ();
     
     void    GetItems        (std::vector<ElementListItem*>& _vecItems) const;
@@ -51,8 +51,8 @@ public:
 
     virtual void        GetPropagationList(std::vector<Element*>& _vecPropagationList) override;
 
-	virtual void OnMouseScrolled(int _iDelta) override;
-	void OnScrollDrag();
+    virtual void OnMouseScrolled(int _iDelta) override;
+    void OnScrollDrag();
 
 private:
 
@@ -62,7 +62,7 @@ private:
     int     ScrollItems(int _iDelta);
 
     void    RecomputeScrollBar();
-	void    RecomputeItems();
+    void    RecomputeItems();
     
 protected:
 
@@ -71,9 +71,9 @@ protected:
     ElementSprite* m_scrollButtonTop;
     ElementSprite* m_scrollButtonBottom;
 
-	std::vector<ElementListItem*> m_items;
-	int m_currentIndexTop;
-	int m_displayedItemCount;
+    std::vector<ElementListItem*> m_items;
+    int m_currentIndexTop;
+    int m_displayedItemCount;
 
     bool m_allowSelection;
     bool m_multipleSelection;

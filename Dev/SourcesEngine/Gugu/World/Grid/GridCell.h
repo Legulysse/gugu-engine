@@ -10,7 +10,7 @@
 
 namespace gugu
 {
-	class BaseGrid;
+    class BaseGrid;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -22,10 +22,10 @@ class GridCell
 {
 public:
 
-	GridCell();
-	virtual ~GridCell();
+    GridCell();
+    virtual ~GridCell();
 
-	virtual void Init(BaseGrid* _pGrid, int _iIndexX, int _iIndexY);
+    virtual void Init(BaseGrid* _pGrid, int _iIndexX, int _iIndexY);
 
     virtual void RecomputePosition(const sf::Vector2f _kPosition);
 
@@ -36,9 +36,9 @@ public:
 
 protected:
 
-	BaseGrid* m_grid;
-	int	m_indexX;
-	int	m_indexY;
+    BaseGrid* m_grid;
+    int m_indexX;
+    int m_indexY;
 
     sf::Vector2f m_position;
 };

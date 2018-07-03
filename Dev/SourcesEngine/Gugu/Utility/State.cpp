@@ -42,12 +42,12 @@ void State::Update(const DeltaTime& dt)
 
 void State::SetOwner(StateMachine* _pOwner)
 {
-	m_owner = _pOwner;
+    m_owner = _pOwner;
 }
 
 StateMachine* State::GetOwner() const
 {
-	return m_owner;
+    return m_owner;
 }
 
 bool State::IsTopState() const

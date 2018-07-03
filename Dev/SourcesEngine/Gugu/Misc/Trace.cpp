@@ -92,4 +92,4 @@ TraceGroup* GetTraceGroupMain()
     return GetEngine()->GetTraceGroupMain();
 }
 
-}	// namespace gugu
+}   // namespace gugu

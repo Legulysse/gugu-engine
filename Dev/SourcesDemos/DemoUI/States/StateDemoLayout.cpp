@@ -34,32 +34,32 @@ void StateDemoLayout::Init()
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
-	m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
     
     //Layout
-	ElementUILayout* pLayout = m_root->AddChild<ElementUILayout>();
+    ElementUILayout* pLayout = m_root->AddChild<ElementUILayout>();
     pLayout->LoadFromFile("LayoutDemo.xml");
 }
 
 void StateDemoLayout::Release()
 {
-	SafeDelete(m_root);
+    SafeDelete(m_root);
 }
 
 bool StateDemoLayout::OnSFEvent(const sf::Event& _oSFEvent)
 {
-	if (!EventListener::OnSFEvent(_oSFEvent))
-		return false;
-
-	ManagerConfig* pConfig = GetConfig();
-
-	if (pConfig->IsInputReleased("CloseGame", _oSFEvent))
-	{
-		GetOwner()->ChangeState(new StateMenuMain);
+    if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
-	}
 
-	return true;
+    ManagerConfig* pConfig = GetConfig();
+
+    if (pConfig->IsInputReleased("CloseGame", _oSFEvent))
+    {
+        GetOwner()->ChangeState(new StateMenuMain);
+        return false;
+    }
+
+    return true;
 }
 
 }   //namespace demoproject

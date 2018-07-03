@@ -23,22 +23,22 @@ namespace gugu {
 
 ElementButton::ElementButton()
 {
-	m_sprite			= new ElementSprite;
-	m_text				= new ElementText;
+    m_sprite            = new ElementSprite;
+    m_text              = new ElementText;
 
-	m_sprite->SetParent(this, false);
-	m_text->SetParent(this, false);
+    m_sprite->SetParent(this, false);
+    m_text->SetParent(this, false);
 
-	m_sprite->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_sprite->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
-	SetTextAlignment();
+    SetTextAlignment();
 
     m_textureIdle = nullptr;
     m_textureFocused = nullptr;
     m_textureDisabled = nullptr;
 
-	m_actionOnPressed	= nullptr;
-	m_actionOnReleased	= nullptr;
+    m_actionOnPressed   = nullptr;
+    m_actionOnReleased  = nullptr;
     
     AddInteractionFlag(EInteraction::Focus);
     AddInteractionFlag(EInteraction::Click);
@@ -48,10 +48,10 @@ ElementButton::ElementButton()
 
 ElementButton::~ElementButton()
 {
-	SafeDelete(m_sprite);
-	SafeDelete(m_text);
-	SafeDelete(m_actionOnPressed);
-	SafeDelete(m_actionOnReleased);
+    SafeDelete(m_sprite);
+    SafeDelete(m_text);
+    SafeDelete(m_actionOnPressed);
+    SafeDelete(m_actionOnReleased);
 }
 
 void ElementButton::SetTexture(const std::string& _strTexturePathIdle, const std::string& _strTexturePathFocus)
@@ -110,14 +110,14 @@ void ElementButton::SetButtonDisabled(bool _bDisabled)
 
 void ElementButton::SetOnMousePressed(Action* _pActionOnPressed)
 {
-	SafeDelete(m_actionOnPressed);
-	m_actionOnPressed = _pActionOnPressed;
+    SafeDelete(m_actionOnPressed);
+    m_actionOnPressed = _pActionOnPressed;
 }
 
 void ElementButton::SetOnMouseReleased(Action* _pActionOnReleased)
 {
-	SafeDelete(m_actionOnReleased);
-	m_actionOnReleased = _pActionOnReleased;
+    SafeDelete(m_actionOnReleased);
+    m_actionOnReleased = _pActionOnReleased;
 }
 
 void ElementButton::SetText(const std::string& _strText)
@@ -127,9 +127,9 @@ void ElementButton::SetText(const std::string& _strText)
 
 bool ElementButton::OnMousePressed()
 {
-	if (m_actionOnPressed)
-	{
-		m_actionOnPressed->Call();
+    if (m_actionOnPressed)
+    {
+        m_actionOnPressed->Call();
         return false;
     }
 
@@ -138,8 +138,8 @@ bool ElementButton::OnMousePressed()
 
 bool ElementButton::OnMouseReleased()
 {
-	if (m_actionOnReleased)
-	{
+    if (m_actionOnReleased)
+    {
         m_actionOnReleased->Call();
         return false;
     }
@@ -150,11 +150,11 @@ bool ElementButton::OnMouseReleased()
 void ElementButton::OnMouseEnter()
 {
     if (m_textureFocused)
-	{
+    {
         sf::Vector2f kSize = m_size;
         m_sprite->SetTexture(m_textureFocused);   //TODO: a boolean param to allow the size reset ?
         SetSize(kSize);
-	}
+    }
 }
 
 void ElementButton::OnMouseLeave()
@@ -164,7 +164,7 @@ void ElementButton::OnMouseLeave()
         sf::Vector2f kSize = m_size;
         m_sprite->SetTexture(m_textureIdle);
         SetSize(kSize);
-	}
+    }
 }
 
 void ElementButton::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
@@ -179,8 +179,8 @@ void ElementButton::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTr
 
 void ElementButton::SetSizeImpl(sf::Vector2f _kOldSize)
 {
-	m_text->ComputeUnifiedDimensions();
-	m_sprite->ComputeUnifiedDimensions();
+    m_text->ComputeUnifiedDimensions();
+    m_sprite->ComputeUnifiedDimensions();
 }
 
 void ElementButton::SetTextAlignment(ETextAlignment::Type _eAlignX, float _fOffsetX, ETextAlignment::Type _eAlignY, float _fOffsetY)
@@ -188,20 +188,20 @@ void ElementButton::SetTextAlignment(ETextAlignment::Type _eAlignX, float _fOffs
     UDim2 kDim;
 
     switch (_eAlignX)
-	{
-        case ETextAlignment::Left:		kDim.x = UDim::ZERO;	break;
-        case ETextAlignment::Center:	kDim.x = UDim::HALF;	break;
-        case ETextAlignment::Right:		kDim.x = UDim::FULL;	break;
-		default: break;
-	}
+    {
+        case ETextAlignment::Left:      kDim.x = UDim::ZERO;    break;
+        case ETextAlignment::Center:    kDim.x = UDim::HALF;    break;
+        case ETextAlignment::Right:     kDim.x = UDim::FULL;    break;
+        default: break;
+    }
 
     switch (_eAlignY)
-	{
-		case ETextAlignment::Top:		kDim.y = UDim::ZERO;		break;
-		case ETextAlignment::Center:	kDim.y = UDim::HALF;		break;
-		case ETextAlignment::Bottom:	kDim.y = UDim::FULL;		break;
-		default: break;
-	}
+    {
+        case ETextAlignment::Top:       kDim.y = UDim::ZERO;        break;
+        case ETextAlignment::Center:    kDim.y = UDim::HALF;        break;
+        case ETextAlignment::Bottom:    kDim.y = UDim::FULL;        break;
+        default: break;
+    }
 
     m_text->SetUnifiedOrigin(kDim);
 
@@ -213,12 +213,12 @@ void ElementButton::SetTextAlignment(ETextAlignment::Type _eAlignX, float _fOffs
 
 ElementText* ElementButton::GetElementText() const
 {
-	return m_text;
+    return m_text;
 }
 
 ElementSprite* ElementButton::GetElementSprite() const
 {
-	return m_sprite;
+    return m_sprite;
 }
 
-}	// namespace gugu
+}   // namespace gugu

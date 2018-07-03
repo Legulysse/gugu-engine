@@ -106,47 +106,47 @@ void ElementInteractions::FireCallbacks(EInteraction::Type _eFlag)
 
 Element::Element()
 {
-	m_parent		= nullptr;
+    m_parent        = nullptr;
 
-	m_flipX		= false;
-	m_flipY		= false;
+    m_flipX     = false;
+    m_flipY     = false;
 
-	m_renderPass	= GUGU_RENDERPASS_DEFAULT;
-	m_isVisible	= true;
-	m_zIndex		= 0;
+    m_renderPass    = GUGU_RENDERPASS_DEFAULT;
+    m_isVisible = true;
+    m_zIndex        = 0;
 
-	m_useDimOrigin    = false;
-	m_useDimPosition		= false;
-	m_useDimSize		= false;
+    m_useDimOrigin    = false;
+    m_useDimPosition        = false;
+    m_useDimSize        = false;
 
-	//m_pShader		= nullptr;
+    //m_pShader     = nullptr;
 
     m_interactions     = nullptr;
 }
 
 Element::~Element()
 {
-	SafeDelete(m_interactions);
-	//SafeDelete(m_pShader);
+    SafeDelete(m_interactions);
+    //SafeDelete(m_pShader);
 
-	if (m_parent)
-	{
+    if (m_parent)
+    {
         StdVectorRemove(m_parent->m_children, this);
-	}
+    }
 
     DeleteAllChildren();
 }
 
 void Element::AddChild(Element* _pNewChild)
 {
-	m_children.push_back(_pNewChild);
-	_pNewChild->m_parent = this;
+    m_children.push_back(_pNewChild);
+    _pNewChild->m_parent = this;
 }
 
 void Element::RemoveChild(Element* _pChild)
 {
     StdVectorRemove(m_children, _pChild);
-	_pChild->m_parent = nullptr;
+    _pChild->m_parent = nullptr;
 }
 
 void Element::DeleteAllChildren()
@@ -163,17 +163,17 @@ void Element::DeleteAllChildren()
 
 void Element::SetParent(Element* _pNewParent, bool _bUpdateParents)
 {
-	if (_bUpdateParents)
-	{
-		if (m_parent)
+    if (_bUpdateParents)
+    {
+        if (m_parent)
             StdVectorRemove(m_parent->m_children, this);
 
-		_pNewParent->AddChild(this);
-	}
-	else
-	{
-		m_parent = _pNewParent;
-	}
+        _pNewParent->AddChild(this);
+    }
+    else
+    {
+        m_parent = _pNewParent;
+    }
 }
 
 Element* Element::GetParent() const
@@ -231,7 +231,7 @@ bool Element::IsVisible(bool _bCheckParent) const
 void Element::Step(const DeltaTime& dt)
 {
     for (size_t i = 0; i < m_children.size(); ++i)
-	{
+    {
         m_children[i]->Step(dt);
     }
 }
@@ -239,31 +239,31 @@ void Element::Step(const DeltaTime& dt)
 void Element::Update(const DeltaTime& dt)
 {
     for (size_t i = 0; i < m_children.size(); ++i)
-	{
+    {
         m_children[i]->Update(dt);
     }
 }
 
 void Element::SetUnifiedOrigin(UDim2 _oNewDimOrigin)
 {
-	m_useDimOrigin = true;
-	m_dimOrigin = _oNewDimOrigin;
+    m_useDimOrigin = true;
+    m_dimOrigin = _oNewDimOrigin;
 
     ComputeUnifiedOrigin();
 }
 
 void Element::SetUnifiedPosition(UDim2 _oNewDimPos)
 {
-	m_useDimPosition = true;
-	m_dimPosition = _oNewDimPos;
+    m_useDimPosition = true;
+    m_dimPosition = _oNewDimPos;
 
     ComputeUnifiedDimensions();
 }
 
 void Element::SetUnifiedSize(UDim2 _oNewDimSize)
 {
-	m_useDimSize = true;
-	m_dimSize = _oNewDimSize;
+    m_useDimSize = true;
+    m_dimSize = _oNewDimSize;
 
     ComputeUnifiedDimensions();
 }
@@ -285,12 +285,12 @@ UDim2 Element::GetUnifiedSize() const
 
 void Element::SetPositionX(float _fPosX)
 {
-	m_transform.setPosition(_fPosX, m_transform.getPosition().y);
+    m_transform.setPosition(_fPosX, m_transform.getPosition().y);
 }
 
 void Element::SetPositionY(float _fPosY)
 {
-	m_transform.setPosition(m_transform.getPosition().x, _fPosY);
+    m_transform.setPosition(m_transform.getPosition().x, _fPosY);
 }
 
 void Element::SetPosition(float _fPosX, float _fPosY)
@@ -337,32 +337,32 @@ void Element::SetScaleX(float _fScaleX)
 {
     if (m_flipY)
         _fScaleX = -_fScaleX;
-	m_transform.setScale(_fScaleX, m_transform.getScale().y);
+    m_transform.setScale(_fScaleX, m_transform.getScale().y);
 }
 
 void Element::SetScaleY(float _fScaleY)
 {
     if (m_flipX)
         _fScaleY = -_fScaleY;
-	m_transform.setScale(m_transform.getScale().x, _fScaleY);
+    m_transform.setScale(m_transform.getScale().x, _fScaleY);
 }
 
 void Element::SetScale(float _fScale)
 {
-	SetScaleX(_fScale);
-	SetScaleY(_fScale);
+    SetScaleX(_fScale);
+    SetScaleY(_fScale);
 }
 
 void Element::SetScale(float _fScaleX, float _fScaleY)
 {
-	SetScaleX(_fScaleX);
-	SetScaleY(_fScaleY);
+    SetScaleX(_fScaleX);
+    SetScaleY(_fScaleY);
 }
 
 void Element::SetScale(const sf::Vector2f& _kScale)
 {
-	SetScaleX(_kScale.x);
-	SetScaleY(_kScale.y);
+    SetScaleX(_kScale.x);
+    SetScaleY(_kScale.y);
 }
 
 void Element::Scale(float _fScaleX, float _fScaleY)
@@ -387,12 +387,12 @@ sf::Vector2f Element::GetScale() const
 
 void Element::SetOriginX(float _fOriginX)
 {
-	m_transform.setOrigin(_fOriginX, m_transform.getOrigin().y);
+    m_transform.setOrigin(_fOriginX, m_transform.getOrigin().y);
 }
 
 void Element::SetOriginY(float _fOriginY)
 {
-	m_transform.setOrigin(m_transform.getOrigin().x, _fOriginY);
+    m_transform.setOrigin(m_transform.getOrigin().x, _fOriginY);
 }
 
 void Element::SetOrigin(float _fOriginX, float _fOriginY)
@@ -422,17 +422,17 @@ const sf::Transform& Element::GetInverseTransform() const
 
 void Element::SetSizeX(float _fNewSizeX)
 {
-	SetSize(sf::Vector2f(_fNewSizeX, m_size.y));
+    SetSize(sf::Vector2f(_fNewSizeX, m_size.y));
 }
 
 void Element::SetSizeY(float _fNewSizeY)
 {
-	SetSize(sf::Vector2f(m_size.x, _fNewSizeY));
+    SetSize(sf::Vector2f(m_size.x, _fNewSizeY));
 }
 
 void Element::SetSize(float _fNewSizeX, float _fNewSizeY)
 {
-	SetSize(sf::Vector2f(_fNewSizeX, _fNewSizeY));
+    SetSize(sf::Vector2f(_fNewSizeX, _fNewSizeY));
 }
 
 void Element::SetSize(sf::Vector2f _kNewSize)
@@ -445,7 +445,7 @@ void Element::SetSize(sf::Vector2f _kNewSize)
     ComputeUnifiedOrigin();
     
     for (size_t i = 0; i < m_children.size(); ++i)
-	{
+    {
         m_children[i]->OnParentResized(kOldSize, m_size);
     }
 }
@@ -456,31 +456,31 @@ void Element::SetSizeImpl(sf::Vector2f _kOldSize)
 
 const sf::Vector2f& Element::GetSize() const
 {
-	return m_size;
+    return m_size;
 }
 
 sf::Vector2f Element::GetSizeScaled() const
 {
-	sf::Vector2f fSize = GetSize();
-	fSize.x *= GetScale().x;
-	fSize.y *= GetScale().y;
-	return fSize;
+    sf::Vector2f fSize = GetSize();
+    fSize.x *= GetScale().x;
+    fSize.y *= GetScale().y;
+    return fSize;
 }
 
 sf::Vector2f Element::GetSizeOnScreen() const
 {
-	sf::Vector2f fSize = GetSizeScaled();
+    sf::Vector2f fSize = GetSizeScaled();
 
-	Element* pParent = m_parent;
-	while (pParent)
-	{
+    Element* pParent = m_parent;
+    while (pParent)
+    {
         fSize.x *= pParent->GetScale().x;
         fSize.y *= pParent->GetScale().y;
 
         pParent = pParent->m_parent;
-	}
+    }
 
-	return fSize;
+    return fSize;
 }
 
 void Element::SetFlipX(bool _bFlip)
@@ -510,12 +510,12 @@ void Element::SetFlip(bool _bFlipX, bool _bFlipY)
 
 bool Element::GetFlipX() const
 {
-	return m_flipX;
+    return m_flipX;
 }
 
 bool Element::GetFlipY() const
 {
-	return m_flipY;
+    return m_flipY;
 }
 
 void Element::ComputeUnifiedOrigin()
@@ -549,7 +549,7 @@ void Element::OnParentResized(sf::Vector2f _kOldSize, sf::Vector2f _kNewSize)
     ComputeUnifiedDimensions();
 
     for (size_t i = 0; i < m_children.size(); ++i)
-	{
+    {
         m_children[i]->OnParentResized(_kOldSize, _kNewSize);
     }
 }
@@ -581,7 +581,7 @@ bool Element::CompareZIndex(Element* _pLeft, Element* _pRight)
 
 void Element::SetRenderPass(int _iPass)
 {
-	m_renderPass = _iPass;
+    m_renderPass = _iPass;
 }
 
 void Element::AddRenderPass(int _iPass)
@@ -596,46 +596,46 @@ void Element::RemoveRenderPass(int _iPass)
 
 /*void Element::SetShader(sf::Shader* _pShader)
 {
-	m_pShader = _pShader;
+    m_pShader = _pShader;
 }*/
 
 void Element::SetInteractionFlags(int _iFlags)
 {
-	InitInteractions();
-	m_interactions->SetInteractionFlags(_iFlags);
+    InitInteractions();
+    m_interactions->SetInteractionFlags(_iFlags);
 }
 
 void Element::AddInteractionFlag(EInteraction::Type _eFlag)
 {
-	InitInteractions();
-	m_interactions->AddInteractionFlag(_eFlag);
+    InitInteractions();
+    m_interactions->AddInteractionFlag(_eFlag);
 }
 
 void Element::RemoveInteractionFlag(EInteraction::Type _eFlag)
 {
-	if (m_interactions)
-		m_interactions->RemoveInteractionFlag(_eFlag);
+    if (m_interactions)
+        m_interactions->RemoveInteractionFlag(_eFlag);
 }
 
 int Element::GetInteractionFlags() const
 {
-	if (m_interactions)
-		return m_interactions->GetInteractionFlags();
-	return EInteraction::None;
+    if (m_interactions)
+        return m_interactions->GetInteractionFlags();
+    return EInteraction::None;
 }
 
 bool Element::HasInteractionFlags() const
 {
-	if (m_interactions)
-		return m_interactions->HasInteractionFlags();
-	return false;
+    if (m_interactions)
+        return m_interactions->HasInteractionFlags();
+    return false;
 }
 
 bool Element::HasInteractionFlag(EInteraction::Type _eFlag) const
 {
-	if (m_interactions)
-		return m_interactions->HasInteractionFlag(_eFlag);
-	return false;
+    if (m_interactions)
+        return m_interactions->HasInteractionFlag(_eFlag);
+    return false;
 }
 
 void Element::InitInteractions()
@@ -653,16 +653,16 @@ ElementInteractions* Element::GetInteractions() const
 
 bool Element::IsPicked(const sf::Vector2f& _kGlobalCoords) const
 {
-	sf::Vector2f oPosMouse          = TransformToLocalFull(_kGlobalCoords);
-	sf::Vector2f oPosBottomRight    = GetSize();
+    sf::Vector2f oPosMouse          = TransformToLocalFull(_kGlobalCoords);
+    sf::Vector2f oPosBottomRight    = GetSize();
 
-	if (	oPosMouse.x >= 0 && oPosMouse.x < oPosBottomRight.x
-		&&	oPosMouse.y >= 0 && oPosMouse.y < oPosBottomRight.y )
-	{
-		return true;
-	}
+    if (    oPosMouse.x >= 0 && oPosMouse.x < oPosBottomRight.x
+        &&  oPosMouse.y >= 0 && oPosMouse.y < oPosBottomRight.y )
+    {
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformParent)
@@ -670,14 +670,14 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
     if (m_isVisible)
     {
         sf::Transform combinedTransform = _kTransformParent * GetTransform();
-		
+        
         OnPreDraw(_kRenderPass);
 
-		if ((_kRenderPass.pass & m_renderPass) != GUGU_RENDERPASS_INVALID)
-			DrawSelf(_kRenderPass, combinedTransform);
+        if ((_kRenderPass.pass & m_renderPass) != GUGU_RENDERPASS_INVALID)
+            DrawSelf(_kRenderPass, combinedTransform);
         
         for (size_t i = 0; i < m_children.size(); ++i)
-		{
+        {
             m_children[i]->Render(_kRenderPass, combinedTransform);
         }
 
@@ -712,4 +712,4 @@ bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
     return true;
 }
 
-}	// namespace gugu
+}   // namespace gugu

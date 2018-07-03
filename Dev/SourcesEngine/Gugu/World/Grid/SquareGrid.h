@@ -17,8 +17,8 @@ class SquareGrid : public BaseGrid
 {
 public:
 
-	SquareGrid();
-	virtual ~SquareGrid();
+    SquareGrid();
+    virtual ~SquareGrid();
 
     void InitSquareGrid(int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight);
 

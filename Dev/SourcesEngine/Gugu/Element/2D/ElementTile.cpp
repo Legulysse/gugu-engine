@@ -179,8 +179,8 @@ void ElementTile::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTran
             int iTextureSizeY = Absolute(m_subRect.height);
 
             // Nb tiles we can fully render
-            int	iNbFullTilesX = ((int)kAreaSize.x) / iTextureSizeX;
-            int	iNbFullTilesY = ((int)kAreaSize.y) / iTextureSizeY;
+            int iNbFullTilesX = ((int)kAreaSize.x) / iTextureSizeX;
+            int iNbFullTilesY = ((int)kAreaSize.y) / iTextureSizeY;
 
             // Remaining margins for truncated tiles
             float fRemainingAreaX = kAreaSize.x - (iNbFullTilesX * iTextureSizeX);
@@ -337,4 +337,4 @@ void ElementTile::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTran
     }
 }
 
-}	// namespace gugu
+}   // namespace gugu

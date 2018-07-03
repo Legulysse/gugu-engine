@@ -17,8 +17,8 @@ namespace demoproject
 
 namespace gugu
 {
-	class Element;
-	class ElementSprite;
+    class Element;
+    class ElementSprite;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -30,20 +30,20 @@ class Projectile : public gugu::Actor
 {
 public:
 
-	Projectile();
-	virtual ~Projectile();
+    Projectile();
+    virtual ~Projectile();
 
-	void InitProjectile(Character* _pSource, const sf::Vector2f& _kFrom, const sf::Vector2f& _kTo);
+    void InitProjectile(Character* _pSource, const sf::Vector2f& _kFrom, const sf::Vector2f& _kTo);
 
-	virtual void Step(const gugu::DeltaTime& dt) override;
+    virtual void Step(const gugu::DeltaTime& dt) override;
 
 public:
 
-	Character* m_characterSource;
-	gugu::ElementSprite* m_sprite;
-	sf::Vector2f m_direction;
-	float m_speed;
-	float m_lifetime;
+    Character* m_characterSource;
+    gugu::ElementSprite* m_sprite;
+    sf::Vector2f m_direction;
+    float m_speed;
+    float m_lifetime;
 };
 
 }   //namespace demoproject

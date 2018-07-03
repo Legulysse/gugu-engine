@@ -23,18 +23,18 @@ class Resource
 {
 public:
 
-	Resource();
-	virtual ~Resource();
+    Resource();
+    virtual ~Resource();
 
-	void Init(ResourceInfo* _pResourceInfos);
+    void Init(ResourceInfo* _pResourceInfos);
 
-    std::string	GetID() const;
+    std::string GetID() const;
 
-    //void			SetFileInfo(const FileInfo& _oFileInfo);	//TODO: Remove ? needed by Editor ?
-	FileInfo		GetFileInfo() const;
-	const FileInfo& GetFileInfoRef() const;
+    //void          SetFileInfo(const FileInfo& _oFileInfo);    //TODO: Remove ? needed by Editor ?
+    FileInfo        GetFileInfo() const;
+    const FileInfo& GetFileInfoRef() const;
 
-	virtual EResourceType::Type	GetResourceType() const;
+    virtual EResourceType::Type GetResourceType() const;
 
     virtual bool        LoadFromFile    ();
     virtual bool        ReloadFromFile  ();
@@ -45,4 +45,4 @@ protected:
     ResourceInfo* m_resourceInfos;
 };
 
-}	// namespace gugu
+}   // namespace gugu

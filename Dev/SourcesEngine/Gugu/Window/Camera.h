@@ -46,7 +46,7 @@ public:
     void            SetTarget   (sf::Vector2f _kTarget);
     sf::Vector2f    GetTarget   () const;
     
-	//TODO: Use UDim, add shortcuts for Center and UpperLeft
+    //TODO: Use UDim, add shortcuts for Center and UpperLeft
     void            SetCenterOnTarget   (bool _bCenterOnTarget);  //true = target is the center of the view (useful for Levels), false = target is the top-left corner of the view (default, useful for Window UI)
     bool            IsCenterOnTarget    () const;
 
@@ -56,13 +56,13 @@ public:
     void            ComputeViewCenter   ();     //Recompute View center, from Target and View size
     
     sf::Vector2f    GetPickedPosition   (const sf::Vector2i& _kMouseCoords) const;
-	bool            IsMouseOverCamera	(const sf::Vector2i& _kMouseCoords) const;
-	bool            IsMouseOverElement  (const sf::Vector2i& _kMouseCoords, Element* _pElement) const;
+    bool            IsMouseOverCamera   (const sf::Vector2i& _kMouseCoords) const;
+    bool            IsMouseOverElement  (const sf::Vector2i& _kMouseCoords, Element* _pElement) const;
 
 private:
 
-    //void OnPreDraw			(RenderPass& _kRenderPass);
-    //void OnPostDraw			(RenderPass& _kRenderPass);
+    //void OnPreDraw            (RenderPass& _kRenderPass);
+    //void OnPostDraw           (RenderPass& _kRenderPass);
 
     //void SetSizeImpl        (sf::Vector2f _kOldSize);
     

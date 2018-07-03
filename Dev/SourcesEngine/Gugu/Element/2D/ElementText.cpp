@@ -27,38 +27,38 @@ namespace gugu {
 ElementText::ElementText()
 : m_font(nullptr)
 {
-	m_textValue	= "";
+    m_textValue = "";
 
     m_resizeRule   = ETextResizeRule::FitSize;
-	m_isMultiline	= false;
-	m_isEditable	= false;
+    m_isMultiline   = false;
+    m_isEditable    = false;
 
     m_skipRecomputeOnResize = false;
-    m_isEditing		= false;
-    m_isTickDisplayed	= false;
-    m_timeSinceTick	= 0.f;
+    m_isEditing     = false;
+    m_isTickDisplayed   = false;
+    m_timeSinceTick = 0.f;
 
     m_actionOnValidate = nullptr;
 
     m_showDebugBounds       = false;
 
-	m_sfText = new sf::Text;
-	m_sfText->setFillColor(sf::Color(0, 0, 0));
+    m_sfText = new sf::Text;
+    m_sfText->setFillColor(sf::Color(0, 0, 0));
 
-	m_sfTextCursor = nullptr;
+    m_sfTextCursor = nullptr;
 
-	SetFont(GetResources()->GetDefaultFont());
-	SetFontSize(20);
+    SetFont(GetResources()->GetDefaultFont());
+    SetFontSize(20);
 }
 
 ElementText::~ElementText()
 {
-	SafeDelete(m_actionOnValidate);
+    SafeDelete(m_actionOnValidate);
 
-	SafeDelete(m_sfTextCursor);
-	SafeDelete(m_sfText);
+    SafeDelete(m_sfTextCursor);
+    SafeDelete(m_sfText);
 
-	ClearStdVector(m_components);
+    //ClearStdVector(m_components);
 }
 
 void ElementText::SetFont(const std::string& _strFontPath)
@@ -71,9 +71,9 @@ void ElementText::SetFont(Font* _pFont)
     if (_pFont)
     {
         m_font = _pFont;
-	    m_sfText->setFont(*m_font->GetSFFont());
+        m_sfText->setFont(*m_font->GetSFFont());
     
-	    Recompute();
+        Recompute();
     }
 }
 
@@ -81,7 +81,7 @@ void ElementText::SetFontSize(uint32 _uiSize)
 {
     m_sfText->setCharacterSize(_uiSize);
     
-	Recompute();
+    Recompute();
 }
 
 void ElementText::SetFontColor(const sf::Color& _oColor)
@@ -93,14 +93,14 @@ void ElementText::SetResizeRule(ETextResizeRule::Type _eResizeRule)
 {
     m_resizeRule = _eResizeRule;
     
-	Recompute();
+    Recompute();
 }
 
 void ElementText::SetMultiline(bool _bIsMultiline)
 {
-	m_isMultiline = _bIsMultiline;
+    m_isMultiline = _bIsMultiline;
     
-	Recompute();
+    Recompute();
 }
 
 void ElementText::SetEditable(bool _bIsEditable)
@@ -129,14 +129,14 @@ void ElementText::SetDebugBoundsVisible(bool _bShowDebugBounds)
 
 void ElementText::SetText(const std::string& _strValue /*, bool _bResize */)
 {
-	m_textValue = _strValue;
+    m_textValue = _strValue;
     
-	Recompute();
+    Recompute();
 
-	//if (/*_bResize && */ !m_bIsMultiline)
+    //if (/*_bResize && */ !m_bIsMultiline)
     /*if (m_eResizeRule == TextResizeRule::FitSize)
     {
-		SetSize(sf::Vector2f(m_pSFText->GetRect().Width, m_pSFText->GetRect().Height));
+        SetSize(sf::Vector2f(m_pSFText->GetRect().Width, m_pSFText->GetRect().Height));
     }*/
 }
 
@@ -147,128 +147,128 @@ std::string ElementText::GetValue() const
 
 void ElementText::Recompute()
 {
-    std::string	strTextImpl = "";
+    std::string strTextImpl = "";
 
-	if (!m_isMultiline)
-	{
-		strTextImpl = m_textValue;
-	}
-	else
-	{
-		ClearStdVector(m_components);
+    if (!m_isMultiline)
+    {
+        strTextImpl = m_textValue;
+    }
+    else
+    {
+        //ClearStdVector(m_components);
 
-		//std::string strNewText = "";	//Used to build the new StringImpl
-		sf::Text oSFText;				//Temp element to compute string size on screen
-		oSFText.setFont(*m_sfText->getFont());
-		oSFText.setCharacterSize(m_sfText->getCharacterSize());
-		oSFText.setStyle(m_sfText->getStyle());
+        //std::string strNewText = "";  //Used to build the new StringImpl
+        sf::Text oSFText;               //Temp element to compute string size on screen
+        oSFText.setFont(*m_sfText->getFont());
+        oSFText.setCharacterSize(m_sfText->getCharacterSize());
+        oSFText.setStyle(m_sfText->getStyle());
 
-		size_t iLineNext = 0;
-		size_t iLineBegin = 0;
-		size_t iChunkNext = 0;
-		size_t iChunkBegin = 0;
-		size_t iChunkEnd = 0;
-		size_t iNbChars = 0;
+        size_t iLineNext = 0;
+        size_t iLineBegin = 0;
+        size_t iChunkNext = 0;
+        size_t iChunkBegin = 0;
+        size_t iChunkEnd = 0;
+        size_t iNbChars = 0;
 
-		//Each loop turn will generate a text line
-		while (iLineNext < m_textValue.size())
-		{
-			//Step 1 : remove whitespaces on beginning (not any more !)
-			//iLineBegin = iLineNext; //m_strValue.find_first_not_of(" ", iLineNext);
-			iLineBegin = m_textValue.find_first_not_of(" ", iLineNext);
-			if (iLineBegin == std::string::npos)
-			    iLineBegin = iLineNext;
-			iNbChars = 0;
+        //Each loop turn will generate a text line
+        while (iLineNext < m_textValue.size())
+        {
+            //Step 1 : remove whitespaces on beginning (not any more !)
+            //iLineBegin = iLineNext; //m_strValue.find_first_not_of(" ", iLineNext);
+            iLineBegin = m_textValue.find_first_not_of(" ", iLineNext);
+            if (iLineBegin == std::string::npos)
+                iLineBegin = iLineNext;
+            iNbChars = 0;
 
-			//Step 2 : parse chunks of text
-			iChunkNext = iLineBegin;
+            //Step 2 : parse chunks of text
+            iChunkNext = iLineBegin;
 
-			std::string strLineTest = "";
-			std::string strNewLine	= "";
-			bool bLineFinished = false;
+            std::string strLineTest = "";
+            std::string strNewLine  = "";
+            bool bLineFinished = false;
 
-			//Each loop will try to fill the current line with one more word, and eventual ponctuation behind
-			while (!bLineFinished)
-			{
-				iChunkBegin = iChunkNext;
-				iChunkEnd = std::string::npos;
+            //Each loop will try to fill the current line with one more word, and eventual ponctuation behind
+            while (!bLineFinished)
+            {
+                iChunkBegin = iChunkNext;
+                iChunkEnd = std::string::npos;
 
-				//we have the beginning of the chunk, let's find its end
-				size_t iSearchBegin = iChunkBegin;
+                //we have the beginning of the chunk, let's find its end
+                size_t iSearchBegin = iChunkBegin;
                 bool bChunkFinished = false;
 
                 while (!bChunkFinished)
-				{
-					iChunkEnd = m_textValue.find_first_of(" ", iSearchBegin + 1);	//end of normal string (+1 is important to manage whitespaces between chunks)
+                {
+                    iChunkEnd = m_textValue.find_first_of(" ", iSearchBegin + 1);   //end of normal string (+1 is important to manage whitespaces between chunks)
 
-                    size_t iNext = (iChunkEnd == std::string::npos) ? std::string::npos : m_textValue.find_first_not_of(" ", iChunkEnd);		//next chunk (can be one of the cases below)
-					size_t iForceEndLine = m_textValue.find_first_of("\n", iSearchBegin);	//possible cut
-					size_t iSpecialChar	= m_textValue.find_first_of(".,;:?!", iSearchBegin);	//possible extension
+                    size_t iNext = (iChunkEnd == std::string::npos) ? std::string::npos : m_textValue.find_first_not_of(" ", iChunkEnd);        //next chunk (can be one of the cases below)
+                    size_t iForceEndLine = m_textValue.find_first_of("\n", iSearchBegin);   //possible cut
+                    size_t iSpecialChar = m_textValue.find_first_of(".,;:?!", iSearchBegin);    //possible extension
 
                     if (iForceEndLine != std::string::npos && (iChunkEnd == std::string::npos || iForceEndLine < iChunkEnd))
-					{
-						iChunkEnd = iForceEndLine;
-						iChunkNext = iForceEndLine + 1;
-						iNbChars = iChunkEnd - iChunkBegin;
+                    {
+                        iChunkEnd = iForceEndLine;
+                        iChunkNext = iForceEndLine + 1;
+                        iNbChars = iChunkEnd - iChunkBegin;
 
-						bLineFinished = true;		//stop parsing chunks for this line
-						iLineNext = iChunkNext;
+                        bLineFinished = true;       //stop parsing chunks for this line
+                        iLineNext = iChunkNext;
 
                         bChunkFinished = true;
-					}
-					else if (iNext != std::string::npos && iNext == iSpecialChar)
-					{
-						iSearchBegin = iSpecialChar;
-					}
-					else
-					{
-						iChunkNext = iChunkEnd;
+                    }
+                    else if (iNext != std::string::npos && iNext == iSpecialChar)
+                    {
+                        iSearchBegin = iSpecialChar;
+                    }
+                    else
+                    {
+                        iChunkNext = iChunkEnd;
                         iNbChars = (iChunkEnd == std::string::npos) ? m_textValue.size() - iChunkBegin : iChunkEnd - iChunkBegin;
 
                         bChunkFinished = true;
-					}
+                    }
                 }
 
-				//Step 2:1 : compute a text chunk
-				strLineTest += m_textValue.substr(iChunkBegin, iNbChars);
+                //Step 2:1 : compute a text chunk
+                strLineTest += m_textValue.substr(iChunkBegin, iNbChars);
 
-				//Step 2:2 : compute new size. if size is too big, skip this chunk and go to step 3
-				oSFText.setString(strLineTest);
-				if (oSFText.getLocalBounds().width > GetSize().x)
-				{
-					if (!strNewLine.empty())
-					{
-						iLineNext = iChunkBegin;		//Not enough place on this line, this chunk will be read on next line
-					}
-					else
-					{
-						//Special case : chunk is too big, but line is empty, so force the display of the chunk as a new line
-						strNewLine = strLineTest;
-						iLineNext = iChunkEnd;
-					}
+                //Step 2:2 : compute new size. if size is too big, skip this chunk and go to step 3
+                oSFText.setString(strLineTest);
+                if (oSFText.getLocalBounds().width > GetSize().x)
+                {
+                    if (!strNewLine.empty())
+                    {
+                        iLineNext = iChunkBegin;        //Not enough place on this line, this chunk will be read on next line
+                    }
+                    else
+                    {
+                        //Special case : chunk is too big, but line is empty, so force the display of the chunk as a new line
+                        strNewLine = strLineTest;
+                        iLineNext = iChunkEnd;
+                    }
 
-					bLineFinished = true;		//stop parsing chunks for this line
-				}
-				else
-				{
-					strNewLine = strLineTest;
+                    bLineFinished = true;       //stop parsing chunks for this line
+                }
+                else
+                {
+                    strNewLine = strLineTest;
 
-					if (iChunkNext == std::string::npos)
-					{
-						iLineNext = std::string::npos;
-						bLineFinished = true;	//end of text
-					}
-				}
-			}
+                    if (iChunkNext == std::string::npos)
+                    {
+                        iLineNext = std::string::npos;
+                        bLineFinished = true;   //end of text
+                    }
+                }
+            }
 
-			//Step 3 : add the new line and loop back
-			strTextImpl += strNewLine + "\n";
-		}
+            //Step 3 : add the new line and loop back
+            strTextImpl += strNewLine + "\n";
+        }
 
-		strTextImpl = strTextImpl.substr(0, strTextImpl.size()-1);	//remove last EndLine
-	}
+        strTextImpl = strTextImpl.substr(0, strTextImpl.size()-1);  //remove last EndLine
+    }
 
-	m_sfText->setString(strTextImpl);
+    m_sfText->setString(strTextImpl);
 
     //TODO: Here I can split my sf::Text into an array (1 line = 1 sf::Text) to allow center-alignment & line visibility.
     
@@ -278,9 +278,9 @@ void ElementText::Recompute()
     //    fLineHeight = m_pSFText->getFont()->getLineSpacing(m_pSFText->getCharacterSize());
 
     if (m_resizeRule == ETextResizeRule::FitScale && m_size.x > 0 && m_size.y > 0 && m_sfText->getLocalBounds().width > 0 && m_sfText->getLocalBounds().height > 0)
-	{
-		m_sfText->setScale(m_size.x / (m_sfText->getLocalBounds().left + m_sfText->getLocalBounds().width), m_size.y / (m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height));
-	}
+    {
+        m_sfText->setScale(m_size.x / (m_sfText->getLocalBounds().left + m_sfText->getLocalBounds().width), m_size.y / (m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height));
+    }
     else if (m_resizeRule == ETextResizeRule::FitSize)
     {
         m_skipRecomputeOnResize = true;
@@ -292,17 +292,17 @@ void ElementText::Recompute()
         SetSizeY(m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height);
     }
 
-	if (m_isEditing)
-	{
+    if (m_isEditing)
+    {
         //TODO: Some fonts may not have the '|' character
-		m_sfTextCursor->setFont(*m_sfText->getFont());
-		m_sfTextCursor->setCharacterSize(m_sfText->getCharacterSize());
-		m_sfTextCursor->setStyle(m_sfText->getStyle());
+        m_sfTextCursor->setFont(*m_sfText->getFont());
+        m_sfTextCursor->setCharacterSize(m_sfText->getCharacterSize());
+        m_sfTextCursor->setStyle(m_sfText->getStyle());
         m_sfTextCursor->setFillColor(m_sfText->getFillColor());
         m_sfTextCursor->setScale(m_sfText->getScale());
 
         m_sfTextCursor->setPosition(m_sfText->getTransform().transformPoint(m_sfText->findCharacterPos(strTextImpl.size())));
-	}
+    }
 }
 
 void ElementText::StartEdition()
@@ -317,9 +317,9 @@ void ElementText::StopEdition()
 
 void ElementText::StartEditionImpl()
 {
-    m_timeSinceTick	= 0.f;
-    m_isTickDisplayed	= true;
-    m_isEditing		= true;
+    m_timeSinceTick = 0.f;
+    m_isTickDisplayed   = true;
+    m_isEditing     = true;
     
     if (!m_sfTextCursor)
     {
@@ -329,18 +329,18 @@ void ElementText::StartEditionImpl()
             
     AddInteractionFlag(EInteraction::RawSFEvent);
     
-	Recompute();
+    Recompute();
 }
 
 void ElementText::StopEditionImpl()
 {
-    m_timeSinceTick	= 0.f;
-    m_isTickDisplayed	= false;
-    m_isEditing		= false;
+    m_timeSinceTick = 0.f;
+    m_isTickDisplayed   = false;
+    m_isEditing     = false;
 
     RemoveInteractionFlag(EInteraction::RawSFEvent);
     
-	Recompute();
+    Recompute();
 }
 
 void ElementText::Update(const DeltaTime& dt)
@@ -371,7 +371,7 @@ bool ElementText::OnMouseDeselected()
 
 bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
 {
-	if(!m_isEditing || _oSFEvent.type != sf::Event::KeyPressed)
+    if(!m_isEditing || _oSFEvent.type != sf::Event::KeyPressed)
         return true;
 
     if (_oSFEvent.key.code == sf::Keyboard::Return && !m_isMultiline && m_actionOnValidate)
@@ -381,17 +381,17 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
     }
 
     if(_oSFEvent.key.code == sf::Keyboard::BackSpace)
-	{
-		if(!m_textValue.empty())
-	    {
+    {
+        if(!m_textValue.empty())
+        {
             m_textValue.erase(m_textValue.length()-1, 1);
             SetText(m_textValue /*, false*/);
 
             return false;
-	    }
-	}
-	else
-	{
+        }
+    }
+    else
+    {
         char cNewChar = '\0';
 
         if (_oSFEvent.key.code >= sf::Keyboard::A && _oSFEvent.key.code <= sf::Keyboard::Z)
@@ -434,7 +434,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
 
             return false;
         }
-	}
+    }
 
     return true;
 }
@@ -476,15 +476,14 @@ void ElementText::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTran
                 _kRenderPass.frameInfos->statDrawCalls += 1;
         }
 
-        //TODO: This is currently unused !
-        for (size_t i = 0; i < m_components.size(); ++i)
-        {
-            _kRenderPass.target->draw(*m_components[i], _kTransformSelf);
+        //for (size_t i = 0; i < m_components.size(); ++i)
+        //{
+        //    _kRenderPass.target->draw(*m_components[i], _kTransformSelf);
 
-            //Stats
-            if (_kRenderPass.frameInfos)
-                _kRenderPass.frameInfos->statDrawCalls += 1;
-        }
+        //    //Stats
+        //    if (_kRenderPass.frameInfos)
+        //        _kRenderPass.frameInfos->statDrawCalls += 1;
+        //}
 
         if (m_isTickDisplayed)
         {
@@ -500,8 +499,8 @@ void ElementText::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTran
 void ElementText::SetSizeImpl(sf::Vector2f _kOldSize)
 {
     if (!m_skipRecomputeOnResize)
-	    Recompute();
+        Recompute();
     m_skipRecomputeOnResize = false;
 }
 
-}	// namespace gugu
+}   // namespace gugu

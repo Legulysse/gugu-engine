@@ -316,4 +316,4 @@ void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)
     //SetSizeImpl(GetSize());
 }
 
-}	// namespace gugu
+}   // namespace gugu

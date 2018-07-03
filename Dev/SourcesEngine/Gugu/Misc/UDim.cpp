@@ -11,8 +11,8 @@ namespace gugu {
 
 UDim::UDim()
 {
-	relative = 0.f;
-	absolute = 0.f;
+    relative = 0.f;
+    absolute = 0.f;
 }
 
 UDim::UDim(const UDim& _kRight)
@@ -40,7 +40,7 @@ const UDim UDim::operator+(float _fAbs) const
 
 float UDim::GetComputedDimension(float _fReference) const
 {
-	return relative * _fReference + absolute;
+    return relative * _fReference + absolute;
 }
 
 UDim2::UDim2()
@@ -85,12 +85,12 @@ const UDim2 UDim2::operator+(const sf::Vector2f& _kAbs) const
 
 sf::Vector2f UDim2::GetComputedDimension(float _fReferenceX, float _fReferenceY) const
 {
-	return GetComputedDimension(sf::Vector2f(_fReferenceX, _fReferenceY));
+    return GetComputedDimension(sf::Vector2f(_fReferenceX, _fReferenceY));
 }
 
 sf::Vector2f UDim2::GetComputedDimension(sf::Vector2f _kReferenceSize) const
 {
-	return sf::Vector2f(x.relative * _kReferenceSize.x + x.absolute, y.relative * _kReferenceSize.y + y.absolute);
+    return sf::Vector2f(x.relative * _kReferenceSize.x + x.absolute, y.relative * _kReferenceSize.y + y.absolute);
 }
 
 const UDim UDim::ZERO = UDim(0.f, 0.f);
@@ -113,4 +113,4 @@ const UDim2 UDim2::SIZE_HORIZONTAL_HALF = UDim2(1.f, 0.f, 0.5f, 0.f);
 const UDim2 UDim2::SIZE_VERTICAL_HALF = UDim2(0.5f, 0.f, 1.f, 0.f);
 const UDim2 UDim2::SIZE_FULL = UDim2(1.f, 0.f, 1.f, 0.f);
 
-}	// namespace gugu
+}   // namespace gugu

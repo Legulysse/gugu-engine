@@ -33,12 +33,12 @@ RendererDemo::RendererDemo()
     m_renderTarget_Refraction = new sf::RenderTexture;
     m_shader_Final = new sf::Shader;
 
-	m_renderTarget_Main->create(400, 300);
+    m_renderTarget_Main->create(400, 300);
     m_renderTarget_Main->setSmooth(true);
-	m_renderTarget_Refraction->create(400, 300);
+    m_renderTarget_Refraction->create(400, 300);
     m_renderTarget_Refraction->setSmooth(true);
-	
-	m_shader_Final->loadFromFile(GetResources()->GetResourcePathName("RenderRefraction.frag"), sf::Shader::Fragment);
+    
+    m_shader_Final->loadFromFile(GetResources()->GetResourcePathName("RenderRefraction.frag"), sf::Shader::Fragment);
 }
 
 RendererDemo::~RendererDemo()
@@ -60,18 +60,18 @@ void RendererDemo::RenderWindow(FrameInfos* _pFrameInfos, Window* _pWindow, Came
         m_renderTarget_Refraction->create(kSize.x, kSize.y);
     }
 
-	//Main
-	RenderPass kRenderPassMain;
+    //Main
+    RenderPass kRenderPassMain;
     kRenderPassMain.pass = DEMO_RENDERPASS_MAIN;
-	kRenderPassMain.target = m_renderTarget_Main;
+    kRenderPassMain.target = m_renderTarget_Main;
     kRenderPassMain.frameInfos = _pFrameInfos;
 
     m_renderTarget_Main->clear(sf::Color(0, 0, 0, 0));
     Render(_pWindow->GetUINode(), _pCamera, kRenderPassMain);
     m_renderTarget_Main->display();
-		
-	//Refractive (Mouse Twirl)
-	RenderPass kRenderPassRefractive;
+        
+    //Refractive (Mouse Twirl)
+    RenderPass kRenderPassRefractive;
     kRenderPassRefractive.pass = DEMO_RENDERPASS_REFRACTION;
     kRenderPassRefractive.target = m_renderTarget_Refraction;
     kRenderPassRefractive.frameInfos = _pFrameInfos;
@@ -80,17 +80,17 @@ void RendererDemo::RenderWindow(FrameInfos* _pFrameInfos, Window* _pWindow, Came
     Render(_pWindow->GetUINode(), _pCamera, kRenderPassRefractive);
     Render(_pWindow->GetMouseNode(), _pCamera, kRenderPassRefractive);
     m_renderTarget_Refraction->display();
-	
-	//Final
-	m_shader_Final->setUniform("texture_main", m_renderTarget_Main->getTexture());
+    
+    //Final
+    m_shader_Final->setUniform("texture_main", m_renderTarget_Main->getTexture());
     m_shader_Final->setUniform("texture_refractive", m_renderTarget_Refraction->getTexture());
     
-	sf::Sprite m_pFullscreenQuad;
+    sf::Sprite m_pFullscreenQuad;
     m_pFullscreenQuad.setTexture(m_renderTarget_Main->getTexture());
-	pTarget->draw(m_pFullscreenQuad, sf::RenderStates(m_shader_Final));
+    pTarget->draw(m_pFullscreenQuad, sf::RenderStates(m_shader_Final));
 
-	//Mouse
-	RenderPass kRenderPassUI;
+    //Mouse
+    RenderPass kRenderPassUI;
     kRenderPassUI.pass = DEMO_RENDERPASS_MAIN;
     kRenderPassUI.target = pTarget;
     kRenderPassUI.frameInfos = _pFrameInfos;

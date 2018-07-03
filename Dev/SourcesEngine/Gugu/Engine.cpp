@@ -88,7 +88,7 @@ void Engine::Init(const EngineConfig& config)
     m_application = nullptr;
     m_renderer = nullptr;
     m_gameWindow = nullptr;
-	m_world = nullptr;
+    m_world = nullptr;
 
 
     //-- Init Managers
@@ -110,9 +110,9 @@ void Engine::Init(const EngineConfig& config)
     m_renderer = new Renderer;
 
 
-	//-- Init World
+    //-- Init World
 
-	m_world = new World;   //TODO: Should I really create a default World ?
+    m_world = new World;   //TODO: Should I really create a default World ?
     m_world->ResetWorld();
 
 
@@ -137,9 +137,9 @@ void Engine::Release()
     SafeDelete(m_application);
 
     ClearStdVector(m_windows);
-	//SafeDelete( m_gameWindow );
+    //SafeDelete( m_gameWindow );
 
-	SafeDelete(m_world);
+    SafeDelete(m_world);
     SafeDelete(m_renderer);
 
     m_managerConfig->Release();
@@ -198,9 +198,9 @@ void Engine::Loop()
         dtLoop = oClock.restart();
         Step(DeltaTime(dtLoop.asMilliseconds()));
 
-		//Safeguard if there is no render in the loop, to avoid using cpu and risking dt times of zero
-		if (m_windows.empty())
-			sf::sleep(sf::milliseconds(16));
+        //Safeguard if there is no render in the loop, to avoid using cpu and risking dt times of zero
+        if (m_windows.empty())
+            sf::sleep(sf::milliseconds(16));
     }
 
     m_managerNetwork->StopReceptionThread();
@@ -353,10 +353,10 @@ Window* Engine::GetGameWindow() const
 
 void Engine::ComputeCommandLine(const std::string& commandLine)
 {
-	std::string lowerCommandLine = commandLine;
-	StdStringToLowerSelf(lowerCommandLine);
+    std::string lowerCommandLine = commandLine;
+    StdStringToLowerSelf(lowerCommandLine);
 
-	//TODO: store commands history
+    //TODO: store commands history
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, StringFormat("CommandLine : {0}", lowerCommandLine));
 
@@ -485,7 +485,7 @@ void Engine::TickTimers(const DeltaTime& dt)
 
 World* Engine::GetWorld() const
 {
-	return m_world;
+    return m_world;
 }
 
 void Engine::OnLevelReleased(Level* level)

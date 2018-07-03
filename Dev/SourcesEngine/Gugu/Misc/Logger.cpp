@@ -160,4 +160,4 @@ void LoggerEngine::Print(ELog::Type _eLogLevel, ELogEngine::Type _eLogEngineCate
     PrintImpl(_eLogLevel, strCategory, _strText);
 }
 
-}	// namespace gugu
+}   // namespace gugu

@@ -101,7 +101,7 @@ void StateScenario::Release()
 {
     GetGame()->ClearScenario();
 
-	SafeDelete(m_menu);
+    SafeDelete(m_menu);
 }
 
 void StateScenario::Enter(State* _pStateFrom)
@@ -126,18 +126,18 @@ void StateScenario::Update(const DeltaTime& dt)
 
 bool StateScenario::OnSFEvent(const sf::Event& _oSFEvent)
 {
-	if (!EventListener::OnSFEvent(_oSFEvent))
-		return false;
-
-	ManagerConfig* pConfig = GetConfig();
-
-	if (pConfig->IsInputReleased("Exit", _oSFEvent))
-	{
-		GetOwner()->ChangeState(new StateMenuMain);
+    if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
-	}
 
-	return true;
+    ManagerConfig* pConfig = GetConfig();
+
+    if (pConfig->IsInputReleased("Exit", _oSFEvent))
+    {
+        GetOwner()->ChangeState(new StateMenuMain);
+        return false;
+    }
+
+    return true;
 }
 
 }   //namespace demoproject

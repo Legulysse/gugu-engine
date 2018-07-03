@@ -25,13 +25,13 @@ class ElementSprite : public Element
 {
 public:
 
-	ElementSprite();
-	virtual ~ElementSprite();
+    ElementSprite();
+    virtual ~ElementSprite();
 
     void SetTexture(const std::string& _strTexturePath);  //TODO: Rename as textureID
     void SetTexture(Texture* _pTexture);
-	void SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName);
-	void SetSubImage(SubImage* _pSubImage);
+    void SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName);
+    void SetSubImage(SubImage* _pSubImage);
 
     Texture* GetTexture() const;
 
@@ -42,7 +42,7 @@ public:
     void SetFlipTextureY(bool _bFlipTextureY);  // Flip Left-Right
     void SetFlipTexture(bool _bFlipTextureX, bool _bFlipTextureY);  // Flip Top-Bottom and Left-Right
 
-	void SetColor(const sf::Color& _oColor);
+    void SetColor(const sf::Color& _oColor);
     sf::Color GetColor() const;
 
     virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement) override;
@@ -68,4 +68,4 @@ protected:
     bool m_flipTextureY;
 };
 
-}	// namespace gugu
+}   // namespace gugu

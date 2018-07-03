@@ -41,4 +41,4 @@ private:
     int m_delta;
 };
 
-}	// namespace gugu
+}   // namespace gugu

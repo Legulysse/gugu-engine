@@ -16,7 +16,7 @@ namespace gugu {
 
 StateMachine::StateMachine()
 {
-	m_nextStateAction = None;
+    m_nextStateAction = None;
     m_nextState = nullptr;
 }
 
@@ -60,7 +60,7 @@ void StateMachine::PushStateNow(State* _pNextState)
     SafeDelete(m_nextState);
     m_nextStateAction = None;
 
-	PushStateImpl(_pNextState);
+    PushStateImpl(_pNextState);
 }
 
 void StateMachine::ChangeStateNow(State* _pNextState)
@@ -68,7 +68,7 @@ void StateMachine::ChangeStateNow(State* _pNextState)
     SafeDelete(m_nextState);
     m_nextStateAction = None;
 
-	ChangeStateImpl(_pNextState);
+    ChangeStateImpl(_pNextState);
 }
 
 void StateMachine::PopStateNow()
@@ -76,7 +76,7 @@ void StateMachine::PopStateNow()
     SafeDelete(m_nextState);
     m_nextStateAction = None;
 
-	PopStateImpl();
+    PopStateImpl();
 }
 
 void StateMachine::PopAllStatesNow()
@@ -89,66 +89,66 @@ void StateMachine::PopAllStatesNow()
 
 void StateMachine::PushStateImpl(State* pNewState)
 {
-	//Init new state
-	pNewState->SetOwner(this);
-	pNewState->Init();
+    //Init new state
+    pNewState->SetOwner(this);
+    pNewState->Init();
 
-	//Exit actual state
+    //Exit actual state
     if(!m_states.empty())
     {
-		GetState()->Exit( pNewState );
+        GetState()->Exit( pNewState );
     }
 
-	//Enter new state
+    //Enter new state
     pNewState->Enter( GetState() );
     m_states.push( pNewState );
 }
 
 void StateMachine::ChangeStateImpl(State* pNewState)
 {
-	if(m_states.empty())
-	{
-		PushStateImpl( pNewState );
-	}
-	else
-	{
-		//Init new state
-		pNewState->SetOwner(this);
-		pNewState->Init();
+    if(m_states.empty())
+    {
+        PushStateImpl( pNewState );
+    }
+    else
+    {
+        //Init new state
+        pNewState->SetOwner(this);
+        pNewState->Init();
 
-		//Exit actual state
-		State* pOldState = GetState();
-		m_states.pop();
-		pOldState->Exit( pNewState );
+        //Exit actual state
+        State* pOldState = GetState();
+        m_states.pop();
+        pOldState->Exit( pNewState );
 
-		//Enter new state
-		pNewState->Enter( pOldState );
-		m_states.push( pNewState );
+        //Enter new state
+        pNewState->Enter( pOldState );
+        m_states.push( pNewState );
 
-		//Release old state
-		pOldState->Release();
-		SafeDelete(pOldState);
-	}
+        //Release old state
+        pOldState->Release();
+        SafeDelete(pOldState);
+    }
 }
 
 void StateMachine::PopStateImpl()
 {
     if(!m_states.empty())
     {
-		//Exit actual state
-		State* pOldState = GetState();
+        //Exit actual state
+        State* pOldState = GetState();
         m_states.pop();
-		pOldState->Exit( GetState() );
+        pOldState->Exit( GetState() );
 
-		//Enter new state if any
-		if(!m_states.empty())
-		{
-			GetState()->Enter( pOldState );
-		}
+        //Enter new state if any
+        if(!m_states.empty())
+        {
+            GetState()->Enter( pOldState );
+        }
 
-		//Release old state
-		pOldState->Release();
-		SafeDelete(pOldState);
+        //Release old state
+        pOldState->Release();
+        SafeDelete(pOldState);
     }
 }
 
@@ -162,12 +162,12 @@ void StateMachine::PopAllStatesImpl()
 
 State* StateMachine::GetState() const
 {
-	if( !m_states.empty() )
-	{
-	    return m_states.top();
-	}
+    if( !m_states.empty() )
+    {
+        return m_states.top();
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 void StateMachine::ProcessNextState()
@@ -191,22 +191,22 @@ void StateMachine::ProcessNextState()
             PopAllStatesImpl();
         }
 
-		m_nextStateAction = None;
+        m_nextStateAction = None;
         m_nextState = nullptr;
     }
 }
 
 void StateMachine::Step(const DeltaTime& dt)
 {
-	//Process eventual State update asked by a PushState, ChangeState or PopState
-	ProcessNextState(); //TODO: remove this, let the user decide
+    //Process eventual State update asked by a PushState, ChangeState or PopState
+    ProcessNextState(); //TODO: remove this, let the user decide
 
-	//Process State step
-	if (GetState())
+    //Process State step
+    if (GetState())
         GetState()->Step(dt);
 
-	//Process eventual State update asked by a PushState, ChangeState or PopState
-	ProcessNextState(); //TODO: remove this, let the user decide
+    //Process eventual State update asked by a PushState, ChangeState or PopState
+    ProcessNextState(); //TODO: remove this, let the user decide
 }
 
 void StateMachine::Update(const DeltaTime& dt)
@@ -214,8 +214,8 @@ void StateMachine::Update(const DeltaTime& dt)
     //Skip Update if we are waiting a step to process a state change
     if(m_nextStateAction == None)
     {
-	    //Process State update
-	    if (GetState())
+        //Process State update
+        if (GetState())
             GetState()->Update(dt);
     }
 }

@@ -39,7 +39,7 @@ void Demo::AppStart()
 
     //Create a custom Renderer
     m_renderer = new RendererDemo;
-    GetGameWindow()->SetRenderer(m_renderer);	//TODO: Ability to store Renderers on the Engine
+    GetGameWindow()->SetRenderer(m_renderer);   //TODO: Ability to store Renderers on the Engine
 
     //Set Mouse aspect
     GetGameWindow()->SetSystemMouseVisible(false);

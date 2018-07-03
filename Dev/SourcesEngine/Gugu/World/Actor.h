@@ -23,16 +23,16 @@ namespace gugu {
     
 class Actor
 {
-	friend class Level;
-	friend class ActorComponent;
+    friend class Level;
+    friend class ActorComponent;
 
 public:
 
-	Actor();
-	virtual ~Actor();
+    Actor();
+    virtual ~Actor();
 
-	virtual void Step(const DeltaTime& dt);
-	virtual void Update(const DeltaTime& dt);
+    virtual void Step(const DeltaTime& dt);
+    virtual void Update(const DeltaTime& dt);
 
     //Components
     ActorComponent* AddComponent(ActorComponent* _pComponent);

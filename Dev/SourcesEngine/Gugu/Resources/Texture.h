@@ -30,7 +30,7 @@ public:
     void SetSFTexture(sf::Texture* _pSFTexture);
     sf::Texture* GetSFTexture() const;
     
-    virtual EResourceType::Type	GetResourceType() const override;
+    virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;
     virtual bool ReloadFromFile() override;
@@ -42,4 +42,4 @@ protected:
     sf::Texture* m_sfTexture;
 };
 
-}	// namespace gugu
+}   // namespace gugu

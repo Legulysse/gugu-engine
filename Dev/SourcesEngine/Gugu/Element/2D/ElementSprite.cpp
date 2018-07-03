@@ -205,7 +205,7 @@ void ElementSprite::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTr
             _kRenderPass.frameInfos->statDrawCalls += 1;
 
         _kRenderPass.statRenderedSprites += 1;
-	}
+    }
 }
 
 bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
@@ -223,4 +223,4 @@ bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
     return true;
 }
 
-}	// namespace gugu
+}   // namespace gugu

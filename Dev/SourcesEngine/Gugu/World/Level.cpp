@@ -53,11 +53,11 @@ void Level::Step(const DeltaTime& dt)
 
     for (size_t i = 0; i < m_actors.size(); ++i)
     {
-		if (m_actors[i])
-	        m_actors[i]->Step(dt);
+        if (m_actors[i])
+            m_actors[i]->Step(dt);
     }
-	
-	m_rootNode->Step(dt);
+    
+    m_rootNode->Step(dt);
 }
 
 void Level::Update(const DeltaTime& dt)
@@ -70,11 +70,11 @@ void Level::Update(const DeltaTime& dt)
 
     for (size_t i = 0; i < m_actors.size(); ++i)
     {
-		if (m_actors[i])
-	        m_actors[i]->Update(dt);
+        if (m_actors[i])
+            m_actors[i]->Update(dt);
     }
-	
-	m_rootNode->Update(dt);
+    
+    m_rootNode->Update(dt);
 }
 
 Element* Level::GetRootNode() const
@@ -188,7 +188,7 @@ void Level::RemoveActor(Actor* _pActor)
     if (iteActor != m_actors.end())
     {
         _pActor->m_level = nullptr;
-		*iteActor = nullptr;
+        *iteActor = nullptr;
     }
 }
 
@@ -242,7 +242,7 @@ void Level::OnActorReleased(Actor* _pActor)
     auto iteActor = StdVectorFind(m_actors, _pActor);
     if (iteActor != m_actors.end())
     {
-		*iteActor = nullptr;
+        *iteActor = nullptr;
     }
 }
 

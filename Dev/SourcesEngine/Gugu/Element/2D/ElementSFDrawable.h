@@ -22,11 +22,11 @@ class ElementSFDrawable : public Element
 {
 public:
 
-	ElementSFDrawable();
-	virtual ~ElementSFDrawable();
+    ElementSFDrawable();
+    virtual ~ElementSFDrawable();
 
-	void			SetSFDrawable	(sf::Drawable* _pSFDrawable);
-	sf::Drawable*	GetSFDrawable	() const;
+    void            SetSFDrawable   (sf::Drawable* _pSFDrawable);
+    sf::Drawable*   GetSFDrawable   () const;
     
 private:
 
@@ -34,7 +34,7 @@ private:
     
 protected:
 
-	sf::Drawable* m_sfDrawable;
+    sf::Drawable* m_sfDrawable;
 };
 
 }   // namespace gugu

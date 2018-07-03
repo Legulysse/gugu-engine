@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 {
 #if defined(GUGU_ENV_VISUAL )
 
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 #endif
 
@@ -56,10 +56,10 @@ int main(int argc, char* argv[])
     int iDistanceE = Distance(-35, -25);
 
     // Vectors
-	sf::Vector2f kVectorNormalized(10.f, 20.f);
+    sf::Vector2f kVectorNormalized(10.f, 20.f);
     kVectorNormalized = Normalize(kVectorNormalized);
 
-	sf::Vector2f kVectorRotated(10.f, 20.f);
+    sf::Vector2f kVectorRotated(10.f, 20.f);
     kVectorRotated = Rotate(kVectorRotated, Math::PiDivTwo);
 
     float fLengthA = Length(kVectorNormalized);
@@ -93,11 +93,11 @@ int main(int argc, char* argv[])
     int minA = kResultsA.begin()->first;
     int maxA = kResultsA.rbegin()->first;
     float minB = *kResultsB.begin();
-	float maxB = *kResultsB.rbegin();
+    float maxB = *kResultsB.rbegin();
     int minC = kResultsC.begin()->first;
     int maxC = kResultsC.rbegin()->first;
     float minD = *kResultsD.begin();
-	float maxD = *kResultsD.rbegin();
+    float maxD = *kResultsD.rbegin();
 
     // UDim
     UDim dimA(UDim::HALF);

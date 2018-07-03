@@ -38,7 +38,7 @@ public :
     /// \param FrameTime : Frame duration, in milliseconds (0 by default)
     ///
     ////////////////////////////////////////////////////////////
-	QSFMLCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size, unsigned int FrameTime = 16);
+    QSFMLCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size, unsigned int FrameTime = 16);
 
     ////////////////////////////////////////////////////////////
     /// Destructor
@@ -46,8 +46,8 @@ public :
     ////////////////////////////////////////////////////////////
     virtual ~QSFMLCanvas();
 
-    void SetWindow			(gugu::Window* _pWindow);
-    void SetCallbackResize	(gugu::Action* _pAction);
+    void SetWindow          (gugu::Window* _pWindow);
+    void SetCallbackResize  (gugu::Action* _pAction);
 
 private :
 
@@ -85,7 +85,7 @@ private :
     ////////////////////////////////////////////////////////////
     virtual void paintEvent(QPaintEvent*);
 
-	virtual void resizeEvent(QResizeEvent*);
+    virtual void resizeEvent(QResizeEvent*);
 
     ////////////////////////////////////////////////////////////
     // Member data
@@ -95,8 +95,8 @@ private :
 
 protected:
 
-    gugu::Window*	m_window;
-    gugu::Action*	m_callbackResize;
+    gugu::Window*   m_window;
+    gugu::Action*   m_callbackResize;
 };
 
 }   // namespace gugu

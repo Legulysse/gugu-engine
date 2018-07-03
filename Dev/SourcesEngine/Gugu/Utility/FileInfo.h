@@ -32,8 +32,8 @@ public:
 
     bool        IsPathEnd       (const std::string& _strPath) const;
 
-    bool		operator <      (const FileInfo& _oRight) const;	//Used by std sorts
-    bool		operator ==     (const FileInfo& _oRight) const;
+    bool        operator <      (const FileInfo& _oRight) const;    //Used by std sorts
+    bool        operator ==     (const FileInfo& _oRight) const;
 
 private:
 
@@ -41,4 +41,4 @@ private:
     std::string m_name;
 };
 
-}	// namespace gugu
+}   // namespace gugu

@@ -15,22 +15,22 @@ namespace gugu {
     
 Hash::Hash()
 {
-	m_value = 0;
+    m_value = 0;
 }
 
 Hash::Hash(const std::string& _strValue)
 {
-	m_value = HashString(_strValue);
+    m_value = HashString(_strValue);
 }
 
 Hash::Hash(const char* _strValue)
 {
-	m_value = HashString(_strValue);
+    m_value = HashString(_strValue);
 }
 
 Hash::Hash(const Hash& _oRight)
 {
-	m_value = _oRight.m_value;
+    m_value = _oRight.m_value;
 }
 
 Hash::~Hash()
@@ -46,18 +46,18 @@ uint64 Hash::HashString(const std::string& _strValue)
 
 uint64 Hash::ToInt() const
 {
-	return m_value;
+    return m_value;
 }
 
 bool Hash::operator < (const Hash& _oRight) const
 {
-	return m_value < _oRight.m_value;
+    return m_value < _oRight.m_value;
 }
 
 Hash& Hash::operator = (const Hash& _oRight)
 {
-	m_value = _oRight.m_value;
-	return *this;
+    m_value = _oRight.m_value;
+    return *this;
 }
 
 std::ostream& operator << (std::ostream& stream, const Hash& hash)

@@ -32,8 +32,8 @@ public:
     Demo();
     virtual ~Demo();
 
-	virtual	void AppStart() override;
-    virtual	void AppStop() override;
+    virtual void AppStart() override;
+    virtual void AppStop() override;
 
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
 
@@ -45,4 +45,4 @@ protected:
     gugu::ElementSprite* m_twirl;
 };
 
-}	//namespace demoproject
+}   //namespace demoproject

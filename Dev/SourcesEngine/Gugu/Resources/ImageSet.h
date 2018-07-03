@@ -37,15 +37,15 @@ public:
     void            SetName(const std::string& _strName);
     std::string     GetName() const;
 
-    void	        SetRect(const sf::IntRect& _oRect);
-    sf::IntRect	    GetRect() const;
+    void            SetRect(const sf::IntRect& _oRect);
+    sf::IntRect     GetRect() const;
 
 protected:
 
-    ImageSet*		m_imageSet;
+    ImageSet*       m_imageSet;
 
     std::string     m_name;
-    sf::IntRect	    m_rect;
+    sf::IntRect     m_rect;
 };
 
 class ImageSet : public Resource
@@ -56,7 +56,7 @@ public:
     ~ImageSet   ();
 
     void        SetTexture(Texture* _pTexture);
-    Texture*	GetTexture() const;
+    Texture*    GetTexture() const;
     
     SubImage*   AddSubImage     (const std::string& _strName);
 
@@ -68,15 +68,15 @@ public:
     void        GetSubImages        (std::vector<SubImage*>& _vecSubImages) const;
     size_t      GetSubImageCount   () const;
 
-    virtual EResourceType::Type	GetResourceType() const override;
+    virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool    LoadFromFile() override;
     virtual bool    SaveToFile() override;
 
 protected:
 
-    Texture*				m_texture;
-    std::vector<SubImage*>	m_subImages;
+    Texture*                m_texture;
+    std::vector<SubImage*>  m_subImages;
 };
 
-}	// namespace gugu
+}   // namespace gugu

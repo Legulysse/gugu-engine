@@ -14,15 +14,15 @@ using namespace gugu;
 
 int main(int argc, char* argv[])
 {
-	//Init engine
-	EngineConfig config;
-	config.applicationName = "GuguEngine Demo HelloWorld";
-	config.pathAssets = "Assets";
-	config.defaultFont = "Spaceranger.ttf";
-	config.gameWindow = EGameWindow::Sfml;
-	config.windowWidth = 400;
-	config.windowHeight = 300;
-	config.backgroundColor = sf::Color(128, 128, 128, 255);
+    //Init engine
+    EngineConfig config;
+    config.applicationName = "GuguEngine Demo HelloWorld";
+    config.pathAssets = "Assets";
+    config.defaultFont = "Spaceranger.ttf";
+    config.gameWindow = EGameWindow::Sfml;
+    config.windowWidth = 400;
+    config.windowHeight = 300;
+    config.backgroundColor = sf::Color(128, 128, 128, 255);
     
     GetEngine()->Init(config);
 

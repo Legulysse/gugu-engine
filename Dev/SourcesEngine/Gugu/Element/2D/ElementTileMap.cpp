@@ -152,4 +152,4 @@ void ElementTileMap::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kT
     }
 }
 
-}	// namespace gugu
+}   // namespace gugu

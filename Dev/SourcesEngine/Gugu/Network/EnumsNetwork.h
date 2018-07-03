@@ -7,22 +7,22 @@ namespace gugu {
     
 namespace ENetPacket
 {
-	enum Type
-	{
-		Undefined = 0,
+    enum Type
+    {
+        Undefined = 0,
 
-		Ping,
-		Pong,
-		ClientInfos,
-		ClientDisconnection,
+        Ping,
+        Pong,
+        ClientInfos,
+        ClientDisconnection,
 
-		JoinGame,
-		AddPlayer,
-		RemovePlayer,
-		TurnReady,
+        JoinGame,
+        AddPlayer,
+        RemovePlayer,
+        TurnReady,
 
-		Game,
-	};
+        Game,
+    };
 }
 
 }   // namespace gugu

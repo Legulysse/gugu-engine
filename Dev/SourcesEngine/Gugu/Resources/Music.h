@@ -16,14 +16,14 @@ class Music : public Resource
 {
 public:
 
-	Music();
-	virtual ~Music();
+    Music();
+    virtual ~Music();
 
     bool    LoadSFMusic (sf::Music* _pMusic);
     
-    virtual EResourceType::Type	GetResourceType() const override;
+    virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;
 };
 
-}	// namespace gugu
+}   // namespace gugu

@@ -56,9 +56,9 @@ public:
 
     void            SetOrigin(const sf::Vector2f _kOrigin);
     sf::Vector2f    GetOrigin() const;
-	
-	void			SetMoveOffset(const sf::Vector2f _kMoveOffset);
-	sf::Vector2f	GetMoveOffset() const;
+    
+    void            SetMoveOffset(const sf::Vector2f _kMoveOffset);
+    sf::Vector2f    GetMoveOffset() const;
 
 protected:
 
@@ -69,7 +69,7 @@ protected:
     float           m_duration;
     std::string     m_events;
     sf::Vector2f    m_origin;
-	sf::Vector2f    m_moveOffset;
+    sf::Vector2f    m_moveOffset;
 };
 
 //--------------------------------
@@ -125,7 +125,7 @@ public:
     void        SetImageSet (ImageSet* _pImageSet);
     ImageSet*   GetImageSet () const;
 
-    virtual EResourceType::Type	GetResourceType() const override;
+    virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool    LoadFromFile() override;
     virtual bool    SaveToFile() override;
@@ -136,4 +136,4 @@ protected:
     std::vector<Animation*> m_animations;
 };
 
-}	// namespace gugu
+}   // namespace gugu

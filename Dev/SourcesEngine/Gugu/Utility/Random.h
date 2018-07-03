@@ -23,4 +23,4 @@ int GetRandom(int _iMin, int _iMax);
 //Get a random float value in range [min, max[
 float GetRandomf(float _fMin, float _fMax);
 
-}	// namespace gugu
+}   // namespace gugu

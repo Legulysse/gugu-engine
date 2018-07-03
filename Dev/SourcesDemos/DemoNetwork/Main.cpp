@@ -14,10 +14,10 @@ using namespace gugu;
 
 int main(int argc, char* argv[])
 {
-	//Init engine
-	EngineConfig config;
-	config.applicationName = "GuguEngine Demo Network";
-	config.pathAssets = "Assets";
+    //Init engine
+    EngineConfig config;
+    config.applicationName = "GuguEngine Demo Network";
+    config.pathAssets = "Assets";
     config.defaultFont = "Spaceranger.ttf";
     config.windowWidth = 1024;
     config.windowHeight = 768;

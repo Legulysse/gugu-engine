@@ -44,7 +44,7 @@ private:
     QTimer* timer;
 
     AnimationPanel* m_pAnimationPanel;
-    ImageSetPanel*	m_pImageSetPanel;
+    ImageSetPanel*  m_pImageSetPanel;
 
     QTabWidget* m_pCentralTabWidget;
     QMenuBar*   m_pMenuBar;

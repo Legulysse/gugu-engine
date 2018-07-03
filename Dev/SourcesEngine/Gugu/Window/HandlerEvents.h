@@ -46,13 +46,13 @@ public:
     void RemoveEventListener(EventListener* _pEventListener);
     bool IsEventListenerRegistered(EventListener* _pEventListener) const;
 
-	void ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<InteractiveElementEntry>& _vecRootElements);
+    void ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<InteractiveElementEntry>& _vecRootElements);
     
 private:
 
-    void BeginEvent		(const std::vector<InteractiveElementEntry>& _vecRootElements);
+    void BeginEvent     (const std::vector<InteractiveElementEntry>& _vecRootElements);
     void ProcessEvent   (const sf::Event& _oSFEvent);
-    void FinishEvent	();
+    void FinishEvent    ();
 
     void ParseElements          (Element* _pRoot, Camera* _pCamera);
     bool PropagateToListeners   (const sf::Event& _oSFEvent);
@@ -62,8 +62,8 @@ private:
     std::vector<EventListener*> m_eventListeners;
     std::vector<InteractiveElementEntry> m_interactiveElements;
 
-    Element* m_elementMouseFocused;	    //Mouse is over this element
-    Element* m_elementMouseSelected;	//This element has been selected by the mouse
+    Element* m_elementMouseFocused;     //Mouse is over this element
+    Element* m_elementMouseSelected;    //This element has been selected by the mouse
     Element* m_elementMouseDragged;
     sf::Vector2f m_lastMouseCoords;
 };

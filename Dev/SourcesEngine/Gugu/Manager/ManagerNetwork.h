@@ -49,74 +49,74 @@ public:
     ManagerNetwork();
     ~ManagerNetwork();
 
-	void StartListening(sf::Uint16 _uiPort);
-	void StopListening();
-	bool IsListening() const;
+    void StartListening(sf::Uint16 _uiPort);
+    void StopListening();
+    bool IsListening() const;
 
     void StartReceptionThread();
     void StopReceptionThread();
-	void StepReception();
+    void StepReception();
     void Lock();
     void Unlock();
     void ProcessWaitingPackets();
 
-	void ConnectToClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort);
+    void ConnectToClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort);
 
-	//void Disconnect(sf::TcpSocket* _pSocket);
-	void Disconnect(ClientInfo* _pClient);
-	void DisconnectAll();
+    //void Disconnect(sf::TcpSocket* _pSocket);
+    void Disconnect(ClientInfo* _pClient);
+    void DisconnectAll();
 
-	//ClientInfo* FindClient(sf::TcpSocket* _pSocket) const;
-	ClientInfo* FindClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort) const;
+    //ClientInfo* FindClient(sf::TcpSocket* _pSocket) const;
+    ClientInfo* FindClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort) const;
 
-	void SendNetPacketToAll			(NetPacket* _pPacket, bool _bIncludeSelf);
-	void SendNetPacketToAllPlayers	(NetPacket* _pPacket, bool _bIncludeSelf);
-	void SendGamePacketToAllPlayers	(NetPacketGame* _pPacket, bool _bIncludeSelf);
+    void SendNetPacketToAll         (NetPacket* _pPacket, bool _bIncludeSelf);
+    void SendNetPacketToAllPlayers  (NetPacket* _pPacket, bool _bIncludeSelf);
+    void SendGamePacketToAllPlayers (NetPacketGame* _pPacket, bool _bIncludeSelf);
 
-	bool SendNetPacket(ClientInfo* _pClient, NetPacket& _oPacket);
+    bool SendNetPacket(ClientInfo* _pClient, NetPacket& _oPacket);
 
-	bool ReceiveNetPacket(NetPacket* _pPacket, ClientInfo* _pSender);
-	void StoreGamePacket(NetPacketGame* _pPacket);
+    bool ReceiveNetPacket(NetPacket* _pPacket, ClientInfo* _pSender);
+    void StoreGamePacket(NetPacketGame* _pPacket);
 
-	void HostGame(bool _bJoin);
-	void JoinGame(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort);
+    void HostGame(bool _bJoin);
+    void JoinGame(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort);
 
-	bool		IsHost() const;
-	sf::Int32	GetPlayerID() const;
+    bool        IsHost() const;
+    sf::Int32   GetPlayerID() const;
 
-	void StartMultiplayerGame();
-	bool IsRunningMultiplayerGame() const;
+    void StartMultiplayerGame();
+    bool IsRunningMultiplayerGame() const;
 
-	bool IsReadyForTurn() const;
-	void SetTurnPlayed();
+    bool IsReadyForTurn() const;
+    void SetTurnPlayed();
 
-	std::list<NetPacketGame*>* GetTurnGamePackets();
+    std::list<NetPacketGame*>* GetTurnGamePackets();
 
     LoggerEngine* GetLogNetwork() const;
 
 private:
 
-	static bool ComparePlayerID(NetPacketGame* _pLeft, NetPacketGame* _pRight);
+    static bool ComparePlayerID(NetPacketGame* _pLeft, NetPacketGame* _pRight);
 
 private:
 
-	sf::SocketSelector*	m_selector;
-	sf::TcpListener*	m_listener;
+    sf::SocketSelector* m_selector;
+    sf::TcpListener*    m_listener;
 
-	sf::Thread*			m_receptionThread;
-	sf::Mutex			m_mutexReception;
+    sf::Thread*         m_receptionThread;
+    sf::Mutex           m_mutexReception;
 
-	bool				m_isListening;
-	sf::Uint16          m_listeningPort;
+    bool                m_isListening;
+    sf::Uint16          m_listeningPort;
 
-	ClientInfo*         m_clientInfoSelf;
+    ClientInfo*         m_clientInfoSelf;
 
     bool                m_isRunningMultiplayerGame;
-	sf::Uint32			m_lastNetTurnProcessed;
-	sf::Uint32          m_nbTurnsOffset;              //Nb turns used as an offset for sync-games
+    sf::Uint32          m_lastNetTurnProcessed;
+    sf::Uint32          m_nbTurnsOffset;              //Nb turns used as an offset for sync-games
 
-	std::list<ClientInfo*>	m_clients;
-	std::map<uint32, std::list<NetPacketGame*> >	m_gamePackets;	//map <turn, packets>
+    std::list<ClientInfo*>  m_clients;
+    std::map<uint32, std::list<NetPacketGame*> >    m_gamePackets;  //map <turn, packets>
     
     LoggerEngine*       m_logNetwork;
 

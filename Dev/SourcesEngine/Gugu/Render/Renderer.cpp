@@ -23,9 +23,9 @@ namespace gugu {
 
 void Renderer::RenderLevel(FrameInfos* _pFrameInfos, Window* _pWindow, Camera* _pCamera, Level* _pLevel)
 {
-	RenderPass kRenderPass;
-	kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
-	kRenderPass.target = _pWindow->GetSFRenderWindow();
+    RenderPass kRenderPass;
+    kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
+    kRenderPass.target = _pWindow->GetSFRenderWindow();
     kRenderPass.frameInfos = _pFrameInfos;
     
     if (_pLevel)
@@ -36,8 +36,8 @@ void Renderer::RenderLevel(FrameInfos* _pFrameInfos, Window* _pWindow, Camera* _
 
 void Renderer::RenderWindow(FrameInfos* _pFrameInfos, Window* _pWindow, Camera* _pCamera)
 {
-	RenderPass kRenderPass;
-	kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
+    RenderPass kRenderPass;
+    kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
     kRenderPass.target = _pWindow->GetSFRenderWindow();
     kRenderPass.frameInfos = _pFrameInfos;
     
@@ -73,7 +73,7 @@ void Renderer::Render(Element* _pRoot, Camera* _pCamera, RenderPass& _kRenderPas
     //}
 
     // Render
-	_pRoot->Render(_kRenderPass, sf::Transform());
+    _pRoot->Render(_kRenderPass, sf::Transform());
 
     // Restore View
     _kRenderPass.target->setView(kView);

@@ -32,7 +32,7 @@ public:
     virtual ~BaseAnimation2D();
 
     void    ChangeAnimSet           (const std::string& _strFilePath);
-	void    ChangeAnimSet           (AnimSet* _pAnimSet);
+    void    ChangeAnimSet           (AnimSet* _pAnimSet);
 
     bool    HasAnimation            (const std::string& _strNameAnim) const;
 
@@ -53,7 +53,7 @@ public:
     void    SetAnimationSpeed       (float _fSpeed);
 
     void    SetOriginFromAnimation  (bool _bOriginFromAnimation);
-    void	SetMoveFromAnimation    (bool _bMoveFromAnimation);
+    void    SetMoveFromAnimation    (bool _bMoveFromAnimation);
 
     void    AddEventCallback(const std::string& _strEvent, Action* _pAction);
 
@@ -77,10 +77,10 @@ protected:
     Animation*  m_animation;
 
     bool        m_originFromAnimation;
-	bool		m_moveFromAnimation;	//Root Motion
+    bool        m_moveFromAnimation;    //Root Motion
 
-    bool		m_animLoop;
-    bool		m_animPause;
+    bool        m_animLoop;
+    bool        m_animPause;
     float       m_animSpeed;
 
     size_t      m_animIndexCurrent;

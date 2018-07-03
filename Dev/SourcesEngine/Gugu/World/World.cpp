@@ -73,7 +73,7 @@ void World::Update(const DeltaTime& dt)
 
 World* GetWorld()
 {
-	return GetEngine()->GetWorld();
+    return GetEngine()->GetWorld();
 }
 
 }   // namespace gugu

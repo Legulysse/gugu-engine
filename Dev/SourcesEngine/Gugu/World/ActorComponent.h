@@ -24,17 +24,17 @@ class ActorComponent
 
 public:
 
-	ActorComponent();
-	virtual ~ActorComponent();
+    ActorComponent();
+    virtual ~ActorComponent();
 
-	virtual void Init		();
-	virtual void Release	();
+    virtual void Init       ();
+    virtual void Release    ();
 
     Actor* GetActor() const;
 
     //Events called from Actor
-	virtual void Step		(const DeltaTime& dt);
-	virtual void Update		(const DeltaTime& dt);
+    virtual void Step       (const DeltaTime& dt);
+    virtual void Update     (const DeltaTime& dt);
 
     virtual void OnAddedToActor         () {}
     virtual void OnRemovedFromActor     () {}

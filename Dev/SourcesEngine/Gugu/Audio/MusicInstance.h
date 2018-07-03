@@ -49,6 +49,7 @@ public:
     DeltaTime GetDuration() const;
     DeltaTime GetPlayOffset() const;
     void SetPlayOffset(DeltaTime _kOffset);
+    //TODO: Investigate loop points feature
 
     bool    IsFinished() const;
 
@@ -61,4 +62,4 @@ private:
     float       m_fadeCoeff;
 };
 
-}	// namespace gugu
+}   // namespace gugu

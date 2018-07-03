@@ -142,9 +142,9 @@ size_t ImageSet::GetSubImageCount() const
     return m_subImages.size();
 }
 
-EResourceType::Type	ImageSet::GetResourceType() const
+EResourceType::Type ImageSet::GetResourceType() const
 {
-	return EResourceType::ImageSet;
+    return EResourceType::ImageSet;
 }
 
 bool ImageSet::LoadFromFile()
@@ -214,4 +214,4 @@ bool ImageSet::SaveToFile()
     return docSave.save_file(GetFileInfoRef().GetPathName().c_str());
 }
 
-}	// namespace gugu
+}   // namespace gugu

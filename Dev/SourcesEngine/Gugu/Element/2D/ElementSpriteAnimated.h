@@ -24,8 +24,8 @@ class ElementSpriteAnimated : public ElementSprite, public BaseAnimation2D
 {
 public:
 
-	ElementSpriteAnimated();
-	virtual ~ElementSpriteAnimated();
+    ElementSpriteAnimated();
+    virtual ~ElementSpriteAnimated();
 
     virtual void Step(const DeltaTime& dt) override;
     virtual void Update(const DeltaTime& dt) override;

@@ -70,7 +70,7 @@ bool XmlReadAttribute(const pugi::xml_node& _kNode, const std::string& _strName,
         return false;
 
     _fValue = kAttr.as_float();
-	return true;
+    return true;
 }
 
 bool XmlReadAttribute(const pugi::xml_node& _kNode, const std::string& _strName, double& _dValue)
@@ -83,7 +83,7 @@ bool XmlReadAttribute(const pugi::xml_node& _kNode, const std::string& _strName,
         return false;
 
     _dValue = kAttr.as_double();
-	return true;
+    return true;
 }
 
 bool XmlReadAttribute(const pugi::xml_node& _kNode, const std::string& _strName, std::string& _strValue)
@@ -96,23 +96,23 @@ bool XmlReadAttribute(const pugi::xml_node& _kNode, const std::string& _strName,
         return false;
 
     _strValue = kAttr.as_string();
-	return true;
+    return true;
 }
 
 bool XmlReadUDimension(const pugi::xml_node& _kNode, UDim2& _oDim)
 {
-	return (	XmlReadAttribute(_kNode, "XRel", _oDim.x.relative)
-			&&	XmlReadAttribute(_kNode, "XAbs", _oDim.x.absolute)
-			&&	XmlReadAttribute(_kNode, "YRel", _oDim.y.relative)
-			&&	XmlReadAttribute(_kNode, "YAbs", _oDim.y.absolute)
-			);
+    return (    XmlReadAttribute(_kNode, "XRel", _oDim.x.relative)
+            &&  XmlReadAttribute(_kNode, "XAbs", _oDim.x.absolute)
+            &&  XmlReadAttribute(_kNode, "YRel", _oDim.y.relative)
+            &&  XmlReadAttribute(_kNode, "YAbs", _oDim.y.absolute)
+            );
 }
 
 bool XmlReadVector2(const pugi::xml_node& _kNode, sf::Vector2f& _kVector)
 {
-    return (	XmlReadAttribute(_kNode, "X", _kVector.x)
-			&&	XmlReadAttribute(_kNode, "Y", _kVector.y)
-			);
+    return (    XmlReadAttribute(_kNode, "X", _kVector.x)
+            &&  XmlReadAttribute(_kNode, "Y", _kVector.y)
+            );
 }
 
 bool XmlReadValue(const pugi::xml_node& _kNode, std::string& _strValue)

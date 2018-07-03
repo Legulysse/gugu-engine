@@ -45,27 +45,27 @@ public:
 
     virtual ~TestElement() {}
 
-    Element*			m_pParent;
+    Element*            m_pParent;
     std::vector<Element*> m_listChildren;
 
     TestSFTransformable m_kTransform;
-    sf::Vector2f		m_kSize;
+    sf::Vector2f        m_kSize;
 
-    int					m_iRenderPass;
-    int32				m_iZIndex;
+    int                 m_iRenderPass;
+    int32               m_iZIndex;
 
     ElementInteractions*    m_pInteractions;
 
-    UDim2		m_oDimOrigin;
-    UDim2		m_oDimPos;
-    UDim2		m_oDimSize;
+    UDim2       m_oDimOrigin;
+    UDim2       m_oDimPos;
+    UDim2       m_oDimSize;
 
-    bool		m_bIsVisible;
-    bool		m_bFlipX;
-    bool		m_bFlipY;
-    bool		m_bDimOrigin;
-    bool		m_bDimPos;
-    bool		m_bDimSize;
+    bool        m_bIsVisible;
+    bool        m_bFlipX;
+    bool        m_bFlipY;
+    bool        m_bDimOrigin;
+    bool        m_bDimPos;
+    bool        m_bDimSize;
 };
 
 class TestElementSprite : public TestElement
@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
 {
 #if defined(GUGU_ENV_VISUAL )
 
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 #endif
 

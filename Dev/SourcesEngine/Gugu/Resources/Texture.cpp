@@ -38,29 +38,29 @@ sf::Texture* Texture::GetSFTexture() const
     return m_sfTexture;
 }
 
-EResourceType::Type	Texture::GetResourceType() const
+EResourceType::Type Texture::GetResourceType() const
 {
     return EResourceType::Texture;
 }
 
 bool Texture::LoadFromFile()
 {
-	m_sfTexture = new sf::Texture;
+    m_sfTexture = new sf::Texture;
     if (!m_sfTexture->loadFromFile(GetFileInfoRef().GetPathName()))
-	{
+    {
         //Use a purple square
         sf::Image oSFImage;
         oSFImage.create(200, 200, sf::Color(255, 0, 255));
-		m_sfTexture->create(200, 200);
+        m_sfTexture->create(200, 200);
         m_sfTexture->update(oSFImage);
 
         m_sfTexture->setSmooth(false);
         m_sfTexture->setRepeated(false);
 
-		//TODO: Return true ? Curently it will discard the Resource I think
+        //TODO: Return true ? Curently it will discard the Resource I think
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Texture not found : {0}", GetFileInfoRef().GetPathName()));
         return false;
-	}
+    }
 
     m_sfTexture->setSmooth(false);
     m_sfTexture->setRepeated(false);
@@ -88,4 +88,4 @@ sf::Vector2f Texture::GetSize() const
     return sf::Vector2f(0.f, 0.f);
 }
 
-}	// namespace gugu
+}   // namespace gugu

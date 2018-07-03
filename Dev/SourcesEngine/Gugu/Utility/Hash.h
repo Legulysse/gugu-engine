@@ -16,18 +16,18 @@ class Hash
 {
 public:
 
-	Hash();
+    Hash();
     Hash(const std::string& _strValue);
-	Hash(const char* _strValue);
-	Hash(const Hash& _oRight);
-	~Hash();
+    Hash(const char* _strValue);
+    Hash(const Hash& _oRight);
+    ~Hash();
 
     static uint64 HashString(const std::string& _strValue);
 
     uint64 ToInt() const;
 
-	bool operator < (const Hash& _oRight) const; // Used by std sorts
-	Hash& operator = (const Hash& _oRight);
+    bool operator < (const Hash& _oRight) const; // Used by std sorts
+    Hash& operator = (const Hash& _oRight);
 
 private:
 
@@ -36,4 +36,4 @@ private:
 
 std::ostream& operator << (std::ostream& stream, const Hash& hash); // Used by toString
 
-}	// namespace gugu
+}   // namespace gugu

@@ -37,7 +37,7 @@ public:
     Datasheet();
     virtual ~Datasheet();
 
-    virtual EResourceType::Type	GetResourceType() const override;
+    virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;
 
@@ -80,16 +80,16 @@ protected:
         {
             _pMember = dynamic_cast<T*>(_pDatasheet);
         }
-	}
+    }
 
-	//Read Enum value
-	template<typename T>
-	void ReadEnum (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T& _eMember)
-	{
-		int iValue = 0;
-		if (ReadEnumValue(_kContext, _strName, _strType, iValue))
-			_eMember = (T)iValue;
-	}
+    //Read Enum value
+    template<typename T>
+    void ReadEnum (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T& _eMember)
+    {
+        int iValue = 0;
+        if (ReadEnumValue(_kContext, _strName, _strType, iValue))
+            _eMember = (T)iValue;
+    }
     
     //Read instance array (instanced datasheet structures)
     template<typename T>
@@ -127,10 +127,10 @@ protected:
         }
     }
     
-	//Read Enum value array
-	template<typename T>
-	void ReadArrayEnum (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T>& _vecMember)
-	{
+    //Read Enum value array
+    template<typename T>
+    void ReadArrayEnum (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T>& _vecMember)
+    {
         std::vector<int> vecValues;
         if (ReadEnumValues(_kContext, _strName, _strType, vecValues))
         {
@@ -141,22 +141,22 @@ protected:
                 _vecMember.push_back((T)(vecValues[i]));
             }
         }
-	}
+    }
 
 private:
     
     bool        LoadFromDatasheet       (const std::string& _strPathName);
 
     Datasheet*  InstanciateDatasheet    (DatasheetParserContext& _kContext, const std::string& _strType);
-    bool	    InstanciateDatasheet    (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, Datasheet*& _pInstance);
+    bool        InstanciateDatasheet    (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, Datasheet*& _pInstance);
     bool        InstanciateDatasheets   (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<Datasheet*>& _vecInstances);
 
-	Datasheet*  ResolveDatasheetLink    (const std::string& _strName);
-	bool	    ResolveDatasheetLink	(DatasheetParserContext& _kContext, const std::string& _strName, Datasheet*& _pDatasheet);
-	bool        ResolveDatasheetLinks   (DatasheetParserContext& _kContext, const std::string& _strName, std::vector<Datasheet*>& _vecDatasheets);
+    Datasheet*  ResolveDatasheetLink    (const std::string& _strName);
+    bool        ResolveDatasheetLink    (DatasheetParserContext& _kContext, const std::string& _strName, Datasheet*& _pDatasheet);
+    bool        ResolveDatasheetLinks   (DatasheetParserContext& _kContext, const std::string& _strName, std::vector<Datasheet*>& _vecDatasheets);
 
-    bool		ReadEnumValue			(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue);
-    bool		ReadEnumValues			(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues);
+    bool        ReadEnumValue           (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue);
+    bool        ReadEnumValues          (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues);
 
 
     pugi::xml_node  FindNodeData        (DatasheetParserContext& _kContext, const std::string& _strName);

@@ -11,7 +11,7 @@
 
 namespace gugu
 {
-	class Element;
+    class Element;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ public:
 
 private:
 
-	gugu::Element* m_menu;
+    gugu::Element* m_menu;
 
     class ElementBar* m_staminaBar;
 };

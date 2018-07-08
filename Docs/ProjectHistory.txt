@@ -29,21 +29,24 @@
     > Ajout de l'outil de Scope Trace (generation d'un json exploitable sur chrome/opera)
     > Mise à jour des Flip (Flip generique autour du pivot pour les Element, FlipTexture pour les sprites)
     > Itération commande console (ajout commandes stats, fps, trace)
-	> Itération World/Level (render, camera, levels, actors)
-	> Itération Animations (root-motion)
-	> Itération Audio (Music playlist)
+    > Itération World/Level (render, camera, levels, actors)
+    > Itération Animations (root-motion)
+    > Itération Audio (Music playlist)
     > Itération du Build process (mise en place simplifiée pour un nouveau projet, flags de compilation accelérée)
     > Itération System Utility (FormatString)
     > Mise à jour SFML 2.4.2
     > Mise à jour Editor Qt 5.7
     
-??/??/???? - Version 0.5
+30/06/2018 - Version 0.5
     > Grosse refacto generale (arbo, renommages, camelCase) en preparation de la mise en open-source
     > Update/Optimisation des ElementSprite et ElementTile avec l'utilisation d'un VertexArray à la place de sf::sprites
     > Ajout de ElementTileMap et ElementSpriteGroup
     > Separation entre les assets de la demo Game et des autres demos
     > Separation des sources de PugiXml dans un projet dédié
     
+04/07/2018 - Version 0.5.1
+    > Script de conversion des tabs en espaces
+    > Mise à jour SFML 2.5.0
     
     
     

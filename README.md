@@ -1,6 +1,6 @@
 # gugu::Engine
 
-A minimalist C++ game engine, mainly based on SFML.
+A minimalist 2D game engine, written in C++, based on SFML and PugiXml.
 
 Author : Legulysse  
 Contributor : Diccy

@@ -72,6 +72,8 @@ void Game::AppStart()
     pConfig->RegisterInput("Player_1_Left", pConfig->BuildEventKey(sf::Keyboard::Q));
     pConfig->RegisterInput("Player_1_Right", pConfig->BuildEventKey(sf::Keyboard::D));
 
+    pConfig->RegisterInput("Screenshot", pConfig->BuildEventKey(sf::Keyboard::F10));
+
     pConfig->RegisterInput("Exit", pConfig->BuildEventKey(sf::Keyboard::Escape));
 }
 
@@ -120,6 +122,12 @@ bool Game::OnSFEvent(const sf::Event& _oSFEvent)
 {
     if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
+
+    ManagerConfig* pConfig = GetConfig();
+    if (pConfig->IsInputPressed("Screenshot", _oSFEvent))
+    {
+        GetGameWindow()->Screenshot();
+    }
 
     return true;
 }

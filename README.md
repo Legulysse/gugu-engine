@@ -25,19 +25,21 @@ The generated project files will be available in /Dev/Build.
 
 ## Quick Start
 
+### Engine
+
+You can find the engine code itself in /Dev/SourcesEngine.  
+It's mostly made of c++ classes, with an additionnal python script (DatasheetBindingTool) used to generate xml binding code for the datasheet system.  
+
 ### Demos
 
 You can find several little demos in /Dev/SourcesDemos.  
 Those demos are very small unit cases, showing individual engine systems at work.  
 Once compiled, most of them will run in /Version/DemoTests.  
 
-The demo Game is a bit bigger, and is aimed to become a sample of a fully fuctionnal mini roguelike, to show all of the engine systems working together.  
+The demo Game is a bit bigger, and is aimed to become a sample of a fully functional mini roguelike, to show all of the engine systems working together.  
 This demo will run in /Version/DemoGame.  
 
-### Engine
-
-You can find the engine code itself in /Dev/SourcesEngine.  
-It's mostly made of c++ classes, with an additionnal python script (DatasheetBindingTool) used to generate xml binding code for the datasheet system.  
+![Demo Game](/Docs/Pictures/DemoGame.png)
 
 ### Editor
 
@@ -45,3 +47,5 @@ You can find an early draft of the editor in /Tools/GuguEditor.
 Its sources can be found in /Dev/Editor.  
 This tool can help create imagesets and animsets from existing textures.  
 Please note that it's a very early draft.  
+
+![Demo Game](/Docs/Pictures/Editor.png)

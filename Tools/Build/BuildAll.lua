@@ -13,7 +13,6 @@ BuildCfg = {
     SubDirBinaries  = EnsureSlash("Build_".._ACTION),
     
     -- Engine
-    DirExternals        = EnsureSlash(pathDev.."External"),
     DirSourcesEngine    = EnsureSlash(pathDev.."SourcesEngine"),
     DirSourcesSfml      = EnsureSlash(pathDev.."SourcesSFML"),
     DirSourcesPugiXml   = EnsureSlash(pathDev.."SourcesPugiXml"),

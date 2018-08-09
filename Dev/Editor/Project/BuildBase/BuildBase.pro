@@ -50,8 +50,7 @@ CONFIG(debug, debug|release) {
             -lPugiXml-s-d
 
     QMAKE_LIBDIR += $$PATH_SOLUTION_ROOT/../../SourcesSFML/extlibs/libs-mingw/x86
-    LIBS += -ljpeg \
-            -lfreetype \
+    LIBS += -lfreetype \
             -lgdi32 \
             -lopengl32 \
             -lwinmm \
@@ -78,8 +77,7 @@ CONFIG(debug, debug|release) {
             -lPugiXml-s
 
     QMAKE_LIBDIR += $$PATH_SOLUTION_ROOT/../../SourcesSFML/extlibs/libs-mingw/x86
-    LIBS += -ljpeg \
-            -lfreetype \
+    LIBS += -lfreetype \
             -lgdi32 \
             -lopengl32 \
             -lwinmm \

@@ -29,6 +29,7 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
             DirSources,
             BuildCfg.DirSourcesEngine,
             BuildCfg.DirSourcesSfml.."include/",
+            BuildCfg.DirSourcesPugiXml,
         }
         
         -- Libs directories

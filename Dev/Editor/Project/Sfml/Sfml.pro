@@ -39,6 +39,7 @@ HEADERS +=  \
             SFML/Audio/SoundStream.hpp \
             SFML/Audio.hpp \
             SFML/Config.hpp \
+            SFML/GpuPreference.hpp \
             SFML/Graphics/BlendMode.hpp \
             SFML/Graphics/CircleShape.hpp \
             SFML/Graphics/Color.hpp \
@@ -65,6 +66,7 @@ HEADERS +=  \
             SFML/Graphics/Transformable.hpp \
             SFML/Graphics/Vertex.hpp \
             SFML/Graphics/VertexArray.hpp \
+            SFML/Graphics/VertexBuffer.hpp \
             SFML/Graphics/View.hpp \
             SFML/Graphics.hpp \
             SFML/Main.hpp \
@@ -101,8 +103,10 @@ HEADERS +=  \
             SFML/System/Vector2.hpp \
             SFML/System/Vector3.hpp \
             SFML/System.hpp \
+            SFML/Window/Clipboard.hpp \
             SFML/Window/Context.hpp \
             SFML/Window/ContextSettings.hpp \
+            SFML/Window/Cursor.hpp \
             SFML/Window/Event.hpp \
             SFML/Window/Export.hpp \
             SFML/Window/GlResource.hpp \
@@ -139,13 +143,18 @@ HEADERS +=  \
             SFML/System/Win32/SleepImpl.hpp \
             SFML/System/Win32/ThreadImpl.hpp \
             SFML/System/Win32/ThreadLocalImpl.hpp \
+            SFML/Window/ClipboardImpl.hpp \
+            SFML/Window/CursorImpl.hpp \
             SFML/Window/GlContext.hpp \
             SFML/Window/InputImpl.hpp \
             SFML/Window/JoystickImpl.hpp \
             SFML/Window/JoystickManager.hpp \
+            SFML/Window/OpenBSD/JoystickImpl.hpp \
             SFML/Window/SensorImpl.hpp \
             SFML/Window/SensorManager.hpp \
             SFML/Window/VideoModeImpl.hpp \
+            SFML/Window/Win32/ClipboardImpl.hpp \
+            SFML/Window/Win32/CursorImpl.hpp \
             SFML/Window/Win32/InputImpl.hpp \
             SFML/Window/Win32/JoystickImpl.hpp \
             SFML/Window/Win32/SensorImpl.hpp \
@@ -204,6 +213,7 @@ SOURCES +=  \
             SFML/Graphics/Transformable.cpp \
             SFML/Graphics/Vertex.cpp \
             SFML/Graphics/VertexArray.cpp \
+            SFML/Graphics/VertexBuffer.cpp \
             SFML/Graphics/View.cpp \
             SFML/Main/MainAndroid.cpp \
             SFML/Main/MainWin32.cpp \
@@ -233,17 +243,22 @@ SOURCES +=  \
             SFML/System/Win32/SleepImpl.cpp \
             SFML/System/Win32/ThreadImpl.cpp \
             SFML/System/Win32/ThreadLocalImpl.cpp \
+            SFML/Window/Clipboard.cpp \
             SFML/Window/Context.cpp \
+            SFML/Window/Cursor.cpp \
             SFML/Window/GlContext.cpp \
             SFML/Window/GlResource.cpp \
             SFML/Window/Joystick.cpp \
             SFML/Window/JoystickManager.cpp \
             SFML/Window/Keyboard.cpp \
             SFML/Window/Mouse.cpp \
+            SFML/Window/OpenBSD/JoystickImpl.cpp \
             SFML/Window/Sensor.cpp \
             SFML/Window/SensorManager.cpp \
             SFML/Window/Touch.cpp \
             SFML/Window/VideoMode.cpp \
+            SFML/Window/Win32/ClipboardImpl.cpp \
+            SFML/Window/Win32/CursorImpl.cpp \
             SFML/Window/Win32/InputImpl.cpp \
             SFML/Window/Win32/JoystickImpl.cpp \
             SFML/Window/Win32/SensorImpl.cpp \
@@ -272,6 +287,7 @@ OTHER_FILES +=  \
             SFML/Audio/SoundStream.hpp \
             SFML/Audio.hpp \
             SFML/Config.hpp \
+            SFML/GpuPreference.hpp \
             SFML/Graphics/BlendMode.hpp \
             SFML/Graphics/CircleShape.hpp \
             SFML/Graphics/Color.hpp \
@@ -298,6 +314,7 @@ OTHER_FILES +=  \
             SFML/Graphics/Transformable.hpp \
             SFML/Graphics/Vertex.hpp \
             SFML/Graphics/VertexArray.hpp \
+            SFML/Graphics/VertexBuffer.hpp \
             SFML/Graphics/View.hpp \
             SFML/Graphics.hpp \
             SFML/Main.hpp \
@@ -334,8 +351,10 @@ OTHER_FILES +=  \
             SFML/System/Vector2.hpp \
             SFML/System/Vector3.hpp \
             SFML/System.hpp \
+            SFML/Window/Clipboard.hpp \
             SFML/Window/Context.hpp \
             SFML/Window/ContextSettings.hpp \
+            SFML/Window/Cursor.hpp \
             SFML/Window/Event.hpp \
             SFML/Window/Export.hpp \
             SFML/Window/GlResource.hpp \
@@ -414,6 +433,7 @@ OTHER_FILES +=  \
             SFML/Graphics/Transformable.cpp \
             SFML/Graphics/Vertex.cpp \
             SFML/Graphics/VertexArray.cpp \
+            SFML/Graphics/VertexBuffer.cpp \
             SFML/Graphics/View.cpp \
             SFML/Main/MainAndroid.cpp \
             SFML/Main/MainWin32.cpp \
@@ -450,7 +470,11 @@ OTHER_FILES +=  \
             SFML/System/Win32/ThreadImpl.hpp \
             SFML/System/Win32/ThreadLocalImpl.cpp \
             SFML/System/Win32/ThreadLocalImpl.hpp \
+            SFML/Window/Clipboard.cpp \
+            SFML/Window/ClipboardImpl.hpp \
             SFML/Window/Context.cpp \
+            SFML/Window/Cursor.cpp \
+            SFML/Window/CursorImpl.hpp \
             SFML/Window/GlContext.cpp \
             SFML/Window/GlContext.hpp \
             SFML/Window/GlResource.cpp \
@@ -461,6 +485,8 @@ OTHER_FILES +=  \
             SFML/Window/JoystickManager.hpp \
             SFML/Window/Keyboard.cpp \
             SFML/Window/Mouse.cpp \
+            SFML/Window/OpenBSD/JoystickImpl.cpp \
+            SFML/Window/OpenBSD/JoystickImpl.hpp \
             SFML/Window/Sensor.cpp \
             SFML/Window/SensorImpl.hpp \
             SFML/Window/SensorManager.cpp \
@@ -468,6 +494,10 @@ OTHER_FILES +=  \
             SFML/Window/Touch.cpp \
             SFML/Window/VideoMode.cpp \
             SFML/Window/VideoModeImpl.hpp \
+            SFML/Window/Win32/ClipboardImpl.cpp \
+            SFML/Window/Win32/ClipboardImpl.hpp \
+            SFML/Window/Win32/CursorImpl.cpp \
+            SFML/Window/Win32/CursorImpl.hpp \
             SFML/Window/Win32/InputImpl.cpp \
             SFML/Window/Win32/InputImpl.hpp \
             SFML/Window/Win32/JoystickImpl.cpp \

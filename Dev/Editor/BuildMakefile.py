@@ -89,6 +89,7 @@ aSfmlExcludes = [   'SFML/Main/SFMLActivity.',
                     '/Android/',
                     '/FreeBSD/',
                     '/iOS/',
+                    '/OpenBSD/',
                     '/OSX/',
                     '/Unix/',
                 ]

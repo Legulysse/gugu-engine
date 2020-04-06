@@ -14,6 +14,7 @@ function ProjectLibGuguEngine(BuildCfg)
         kind "StaticLib"
         language "C++"
         defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
+        systemversion "latest"
         characterset "Unicode"
         targetdir (BuildCfg.DirLibEngine)
         uuid "59E650EC-0FD8-4D3C-A9E3-29DFF2AA5096"
@@ -66,6 +67,7 @@ function ProjectLibSFML(BuildCfg)
         kind "StaticLib"
         language "C++"
         defines { "SFML_STATIC", "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" } -- OV_EXCLUDE_STATIC_CALLBACKS and FLAC__NO_DLL are parts of modifications made in the SFML repo, see the Notes.txt there
+        systemversion "latest"
         characterset "Unicode"
         targetdir (BuildCfg.DirLibEngine)
         uuid "936D68B9-FF55-CA40-9A14-7C2D95524D8B"
@@ -152,6 +154,7 @@ function ProjectLibPugiXml(BuildCfg)
         kind "StaticLib"
         language "C++"
         defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+        systemversion "latest"
         characterset "Unicode"
         targetdir (BuildCfg.DirLibEngine)
         uuid "2961203D-3842-4A18-9129-7295D98964CF"

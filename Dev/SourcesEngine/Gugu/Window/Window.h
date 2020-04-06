@@ -6,6 +6,7 @@
 #include "Gugu/Utility/DeltaTime.h"
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Sprite.hpp>   //TODO: use pointers + forward declaration
 #include <SFML/Graphics/Text.hpp>   //TODO: use pointers + forward declaration
 
 #include <list>
@@ -16,6 +17,7 @@
 namespace gugu
 {
     struct EngineConfig;
+    struct EngineStats;
     class HandlerEvents;
     class Element;
     class ElementSprite;
@@ -68,7 +70,7 @@ public:
     void        BindLevel       (Level* _pLevel, Camera* _pCamera, Renderer* _pRenderer);
     void        OnLevelReleased (Level* _pLevel);
 
-    void        Refresh         (const DeltaTime& dt);
+    void        Refresh         (const DeltaTime& dt, const EngineStats& engineStats);
     
     sf::Vector2u    GetSize     () const;
 
@@ -98,11 +100,14 @@ public:
     void ToggleShowStats    ();
     void ToggleShowFPS      ();
 
+    void SetShowBounds(bool showBounds);
+    void ToggleShowBounds();
+
     virtual void ComputeSize    (int _iWidth, int _iHeight);
 
 protected:
 
-    virtual void Render         (const DeltaTime& dt);
+    virtual void Render(const DeltaTime& dt, const EngineStats& engineStats);
 
 private:
 
@@ -110,7 +115,7 @@ private:
 
     void OnConsoleCommandValidated();
 
-    void DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTime, const DeltaTime& _kTimeSinceLastFrame);
+    void DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTime, const DeltaTime& _kTimeSinceLastFrame, const EngineStats& engineStats);
     void DrawFPS(const DeltaTime& _kTimeSinceLastFrame);
 
 protected:
@@ -148,12 +153,18 @@ protected:
     std::list<int>      m_statFrameTimes;
     std::list<int>      m_statDrawCalls;
 
+    sf::Sprite m_statsBackground;
     sf::Text m_statTextFameTime;
     sf::Text m_statTextFameTimeAverage;
     sf::Text m_statTextFameTimeMin;
     sf::Text m_statTextFameTimeMax;
     sf::Text m_statTextFPS;
     sf::Text m_statTextDrawCalls;
+    sf::Text m_statTextStepTime;
+    sf::Text m_statTextIsTracing;
+
+    // Debug
+    bool m_showBounds;
 };
 
 Window* GetGameWindow();

@@ -182,10 +182,13 @@ void ElementSpriteGroup::RecomputeItemVertices(int _iIndex)
     }
 }
 
-void ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
+int ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
 {
     _pNewItem->SetParent(this, false);
     m_items.push_back(_pNewItem);
+
+    m_needRecompute = true;
+    return m_items.size() - 1;
 }
 
 ElementSpriteGroupItem* ElementSpriteGroup::GetItem(int _iIndex) const
@@ -193,6 +196,11 @@ ElementSpriteGroupItem* ElementSpriteGroup::GetItem(int _iIndex) const
     if (_iIndex < 0 || _iIndex >= (int)m_items.size())
         return nullptr;
     return m_items[_iIndex];
+}
+
+void ElementSpriteGroup::GetPropagationList(std::vector<Element*>& _vecPropagationList)
+{
+    StdVectorAppend(m_items, _vecPropagationList);
 }
 
 void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)

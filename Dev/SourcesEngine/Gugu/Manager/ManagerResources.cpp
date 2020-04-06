@@ -36,6 +36,7 @@ ManagerResources::ManagerResources()
     m_pathAssets = "";
     m_pathScreenshots = "";
     m_defaultFont = "";
+    m_debugFont = "";
     m_useFullPath = false;
 }
 
@@ -49,6 +50,7 @@ void ManagerResources::Init(const EngineConfig& config)
     m_pathScreenshots = config.pathScreenshots;
     m_useFullPath = config.useAssetsFullPaths;
     m_defaultFont = config.defaultFont;
+    m_debugFont = config.debugFont;
 
     ParseDirectory(m_pathAssets);
 }
@@ -556,6 +558,11 @@ Texture* ManagerResources::GetCustomTexture(const std::string& _strName)
 Font* ManagerResources::GetDefaultFont()
 {
     return GetFont(m_defaultFont);
+}
+
+Font* ManagerResources::GetDebugFont()
+{
+    return GetFont(m_debugFont);
 }
 
 void ManagerResources::GetLoadedTextureInfos(std::vector<const ResourceInfo*>& _vecInfos) const

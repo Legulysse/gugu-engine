@@ -85,6 +85,8 @@ void Engine::Init(const EngineConfig& config)
     //-- Init Engine core & Main Window
 
     m_stopLoop = false;
+    m_stepSpeed = 10;
+
     m_application = nullptr;
     m_renderer = nullptr;
     m_gameWindow = nullptr;
@@ -159,7 +161,7 @@ void Engine::Release()
     DeleteInstance();
 }
 
-void Engine::Loop()
+void Engine::StartLooping()
 {
     m_stopLoop = false;
 
@@ -178,16 +180,16 @@ void Engine::Loop()
     {
         if (m_traceLifetime > 0)
         {
-            if (!GetTraceGroupMain()->IsActive())
+            if (!m_traceGroupMain->IsActive())
             {
-                GetTraceGroupMain()->Start();
+                m_traceGroupMain->Start();
             }
             else
             {
                 m_traceLifetime -= 1;
                 if (m_traceLifetime <= 0)
                 {
-                    GetTraceGroupMain()->Stop();
+                    m_traceGroupMain->Stop();
                     m_traceLifetime = 0;
                 }
             }
@@ -196,7 +198,7 @@ void Engine::Loop()
         GUGU_SCOPE_TRACE_MAIN("Engine Loop");
 
         dtLoop = oClock.restart();
-        Step(DeltaTime(dtLoop.asMilliseconds()));
+        RunSingleLoop(DeltaTime(dtLoop.asMilliseconds()));
 
         //Safeguard if there is no render in the loop, to avoid using cpu and risking dt times of zero
         if (m_windows.empty())
@@ -209,9 +211,14 @@ void Engine::Loop()
         m_application->AppStop();
 }
 
-void Engine::Step(const DeltaTime& dt)
+void Engine::RunSingleLoop(const DeltaTime& dt)
 {
-    DeltaTime dtConstantStep(20);
+    DeltaTime dtConstantStep((20));
+    DeltaTime dtSpeedModulatedStep(2 * m_stepSpeed);    // Default step speed multiplier is 10, minimum is 1.
+
+    uint32 statMaxNbValues = 150;
+    sf::Clock clockStatLoop;
+    sf::Clock clockStatSteps;
 
     //Network Step
     if (m_managerNetwork->IsListening())
@@ -222,6 +229,7 @@ void Engine::Step(const DeltaTime& dt)
 
     {
         GUGU_SCOPE_TRACE_MAIN("Windows Events");
+        clockStatSteps.restart();
 
         //Window Events (will abort the Step if main window is closed !)
         for (size_t i = 0; i < m_windows.size(); ++i)
@@ -238,7 +246,7 @@ void Engine::Step(const DeltaTime& dt)
 
                 if (bMainWindow)
                 {
-                    GetEngine()->Stop();
+                    GetEngine()->StopLooping();
                     return;
                 }
             }
@@ -247,6 +255,7 @@ void Engine::Step(const DeltaTime& dt)
 
     {
         GUGU_SCOPE_TRACE_MAIN("Step");
+        clockStatSteps.restart();
 
         //Step
         m_dtSinceLastStep += dt;
@@ -255,25 +264,33 @@ void Engine::Step(const DeltaTime& dt)
         //TODO: option to ignore constantstep
         if (m_dtSinceLastStep >= dtConstantStep && m_managerNetwork->IsReadyForTurn())
         {
-            TickTimers(dtConstantStep);
+            TickTimers(dtSpeedModulatedStep);
 
             if (m_application)
-                m_application->AppStep(dtConstantStep);
+                m_application->AppStep(dtSpeedModulatedStep);
 
             if (m_world)
-                m_world->Step(dtConstantStep);
+                m_world->Step(dtSpeedModulatedStep);
 
             for (size_t i = 0; i < m_windows.size(); ++i)
-                m_windows[i]->Step(dtConstantStep);
+                m_windows[i]->Step(dtSpeedModulatedStep);
 
             m_dtSinceLastStep -= dtConstantStep;
 
             m_managerNetwork->SetTurnPlayed();
+
+            // Step Stats
+            m_stats.stepTimes.push_front(clockStatSteps.getElapsedTime().asMilliseconds());
+            if (m_stats.stepTimes.size() > statMaxNbValues)
+            {
+                m_stats.stepTimes.pop_back();
+            }
         }
     }
 
     {
         GUGU_SCOPE_TRACE_MAIN("Update");
+        clockStatSteps.restart();
 
         //Update
         if (m_application)
@@ -292,20 +309,29 @@ void Engine::Step(const DeltaTime& dt)
     //Network
     m_managerNetwork->StartReceptionThread();
 
+    m_stats.isTracing = m_traceGroupMain->IsActive();
+
     {
         GUGU_SCOPE_TRACE_MAIN("Render");
 
         //Render (Note for Editor : For now, Render here instead of Qt draw event)
         for (size_t i = 0; i < m_windows.size(); ++i)
-            m_windows[i]->Refresh(dt);
+            m_windows[i]->Refresh(dt, m_stats);
     }
 
     //m_managerNetwork->StopReceptionThread();
     //m_managerNetwork->Lock();
     //m_managerNetwork->Unlock();
+
+    // Loop Stats
+    m_stats.loopTimes.push_front(clockStatLoop.getElapsedTime().asMilliseconds());
+    if (m_stats.loopTimes.size() > statMaxNbValues)
+    {
+        m_stats.loopTimes.pop_back();
+    }
 }
 
-void Engine::Stop()
+void Engine::StopLooping()
 {
     m_stopLoop = true;
 }
@@ -378,11 +404,26 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
             if (m_gameWindow)
                 m_gameWindow->ToggleShowStats();
         }
+        else if (strCommand == "bounds")
+        {
+            if (m_gameWindow)
+                m_gameWindow->ToggleShowBounds();
+        }
         else if (strCommand == "trace")
         {
             m_traceLifetime = 10;
             if (!vecTokens.empty())
                 FromString(vecTokens[0], m_traceLifetime);
+        }
+        else if (strCommand == "speed")
+        {
+            // Default step speed multiplier is 10, minimum is 1.
+            if (!vecTokens.empty())
+            {
+                int speed = 10;
+                if (FromString(vecTokens[0], speed))
+                    m_stepSpeed = Max(1, speed);
+            }
         }
 
         if (GetApplication())

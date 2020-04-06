@@ -25,6 +25,7 @@ MusicParameters::MusicParameters()
     volume = 1.f;
     fadeIn = 2.f;
     fadeOut = 2.f;
+	layer = 0;
 }
 
 MusicLayer::MusicLayer()

@@ -55,6 +55,19 @@ int main(int argc, char* argv[])
     int iDistanceD = Distance(5, -5);
     int iDistanceE = Distance(-35, -25);
 
+    int iLerpA = Lerp(20, 30, 0.f);
+    int iLerpB = Lerp(20, 30, 0.5f);
+    int iLerpC = Lerp(200000000, 300000000, 1.f);
+    int iLerpD = Lerp(20, 30, 2.f);
+
+    float fInverseLerpA = InverseLerp(20, 30, 25);
+    float fInverseLerpB = InverseLerp(20, 30, 40);
+    float fInverseLerpC = InverseLerp(20, 30, 0);
+
+    int iLerpRemapA = RemapLerp(20, 30, 1, 5, 25);
+    int iLerpRemapB = RemapLerp(20, 30, 1, 5, 40);
+    int iLerpRemapC = RemapLerp(20, 30, 1, 5, 0);
+
     // Vectors
     sf::Vector2f kVectorNormalized(10.f, 20.f);
     kVectorNormalized = Normalize(kVectorNormalized);

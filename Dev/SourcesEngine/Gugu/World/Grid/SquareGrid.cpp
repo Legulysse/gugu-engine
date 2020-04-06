@@ -52,4 +52,14 @@ void SquareGrid::RecomputePositions()
     }
 }
 
+float SquareGrid::GetCellWidth() const
+{
+    return m_cellWidth;
+}
+
+float SquareGrid::GetCellHeight() const
+{
+    return m_cellHeight;
+}
+
 }   // namespace gugu

@@ -11,7 +11,11 @@
 #include "Gugu/Render/Renderer.h"
 #include "Gugu/Utility/System.h"
 #include "Gugu/Utility/Action.h"
+#include "Gugu/Render/Renderer.h"
 #include "Gugu/External/PugiXmlWrap.h"
+
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -114,6 +118,8 @@ Element::Element()
     m_renderPass    = GUGU_RENDERPASS_DEFAULT;
     m_isVisible = true;
     m_zIndex        = 0;
+
+    m_showDebugBounds = false;
 
     m_useDimOrigin    = false;
     m_useDimPosition        = false;
@@ -594,6 +600,11 @@ void Element::RemoveRenderPass(int _iPass)
     m_renderPass = m_renderPass & ~_iPass;
 }
 
+void Element::SetDebugBoundsVisible(bool showDebugBounds)
+{
+    m_showDebugBounds = showDebugBounds;
+}
+
 /*void Element::SetShader(sf::Shader* _pShader)
 {
     m_pShader = _pShader;
@@ -682,6 +693,17 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
         }
 
         OnPostDraw(_kRenderPass);
+
+        //Debug Bounds
+        if (m_showDebugBounds || (_kRenderPass.frameInfos && _kRenderPass.frameInfos->showBounds))
+        {
+            _kRenderPass.frameInfos->defaultBoundsShape.setSize(m_size);
+            _kRenderPass.target->draw(_kRenderPass.frameInfos->defaultBoundsShape, combinedTransform);
+
+            //Stats
+            if (_kRenderPass.frameInfos)
+                _kRenderPass.frameInfos->statDrawCalls += 1;
+        }
     }
 }
 

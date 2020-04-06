@@ -35,7 +35,7 @@ void Demo::AppStart()
     
     // Register Inputs
     ManagerConfig* pConfig = GetConfig();
-    pConfig->RegisterInput("CloseGame", pConfig->BuildEventKey(sf::Keyboard::Escape));
+    pConfig->RegisterInput("CloseGame", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
 }
 
 void Demo::AppStop()

@@ -37,11 +37,14 @@ void ManagerAudio::Init(const EngineConfig& config)
 {
     GetLogEngine()->Print(ELog::Info, ELogEngine::Audio, "Init Manager Audio...");
 
-    m_soundInstances.resize(Max(2, config.maxSoundTracks));
-    m_musicInstances.resize(Max(2, config.maxMusicTracks));
-    m_musicLayers.resize(1);
+    m_soundInstances.resize(Max(12, config.maxSoundTracks));
+    m_musicInstances.resize(Max(4, config.maxMusicTracks));
+    m_musicLayers.resize(Max(2, (int)m_musicInstances.size() / 2));
 
-    m_musicLayers[0].SetInstances(&m_musicInstances[0], &m_musicInstances[1]);
+    for (size_t i = 0; i < m_musicLayers.size(); ++i)
+    {
+        m_musicLayers[i].SetInstances(&m_musicInstances[i*2], &m_musicInstances[i*2 + 1]);
+    }
 
     m_soundIndex = 0;
 
@@ -52,9 +55,9 @@ void ManagerAudio::Init(const EngineConfig& config)
 
 void ManagerAudio::Release()
 {
-    m_soundInstances.clear();
-    m_musicInstances.clear();
     m_musicLayers.clear();
+    m_musicInstances.clear();
+    m_soundInstances.clear();
 }
 
 void ManagerAudio::Update(const DeltaTime& dt)
@@ -136,9 +139,12 @@ bool ManagerAudio::PlayMusic(const std::string& _strFile, float _fVolume, float 
 
 bool ManagerAudio::PlayMusic(const MusicParameters& _kParameters)
 {
+    if (_kParameters.layer < 0 || _kParameters.layer >= (int)m_musicLayers.size())
+        return false;
+
     if (_kParameters.music || GetResources()->HasResource(_kParameters.musicID))
     {
-        MusicLayer* pLayer = &m_musicLayers[0];
+        MusicLayer* pLayer = &m_musicLayers[_kParameters.layer];
         pLayer->SetNext(_kParameters);
         pLayer->FadeToNext();
 
@@ -148,33 +154,42 @@ bool ManagerAudio::PlayMusic(const MusicParameters& _kParameters)
     return false;
 }
 
-bool ManagerAudio::PlayMusicList(const std::vector<MusicParameters>& _vecPlaylist)
+bool ManagerAudio::PlayMusicList(const std::vector<MusicParameters>& _vecPlaylist, int layer)
 {
-    MusicLayer* pLayer = &m_musicLayers[0];
+    if (layer < 0 || layer >= (int)m_musicLayers.size())
+        return false;
+
+    MusicLayer* pLayer = &m_musicLayers[layer];
     pLayer->SetPlayList(_vecPlaylist);
     pLayer->FadeToNext();
 
-    return false;
+    return true;
 }
 
-bool ManagerAudio::StopMusic(float _fFade)
+bool ManagerAudio::StopMusic(float _fFade, int layer)
 {
+    if (layer < 0 || layer >= (int)m_musicLayers.size())
+        return false;
+
     MusicParameters kParameters;
     kParameters.music = nullptr;
     kParameters.volume = 0.f;
     kParameters.fadeOut = _fFade;
     kParameters.fadeIn = _fFade;
 
-    MusicLayer* pLayer = &m_musicLayers[0];
+    MusicLayer* pLayer = &m_musicLayers[layer];
     pLayer->SetNext(kParameters);
     pLayer->FadeToNext();
 
     return true;
 }
 
-MusicInstance* ManagerAudio::GetCurrentMusicInstance() const
+MusicInstance* ManagerAudio::GetCurrentMusicInstance(int layer) const
 {
-    return m_musicLayers[0].GetCurrentMusicInstance();
+    if (layer < 0 || layer >= (int)m_musicLayers.size())
+        return nullptr;
+
+    return m_musicLayers[layer].GetCurrentMusicInstance();
 }
 
 ManagerAudio* GetAudio()

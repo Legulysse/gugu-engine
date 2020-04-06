@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <list>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -57,6 +58,7 @@ struct EngineConfig
     std::string pathAssets;
     std::string pathScreenshots;
     std::string defaultFont;
+    std::string debugFont;
 
     // Graphics
     EGameWindow::Type gameWindow;
@@ -84,6 +86,7 @@ struct EngineConfig
         pathAssets = "";
         pathScreenshots = "Screenshots";
         defaultFont = "";
+        debugFont = "";
 
         gameWindow = EGameWindow::Sfml;
         windowWidth = 800;
@@ -98,6 +101,13 @@ struct EngineConfig
         showStats = false;
         showFPS = false;
     }
+};
+
+struct EngineStats
+{
+    std::list<int> loopTimes;
+    std::list<int> stepTimes;
+    bool isTracing = false;
 };
 
 struct Timer
@@ -124,9 +134,9 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-    void Loop();
-    void Step(const DeltaTime& dt);
-    void Stop();
+    void StartLooping();
+    void RunSingleLoop(const DeltaTime& dt);
+    void StopLooping();
 
     void            SetApplication(Application* application);
     Application*    GetApplication() const;
@@ -179,6 +189,10 @@ private:
 
     bool                m_stopLoop;
     DeltaTime           m_dtSinceLastStep;
+    int                 m_stepSpeed;        // Default step speed multiplier is 10, minimum is 1.
+
+    // Stats
+    EngineStats         m_stats;
 };
 
 Engine* GetEngine();

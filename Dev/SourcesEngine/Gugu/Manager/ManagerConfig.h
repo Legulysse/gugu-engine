@@ -23,6 +23,32 @@ namespace gugu
 
 namespace gugu {
 
+enum class EPadButton : int8
+{
+    X360_A = 0,
+    X360_B = 1,
+    X360_X = 2,
+    X360_Y = 3,
+    X360_LeftShoulder = 4,
+    X360_RightShoulder = 5,
+    X360_Back = 6,
+    X360_Start = 7,
+    X360_L3 = 8,
+    X360_R3 = 9,
+};
+
+enum class EPadAxis : int8
+{
+    X360_LeftStick_X = sf::Joystick::Axis::X,
+    X360_LeftStick_Y = sf::Joystick::Axis::Y,
+    X360_Triggers = sf::Joystick::Axis::Z,  // positive = left, negative = right
+    // sf::Joystick::Axis::R,   // unused
+    X360_RightStick_X = sf::Joystick::Axis::U,
+    X360_RightStick_Y = sf::Joystick::Axis::V,
+    X360_DPad_X = sf::Joystick::Axis::PovX,
+    X360_DPad_Y = sf::Joystick::Axis::PovY,
+};
+
 struct InputKeyBindings
 {
     std::vector<sf::Event> bindings;
@@ -51,7 +77,9 @@ public:
 
     bool IsKeyDown          (sf::Keyboard::Key _eKey) const;
 
-    sf::Event   BuildEventKey   (sf::Keyboard::Key _eKey);
+    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key);
+    static sf::Event BuildJoystickEvent(EPadButton button, int joystickId = 0);
+    static sf::Event BuildJoystickEvent(int button, int joystickId = 0);
 
 private:
 

@@ -123,6 +123,7 @@ void Demo::AppStart()
 
 void Demo::AppStop()
 {
+    SafeDelete(m_root);
 }
 
 void Demo::AppStep(const DeltaTime& dt)

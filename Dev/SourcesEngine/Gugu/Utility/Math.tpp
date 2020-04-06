@@ -5,6 +5,9 @@
 
 namespace gugu {
 
+//--------------------------------
+// General
+
 template <typename T>
 bool IsInRange(T _tValue, T _tMin, T _tMax)
 {
@@ -69,6 +72,9 @@ T Power(const T& n, const int& p)
     }
 }
 
+//--------------------------------
+// Vectors
+
 template <typename T>
 float LengthSquare(const sf::Vector2<T>& _kVector)
 {
@@ -98,6 +104,27 @@ sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians)
     kResult.x = _kVector.x * fCos - _kVector.y * fSin; 
     kResult.y = _kVector.x * fSin + _kVector.y * fCos;
     return kResult;
+}
+
+//--------------------------------
+// Interpolations
+
+template <typename T>
+T Lerp(const T& min, const T& max, float ratio)
+{
+    return min * (1.f - ratio) + max * ratio;
+}
+
+template <typename T>
+float InverseLerp(const T& min, const T& max, const T& value)
+{
+    return (float)(value - min) / (float)(max - min);
+}
+
+template <typename T>
+T RemapLerp(const T& minA, const T& maxA, const T& minB, const T& maxB, const T& value)
+{
+    return Lerp(minB, maxB, InverseLerp(minA, maxA, value));
 }
 
 }   // namespace gugu

@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
     config.applicationName = "GuguEngine Demo UI";
     config.pathAssets = "Assets";
     config.defaultFont = "Spaceranger.ttf";
+    config.debugFont = "Roboto-Regular.ttf";
     config.windowWidth = 1024;
     config.windowHeight = 768;
     
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
 
     //--------
 
-    GetEngine()->Loop();
+    GetEngine()->StartLooping();
     GetEngine()->Release();
 
     return 0;

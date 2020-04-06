@@ -107,7 +107,8 @@ public:
     //TODO: Refactor with ResourceContext
     Texture*        GetCustomTexture(const std::string& _strName);
 
-    Font*           GetDefaultFont      ();
+    Font*           GetDefaultFont();
+    Font*           GetDebugFont();
     
     void                RegisterDatasheetFactory    (DelegateStatic1P<const std::string&, Datasheet*>* _pDatasheetFactory);
     Datasheet*          InstanciateDatasheet        (const std::string& _strType);
@@ -127,6 +128,7 @@ private:
     std::string                     m_pathAssets;
     std::string                     m_pathScreenshots;
     std::string                     m_defaultFont;
+    std::string                     m_debugFont;
     bool                            m_useFullPath; //TODO: some kind of enum RessourceIDPolicy
 
     std::map<ResourceMapKey, ResourceInfo*> m_resources;

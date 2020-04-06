@@ -193,6 +193,8 @@ public:
             void            AddRenderPass           (int _iPass);
             void            RemoveRenderPass        (int _iPass);
 
+            void SetDebugBoundsVisible(bool showDebugBounds);
+
             //TODO: Handle shaders properly
             //> Need to share shaders between objects ?
             //> Where/how do I manage/load/delete them ?
@@ -257,6 +259,8 @@ protected:
     int                 m_renderPass;
     bool                m_isVisible;
     int32               m_zIndex;
+
+    bool m_showDebugBounds;
 
     //sf::Shader*       m_pShader;
 

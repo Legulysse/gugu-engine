@@ -8,6 +8,7 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
     project (ProjectName)
         language "C++"
         defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
+        systemversion "latest"
         characterset "Unicode"
         targetdir   (DirVersion..SubDirBinaries)
         debugdir    (DirVersion)
@@ -103,6 +104,7 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
     project (ProjectName)
         language "C++"
         defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
+        systemversion "latest"
         characterset "Unicode"
         targetdir   (DirVersion..SubDirBinaries)
         debugdir    (DirVersion)

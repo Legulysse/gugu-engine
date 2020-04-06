@@ -67,14 +67,13 @@ void Game::AppStart()
     pConfig->RegisterInput("Player_2_Right", pConfig->BuildEventKey(sf::Keyboard::Right));
     */
 
-    pConfig->RegisterInput("Player_1_Up", pConfig->BuildEventKey(sf::Keyboard::Z));
-    pConfig->RegisterInput("Player_1_Down", pConfig->BuildEventKey(sf::Keyboard::S));
-    pConfig->RegisterInput("Player_1_Left", pConfig->BuildEventKey(sf::Keyboard::Q));
-    pConfig->RegisterInput("Player_1_Right", pConfig->BuildEventKey(sf::Keyboard::D));
+    pConfig->RegisterInput("Player_1_Up", pConfig->BuildKeyboardEvent(sf::Keyboard::Z));
+    pConfig->RegisterInput("Player_1_Down", pConfig->BuildKeyboardEvent(sf::Keyboard::S));
+    pConfig->RegisterInput("Player_1_Left", pConfig->BuildKeyboardEvent(sf::Keyboard::Q));
+    pConfig->RegisterInput("Player_1_Right", pConfig->BuildKeyboardEvent(sf::Keyboard::D));
 
-    pConfig->RegisterInput("Screenshot", pConfig->BuildEventKey(sf::Keyboard::F10));
-
-    pConfig->RegisterInput("Exit", pConfig->BuildEventKey(sf::Keyboard::Escape));
+    pConfig->RegisterInput("Exit", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
+    pConfig->RegisterInput("Screenshot", pConfig->BuildKeyboardEvent(sf::Keyboard::F10));
 }
 
 void Game::AppStop()

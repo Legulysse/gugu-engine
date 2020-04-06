@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
     config.applicationName = "GuguEngine Demo Camera";
     config.pathAssets = "Assets";
     config.defaultFont = "Spaceranger.ttf";
+    config.debugFont = "Roboto-Regular.ttf";
     config.gameWindow = EGameWindow::Sfml;
     config.showFPS = true;
     
@@ -49,7 +50,7 @@ int main(int argc, char* argv[])
 
     //--------
 
-    GetEngine()->Loop();
+    GetEngine()->StartLooping();
     GetEngine()->Release();
 
     return 0;

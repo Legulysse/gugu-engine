@@ -57,6 +57,8 @@ Window::Window()
     m_isMouseVisible  = true;
 
     m_backgroundColor = sf::Color(128,128,128,255);
+
+    m_showBounds = false;
 }
 
 Window::~Window()
@@ -85,7 +87,7 @@ sf::RenderWindow* Window::Create(const EngineConfig& config)
     Settings.antialiasingLevel = 2;  // Request 2 levels of antialiasing
 
     //Create main window
-    m_sfWindow->create(sf::VideoMode(config.windowWidth, config.windowHeight, 32), config.applicationName, sf::Style::Resize | sf::Style::Close, Settings);
+    m_sfWindow->create(sf::VideoMode(config.windowWidth, config.windowHeight, 32), config.applicationName,/* sf::Style::Default */ sf::Style::Resize | sf::Style::Close, Settings);
     m_sfWindow->setFramerateLimit(config.framerateLimit);
     m_sfWindow->setVerticalSyncEnabled(config.enableVerticalSync);
 
@@ -146,7 +148,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     pSFTextureConsole->create(8, 8);
     pSFTextureConsole->update(oImgConsole);
 
-    Font* pFont = GetResources()->GetDefaultFont();
+    Font* pFont = GetResources()->GetDebugFont();
 
     ElementSprite* pConsoleBackground = m_consoleNode->AddChild<ElementSprite>();
     pConsoleBackground->SetTexture(pTextureConsole);
@@ -182,11 +184,11 @@ void Window::Update(const DeltaTime& dt)
     m_rootNode->Update(dt);
 }
 
-void Window::Refresh(const DeltaTime& dt)
+void Window::Refresh(const DeltaTime& dt, const EngineStats& engineStats)
 {
     m_sfWindow->setActive();
 
-    Render(dt);
+    Render(dt, engineStats);
 }
 
 void Window::SetRenderer(Renderer* _pRenderer)
@@ -301,9 +303,13 @@ void Window::OnLevelReleased(Level* _pLevel)
     }
 }
 
-void Window::Render(const DeltaTime& dt)
+void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
 {
     FrameInfos kFrameInfos;
+    kFrameInfos.showBounds = m_showBounds;
+    kFrameInfos.defaultBoundsShape.setOutlineThickness(1.f);
+    kFrameInfos.defaultBoundsShape.setOutlineColor(sf::Color::Magenta);
+    kFrameInfos.defaultBoundsShape.setFillColor(sf::Color::Transparent);
 
     {
         GUGU_SCOPE_TRACE_MAIN("Clear");
@@ -319,7 +325,7 @@ void Window::Render(const DeltaTime& dt)
         //Render Levels
         for (size_t i = 0; i < m_levelBindings.size(); ++i)
         {
-            m_levelBindings[i].renderer->RenderLevel(&kFrameInfos, this, m_levelBindings[i].camera, m_levelBindings[i].level);
+            m_levelBindings[i].renderer->RenderLevel(kFrameInfos, this, m_levelBindings[i].camera, m_levelBindings[i].level);
         }
     }
 
@@ -330,7 +336,7 @@ void Window::Render(const DeltaTime& dt)
         m_rootNode->SortOnZIndex();
 
         if (m_renderer)
-            m_renderer->RenderWindow(&kFrameInfos, this, m_mainCamera);
+            m_renderer->RenderWindow(kFrameInfos, this, m_mainCamera);
     }
 
     {
@@ -347,6 +353,7 @@ void Window::Render(const DeltaTime& dt)
         kRenderPassConsole.pass = GUGU_RENDERPASS_DEFAULT;
         kRenderPassConsole.target = m_sfWindow;
         kRenderPassConsole.rectViewport = kViewport;
+
         m_consoleNode->Render(kRenderPassConsole, sf::Transform());
     }
 
@@ -355,7 +362,7 @@ void Window::Render(const DeltaTime& dt)
 
         //Stats
         if (m_showStats)
-            DrawStats(kFrameInfos, DeltaTime(kRenderClock.getElapsedTime()), dt);
+            DrawStats(kFrameInfos, DeltaTime(kRenderClock.getElapsedTime()), dt, engineStats);
         else if (m_showFPS)
             DrawFPS(dt);
     }
@@ -367,22 +374,29 @@ void Window::Render(const DeltaTime& dt)
     }
 }
 
-void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTime, const DeltaTime& _kTimeSinceLastFrame)
+void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTime, const DeltaTime& _kTimeSinceLastFrame, const EngineStats& engineStats)
 {
-    if (!GetResources()->GetDefaultFont())
+    if (!GetResources()->GetDebugFont())
         return;
 
-    sf::Font* pFont = GetResources()->GetDefaultFont()->GetSFFont();
+    sf::Font* pFont = GetResources()->GetDebugFont()->GetSFFont();
 
-    // Compute FrameTime Values
+    // Compute Values
     uint32 iNbCurvePointsMax = 150;
+
+    // Frame Times
     int iFrameTime = _kFrameTime.ms();
     int iMinFrameTime = 9999999;
     int iMaxFrameTime = 1;
     float fAvgFrameTime = 0.f;
     int iFPS = 1000 / ((_kTimeSinceLastFrame.ms() > 0) ? _kTimeSinceLastFrame.ms() : 1);
 
+    // Draw Calls
     int iMaxDrawCalls = 1;
+
+    // Step Times
+    int maxStepTime = 1;
+    int lastStepTime = (engineStats.stepTimes.empty()) ? 0 : engineStats.stepTimes.front();
 
     {
         GUGU_SCOPE_TRACE_MAIN("Compute Values");
@@ -415,6 +429,12 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
         {
             iMaxDrawCalls = Max(iMaxDrawCalls, iValue);
         }
+
+        // Step Times
+        for (int value : engineStats.stepTimes)
+        {
+            maxStepTime = Max(maxStepTime, value);
+        }
     }
 
     // Draw Curves
@@ -427,17 +447,16 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
     sf::Color kColorCurveBox = sf::Color(255, 255, 255, 255);
     sf::Color kColorCurveFrameTimes = sf::Color(255, 255, 255, 255);
     sf::Color kColorCurveDrawCalls = sf::Color(255, 255, 70, 255);
+    sf::Color colorCurveStepTimes = sf::Color(70, 200, 255, 255);
 
     {
         GUGU_SCOPE_TRACE_MAIN("Curves");
 
-        sf::VertexArray kBorder(sf::PrimitiveType::LineStrip);
-        kBorder.resize(4);
-        kBorder[0] = (sf::Vertex(sf::Vector2f(fPositionX, fPositionY), kColorCurveBox));
-        kBorder[1] = (sf::Vertex(sf::Vector2f(fPositionX, fPositionY + fCurveHeight), kColorCurveBox));
-        kBorder[2] = (sf::Vertex(sf::Vector2f(fPositionX + fCurveWidth, fPositionY + fCurveHeight), kColorCurveBox));
-        kBorder[3] = (sf::Vertex(sf::Vector2f(fPositionX + fCurveWidth, fPositionY), kColorCurveBox));
-        m_sfWindow->draw(kBorder);
+        // Background
+        Texture* textureBackground = GetResources()->GetCustomTexture("GuguConsoleBackground");
+        m_statsBackground.setTexture(*textureBackground->GetSFTexture());
+        m_statsBackground.setScale((fCurveWidth + fPositionX + 200.f) / textureBackground->GetSize().x, (fCurveHeight + fPositionY + 22.f) / textureBackground->GetSize().y);
+        m_sfWindow->draw(m_statsBackground);
 
         // Frame Times
         {
@@ -470,6 +489,31 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
             }
             m_sfWindow->draw(kCurve);
         }
+
+        // Step Times
+        {
+            float curvePointScaleX = fCurveWidth / (iNbCurvePointsMax - 1);
+            float curvePointScaleY = (fCurveHeight - fMarginTop) / maxStepTime;
+
+            int index = 0;
+            sf::VertexArray curve(sf::PrimitiveType::LineStrip);
+            curve.resize(engineStats.stepTimes.size());
+            for (int value : engineStats.stepTimes)
+            {
+                curve[index] = (sf::Vertex(sf::Vector2f(fPositionX + index * curvePointScaleX, fPositionY + fCurveHeight - value * curvePointScaleY), colorCurveStepTimes));
+                ++index;
+            }
+            m_sfWindow->draw(curve);
+        }
+
+        // Borders
+        sf::VertexArray kBorder(sf::PrimitiveType::LineStrip);
+        kBorder.resize(4);
+        kBorder[0] = (sf::Vertex(sf::Vector2f(fPositionX, fPositionY), kColorCurveBox));
+        kBorder[1] = (sf::Vertex(sf::Vector2f(fPositionX, fPositionY + fCurveHeight), kColorCurveBox));
+        kBorder[2] = (sf::Vertex(sf::Vector2f(fPositionX + fCurveWidth, fPositionY + fCurveHeight), kColorCurveBox));
+        kBorder[3] = (sf::Vertex(sf::Vector2f(fPositionX + fCurveWidth, fPositionY), kColorCurveBox));
+        m_sfWindow->draw(kBorder);
     }
 
     // Draw Text Infos
@@ -531,15 +575,34 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
         m_statTextDrawCalls.setString(StringFormat("Draw calls: {0}", kFrameInfos.statDrawCalls));
         m_statTextDrawCalls.setFont(*pFont);
         m_sfWindow->draw(m_statTextDrawCalls);
+
+        // Step Times
+        m_statTextStepTime.setPosition(fPositionX + 180.f, fPositionY + fCurveHeight);
+        m_statTextStepTime.setFillColor(colorCurveStepTimes);
+        m_statTextStepTime.setCharacterSize(iFontSize);
+        m_statTextStepTime.setString(StringFormat("Step time: {0} ms", lastStepTime));
+        m_statTextStepTime.setFont(*pFont);
+        m_sfWindow->draw(m_statTextStepTime);
+
+        // Is Tracing
+        if (engineStats.isTracing)
+        {
+            m_statTextIsTracing.setPosition(fPosX, fPositionY + fCurveHeight);
+            m_statTextIsTracing.setFillColor(kColorText);
+            m_statTextIsTracing.setCharacterSize(iFontSize);
+            m_statTextIsTracing.setString("(Tracing)");
+            m_statTextIsTracing.setFont(*pFont);
+            m_sfWindow->draw(m_statTextIsTracing);
+        }
     }
 }
 
 void Window::DrawFPS(const DeltaTime& _kTimeSinceLastFrame)
 {
-    if (!GetResources()->GetDefaultFont())
+    if (!GetResources()->GetDebugFont())
         return;
 
-    sf::Font* pFont = GetResources()->GetDefaultFont()->GetSFFont();
+    sf::Font* pFont = GetResources()->GetDebugFont()->GetSFFont();
 
     int iFPS = 1000 / ((_kTimeSinceLastFrame.ms() > 0) ? _kTimeSinceLastFrame.ms() : 1);
 
@@ -555,7 +618,7 @@ void Window::DrawFPS(const DeltaTime& _kTimeSinceLastFrame)
 
 void Window::OnConsoleCommandValidated()
 {
-    std::string strCommandLine = m_consoleTextEntry->GetValue();
+    std::string strCommandLine = m_consoleTextEntry->GetText();
     GetEngine()->ComputeCommandLine(strCommandLine);
 
     m_consoleTextEntry->SetText("");
@@ -781,6 +844,16 @@ void Window::ToggleShowFPS()
 {
     m_showStats = false;
     m_showFPS = !m_showFPS;
+}
+
+void Window::SetShowBounds(bool showBounds)
+{
+    m_showBounds = showBounds;
+}
+
+void Window::ToggleShowBounds()
+{
+    m_showBounds = !m_showBounds;
 }
 
 Window* GetGameWindow()

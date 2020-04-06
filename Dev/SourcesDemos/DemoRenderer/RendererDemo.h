@@ -32,7 +32,7 @@ public:
     RendererDemo();
     virtual ~RendererDemo();
     
-    virtual void RenderWindow(gugu::FrameInfos* _pFrameInfos, gugu::Window* _pWindow, gugu::Camera* _pCamera) override;
+    virtual void RenderWindow(gugu::FrameInfos& _pFrameInfos, gugu::Window* _pWindow, gugu::Camera* _pCamera) override;
 
 private:
     

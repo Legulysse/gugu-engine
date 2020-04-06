@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/Utility/DeltaTime.h"
 
 #include <SFML/Audio/Music.hpp>
 
@@ -24,6 +25,8 @@ public:
     virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;
+
+    DeltaTime GetDuration() const;
 };
 
 }   // namespace gugu

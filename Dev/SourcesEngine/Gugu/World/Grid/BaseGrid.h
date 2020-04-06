@@ -27,6 +27,9 @@ public:
 
     virtual void RecomputePositions() = 0;
 
+    int GetGridWidth() const;
+    int GetGridHeight() const;
+
 protected:
 
             void GenerateCells(int _iWidth, int _iHeight);

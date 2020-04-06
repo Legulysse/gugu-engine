@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
     config.applicationName = "GuguEngine Demo Datasheets";
     config.pathAssets = "Assets";
     config.defaultFont = "Spaceranger.ttf";
+    config.debugFont = "Roboto-Regular.ttf";
     config.gameWindow = EGameWindow::None;
 
     GetEngine()->Init(config);
@@ -68,7 +69,7 @@ int main(int argc, char* argv[])
 
     //--------
 
-    //GetEngine()->Loop();
+    //GetEngine()->StartLooping();
     GetEngine()->Release();
 
     return 0;

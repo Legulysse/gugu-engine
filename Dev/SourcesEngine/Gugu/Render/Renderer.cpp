@@ -21,31 +21,32 @@
 
 namespace gugu {
 
-void Renderer::RenderLevel(FrameInfos* _pFrameInfos, Window* _pWindow, Camera* _pCamera, Level* _pLevel)
+void Renderer::RenderLevel(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Level* _pLevel)
 {
-    RenderPass kRenderPass;
-    kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
-    kRenderPass.target = _pWindow->GetSFRenderWindow();
-    kRenderPass.frameInfos = _pFrameInfos;
     
     if (_pLevel)
     {
-        Render(_pLevel->GetRootNode(), _pCamera, kRenderPass);
+        RenderPass kRenderPass;
+        kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
+        kRenderPass.target = _pWindow->GetSFRenderWindow();
+        kRenderPass.frameInfos = &_pFrameInfos;
+
+        Render(kRenderPass, _pCamera, _pLevel->GetRootNode());
     }
 }
 
-void Renderer::RenderWindow(FrameInfos* _pFrameInfos, Window* _pWindow, Camera* _pCamera)
+void Renderer::RenderWindow(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera)
 {
     RenderPass kRenderPass;
     kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
     kRenderPass.target = _pWindow->GetSFRenderWindow();
-    kRenderPass.frameInfos = _pFrameInfos;
-    
-    Render(_pWindow->GetUINode(), _pCamera, kRenderPass);
-    Render(_pWindow->GetMouseNode(), _pCamera, kRenderPass);
+    kRenderPass.frameInfos = &_pFrameInfos;
+
+    Render(kRenderPass, _pCamera, _pWindow->GetUINode());
+    Render(kRenderPass, _pCamera, _pWindow->GetMouseNode());
 }
 
-void Renderer::Render(Element* _pRoot, Camera* _pCamera, RenderPass& _kRenderPass)
+void Renderer::Render(RenderPass& _kRenderPass, Camera* _pCamera, Element* _pRoot)
 {
     if (!_pRoot)
         return;

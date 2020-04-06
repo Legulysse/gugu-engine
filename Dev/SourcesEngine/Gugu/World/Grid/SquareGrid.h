@@ -24,6 +24,9 @@ public:
 
     virtual void RecomputePositions() override;
 
+    float GetCellWidth() const;
+    float GetCellHeight() const;
+
 protected:
 
     float m_cellWidth;

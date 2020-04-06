@@ -4,6 +4,7 @@
 // Includes
 
 #include "SFML/Graphics/Rect.hpp"
+#include "SFML/Graphics/RectangleShape.hpp"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -25,7 +26,7 @@ namespace sf
 // Macros
 
 #define GUGU_RENDERPASS_INVALID 0x0000
-#define GUGU_RENDERPASS_DEFAULT 0x0001  //The Console is rendered with this flag    //TODO: passe specifique pour les infos de debug et la console
+#define GUGU_RENDERPASS_DEFAULT 0x0001  //The Console is rendered with this flag    //TODO: passe specifique pour les infos de debug et la console ?
 
 ////////////////////////////////////////////////////////////////
 // File Declarations
@@ -34,30 +35,22 @@ namespace gugu {
 
 struct FrameInfos
 {
+    bool showBounds = false;
+    sf::RectangleShape defaultBoundsShape;
+
     int statDrawCalls = 0;
 };
 
 struct RenderPass
 {
-    RenderPass()
-    {
-        frameInfos = nullptr;
-        target = nullptr;
-        pass = 0;
-
-        statRenderedSprites = 0;
-        statRenderedTexts = 0;
-        statRenderedDrawables = 0;
-    }
-
-    FrameInfos* frameInfos;
-    sf::RenderTarget* target;
-    int pass;
+    FrameInfos* frameInfos = nullptr;
+    sf::RenderTarget* target = nullptr;
+    int pass = GUGU_RENDERPASS_DEFAULT;
     sf::FloatRect rectViewport;  // Pre-computed viewport
 
-    int statRenderedSprites;
-    int statRenderedTexts;
-    int statRenderedDrawables;
+    int statRenderedSprites = 0;
+    int statRenderedTexts = 0;
+    int statRenderedDrawables = 0;
 };
 
 class Renderer
@@ -67,13 +60,13 @@ public:
             Renderer    () {}
     virtual ~Renderer   () {}
     
-    virtual void RenderLevel(FrameInfos* _pFrameInfos, Window* _pWindow, Camera* _pCamera, Level* _pLevel);
-    virtual void RenderWindow(FrameInfos* _pFrameInfos, Window* _pWindow, Camera* _pCamera);
+    virtual void RenderLevel(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Level* _pLevel);
+    virtual void RenderWindow(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera);
 
 protected:
 
     // If Camera is not null, it will override the RenderTarget view and viewport
-    void Render(Element* _pRoot, Camera* _pCamera, RenderPass& _kRenderPass);
+    void Render(RenderPass& _kRenderPass, Camera* _pCamera, Element* _pRoot);
 };
 
 }   // namespace gugu

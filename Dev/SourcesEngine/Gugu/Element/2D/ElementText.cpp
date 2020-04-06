@@ -40,8 +40,6 @@ ElementText::ElementText()
 
     m_actionOnValidate = nullptr;
 
-    m_showDebugBounds       = false;
-
     m_sfText = new sf::Text;
     m_sfText->setFillColor(sf::Color(0, 0, 0));
 
@@ -122,14 +120,9 @@ void ElementText::SetEditable(bool _bIsEditable)
     }
 }
 
-void ElementText::SetDebugBoundsVisible(bool _bShowDebugBounds)
+void ElementText::SetText(const sf::String& value /*, bool _bResize */)
 {
-    m_showDebugBounds = _bShowDebugBounds;
-}
-
-void ElementText::SetText(const std::string& _strValue /*, bool _bResize */)
-{
-    m_textValue = _strValue;
+    m_textValue = value;
     
     Recompute();
 
@@ -140,22 +133,26 @@ void ElementText::SetText(const std::string& _strValue /*, bool _bResize */)
     }*/
 }
 
-std::string ElementText::GetValue() const
+sf::String ElementText::GetText() const
 {
     return m_textValue;
 }
 
 void ElementText::Recompute()
 {
-    std::string strTextImpl = "";
+    size_t textSize = 0;
 
     if (!m_isMultiline)
     {
-        strTextImpl = m_textValue;
+        m_sfText->setString(m_textValue);
+        textSize = m_textValue.getSize();
     }
     else
     {
         //ClearStdVector(m_components);
+
+        std::string strTextSource = m_textValue;
+        std::string strTextImpl = "";
 
         //std::string strNewText = "";  //Used to build the new StringImpl
         sf::Text oSFText;               //Temp element to compute string size on screen
@@ -171,11 +168,13 @@ void ElementText::Recompute()
         size_t iNbChars = 0;
 
         //Each loop turn will generate a text line
-        while (iLineNext < m_textValue.size())
+        while (iLineNext < strTextSource.size())
         {
+            //TODO: Refacto (the cast from sf::string to std::string is probably breaking things)
+
             //Step 1 : remove whitespaces on beginning (not any more !)
             //iLineBegin = iLineNext; //m_strValue.find_first_not_of(" ", iLineNext);
-            iLineBegin = m_textValue.find_first_not_of(" ", iLineNext);
+            iLineBegin = strTextSource.find_first_not_of(" ", iLineNext);
             if (iLineBegin == std::string::npos)
                 iLineBegin = iLineNext;
             iNbChars = 0;
@@ -199,11 +198,11 @@ void ElementText::Recompute()
 
                 while (!bChunkFinished)
                 {
-                    iChunkEnd = m_textValue.find_first_of(" ", iSearchBegin + 1);   //end of normal string (+1 is important to manage whitespaces between chunks)
+                    iChunkEnd = strTextSource.find_first_of(" ", iSearchBegin + 1);   //end of normal string (+1 is important to manage whitespaces between chunks)
 
-                    size_t iNext = (iChunkEnd == std::string::npos) ? std::string::npos : m_textValue.find_first_not_of(" ", iChunkEnd);        //next chunk (can be one of the cases below)
-                    size_t iForceEndLine = m_textValue.find_first_of("\n", iSearchBegin);   //possible cut
-                    size_t iSpecialChar = m_textValue.find_first_of(".,;:?!", iSearchBegin);    //possible extension
+                    size_t iNext = (iChunkEnd == std::string::npos) ? std::string::npos : strTextSource.find_first_not_of(" ", iChunkEnd);        //next chunk (can be one of the cases below)
+                    size_t iForceEndLine = strTextSource.find_first_of("\n", iSearchBegin);   //possible cut
+                    size_t iSpecialChar = strTextSource.find_first_of(".,;:?!", iSearchBegin);    //possible extension
 
                     if (iForceEndLine != std::string::npos && (iChunkEnd == std::string::npos || iForceEndLine < iChunkEnd))
                     {
@@ -223,14 +222,14 @@ void ElementText::Recompute()
                     else
                     {
                         iChunkNext = iChunkEnd;
-                        iNbChars = (iChunkEnd == std::string::npos) ? m_textValue.size() - iChunkBegin : iChunkEnd - iChunkBegin;
+                        iNbChars = (iChunkEnd == std::string::npos) ? strTextSource.size() - iChunkBegin : iChunkEnd - iChunkBegin;
 
                         bChunkFinished = true;
                     }
                 }
 
                 //Step 2:1 : compute a text chunk
-                strLineTest += m_textValue.substr(iChunkBegin, iNbChars);
+                strLineTest += strTextSource.substr(iChunkBegin, iNbChars);
 
                 //Step 2:2 : compute new size. if size is too big, skip this chunk and go to step 3
                 oSFText.setString(strLineTest);
@@ -266,9 +265,10 @@ void ElementText::Recompute()
         }
 
         strTextImpl = strTextImpl.substr(0, strTextImpl.size()-1);  //remove last EndLine
-    }
 
-    m_sfText->setString(strTextImpl);
+        m_sfText->setString(strTextImpl);
+        textSize = strTextImpl.size();
+    }
 
     //TODO: Here I can split my sf::Text into an array (1 line = 1 sf::Text) to allow center-alignment & line visibility.
     
@@ -301,7 +301,7 @@ void ElementText::Recompute()
         m_sfTextCursor->setFillColor(m_sfText->getFillColor());
         m_sfTextCursor->setScale(m_sfText->getScale());
 
-        m_sfTextCursor->setPosition(m_sfText->getTransform().transformPoint(m_sfText->findCharacterPos(strTextImpl.size())));
+        m_sfTextCursor->setPosition(m_sfText->getTransform().transformPoint(m_sfText->findCharacterPos(textSize)));
     }
 }
 
@@ -382,9 +382,9 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
 
     if(_oSFEvent.key.code == sf::Keyboard::BackSpace)
     {
-        if(!m_textValue.empty())
+        if(!m_textValue.isEmpty())
         {
-            m_textValue.erase(m_textValue.length()-1, 1);
+            m_textValue.erase(m_textValue.getSize()-1, 1);
             SetText(m_textValue /*, false*/);
 
             return false;
@@ -398,10 +398,8 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
         {
             cNewChar = (char)('a' + (_oSFEvent.key.code - sf::Keyboard::A));
 
-            if(GetConfig()->IsShiftDown())
-            {
+            if (_oSFEvent.key.shift)
                 cNewChar += 'A' - 'a';
-            }
         }
         else if (_oSFEvent.key.code >= sf::Keyboard::Num0 && _oSFEvent.key.code <= sf::Keyboard::Num9)
         {
@@ -410,6 +408,22 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
         else if (_oSFEvent.key.code >= sf::Keyboard::Numpad0 && _oSFEvent.key.code <= sf::Keyboard::Numpad9)
         {
             cNewChar = (char)('0' + (_oSFEvent.key.code - sf::Keyboard::Numpad0));
+        }
+        else if (_oSFEvent.key.code == sf::Keyboard::Add)
+        {
+            cNewChar = '+';
+        }
+        else if (_oSFEvent.key.code == sf::Keyboard::Subtract)
+        {
+            cNewChar = '-';
+        }
+        else if (_oSFEvent.key.code == sf::Keyboard::Multiply)
+        {
+            cNewChar = '*';
+        }
+        else if (_oSFEvent.key.code == sf::Keyboard::Divide)
+        {
+            cNewChar = '/';
         }
         else if (_oSFEvent.key.code == sf::Keyboard::Period)
         {
@@ -429,7 +443,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
             std::string strNewChar;
             strNewChar = cNewChar;
 
-            m_textValue.insert(m_textValue.length(), strNewChar);
+            m_textValue.insert(m_textValue.getSize(), strNewChar);
             SetText(m_textValue /*, false */);
 
             return false;
@@ -459,21 +473,6 @@ void ElementText::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTran
                 _kRenderPass.frameInfos->statDrawCalls += 1;
 
             _kRenderPass.statRenderedTexts += 1;
-        }
-
-        //Debug Bounds
-        if (m_showDebugBounds)
-        {
-            sf::RectangleShape oBorder;
-            oBorder.setSize(m_size);
-            oBorder.setOutlineColor(sf::Color::Magenta);
-            oBorder.setOutlineThickness(1.f);
-            oBorder.setFillColor(sf::Color::Transparent);
-            _kRenderPass.target->draw(oBorder, _kTransformSelf);
-
-            //Stats
-            if (_kRenderPass.frameInfos)
-                _kRenderPass.frameInfos->statDrawCalls += 1;
         }
 
         //for (size_t i = 0; i < m_components.size(); ++i)

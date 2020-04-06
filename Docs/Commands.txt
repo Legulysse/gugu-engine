@@ -1,0 +1,16 @@
+
+- fps
+Display fps count on the screen.
+
+- stats
+Display rendering stats on the screen.
+
+- bounds
+Display all Elements bounds.
+
+- trace <frames>
+Trace performances for the next <frames> frames (default : trace 10).
+Generates a json file readable in chrome://tracing/ (chrome) or about://tracing/ (opera).
+
+- speed <value>
+Set the game step speed at <value> (default speed is 10, minimum is 1).

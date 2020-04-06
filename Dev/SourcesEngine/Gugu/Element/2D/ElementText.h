@@ -49,7 +49,8 @@ public:
     ElementText();
     virtual ~ElementText();
 
-    void SetText        (const std::string& _strValue /* , bool _bResize = true */);
+    void SetText(const sf::String& value /* , bool _bResize = true */);
+    sf::String GetText() const;
 
     void SetFont        (const std::string& _strFontPath);
     void SetFont        (Font* _pFont);
@@ -70,12 +71,8 @@ public:
     virtual bool OnMouseDeselected() override;
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 
-    std::string GetValue() const;
-
     void SetOnValidate      (Action* _pAction);
 
-    void SetDebugBoundsVisible(bool _bShowDebugBounds);
-    
 private:
 
     void StartEditionImpl   ();
@@ -93,7 +90,7 @@ protected:
     sf::Text* m_sfText;
     sf::Text* m_sfTextCursor;
 
-    std::string m_textValue;
+    sf::String m_textValue;
 
     ETextResizeRule::Type m_resizeRule;
     bool m_isMultiline;
@@ -107,8 +104,6 @@ protected:
     //std::vector<sf::Text*> m_components;
 
     Action* m_actionOnValidate;
-
-    bool m_showDebugBounds;
 };
 
 }   // namespace gugu

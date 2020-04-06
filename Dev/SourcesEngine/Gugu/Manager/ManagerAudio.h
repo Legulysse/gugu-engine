@@ -50,11 +50,10 @@ public:
 
     bool    PlayMusic       (const std::string& _strFile, float _fVolume = 1.f, float _fFade = 2.f);   // Volume range [0, 1]
     bool    PlayMusic       (const MusicParameters& _kParameters);
-    bool    PlayMusicList   (const std::vector<MusicParameters>& _vecPlaylist);
-    bool    StopMusic       (float _fFade = 2.f);
+    bool    PlayMusicList   (const std::vector<MusicParameters>& _vecPlaylist, int layer = 0);
+    bool    StopMusic       (float _fFade = 2.f, int layer = 0);
 
-    //TODO: Provide layer parameter (currently only index 0 is valid)
-    MusicInstance* GetCurrentMusicInstance() const;
+    MusicInstance* GetCurrentMusicInstance(int layer) const;
 
 private:
 

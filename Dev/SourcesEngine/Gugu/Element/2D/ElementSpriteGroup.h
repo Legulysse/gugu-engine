@@ -48,10 +48,12 @@ public:
 
     Texture* GetTexture() const;
 
-    void AddItem(ElementSpriteGroupItem* _pNewItem);
+    int AddItem(ElementSpriteGroupItem* _pNewItem);
     ElementSpriteGroupItem* GetItem(int _iIndex) const;
 
     void RecomputeItemVertices(int _iIndex);
+
+    virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) override;
 
     void LoadFromXml(const std::string& _strPath);  //TODO: use a different name from the function used by Layouts loading ?
 

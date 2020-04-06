@@ -104,7 +104,7 @@ bool StateMenuMain::OnSFEvent(const sf::Event& _oSFEvent)
 
     if (pConfig->IsInputReleased("CloseGame", _oSFEvent))
     {
-        GetEngine()->Stop();
+        GetEngine()->StopLooping();
         return false;
     }
 
@@ -115,7 +115,7 @@ void StateMenuMain::OnButtonClick(int _iButtonID)
 {
     if (_iButtonID == 0)
     {
-        GetEngine()->Stop();
+        GetEngine()->StopLooping();
     }
     else if (_iButtonID == 4)
     {

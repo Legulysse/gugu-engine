@@ -48,7 +48,7 @@ RendererDemo::~RendererDemo()
     SafeDelete(m_shader_Final);
 }
 
-void RendererDemo::RenderWindow(FrameInfos* _pFrameInfos, Window* _pWindow, Camera* _pCamera)
+void RendererDemo::RenderWindow(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera)
 {
     sf::RenderTarget* pTarget = _pWindow->GetSFRenderWindow();
 
@@ -64,21 +64,21 @@ void RendererDemo::RenderWindow(FrameInfos* _pFrameInfos, Window* _pWindow, Came
     RenderPass kRenderPassMain;
     kRenderPassMain.pass = DEMO_RENDERPASS_MAIN;
     kRenderPassMain.target = m_renderTarget_Main;
-    kRenderPassMain.frameInfos = _pFrameInfos;
+    kRenderPassMain.frameInfos = &_pFrameInfos;
 
     m_renderTarget_Main->clear(sf::Color(0, 0, 0, 0));
-    Render(_pWindow->GetUINode(), _pCamera, kRenderPassMain);
+    Render(kRenderPassMain, _pCamera, _pWindow->GetUINode());
     m_renderTarget_Main->display();
         
     //Refractive (Mouse Twirl)
     RenderPass kRenderPassRefractive;
     kRenderPassRefractive.pass = DEMO_RENDERPASS_REFRACTION;
     kRenderPassRefractive.target = m_renderTarget_Refraction;
-    kRenderPassRefractive.frameInfos = _pFrameInfos;
+    kRenderPassRefractive.frameInfos = &_pFrameInfos;
 
     m_renderTarget_Refraction->clear(sf::Color(0, 0, 0, 255));
-    Render(_pWindow->GetUINode(), _pCamera, kRenderPassRefractive);
-    Render(_pWindow->GetMouseNode(), _pCamera, kRenderPassRefractive);
+    Render(kRenderPassRefractive, _pCamera, _pWindow->GetUINode());
+    Render(kRenderPassRefractive, _pCamera, _pWindow->GetMouseNode());
     m_renderTarget_Refraction->display();
     
     //Final
@@ -93,9 +93,9 @@ void RendererDemo::RenderWindow(FrameInfos* _pFrameInfos, Window* _pWindow, Came
     RenderPass kRenderPassUI;
     kRenderPassUI.pass = DEMO_RENDERPASS_MAIN;
     kRenderPassUI.target = pTarget;
-    kRenderPassUI.frameInfos = _pFrameInfos;
+    kRenderPassUI.frameInfos = &_pFrameInfos;
 
-    Render(_pWindow->GetMouseNode(), _pCamera, kRenderPassUI);
+    Render(kRenderPassUI, _pCamera, _pWindow->GetMouseNode());
 }
 
 }   //namespace demoproject

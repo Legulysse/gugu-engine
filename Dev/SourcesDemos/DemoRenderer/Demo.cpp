@@ -70,7 +70,7 @@ void Demo::AppStop()
 
 void Demo::AppUpdate(const DeltaTime& dt)
 {
-    m_twirl->Rotate(dt.s() * 0.1f * -360.f);     //360° in 10s
+    m_twirl->Rotate(dt.s() * 0.1f * -360.f);     //360Â° in 10s
 }
 
 }   //namespace demoproject

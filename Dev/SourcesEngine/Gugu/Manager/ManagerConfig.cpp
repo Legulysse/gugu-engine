@@ -83,7 +83,7 @@ void ManagerConfig::LoadInputFile(const std::string& _strPath)
             pugi::xml_attribute oAttributeValue = oNodeKey.attribute("Value");
 
             if (oAttributeValue && ReadKeyCode(oAttributeValue.as_string(), oKeyCode))
-                RegisterInput(oAttributeName.as_string(), BuildEventKey(oKeyCode));
+                RegisterInput(oAttributeName.as_string(), BuildKeyboardEvent(oKeyCode));
         }
     }
 }
@@ -99,12 +99,21 @@ bool ManagerConfig::IsInput(const std::string& _strInputName, const sf::Event& _
         {
             const sf::Event& oStoredEvent = vecBindings[i];
 
-            //Keyboard
+            // Keyboard
             if (oStoredEvent.type == sf::Event::KeyPressed)
             {
                 if (_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::KeyReleased)
                 {
                     if (oStoredEvent.key.code == _oSFEvent.key.code)
+                        return true;
+                }
+            }
+            // Joystick
+            else if (oStoredEvent.type == sf::Event::JoystickButtonPressed)
+            {
+                if (_oSFEvent.type == sf::Event::JoystickButtonPressed || _oSFEvent.type == sf::Event::JoystickButtonReleased)
+                {
+                    if (oStoredEvent.joystickButton.joystickId == _oSFEvent.joystickButton.joystickId && oStoredEvent.joystickButton.button == _oSFEvent.joystickButton.button)
                         return true;
                 }
             }
@@ -116,12 +125,12 @@ bool ManagerConfig::IsInput(const std::string& _strInputName, const sf::Event& _
 
 bool ManagerConfig::IsInputPressed(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
-    return (_oSFEvent.type == sf::Event::KeyPressed && IsInput(_strInputName, _oSFEvent));
+    return ((_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::JoystickButtonPressed) && IsInput(_strInputName, _oSFEvent));
 }
 
 bool ManagerConfig::IsInputReleased(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
-    return (_oSFEvent.type == sf::Event::KeyReleased && IsInput(_strInputName, _oSFEvent));
+    return ((_oSFEvent.type == sf::Event::KeyReleased || _oSFEvent.type == sf::Event::JoystickButtonReleased) && IsInput(_strInputName, _oSFEvent));
 }
 
 bool ManagerConfig::IsInputDown(const std::string& _strInputName) const
@@ -134,9 +143,16 @@ bool ManagerConfig::IsInputDown(const std::string& _strInputName) const
         {
             const sf::Event& oStoredEvent = vecBindings[i];
 
-            if (oStoredEvent.type == sf::Event::KeyReleased || oStoredEvent.type == sf::Event::KeyPressed)
+            // Keyboard
+            if (oStoredEvent.type == sf::Event::KeyPressed)
             {
                 if (sf::Keyboard::isKeyPressed(oStoredEvent.key.code))
+                    return true;
+            }
+            // Joystick
+            else if (oStoredEvent.type == sf::Event::JoystickButtonPressed)
+            {
+                if (sf::Joystick::isButtonPressed(oStoredEvent.joystickButton.joystickId, oStoredEvent.joystickButton.button))
                     return true;
             }
         }
@@ -155,17 +171,29 @@ bool ManagerConfig::IsKeyDown(sf::Keyboard::Key _eKey) const
     return sf::Keyboard::isKeyPressed(_eKey);
 }
 
-sf::Event ManagerConfig::BuildEventKey(sf::Keyboard::Key _eKey)
+sf::Event ManagerConfig::BuildKeyboardEvent(sf::Keyboard::Key key)
 {
-    sf::Event oEvent;
+    sf::Event event;
+    event.type = sf::Event::KeyPressed;
+    event.key.code = key;
+    event.key.alt = false;
+    event.key.shift = false;
+    event.key.control = false;
+    return event;
+}
 
-    oEvent.type         = sf::Event::KeyPressed;
-    oEvent.key.code     = _eKey;
-    oEvent.key.alt      = false;
-    oEvent.key.shift    = false;
-    oEvent.key.control  = false;
+sf::Event ManagerConfig::BuildJoystickEvent(EPadButton button, int joystickId)
+{
+    return BuildJoystickEvent((int)button, joystickId);
+}
 
-    return oEvent;
+sf::Event ManagerConfig::BuildJoystickEvent(int button, int joystickId)
+{
+    sf::Event event;
+    event.type = sf::Event::JoystickButtonPressed;
+    event.joystickButton.joystickId = joystickId;
+    event.joystickButton.button = button;
+    return event;
 }
 
 void ManagerConfig::FillListKeyCodes()

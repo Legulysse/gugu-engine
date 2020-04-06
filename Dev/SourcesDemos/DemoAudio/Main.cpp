@@ -19,6 +19,7 @@ int main(int argc, char* argv[])
     config.applicationName = "GuguEngine Demo Audio";
     config.pathAssets = "Assets";
     config.defaultFont = "Spaceranger.ttf";
+    config.debugFont = "Roboto-Regular.ttf";
     config.windowWidth = 800;
     config.windowHeight = 600;
     
@@ -30,7 +31,7 @@ int main(int argc, char* argv[])
     
     //--------
 
-    GetEngine()->Loop();
+    GetEngine()->StartLooping();
     GetEngine()->Release();
 
     return 0;

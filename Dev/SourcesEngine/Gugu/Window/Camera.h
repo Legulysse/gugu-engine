@@ -42,6 +42,9 @@ public:
     void            SetSize     (sf::Vector2f _kSize);
     sf::Vector2f    GetSize     () const;
 
+    void            SetZoom(float zoom);
+    float           GetZoom() const;
+
     void            SetTarget   (float _fTargetX, float _fTargetY);
     void            SetTarget   (sf::Vector2f _kTarget);
     sf::Vector2f    GetTarget   () const;
@@ -68,14 +71,16 @@ private:
     
 protected:
 
-    sf::View        m_sfView;
-    sf::Vector2f    m_targetPosition;
-    bool            m_centerOnTarget;
-    
-    Window*         m_window;
-    Level*          m_level;
+    sf::View m_sfView;
+	float m_zoomMultiplier;
 
-    //bool        m_extendOnResize;
+    sf::Vector2f m_targetPosition;
+    bool m_centerOnTarget;
+    
+    Window* m_window;
+    Level* m_level;
+
+    //bool m_extendOnResize;
 };
 
 }   // namespace gugu

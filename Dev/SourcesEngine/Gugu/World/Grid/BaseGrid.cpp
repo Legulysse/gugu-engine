@@ -68,4 +68,14 @@ GridCell* BaseGrid::InstantiateCell()
     return new GridCell;
 }
 
+int BaseGrid::GetGridWidth() const
+{
+    return m_width;
+}
+
+int BaseGrid::GetGridHeight() const
+{
+    return m_height;
+}
+
 }   // namespace gugu

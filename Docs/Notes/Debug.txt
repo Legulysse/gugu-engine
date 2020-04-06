@@ -1,0 +1,23 @@
+
+* Fichiers
+
+Nouveau dossier Debug :
+- Trace
+- Logger
+- DebugUI
+- DebugStats ?
+
+
+* DebugStats ?
+
+Nouvelle classe pour heberger les infos de debug, gérée par l'engine.
+Stocke les infos de stats : stats par Window + stats globales.
+
+- Methode pour register les stats d'une frame depuis une Window : PushStats(struct, window)
+- Methode pour draw les stats d'une Window : DrawStats(window)
+
+
+* DebugUI
+
+Nouvelle classe pour fournir des points d'entrée pour du Immediate UI, gérée par l'engine.
+Pourrait s'occuper du Draw des stats.

@@ -86,6 +86,59 @@ sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector);
 template <typename T>
 sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians);
 
+//--------------------------------
+// Interpolations
+
+template <typename T>
+T Lerp(const T& min, const T& max, float ratio);
+
+template <typename T>
+float InverseLerp(const T& min, const T& max, const T& value);
+
+template <typename T>
+T RemapLerp(const T& minA, const T& maxA, const T& minB, const T& maxB, const T& value);
+
+// Easing methods from https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
+float EaseInQuad(float ratio);
+float EaseOutQuad(float ratio);
+float EaseInOutQuad(float ratio);
+
+float EaseInCubic(float ratio);
+float EaseOutCubic(float ratio);
+float EaseInOutCubic(float ratio);
+
+float EaseInQuart(float ratio);
+float EaseOutQuart(float ratio);
+float EaseInOutQuart(float ratio);
+
+float EaseInQuint(float ratio);
+float EaseOutQuint(float ratio);
+float EaseInOutQuint(float ratio);
+
+float EaseInSine(float ratio);
+float EaseOutSine(float ratio);
+float EaseInOutSine(float ratio);
+
+float EaseInExpo(float ratio);
+float EaseOutExpo(float ratio);
+float EaseInOutExpo(float ratio);
+
+float EaseInCirc(float ratio);
+float EaseOutCirc(float ratio);
+float EaseInOutCirc(float ratio);
+
+float EaseInBack(float ratio);
+float EaseOutBack(float ratio);
+float EaseInOutBack(float ratio);
+
+float EaseInElastic(float ratio);
+float EaseOutElastic(float ratio);
+float EaseInOutElastic(float ratio);
+
+float EaseInBounce(float ratio);
+float EaseOutBounce(float ratio);
+float EaseInOutBounce(float ratio);
+
 }   // namespace gugu
 
 ////////////////////////////////////////////////////////////////

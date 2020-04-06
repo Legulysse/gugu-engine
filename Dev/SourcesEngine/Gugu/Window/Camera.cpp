@@ -24,6 +24,8 @@ namespace gugu {
     
 Camera::Camera()
 {
+    m_zoomMultiplier = 1.f;
+
     m_targetPosition = sf::Vector2f(0.f, 0.f);
     m_centerOnTarget = false;
 
@@ -116,6 +118,17 @@ sf::Vector2f Camera::GetSize() const
     return m_sfView.getSize();
 }
 
+void Camera::SetZoom(float zoom)
+{
+    m_zoomMultiplier = 1.f / zoom;
+    ComputeViewSize();
+}
+
+float Camera::GetZoom() const
+{
+    return 1.f / m_zoomMultiplier;
+}
+
 void Camera::SetTarget(float _fTargetX, float _fTargetY)
 {
     SetTarget(sf::Vector2f(_fTargetX, _fTargetY));
@@ -153,7 +166,7 @@ void Camera::ComputeViewSize()
     sf::Vector2f kWindowSize = sf::Vector2f(m_window->GetSize());
     const sf::FloatRect& kViewport = m_sfView.getViewport();
     
-    SetSize(kWindowSize.x * kViewport.width, kWindowSize.y * kViewport.height); //Will call ComputeViewCenter
+    SetSize((kWindowSize.x * kViewport.width) * m_zoomMultiplier, (kWindowSize.y * kViewport.height) * m_zoomMultiplier); //Will call ComputeViewCenter
 }
 
 void Camera::ComputeViewCenter()

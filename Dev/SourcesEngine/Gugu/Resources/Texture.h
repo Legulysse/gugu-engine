@@ -30,6 +30,9 @@ public:
     void SetSFTexture(sf::Texture* _pSFTexture);
     sf::Texture* GetSFTexture() const;
     
+    void SetSmooth(bool smooth);
+    bool IsSmooth() const;
+
     virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;

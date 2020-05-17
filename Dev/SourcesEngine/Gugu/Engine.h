@@ -59,6 +59,7 @@ struct EngineConfig
     std::string pathScreenshots;
     std::string defaultFont;
     std::string debugFont;
+    bool defaultTextureSmooth;
 
     // Graphics
     EGameWindow::Type gameWindow;
@@ -87,6 +88,7 @@ struct EngineConfig
         pathScreenshots = "Screenshots";
         defaultFont = "";
         debugFont = "";
+        defaultTextureSmooth = false;
 
         gameWindow = EGameWindow::Sfml;
         windowWidth = 800;

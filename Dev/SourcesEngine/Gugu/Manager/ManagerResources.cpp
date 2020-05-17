@@ -38,6 +38,7 @@ ManagerResources::ManagerResources()
     m_defaultFont = "";
     m_debugFont = "";
     m_useFullPath = false;
+    m_defaultTextureSmooth = false;
 }
 
 ManagerResources::~ManagerResources()
@@ -51,6 +52,7 @@ void ManagerResources::Init(const EngineConfig& config)
     m_useFullPath = config.useAssetsFullPaths;
     m_defaultFont = config.defaultFont;
     m_debugFont = config.debugFont;
+    m_defaultTextureSmooth = config.defaultTextureSmooth;
 
     ParseDirectory(m_pathAssets);
 }
@@ -553,6 +555,11 @@ Texture* ManagerResources::GetCustomTexture(const std::string& _strName)
 
     iteElement = m_customTextures.insert(iteElement, std::make_pair(_strName, pNewTexture));
     return pNewTexture;
+}
+
+bool ManagerResources::IsDefaultTextureSmooth() const
+{
+    return m_defaultTextureSmooth;
 }
 
 Font* ManagerResources::GetDefaultFont()

@@ -7,7 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu//Engine.h"
+#include "Gugu/Engine.h"
+#include "Gugu/Manager/ManagerResources.h"
 #include "Gugu/Utility/System.h"
 #include "Gugu/Misc/Logger.h"
 
@@ -38,6 +39,24 @@ sf::Texture* Texture::GetSFTexture() const
     return m_sfTexture;
 }
 
+void Texture::SetSmooth(bool smooth)
+{
+    if (m_sfTexture)
+    {
+        m_sfTexture->setSmooth(smooth);
+    }
+}
+
+bool Texture::IsSmooth() const
+{
+    if (m_sfTexture)
+    {
+        return m_sfTexture->isSmooth();
+    }
+
+    return false;
+}
+
 EResourceType::Type Texture::GetResourceType() const
 {
     return EResourceType::Texture;
@@ -54,7 +73,7 @@ bool Texture::LoadFromFile()
         m_sfTexture->create(200, 200);
         m_sfTexture->update(oSFImage);
 
-        m_sfTexture->setSmooth(false);
+        m_sfTexture->setSmooth(GetResources()->IsDefaultTextureSmooth());
         m_sfTexture->setRepeated(false);
 
         //TODO: Return true ? Curently it will discard the Resource I think
@@ -62,7 +81,7 @@ bool Texture::LoadFromFile()
         return false;
     }
 
-    m_sfTexture->setSmooth(false);
+    m_sfTexture->setSmooth(GetResources()->IsDefaultTextureSmooth());
     m_sfTexture->setRepeated(false);
 
     return true;

@@ -160,10 +160,11 @@ void Element::DeleteAllChildren()
     for (size_t i = 0; i < m_children.size(); ++i)
     {
         Element* pElem = m_children[i];
-        m_children[i] = nullptr;     //Set to null before calling the delete, to avoid the child to call a remove
+        pElem->m_parent = nullptr;  //Set to null before calling the delete, to avoid the child to call a remove
 
         SafeDelete(pElem);
     }
+
     m_children.clear();
 }
 

@@ -1,4 +1,7 @@
-21/03/2009 - Début du projet de moteur de jeu avec la SFML, basé sur un essai avec la SDL (2D, depuis Janvier 2009), basé sur un essai en OpenGl (3D, Décembre 2008), basé sur la création d'une machine à états (Octobre 2008).
+01/10/2008 - Prototype de machine à états.
+01/12/2008 - Prototype de moteur de jeu 3D basé sur OpenGl.
+01/01/2009 - Prototype de moteur de jeu 2D basé sur SDL.
+21/03/2009 - Reboot du projet de moteur de jeu 2D sur SFML.
 03/04/2009 - Base plutôt bien avancée, première version des images de la démo Volley. Gestion des déplacements père/fils.
 05/05/2009 - Ajout de la gestion d'acteurs. Bases de Gui presque finies. Première passe de clean général.
 05/07/2009 - Grosse passe de clean : namespaces, includes, Game -> Engine (hamster check 1).
@@ -47,6 +50,14 @@
 04/07/2018 - Version 0.5.1
     > Script de conversion des tabs en espaces
     > Mise à jour SFML 2.5.0
+    
+06/04/2020 - Version 0.5.2
+    > Migration Bitbucket vers Github.
+    > Ajout des commandes speed et bounds.
+    > Ajout de la gestion des joysticks.
+    > Ajout des fonctions d'interpolation.
+    > Ajout du zoom sur les cameras.
+    
     
     
     

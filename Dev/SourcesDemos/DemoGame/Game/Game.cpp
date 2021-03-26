@@ -152,7 +152,7 @@ void Game::CreateScenario()
     m_character = new Character;
     pLevel->AddActor(m_character);
 
-    m_character->InitCharacter(true, 250.f);
+    m_character->InitCharacter(true, 1000.f);
 
     m_controllerPlayer = new ControllerPlayer;
     pLevel->AddActor(m_controllerPlayer);
@@ -160,7 +160,7 @@ void Game::CreateScenario()
     m_controllerPlayer->InitControllerPlayer(m_character);
 
     //Init Enemies
-    for (size_t i = 0; i < 50; ++i)
+    for (size_t i = 0; i < 500; ++i)
     {
         ControllerAI* pControllerAI = new ControllerAI;
         pLevel->AddActor(pControllerAI);

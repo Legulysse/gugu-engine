@@ -33,8 +33,8 @@ Character::Character()
     m_staminaRecovery = 50.f;
     m_staminaRecoveryDelay = 1.f;
 
-    m_attackSpeed = 5.f;
-    m_attackStaminaCost = 2.f;
+    m_attackSpeed = 200;
+    m_attackStaminaCost = 0.0f;
 
     m_sprite = nullptr;
     m_lifeBar = nullptr;
@@ -92,8 +92,8 @@ void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
 {
     if (_kDirection == sf::Vector2f())  //TODO: Constant for Zero vector
     {
-        if(!m_sprite->IsAnimationPlaying("Idle"))  //TODO: param on StartAnimation to check current anim
-            m_sprite->StartAnimation("Idle");
+        //if(!m_sprite->IsAnimationPlaying("IdleDown") && m_attackCooldown <= 0.f)  //TODO: param on StartAnimation to check current anim
+        //    m_sprite->StartAnimation("IdleDown");
     }
     else
     {
@@ -102,8 +102,7 @@ void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
 
         float fAngleDegrees = ToDegreesf(atan2f(_kDirection.y, _kDirection.x));     //TODO: Atan2 dans Math.h + AngleVector en version degrees + radians + rename ToDegrees
 
-        std::string strAnim = "Idle";
-
+        std::string strAnim = "IdleDown";
         if (fAngleDegrees >= -45.f && fAngleDegrees <= 45.f)
             strAnim = "WalkRight";
         else if (fAngleDegrees <= -135.f || fAngleDegrees >= 135.f)
@@ -113,28 +112,64 @@ void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
         else if (fAngleDegrees <= -45.f && fAngleDegrees >= -135.f)
             strAnim = "WalkUp";
 
-        if (!m_sprite->IsAnimationPlaying(strAnim))
+        if (!m_sprite->IsAnimationPlaying(strAnim) && m_attackCooldown <= 0.f)
             m_sprite->StartAnimation(strAnim);
     }
 }
 
-void Character::Attack(const sf::Vector2f& _kCoords)
+void Character::Attack(const sf::Vector2f& _kCoords, const DeltaTime& dt)
 {
     if (m_attackCooldown <= 0.f && m_currentStamina > 0.f)   // Allow action when we have at least 1 stamina point (allow negative values)
     {
-        m_currentStamina -= m_attackStaminaCost;
+        float attackDelay = (m_attackSpeed > 0.f) ? 1.f / m_attackSpeed : 1.f;
+        int nbAttacks = Max(1, (int)(dt.s() / attackDelay));
+
+        m_attackCooldown = attackDelay * nbAttacks;
         m_staminaRecoveryCooldown = m_staminaRecoveryDelay;
 
-        m_attackCooldown = (m_attackSpeed > 0.f) ? 1.f / m_attackSpeed : 1.f;
+        for (int i = 0; i < nbAttacks; ++i)
+        {
+            if (m_currentStamina <= 0.f)   // Allow action when we have at least 1 stamina point (allow negative values)
+            {
+                break;
+            }
 
-        Projectile* newProjectile = new Projectile();
-        m_level->AddActor(newProjectile);
+            m_currentStamina -= m_attackStaminaCost;
 
-        newProjectile->InitProjectile(this, GetPosition(), _kCoords);
+            Projectile* newProjectile = new Projectile();
+            m_level->AddActor(newProjectile);
+
+            newProjectile->InitProjectile(this, GetPosition(), _kCoords);
+        }
+
+        sf::Vector2f direction;
+        if (_kCoords != GetPosition())
+        {
+            direction = Normalize(_kCoords - GetPosition());
+        }
+        else
+        {
+            direction = sf::Vector2f(1.f, 0.f);
+        }
+
+        float fAngleDegrees = ToDegreesf(atan2f(direction.y, direction.x));
+
+        std::string strAnim = "";
+        if (fAngleDegrees >= -45.f && fAngleDegrees <= 45.f)
+            strAnim = "AttackRight";
+        else if (fAngleDegrees <= -135.f || fAngleDegrees >= 135.f)
+            strAnim = "AttackLeft";
+        else if (fAngleDegrees >= 45.f && fAngleDegrees <= 135.f)
+            strAnim = "AttackDown";
+        else if (fAngleDegrees <= -45.f && fAngleDegrees >= -135.f)
+            strAnim = "AttackUp";
+
+        if (strAnim != "" && !m_sprite->IsAnimationPlaying(strAnim))
+            m_sprite->StartAnimation(strAnim);
     }
 }
 
-bool Character::TestCollision(class Projectile* _pProjectile)
+bool Character::TestCollision(Projectile* _pProjectile)
 {
     if (!_pProjectile)
         return false;

@@ -73,7 +73,7 @@ void ControllerPlayer::Step(const DeltaTime& dt)
         sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
         Camera* pCamera = GetGameWindow()->GetCamera(0);
         sf::Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
-        m_character->Attack(kPickedPosition);       //TODO: test with varrying world transform
+        m_character->Attack(kPickedPosition, dt);       //TODO: test with varrying world transform
     }
 
     //Camera

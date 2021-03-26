@@ -43,4 +43,20 @@
 		<Frame SubImage="x7_y8" Duration="0.08" Events="" />
 		<Frame SubImage="x8_y8" Duration="0.08" Events="" />
 	</Animation>
+	<Animation Name="AttackLeft">
+		<Frame SubImage="x8_y17" Duration="0.1" Events="" />
+		<Frame SubImage="x9_y17" Duration="0.1" Events="" />
+	</Animation>
+	<Animation Name="AttackUp">
+		<Frame SubImage="x8_y16" Duration="0.1" Events="" />
+		<Frame SubImage="x9_y16" Duration="0.1" Events="" />
+	</Animation>
+	<Animation Name="AttackRight">
+		<Frame SubImage="x8_y19" Duration="0.1" Events="" />
+		<Frame SubImage="x9_y19" Duration="0.1" Events="" />
+	</Animation>
+	<Animation Name="AttackDown">
+		<Frame SubImage="x8_y18" Duration="0.1" Events="" />
+		<Frame SubImage="x9_y18" Duration="0.1" Events="" />
+	</Animation>
 </AnimSet>

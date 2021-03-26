@@ -33,7 +33,7 @@ public:
     void            Move        (sf::Vector2f _kDirection, const gugu::DeltaTime& dt);
     sf::Vector2f    GetPosition () const;
 
-    void            Attack(const sf::Vector2f& _kCoords);
+    void            Attack(const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt);
 
     bool TestCollision(class Projectile* _pProjectile);
 

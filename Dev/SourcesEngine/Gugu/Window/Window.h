@@ -46,7 +46,7 @@ public:
     Window();
     virtual ~Window();
 
-    sf::RenderWindow*   Create  (const EngineConfig& config);
+    sf::RenderWindow*   Create  (const EngineConfig& config, bool hostImGui);
     virtual void        Init    (sf::RenderWindow* _pSFWindow, const EngineConfig& config);
 
     void        Step            (const DeltaTime& dt);
@@ -89,7 +89,7 @@ public:
 
     HandlerEvents*      GetEvents() const;
 
-    bool ProcessEvents  ();
+    bool ProcessEvents();
 
     bool IsConsoleVisible() const;
 
@@ -130,6 +130,8 @@ protected:
 
     sf::RenderWindow*   m_sfWindow;
     Renderer*           m_renderer;
+
+    bool                m_hostImGui;
 
     Camera*                     m_mainCamera;
     std::vector<Camera*>        m_cameras;

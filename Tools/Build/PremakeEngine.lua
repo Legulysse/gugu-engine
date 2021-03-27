@@ -29,9 +29,10 @@ function ProjectLibGuguEngine(BuildCfg)
             BuildCfg.DirSourcesEngine,
             BuildCfg.DirSourcesSfml.."include/",
             BuildCfg.DirSourcesPugiXml,
+            BuildCfg.DirSourcesImGui,
         })
 		
-        dependson { "SFML", "PugiXml" } -- project dependency
+        dependson { "ImGui", "SFML", "PugiXml" } -- project dependency
 
         filter { "configurations:Debug" }
             defines { "DEBUG" }
@@ -54,6 +55,50 @@ function ProjectLibGuguEngine(BuildCfg)
         filter { "system:windows", "action:vs2013 or vs2015 or vs2017" }
             warnings "Extra"
             disablewarnings { "4100", } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
+end
+
+-- Project ImGui
+function ProjectLibImGui(BuildCfg)
+
+    DirImGuiSources = BuildCfg.DirSourcesImGui
+
+    project "ImGui"
+        kind "StaticLib"
+        language "C++"
+        defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+        systemversion "latest"
+        characterset "Unicode"
+        targetdir (BuildCfg.DirLibEngine)
+        uuid "11A07067-A137-4C3C-B6ED-F2DC8BE3639D"
+        
+        files {
+            DirImGuiSources.."**.h",
+            DirImGuiSources.."**.cpp",
+        }
+        includedirs {
+            DirImGuiSources,
+            BuildCfg.DirSourcesSfml.."include/",
+        }
+
+        dependson { "SFML" } -- project dependency
+
+        filter { "configurations:Debug" }
+            defines { "DEBUG", "_DEBUG" }
+            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+            symbols "On"
+            targetname "ImGui-s-d"
+
+        filter { "configurations:Release" }
+            defines { "NDEBUG" }
+            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+            optimize "On"
+            targetname "ImGui-s"
+            
+        filter { "platforms:x86" }
+            architecture "x32"
+            
+        filter { "platforms:x64" }
+            architecture "x64"
 end
 
 -- Project SFML

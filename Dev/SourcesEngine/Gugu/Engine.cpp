@@ -29,6 +29,7 @@
 #include "Gugu/World/World.h"
 
 #include <SFML/System/Sleep.hpp>
+#include <imgui-SFML.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -125,10 +126,12 @@ void Engine::Init(const EngineConfig& config)
 
     if (m_gameWindow)
     {
-        m_gameWindow->Create(computedConfig);
+        m_gameWindow->Create(computedConfig, true);
         m_gameWindow->SetRenderer(m_renderer);
 
         AddWindow(m_gameWindow);
+
+        ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
     }
 }
 
@@ -154,6 +157,8 @@ void Engine::Release()
     SafeDelete( m_managerResources );
 
     SafeDelete(m_traceGroupMain);
+
+    ImGui::SFML::Shutdown();
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, "Gugu::Engine Stop");
     SafeDelete(m_logEngine);
@@ -235,16 +240,16 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
         for (size_t i = 0; i < m_windows.size(); ++i)
         {
             Window* pWindow = m_windows[i];
+
             bool bClosed = pWindow->ProcessEvents();
             if (bClosed)
             {
-                bool bMainWindow = (pWindow == m_gameWindow);
-
                 //TODO: I currently avoid to delete Windows for crash safety (events, Elements), maybe I could handle this better
                 //RemoveWindow(pWindow); //if used, need manual handling of ++i
                 //SafeDelete(pWindow);
 
-                if (bMainWindow)
+                bool isMainWindow = (pWindow == m_gameWindow);
+                if (isMainWindow)
                 {
                     GetEngine()->StopLooping();
                     return;
@@ -291,6 +296,11 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     {
         GUGU_SCOPE_TRACE_MAIN("Update");
         clockStatSteps.restart();
+
+        if (m_gameWindow)
+        {
+            ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), sf::Time(dt));
+        }
 
         //Update
         if (m_application)

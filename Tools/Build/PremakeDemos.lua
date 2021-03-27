@@ -31,6 +31,7 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
             BuildCfg.DirSourcesEngine,
             BuildCfg.DirSourcesSfml.."include/",
             BuildCfg.DirSourcesPugiXml,
+            BuildCfg.DirSourcesImGui,
         }
         
         -- Libs directories
@@ -55,10 +56,10 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
             
         -- Links
         filter { "configurations:Debug" }
-            links { "GuguEngine-s-d", "SFML-s-d", "PugiXml-s-d" }
+            links { "GuguEngine-s-d", "ImGui-s-d", "SFML-s-d", "PugiXml-s-d" }
             
         filter { "configurations:Release" }
-            links { "GuguEngine-s", "SFML-s", "PugiXml-s" }
+            links { "GuguEngine-s", "ImGui-s", "SFML-s", "PugiXml-s" }
             
         filter { "system:windows" }
 			links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }

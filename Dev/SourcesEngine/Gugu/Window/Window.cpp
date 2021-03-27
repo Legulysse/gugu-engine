@@ -32,6 +32,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include <thread>   // Used for async screenshot save
+#include <imgui-SFML.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -76,9 +77,10 @@ Window::~Window()
     SafeDelete(m_sfWindow);
 }
 
-sf::RenderWindow* Window::Create(const EngineConfig& config)
+sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
 {
     m_sfWindow = new sf::RenderWindow;
+    m_hostImGui = hostImGui;
 
     //Windows Settings
     sf::ContextSettings Settings;
@@ -110,6 +112,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_backgroundColor = config.backgroundColor;
 
     m_sfWindow->setKeyRepeatEnabled(false);
+    m_sfWindow->resetGLStates();
 
     //Rendering
     m_mainCamera = new Camera;
@@ -365,6 +368,13 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
             DrawStats(kFrameInfos, DeltaTime(kRenderClock.getElapsedTime()), dt, engineStats);
         else if (m_showFPS)
             DrawFPS(dt);
+    }
+
+    if (m_hostImGui)
+    {
+        GUGU_SCOPE_TRACE_MAIN("ImGui");
+
+        ImGui::SFML::Render(*m_sfWindow);
     }
 
     {
@@ -651,25 +661,30 @@ void Window::ComputeSize(int _iWidth, int _iHeight)
 
 bool Window::ProcessEvents()
 {
-    sf::Event oEvent;
-    while (m_sfWindow->pollEvent(oEvent))
+    sf::Event event;
+    while (m_sfWindow->pollEvent(event))
     {
         GUGU_SCOPE_TRACE_MAIN("Window Process Event");
 
-        if (oEvent.type == sf::Event::Closed)
+        if (m_hostImGui)
+        {
+            ImGui::SFML::ProcessEvent(event);
+        }
+
+        if (event.type == sf::Event::Closed)
         {
             return true;
         }
         else if (m_consoleNode->IsVisible() && m_consoleTextEntry)
         {
-            if (ProcessEvent(oEvent))
+            if (ProcessEvent(event))
             {
-                m_consoleTextEntry->OnSFEvent(oEvent);
+                m_consoleTextEntry->OnSFEvent(event);
             }
         }
         else
         {
-            if (ProcessEvent(oEvent))
+            if (ProcessEvent(event))
             {
                 std::vector<HandlerEvents::InteractiveElementEntry> vecRootElements;
 
@@ -694,7 +709,7 @@ bool Window::ProcessEvents()
                     }
                 }
 
-                m_handlerEvents->ProcessEventOnElements(oEvent, vecRootElements);
+                m_handlerEvents->ProcessEventOnElements(event, vecRootElements);
             }
         }
     }

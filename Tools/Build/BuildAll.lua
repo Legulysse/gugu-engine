@@ -16,6 +16,7 @@ BuildCfg = {
     DirSourcesEngine    = EnsureSlash(pathDev.."SourcesEngine"),
     DirSourcesSfml      = EnsureSlash(pathDev.."SourcesSFML"),
     DirSourcesPugiXml   = EnsureSlash(pathDev.."SourcesPugiXml"),
+    DirSourcesImGui     = EnsureSlash(pathDev.."SourcesImGui"),
     DirLibEngine        = EnsureSlash(pathSolution.."Build"),
 }
 
@@ -54,3 +55,4 @@ solution "GuguEngine"
     group "External"
     ProjectLibSFML(BuildCfg)
     ProjectLibPugiXml(BuildCfg)
+    ProjectLibImGui(BuildCfg)

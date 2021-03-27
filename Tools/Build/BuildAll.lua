@@ -32,7 +32,7 @@ solution "GuguEngine"
     -- GUIDs can be generated from here : https://www.guidgenerator.com/online-guid-generator.aspx
 
     group "Demo Game"
-    ProjectDefault(BuildCfg, "DemoGame"       , pathDev.."SourcesDemos/DemoGame"         	, pathVersion.."DemoGame", "9F765D56-4450-4839-9060-DF16801FA23C")
+    ProjectDefault(BuildCfg, "DemoGame"         , pathDev.."SourcesDemos/DemoGame"         	, pathVersion.."DemoGame", "9F765D56-4450-4839-9060-DF16801FA23C")
     
     group "Demo Tests"
     ProjectDefault(BuildCfg, "DemoHelloWorld"   , pathDev.."SourcesDemos/DemoHelloWorld"   	, pathVersion.."DemoTests", "3CA4F3A3-45C4-4DE3-96EA-C3E8CCD90501")
@@ -48,6 +48,7 @@ solution "GuguEngine"
     ProjectDefault(BuildCfg, "DemoSystemUtility", pathDev.."SourcesDemos/DemoSystemUtility" , pathVersion.."DemoTests", "C651D7AF-5018-438B-8508-E2353C82AC7C")
     ProjectDefault(BuildCfg, "DemoTestSizes"    , pathDev.."SourcesDemos/DemoTestSizes"     , pathVersion.."DemoTests", "A9A0A24C-014D-4EA3-AA4F-FCCCCC9B0F26")
     ProjectDefault(BuildCfg, "DemoCallback"     , pathDev.."SourcesDemos/DemoCallback"     	, pathVersion.."DemoTests", "A6F5963E-901A-4CE5-9A56-38F8FE448267")
+    ProjectDefault(BuildCfg, "DemoImGui"        , pathDev.."SourcesDemos/DemoImGui"   	    , pathVersion.."DemoTests", "27168220-7E03-4AFA-8196-4821B7EDE8A5")
     
     group "Engine"
     ProjectLibGuguEngine(BuildCfg)

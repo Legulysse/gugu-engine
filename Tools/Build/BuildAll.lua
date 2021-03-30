@@ -6,6 +6,7 @@ require "PremakeDemos"
 local pathDev 		= EnsureSlash("../../Dev")
 local pathSolution 	= EnsureSlash(pathDev.."Build/".._ACTION)
 local pathVersion 	= EnsureSlash("../../Version")
+local pathEditorVersion = EnsureSlash("../../Tools/GuguEditor")
 
 BuildCfg = {
     -- Solution
@@ -18,6 +19,11 @@ BuildCfg = {
     DirSourcesPugiXml   = EnsureSlash(pathDev.."SourcesPugiXml"),
     DirSourcesImGui     = EnsureSlash(pathDev.."SourcesImGui"),
     DirLibEngine        = EnsureSlash(pathSolution.."Build"),
+    
+    -- Editor
+    DirEditorVersion    = EnsureSlash(pathEditorVersion),
+    DirSourcesEditorApp = EnsureSlash(pathDev.."SourcesEditor"),
+    DirSourcesEditorLib = EnsureSlash(pathDev.."SourcesEditorLib"),
 }
 
 
@@ -49,6 +55,10 @@ solution "GuguEngine"
     ProjectDefault(BuildCfg, "DemoTestSizes"    , pathDev.."SourcesDemos/DemoTestSizes"     , pathVersion.."DemoTests", "A9A0A24C-014D-4EA3-AA4F-FCCCCC9B0F26")
     ProjectDefault(BuildCfg, "DemoCallback"     , pathDev.."SourcesDemos/DemoCallback"     	, pathVersion.."DemoTests", "A6F5963E-901A-4CE5-9A56-38F8FE448267")
     ProjectDefault(BuildCfg, "DemoImGui"        , pathDev.."SourcesDemos/DemoImGui"   	    , pathVersion.."DemoTests", "27168220-7E03-4AFA-8196-4821B7EDE8A5")
+    
+    group "Editor"
+    ProjectGuguEditor(BuildCfg)
+    ProjectLibGuguEditor(BuildCfg)
     
     group "Engine"
     ProjectLibGuguEngine(BuildCfg)

@@ -6,6 +6,152 @@ function EnsureSlash(path)
 	return path
 end
 
+-- Project GuguEditor
+function ProjectGuguEditor(BuildCfg)
+    
+	SubDirBinaries = EnsureSlash(BuildCfg.SubDirBinaries)
+	
+    project ("GuguEditor")
+        language "C++"
+        defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
+        systemversion "latest"
+        characterset "Unicode"
+        targetdir   (BuildCfg.DirEditorVersion..SubDirBinaries)
+        debugdir    (BuildCfg.DirEditorVersion)
+        uuid        ("E4D3697E-E0B5-4343-B000-E895BACF446A")
+        
+        -- Projects dependencies
+        dependson { "GuguEditorLib" }
+        
+        -- Files
+        files {
+            BuildCfg.DirSourcesEditorApp.."**.h",
+            BuildCfg.DirSourcesEditorApp.."**.hpp",
+            BuildCfg.DirSourcesEditorApp.."**.cpp",
+            BuildCfg.DirSourcesEditorApp.."**.tpp",
+        }
+        
+        -- Includes directories
+        includedirs {
+            BuildCfg.DirSourcesEditorApp,
+            BuildCfg.DirSourcesEditorLib,
+            BuildCfg.DirSourcesEngine,
+            BuildCfg.DirSourcesSfml.."include/",
+            BuildCfg.DirSourcesPugiXml,
+            BuildCfg.DirSourcesImGui,
+        }
+        
+        -- Libs directories
+        libdirs {
+            BuildCfg.DirLibEngine,
+        }
+		
+        filter { "system:windows", "action:codelite", "platforms:x86" }
+			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x86", }
+        filter { "system:windows", "action:codelite", "platforms:x64" }
+			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x64", }
+
+        filter { "system:windows", "action:vs2013", "platforms:x86" }
+            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x86", }
+        filter { "system:windows", "action:vs2013", "platforms:x64" }
+            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x64", }
+            
+        filter { "system:windows", "action:vs2015 or vs2017", "platforms:x86" }
+            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
+        filter { "system:windows", "action:vs2015 or vs2017", "platforms:x64" }
+            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x64", }
+            
+        -- Links
+        filter { "configurations:Debug" }
+            links { "GuguEditorLib-s-d", "GuguEngine-s-d", "ImGui-s-d", "SFML-s-d", "PugiXml-s-d" }
+            
+        filter { "configurations:Release" }
+            links { "GuguEditorLib-s", "GuguEngine-s", "ImGui-s", "SFML-s", "PugiXml-s" }
+            
+        filter { "system:windows" }
+			links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
+            
+        filter { "system:linux" }
+            links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
+		
+        -- Target
+        filter { "configurations:Debug" }
+            kind "ConsoleApp"
+            defines { "DEBUG" }
+            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+            symbols "On"
+            targetname ("GuguEditor-d")
+            
+        filter { "configurations:Release" }
+            kind "WindowedApp"
+            defines { "NDEBUG" }
+            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+            optimize "On"
+            targetname ("GuguEditor")
+            
+        filter { "platforms:x86" }
+            architecture "x32"
+            
+        filter { "platforms:x64" }
+            architecture "x64"
+            
+        -- Options
+        filter { "system:windows", "action:vs2013 or vs2015 or vs2017" }
+            warnings "Extra"
+            disablewarnings { "4100", "4189" } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
+            
+end
+
+-- Project GuguEditor Lib
+function ProjectLibGuguEditor(BuildCfg)
+
+    project "GuguEditorLib"
+        kind "StaticLib"
+        language "C++"
+        defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
+        systemversion "latest"
+        characterset "Unicode"
+        targetdir (BuildCfg.DirLibEngine)
+        uuid "D56FC1A7-034F-4E7F-9DBB-B615C3C5C070"
+        
+        files {
+            BuildCfg.DirSourcesEditorLib.."**.h",
+            BuildCfg.DirSourcesEditorLib.."**.hpp",
+            BuildCfg.DirSourcesEditorLib.."**.cpp",
+            BuildCfg.DirSourcesEditorLib.."**.tpp",
+        }
+        includedirs ({
+            BuildCfg.DirSourcesEditorLib,
+            BuildCfg.DirSourcesEngine,
+            BuildCfg.DirSourcesSfml.."include/",
+            BuildCfg.DirSourcesPugiXml,
+            BuildCfg.DirSourcesImGui,
+        })
+		
+        dependson { "GuguEngine", "ImGui", "SFML", "PugiXml" } -- project dependency
+
+        filter { "configurations:Debug" }
+            defines { "DEBUG" }
+            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+            symbols "On"
+            targetname "GuguEditorLib-s-d"
+
+        filter { "configurations:Release" }
+            defines { "NDEBUG" }
+            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+            optimize "On" -- Off, On, Debug, Size, Speed, Full
+            targetname "GuguEditorLib-s"
+            
+        filter { "platforms:x86" }
+            architecture "x32"
+            
+        filter { "platforms:x64" }
+            architecture "x64"
+            
+        filter { "system:windows", "action:vs2013 or vs2015 or vs2017" }
+            warnings "Extra"
+            disablewarnings { "4100", } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
+end
 
 -- Project GuguEngine
 function ProjectLibGuguEngine(BuildCfg)

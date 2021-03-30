@@ -149,7 +149,6 @@ HEADERS +=  \
             SFML/Window/InputImpl.hpp \
             SFML/Window/JoystickImpl.hpp \
             SFML/Window/JoystickManager.hpp \
-            SFML/Window/OpenBSD/JoystickImpl.hpp \
             SFML/Window/SensorImpl.hpp \
             SFML/Window/SensorManager.hpp \
             SFML/Window/VideoModeImpl.hpp \
@@ -252,7 +251,6 @@ SOURCES +=  \
             SFML/Window/JoystickManager.cpp \
             SFML/Window/Keyboard.cpp \
             SFML/Window/Mouse.cpp \
-            SFML/Window/OpenBSD/JoystickImpl.cpp \
             SFML/Window/Sensor.cpp \
             SFML/Window/SensorManager.cpp \
             SFML/Window/Touch.cpp \
@@ -485,8 +483,6 @@ OTHER_FILES +=  \
             SFML/Window/JoystickManager.hpp \
             SFML/Window/Keyboard.cpp \
             SFML/Window/Mouse.cpp \
-            SFML/Window/OpenBSD/JoystickImpl.cpp \
-            SFML/Window/OpenBSD/JoystickImpl.hpp \
             SFML/Window/Sensor.cpp \
             SFML/Window/SensorImpl.hpp \
             SFML/Window/SensorManager.cpp \

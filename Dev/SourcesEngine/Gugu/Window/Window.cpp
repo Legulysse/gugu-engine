@@ -32,7 +32,9 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include <thread>   // Used for async screenshot save
+
 #include <imgui-SFML.h>
+#include <imgui.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -334,6 +336,26 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
 
     {
         GUGU_SCOPE_TRACE_MAIN("UI");
+
+        //Handle Mouse visibility
+        bool isMouseWantedVisible = m_isMouseVisible;
+        if (isMouseWantedVisible && m_hostImGui)
+        {
+            if (ImGui::GetIO().WantCaptureMouse)
+            {
+                isMouseWantedVisible = false;
+                ImGui::GetIO().MouseDrawCursor = true;
+            }
+            else
+            {
+                ImGui::GetIO().MouseDrawCursor = false;
+            }
+        }
+
+        if (isMouseWantedVisible != m_mouseNode->IsVisible())
+        {
+            m_mouseNode->SetVisible(isMouseWantedVisible);
+        }
 
         //Render Window UI
         m_rootNode->SortOnZIndex();
@@ -788,7 +810,7 @@ void Window::SetSystemMouseVisible(bool _bIsVisible)
 void Window::SetMouseVisible(bool _bIsVisible)
 {
     m_isMouseVisible = _bIsVisible;
-    m_mouseNode->SetVisible(m_isMouseVisible);
+    //m_mouseNode->SetVisible(m_isMouseVisible);
 }
 
 void Window::SetMouseTexture(const std::string& _strFile)

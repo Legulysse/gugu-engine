@@ -31,9 +31,12 @@ public:
 
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
 
+    virtual bool OnSFEvent(const sf::Event& event) override;
+
 protected:
 
     gugu::Element* m_root;
+    bool m_showImGuiDemo;
 };
 
 }   //namespace demoproject

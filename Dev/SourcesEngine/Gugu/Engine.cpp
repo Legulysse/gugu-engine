@@ -29,7 +29,9 @@
 #include "Gugu/World/World.h"
 
 #include <SFML/System/Sleep.hpp>
+
 #include <imgui-SFML.h>
+#include <imgui.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -132,6 +134,7 @@ void Engine::Init(const EngineConfig& config)
         AddWindow(m_gameWindow);
 
         ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
     }
 }
 

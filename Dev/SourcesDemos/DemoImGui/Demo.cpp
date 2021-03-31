@@ -41,6 +41,8 @@ void Demo::AppStart()
     // Register Inputs
     ManagerConfig* pConfig = GetConfig();
     pConfig->RegisterInput("ToggleImGui", pConfig->BuildKeyboardEvent(sf::Keyboard::F1));
+    pConfig->RegisterInput("UseMouse", pConfig->BuildKeyboardEvent(sf::Keyboard::F2));
+    pConfig->RegisterInput("UseSystemMouse", pConfig->BuildKeyboardEvent(sf::Keyboard::F3));
     pConfig->RegisterInput("CloseGame", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
 
     // Set Mouse aspect
@@ -51,6 +53,11 @@ void Demo::AppStart()
     // Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
     m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+
+    // Instructions
+    ElementText* textInstructions = m_root->AddChild<ElementText>();
+    textInstructions->SetText("F1 : Toggle ImGui Demo.\nF2 : Use Game Mouse.\nF3 : Use System Mouse.\n\nEscape : Close Demo.");
+    textInstructions->SetPosition(15, 15);
 }
 
 void Demo::AppStop()
@@ -76,6 +83,18 @@ bool Demo::OnSFEvent(const sf::Event& event)
     if (config->IsInputPressed("ToggleImGui", event))
     {
         m_showImGuiDemo = !m_showImGuiDemo;
+        return false;
+    }
+    else if (config->IsInputPressed("UseMouse", event))
+    {
+        GetGameWindow()->SetMouseVisible(true);
+        GetGameWindow()->SetSystemMouseVisible(false);
+        return false;
+    }
+    else if (config->IsInputPressed("UseSystemMouse", event))
+    {
+        GetGameWindow()->SetMouseVisible(false);
+        GetGameWindow()->SetSystemMouseVisible(true);
         return false;
     }
     else if (config->IsInputReleased("CloseGame", event))

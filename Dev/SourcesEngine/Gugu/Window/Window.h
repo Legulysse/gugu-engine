@@ -145,7 +145,9 @@ protected:
     ElementText*        m_consoleTextEntry;
     ElementSprite*      m_mouseNode;            //Root for the mouse
 
-    bool                m_isMouseVisible;
+    bool                m_systemMouseVisible;
+    bool                m_mouseVisible;
+    bool                m_windowFocused;
 
     sf::Color           m_backgroundColor;
 

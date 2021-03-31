@@ -45,8 +45,10 @@ Window::Window()
 {
     m_sfWindow     = nullptr;
     m_renderer     = nullptr;
-    m_mainCamera   = nullptr;
 
+    m_hostImGui = false;
+
+    m_mainCamera   = nullptr;
     m_handlerEvents = nullptr;
 
     m_rootNode     = nullptr;
@@ -55,9 +57,12 @@ Window::Window()
     m_consoleTextEntry = nullptr;
     m_mouseNode    = nullptr;
 
+    m_systemMouseVisible = true;
+    m_mouseVisible = false;
+    m_windowFocused = false;
+
     m_showStats        = false;
     m_showFPS           = false;
-    m_isMouseVisible  = true;
 
     m_backgroundColor = sf::Color(128,128,128,255);
 
@@ -136,7 +141,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     //Mouse Node
     m_mouseNode = m_rootNode->AddChild<ElementSprite>();
     //m_pMouseNode->SetUnifiedSize(UDim2::USIZE_FULL);
-    SetMouseVisible(false);
+    m_mouseNode->SetVisible(false);
 
     //Console Node
     m_consoleNode = m_rootNode->AddChild<Element>();
@@ -148,7 +153,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     sf::Image oImgConsole;
     oImgConsole.create(8, 8, sf::Color(0, 0, 0, 128));
 
-    Texture* pTextureConsole = GetResources()->GetCustomTexture("GuguConsoleBackground");
+    Texture* pTextureConsole = GetResources()->GetCustomTexture("GuguConsoleBackground");   //TODO: Prepare custom textures in the manager beforehand
     sf::Texture* pSFTextureConsole = pTextureConsole->GetSFTexture();
     pSFTextureConsole->create(8, 8);
     pSFTextureConsole->update(oImgConsole);
@@ -338,24 +343,28 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
         GUGU_SCOPE_TRACE_MAIN("UI");
 
         //Handle Mouse visibility
-        bool isMouseWantedVisible = m_isMouseVisible;
-        if (isMouseWantedVisible && m_hostImGui)
+        bool isSystemMouseWantedVisible = m_systemMouseVisible;
+        bool isMouseWantedVisible = m_mouseVisible;
+
+        if (!m_windowFocused)
         {
-            if (ImGui::GetIO().WantCaptureMouse)
-            {
-                isMouseWantedVisible = false;
-                ImGui::GetIO().MouseDrawCursor = true;
-            }
-            else
-            {
-                ImGui::GetIO().MouseDrawCursor = false;
-            }
+            isSystemMouseWantedVisible = true;
+            isMouseWantedVisible = false;
         }
 
-        if (isMouseWantedVisible != m_mouseNode->IsVisible())
+        if (m_hostImGui && ImGui::GetIO().WantCaptureMouse)
         {
-            m_mouseNode->SetVisible(isMouseWantedVisible);
+            isSystemMouseWantedVisible = false;
+            isMouseWantedVisible = false;
+            ImGui::GetIO().MouseDrawCursor = true;
         }
+        else
+        {
+            ImGui::GetIO().MouseDrawCursor = false;
+        }
+
+        m_sfWindow->setMouseCursorVisible(isSystemMouseWantedVisible);
+        m_mouseNode->SetVisible(isMouseWantedVisible);
 
         //Render Window UI
         m_rootNode->SortOnZIndex();
@@ -747,13 +756,11 @@ bool Window::ProcessEvent(const sf::Event& _oEvent)
     }
     else if (_oEvent.type == sf::Event::MouseLeft)
     {
-        if (m_isMouseVisible)
-            m_mouseNode->SetVisible(false);
+        m_windowFocused = false;
     }
     else if (_oEvent.type == sf::Event::MouseEntered)
     {
-        if (m_isMouseVisible)
-            m_mouseNode->SetVisible(true);
+        m_windowFocused = true;
     }
     else if (_oEvent.type == sf::Event::Resized)
     {
@@ -804,13 +811,12 @@ ElementSprite* Window::GetMouseNode() const
 
 void Window::SetSystemMouseVisible(bool _bIsVisible)
 {
-    m_sfWindow->setMouseCursorVisible(_bIsVisible);
+    m_systemMouseVisible = _bIsVisible;
 }
 
 void Window::SetMouseVisible(bool _bIsVisible)
 {
-    m_isMouseVisible = _bIsVisible;
-    //m_mouseNode->SetVisible(m_isMouseVisible);
+    m_mouseVisible = _bIsVisible;
 }
 
 void Window::SetMouseTexture(const std::string& _strFile)

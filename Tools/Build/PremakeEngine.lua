@@ -56,9 +56,9 @@ function ProjectGuguEditor(BuildCfg)
         filter { "system:windows", "action:vs2013", "platforms:x64" }
             libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x64", }
             
-        filter { "system:windows", "action:vs2015 or vs2017", "platforms:x86" }
+        filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x86" }
             libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
-        filter { "system:windows", "action:vs2015 or vs2017", "platforms:x64" }
+        filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x64" }
             libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x64", }
             
         -- Links
@@ -96,7 +96,7 @@ function ProjectGuguEditor(BuildCfg)
             architecture "x64"
             
         -- Options
-        filter { "system:windows", "action:vs2013 or vs2015 or vs2017" }
+        filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019" }
             warnings "Extra"
             disablewarnings { "4100", "4189" } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
             
@@ -148,7 +148,7 @@ function ProjectLibGuguEditor(BuildCfg)
         filter { "platforms:x64" }
             architecture "x64"
             
-        filter { "system:windows", "action:vs2013 or vs2015 or vs2017" }
+        filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019" }
             warnings "Extra"
             disablewarnings { "4100", } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
 end
@@ -198,7 +198,7 @@ function ProjectLibGuguEngine(BuildCfg)
         filter { "platforms:x64" }
             architecture "x64"
             
-        filter { "system:windows", "action:vs2013 or vs2015 or vs2017" }
+        filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019" }
             warnings "Extra"
             disablewarnings { "4100", } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
 end

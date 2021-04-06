@@ -374,6 +374,23 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
     }
 
     {
+        GUGU_SCOPE_TRACE_MAIN("Stats");
+
+        //Stats
+        if (m_showStats)
+            DrawStats(kFrameInfos, DeltaTime(kRenderClock.getElapsedTime()), dt, engineStats);
+        else if (m_showFPS)
+            DrawFPS(dt);
+    }
+
+    if (m_hostImGui)
+    {
+        GUGU_SCOPE_TRACE_MAIN("ImGui");
+
+        ImGui::SFML::Render(*m_sfWindow);
+    }
+
+    {
         GUGU_SCOPE_TRACE_MAIN("Console");
 
         //Console
@@ -389,23 +406,6 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
         kRenderPassConsole.rectViewport = kViewport;
 
         m_consoleNode->Render(kRenderPassConsole, sf::Transform());
-    }
-
-    {
-        GUGU_SCOPE_TRACE_MAIN("Stats");
-
-        //Stats
-        if (m_showStats)
-            DrawStats(kFrameInfos, DeltaTime(kRenderClock.getElapsedTime()), dt, engineStats);
-        else if (m_showFPS)
-            DrawFPS(dt);
-    }
-
-    if (m_hostImGui)
-    {
-        GUGU_SCOPE_TRACE_MAIN("ImGui");
-
-        ImGui::SFML::Render(*m_sfWindow);
     }
 
     {
@@ -697,82 +697,33 @@ bool Window::ProcessEvents()
     {
         GUGU_SCOPE_TRACE_MAIN("Window Process Event");
 
-        if (m_hostImGui)
-        {
-            ImGui::SFML::ProcessEvent(event);
-        }
+        bool propagateEvent = true;
 
         if (event.type == sf::Event::Closed)
         {
             return true;
         }
-        else if (m_consoleNode->IsVisible() && m_consoleTextEntry)
+        else if (event.type == sf::Event::MouseMoved)
         {
-            if (ProcessEvent(event))
-            {
-                m_consoleTextEntry->OnSFEvent(event);
-            }
+            // TODO: the interaction code uses a method to get the mouse pixel coords not depending on this event, I should do the same for the cursor render.
+            m_mouseNode->SetPosition(GetMousePosition());
         }
-        else
+        else if (event.type == sf::Event::MouseLeft)
         {
-            if (ProcessEvent(event))
-            {
-                std::vector<HandlerEvents::InteractiveElementEntry> vecRootElements;
-
-                if (m_rootNode && m_mainCamera)
-                {
-                    m_rootNode->SortOnZIndex();
-
-                    HandlerEvents::InteractiveElementEntry kEntry;
-                    kEntry.element = m_rootNode;
-                    kEntry.camera = m_mainCamera;
-                    vecRootElements.push_back(kEntry);
-                }
-
-                for (size_t i = 0; i < m_levelBindings.size(); ++i)
-                {
-                    if (m_levelBindings[i].level && m_levelBindings[i].level->GetRootNode() && m_levelBindings[i].camera)
-                    {
-                        HandlerEvents::InteractiveElementEntry kEntry;
-                        kEntry.element = m_levelBindings[i].level->GetRootNode();
-                        kEntry.camera = m_levelBindings[i].camera;
-                        vecRootElements.push_back(kEntry);
-                    }
-                }
-
-                m_handlerEvents->ProcessEventOnElements(event, vecRootElements);
-            }
+            m_windowFocused = false;
         }
-    }
-
-    return false;
-}
-
-bool Window::ProcessEvent(const sf::Event& _oEvent)
-{
-    if (_oEvent.type == sf::Event::MouseMoved)
-    {
-        m_mouseNode->SetPosition(GetMousePosition());
-    }
-    else if (_oEvent.type == sf::Event::MouseLeft)
-    {
-        m_windowFocused = false;
-    }
-    else if (_oEvent.type == sf::Event::MouseEntered)
-    {
-        m_windowFocused = true;
-    }
-    else if (_oEvent.type == sf::Event::Resized)
-    {
-        ComputeSize(_oEvent.size.width, _oEvent.size.height);
-    }
-    else if (_oEvent.type == sf::Event::KeyReleased)
-    {
-        if (_oEvent.key.code == sf::Keyboard::Quote)
+        else if (event.type == sf::Event::MouseEntered)
+        {
+            m_windowFocused = true;
+        }
+        else if (event.type == sf::Event::Resized)
+        {
+            ComputeSize(event.size.width, event.size.height);
+        }
+        else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Quote)
         {
             if (!m_consoleNode->IsVisible())
             {
-                //Todo: Make sure the Console gets events before anything else, eventually blocking everything
                 m_consoleNode->SetVisible(true);
                 m_consoleTextEntry->StartEdition();
             }
@@ -782,11 +733,63 @@ bool Window::ProcessEvent(const sf::Event& _oEvent)
                 m_consoleNode->SetVisible(false);
             }
 
-            return false;
+            propagateEvent = false;
+        }
+        else if (m_consoleNode->IsVisible())
+        {
+            m_consoleTextEntry->OnSFEvent(event);
+            propagateEvent = false;
+        }
+
+        if (m_hostImGui && propagateEvent)
+        {
+            // This will help disabling imgui text entries, but not the mouse events, they are handled in ImGui::SFML::Update.
+            if (!m_consoleNode->IsVisible())
+            {
+                ImGui::SFML::ProcessEvent(event);
+            }
+        }
+
+        if (m_hostImGui && ImGui::GetIO().WantCaptureMouse
+            && (event.type == sf::Event::MouseButtonPressed
+                || event.type == sf::Event::MouseButtonReleased
+                || event.type == sf::Event::MouseWheelMoved
+                || event.type == sf::Event::MouseWheelScrolled
+                || event.type == sf::Event::MouseMoved))
+        {
+            propagateEvent = false;
+        }
+
+        if (propagateEvent)
+        {
+            std::vector<HandlerEvents::InteractiveElementEntry> vecRootElements;
+
+            if (m_rootNode && m_mainCamera)
+            {
+                m_rootNode->SortOnZIndex();
+
+                HandlerEvents::InteractiveElementEntry kEntry;
+                kEntry.element = m_rootNode;
+                kEntry.camera = m_mainCamera;
+                vecRootElements.push_back(kEntry);
+            }
+
+            for (size_t i = 0; i < m_levelBindings.size(); ++i)
+            {
+                if (m_levelBindings[i].level && m_levelBindings[i].level->GetRootNode() && m_levelBindings[i].camera)
+                {
+                    HandlerEvents::InteractiveElementEntry kEntry;
+                    kEntry.element = m_levelBindings[i].level->GetRootNode();
+                    kEntry.camera = m_levelBindings[i].camera;
+                    vecRootElements.push_back(kEntry);
+                }
+            }
+
+            m_handlerEvents->ProcessEventOnElements(event, vecRootElements);
         }
     }
 
-    return true;
+    return false;
 }
 
 bool Window::IsConsoleVisible() const

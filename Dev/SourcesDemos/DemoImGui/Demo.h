@@ -12,6 +12,7 @@
 namespace gugu
 {
     class Element;
+    class ElementText;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -33,9 +34,20 @@ public:
 
     virtual bool OnSFEvent(const sf::Event& event) override;
 
+private:
+
+    enum EButton
+    {
+        ToggleTextA,
+        ToggleTextB,
+    };
+
+    void OnButtonClick(EButton button);
+
 protected:
 
     gugu::Element* m_root;
+    gugu::ElementText* m_textToggle;
     bool m_showImGuiDemo;
 };
 

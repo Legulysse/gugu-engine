@@ -111,7 +111,7 @@ protected:
 
 private:
 
-    bool ProcessEvent(const sf::Event& _oEvent);
+    bool ProcessEvent(const sf::Event& event);
 
     void OnConsoleCommandValidated();
 

@@ -371,6 +371,7 @@ bool ElementText::OnMouseDeselected()
 
 bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
 {
+    //TODO: rework this method with the sf::Event::TextEntered instead.
     if(!m_isEditing || _oSFEvent.type != sf::Event::KeyPressed)
         return true;
 

@@ -138,8 +138,10 @@ void Game::CreateScenario()
     pCamera->SetCenterOnTarget(true);
     
     Level* pLevel = GetWorld()->GetMainLevel()->CreateSubLevel();
-
     GetGameWindow()->BindLevel(pLevel, pCamera);
+
+    //Disable interactions on level nodes (optimisation)
+    pLevel->GetRootNode()->AddInteractionFlag(EInteraction::Absorb);
     
     //Fill Level
     //ElementSprite* pGround = pLevel->GetLayer(0)->GetRoot()->AddChild<ElementSprite>();

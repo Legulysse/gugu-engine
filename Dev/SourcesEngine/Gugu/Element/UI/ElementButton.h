@@ -55,6 +55,7 @@ public:
     virtual void OnMouseEnter() override;
     virtual void OnMouseLeave() override;
 
+    // TODO: Use UDim directly instead of an enum.
     void SetTextAlignment(ETextAlignment::Type _eAlignX = ETextAlignment::Center, float _fOffsetX = 0.f, ETextAlignment::Type _eAlignY = ETextAlignment::Top, float _fOffsetY = 0.f);
 
     ElementText* GetElementText() const;

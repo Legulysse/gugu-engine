@@ -698,12 +698,14 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
         //Debug Bounds
         if (m_showDebugBounds || (_kRenderPass.frameInfos && _kRenderPass.frameInfos->showBounds))
         {
+            // TODO: Maybe try to render all bounds in a single drawcall ?
             _kRenderPass.frameInfos->defaultBoundsShape.setSize(m_size);
             _kRenderPass.target->draw(_kRenderPass.frameInfos->defaultBoundsShape, combinedTransform);
 
-            //Stats
-            if (_kRenderPass.frameInfos)
-                _kRenderPass.frameInfos->statDrawCalls += 1;
+            // TODO: I believe it's not useful to count the bounds drawcalls, but it could be done through separate stats.
+            ////Stats
+            //if (_kRenderPass.frameInfos)
+            //    _kRenderPass.frameInfos->statDrawCalls += 1;
         }
     }
 }

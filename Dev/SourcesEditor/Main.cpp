@@ -34,8 +34,9 @@ int main(int argc, char* argv[])
     config.pathAssets = "Assets";
     config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";
-    config.windowWidth = 1024;
-    config.windowHeight = 768;
+    config.windowWidth = 1440;
+    config.windowHeight = 900;
+    config.maximizeWindow = true;
 
     GetEngine()->Init(config);
 

@@ -31,10 +31,13 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include <thread>   // Used for async screenshot save
-
 #include <imgui-SFML.h>
 #include <imgui.h>
+
+#include <thread>           // Used for async screenshot save.
+#ifdef GUGU_OS_WIN32
+    #include <windows.h>    // Used for maximizing the window.
+#endif
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -99,6 +102,13 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     m_sfWindow->create(sf::VideoMode(config.windowWidth, config.windowHeight, 32), config.applicationName,/* sf::Style::Default */ sf::Style::Resize | sf::Style::Close, Settings);
     m_sfWindow->setFramerateLimit(config.framerateLimit);
     m_sfWindow->setVerticalSyncEnabled(config.enableVerticalSync);
+
+#ifdef GUGU_OS_WIN32
+    if (config.maximizeWindow)
+    {
+        ::ShowWindow(m_sfWindow->getSystemHandle(), SW_MAXIMIZE);
+    }
+#endif
 
     if (GetResources()->HasResource(config.applicationIcon))
     {

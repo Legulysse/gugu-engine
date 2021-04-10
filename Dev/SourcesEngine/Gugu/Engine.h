@@ -68,6 +68,7 @@ struct EngineConfig
     bool enableVerticalSync;
     int framerateLimit;
     sf::Color backgroundColor;
+    bool maximizeWindow;
 
     // Audio
     int maxSoundTracks;     // Total tracks should not exceed 256
@@ -96,6 +97,7 @@ struct EngineConfig
         enableVerticalSync = false;
         framerateLimit = 60;
         backgroundColor = sf::Color(128, 128, 128, 255);
+        maximizeWindow = false;
 
         maxSoundTracks = 240;   // Total tracks should not exceed 256
         maxMusicTracks = 16;    // Total tracks should not exceed 256

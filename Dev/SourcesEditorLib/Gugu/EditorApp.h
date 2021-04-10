@@ -22,6 +22,12 @@ public:
     virtual void AppStop() override;
 
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
+
+    virtual bool OnSFEvent(const sf::Event& event) override;
+
+private:
+
+    class EditorCore* m_editorCore;
 };
 
-}   //namespace demoproject
+}   //namespace gugu

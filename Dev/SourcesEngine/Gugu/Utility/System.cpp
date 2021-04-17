@@ -111,6 +111,8 @@ void StdStringReplaceSelf(std::string& _strValue, const std::string& _strFrom, c
 
 void StdStringSplit(const std::string& _strValue, std::string _strDelimiter, std::vector<std::string>& _vecTokens)
 {
+    _vecTokens.clear();
+
     if (_strValue.empty())
         return;
 

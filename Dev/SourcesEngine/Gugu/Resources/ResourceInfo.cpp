@@ -25,9 +25,9 @@ ResourceInfo::~ResourceInfo()
     SafeDelete(resource);
 }
 
-bool ResourceInfo::Compare(const ResourceInfo* pLeft, const ResourceInfo* pRight)
+bool ResourceInfo::CompareID(const ResourceInfo* pLeft, const ResourceInfo* pRight)
 {
-    return pLeft->fileInfo < pRight->fileInfo;
+    return pLeft->resourceID < pRight->resourceID;
 }
 
 }   // namespace gugu

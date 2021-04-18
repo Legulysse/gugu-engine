@@ -25,7 +25,7 @@ public:
     ResourceInfo();
     ~ResourceInfo();
 
-    static bool Compare (const ResourceInfo* pLeft, const ResourceInfo* pRight);
+    static bool CompareID(const ResourceInfo* pLeft, const ResourceInfo* pRight);
 
 public:
 

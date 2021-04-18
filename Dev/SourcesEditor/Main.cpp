@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
     config.applicationIcon = "Icon.png";
-    config.pathAssets = "Assets";
+    config.pathAssets = "../../Version/DemoGame/Assets";    // TODO: find a way to separate and handle the application assets path and the edited project assets.
     config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";
     config.windowWidth = 1440;

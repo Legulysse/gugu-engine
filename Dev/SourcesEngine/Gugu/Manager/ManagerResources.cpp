@@ -597,19 +597,20 @@ void ManagerResources::GetLoadedResourceInfos(std::vector<const ResourceInfo*>& 
         ++iteCurrent;
     }
 
-    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::Compare);
+    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
 }
 
-void ManagerResources::GetResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const
+void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const
 {
+    _vecInfos.clear();
+    _vecInfos.reserve(m_resources.size());
+
     auto iteCurrent = m_resources.begin();
     while (iteCurrent != m_resources.end())
     {
         _vecInfos.push_back(iteCurrent->second);
         ++iteCurrent;
     }
-
-    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::Compare);
 }
 
 void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType) const
@@ -619,12 +620,12 @@ void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>
     auto iteCurrent = m_resources.begin();
     while (iteCurrent != m_resources.end())
     {
-        if (iteCurrent->second->resource && iteCurrent->second->fileInfo.IsPathEnd(strPathNormalized)&& (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
+        if (iteCurrent->second->resource && iteCurrent->second->fileInfo.IsPathEnd(strPathNormalized) && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
             _vecInfos.push_back(iteCurrent->second);
         ++iteCurrent;
     }
 
-    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::Compare);
+    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
 }
 
 void ManagerResources::RegisterDatasheetFactory(DelegateStatic1P<const std::string&, Datasheet*>* _pDatasheetFactory)

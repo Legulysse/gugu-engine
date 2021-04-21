@@ -54,6 +54,8 @@ private:
     bool m_showImGuiDemo;
 
     TreeNode* m_rootNode;
+
+    std::string m_testFileOpen;
 };
 
 }   //namespace gugu

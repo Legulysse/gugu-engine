@@ -184,12 +184,22 @@ void EditorCore::Update(const DeltaTime& dt)
     if (ImGui::Begin("ImageSet Editor", false))
     {
         ImGui::Text("Here lies the future ImageSet Editor.");
+
+        if (!m_testFileOpen.empty())
+        {
+            ImGui::Text("Last opened file : %s.", m_testFileOpen.c_str());
+        }
     }
     ImGui::End();
 
     if (ImGui::Begin("AnimSet Editor", false))
     {
         ImGui::Text("Here lies the future AnimSet Editor.");
+
+        if (!m_testFileOpen.empty())
+        {
+            ImGui::Text("Last opened file : %s.", m_testFileOpen.c_str());
+        }
     }
     ImGui::End();
 
@@ -361,7 +371,11 @@ void EditorCore::DisplayTreeNode(TreeNode* node, ImGuiTreeNodeFlags directoryFla
 
         ImGui::TreeNodeEx(node->name.c_str(), nodeFlags);
 
-        if (ImGui::IsItemClicked())
+        if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
+        {
+            m_testFileOpen = node->name;
+        }
+        else if (ImGui::IsItemClicked())
         {
             // TODO: handle selection.
         }

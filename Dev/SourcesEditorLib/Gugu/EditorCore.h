@@ -40,12 +40,10 @@ private:
         std::vector<TreeNode*> children;
     };
 
-    void UpdateAssetsExplorer1();
-    void UpdateAssetsExplorer2();
+    void UpdateAssetsExplorer();
 
     void RecursiveSortTreeNodes(TreeNode* node);
-    void DisplayTreeNode1(TreeNode* node, ImGuiTreeNodeFlags directoryFlags, ImGuiTreeNodeFlags fileFlags, bool test_drag_and_drop);
-    void DisplayTreeNode2(TreeNode* node, ImGuiTreeNodeFlags directoryFlags, ImGuiTreeNodeFlags fileFlags, bool test_drag_and_drop);
+    void DisplayTreeNode(TreeNode* node, ImGuiTreeNodeFlags directoryFlags, ImGuiTreeNodeFlags fileFlags, bool test_drag_and_drop, bool table, int depth, bool expandAll, bool collapseAll);
 
     static bool CompareTreeNodes(const TreeNode* left, const TreeNode* right);
 

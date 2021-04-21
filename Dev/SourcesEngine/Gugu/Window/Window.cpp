@@ -115,6 +115,7 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
         sf::Image oImgIcon;
         oImgIcon.loadFromFile(GetResources()->GetResourcePathName(config.applicationIcon));
 
+        // TODO: maybe I should use the actual texture size ?
         m_sfWindow->setIcon(16, 16, oImgIcon.getPixelsPtr());
     }
 

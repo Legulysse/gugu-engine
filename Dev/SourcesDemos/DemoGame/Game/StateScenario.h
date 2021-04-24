@@ -12,6 +12,7 @@
 namespace gugu
 {
     class Element;
+    class ElementText;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -39,9 +40,10 @@ public:
 
 private:
 
-    gugu::Element* m_menu;
+    gugu::Element* m_root;
 
     class ElementBar* m_staminaBar;
+    class gugu::ElementText* m_textStatus;
 };
 
 }   //namespace demoproject

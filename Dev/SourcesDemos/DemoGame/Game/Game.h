@@ -42,6 +42,8 @@ public:
     void CreateScenario();
     void ClearScenario();
 
+    void GetStatus(int& level, int& enemies) const;
+
 public:
 
     Character* m_character;

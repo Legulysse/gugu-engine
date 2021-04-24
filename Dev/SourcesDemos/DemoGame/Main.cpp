@@ -37,7 +37,8 @@ int main(int argc, char* argv[])
     config.defaultFont = "Spaceranger.ttf";
     config.debugFont = "Roboto-Regular.ttf";
     config.gameWindow = EGameWindow::Sfml;
-    config.showStats = true;
+    config.maximizeWindow = true;
+    //config.showStats = true;
     
     GetEngine()->Init(config);
 

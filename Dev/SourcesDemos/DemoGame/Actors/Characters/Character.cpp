@@ -9,6 +9,7 @@
 
 #include "Actors/Projectiles/Projectile.h"
 #include "UI/ElementBar.h"
+#include "Level/Grid.h"
 
 #include "Gugu/World/Level.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
@@ -50,10 +51,14 @@ Character::Character()
 Character::~Character()
 {
     SafeDelete(m_sprite);
+
+    m_lifeBar = nullptr;
+    m_grid = nullptr;
 }
 
-void Character::InitCharacter(bool bPlayer, float _fSpeed)
+void Character::InitCharacter(bool bPlayer, float _fSpeed, Grid* grid)
 {
+    m_grid = grid;
     m_walkSpeed = _fSpeed;
 
     m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
@@ -98,7 +103,12 @@ void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
     else
     {
         _kDirection = Normalize(_kDirection);
-        m_sprite->Move(_kDirection * dt.s() * m_walkSpeed);
+
+        sf::Vector2f position = Character::GetPosition();
+        position += _kDirection * dt.s() * m_walkSpeed;
+
+        m_grid->ClampPositionInsideBounds(position);
+        m_sprite->SetPosition(position);
 
         float fAngleDegrees = ToDegreesf(atan2f(_kDirection.y, _kDirection.x));     //TODO: Atan2 dans Math.h + AngleVector en version degrees + radians + rename ToDegrees
 

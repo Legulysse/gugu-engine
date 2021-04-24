@@ -154,7 +154,7 @@ void Game::CreateScenario()
     m_character = new Character;
     pLevel->AddActor(m_character);
 
-    m_character->InitCharacter(true, 1000.f);
+    m_character->InitCharacter(true, 1000.f, m_grid);
 
     m_controllerPlayer = new ControllerPlayer;
     pLevel->AddActor(m_controllerPlayer);
@@ -172,7 +172,7 @@ void Game::CreateScenario()
         Character* pEnemy = new Character;
         pLevel->AddActor(pEnemy);
 
-        pEnemy->InitCharacter(false, 100.f);
+        pEnemy->InitCharacter(false, 100.f, m_grid);
         pControllerAI->m_character = pEnemy;
     }
 
@@ -193,6 +193,12 @@ void Game::ClearScenario()
     GetWorld()->ResetWorld();
 
     GetGameWindow()->DeleteAllCameras();
+}
+
+void Game::GetStatus(int& level, int& enemies) const
+{
+    level = 1;
+    enemies = m_controllersAI.size();
 }
 
 

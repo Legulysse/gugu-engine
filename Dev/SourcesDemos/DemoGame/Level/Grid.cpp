@@ -14,6 +14,7 @@
 #include "Gugu/Element/2D/ElementTileMap.h"
 #include "Gugu/World/Level.h"
 #include "Gugu/Utility/Random.h"
+#include "Gugu/Utility/Math.h"
 
 using namespace gugu;
 
@@ -38,10 +39,11 @@ void Grid::InitGrid(Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth
     pRoot->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
     //pRoot->Rotate(45);
 
-    ElementTileMap* pTileMap = pRoot->AddChild<ElementTileMap>();
-    pTileMap->SetTexture("LevelFloor.png");
-    pTileMap->SetTileCount(m_width, m_height);
-    pTileMap->SetTileSize(sf::Vector2f(m_cellWidth, m_cellHeight));
+    m_pTileMap = pRoot->AddChild<ElementTileMap>();
+    m_pTileMap->SetTexture("LevelFloor.png");
+    m_pTileMap->SetTileCount(m_width, m_height);
+    m_pTileMap->SetTileSize(sf::Vector2f(m_cellWidth, m_cellHeight));
+    m_pTileMap->SetPosition(m_pTileMap->GetSize() / -2.f);
 
     for (int y = 0; y < m_height; ++y)
     {
@@ -49,9 +51,15 @@ void Grid::InitGrid(Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth
         {
             //Cell* pCell = (Cell*)m_aGrid[x][y];     //TODO: I will need a nicier GetCell. Template BaseClass ?
 
-            pTileMap->SetTile(x, y, GetRandom(100) > 5 ? sf::IntRect(0, 0, 16, 16) : sf::IntRect(16, 0, 16, 16));
+            m_pTileMap->SetTile(x, y, GetRandom(100) > 5 ? sf::IntRect(0, 0, 16, 16) : sf::IntRect(16, 0, 16, 16));
         }
     }
+}
+
+void Grid::ClampPositionInsideBounds(sf::Vector2f& position) const
+{
+    position.x = Clamp(position.x, m_pTileMap->GetPosition().x, m_pTileMap->GetPosition().x + m_pTileMap->GetSize().x);
+    position.y = Clamp(position.y, m_pTileMap->GetPosition().y, m_pTileMap->GetPosition().y + m_pTileMap->GetSize().y);
 }
 
 GridCell* Grid::InstantiateCell()

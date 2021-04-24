@@ -49,8 +49,8 @@ void StateScenario::Init()
     RegisterHandlerEvents(GetGameWindow());
 
     //Root UI
-    m_menu = GetGameWindow()->GetUINode()->AddChild<Element>();
-    m_menu->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
+    m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
     //LifeBar test
     float fSizeX = 200.f;
@@ -60,7 +60,7 @@ void StateScenario::Init()
     float fOffsetX = 0.f;
     float fOffsetY = -20.f;
 
-    ElementBar* pLifeBar = m_menu->AddChild<ElementBar>();
+    ElementBar* pLifeBar = m_root->AddChild<ElementBar>();
     pLifeBar->InitBar(ElementBar::BarColor::Red, 8.f);
     pLifeBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     pLifeBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
@@ -69,7 +69,7 @@ void StateScenario::Init()
     fPositionX += fOffsetX;
     fPositionY += fOffsetY;
 
-    m_staminaBar = m_menu->AddChild<ElementBar>();
+    m_staminaBar = m_root->AddChild<ElementBar>();
     m_staminaBar->InitBar(ElementBar::BarColor::Green, 8.f);
     m_staminaBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     m_staminaBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
@@ -78,7 +78,7 @@ void StateScenario::Init()
     fPositionX += fOffsetX;
     fPositionY += fOffsetY;
 
-    ElementBar* pManaBar = m_menu->AddChild<ElementBar>();
+    ElementBar* pManaBar = m_root->AddChild<ElementBar>();
     pManaBar->InitBar(ElementBar::BarColor::Blue, 8.f);
     pManaBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     pManaBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
@@ -87,11 +87,16 @@ void StateScenario::Init()
     fPositionX += fOffsetX;
     fPositionY += fOffsetY;
 
-    ElementBar* pFaithBar = m_menu->AddChild<ElementBar>();
+    ElementBar* pFaithBar = m_root->AddChild<ElementBar>();
     pFaithBar->InitBar(ElementBar::BarColor::Yellow, 8.f);
     pFaithBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     pFaithBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
     pFaithBar->SetSize(fSizeX, fSizeY);
+
+    // Status panel
+    m_textStatus = m_root->AddChild<ElementText>();
+    m_textStatus->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
+    m_textStatus->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + sf::Vector2f(10, 10));
 
     //Init Level
     GetGame()->CreateScenario();
@@ -101,7 +106,7 @@ void StateScenario::Release()
 {
     GetGame()->ClearScenario();
 
-    SafeDelete(m_menu);
+    SafeDelete(m_root);
 }
 
 void StateScenario::Enter(State* _pStateFrom)
@@ -121,7 +126,14 @@ void StateScenario::Update(const DeltaTime& dt)
     Character* pCharacter = GetGame()->m_character;
 
     if (pCharacter->m_maxStamina > 0.f)
+    {
         m_staminaBar->SetValue(pCharacter->m_currentStamina, pCharacter->m_maxStamina);
+    }
+
+    int level = 0;
+    int enemies = 0;
+    GetGame()->GetStatus(level, enemies);
+    m_textStatus->SetText(StringFormat("Level : {0}\nEnemies : {1}", level, enemies));
 }
 
 bool StateScenario::OnSFEvent(const sf::Event& _oSFEvent)

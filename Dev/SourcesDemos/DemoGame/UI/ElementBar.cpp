@@ -45,13 +45,28 @@ void ElementBar::InitBar(BarColor _eColor, float _fBarBorderSizeX)
 
     LoadFromXml(strTemplate);
 
-    Element* pSpriteLeft = GetItem(0);
-    Element* pSpriteMid = GetItem(1);
-    Element* pSpriteRight = GetItem(2);
-
     float fBarSizeX = GetSize().x;
     float fBarSizeY = GetSize().y;
     float fBarBorderSizeX = _fBarBorderSizeX;
+
+    Element* pSpriteBackLeft = GetItem(0);
+    Element* pSpriteBackMid = GetItem(1);
+    Element* pSpriteBackRight = GetItem(2);
+    Element* pSpriteLeft = GetItem(3);
+    Element* pSpriteMid = GetItem(4);
+    Element* pSpriteRight = GetItem(5);
+
+    pSpriteBackLeft->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
+    pSpriteBackLeft->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT);
+    pSpriteBackLeft->SetUnifiedSize(UDim2(0.f, fBarBorderSizeX, 1.f, 0.f));
+
+    pSpriteBackMid->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
+    pSpriteBackMid->SetUnifiedPosition(UDim2(0.f, fBarBorderSizeX, 0.f, 0.f));
+    pSpriteBackMid->SetUnifiedSize(UDim2(1.f, -2.f * fBarBorderSizeX, 1.f, 0.f));
+
+    pSpriteBackRight->SetUnifiedOrigin(UDim2::POSITION_TOP_RIGHT);
+    pSpriteBackRight->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT);
+    pSpriteBackRight->SetUnifiedSize(UDim2(0.f, fBarBorderSizeX, 1.f, 0.f));
 
     pSpriteLeft->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
     pSpriteLeft->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT);
@@ -68,11 +83,9 @@ void ElementBar::InitBar(BarColor _eColor, float _fBarBorderSizeX)
 
 void ElementBar::SetValue(float _fCurrent, float _fMax)
 {
-    Element* pSpriteLeft = GetItem(0);
-    Element* pSpriteMid = GetItem(1);
-
-    if (!pSpriteLeft || !pSpriteMid)
-        return;
+    Element* pSpriteLeft = GetItem(3);
+    Element* pSpriteMid = GetItem(4);
+    Element* pSpriteRight = GetItem(5);
 
     float fValue = 1.f;
     if (_fMax > 0.f)
@@ -83,7 +96,22 @@ void ElementBar::SetValue(float _fCurrent, float _fMax)
     fSizeX = Max(0.f, fSizeX);
     pSpriteMid->SetUnifiedSize(UDim2(0.f, fSizeX, 1.f, 0.f));
 
-    RecomputeItemVertices(1);
+    bool leftVisible = fValue - gugu::Math::Epsilon >= 0.f;
+    bool rightVisible = fValue + gugu::Math::Epsilon >= 1.f;
+
+    // If we want to hide/show some items, we need a full recompute.
+    if (leftVisible != pSpriteLeft->IsVisible(false) || rightVisible != pSpriteRight->IsVisible(false))
+    {
+        m_needRecompute = true;
+
+        pSpriteLeft->SetVisible(leftVisible);
+        pSpriteRight->SetVisible(rightVisible);
+    }
+    else
+    {
+        // Only recompute the center item vertices when we can.
+        RecomputeItemVertices(4);
+    }
 }
 
 }   //namespace demoproject

@@ -35,7 +35,7 @@ Character::Character()
     m_staminaRecoveryDelay = 1.f;
 
     m_attackSpeed = 200;
-    m_attackStaminaCost = 0.0f;
+    m_attackStaminaCost = 0.1f;
 
     m_sprite = nullptr;
     m_lifeBar = nullptr;

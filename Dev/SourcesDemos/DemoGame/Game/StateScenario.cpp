@@ -53,14 +53,20 @@ void StateScenario::Init()
     m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
     //LifeBar test
+    ElementSprite* panelCharacterBars = m_root->AddChild<ElementSprite>();
+    panelCharacterBars->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
+    panelCharacterBars->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT);
+    panelCharacterBars->SetSubImage("uipack_rpg.imageset.xml", "panel_blue");
+    panelCharacterBars->SetSize(230, 110);
+
     float fSizeX = 200.f;
     float fSizeY = 16.f;
-    float fPositionX = 8.f;
-    float fPositionY = -8.f;
+    float fPositionX = 16;
+    float fPositionY = -16.f;
     float fOffsetX = 0.f;
     float fOffsetY = -20.f;
 
-    ElementBar* pLifeBar = m_root->AddChild<ElementBar>();
+    ElementBar* pLifeBar = panelCharacterBars->AddChild<ElementBar>();
     pLifeBar->InitBar(ElementBar::BarColor::Red, 8.f);
     pLifeBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     pLifeBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
@@ -69,7 +75,7 @@ void StateScenario::Init()
     fPositionX += fOffsetX;
     fPositionY += fOffsetY;
 
-    m_staminaBar = m_root->AddChild<ElementBar>();
+    m_staminaBar = panelCharacterBars->AddChild<ElementBar>();
     m_staminaBar->InitBar(ElementBar::BarColor::Green, 8.f);
     m_staminaBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     m_staminaBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
@@ -78,7 +84,7 @@ void StateScenario::Init()
     fPositionX += fOffsetX;
     fPositionY += fOffsetY;
 
-    ElementBar* pManaBar = m_root->AddChild<ElementBar>();
+    ElementBar* pManaBar = panelCharacterBars->AddChild<ElementBar>();
     pManaBar->InitBar(ElementBar::BarColor::Blue, 8.f);
     pManaBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     pManaBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
@@ -87,16 +93,22 @@ void StateScenario::Init()
     fPositionX += fOffsetX;
     fPositionY += fOffsetY;
 
-    ElementBar* pFaithBar = m_root->AddChild<ElementBar>();
+    ElementBar* pFaithBar = panelCharacterBars->AddChild<ElementBar>();
     pFaithBar->InitBar(ElementBar::BarColor::Yellow, 8.f);
     pFaithBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     pFaithBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
     pFaithBar->SetSize(fSizeX, fSizeY);
 
     // Status panel
-    m_textStatus = m_root->AddChild<ElementText>();
+    ElementSprite* panelStatus = m_root->AddChild<ElementSprite>();
+    panelStatus->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
+    panelStatus->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT);
+    panelStatus->SetSubImage("uipack_rpg.imageset.xml", "panel_blue");
+    panelStatus->SetSize(180, 60);
+
+    m_textStatus = panelStatus->AddChild<ElementText>();
     m_textStatus->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
-    m_textStatus->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + sf::Vector2f(10, 10));
+    m_textStatus->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + sf::Vector2f(15, 5));
 
     //Init Level
     GetGame()->CreateScenario();
@@ -131,10 +143,10 @@ void StateScenario::Update(const DeltaTime& dt)
         m_staminaBar->SetValue(pCharacter->m_currentStamina, pCharacter->m_maxStamina);
     }
 
-    int level = 0;
+    int floor = 0;
     int enemies = 0;
-    GetGame()->GetStatus(level, enemies);
-    m_textStatus->SetText(StringFormat("Level : {0}\nEnemies : {1}", level, enemies));
+    GetGame()->GetStatus(floor, enemies);
+    m_textStatus->SetText(StringFormat("Floor : {0}\nEnemies : {1}", floor, enemies));
 }
 
 bool StateScenario::OnSFEvent(const sf::Event& _oSFEvent)

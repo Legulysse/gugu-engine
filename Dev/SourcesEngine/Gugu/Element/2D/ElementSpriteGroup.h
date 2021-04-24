@@ -51,6 +51,7 @@ public:
     int AddItem(ElementSpriteGroupItem* _pNewItem);
     ElementSpriteGroupItem* GetItem(int _iIndex) const;
 
+    // TODO: add a method to trigger a recompute during the update.
     void RecomputeItemVertices(int _iIndex);
 
     virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) override;

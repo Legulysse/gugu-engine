@@ -129,19 +129,25 @@ void ElementSpriteGroup::DrawSelf(RenderPass& _kRenderPass, const sf::Transform&
             int nbVertices = 0;
             for (size_t i = 0; i < m_items.size(); ++i)
             {
-                nbVertices += m_items[i]->GetItemVertexCount();
+                if (m_items[i]->IsVisible(false))
+                {
+                    nbVertices += m_items[i]->GetItemVertexCount();
+                }
             }
+
+            // Reset vertices
+            m_vertices.setPrimitiveType(sf::Triangles);
+            m_vertices.resize(nbVertices);
 
             if (nbVertices > 0)
             {
-                // Reset vertices
-                m_vertices.setPrimitiveType(sf::Triangles);
-                m_vertices.resize(nbVertices);
-
                 int indexFirstVertex = 0;
                 for (size_t i = 0; i < m_items.size(); ++i)
                 {
-                    m_items[i]->ComputeItemVertices(m_vertices, indexFirstVertex);
+                    if (m_items[i]->IsVisible(false))
+                    {
+                        m_items[i]->ComputeItemVertices(m_vertices, indexFirstVertex);
+                    }
                 }
             }
         }
@@ -177,7 +183,10 @@ void ElementSpriteGroup::RecomputeItemVertices(int _iIndex)
         }
         else
         {
-            indexFirstVertex += m_items[i]->GetItemVertexCount();
+            if (m_items[i]->IsVisible(false))
+            {
+                indexFirstVertex += m_items[i]->GetItemVertexCount();
+            }
         }
     }
 }

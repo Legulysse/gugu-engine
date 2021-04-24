@@ -221,6 +221,7 @@ void Engine::StartLooping()
 
 void Engine::RunSingleLoop(const DeltaTime& dt)
 {
+    // TODO: rework the speed option, to handle values below 1ms/frame (I can use intervals with a dt=0).
     DeltaTime dtConstantStep((20));
     DeltaTime dtSpeedModulatedStep(2 * m_stepSpeed);    // Default step speed multiplier is 10, minimum is 1.
 

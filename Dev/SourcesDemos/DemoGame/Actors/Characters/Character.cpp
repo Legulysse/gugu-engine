@@ -90,6 +90,8 @@ void Character::InitCharacter(bool bPlayer, float _fSpeed, Grid* grid)
         m_lifeBar->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
         m_lifeBar->SetUnifiedPosition(UDim2(0.5f, 0.f, 0.f, -5.f));
         m_lifeBar->SetSize(32.f, 4.f);
+
+        m_lifeBar->SetVisible(false);
     }
 }
 
@@ -186,6 +188,8 @@ bool Character::TestCollision(Projectile* _pProjectile)
 
     if (LengthSquare(m_sprite->GetPosition() - _pProjectile->m_sprite->GetPosition()) > Power(16.f, 2))
         return false;
+
+    m_lifeBar->SetVisible(true);
 
     m_currentLife -= 20.f;
     if (m_currentLife <= 0.f)

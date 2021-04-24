@@ -5,6 +5,7 @@
 
 #include "Game/Game.h"
 #include "Game/StateMenuMain.h"
+#include "Game/StateScenario.h"
 
 #include "Gugu/Engine.h"
 
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
     EngineConfig config;
     config.applicationName = "GuguEngine Demo Game";
     config.pathAssets = "Assets";
-    config.defaultFont = "Spaceranger.ttf";
+    config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";
     config.gameWindow = EGameWindow::Sfml;
     config.maximizeWindow = true;
@@ -45,8 +46,8 @@ int main(int argc, char* argv[])
     //--------
     
     Game* pGame = new Game;
-    pGame->PushStateNow(new StateMenuMain);
     GetEngine()->SetApplication(pGame);
+    pGame->PushStateNow(new StateScenario);
 
     //--------
 

@@ -35,6 +35,9 @@ Game::Game()
 {
     m_character = nullptr;
     m_controllerPlayer = nullptr;
+
+    m_floor = 0;
+    m_delayReset = 0;
 }
 
 Game::~Game()
@@ -83,7 +86,15 @@ void Game::AppStop()
 void Game::AppStep(const DeltaTime& dt)
 {
     StateMachine::Step(dt);
+}
 
+void Game::AppUpdate(const DeltaTime& dt)
+{
+    StateMachine::Update(dt);
+}
+
+void Game::StepScenario(const DeltaTime& dt)
+{
     // Handle basic collisions for projectiles
     for (size_t iProjectile = 0; iProjectile < m_projectiles.size(); ++iProjectile)
     {
@@ -110,11 +121,22 @@ void Game::AppStep(const DeltaTime& dt)
         }
     }
     StdVectorRemove<ControllerAI*>(m_controllersAI, nullptr);
-}
 
-void Game::AppUpdate(const DeltaTime& dt)
-{
-    StateMachine::Update(dt);
+    // Reset level
+    if (m_delayReset > 0)
+    {
+        m_delayReset -= dt.ms();
+        if (m_delayReset <= 0)
+        {
+            m_delayReset = 0;
+
+            SpawnNextFloor();
+        }
+    }
+    else if (m_controllersAI.empty())
+    {
+        m_delayReset = 2000;
+    }
 }
 
 bool Game::OnSFEvent(const sf::Event& _oSFEvent)
@@ -137,46 +159,61 @@ void Game::CreateScenario()
     Camera* pCamera = GetGameWindow()->CreateCamera();
     pCamera->SetCenterOnTarget(true);
     
-    Level* pLevel = GetWorld()->GetMainLevel()->CreateSubLevel();
-    GetGameWindow()->BindLevel(pLevel, pCamera);
+    m_level = GetWorld()->GetMainLevel()->CreateSubLevel();
+    GetGameWindow()->BindLevel(m_level, pCamera);
 
     //Disable interactions on level nodes (optimisation)
-    pLevel->GetRootNode()->AddInteractionFlag(EInteraction::Absorb);
+    m_level->GetRootNode()->AddInteractionFlag(EInteraction::Absorb);
     
     //Fill Level
     //ElementSprite* pGround = pLevel->GetLayer(0)->GetRoot()->AddChild<ElementSprite>();
     //pGround->SetImage("BraidBackground.jpg");
 
     m_grid = new Grid();
-    m_grid->InitGrid(pLevel, 50, 50, 32.f, 32.f);
+    m_grid->InitGrid(m_level, 50, 50, 32.f, 32.f);
 
     //Init Player
     m_character = new Character;
-    pLevel->AddActor(m_character);
+    m_level->AddActor(m_character);
 
     m_character->InitCharacter(true, 1000.f, m_grid);
 
     m_controllerPlayer = new ControllerPlayer;
-    pLevel->AddActor(m_controllerPlayer);
+    m_level->AddActor(m_controllerPlayer);
 
     m_controllerPlayer->InitControllerPlayer(m_character);
 
+    // Spawn first level
+    m_floor = 1;
+    SpawnFloor();
+}
+
+void Game::SpawnNextFloor()
+{
+    m_floor += 1;
+
+    SpawnFloor();
+}
+
+void Game::SpawnFloor()
+{
     //Init Enemies
-    for (size_t i = 0; i < 500; ++i)
+    int enemiesCount = m_floor * 50;
+    for (size_t i = 0; i < enemiesCount; ++i)
     {
         ControllerAI* pControllerAI = new ControllerAI;
-        pLevel->AddActor(pControllerAI);
+        m_level->AddActor(pControllerAI);
 
         m_controllersAI.push_back(pControllerAI);
 
         Character* pEnemy = new Character;
-        pLevel->AddActor(pEnemy);
+        m_level->AddActor(pEnemy);
 
         pEnemy->InitCharacter(false, 100.f, m_grid);
         pControllerAI->m_character = pEnemy;
     }
 
-    pLevel->GetRootNode()->SortOnZIndex();  //TODO: Should this be automatic even for Level nodes ?
+    m_level->GetRootNode()->SortOnZIndex();  //TODO: Should this be automatic even for Level nodes ?
 }
 
 void Game::ClearScenario()
@@ -195,9 +232,9 @@ void Game::ClearScenario()
     GetGameWindow()->DeleteAllCameras();
 }
 
-void Game::GetStatus(int& level, int& enemies) const
+void Game::GetStatus(int& floor, int& enemies) const
 {
-    level = 1;
+    floor = m_floor;
     enemies = m_controllersAI.size();
 }
 

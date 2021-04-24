@@ -119,6 +119,7 @@ void StateScenario::Exit(State* _pStateTo)
 
 void StateScenario::Step(const DeltaTime& dt)
 {
+    GetGame()->StepScenario(dt);
 }
 
 void StateScenario::Update(const DeltaTime& dt)

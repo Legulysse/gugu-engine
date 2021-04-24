@@ -19,6 +19,11 @@ namespace demoproject
     class Grid;
 }
 
+namespace gugu
+{
+    class Level;
+}
+
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
@@ -41,10 +46,16 @@ public:
     
     void CreateScenario();
     void ClearScenario();
+    void StepScenario(const gugu::DeltaTime& dt);
 
-    void GetStatus(int& level, int& enemies) const;
+    void SpawnNextFloor();
+    void SpawnFloor();
+
+    void GetStatus(int& floor, int& enemies) const;
 
 public:
+
+    gugu::Level* m_level;
 
     Character* m_character;
     ControllerPlayer* m_controllerPlayer;
@@ -53,6 +64,9 @@ public:
     std::vector<Projectile*> m_projectiles;
 
     Grid* m_grid;
+
+    int m_floor;
+    int m_delayReset;
 };
 
 Game* GetGame();

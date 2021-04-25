@@ -8,6 +8,8 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include <set>
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -53,6 +55,7 @@ public:
     bool m_hasLifetime;
     bool m_hasDestination;
     int m_hitCount;
+    std::set<Character*> m_characterHits;
 };
 
 }   //namespace demoproject

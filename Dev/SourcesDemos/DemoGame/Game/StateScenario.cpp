@@ -204,7 +204,7 @@ void StateScenario::RefreshCharacterSheet()
     m_textStaminaRecoveryValue->SetText(StringFormat("{0}", GetGame()->m_character->m_staminaRecovery));
     m_textStaminaRecoveryDelayValue->SetText(StringFormat("{0}", GetGame()->m_character->m_staminaRecoveryDelay));
     m_textAttackSpeedValue->SetText(StringFormat("{0}", GetGame()->m_character->m_attackSpeed));
-    m_textAttackStaminaCostValue->SetText(StringFormat("{0}", GetGame()->m_character->m_attackStaminaCost));
+    m_textAttackStaminaCostValue->SetText(StringFormat("---"));
     m_textWalkSpeedValue->SetText(StringFormat("{0}", GetGame()->m_character->m_walkSpeed));
 }
 

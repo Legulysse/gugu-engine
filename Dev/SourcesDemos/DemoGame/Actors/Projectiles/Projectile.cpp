@@ -91,10 +91,16 @@ void Projectile::InitProjectile(const SkillContext& skillContext, DS_EffectProje
 
 bool Projectile::OnHit(Character* character)
 {
-    // TODO: handle only one hit per character.
+    if (m_characterHits.find(character) != m_characterHits.end())
+    {
+        return false;
+    }
+
+    m_characterHits.insert(character);
+    ++m_hitCount;
+
     SkillUtility::ApplySkillEffectList(m_skillContext, m_effectSource->effectsOnHit, character, m_sprite->GetPosition());
 
-    ++m_hitCount;
     if (m_effectSource->maximumHits >= 0)
     {
         return m_hitCount >= m_effectSource->maximumHits;    // true = Destroy projectile

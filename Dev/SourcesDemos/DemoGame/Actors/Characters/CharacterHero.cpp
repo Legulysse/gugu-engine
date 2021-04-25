@@ -31,7 +31,6 @@ namespace demoproject {
 CharacterHero::CharacterHero()
 {
     m_attackSpeed = 10;
-    m_attackStaminaCost = 0.1f;
 
     m_attackCooldown = 0.f;
     m_skillCooldown = 0.f;
@@ -108,7 +107,7 @@ void CharacterHero::Attack(const sf::Vector2f& _kCoords, const DeltaTime& dt)
                     break;
                 }
 
-                m_currentStamina -= m_attackStaminaCost;
+                m_currentStamina -= sheetSkill->staminaCost;
             }
 
             // Use skill.

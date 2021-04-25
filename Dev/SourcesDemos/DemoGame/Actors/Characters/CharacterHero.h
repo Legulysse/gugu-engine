@@ -37,7 +37,6 @@ public:
     float m_staminaRecoveryDelay;   // Delay in seconds before stamina recovery
 
     float m_attackSpeed;            // Nb attacks per second
-    float m_attackStaminaCost;      // Stamina cost per attack
 
 public:
 

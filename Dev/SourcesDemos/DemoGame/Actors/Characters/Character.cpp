@@ -26,13 +26,8 @@ namespace demoproject {
 
 Character::Character()
 {
-    m_walkSpeed = 100.f;
-    m_maxLife = 100.f;
-
     m_sprite = nullptr;
     m_lifeBar = nullptr;
-
-    m_currentLife = m_maxLife;
 
     m_isDead = false;
 
@@ -47,45 +42,6 @@ Character::~Character()
 
     m_lifeBar = nullptr;
     m_grid = nullptr;
-}
-
-void Character::InitCharacter(bool bPlayer, float _fSpeed, Grid* grid)
-{
-    m_grid = grid;
-    m_walkSpeed = _fSpeed;
-
-    m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
-
-    if (bPlayer)
-    {
-        m_sprite->ChangeAnimSet("Human.animset.xml");
-    }
-    else
-    {
-        if (GetRandom(0, 1) == 0)
-            m_sprite->ChangeAnimSet("Orc.animset.xml");
-        else
-            m_sprite->ChangeAnimSet("Lady.animset.xml");
-    }
-
-    m_sprite->StartAnimation("IdleDown");
-    m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
-
-    if (bPlayer)
-    {
-        //m_pSprite->SetColor(sf::Color::Cyan);
-        m_sprite->SetZIndex(1000);
-    }
-    else
-    {
-        m_lifeBar = m_sprite->AddChild<ElementBar>();
-        m_lifeBar->InitBar(ElementBar::BarColor::Red, 2.f);
-        m_lifeBar->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
-        m_lifeBar->SetUnifiedPosition(UDim2(0.5f, 0.f, 0.f, -5.f));
-        m_lifeBar->SetSize(32.f, 4.f);
-
-        m_lifeBar->SetVisible(false);
-    }
 }
 
 void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
@@ -131,7 +87,7 @@ bool Character::TestCollision(Projectile* _pProjectile)
     if (!_pProjectile)
         return false;
 
-    if (LengthSquare(m_sprite->GetPosition() - _pProjectile->m_sprite->GetPosition()) > Power(16.f, 2))
+    if (LengthSquare(m_sprite->GetPosition() - _pProjectile->m_sprite->GetPosition()) > Power(32.f, 2))
         return false;
 
     m_lifeBar->SetVisible(true);

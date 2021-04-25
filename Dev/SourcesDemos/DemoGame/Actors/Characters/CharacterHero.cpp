@@ -11,6 +11,8 @@
 #include "UI/ElementBar.h"
 #include "Level/Grid.h"
 
+#include "DatasheetBinding.h"
+
 #include "Gugu/World/Level.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Utility/Math.h"
@@ -26,14 +28,9 @@ namespace demoproject {
 
 CharacterHero::CharacterHero()
 {
-    m_maxStamina = 90.f;
-    m_staminaRecovery = 50.f;
-    m_staminaRecoveryDelay = 1.f;
-
-    m_attackSpeed = 150;
+    m_attackSpeed = 10;
     m_attackStaminaCost = 0.1f;
 
-    m_currentStamina = m_maxStamina;
     m_attackCooldown = 0.f;
     m_staminaRecoveryCooldown = 0.f;
 
@@ -44,6 +41,31 @@ CharacterHero::CharacterHero()
 
 CharacterHero::~CharacterHero()
 {
+}
+
+void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid)
+{
+    m_grid = grid;
+
+    // Init stats from datasheet
+    m_maxLife = sheetHero->health;
+    m_walkSpeed = sheetHero->speed;
+
+    m_maxStamina = sheetHero->stamina;
+    m_staminaRecovery = sheetHero->staminaRecovery;
+    m_staminaRecoveryDelay = sheetHero->staminaRecoveryDelay;
+
+    m_currentLife = m_maxLife;
+    m_currentStamina = m_maxStamina;
+
+    // Sprite
+    m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
+    m_sprite->ChangeAnimSet(sheetHero->sprite->animSet);
+    m_sprite->StartAnimation("IdleDown");
+    m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+
+    //m_pSprite->SetColor(sf::Color::Cyan);
+    m_sprite->SetZIndex(1000);
 }
 
 void CharacterHero::Attack(const sf::Vector2f& _kCoords, const DeltaTime& dt)

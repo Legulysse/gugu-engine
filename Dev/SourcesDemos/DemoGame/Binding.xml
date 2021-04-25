@@ -1,12 +1,20 @@
 <?xml version="1.0" ?>
 <Binding namespace="demoproject">
 
+    <!-- Assets -->
+    
+    <Class name="spriteInfo" code="DS_SpriteInfo">
+        <Data type="string"                     name="imageset"         code="imageSet" />
+        <Data type="string"                     name="animset"          code="animSet" />
+    </Class>
+    
     <!-- Entity -->
     
     <Class name="character" code="DS_Character">
         <Data type="string"                     name="name"             code="name"       default="CHARACTER_NAME" />
         <Data type="float"                      name="health"           code="health"     default="100" />
         <Data type="float"                      name="speed"            code="speed"      default="100" />
+        <Data type="instance:spriteInfo"        name="sprite"           code="sprite" />
     </Class>
     
     <Class name="hero" code="DS_Hero" base="character">

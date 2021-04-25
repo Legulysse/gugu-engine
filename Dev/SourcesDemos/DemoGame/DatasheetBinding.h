@@ -12,6 +12,7 @@ namespace demoproject {
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
+class DS_SpriteInfo;
 class DS_Character;
 class DS_Hero;
 class DS_Enemy;
@@ -19,6 +20,24 @@ class DS_Condition;
 class DS_Skill;
 class DS_Effect;
 
+
+////////////////////////////////////////////////////////////////
+class DS_SpriteInfo : public gugu::Datasheet
+{
+public:
+
+    DS_SpriteInfo();
+    virtual ~DS_SpriteInfo();
+
+public:
+
+    std::string imageSet;
+    std::string animSet;
+
+protected:
+
+    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+};
 
 ////////////////////////////////////////////////////////////////
 class DS_Character : public gugu::Datasheet
@@ -33,6 +52,7 @@ public:
     std::string name;
     float health;
     float speed;
+    DS_SpriteInfo* sprite;
 
 protected:
 

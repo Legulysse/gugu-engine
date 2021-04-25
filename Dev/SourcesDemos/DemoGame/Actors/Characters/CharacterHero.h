@@ -18,7 +18,9 @@ public:
 
     CharacterHero();
     virtual ~CharacterHero();
-    
+
+    void InitHero(class DS_Hero* sheetHero, float _fSpeed, class Grid* grid);
+
     void Attack(const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt);
 
     virtual void Step(const gugu::DeltaTime& dt) override;

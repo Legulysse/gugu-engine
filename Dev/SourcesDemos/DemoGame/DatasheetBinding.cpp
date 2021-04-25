@@ -13,15 +13,36 @@ namespace demoproject {
 
 
 ////////////////////////////////////////////////////////////////
+DS_SpriteInfo::DS_SpriteInfo()
+{
+    imageSet = "";
+    animSet = "";
+}
+
+DS_SpriteInfo::~DS_SpriteInfo()
+{
+}
+
+void DS_SpriteInfo::ParseMembers(gugu::DatasheetParserContext& context)
+{
+    gugu::Datasheet::ParseMembers(context);
+
+    ReadString(context, "imageset", imageSet);
+    ReadString(context, "animset", animSet);
+}
+
+////////////////////////////////////////////////////////////////
 DS_Character::DS_Character()
 {
     name = "CHARACTER_NAME";
     health = 100;
     speed = 100;
+    sprite = nullptr;
 }
 
 DS_Character::~DS_Character()
 {
+    SafeDelete(sprite);
 }
 
 void DS_Character::ParseMembers(gugu::DatasheetParserContext& context)
@@ -31,6 +52,7 @@ void DS_Character::ParseMembers(gugu::DatasheetParserContext& context)
     ReadString(context, "name", name);
     ReadFloat(context, "health", health);
     ReadFloat(context, "speed", speed);
+    ReadInstance(context, "sprite", "spriteInfo", sprite);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -125,6 +147,10 @@ void DatasheetBinding_Register()
 ////////////////////////////////////////////////////////////////
 gugu::Datasheet* DatasheetBinding_InstanciateDatasheet(const std::string& classType)
 {
+    if (classType == "spriteInfo")
+    {
+        return new DS_SpriteInfo;
+    }
     if (classType == "character")
     {
         return new DS_Character;

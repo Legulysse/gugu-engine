@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<Datasheet>
+    <Data name="name" value="Heroic Hero" />
+    <Data name="health" value="200" />
+    <Data name="speed" value="250" />
+    <Data name="sprite">
+        <Data name="animset" value="Human.animset.xml" />
+    </Data>
+    
+    <Data name="stamina" value="80" />
+    <Data name="staminaRecovery" value="50" />
+    <Data name="staminaRecoveryDelay" value="1" />
+</Datasheet>

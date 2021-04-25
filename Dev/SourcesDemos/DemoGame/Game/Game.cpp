@@ -14,6 +14,8 @@
 #include "Actors/Projectiles/Projectile.h"
 #include "Level/Grid.h"
 
+#include "DatasheetBinding.h"
+
 #include "Gugu/Engine.h"
 #include "Gugu/Manager/ManagerResources.h"
 #include "Gugu/Manager/ManagerConfig.h"
@@ -177,10 +179,12 @@ void Game::CreateScenario()
     m_grid->InitGrid(m_level, 50, 50, 32.f, 32.f);
 
     //Init Player
+    DS_Hero* sheetHero = GetResources()->GetDatasheet<DS_Hero>("Hero.hero");
+
     m_character = new CharacterHero;
     m_level->AddActor(m_character);
 
-    m_character->InitCharacter(true, 600.f, m_grid);
+    m_character->InitHero(sheetHero, 600.f, m_grid);
 
     m_controllerPlayer = new ControllerPlayer;
     m_level->AddActor(m_controllerPlayer);
@@ -206,6 +210,8 @@ void Game::SpawnFloor()
     int enemiesCount = m_floor * 50;
     for (size_t i = 0; i < enemiesCount; ++i)
     {
+        DS_Enemy* sheetEnemy = GetResources()->GetDatasheet<DS_Enemy>("DefaultEnemy.enemy");
+
         ControllerAI* pControllerAI = new ControllerAI;
         m_level->AddActor(pControllerAI);
 
@@ -214,7 +220,7 @@ void Game::SpawnFloor()
         CharacterEnemy* pEnemy = new CharacterEnemy;
         m_level->AddActor(pEnemy);
 
-        pEnemy->InitCharacter(false, 100.f, m_grid);
+        pEnemy->InitEnemy(sheetEnemy, 100.f, m_grid);
         pControllerAI->m_character = pEnemy;
     }
 

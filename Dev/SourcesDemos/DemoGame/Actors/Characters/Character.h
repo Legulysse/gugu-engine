@@ -28,8 +28,6 @@ public:
     Character();
     virtual ~Character();
     
-    void    InitCharacter(bool bPlayer, float _fSpeed, class Grid* grid);
-
     void            Move        (sf::Vector2f _kDirection, const gugu::DeltaTime& dt);
     sf::Vector2f    GetPosition () const;
 

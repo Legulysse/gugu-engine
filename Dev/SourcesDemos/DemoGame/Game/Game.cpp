@@ -77,6 +77,8 @@ void Game::AppStart()
 
     pConfig->RegisterInput("Exit", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
     pConfig->RegisterInput("Screenshot", pConfig->BuildKeyboardEvent(sf::Keyboard::F10));
+
+    pConfig->RegisterInput("ToggleCharacterSheet", pConfig->BuildKeyboardEvent(sf::Keyboard::I));
 }
 
 void Game::AppStop()
@@ -176,7 +178,7 @@ void Game::CreateScenario()
     m_character = new Character;
     m_level->AddActor(m_character);
 
-    m_character->InitCharacter(true, 1000.f, m_grid);
+    m_character->InitCharacter(true, 600.f, m_grid);
 
     m_controllerPlayer = new ControllerPlayer;
     m_level->AddActor(m_controllerPlayer);

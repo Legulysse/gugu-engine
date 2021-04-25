@@ -30,11 +30,11 @@ Character::Character()
 
     m_maxLife = 100.f;
 
-    m_maxStamina = 100.f;
+    m_maxStamina = 90.f;
     m_staminaRecovery = 50.f;
     m_staminaRecoveryDelay = 1.f;
 
-    m_attackSpeed = 200;
+    m_attackSpeed = 150;
     m_attackStaminaCost = 0.1f;
 
     m_sprite = nullptr;
@@ -44,6 +44,10 @@ Character::Character()
     m_currentStamina = m_maxStamina;
     m_attackCooldown = 0.f;
     m_staminaRecoveryCooldown = 0.f;
+
+    m_experience = 0;
+    m_totalPoints = 0;
+    m_spentPoints = 0;
 
     m_isDead = false;
 }
@@ -198,6 +202,8 @@ bool Character::TestCollision(Projectile* _pProjectile)
         m_currentLife = 0.f;
 
         m_sprite->SetVisible(false);
+
+        _pProjectile->m_characterSource->GainExperience(1);
     }
 
     return true;
@@ -230,6 +236,12 @@ void Character::Step(const DeltaTime& dt)
     {
         m_lifeBar->SetValue(m_currentLife, m_maxLife);
     }
+}
+
+void Character::GainExperience(int value)
+{
+    m_experience += value;
+    m_totalPoints = m_experience / 25;
 }
 
 sf::Vector2f Character::GetPosition() const

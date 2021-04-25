@@ -39,6 +39,8 @@ public:
 
     virtual void Step(const gugu::DeltaTime& dt) override;
 
+    void GainExperience(int value);
+
 public:
 
     float m_walkSpeed;              // Distance walked per second
@@ -62,6 +64,10 @@ public:
 
     float m_attackCooldown;
     float m_staminaRecoveryCooldown;
+
+    int m_experience;
+    int m_totalPoints;
+    int m_spentPoints;
 
     bool m_isDead;
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<Binding namespace="demoproject">
+
+    <!-- Entity -->
+    
+    <Class name="character" code="DS_Character">
+        <Data type="string"                     name="name"             code="name"       default="CHARACTER_NAME" />
+        <Data type="float"                      name="health"           code="health"     default="100" />
+        <Data type="float"                      name="speed"            code="speed"      default="100" />
+    </Class>
+    
+    <Class name="hero" code="DS_Hero" base="character">
+        <Data type="float"                        name="stamina"                code="stamina"              default="100" />
+        <Data type="float"                        name="staminaRecovery"        code="staminaRecovery"      default="100" />
+        <Data type="float"                        name="staminaRecoveryDelay"   code="staminaRecoveryDelay" default="100" />
+    </Class>
+    
+    <Class name="enemy" code="DS_Enemy" base="character">
+    </Class>
+    
+    <!-- Skill -->
+    
+    <Class name="condition" code="DS_Condition">
+    </Class>
+    
+    <Class name="skill" code="DS_Skill">
+        <Data type="string"                     name="name"                         code="name" />
+    </Class>
+    
+    <!-- Effect -->
+    
+    <Class name="effect" code="DS_Effect">
+    </Class>
+    
+</Binding>

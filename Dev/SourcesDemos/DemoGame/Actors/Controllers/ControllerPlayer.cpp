@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Actors/Characters/Character.h"
+#include "Actors/Characters/CharacterHero.h"
 
 #include "Gugu/Manager/ManagerConfig.h"
 #include "Gugu/Window/Camera.h"
@@ -29,7 +29,7 @@ ControllerPlayer::~ControllerPlayer()
 {
 }
 
-void ControllerPlayer::InitControllerPlayer(Character* _pCharacter)
+void ControllerPlayer::InitControllerPlayer(CharacterHero* _pCharacter)
 {
     m_character = _pCharacter;
 
@@ -44,6 +44,15 @@ void ControllerPlayer::Step(const DeltaTime& dt)
         return;
 
     ManagerConfig* pConfig = GetConfig();
+
+    //Attack
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
+    {
+        sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
+        Camera* pCamera = GetGameWindow()->GetCamera(0);
+        sf::Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
+        m_character->Attack(kPickedPosition, dt);       //TODO: test with varrying world transform
+    }
 
     //Movement
     sf::Vector2f kDirection;
@@ -66,15 +75,6 @@ void ControllerPlayer::Step(const DeltaTime& dt)
     }
 
     m_character->Move(kDirection, dt);
-
-    //Attack
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
-    {
-        sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
-        Camera* pCamera = GetGameWindow()->GetCamera(0);
-        sf::Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
-        m_character->Attack(kPickedPosition, dt);       //TODO: test with varrying world transform
-    }
 
     //Camera
     Camera* pCamera = GetGameWindow()->GetCamera(0);

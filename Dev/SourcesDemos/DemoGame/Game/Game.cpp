@@ -9,6 +9,8 @@
 #include "Actors/Controllers/ControllerPlayer.h"
 #include "Actors/Controllers/ControllerAI.h"
 #include "Actors/Characters/Character.h"
+#include "Actors/Characters/CharacterHero.h"
+#include "Actors/Characters/CharacterEnemy.h"
 #include "Actors/Projectiles/Projectile.h"
 #include "Level/Grid.h"
 
@@ -175,7 +177,7 @@ void Game::CreateScenario()
     m_grid->InitGrid(m_level, 50, 50, 32.f, 32.f);
 
     //Init Player
-    m_character = new Character;
+    m_character = new CharacterHero;
     m_level->AddActor(m_character);
 
     m_character->InitCharacter(true, 600.f, m_grid);
@@ -187,6 +189,7 @@ void Game::CreateScenario()
 
     // Spawn first level
     m_floor = 1;
+
     SpawnFloor();
 }
 
@@ -208,7 +211,7 @@ void Game::SpawnFloor()
 
         m_controllersAI.push_back(pControllerAI);
 
-        Character* pEnemy = new Character;
+        CharacterEnemy* pEnemy = new CharacterEnemy;
         m_level->AddActor(pEnemy);
 
         pEnemy->InitCharacter(false, 100.f, m_grid);

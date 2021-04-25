@@ -7,6 +7,8 @@
 #include "Game/StateMenuMain.h"
 #include "Game/StateScenario.h"
 
+#include "DatasheetBinding.h"
+
 #include "Gugu/Engine.h"
 
 #if defined(GUGU_ENV_VISUAL )
@@ -44,7 +46,9 @@ int main(int argc, char* argv[])
     GetEngine()->Init(config);
 
     //--------
-    
+
+    DatasheetBinding_Register();
+
     Game* pGame = new Game;
     GetEngine()->SetApplication(pGame);
     pGame->PushStateNow(new StateScenario);

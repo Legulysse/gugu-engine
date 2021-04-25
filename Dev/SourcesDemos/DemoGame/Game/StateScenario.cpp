@@ -9,6 +9,7 @@
 #include "Game/Game.h"
 #include "Game/StateMenuMain.h"
 #include "Actors/Characters/Character.h"
+#include "Actors/Characters/CharacterHero.h"
 #include "UI/ElementBar.h"
 
 #include "Gugu/Engine.h"
@@ -244,7 +245,7 @@ void StateScenario::Step(const DeltaTime& dt)
 
 void StateScenario::Update(const DeltaTime& dt)
 {
-    Character* pCharacter = GetGame()->m_character;
+    CharacterHero* pCharacter = GetGame()->m_character;
 
     RefreshCharacterSheet();
 

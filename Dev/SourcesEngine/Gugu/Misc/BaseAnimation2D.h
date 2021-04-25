@@ -40,6 +40,7 @@ public:
     void    RestartAnimation        ();
     void    StopAnimation           ();
 
+    bool    IsAnimationPlaying      () const;
     bool    IsAnimationPlaying      (const std::string& _strNameAnim) const;
 
     bool    IsAnimationPaused       () const;

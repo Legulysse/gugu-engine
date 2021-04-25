@@ -11,7 +11,7 @@
 
 namespace demoproject
 {
-    class Character;
+    class CharacterHero;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ public:
     ControllerPlayer();
     virtual ~ControllerPlayer();
     
-    void InitControllerPlayer   (Character* _pCharacter);
+    void InitControllerPlayer   (CharacterHero* _pCharacter);
 
     virtual void Step(const gugu::DeltaTime& dt) override;
 
@@ -34,7 +34,7 @@ public:
 
 public:
 
-    Character* m_character;
+    CharacterHero* m_character;
 };
 
 }   //namespace demoproject

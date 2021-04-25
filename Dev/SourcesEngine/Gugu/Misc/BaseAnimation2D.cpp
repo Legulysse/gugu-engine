@@ -94,6 +94,11 @@ void BaseAnimation2D::StopAnimation()
     //TODO: Call InitCurrentAnimationFrame() and force empty Sprites ?
 }
 
+bool BaseAnimation2D::IsAnimationPlaying() const
+{
+    return (m_animSet && m_animation);
+}
+
 bool BaseAnimation2D::IsAnimationPlaying(const std::string& _strNameAnim) const
 {
     if (m_animSet && m_animation)

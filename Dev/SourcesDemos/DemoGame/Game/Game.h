@@ -12,7 +12,7 @@
 
 namespace demoproject
 {
-    class Character;
+    class CharacterHero;
     class ControllerPlayer;
     class ControllerAI;
     class Projectile;
@@ -57,7 +57,7 @@ public:
 
     gugu::Level* m_level;
 
-    Character* m_character;
+    CharacterHero* m_character;
     ControllerPlayer* m_controllerPlayer;
     std::vector<ControllerAI*> m_controllersAI;
 

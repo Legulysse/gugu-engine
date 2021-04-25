@@ -90,9 +90,22 @@ bool Character::TestCollision(Projectile* _pProjectile)
     if (LengthSquare(m_sprite->GetPosition() - _pProjectile->m_sprite->GetPosition()) > Power(32.f, 2))
         return false;
 
-    m_lifeBar->SetVisible(true);
+    return _pProjectile->OnHit(this);;    // true = Destroy projectile
+}
 
-    m_currentLife -= 20.f;
+void Character::ReceiveDamage(Character* source, float value)
+{
+    if (m_isDead)
+    {
+        return;
+    }
+
+    if (m_lifeBar)
+    {
+        m_lifeBar->SetVisible(true);
+    }
+
+    m_currentLife -= value;
     if (m_currentLife <= 0.f)
     {
         m_isDead = true;
@@ -100,16 +113,28 @@ bool Character::TestCollision(Projectile* _pProjectile)
 
         m_sprite->SetVisible(false);
 
-        _pProjectile->m_characterSource->NotifyOpponentKilled(1);
+        source->NotifyOpponentKilled(1);
+    }
+}
+
+void Character::ReceiveHeal(float value)
+{
+    if (m_isDead)
+    {
+        return;
     }
 
-    return true;
+    m_currentLife = Clamp(m_currentLife + value, m_currentLife, m_maxLife);
 }
 
 void Character::NotifyOpponentKilled(int value)
 {
 }
 
+bool Character::CanUseSkill(DS_Skill* skill) const
+{
+    return true;
+}
 
 void Character::Step(const DeltaTime& dt)
 {

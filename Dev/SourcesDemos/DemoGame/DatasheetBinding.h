@@ -16,10 +16,42 @@ class DS_SpriteInfo;
 class DS_Character;
 class DS_Hero;
 class DS_Enemy;
-class DS_Condition;
 class DS_Skill;
 class DS_Effect;
+class DS_EffectArea;
+class DS_EffectProjectile;
+class DS_EffectDamage;
+class DS_EffectHeal;
 
+////////////////////////////////////////////////////////////////
+namespace EEffectCenter {
+    enum Type
+    {
+        Caster,
+        Target,
+        Affected,
+    };
+
+    gugu::DatasheetEnum* GetDatasheetEnum();
+    void GetEnumValues(std::vector<EEffectCenter::Type>& enumValues);
+    size_t GetSize();
+
+    void Register();
+}
+////////////////////////////////////////////////////////////////
+namespace EProjectileAim {
+    enum Type
+    {
+        Direction,
+        Cursor,
+    };
+
+    gugu::DatasheetEnum* GetDatasheetEnum();
+    void GetEnumValues(std::vector<EProjectileAim::Type>& enumValues);
+    size_t GetSize();
+
+    void Register();
+}
 
 ////////////////////////////////////////////////////////////////
 class DS_SpriteInfo : public gugu::Datasheet
@@ -94,21 +126,6 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Condition : public gugu::Datasheet
-{
-public:
-
-    DS_Condition();
-    virtual ~DS_Condition();
-
-public:
-
-protected:
-
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
-};
-
-////////////////////////////////////////////////////////////////
 class DS_Skill : public gugu::Datasheet
 {
 public:
@@ -119,6 +136,10 @@ public:
 public:
 
     std::string name;
+    float staminaCost;
+    bool useAttackSpeed;
+    float cooldown;
+    std::vector< DS_Effect* > effects;
 
 protected:
 
@@ -134,6 +155,85 @@ public:
     virtual ~DS_Effect();
 
 public:
+
+    EEffectCenter::Type center;
+
+protected:
+
+    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectArea : public DS_Effect
+{
+public:
+
+    DS_EffectArea();
+    virtual ~DS_EffectArea();
+
+public:
+
+    bool excludeCaster;
+    bool excludeTarget;
+    float maxRadius;
+    float angleFromDirection;
+    std::vector< DS_Effect* > effectsOnHit;
+
+protected:
+
+    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectProjectile : public DS_Effect
+{
+public:
+
+    DS_EffectProjectile();
+    virtual ~DS_EffectProjectile();
+
+public:
+
+    EProjectileAim::Type aim;
+    float speed;
+    float lifetime;
+    int maximumHits;
+    std::vector< DS_Effect* > effectsOnHit;
+    std::vector< DS_Effect* > effectsOnDestination;
+
+protected:
+
+    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectDamage : public DS_Effect
+{
+public:
+
+    DS_EffectDamage();
+    virtual ~DS_EffectDamage();
+
+public:
+
+    float damage;
+
+protected:
+
+    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectHeal : public DS_Effect
+{
+public:
+
+    DS_EffectHeal();
+    virtual ~DS_EffectHeal();
+
+public:
+
+    float heal;
 
 protected:
 

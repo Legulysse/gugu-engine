@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<Datasheet>
+    <Data name="name" value="Fireball" />
+    <Data name="cooldown" value="1" />
+    <Data name="effects">
+        <Child type="effectProjectile">
+            <Data name="center" value="Caster" />
+            <Data name="aim" value="Cursor" />
+            <Data name="speed" value="1000" />
+            <Data name="lifetime" value="-1" />
+            <Data name="maximumHits" value="-1" />
+            <Data name="effectsOnHit">
+                <Child type="effectDamage">
+                    <Data name="center" value="Affected" />
+                    <Data name="damage" value="5" />
+                </Child>
+            </Data>
+            <Data name="effectsOnDestination">
+                <Child type="effectArea">
+                    <Data name="center" value="Affected" />
+                    <Data name="excludeCaster" value="true" />
+                    <Data name="maxRadius" value="200" />
+                    <Data name="effectsOnHit">
+                        <Child type="effectDamage">
+                            <Data name="center" value="Affected" />
+                            <Data name="damage" value="75" />
+                        </Child>
+                    </Data>
+                </Child>
+            </Data>
+        </Child>
+    </Data>
+</Datasheet>

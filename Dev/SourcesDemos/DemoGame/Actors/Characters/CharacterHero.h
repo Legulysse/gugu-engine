@@ -23,6 +23,8 @@ public:
 
     void Attack(const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt);
 
+    virtual bool CanUseSkill(class DS_Skill* skill) const override;
+
     virtual void Step(const gugu::DeltaTime& dt) override;
     virtual void Update(const gugu::DeltaTime& dt) override;
 
@@ -42,6 +44,7 @@ public:
     float m_currentStamina;
 
     float m_attackCooldown;
+    float m_skillCooldown;
     float m_staminaRecoveryCooldown;
 
     int m_experience;

@@ -56,6 +56,7 @@ private:
 
     gugu::Element* m_root;
 
+    class ElementBar* m_healthBar;
     class ElementBar* m_staminaBar;
     gugu::ElementText* m_textStatus;
 

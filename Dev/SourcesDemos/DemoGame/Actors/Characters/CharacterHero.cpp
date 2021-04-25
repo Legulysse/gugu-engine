@@ -10,11 +10,13 @@
 #include "Actors/Projectiles/Projectile.h"
 #include "UI/ElementBar.h"
 #include "Level/Grid.h"
+#include "Skills/SkillUtility.h"
 
 #include "DatasheetBinding.h"
 
 #include "Gugu/World/Level.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
+#include "Gugu/Manager/ManagerResources.h"
 #include "Gugu/Utility/Math.h"
 #include "Gugu/Utility/Random.h"
 #include "Gugu/Utility/System.h"
@@ -32,6 +34,7 @@ CharacterHero::CharacterHero()
     m_attackStaminaCost = 0.1f;
 
     m_attackCooldown = 0.f;
+    m_skillCooldown = 0.f;
     m_staminaRecoveryCooldown = 0.f;
 
     m_experience = 0;
@@ -72,27 +75,51 @@ void CharacterHero::Attack(const sf::Vector2f& _kCoords, const DeltaTime& dt)
 {
     m_isActingThisFrame = true;
 
-    if (m_attackCooldown <= 0.f && m_currentStamina > 0.f)   // Allow action when we have at least 1 stamina point (allow negative values)
+    // Use a skill for the base attack.
+    //DS_Skill* sheetSkill = GetResources()->GetDatasheet<DS_Skill>("Fireball.skill");
+    DS_Skill* sheetSkill = GetResources()->GetDatasheet<DS_Skill>("BowAttack.skill");
+
+    if (CanUseSkill(sheetSkill))
     {
-        float attackDelay = (m_attackSpeed > 0.f) ? 1.f / m_attackSpeed : 1.f;
-        int nbAttacks = Max(1, (int)(dt.s() / attackDelay));
-
-        m_attackCooldown = attackDelay * nbAttacks;
-        m_staminaRecoveryCooldown = m_staminaRecoveryDelay;
-
-        for (int i = 0; i < nbAttacks; ++i)
+        int nbUse = 1;
+        if (sheetSkill->useAttackSpeed)
         {
-            if (m_currentStamina <= 0.f)   // Allow action when we have at least 1 stamina point (allow negative values)
+            float attackDelay = (m_attackSpeed > 0.f) ? 1.f / m_attackSpeed : 1.f;
+            nbUse = Max(1, (int)(dt.s() / attackDelay));
+
+            m_attackCooldown = attackDelay * nbUse;
+
+            if (sheetSkill->staminaCost > 0.f)
             {
-                break;
+                m_staminaRecoveryCooldown = m_staminaRecoveryDelay;
+            }
+        }
+        else
+        {
+            m_skillCooldown = sheetSkill->cooldown;
+        }
+
+        for (int i = 0; i < nbUse; ++i)
+        {
+            if (sheetSkill->staminaCost > 0.f)
+            {
+                if (m_currentStamina <= 0.f)   // Allow action when we have at least 1 stamina point (allow negative values)
+                {
+                    break;
+                }
+
+                m_currentStamina -= m_attackStaminaCost;
             }
 
-            m_currentStamina -= m_attackStaminaCost;
+            // Use skill.
+            SkillContext context;
+            context.skill = sheetSkill;
+            context.caster = this;
+            context.target = nullptr;
+            context.aim = _kCoords;
+            context.level = m_level;
 
-            Projectile* newProjectile = new Projectile();
-            m_level->AddActor(newProjectile);
-
-            newProjectile->InitProjectile(this, GetPosition(), _kCoords);
+            SkillUtility::UseSkill(context);
         }
 
         sf::Vector2f direction;
@@ -122,11 +149,36 @@ void CharacterHero::Attack(const sf::Vector2f& _kCoords, const DeltaTime& dt)
     }
 }
 
+bool CharacterHero::CanUseSkill(DS_Skill* skill) const
+{
+    if (Character::CanUseSkill(skill))
+    {
+        // Allow action when we have at least 1 stamina point (allow negative values).
+        if (skill->staminaCost > 0.f && m_currentStamina <= 0.f)
+        {
+            return false;
+        }
+
+        if (skill->useAttackSpeed && m_attackCooldown > 0.f)
+        {
+            return false;
+        }
+        else if (skill->cooldown > 0.f && m_skillCooldown > 0.f)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 void CharacterHero::Step(const DeltaTime& dt)
 {
     Character::Step(dt);
 
-    // Stamina
+    // Stamina recovery
     if (m_staminaRecoveryCooldown > 0.f)
     {
         m_staminaRecoveryCooldown -= dt.s();
@@ -138,10 +190,16 @@ void CharacterHero::Step(const DeltaTime& dt)
         m_currentStamina = Min(m_currentStamina, m_maxStamina);
     }
 
-    // Attack
+    // Attack cooldown
     if (m_attackCooldown > 0.f)
     {
         m_attackCooldown -= dt.s();
+    }
+
+    // Skill cooldown
+    if (m_skillCooldown > 0.f)
+    {
+        m_skillCooldown -= dt.s();
     }
 }
 

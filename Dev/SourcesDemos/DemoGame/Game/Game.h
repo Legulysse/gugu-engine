@@ -7,6 +7,8 @@
 #include "Gugu/Misc/EventListener.h"
 #include "Gugu/Utility/StateMachine.h"
 
+#include <SFML/System/Vector2.hpp>
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -52,6 +54,8 @@ public:
     void SpawnFloor();
 
     void GetStatus(int& floor, int& enemies) const;
+
+    void GetCharactersInRange(std::vector<class Character*>& characters, const sf::Vector2f& center, float radius) const;
 
 public:
 

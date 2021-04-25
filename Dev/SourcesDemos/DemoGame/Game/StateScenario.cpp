@@ -71,11 +71,11 @@ void StateScenario::Init()
         float fOffsetX = 0.f;
         float fOffsetY = -20.f;
 
-        ElementBar* pLifeBar = panelCharacterBars->AddChild<ElementBar>();
-        pLifeBar->InitBar(ElementBar::BarColor::Red, 8.f);
-        pLifeBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-        pLifeBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
-        pLifeBar->SetSize(fSizeX, fSizeY);
+        m_healthBar = panelCharacterBars->AddChild<ElementBar>();
+        m_healthBar->InitBar(ElementBar::BarColor::Red, 8.f);
+        m_healthBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
+        m_healthBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
+        m_healthBar->SetSize(fSizeX, fSizeY);
 
         fPositionX += fOffsetX;
         fPositionY += fOffsetY;
@@ -248,6 +248,11 @@ void StateScenario::Update(const DeltaTime& dt)
     CharacterHero* pCharacter = GetGame()->m_character;
 
     RefreshCharacterSheet();
+
+    if (pCharacter->m_maxLife > 0.f)
+    {
+        m_healthBar->SetValue(pCharacter->m_currentLife, pCharacter->m_maxLife);
+    }
 
     if (pCharacter->m_maxStamina > 0.f)
     {

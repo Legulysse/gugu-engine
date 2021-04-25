@@ -27,6 +27,7 @@
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Utility/System.h"
+#include "Gugu/Utility/Math.h"
 
 using namespace gugu;
 
@@ -207,7 +208,7 @@ void Game::SpawnNextFloor()
 void Game::SpawnFloor()
 {
     //Init Enemies
-    int enemiesCount = m_floor * 50;
+    size_t enemiesCount = m_floor * 50;
     for (size_t i = 0; i < enemiesCount; ++i)
     {
         DS_Enemy* sheetEnemy = GetResources()->GetDatasheet<DS_Enemy>("DefaultEnemy.enemy");
@@ -247,6 +248,17 @@ void Game::GetStatus(int& floor, int& enemies) const
 {
     floor = m_floor;
     enemies = m_controllersAI.size();
+}
+
+void Game::GetCharactersInRange(std::vector<Character*>& characters, const sf::Vector2f& center, float radius) const
+{
+    for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
+    {
+        if (LengthSquare(m_controllersAI[iController]->m_character->GetPosition() - center) <= Power(radius, 2))
+        {
+            characters.push_back(m_controllersAI[iController]->m_character);
+        }
+    }
 }
 
 

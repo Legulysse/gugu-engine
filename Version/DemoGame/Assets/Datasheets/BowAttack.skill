@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<Datasheet>
+    <Data name="name" value="Bow Attack" />
+    <Data name="staminaCost" value="0.5" />
+    <Data name="useAttackSpeed" value="true" />
+    <Data name="effects">
+        <Child type="effectProjectile">
+            <Data name="center" value="Caster" />
+            <Data name="aim" value="Direction" />
+            <Data name="speed" value="650" />
+            <Data name="lifetime" value="2" />
+            <Data name="maximumHits" value="3" />
+            <Data name="effectsOnHit">
+                <Child type="effectDamage">
+                    <Data name="center" value="Affected" />
+                    <Data name="damage" value="50" />
+                </Child>
+            </Data>
+        </Child>
+    </Data>
+</Datasheet>

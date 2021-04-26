@@ -36,6 +36,8 @@ int main(int argc, char* argv[])
     std::string strFormatG = StringFormat("hello {0}, do you have {1} gold ?", "Jean-Jacques", 98521);
     std::string strFormatH = StringFormat("hello {0}, do you have {1} gold ?", "Jean-Jacques");
     std::string strFormatI = StringFormat("My age is {0}.", 42.5f);
+    std::string strFormatJ = StringFormat("My age is {0}.", ToString(42.555f));
+    std::string strFormatK = StringFormat("My age is {0}.", ToString(42.555f, 1));
 
     std::string strNumberFormatA = StringNumberFormat(12345678);
     std::string strNumberFormatB = StringNumberFormat(12345678, ",");

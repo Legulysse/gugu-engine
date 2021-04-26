@@ -35,6 +35,17 @@ std::string ToString(const T& _tValue)
 }
 
 template<typename T>
+std::string ToString(const T& _tValue, int precision)
+{
+    // floats are better displayed this way than with std::to_string
+    std::ostringstream os;
+    os.precision(precision);
+    os << std::fixed;
+    os << _tValue;
+    return os.str();
+}
+
+template<typename T>
 bool FromString(const std::string& _strValue, T& _tValue)
 {
     std::istringstream iss( _strValue );

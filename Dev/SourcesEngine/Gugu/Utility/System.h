@@ -34,6 +34,10 @@ void SafeDeleteArray(T*& _aObjects);
 
 template<typename T>
 std::string ToString(const T& _tValue);
+
+template<typename T>
+std::string ToString(const T& _tValue, int precision);
+
 std::string ToString(const int& _iValue);
 std::string ToString(const char* _strValue);
 

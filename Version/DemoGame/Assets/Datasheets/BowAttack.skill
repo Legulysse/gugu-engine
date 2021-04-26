@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Datasheet>
     <Data name="name" value="Bow Attack" />
-    <Data name="staminaCost" value="0.5" />
+    <Data name="staminaCost" value="0.1" />
     <Data name="useAttackSpeed" value="true" />
     <Data name="effects">
         <Child type="effectProjectile">

@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <Datasheet>
     <Data name="name" value="Fireball" />
-    <Data name="cooldown" value="1" />
+    <Data name="manaCost" value="40" />
+    <Data name="cooldown" value="2" />
     <Data name="effects">
         <Child type="effectProjectile">
             <Data name="center" value="Caster" />

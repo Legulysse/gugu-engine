@@ -21,7 +21,8 @@ public:
 
     void InitHero(class DS_Hero* sheetHero, float _fSpeed, class Grid* grid);
 
-    void Attack(const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt);
+    void UseSkillByIndex(int index, const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt);
+    void UseSkill(DS_Skill* skill, const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt);
 
     virtual bool CanUseSkill(class DS_Skill* skill) const override;
 
@@ -36,15 +37,20 @@ public:
     float m_staminaRecovery;        // Stamina recovery per second
     float m_staminaRecoveryDelay;   // Delay in seconds before stamina recovery
 
+    float m_maxMana;                // Max Mana
+    float m_manaRecovery;           // Mana recovery per second
+
     float m_attackSpeed;            // Nb attacks per second
 
 public:
 
     float m_currentStamina;
+    float m_staminaRecoveryCooldown;
+
+    float m_currentMana;
 
     float m_attackCooldown;
     float m_skillCooldown;
-    float m_staminaRecoveryCooldown;
 
     int m_experience;
     int m_totalPoints;

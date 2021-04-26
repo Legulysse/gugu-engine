@@ -57,8 +57,12 @@ void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid)
     m_staminaRecovery = sheetHero->staminaRecovery;
     m_staminaRecoveryDelay = sheetHero->staminaRecoveryDelay;
 
+    m_maxMana = sheetHero->mana;
+    m_manaRecovery = sheetHero->manaRecovery;
+
     m_currentLife = m_maxLife;
     m_currentStamina = m_maxStamina;
+    m_currentMana = m_maxMana;
 
     // Sprite
     m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
@@ -70,49 +74,68 @@ void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid)
     m_sprite->SetZIndex(1000);
 }
 
-void CharacterHero::Attack(const sf::Vector2f& _kCoords, const DeltaTime& dt)
+void CharacterHero::UseSkillByIndex(int index, const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt)
+{
+    // Index 0 is the base attack skill.
+    if (index == 0)
+    {
+        DS_Skill* skill = GetResources()->GetDatasheet<DS_Skill>("BowAttack.skill");
+        UseSkill(skill, _kCoords, dt);
+    }
+    else
+    {
+        DS_Skill* skill = GetResources()->GetDatasheet<DS_Skill>("Fireball.skill");
+        UseSkill(skill, _kCoords, dt);
+    }
+}
+
+void CharacterHero::UseSkill(DS_Skill* skill, const sf::Vector2f& _kCoords, const DeltaTime& dt)
 {
     m_isActingThisFrame = true;
 
-    // Use a skill for the base attack.
-    //DS_Skill* sheetSkill = GetResources()->GetDatasheet<DS_Skill>("Fireball.skill");
-    DS_Skill* sheetSkill = GetResources()->GetDatasheet<DS_Skill>("BowAttack.skill");
-
-    if (CanUseSkill(sheetSkill))
+    if (CanUseSkill(skill))
     {
         int nbUse = 1;
-        if (sheetSkill->useAttackSpeed)
+        if (skill->useAttackSpeed)
         {
             float attackDelay = (m_attackSpeed > 0.f) ? 1.f / m_attackSpeed : 1.f;
             nbUse = Max(1, (int)(dt.s() / attackDelay));
 
-            m_attackCooldown = attackDelay * nbUse;
-
-            if (sheetSkill->staminaCost > 0.f)
+            int nbUseStamina = (int)(m_currentStamina / skill->staminaCost);
+            if (nbUseStamina * skill->staminaCost < m_currentStamina - Math::Epsilon)
             {
-                m_staminaRecoveryCooldown = m_staminaRecoveryDelay;
+                // Allow action when we have at least 1 stamina point (allow negative values)
+                nbUseStamina += 1;
             }
+
+            if (nbUseStamina < nbUse)
+            {
+                nbUse = Max(1, nbUseStamina);
+            }
+
+            m_attackCooldown = attackDelay * nbUse;
         }
         else
         {
-            m_skillCooldown = sheetSkill->cooldown;
+            m_skillCooldown = skill->cooldown;
+        }
+
+        if (skill->staminaCost > 0.f)
+        {
+            m_currentStamina -= skill->staminaCost * nbUse;
+            m_staminaRecoveryCooldown = m_staminaRecoveryDelay;
+        }
+
+        if (skill->manaCost > 0.f)
+        {
+            m_currentMana -= skill->manaCost * nbUse;
         }
 
         for (int i = 0; i < nbUse; ++i)
         {
-            if (sheetSkill->staminaCost > 0.f)
-            {
-                if (m_currentStamina <= 0.f)   // Allow action when we have at least 1 stamina point (allow negative values)
-                {
-                    break;
-                }
-
-                m_currentStamina -= sheetSkill->staminaCost;
-            }
-
             // Use skill.
             SkillContext context;
-            context.skill = sheetSkill;
+            context.skill = skill;
             context.caster = this;
             context.target = nullptr;
             context.aim = _kCoords;
@@ -158,6 +181,11 @@ bool CharacterHero::CanUseSkill(DS_Skill* skill) const
             return false;
         }
 
+        if (skill->manaCost > 0.f && m_currentMana < skill->manaCost - Math::Epsilon)
+        {
+            return false;
+        }
+
         if (skill->useAttackSpeed && m_attackCooldown > 0.f)
         {
             return false;
@@ -188,6 +216,10 @@ void CharacterHero::Step(const DeltaTime& dt)
         m_currentStamina += dt.s() * m_staminaRecovery;
         m_currentStamina = Min(m_currentStamina, m_maxStamina);
     }
+
+    // Mana recovery
+    m_currentMana += dt.s() * m_manaRecovery;
+    m_currentMana = Min(m_currentMana, m_maxMana);
 
     // Attack cooldown
     if (m_attackCooldown > 0.f)

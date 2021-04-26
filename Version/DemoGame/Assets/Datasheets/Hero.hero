@@ -7,7 +7,9 @@
         <Data name="animset" value="Human.animset.xml" />
     </Data>
     
-    <Data name="stamina" value="80" />
+    <Data name="stamina" value="100" />
     <Data name="staminaRecovery" value="50" />
     <Data name="staminaRecoveryDelay" value="1" />
+    <Data name="mana" value="60" />
+    <Data name="manaRecovery" value="10" />
 </Datasheet>

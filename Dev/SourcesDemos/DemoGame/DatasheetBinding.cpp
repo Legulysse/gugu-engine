@@ -103,8 +103,8 @@ void DS_SpriteInfo::ParseMembers(gugu::DatasheetParserContext& context)
 DS_Character::DS_Character()
 {
     name = "CHARACTER_NAME";
-    health = 100;
-    speed = 100;
+    health = 50;
+    speed = 50;
     sprite = nullptr;
 }
 
@@ -126,9 +126,11 @@ void DS_Character::ParseMembers(gugu::DatasheetParserContext& context)
 ////////////////////////////////////////////////////////////////
 DS_Hero::DS_Hero()
 {
-    stamina = 100;
-    staminaRecovery = 100;
-    staminaRecoveryDelay = 100;
+    stamina = 50;
+    staminaRecovery = 50;
+    staminaRecoveryDelay = 50;
+    mana = 50;
+    manaRecovery = 50;
 }
 
 DS_Hero::~DS_Hero()
@@ -142,6 +144,8 @@ void DS_Hero::ParseMembers(gugu::DatasheetParserContext& context)
     ReadFloat(context, "stamina", stamina);
     ReadFloat(context, "staminaRecovery", staminaRecovery);
     ReadFloat(context, "staminaRecoveryDelay", staminaRecoveryDelay);
+    ReadFloat(context, "mana", mana);
+    ReadFloat(context, "manaRecovery", manaRecovery);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -164,6 +168,7 @@ DS_Skill::DS_Skill()
 {
     name = "";
     staminaCost = -1;
+    manaCost = -1;
     useAttackSpeed = false;
     cooldown = -1;
 }
@@ -179,6 +184,7 @@ void DS_Skill::ParseMembers(gugu::DatasheetParserContext& context)
 
     ReadString(context, "name", name);
     ReadFloat(context, "staminaCost", staminaCost);
+    ReadFloat(context, "manaCost", manaCost);
     ReadBool(context, "useAttackSpeed", useAttackSpeed);
     ReadFloat(context, "cooldown", cooldown);
     ReadArrayInstance(context, "effects", "effect", effects);

@@ -25,15 +25,17 @@
     
     <Class name="character" code="DS_Character">
         <Data type="string"                     name="name"             code="name"       default="CHARACTER_NAME" />
-        <Data type="float"                      name="health"           code="health"     default="100" />
-        <Data type="float"                      name="speed"            code="speed"      default="100" />
+        <Data type="float"                      name="health"           code="health"     default="50" />
+        <Data type="float"                      name="speed"            code="speed"      default="50" />
         <Data type="instance:spriteInfo"        name="sprite"           code="sprite" />
     </Class>
     
     <Class name="hero" code="DS_Hero" base="character">
-        <Data type="float"                        name="stamina"                code="stamina"              default="100" />
-        <Data type="float"                        name="staminaRecovery"        code="staminaRecovery"      default="100" />
-        <Data type="float"                        name="staminaRecoveryDelay"   code="staminaRecoveryDelay" default="100" />
+        <Data type="float"                        name="stamina"                code="stamina"              default="50" />
+        <Data type="float"                        name="staminaRecovery"        code="staminaRecovery"      default="50" />
+        <Data type="float"                        name="staminaRecoveryDelay"   code="staminaRecoveryDelay" default="50" />
+        <Data type="float"                        name="mana"                   code="mana"                 default="50" />
+        <Data type="float"                        name="manaRecovery"           code="manaRecovery"         default="50" />
     </Class>
     
     <Class name="enemy" code="DS_Enemy" base="character">
@@ -44,6 +46,7 @@
     <Class name="skill" code="DS_Skill">
         <Data type="string" name="name" code="name" />
         <Data type="float" name="staminaCost" code="staminaCost" default="-1" />
+        <Data type="float" name="manaCost" code="manaCost" default="-1" />
         <Data type="bool" name="useAttackSpeed" code="useAttackSpeed" default="false" />
         <Data type="float" name="cooldown" code="cooldown" default="-1" />
         <Data type="array:instance:effect" name="effects" code="effects" />

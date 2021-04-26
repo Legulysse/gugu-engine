@@ -104,6 +104,8 @@ public:
     float stamina;
     float staminaRecovery;
     float staminaRecoveryDelay;
+    float mana;
+    float manaRecovery;
 
 protected:
 
@@ -137,6 +139,7 @@ public:
 
     std::string name;
     float staminaCost;
+    float manaCost;
     bool useAttackSpeed;
     float cooldown;
     std::vector< DS_Effect* > effects;

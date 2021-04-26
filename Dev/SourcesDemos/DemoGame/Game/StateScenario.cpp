@@ -56,7 +56,34 @@ void StateScenario::Init()
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
     m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
-    //LifeBar test
+    // Character skills
+    {
+        ElementSprite* panelCharacterSkills = m_root->AddChild<ElementSprite>();
+        panelCharacterSkills->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
+        panelCharacterSkills->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + sf::Vector2f(210, 0.f));
+        panelCharacterSkills->SetSubImage("uipack_rpg.imageset.xml", "panel_blue");
+        panelCharacterSkills->SetSize(300, 100);
+
+        m_skillSprite1 = panelCharacterSkills->AddChild<ElementSprite>();
+        m_skillSprite1->SetTexture("fireball-red-2.png");
+        m_skillSprite1->SetColor(sf::Color(110, 110, 110));
+        m_skillSprite1->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
+        m_skillSprite1->SetPosition(64, 28);
+        m_skillSprite1->SetSize(64, 64);
+
+        ElementText* skillText1 = panelCharacterSkills->AddChild<ElementText>();
+        skillText1->SetText("1");
+        skillText1->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
+        skillText1->SetPosition(64, 2);
+
+        m_skillCooldownText1 = m_skillSprite1->AddChild<ElementText>();
+        m_skillCooldownText1->SetText("0.57");
+        m_skillCooldownText1->SetFontColor(sf::Color::White);
+        m_skillCooldownText1->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+        m_skillCooldownText1->SetUnifiedPosition(UDim2::POSITION_CENTER);
+    }
+
+    // Character bars
     {
         ElementSprite* panelCharacterBars = m_root->AddChild<ElementSprite>();
         panelCharacterBars->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
@@ -89,11 +116,11 @@ void StateScenario::Init()
         fPositionX += fOffsetX;
         fPositionY += fOffsetY;
 
-        ElementBar* pManaBar = panelCharacterBars->AddChild<ElementBar>();
-        pManaBar->InitBar(ElementBar::BarColor::Blue, 8.f);
-        pManaBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-        pManaBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
-        pManaBar->SetSize(fSizeX, fSizeY);
+        m_manaBar = panelCharacterBars->AddChild<ElementBar>();
+        m_manaBar->InitBar(ElementBar::BarColor::Blue, 8.f);
+        m_manaBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
+        m_manaBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
+        m_manaBar->SetSize(fSizeX, fSizeY);
 
         fPositionX += fOffsetX;
         fPositionY += fOffsetY;
@@ -142,7 +169,7 @@ void StateScenario::Init()
         positionY += positionOffsetYBig;
         AddCharacterSheetAttribute("Maximum Health", m_textHealthValue, positionX, positionY, positionColumnX, nullptr);
 
-        positionY += positionOffsetYSmall;
+        positionY += positionOffsetYBig;
         AddCharacterSheetAttribute("Maximum Stamina", m_textStaminaValue, positionX, positionY, positionColumnX, nullptr);
 
         positionY += positionOffsetYSmall;
@@ -151,7 +178,13 @@ void StateScenario::Init()
         positionY += positionOffsetYSmall;
         AddCharacterSheetAttribute("Stamina Reco. Delay", m_textStaminaRecoveryDelayValue, positionX, positionY, positionColumnX, nullptr);
 
+        positionY += positionOffsetYBig;
+        AddCharacterSheetAttribute("Maximum Mana", m_textManaValue, positionX, positionY, positionColumnX, nullptr);
+
         positionY += positionOffsetYSmall;
+        AddCharacterSheetAttribute("Mana Recovery", m_textManaRecoveryValue, positionX, positionY, positionColumnX, nullptr);
+
+        positionY += positionOffsetYBig;
         AddCharacterSheetAttribute("Walk Speed", m_textWalkSpeedValue, positionX, positionY, positionColumnX, nullptr);
 
         positionY += positionOffsetYBig;
@@ -203,6 +236,8 @@ void StateScenario::RefreshCharacterSheet()
     m_textStaminaValue->SetText(StringFormat("{0}", GetGame()->m_character->m_maxStamina));
     m_textStaminaRecoveryValue->SetText(StringFormat("{0}", GetGame()->m_character->m_staminaRecovery));
     m_textStaminaRecoveryDelayValue->SetText(StringFormat("{0}", GetGame()->m_character->m_staminaRecoveryDelay));
+    m_textManaValue->SetText(StringFormat("{0}", GetGame()->m_character->m_maxMana));
+    m_textManaRecoveryValue->SetText(StringFormat("{0}", GetGame()->m_character->m_manaRecovery));
     m_textAttackSpeedValue->SetText(StringFormat("{0}", GetGame()->m_character->m_attackSpeed));
     m_textAttackStaminaCostValue->SetText(StringFormat("---"));
     m_textWalkSpeedValue->SetText(StringFormat("{0}", GetGame()->m_character->m_walkSpeed));
@@ -257,6 +292,27 @@ void StateScenario::Update(const DeltaTime& dt)
     if (pCharacter->m_maxStamina > 0.f)
     {
         m_staminaBar->SetValue(pCharacter->m_currentStamina, pCharacter->m_maxStamina);
+    }
+
+    if (pCharacter->m_maxMana > 0.f)
+    {
+        m_manaBar->SetValue(pCharacter->m_currentMana, pCharacter->m_maxMana);
+    }
+
+    // SKills status
+    if (pCharacter->m_skillCooldown > 0.f)
+    {
+        m_skillCooldownText1->SetVisible(true);
+        m_skillCooldownText1->SetText(StringFormat("{0}s", ToString(pCharacter->m_skillCooldown, 1)));
+        m_skillSprite1->SetColor(sf::Color(110, 110, 110));
+    }
+    else
+    {
+        if (m_skillCooldownText1->IsVisible())
+        {
+            m_skillCooldownText1->SetVisible(false);
+            m_skillSprite1->SetColor(sf::Color::White);
+        }
     }
 
     int floor = 0;

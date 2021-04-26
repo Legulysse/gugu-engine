@@ -15,6 +15,7 @@ namespace gugu
 {
     class Action;
     class Element;
+    class ElementSprite;
     class ElementText;
 }
 
@@ -58,6 +59,11 @@ private:
 
     class ElementBar* m_healthBar;
     class ElementBar* m_staminaBar;
+    class ElementBar* m_manaBar;
+
+    gugu::ElementSprite* m_skillSprite1;
+    gugu::ElementText* m_skillCooldownText1;
+
     gugu::ElementText* m_textStatus;
 
     gugu::Element* m_characterSheet;
@@ -67,6 +73,8 @@ private:
     gugu::ElementText* m_textStaminaValue;
     gugu::ElementText* m_textStaminaRecoveryValue;
     gugu::ElementText* m_textStaminaRecoveryDelayValue;
+    gugu::ElementText* m_textManaValue;
+    gugu::ElementText* m_textManaRecoveryValue;
     gugu::ElementText* m_textAttackSpeedValue;
     gugu::ElementText* m_textAttackStaminaCostValue;
     gugu::ElementText* m_textWalkSpeedValue;

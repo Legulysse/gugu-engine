@@ -79,6 +79,9 @@ void Game::AppStart()
     pConfig->RegisterInput("Player_1_Down", pConfig->BuildKeyboardEvent(sf::Keyboard::S));
     pConfig->RegisterInput("Player_1_Left", pConfig->BuildKeyboardEvent(sf::Keyboard::Q));
     pConfig->RegisterInput("Player_1_Right", pConfig->BuildKeyboardEvent(sf::Keyboard::D));
+    pConfig->RegisterInput("Player_1_Skill_1", pConfig->BuildKeyboardEvent(sf::Keyboard::Num1));
+    pConfig->RegisterInput("Player_1_Skill_2", pConfig->BuildKeyboardEvent(sf::Keyboard::Num2));
+    pConfig->RegisterInput("Player_1_Skill_3", pConfig->BuildKeyboardEvent(sf::Keyboard::Num3));
 
     pConfig->RegisterInput("Exit", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
     pConfig->RegisterInput("Screenshot", pConfig->BuildKeyboardEvent(sf::Keyboard::F10));

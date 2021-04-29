@@ -101,16 +101,19 @@ void CharacterHero::UseSkill(DS_Skill* skill, const sf::Vector2f& _kCoords, cons
             float attackDelay = (m_attackSpeed > 0.f) ? 1.f / m_attackSpeed : 1.f;
             nbUse = Max(1, (int)(dt.s() / attackDelay));
 
-            int nbUseStamina = (int)(m_currentStamina / skill->staminaCost);
-            if (nbUseStamina * skill->staminaCost < m_currentStamina - Math::Epsilon)
+            if (skill->staminaCost > 0.f)
             {
-                // Allow action when we have at least 1 stamina point (allow negative values)
-                nbUseStamina += 1;
-            }
+                int nbUseStamina = (int)(m_currentStamina / skill->staminaCost);
+                if (nbUseStamina * skill->staminaCost < m_currentStamina - Math::Epsilon)
+                {
+                    // Allow action when we have at least 1 stamina point (allow negative values)
+                    nbUseStamina += 1;
+                }
 
-            if (nbUseStamina < nbUse)
-            {
-                nbUse = Max(1, nbUseStamina);
+                if (nbUseStamina < nbUse)
+                {
+                    nbUse = Max(1, nbUseStamina);
+                }
             }
 
             m_attackCooldown = attackDelay * nbUse;

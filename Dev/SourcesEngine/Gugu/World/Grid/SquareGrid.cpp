@@ -29,35 +29,13 @@ SquareGrid::~SquareGrid()
 
 void SquareGrid::InitSquareGrid(int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight, bool eightSides)
 {
-    //GenerateCells(_iWidth, _iHeight);
-
     m_width = _iWidth;
     m_height = _iHeight;
     m_eightSides = eightSides;
 
     m_cellWidth = _fCellWidth;
     m_cellHeight = _fCellHeight;
-
-    //RecomputePositions();
 }
-
-//void SquareGrid::RecomputePositions()
-//{
-//    if (m_Cells && m_width > 0 && m_height > 0 && m_cellWidth > 0.f && m_cellHeight > 0.f)
-//    {
-//        for (int x = 0; x < m_width; ++x)
-//        {
-//            for (int y = 0; y < m_height; ++y)
-//            {
-//                sf::Vector2f kPosition;
-//                kPosition.x = x * m_cellWidth;
-//                kPosition.y = y * m_cellHeight;
-//
-//                m_Cells[x][y]->RecomputePosition(kPosition);
-//            }
-//        }
-//    }
-//}
 
 sf::Vector2f SquareGrid::GetCellPosition(const sf::Vector2i& coords) const
 {

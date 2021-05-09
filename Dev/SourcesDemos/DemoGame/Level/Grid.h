@@ -32,10 +32,6 @@ public:
     
     void ClampPositionInsideBounds(sf::Vector2f& position) const;
 
-protected:
-    
-    virtual gugu::GridCell* InstantiateCell() override;
-
 private:
 
     gugu::ElementTileMap* m_pTileMap;

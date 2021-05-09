@@ -7,8 +7,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Level/Cell.h"
-
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementTileMap.h"
@@ -33,7 +31,7 @@ Grid::~Grid()
 
 void Grid::InitGrid(Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight)
 {
-    SquareGrid::InitSquareGrid(_iWidth, _iHeight, _fCellWidth, _fCellHeight);
+    SquareGrid::InitSquareGrid(_iWidth, _iHeight, _fCellWidth, _fCellHeight, true);
     
     Element* pRoot = _pLevel->GetRootNode()->AddChild<Element>();
     pRoot->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
@@ -60,11 +58,6 @@ void Grid::ClampPositionInsideBounds(sf::Vector2f& position) const
 {
     position.x = Clamp(position.x, m_pTileMap->GetPosition().x, m_pTileMap->GetPosition().x + m_pTileMap->GetSize().x);
     position.y = Clamp(position.y, m_pTileMap->GetPosition().y, m_pTileMap->GetPosition().y + m_pTileMap->GetSize().y);
-}
-
-GridCell* Grid::InstantiateCell()
-{
-    return new Cell;
 }
 
 }   //namespace demoproject

@@ -55,6 +55,7 @@ solution "GuguEngine"
     ProjectDefault(BuildCfg, "DemoTestSizes"    , pathDev.."SourcesDemos/DemoTestSizes"     , pathVersion.."DemoTests", "A9A0A24C-014D-4EA3-AA4F-FCCCCC9B0F26")
     ProjectDefault(BuildCfg, "DemoCallback"     , pathDev.."SourcesDemos/DemoCallback"     	, pathVersion.."DemoTests", "A6F5963E-901A-4CE5-9A56-38F8FE448267")
     ProjectDefault(BuildCfg, "DemoImGui"        , pathDev.."SourcesDemos/DemoImGui"   	    , pathVersion.."DemoTests", "27168220-7E03-4AFA-8196-4821B7EDE8A5")
+    ProjectDefault(BuildCfg, "DemoGrid"         , pathDev.."SourcesDemos/DemoGrid"   	    , pathVersion.."DemoTests", "8D7C0EBA-3EC7-4C66-A56C-E2AC18633890")
     
     group "Editor"
     ProjectGuguEditor(BuildCfg)

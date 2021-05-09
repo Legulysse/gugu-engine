@@ -60,7 +60,10 @@ void Demo::AppStart()
     m_grid8->GetNeighbours(sf::Vector2i(4, 3), neighboursB);
 
     std::vector<sf::Vector2i> neighboursRangeA;
-    m_grid8->GetNeighboursInRange(sf::Vector2i(4, 3), 1, neighboursRangeA);
+    m_grid4->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeA);
+
+    std::vector<sf::Vector2i> neighboursRangeB;
+    m_grid8->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeB);
 
     Element* gridsLayer = m_root->AddChild<Element>();
     gridsLayer->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
@@ -79,11 +82,11 @@ void Demo::AppStart()
         }
     }
 
-    for (sf::Vector2i coords : neighboursA)
+    for (sf::Vector2i coords : neighboursRangeA)
     {
         m_pTileMapA->SetTile(coords.x, coords.y, sf::IntRect(32, 0, 32, 32));
     }
-
+    
     ElementTileMap* m_pTileMapB = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapB->SetTexture("SquareGrid.png");
     m_pTileMapB->SetTileCount(m_grid8->GetWidth(), m_grid8->GetHeight());
@@ -98,7 +101,7 @@ void Demo::AppStart()
         }
     }
 
-    for (sf::Vector2i coords : neighboursB)
+    for (sf::Vector2i coords : neighboursRangeB)
     {
         m_pTileMapB->SetTile(coords.x, coords.y, sf::IntRect(32, 0, 32, 32));
     }

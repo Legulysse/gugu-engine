@@ -53,13 +53,13 @@ void Demo::AppStart()
     gridsLayer->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
 
     // Square-4 grid.
-    SquareGrid* m_grid4 = new SquareGrid();
+    m_grid4 = new SquareGrid();
     m_grid4->InitSquareGrid(10, 10, 32.f, 32.f, false);
 
     std::vector<sf::Vector2i> neighboursRangeA;
     m_grid4->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeA);
 
-    ElementTileMap* m_pTileMapA = gridsLayer->AddChild<ElementTileMap>();
+    m_pTileMapA = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapA->SetTexture("SquareGrid.png");
     m_pTileMapA->SetTileCount(m_grid4->GetWidth(), m_grid4->GetHeight());
     m_pTileMapA->SetTileSize(sf::Vector2f(m_grid4->GetCellWidth(), m_grid4->GetCellHeight()));
@@ -79,13 +79,13 @@ void Demo::AppStart()
     }
     
     // Square-8 grid.
-    SquareGrid* m_grid8 = new SquareGrid();
+    m_grid8 = new SquareGrid();
     m_grid8->InitSquareGrid(10, 10, 32.f, 32.f, true);
 
     std::vector<sf::Vector2i> neighboursRangeB;
     m_grid8->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeB);
 
-    ElementTileMap* m_pTileMapB = gridsLayer->AddChild<ElementTileMap>();
+    m_pTileMapB = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapB->SetTexture("SquareGrid.png");
     m_pTileMapB->SetTileCount(m_grid8->GetWidth(), m_grid8->GetHeight());
     m_pTileMapB->SetTileSize(sf::Vector2f(m_grid8->GetCellWidth(), m_grid8->GetCellHeight()));
@@ -105,13 +105,13 @@ void Demo::AppStart()
     }
 
     // Hex grid.
-    HexGrid* m_grid6 = new HexGrid();
+    m_grid6 = new HexGrid();
     m_grid6->InitHexGrid(10, 10, 32.f);
 
     std::vector<sf::Vector2i> neighboursRangeC;
     m_grid6->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeC);
 
-    ElementSpriteGroup* m_pTileMapC = gridsLayer->AddChild<ElementSpriteGroup>();
+    m_pTileMapC = gridsLayer->AddChild<ElementSpriteGroup>();
     m_pTileMapC->SetTexture("HexGrid.png");
     m_pTileMapC->SetPosition(690, 10);
     m_pTileMapC->SetSize(32.f * m_grid6->GetWidth(), 32.f * m_grid6->GetHeight());
@@ -143,6 +143,29 @@ void Demo::AppStop()
 
 void Demo::AppUpdate(const DeltaTime& dt)
 {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
+    {
+        sf::Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+        sf::Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+        sf::Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+
+        sf::Vector2i pickedCoords;
+        if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
+        {
+            m_pTileMapA->SetTile(pickedCoords.x, pickedCoords.y, sf::IntRect(0, 32, 32, 32));
+        }
+        else if (m_grid8->PickCoords(localPickedPositionB, pickedCoords))
+        {
+            m_pTileMapB->SetTile(pickedCoords.x, pickedCoords.y, sf::IntRect(0, 32, 32, 32));
+        }
+        else if (m_grid6->PickCoords(localPickedPositionC, pickedCoords))
+        {
+            int tileIndex = pickedCoords.x + pickedCoords.y * m_grid6->GetWidth();
+            m_pTileMapC->GetItem(tileIndex)->SetSubRect(sf::IntRect(0, 37, 32, 37));
+            m_pTileMapC->RecomputeItemVertices(tileIndex);
+        }
+    }
+
     if (ImGui::Begin("Grid Setup"))
     {
         const char* items[] = { "Square 4", "Square 8", "Hexagon" };

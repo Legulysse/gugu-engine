@@ -12,6 +12,10 @@
 namespace gugu
 {
     class Element;
+    class ElementTileMap;
+    class ElementSpriteGroup;
+    class SquareGrid;
+    class HexGrid;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -36,6 +40,13 @@ public:
 private:
 
     gugu::Element* m_root;
+    gugu::ElementTileMap* m_pTileMapA;
+    gugu::ElementTileMap* m_pTileMapB;
+    gugu::ElementSpriteGroup* m_pTileMapC;
+
+    gugu::SquareGrid* m_grid4;
+    gugu::SquareGrid* m_grid8;
+    gugu::HexGrid* m_grid6;
 };
 
 }   //namespace demoproject

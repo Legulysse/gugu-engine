@@ -53,6 +53,45 @@ sf::Vector2f HexGrid::GetCellCenter(const sf::Vector2i& coords) const
     return sf::Vector2f(m_hexagonApothem + coords.x * m_cellWidth + (coords.y % 2) * m_hexagonApothem, m_hexagonRadius + coords.y * (1.5f * m_hexagonRadius));
 }
 
+bool HexGrid::PickCoords(const sf::Vector2f& position, sf::Vector2i& pickedCoords) const
+{
+	// This algorithm uses an approximation using circular distance, based on hexagons center and their radius.
+	// TODO: narrow down the tested coords to an approximated region.
+	for (int y = 0; y < m_height; ++y)
+	{
+		for (int x = 0; x < m_width; ++x)
+		{
+			sf::Vector2i testCoords(x, y);
+			sf::Vector2f testCenter = GetCellCenter(testCoords);
+
+			// Pick the first hexagon we find that is in radius range from the pick position.
+			if (LengthSquare(testCenter - position) <= std::powf(m_hexagonRadius, 2))
+			{
+				//Check if a neighbour is nearer.
+				std::vector<sf::Vector2i> neighbours;
+				GetNeighbours(testCoords, neighbours);
+
+				sf::Vector2i nearestCoords = testCoords;
+				for (sf::Vector2i neighbourCoords : neighbours)
+				{
+					sf::Vector2f nearestCenter = GetCellCenter(nearestCoords);
+					sf::Vector2f neighbourCenter = GetCellCenter(neighbourCoords);
+
+					if (LengthSquare(nearestCenter - position) > LengthSquare(neighbourCenter - position))
+					{
+						nearestCoords = neighbourCoords;
+					}
+				}
+
+				pickedCoords = nearestCoords;
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void HexGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i>& neighbours) const
 {
 	static const std::array<sf::Vector2i, 12> neighbourDirections = {

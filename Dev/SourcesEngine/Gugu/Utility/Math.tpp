@@ -84,7 +84,7 @@ float LengthSquare(const sf::Vector2<T>& _kVector)
 template <typename T>
 float Length(const sf::Vector2<T>& _kVector)
 {
-    return sqrt(LengthSquare(_kVector));
+    return std::sqrt(LengthSquare(_kVector));
 }
 
 template <typename T>

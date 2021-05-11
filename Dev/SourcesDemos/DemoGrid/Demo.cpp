@@ -6,10 +6,12 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Engine.h"
 #include "Gugu/Manager/ManagerConfig.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementTileMap.h"
+#include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/World/Grid/SquareGrid.h"
 #include "Gugu/World/Grid/HexGrid.h"
 
@@ -47,26 +49,15 @@ void Demo::AppStart()
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
     m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
+    Element* gridsLayer = m_root->AddChild<Element>();
+    gridsLayer->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
+
+    // Square-4 grid.
     SquareGrid* m_grid4 = new SquareGrid();
     m_grid4->InitSquareGrid(10, 10, 32.f, 32.f, false);
 
-    SquareGrid* m_grid8 = new SquareGrid();
-    m_grid8->InitSquareGrid(10, 10, 32.f, 32.f, true);
-
-    std::vector<sf::Vector2i> neighboursA;
-    m_grid4->GetNeighbours(sf::Vector2i(4, 3), neighboursA);
-
-    std::vector<sf::Vector2i> neighboursB;
-    m_grid8->GetNeighbours(sf::Vector2i(4, 3), neighboursB);
-
     std::vector<sf::Vector2i> neighboursRangeA;
     m_grid4->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeA);
-
-    std::vector<sf::Vector2i> neighboursRangeB;
-    m_grid8->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeB);
-
-    Element* gridsLayer = m_root->AddChild<Element>();
-    gridsLayer->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
 
     ElementTileMap* m_pTileMapA = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapA->SetTexture("SquareGrid.png");
@@ -87,6 +78,13 @@ void Demo::AppStart()
         m_pTileMapA->SetTile(coords.x, coords.y, sf::IntRect(32, 0, 32, 32));
     }
     
+    // Square-8 grid.
+    SquareGrid* m_grid8 = new SquareGrid();
+    m_grid8->InitSquareGrid(10, 10, 32.f, 32.f, true);
+
+    std::vector<sf::Vector2i> neighboursRangeB;
+    m_grid8->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeB);
+
     ElementTileMap* m_pTileMapB = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapB->SetTexture("SquareGrid.png");
     m_pTileMapB->SetTileCount(m_grid8->GetWidth(), m_grid8->GetHeight());
@@ -104,6 +102,38 @@ void Demo::AppStart()
     for (sf::Vector2i coords : neighboursRangeB)
     {
         m_pTileMapB->SetTile(coords.x, coords.y, sf::IntRect(32, 0, 32, 32));
+    }
+
+    // Hex grid.
+    HexGrid* m_grid6 = new HexGrid();
+    m_grid6->InitHexGrid(10, 10, 32.f);
+
+    std::vector<sf::Vector2i> neighboursRangeC;
+    m_grid6->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeC);
+
+    ElementSpriteGroup* m_pTileMapC = gridsLayer->AddChild<ElementSpriteGroup>();
+    m_pTileMapC->SetTexture("SquareGrid.png");
+    m_pTileMapC->SetPosition(690, 10);
+    m_pTileMapC->SetSize(32.f * m_grid6->GetWidth(), 32.f * m_grid6->GetHeight());
+
+    for (int y = 0; y < m_grid6->GetHeight(); ++y)
+    {
+        for (int x = 0; x < m_grid6->GetWidth(); ++x)
+        {
+            ElementSpriteGroupItem* item = new ElementSpriteGroupItem;
+            item->SetSubRect(sf::IntRect(0, 0, 32, 32));
+            item->SetPosition(m_grid6->GetCellPosition(sf::Vector2i(x, y)));
+            item->SetSize(32.f, 32.f);
+
+            m_pTileMapC->AddItem(item);
+        }
+    }
+
+    for (sf::Vector2i coords : neighboursRangeC)
+    {
+        int tileIndex = coords.x + coords.y * m_grid6->GetWidth();
+        m_pTileMapC->GetItem(tileIndex)->SetSubRect(sf::IntRect(32, 0, 32, 32));
+        m_pTileMapC->RecomputeItemVertices(tileIndex);
     }
 }
 
@@ -129,6 +159,22 @@ void Demo::AppUpdate(const DeltaTime& dt)
     }
 
     ImGui::End();
+}
+
+bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
+{
+    if (!EventListener::OnSFEvent(_oSFEvent))
+        return false;
+
+    ManagerConfig* pConfig = GetConfig();
+
+    if (pConfig->IsInputReleased("CloseGame", _oSFEvent))
+    {
+        GetEngine()->StopLooping();
+        return false;
+    }
+
+    return true;
 }
 
 }   //namespace demoproject

@@ -31,6 +31,8 @@ public:
 
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
 
+    virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
+
 private:
 
     gugu::Element* m_root;

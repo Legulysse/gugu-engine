@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
     config.pathAssets = "Assets";
     config.defaultFont = "Spaceranger.ttf";
     config.debugFont = "Roboto-Regular.ttf";
-    config.windowWidth = 1024;
-    config.windowHeight = 768;
+    config.windowWidth = 1280;
+    config.windowHeight = 720;
     
     GetEngine()->Init(config);
 

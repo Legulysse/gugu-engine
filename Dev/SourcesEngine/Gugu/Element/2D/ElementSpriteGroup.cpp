@@ -21,12 +21,22 @@
 namespace gugu {
 
 ElementSpriteGroupItem::ElementSpriteGroupItem()
-: m_isTile(false)
+: m_tiled(false)
 {
 }
 
 ElementSpriteGroupItem::~ElementSpriteGroupItem()
 {
+}
+
+void ElementSpriteGroupItem::SetSubRect(const sf::IntRect& _kSubRect)
+{
+    m_subRect = _kSubRect;
+}
+
+void ElementSpriteGroupItem::SetTiled(bool tiled)
+{
+    m_tiled = tiled;
 }
 
 int ElementSpriteGroupItem::GetItemVertexCount() const
@@ -170,6 +180,7 @@ void ElementSpriteGroup::DrawSelf(RenderPass& _kRenderPass, const sf::Transform&
 
 void ElementSpriteGroup::RecomputeItemVertices(int _iIndex)
 {
+    // TODO: if called explicitly, maybe I should allow it ? or add a "force" parameter ?
     if (m_needRecompute)
         return;
 
@@ -271,7 +282,7 @@ void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)
             ElementSpriteGroupItem* pNewTile = new ElementSpriteGroupItem;
             pNewElement = pNewTile;
 
-            pNewTile->m_isTile = true;
+            pNewTile->SetTiled(true);
         }
 
         if (pNewElement)
@@ -284,7 +295,7 @@ void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)
                 {
                     SubImage* pSubImage = pImageSet->GetSubImage(kAttrSubImage.as_string());
                     if (pSubImage)
-                        pNewElement->m_subRect = pSubImage->GetRect();
+                        pNewElement->SetSubRect(pSubImage->GetRect());
                 }
             }
             else if (pTexture)
@@ -307,7 +318,7 @@ void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)
                         int w = kAttrW.as_int();
                         int h = kAttrH.as_int();
 
-                        pNewElement->m_subRect = sf::IntRect(x, y, w, h);
+                        pNewElement->SetSubRect(sf::IntRect(x, y, w, h));
                     }
                 }
             }

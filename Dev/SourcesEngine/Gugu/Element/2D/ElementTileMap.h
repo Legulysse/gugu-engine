@@ -35,6 +35,7 @@ public:
     void SetTileCount(int _iWidth, int _iHeight);
     void SetTileSize(const sf::Vector2f& _kTileSize);
 
+    // Improve interface with more explicit functions and parameters (settilesubrect, settilecolor, settileposition, etc...).
     bool SetTile(int x, int y, const sf::IntRect& _kSubRect);
 
 protected:

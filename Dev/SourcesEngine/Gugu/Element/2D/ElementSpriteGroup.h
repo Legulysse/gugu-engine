@@ -27,13 +27,16 @@ public:
     ElementSpriteGroupItem();
     virtual ~ElementSpriteGroupItem();
 
+    void SetSubRect(const sf::IntRect& _kSubRect);
+    void SetTiled(bool tiled);
+
     int GetItemVertexCount() const;
     bool ComputeItemVertices(sf::VertexArray& vertices, int& indexFirstVertex) const;
 
-public:
+protected:
 
     sf::IntRect m_subRect;
-    bool m_isTile;   //TODO: Handle tiling
+    bool m_tiled;   //TODO: Handle tiling
 };
 
 class ElementSpriteGroup : public Element

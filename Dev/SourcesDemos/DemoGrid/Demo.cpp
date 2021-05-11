@@ -112,7 +112,7 @@ void Demo::AppStart()
     m_grid6->GetNeighboursInRange(sf::Vector2i(4, 3), 4, neighboursRangeC);
 
     ElementSpriteGroup* m_pTileMapC = gridsLayer->AddChild<ElementSpriteGroup>();
-    m_pTileMapC->SetTexture("SquareGrid.png");
+    m_pTileMapC->SetTexture("HexGrid.png");
     m_pTileMapC->SetPosition(690, 10);
     m_pTileMapC->SetSize(32.f * m_grid6->GetWidth(), 32.f * m_grid6->GetHeight());
 
@@ -121,9 +121,9 @@ void Demo::AppStart()
         for (int x = 0; x < m_grid6->GetWidth(); ++x)
         {
             ElementSpriteGroupItem* item = new ElementSpriteGroupItem;
-            item->SetSubRect(sf::IntRect(0, 0, 32, 32));
+            item->SetSubRect(sf::IntRect(0, 0, 32, 37));
             item->SetPosition(m_grid6->GetCellPosition(sf::Vector2i(x, y)));
-            item->SetSize(32.f, 32.f);
+            item->SetSize(m_grid6->GetCellWidth(), m_grid6->GetCellHeight());
 
             m_pTileMapC->AddItem(item);
         }
@@ -132,7 +132,7 @@ void Demo::AppStart()
     for (sf::Vector2i coords : neighboursRangeC)
     {
         int tileIndex = coords.x + coords.y * m_grid6->GetWidth();
-        m_pTileMapC->GetItem(tileIndex)->SetSubRect(sf::IntRect(32, 0, 32, 32));
+        m_pTileMapC->GetItem(tileIndex)->SetSubRect(sf::IntRect(32, 0, 32, 37));
         m_pTileMapC->RecomputeItemVertices(tileIndex);
     }
 }

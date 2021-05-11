@@ -42,6 +42,11 @@ sf::Vector2f SquareGrid::GetCellPosition(const sf::Vector2i& coords) const
     return sf::Vector2f(coords.x * m_cellWidth, coords.y * m_cellHeight);
 }
 
+sf::Vector2f SquareGrid::GetCellCenter(const sf::Vector2i& coords) const
+{
+    return sf::Vector2f(m_cellWidth * 0.5f + coords.x * m_cellWidth, m_cellHeight * 0.5f + coords.y * m_cellHeight);
+}
+
 void SquareGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i>& neighbours) const
 {
     neighbours.reserve(m_eightSides ? 8 : 4);

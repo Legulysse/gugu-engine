@@ -20,8 +20,10 @@ namespace gugu {
 HexGrid::HexGrid()
     : m_width(0)
     , m_height(0)
-    , m_hexagonWidth(0.f)
+    , m_hexagonApothem(0.f)
     , m_hexagonRadius(0.f)
+    , m_cellWidth(0.f)
+    , m_cellHeight(0.f)
 {
 }
 
@@ -34,16 +36,21 @@ void HexGrid::InitHexGrid(int _iWidth, int _iHeight, float _hexagonWidth)
     m_width = _iWidth;
     m_height = _iHeight;
 
-    m_hexagonWidth = _hexagonWidth;
-    m_hexagonRadius = std::sqrtf(std::pow(m_hexagonWidth, 2) / 3.f);
+    m_hexagonApothem = _hexagonWidth * 0.5f;
+    m_hexagonRadius = m_hexagonApothem / (std::sqrtf(3) / 2.f);
+
+    m_cellWidth = m_hexagonApothem * 2.f;
+    m_cellHeight = m_hexagonRadius * 2.f;
 }
 
 sf::Vector2f HexGrid::GetCellPosition(const sf::Vector2i& coords) const
 {
-    //float fCenterX = (m_hexagonWidth / 2.f) + ((coords.y % 2) * (m_hexagonWidth / 2.f)) + (coords.x * m_hexagonWidth);
-    //float fCenterY = m_hexagonRadius + ((1.5f * m_hexagonRadius) * coords.y);
+    return sf::Vector2f(coords.x * m_cellWidth + (coords.y % 2) * m_hexagonApothem, coords.y * (1.5f * m_hexagonRadius));
+}
 
-    return sf::Vector2f(coords.x * m_hexagonWidth + (coords.y % 2) * (m_hexagonWidth / 2.f), coords.y * (1.5f * m_hexagonRadius));
+sf::Vector2f HexGrid::GetCellCenter(const sf::Vector2i& coords) const
+{
+    return sf::Vector2f(m_hexagonApothem + coords.x * m_cellWidth + (coords.y % 2) * m_hexagonApothem, m_hexagonRadius + coords.y * (1.5f * m_hexagonRadius));
 }
 
 void HexGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i>& neighbours) const
@@ -94,6 +101,16 @@ int HexGrid::GetWidth() const
 int HexGrid::GetHeight() const
 {
     return m_height;
+}
+
+float HexGrid::GetCellWidth() const
+{
+    return m_cellWidth;
+}
+
+float HexGrid::GetCellHeight() const
+{
+    return m_cellHeight;
 }
 
 }   // namespace gugu

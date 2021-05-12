@@ -1,10 +1,13 @@
 ////////////////////////////////////////////////////////////////
 // Header
 
+#include "Gugu/Common.h"
 #include "Demo.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
+
+#include "DemoGridData.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Manager/ManagerConfig.h"
@@ -60,8 +63,6 @@ void Demo::AppStart()
     m_gridData4 = new DemoGridData;
     m_gridData4->GenerateCells(m_grid4->GetWidth(), m_grid4->GetHeight());
 
-    m_referenceCoords4 = sf::Vector2i(4, 3);
-
     m_pTileMapA = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapA->SetTexture("SquareGrid.png");
     m_pTileMapA->SetTileCount(m_grid4->GetWidth(), m_grid4->GetHeight());
@@ -82,8 +83,6 @@ void Demo::AppStart()
 
     m_gridData8 = new DemoGridData;
     m_gridData8->GenerateCells(m_grid8->GetWidth(), m_grid8->GetHeight());
-
-    m_referenceCoords8 = sf::Vector2i(4, 3);
 
     m_pTileMapB = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapB->SetTexture("SquareGrid.png");
@@ -106,8 +105,6 @@ void Demo::AppStart()
     m_gridData6 = new DemoGridData;
     m_gridData6->GenerateCells(m_grid6->GetWidth(), m_grid6->GetHeight());
 
-    m_referenceCoords6 = sf::Vector2i(4, 3);
-
     m_pTileMapC = gridsLayer->AddChild<ElementSpriteGroup>();
     m_pTileMapC->SetTexture("HexGrid.png");
     m_pTileMapC->SetPosition(690, 10);
@@ -127,6 +124,11 @@ void Demo::AppStart()
     }
 
     // Finalize.
+    m_referenceCoords4 = sf::Vector2i(4, 3);
+    m_referenceCoords8 = sf::Vector2i(4, 3);
+    m_referenceCoords6 = sf::Vector2i(4, 3);
+    m_neighboursRange = 4;
+
     RefreshGrids();
 }
 
@@ -144,7 +146,7 @@ void Demo::RefreshGrids()
     m_pTileMapA->SetTile(m_referenceCoords4.x, m_referenceCoords4.y, sf::IntRect(32, 32, 32, 32));
 
     std::vector<sf::Vector2i> neighboursRangeA;
-    BreadthFirstSearchNeighboursByWalkableRange(*m_grid4, *m_gridData4, m_referenceCoords4, 4, neighboursRangeA);
+    BreadthFirstSearchNeighboursByWalkableRange(*m_grid4, *m_gridData4, m_referenceCoords4, m_neighboursRange, neighboursRangeA);
 
     for (sf::Vector2i coords : neighboursRangeA)
     {
@@ -163,7 +165,7 @@ void Demo::RefreshGrids()
     m_pTileMapB->SetTile(m_referenceCoords8.x, m_referenceCoords8.y, sf::IntRect(32, 32, 32, 32));
 
     std::vector<sf::Vector2i> neighboursRangeB;
-    BreadthFirstSearchNeighboursByWalkableRange(*m_grid8, *m_gridData8, m_referenceCoords8, 4, neighboursRangeB);
+    BreadthFirstSearchNeighboursByWalkableRange(*m_grid8, *m_gridData8, m_referenceCoords8, m_neighboursRange, neighboursRangeB);
 
     for (sf::Vector2i coords : neighboursRangeB)
     {
@@ -186,7 +188,7 @@ void Demo::RefreshGrids()
     m_pTileMapC->RecomputeItemVertices(referenceTileIndex);
 
     std::vector<sf::Vector2i> neighboursRangeC;
-    BreadthFirstSearchNeighboursByWalkableRange(*m_grid6, *m_gridData6, m_referenceCoords6, 4, neighboursRangeC);
+    BreadthFirstSearchNeighboursByWalkableRange(*m_grid6, *m_gridData6, m_referenceCoords6, m_neighboursRange, neighboursRangeC);
 
     for (sf::Vector2i coords : neighboursRangeC)
     {
@@ -198,69 +200,93 @@ void Demo::RefreshGrids()
 
 void Demo::AppUpdate(const DeltaTime& dt)
 {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
-    {
-        sf::Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-        sf::Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-        sf::Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+    bool refresh = false;
 
-        sf::Vector2i pickedCoords;
-        if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
+    // TODO: maybe provide an accessor on the Engine side ?
+    if (!ImGui::GetIO().WantCaptureMouse)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
         {
-            m_gridData4->SetBlocked(pickedCoords, true);
-            RefreshGrids();
+            sf::Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            sf::Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            sf::Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+
+            sf::Vector2i pickedCoords;
+            if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
+            {
+                m_gridData4->SetBlocked(pickedCoords, true);
+                refresh = true;
+            }
+            else if (m_grid8->PickCoords(localPickedPositionB, pickedCoords))
+            {
+                m_gridData8->SetBlocked(pickedCoords, true);
+                refresh = true;
+            }
+            else if (m_grid6->PickCoords(localPickedPositionC, pickedCoords))
+            {
+                m_gridData6->SetBlocked(pickedCoords, true);
+                refresh = true;
+            }
         }
-        else if (m_grid8->PickCoords(localPickedPositionB, pickedCoords))
+        else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
         {
-            m_gridData8->SetBlocked(pickedCoords, true);
-            RefreshGrids();
-        }
-        else if (m_grid6->PickCoords(localPickedPositionC, pickedCoords))
-        {
-            m_gridData6->SetBlocked(pickedCoords, true);
-            RefreshGrids();
+            sf::Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            sf::Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            sf::Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+
+            sf::Vector2i pickedCoords;
+            if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
+            {
+                m_referenceCoords4 = pickedCoords;
+                refresh = true;
+            }
+            else if (m_grid8->PickCoords(localPickedPositionB, pickedCoords))
+            {
+                m_referenceCoords8 = pickedCoords;
+                refresh = true;
+            }
+            else if (m_grid6->PickCoords(localPickedPositionC, pickedCoords))
+            {
+                m_referenceCoords6 = pickedCoords;
+                refresh = true;
+            }
         }
     }
-    else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
+
+    // Imgui panel.
+    if (ImGui::Begin("Grid Demo"))
     {
-        sf::Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-        sf::Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-        sf::Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+        //const char* items[] = { "Square 4", "Square 8", "Hexagon" };
+        //static int item_current = 0;
+        //ImGui::Combo("Grid Type", &item_current, items, IM_ARRAYSIZE(items));
 
-        sf::Vector2i pickedCoords;
-        if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
+        if (ImGui::SliderInt("Neighbours Range", &m_neighboursRange, 1, 10))
         {
-            m_referenceCoords4 = pickedCoords;
-            RefreshGrids();
+            refresh = true;
         }
-        else if (m_grid8->PickCoords(localPickedPositionB, pickedCoords))
+
+        if (ImGui::Button("Reset"))
         {
-            m_referenceCoords8 = pickedCoords;
-            RefreshGrids();
-        }
-        else if (m_grid6->PickCoords(localPickedPositionC, pickedCoords))
-        {
-            m_referenceCoords6 = pickedCoords;
-            RefreshGrids();
-        }
-    }
+            m_gridData4->ResetCells();
+            m_gridData8->ResetCells();
+            m_gridData6->ResetCells();
 
-    if (ImGui::Begin("Grid Setup"))
-    {
-        const char* items[] = { "Square 4", "Square 8", "Hexagon" };
-        static int item_current = 0;
-        ImGui::Combo("Grid Type", &item_current, items, IM_ARRAYSIZE(items));
+            m_referenceCoords4 = sf::Vector2i(4, 3);
+            m_referenceCoords8 = sf::Vector2i(4, 3);
+            m_referenceCoords6 = sf::Vector2i(4, 3);
+            m_neighboursRange = 4;
 
-        static int rangeNeighbours = 1;
-        ImGui::SliderInt("Neighbours Range", &rangeNeighbours, 1, 10);
-
-        if (ImGui::Button("Refresh Neighbours"))
-        {
-
+            refresh = true;
         }
     }
 
     ImGui::End();
+
+    // Apply changes.
+    if (refresh)
+    {
+        RefreshGrids();
+    }
 }
 
 bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
@@ -277,43 +303,6 @@ bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
     }
 
     return true;
-}
-
-
-DemoGridData::DemoGridData()
-    : m_width(0)
-    , m_height(0)
-{
-}
-
-void DemoGridData::GenerateCells(int width, int height)
-{
-    m_width = width;
-    m_height = height;
-
-    m_cells.clear();
-    m_cells.resize(m_width * m_height);
-}
-
-bool DemoGridData::IsBlocked(const sf::Vector2i& coords) const
-{
-    return m_cells[coords.x + m_width * coords.y].blocked;
-}
-
-void DemoGridData::SetBlocked(const sf::Vector2i& coords, bool blocked)
-{
-    m_cells[coords.x + m_width * coords.y].blocked = blocked;
-}
-
-bool DemoGridData::IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo) const
-{
-    return !m_cells[coordsTo.x + m_width * coordsTo.y].blocked;
-}
-
-bool DemoGridData::IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo, float& cost) const
-{
-    cost = 1.f;
-    return !m_cells[coordsTo.x + m_width * coordsTo.y].blocked;
 }
 
 }   //namespace demoproject

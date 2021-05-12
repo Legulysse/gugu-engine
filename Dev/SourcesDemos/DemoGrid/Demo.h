@@ -24,32 +24,6 @@ namespace gugu
 
 namespace demoproject {
 
-class DemoGridData
-{
-public:
-
-    DemoGridData();
-
-    void GenerateCells(int width, int height);
-
-    bool IsBlocked(const sf::Vector2i& coords) const;
-    void SetBlocked(const sf::Vector2i& coords, bool blocked);
-
-    bool IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo) const;
-    bool IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo, float& cost) const;
-
-private:
-
-    struct DemoCellData
-    {
-        bool blocked = false;
-    };
-
-    int m_width;
-    int m_height;
-    std::vector<DemoCellData> m_cells;
-};
-    
 class Demo : public gugu::Application, public gugu::EventListener
 {
 public:
@@ -74,13 +48,15 @@ private:
     gugu::SquareGrid* m_grid8;
     gugu::HexGrid* m_grid6;
 
-    DemoGridData* m_gridData4;
-    DemoGridData* m_gridData8;
-    DemoGridData* m_gridData6;
+    class DemoGridData* m_gridData4;
+    class DemoGridData* m_gridData8;
+    class DemoGridData* m_gridData6;
 
     sf::Vector2i m_referenceCoords4;
     sf::Vector2i m_referenceCoords8;
     sf::Vector2i m_referenceCoords6;
+
+    int m_neighboursRange;
 };
 
 }   //namespace demoproject

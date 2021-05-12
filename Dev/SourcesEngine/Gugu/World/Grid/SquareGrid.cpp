@@ -5,11 +5,6 @@
 #include "Gugu/World/Grid/SquareGrid.h"
 
 ////////////////////////////////////////////////////////////////
-// Includes
-
-#include "Gugu/World/Grid/GridUtility.h"
-
-////////////////////////////////////////////////////////////////
 // File Implementation
 
 namespace gugu {
@@ -52,8 +47,8 @@ bool SquareGrid::PickCoords(const sf::Vector2f& position, sf::Vector2i& pickedCo
     if (position.x < 0 || position.x >= m_cellWidth * m_width || position.y < 0 || position.y >= m_cellHeight * m_height)
         return false;
 
-    pickedCoords.x = position.x / m_cellWidth;
-    pickedCoords.y = position.y / m_cellHeight;
+    pickedCoords.x = (int)(position.x / m_cellWidth);
+    pickedCoords.y = (int)(position.y / m_cellHeight);
 
     return true;
 }
@@ -78,11 +73,6 @@ void SquareGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vecto
             }
         }
     }
-}
-
-void SquareGrid::GetNeighboursInRange(const sf::Vector2i& coords, int range, std::vector<sf::Vector2i>& neighbours) const
-{
-    BreadthFirstSearchNeighbours(this, coords, range, neighbours);
 }
 
 int SquareGrid::GetWidth() const

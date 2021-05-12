@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/World/Grid/GridUtility.h"
 #include "Gugu/Utility/Math.h"
 
 #include <array>
@@ -125,11 +124,6 @@ void HexGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i
             neighbours.push_back(neighbour);
         }
     }
-}
-
-void HexGrid::GetNeighboursInRange(const sf::Vector2i& coords, int range, std::vector<sf::Vector2i>& neighbours) const
-{
-    BreadthFirstSearchNeighbours(this, coords, range, neighbours);
 }
 
 int HexGrid::GetWidth() const

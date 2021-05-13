@@ -83,10 +83,10 @@ void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridD
             {
                 if (explored.find(neighbour) == explored.end())
                 {
-                    explored.insert(neighbour);
-
                     if (gridData.IsWalkable(currentCoords, neighbour))
                     {
+                        explored.insert(neighbour);
+
                         pendingQueue.push(neighbour);
                         neighbours.push_back(neighbour);
                     }

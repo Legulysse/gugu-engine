@@ -265,6 +265,13 @@ void Demo::AppUpdate(const DeltaTime& dt)
             refresh = true;
         }
 
+        bool restrictDiagonals = m_gridData8->AreDiagonalsRestricted();
+        if (ImGui::Checkbox("Restrict Square-8 Diagonals", &restrictDiagonals))
+        {
+            m_gridData8->SetDiagonalsRestricted(restrictDiagonals);
+            refresh = true;
+        }
+
         if (ImGui::Button("Reset"))
         {
             m_gridData4->ResetCells();

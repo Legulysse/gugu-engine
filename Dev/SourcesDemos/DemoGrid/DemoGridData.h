@@ -24,6 +24,10 @@ public:
     bool IsBlocked(const sf::Vector2i& coords) const;
     void SetBlocked(const sf::Vector2i& coords, bool blocked);
 
+    // Check diagonal move (only works for square-8 grids).
+    bool AreDiagonalsRestricted() const;
+    void SetDiagonalsRestricted(bool restrictDiagonals);
+
     bool IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo) const;
     bool IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo, float& cost) const;
 
@@ -37,6 +41,8 @@ private:
     int m_width;
     int m_height;
     std::vector<DemoCellData> m_cells;
+
+    bool m_restrictDiagonals;
 };
 
 }   //namespace demoproject

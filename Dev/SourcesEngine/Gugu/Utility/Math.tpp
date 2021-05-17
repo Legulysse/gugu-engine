@@ -73,40 +73,6 @@ T Power(const T& n, const int& p)
 }
 
 //--------------------------------
-// Vectors
-
-template <typename T>
-float LengthSquare(const sf::Vector2<T>& _kVector)
-{
-    return (float)(_kVector.x * _kVector.x + _kVector.y * _kVector.y);
-}
-
-template <typename T>
-float Length(const sf::Vector2<T>& _kVector)
-{
-    return std::sqrt(LengthSquare(_kVector));
-}
-
-template <typename T>
-sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector)
-{
-    if (_kVector != sf::Vector2<T>(0,0))
-        return _kVector / (Length(_kVector));
-    return sf::Vector2<T>(0,0);
-}
-
-template <typename T>
-sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians)
-{
-    sf::Vector2<T> kResult;
-    float fCos = std::cos(_fRadians);
-    float fSin = std::sin(_fRadians);
-    kResult.x = _kVector.x * fCos - _kVector.y * fSin; 
-    kResult.y = _kVector.x * fSin + _kVector.y * fCos;
-    return kResult;
-}
-
-//--------------------------------
 // Interpolations
 
 template <typename T>

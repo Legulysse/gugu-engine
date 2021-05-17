@@ -4,7 +4,6 @@
 // Includes
 
 #include "Gugu/Utility/Types.h"
-#include "Gugu/Utility/Vector2.h"
 
 #include <cmath>
 #include <algorithm>
@@ -69,21 +68,6 @@ double ToDegrees(double _fRadians);
 
 float ToRadiansf(float _fDegrees);
 float ToDegreesf(float _fRadians);
-
-//--------------------------------
-// Vectors
-
-template <typename T>
-float LengthSquare(const sf::Vector2<T>& _kVector);
-
-template <typename T>
-float Length(const sf::Vector2<T>& _kVector);
-
-template <typename T>
-sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector);
-
-template <typename T>
-sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians);
 
 //--------------------------------
 // Interpolations

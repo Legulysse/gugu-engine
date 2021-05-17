@@ -16,8 +16,22 @@ typedef sf::Vector2i Vector2i;
 typedef sf::Vector2u Vector2u;
 typedef sf::Vector2f Vector2f;
 
+template <typename T>
+float LengthSquare(const sf::Vector2<T>& _kVector);
+
+template <typename T>
+float Length(const sf::Vector2<T>& _kVector);
+
+template <typename T>
+sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector);
+
+template <typename T>
+sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians);
+
 }   // namespace gugu
 
+//--------------------------------
+// Comparators for containers
 
 namespace std {
 
@@ -40,3 +54,41 @@ struct less<gugu::Vector2u>
 };
 
 }   // namespace std
+
+////////////////////////////////////////////////////////////////
+// Template Implementation
+
+namespace gugu {
+
+template <typename T>
+float LengthSquare(const sf::Vector2<T>& _kVector)
+{
+    return (float)(_kVector.x * _kVector.x + _kVector.y * _kVector.y);
+}
+
+template <typename T>
+float Length(const sf::Vector2<T>& _kVector)
+{
+    return std::sqrt(LengthSquare(_kVector));
+}
+
+template <typename T>
+sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector)
+{
+    if (_kVector != sf::Vector2<T>(0, 0))
+        return _kVector / (Length(_kVector));
+    return sf::Vector2<T>(0, 0);
+}
+
+template <typename T>
+sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians)
+{
+    sf::Vector2<T> kResult;
+    float fCos = std::cos(_fRadians);
+    float fSin = std::sin(_fRadians);
+    kResult.x = _kVector.x * fCos - _kVector.y * fSin;
+    kResult.y = _kVector.x * fSin + _kVector.y * fCos;
+    return kResult;
+}
+
+}   // namespace gugu

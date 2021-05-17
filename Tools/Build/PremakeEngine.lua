@@ -265,6 +265,7 @@ function ProjectLibSFML(BuildCfg)
         
         files {
             DirSfmlHeaders.."**.hpp",
+            DirSfmlHeaders.."**.inl",
             DirSfmlSources.."**.hpp",
             DirSfmlSources.."**.cpp",
         }

@@ -5,6 +5,8 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include <set>  // for std::less specialization
+
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
@@ -16,12 +18,25 @@ typedef sf::Vector2f Vector2f;
 
 }   // namespace gugu
 
-namespace sf {
 
-template <typename T>
-bool operator<(const sf::Vector2<T>& left, const sf::Vector2<T>& right)
+namespace std {
+
+template<>
+struct less<gugu::Vector2i>
 {
-    return left.y < right.y || (left.y == right.y && left.x < right.x);
-}
+    constexpr bool operator()(const gugu::Vector2i& left, const gugu::Vector2i& right) const noexcept
+    {
+        return left.y < right.y || (left.y == right.y && left.x < right.x);
+    }
+};
 
-}   // namespace sf
+template<>
+struct less<gugu::Vector2u>
+{
+    constexpr bool operator()(const gugu::Vector2u& left, const gugu::Vector2u& right) const noexcept
+    {
+        return left.y < right.y || (left.y == right.y && left.x < right.x);
+    }
+};
+
+}   // namespace std

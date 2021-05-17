@@ -4,8 +4,7 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
-
-#include <SFML/System/Vector2.hpp>
+#include "Gugu/Utility/Vector2.h"
 
 #include <vector>
 #include <map>

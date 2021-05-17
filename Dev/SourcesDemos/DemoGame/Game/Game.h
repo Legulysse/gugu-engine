@@ -6,8 +6,7 @@
 #include "Gugu/Misc/Application.h"
 #include "Gugu/Misc/EventListener.h"
 #include "Gugu/Utility/StateMachine.h"
-
-#include <SFML/System/Vector2.hpp>
+#include "Gugu/Utility/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

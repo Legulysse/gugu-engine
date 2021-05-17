@@ -5,8 +5,6 @@
 
 #include "Actors/Characters/Character.h"
 
-#include <SFML/System/Vector2.hpp>
-
 ////////////////////////////////////////////////////////////////
 // File Declarations
 

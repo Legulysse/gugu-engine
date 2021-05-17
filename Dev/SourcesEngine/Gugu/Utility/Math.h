@@ -4,8 +4,7 @@
 // Includes
 
 #include "Gugu/Utility/Types.h"
-
-#include <SFML/System/Vector2.hpp>
+#include "Gugu/Utility/Vector2.h"
 
 #include <cmath>
 #include <algorithm>

@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
-#include "PugiXml/pugixml.hpp"
 #include "Gugu/Utility/System.h"
+#include "Gugu/Utility/Vector2.h"
 
-#include <SFML/System/Vector2.hpp>
+#include <PugiXml/pugixml.hpp>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

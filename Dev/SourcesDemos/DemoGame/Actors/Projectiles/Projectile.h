@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/World/Actor.h"
 #include "Skills/SkillUtility.h"
 
-#include <SFML/System/Vector2.hpp>
+#include "Gugu/World/Actor.h"
+#include "Gugu/Utility/Vector2.h"
 
 #include <set>
 

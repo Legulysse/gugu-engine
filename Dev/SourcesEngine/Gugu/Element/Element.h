@@ -6,8 +6,8 @@
 #include "Gugu/Utility/Types.h"
 #include "Gugu/Utility/DeltaTime.h"
 #include "Gugu/Misc/UDim.h"
+#include "Gugu/Utility/Vector2.h"
 
-#include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
 

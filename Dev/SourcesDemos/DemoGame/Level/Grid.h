@@ -4,8 +4,7 @@
 // Includes
 
 #include "Gugu/World/Grid/SquareGrid.h"
-
-#include <SFML/System/Vector2.hpp>
+#include "Gugu/Utility/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

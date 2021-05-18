@@ -105,9 +105,9 @@ bool StateGuiTest::OnSFEvent(const sf::Event& _oSFEvent)
     if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
-    if (pConfig->IsInputReleased("CloseGame", _oSFEvent))
+    if (inputs->IsInputReleased("CloseGame", _oSFEvent))
     {
         GetOwner()->ChangeState(new StateMenuMain);
         return false;

@@ -19,31 +19,31 @@
 
 namespace gugu {
 
-ManagerConfig::ManagerConfig()
+ManagerInputs::ManagerInputs()
 {
 }
 
-ManagerConfig::~ManagerConfig()
+ManagerInputs::~ManagerInputs()
 {
 }
 
-void ManagerConfig::Init(const EngineConfig& config)
+void ManagerInputs::Init(const EngineConfig& config)
 {
     FillListKeyCodes();
 }
 
-void ManagerConfig::Release()
+void ManagerInputs::Release()
 {
     m_inputBindings.clear();
     m_keyCodes.clear();
 }
 
-void ManagerConfig::RegisterInput(const std::string& _strInputName, const sf::Event& _oSFEvent)
+void ManagerInputs::RegisterInput(const std::string& _strInputName, const sf::Event& _oSFEvent)
 {
     m_inputBindings[_strInputName].bindings.push_back(_oSFEvent);
 }
 
-bool ManagerConfig::ModifyInput(const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex)
+bool ManagerInputs::ModifyInput(const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex)
 {
     auto kvp = m_inputBindings.find(_strInputName);
     if (kvp != m_inputBindings.end())
@@ -58,7 +58,7 @@ bool ManagerConfig::ModifyInput(const std::string& _strInputName, const sf::Even
     return false;
 }
 
-void ManagerConfig::LoadInputFile(const std::string& _strPath)
+void ManagerInputs::LoadInputFile(const std::string& _strPath)
 {
     pugi::xml_document oDoc;
     pugi::xml_parse_result result = oDoc.load_file(GetResources()->GetResourcePathName(_strPath).c_str());
@@ -88,7 +88,7 @@ void ManagerConfig::LoadInputFile(const std::string& _strPath)
     }
 }
 
-bool ManagerConfig::IsInput(const std::string& _strInputName, const sf::Event& _oSFEvent) const
+bool ManagerInputs::IsInput(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
     auto kvp = m_inputBindings.find(_strInputName);
     if (kvp != m_inputBindings.end())
@@ -123,17 +123,17 @@ bool ManagerConfig::IsInput(const std::string& _strInputName, const sf::Event& _
     return false;
 }
 
-bool ManagerConfig::IsInputPressed(const std::string& _strInputName, const sf::Event& _oSFEvent) const
+bool ManagerInputs::IsInputPressed(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
     return ((_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::JoystickButtonPressed) && IsInput(_strInputName, _oSFEvent));
 }
 
-bool ManagerConfig::IsInputReleased(const std::string& _strInputName, const sf::Event& _oSFEvent) const
+bool ManagerInputs::IsInputReleased(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
     return ((_oSFEvent.type == sf::Event::KeyReleased || _oSFEvent.type == sf::Event::JoystickButtonReleased) && IsInput(_strInputName, _oSFEvent));
 }
 
-bool ManagerConfig::IsInputDown(const std::string& _strInputName) const
+bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
 {
     auto kvp = m_inputBindings.find(_strInputName);
     if (kvp != m_inputBindings.end())
@@ -161,17 +161,17 @@ bool ManagerConfig::IsInputDown(const std::string& _strInputName) const
     return false;
 }
 
-bool ManagerConfig::IsShiftDown() const
+bool ManagerInputs::IsShiftDown() const
 {
     return (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift));
 }
 
-bool ManagerConfig::IsKeyDown(sf::Keyboard::Key _eKey) const
+bool ManagerInputs::IsKeyDown(sf::Keyboard::Key _eKey) const
 {
     return sf::Keyboard::isKeyPressed(_eKey);
 }
 
-sf::Event ManagerConfig::BuildKeyboardEvent(sf::Keyboard::Key key)
+sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key)
 {
     sf::Event event;
     event.type = sf::Event::KeyPressed;
@@ -182,12 +182,12 @@ sf::Event ManagerConfig::BuildKeyboardEvent(sf::Keyboard::Key key)
     return event;
 }
 
-sf::Event ManagerConfig::BuildJoystickEvent(EPadButton button, int joystickId)
+sf::Event ManagerInputs::BuildJoystickEvent(EPadButton button, int joystickId)
 {
     return BuildJoystickEvent((int)button, joystickId);
 }
 
-sf::Event ManagerConfig::BuildJoystickEvent(int button, int joystickId)
+sf::Event ManagerInputs::BuildJoystickEvent(int button, int joystickId)
 {
     sf::Event event;
     event.type = sf::Event::JoystickButtonPressed;
@@ -196,7 +196,7 @@ sf::Event ManagerConfig::BuildJoystickEvent(int button, int joystickId)
     return event;
 }
 
-void ManagerConfig::FillListKeyCodes()
+void ManagerInputs::FillListKeyCodes()
 {
     m_keyCodes["A"] = sf::Keyboard::A;
     m_keyCodes["B"] = sf::Keyboard::B;
@@ -307,7 +307,7 @@ void ManagerConfig::FillListKeyCodes()
     m_keyCodes["Pause"] = sf::Keyboard::Pause;  ///< The Pause key
 }
 
-bool ManagerConfig::ReadKeyCode(const std::string& _strValue, sf::Keyboard::Key& _eKey) const
+bool ManagerInputs::ReadKeyCode(const std::string& _strValue, sf::Keyboard::Key& _eKey) const
 {
     auto kvp = m_keyCodes.find(_strValue);
     if (kvp != m_keyCodes.end())
@@ -319,9 +319,9 @@ bool ManagerConfig::ReadKeyCode(const std::string& _strValue, sf::Keyboard::Key&
     return false;
 }
 
-ManagerConfig* GetConfig()
+ManagerInputs* GetInputs()
 {
-    return GetEngine()->GetManagerConfig();
+    return GetEngine()->GetManagerInputs();
 }
 
 }   // namespace gugu

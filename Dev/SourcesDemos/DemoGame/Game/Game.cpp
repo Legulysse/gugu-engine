@@ -58,35 +58,24 @@ void Game::AppStart()
     GetGameWindow()->SetMouseVisible(true);
     GetGameWindow()->SetMouseTexture("Mouse.png");
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
     //Method 1 : use a config file
-    pConfig->LoadInputFile("Bindings.xml");
+    inputs->LoadInputFile("Bindings.xml");
     
     //Method 2 : register keys manually
-    /*pConfig->RegisterInput("Player_1_Up",     pConfig->BuildEventKey(sf::Keyboard::Z));
-    pConfig->RegisterInput("Player_1_Down",     pConfig->BuildEventKey(sf::Keyboard::S));
-    pConfig->RegisterInput("Player_1_Left",     pConfig->BuildEventKey(sf::Keyboard::Q));
-    pConfig->RegisterInput("Player_1_Right",    pConfig->BuildEventKey(sf::Keyboard::D));
+    inputs->RegisterInput("Player_1_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Z));
+    inputs->RegisterInput("Player_1_Down", inputs->BuildKeyboardEvent(sf::Keyboard::S));
+    inputs->RegisterInput("Player_1_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Q));
+    inputs->RegisterInput("Player_1_Right", inputs->BuildKeyboardEvent(sf::Keyboard::D));
+    inputs->RegisterInput("Player_1_Skill_1", inputs->BuildKeyboardEvent(sf::Keyboard::Num1));
+    inputs->RegisterInput("Player_1_Skill_2", inputs->BuildKeyboardEvent(sf::Keyboard::Num2));
+    inputs->RegisterInput("Player_1_Skill_3", inputs->BuildKeyboardEvent(sf::Keyboard::Num3));
 
-    pConfig->RegisterInput("Player_2_Up",       pConfig->BuildEventKey(sf::Keyboard::Up));
-    pConfig->RegisterInput("Player_2_Down",     pConfig->BuildEventKey(sf::Keyboard::Down));
-    pConfig->RegisterInput("Player_2_Left",     pConfig->BuildEventKey(sf::Keyboard::Left));
-    pConfig->RegisterInput("Player_2_Right", pConfig->BuildEventKey(sf::Keyboard::Right));
-    */
+    inputs->RegisterInput("Exit", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
+    inputs->RegisterInput("Screenshot", inputs->BuildKeyboardEvent(sf::Keyboard::F10));
 
-    pConfig->RegisterInput("Player_1_Up", pConfig->BuildKeyboardEvent(sf::Keyboard::Z));
-    pConfig->RegisterInput("Player_1_Down", pConfig->BuildKeyboardEvent(sf::Keyboard::S));
-    pConfig->RegisterInput("Player_1_Left", pConfig->BuildKeyboardEvent(sf::Keyboard::Q));
-    pConfig->RegisterInput("Player_1_Right", pConfig->BuildKeyboardEvent(sf::Keyboard::D));
-    pConfig->RegisterInput("Player_1_Skill_1", pConfig->BuildKeyboardEvent(sf::Keyboard::Num1));
-    pConfig->RegisterInput("Player_1_Skill_2", pConfig->BuildKeyboardEvent(sf::Keyboard::Num2));
-    pConfig->RegisterInput("Player_1_Skill_3", pConfig->BuildKeyboardEvent(sf::Keyboard::Num3));
-
-    pConfig->RegisterInput("Exit", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
-    pConfig->RegisterInput("Screenshot", pConfig->BuildKeyboardEvent(sf::Keyboard::F10));
-
-    pConfig->RegisterInput("ToggleCharacterSheet", pConfig->BuildKeyboardEvent(sf::Keyboard::I));
+    inputs->RegisterInput("ToggleCharacterSheet", inputs->BuildKeyboardEvent(sf::Keyboard::I));
 }
 
 void Game::AppStop()
@@ -154,8 +143,9 @@ bool Game::OnSFEvent(const sf::Event& _oSFEvent)
     if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
 
-    ManagerConfig* pConfig = GetConfig();
-    if (pConfig->IsInputPressed("Screenshot", _oSFEvent))
+    ManagerInputs* inputs = GetInputs();
+
+    if (inputs->IsInputPressed("Screenshot", _oSFEvent))
     {
         GetGameWindow()->Screenshot();
     }

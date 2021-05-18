@@ -103,9 +103,9 @@ bool StateMenuMain::OnSFEvent(const sf::Event& _oSFEvent)
     if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
-    if (pConfig->IsInputReleased("Exit", _oSFEvent))
+    if (inputs->IsInputReleased("Exit", _oSFEvent))
     {
         GetEngine()->StopLooping();
         return false;

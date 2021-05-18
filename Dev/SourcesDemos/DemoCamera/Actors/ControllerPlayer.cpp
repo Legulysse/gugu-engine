@@ -40,44 +40,44 @@ void ControllerPlayer::Step(const DeltaTime& dt)
 {
     Actor::Step(dt);
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
     sf::Vector2f kDirection;
 
     if (m_playerIndex == 0)
     {
-        if (pConfig->IsInputDown("Player_1_Up"))
+        if (inputs->IsInputDown("Player_1_Up"))
         {
             kDirection.y += -1.f;
         }
-        if (pConfig->IsInputDown("Player_1_Down"))
+        if (inputs->IsInputDown("Player_1_Down"))
         {
             kDirection.y += 1.f;
         }
-        if (pConfig->IsInputDown("Player_1_Left"))
+        if (inputs->IsInputDown("Player_1_Left"))
         {
             kDirection.x += -1.f;
         }
-        if (pConfig->IsInputDown("Player_1_Right"))
+        if (inputs->IsInputDown("Player_1_Right"))
         {
             kDirection.x += 1.f;
         }
     }
     else if (m_playerIndex == 1)
     {
-        if (pConfig->IsInputDown("Player_2_Up"))
+        if (inputs->IsInputDown("Player_2_Up"))
         {
             kDirection.y += -1.f;
         }
-        if (pConfig->IsInputDown("Player_2_Down"))
+        if (inputs->IsInputDown("Player_2_Down"))
         {
             kDirection.y += 1.f;
         }
-        if (pConfig->IsInputDown("Player_2_Left"))
+        if (inputs->IsInputDown("Player_2_Left"))
         {
             kDirection.x += -1.f;
         }
-        if (pConfig->IsInputDown("Player_2_Right"))
+        if (inputs->IsInputDown("Player_2_Right"))
         {
             kDirection.x += 1.f;
         }

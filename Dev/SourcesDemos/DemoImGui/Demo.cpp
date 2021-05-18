@@ -42,11 +42,11 @@ void Demo::AppStart()
     RegisterHandlerEvents(GetGameWindow());
 
     // Register Inputs
-    ManagerConfig* pConfig = GetConfig();
-    pConfig->RegisterInput("ToggleImGui", pConfig->BuildKeyboardEvent(sf::Keyboard::F1));
-    pConfig->RegisterInput("UseMouse", pConfig->BuildKeyboardEvent(sf::Keyboard::F2));
-    pConfig->RegisterInput("UseSystemMouse", pConfig->BuildKeyboardEvent(sf::Keyboard::F3));
-    pConfig->RegisterInput("CloseGame", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
+    ManagerInputs* inputs = GetInputs();
+    inputs->RegisterInput("ToggleImGui", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
+    inputs->RegisterInput("UseMouse", inputs->BuildKeyboardEvent(sf::Keyboard::F2));
+    inputs->RegisterInput("UseSystemMouse", inputs->BuildKeyboardEvent(sf::Keyboard::F3));
+    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
 
     // Set Mouse aspect
     GetGameWindow()->SetSystemMouseVisible(false);
@@ -120,26 +120,26 @@ bool Demo::OnSFEvent(const sf::Event& event)
     if (!EventListener::OnSFEvent(event))
         return false;
 
-    ManagerConfig* config = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
-    if (config->IsInputPressed("ToggleImGui", event))
+    if (inputs->IsInputPressed("ToggleImGui", event))
     {
         m_showImGuiDemo = !m_showImGuiDemo;
         return false;
     }
-    else if (config->IsInputPressed("UseMouse", event))
+    else if (inputs->IsInputPressed("UseMouse", event))
     {
         GetGameWindow()->SetMouseVisible(true);
         GetGameWindow()->SetSystemMouseVisible(false);
         return false;
     }
-    else if (config->IsInputPressed("UseSystemMouse", event))
+    else if (inputs->IsInputPressed("UseSystemMouse", event))
     {
         GetGameWindow()->SetMouseVisible(false);
         GetGameWindow()->SetSystemMouseVisible(true);
         return false;
     }
-    else if (config->IsInputReleased("CloseGame", event))
+    else if (inputs->IsInputReleased("CloseGame", event))
     {
         GetEngine()->StopLooping();
         return false;

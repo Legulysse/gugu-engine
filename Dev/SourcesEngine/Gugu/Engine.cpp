@@ -101,8 +101,8 @@ void Engine::Init(const EngineConfig& config)
     m_managerResources = new ManagerResources;
     m_managerResources->Init(computedConfig);
 
-    m_managerConfig = new ManagerConfig;
-    m_managerConfig->Init(computedConfig);
+    m_managerInputs = new ManagerInputs;
+    m_managerInputs->Init(computedConfig);
 
     m_managerAudio = new ManagerAudio;
     m_managerAudio->Init(computedConfig);
@@ -145,19 +145,19 @@ void Engine::Release()
     SafeDelete(m_application);
 
     ClearStdVector(m_windows);
-    //SafeDelete( m_gameWindow );
+    //SafeDelete(m_gameWindow);
 
     SafeDelete(m_world);
     SafeDelete(m_renderer);
 
-    m_managerConfig->Release();
+    m_managerInputs->Release();
     m_managerAudio->Release();
     m_managerResources->Release();
 
-    SafeDelete( m_managerConfig );
-    SafeDelete( m_managerAudio );
-    SafeDelete( m_managerNetwork );
-    SafeDelete( m_managerResources );
+    SafeDelete(m_managerInputs);
+    SafeDelete(m_managerAudio);
+    SafeDelete(m_managerNetwork);
+    SafeDelete(m_managerResources);
 
     SafeDelete(m_traceGroupMain);
 
@@ -554,9 +554,9 @@ Renderer* Engine::GetDefaultRenderer() const
     return m_renderer;
 }
 
-ManagerConfig* Engine::GetManagerConfig() const
+ManagerInputs* Engine::GetManagerInputs() const
 {
-    return m_managerConfig;
+    return m_managerInputs;
 }
 
 ManagerAudio* Engine::GetManagerAudio() const

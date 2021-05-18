@@ -35,8 +35,9 @@ void EditorApp::AppStart()
     RegisterHandlerEvents(GetGameWindow());
 
     // Register Inputs.
-    GetConfig()->RegisterInput("CloseApp", GetConfig()->BuildKeyboardEvent(sf::Keyboard::Escape));
-    GetConfig()->RegisterInput("ResetPanels", GetConfig()->BuildKeyboardEvent(sf::Keyboard::F1));
+    ManagerInputs* inputs = GetInputs();
+    inputs->RegisterInput("CloseApp", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
+    inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
 
     // Setup EditorCore.
     m_editorCore = new EditorCore;
@@ -59,14 +60,14 @@ bool EditorApp::OnSFEvent(const sf::Event& event)
     if (!EventListener::OnSFEvent(event))
         return false;
 
-    ManagerConfig* config = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
-    if (config->IsInputReleased("CloseApp", event))
+    if (inputs->IsInputReleased("CloseApp", event))
     {
         GetEngine()->StopLooping();
         return false;
     }
-    else if (config->IsInputReleased("ResetPanels", event))
+    else if (inputs->IsInputReleased("ResetPanels", event))
     {
         m_editorCore->ResetPanels();
         return false;

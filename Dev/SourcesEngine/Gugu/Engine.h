@@ -19,7 +19,7 @@
 
 namespace gugu
 {
-    class ManagerConfig;
+    class ManagerInputs;
     class ManagerAudio;
     class ManagerNetwork;
     class ManagerResources;
@@ -162,7 +162,7 @@ public:
 
     Renderer*           GetDefaultRenderer() const;
 
-    ManagerConfig*      GetManagerConfig() const;
+    ManagerInputs*      GetManagerInputs() const;
     ManagerAudio*       GetManagerAudio() const;
     ManagerNetwork*     GetManagerNetwork() const;
     ManagerResources*   GetManagerResources() const;
@@ -180,7 +180,7 @@ private:
 
     World*              m_world;
 
-    ManagerConfig*      m_managerConfig;
+    ManagerInputs*      m_managerInputs;
     ManagerAudio*       m_managerAudio;
     ManagerNetwork*     m_managerNetwork;
     ManagerResources*   m_managerResources;

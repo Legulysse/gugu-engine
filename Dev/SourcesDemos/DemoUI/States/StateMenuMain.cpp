@@ -100,9 +100,9 @@ bool StateMenuMain::OnSFEvent(const sf::Event& _oSFEvent)
     if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
-    if (pConfig->IsInputReleased("CloseGame", _oSFEvent))
+    if (inputs->IsInputReleased("CloseGame", _oSFEvent))
     {
         GetEngine()->StopLooping();
         return false;

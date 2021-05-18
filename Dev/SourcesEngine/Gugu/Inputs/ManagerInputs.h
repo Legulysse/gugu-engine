@@ -54,12 +54,12 @@ struct InputKeyBindings
     std::vector<sf::Event> bindings;
 };
 
-class ManagerConfig
+class ManagerInputs
 {
 public:
 
-    ManagerConfig();
-    ~ManagerConfig();
+    ManagerInputs();
+    ~ManagerInputs();
 
     void Init(const EngineConfig& config);
     void Release();
@@ -92,6 +92,6 @@ private:
     std::map<std::string, sf::Keyboard::Key> m_keyCodes;
 };
 
-ManagerConfig* GetConfig();
+ManagerInputs* GetInputs();
 
 }   // namespace gugu

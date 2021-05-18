@@ -34,8 +34,8 @@ void Demo::AppStart()
     GetGameWindow()->SetMouseTexture("Mouse.png");
     
     // Register Inputs
-    ManagerConfig* pConfig = GetConfig();
-    pConfig->RegisterInput("CloseGame", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
+    ManagerInputs* inputs = GetInputs();
+    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
 }
 
 void Demo::AppStop()

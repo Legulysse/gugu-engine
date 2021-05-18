@@ -46,8 +46,8 @@ void Demo::AppStart()
     GetGameWindow()->SetMouseTexture("Mouse.png");
     
     // Register Inputs
-    ManagerConfig* pConfig = GetConfig();
-    pConfig->RegisterInput("CloseGame", pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
+    ManagerInputs* inputs = GetInputs();
+    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
@@ -301,9 +301,9 @@ bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
     if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
-    if (pConfig->IsInputReleased("CloseGame", _oSFEvent))
+    if (inputs->IsInputReleased("CloseGame", _oSFEvent))
     {
         GetEngine()->StopLooping();
         return false;

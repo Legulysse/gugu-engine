@@ -50,23 +50,23 @@ void Demo::AppStart()
     GetGameWindow()->SetMouseVisible(true);
     GetGameWindow()->SetMouseTexture("Mouse.png");
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
     //Method 1 : use a config file
-    pConfig->LoadInputFile("Bindings.xml");
+    inputs->LoadInputFile("Bindings.xml");
     
     //Method 2 : register keys manually
-    pConfig->RegisterInput("Player_1_Up",       pConfig->BuildKeyboardEvent(sf::Keyboard::Z));
-    pConfig->RegisterInput("Player_1_Down",     pConfig->BuildKeyboardEvent(sf::Keyboard::S));
-    pConfig->RegisterInput("Player_1_Left",     pConfig->BuildKeyboardEvent(sf::Keyboard::Q));
-    pConfig->RegisterInput("Player_1_Right",    pConfig->BuildKeyboardEvent(sf::Keyboard::D));
+    inputs->RegisterInput("Player_1_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Z));
+    inputs->RegisterInput("Player_1_Down", inputs->BuildKeyboardEvent(sf::Keyboard::S));
+    inputs->RegisterInput("Player_1_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Q));
+    inputs->RegisterInput("Player_1_Right", inputs->BuildKeyboardEvent(sf::Keyboard::D));
 
-    pConfig->RegisterInput("Player_2_Up",       pConfig->BuildKeyboardEvent(sf::Keyboard::Up));
-    pConfig->RegisterInput("Player_2_Down",     pConfig->BuildKeyboardEvent(sf::Keyboard::Down));
-    pConfig->RegisterInput("Player_2_Left",     pConfig->BuildKeyboardEvent(sf::Keyboard::Left));
-    pConfig->RegisterInput("Player_2_Right",    pConfig->BuildKeyboardEvent(sf::Keyboard::Right));
+    inputs->RegisterInput("Player_2_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Up));
+    inputs->RegisterInput("Player_2_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Down));
+    inputs->RegisterInput("Player_2_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Left));
+    inputs->RegisterInput("Player_2_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Right));
 
-    pConfig->RegisterInput("Exit",              pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
+    inputs->RegisterInput("Exit", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
 
     // Run demo
     CreateScenario();
@@ -151,9 +151,9 @@ bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
     if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
-    if (pConfig->IsInputReleased("Exit", _oSFEvent))
+    if (inputs->IsInputReleased("Exit", _oSFEvent))
     {
         GetEngine()->StopLooping();
         return false;

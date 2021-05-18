@@ -43,7 +43,7 @@ void ControllerPlayer::Step(const DeltaTime& dt)
     if (GetGameWindow()->IsConsoleVisible())
         return;
 
-    ManagerConfig* config = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
     //Attack
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
@@ -54,7 +54,7 @@ void ControllerPlayer::Step(const DeltaTime& dt)
         m_character->UseSkillByIndex(0, kPickedPosition, dt);       //TODO: test with varrying world transform
     }
 
-    if (config->IsInputDown("Player_1_Skill_1"))
+    if (inputs->IsInputDown("Player_1_Skill_1"))
     {
         sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
         Camera* pCamera = GetGameWindow()->GetCamera(0);
@@ -65,19 +65,19 @@ void ControllerPlayer::Step(const DeltaTime& dt)
     //Movement
     sf::Vector2f kDirection;
 
-    if (config->IsInputDown("Player_1_Up"))
+    if (inputs->IsInputDown("Player_1_Up"))
     {
         kDirection.y += -1.f;
     }
-    if (config->IsInputDown("Player_1_Down"))
+    if (inputs->IsInputDown("Player_1_Down"))
     {
         kDirection.y += 1.f;
     }
-    if (config->IsInputDown("Player_1_Left"))
+    if (inputs->IsInputDown("Player_1_Left"))
     {
         kDirection.x += -1.f;
     }
-    if (config->IsInputDown("Player_1_Right"))
+    if (inputs->IsInputDown("Player_1_Right"))
     {
         kDirection.x += 1.f;
     }
@@ -100,7 +100,7 @@ bool ControllerPlayer::OnSFEvent(const sf::Event& _oSFEvent)
     if (!EventListener::OnSFEvent(_oSFEvent))
         return false;
 
-    ManagerConfig* pConfig = GetConfig();
+    ManagerInputs* inputs = GetInputs();
 
     //Picking
     if (_oSFEvent.type == sf::Event::KeyPressed)

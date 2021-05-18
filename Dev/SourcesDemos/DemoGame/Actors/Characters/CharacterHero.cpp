@@ -98,6 +98,7 @@ void CharacterHero::UseSkill(DS_Skill* skill, const sf::Vector2f& _kCoords, cons
         int nbUse = 1;
         if (skill->useAttackSpeed)
         {
+            // If the attack speed allows for several hits in the same frame, we need some additional computations.
             float attackDelay = (m_attackSpeed > 0.f) ? 1.f / m_attackSpeed : 1.f;
             nbUse = Max(1, (int)(dt.s() / attackDelay));
 
@@ -106,7 +107,7 @@ void CharacterHero::UseSkill(DS_Skill* skill, const sf::Vector2f& _kCoords, cons
                 int nbUseStamina = (int)(m_currentStamina / skill->staminaCost);
                 if (nbUseStamina * skill->staminaCost < m_currentStamina - Math::Epsilon)
                 {
-                    // Allow action when we have at least 1 stamina point (allow negative values)
+                    // Allow action when we have at least 1 stamina point (allow negative values).
                     nbUseStamina += 1;
                 }
 

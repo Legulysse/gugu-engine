@@ -24,8 +24,8 @@ int main(int argc, char* argv[])
 
     int64 iTimestamp = GetTimestamp();
 
-    std::string strUpperCase = StdStringToUpper("hello world");
-    std::string strLowerCase = StdStringToLower("HELLO WORLD");
+    std::string strUpperCase = StdStringToUpper("hello world 42");
+    std::string strLowerCase = StdStringToLower("HELLO WORLD 42");
 
     std::string strFormatA = StringFormat("My name is {0}. Yes, {0}.", "plop");
     std::string strFormatB = StringFormat("My age is {0}.", 42);

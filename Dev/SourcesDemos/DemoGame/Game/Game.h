@@ -45,6 +45,7 @@ public:
 
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
     
+    // TODO: split into a dedicated Scenario class.
     void CreateScenario();
     void ClearScenario();
     void StepScenario(const gugu::DeltaTime& dt);

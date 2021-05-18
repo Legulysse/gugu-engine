@@ -136,6 +136,8 @@ void Game::StepScenario(const DeltaTime& dt)
     {
         m_delayReset = 2000;
     }
+
+    //m_level->GetRootNode()->SortOnZIndex();  //TODO: Should this be automatic even for Level nodes ?
 }
 
 bool Game::OnSFEvent(const sf::Event& _oSFEvent)

@@ -1,9 +1,8 @@
 ## Manual Ignore
 
-vs2017/
-vs2019/
-Build_vs2017/
-Build_vs2019/
+Dev/Build/
+[Bb]uild_*/
+[Bb]uild-*/
 Trace_*.json
 
 
@@ -21,13 +20,13 @@ Trace_*.json
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-[Oo]bj/
-[Ll]og/
+## Build results
+#[Dd]ebug/
+#[Dd]ebugPublic/
+#[Rr]elease/
+#[Rr]eleases/
+#[Oo]bj/
+#[Ll]og/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

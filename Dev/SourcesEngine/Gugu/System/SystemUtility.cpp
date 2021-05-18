@@ -6,12 +6,11 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Math/MathUtility.h"
-
 #include <iostream>
 #include <fstream>
 #include <chrono>
 #include <ctime>
+#include <locale>
 
 #if defined(GUGU_OS_WIN32)
     #include <windows.h>
@@ -154,7 +153,9 @@ void StdStringToLower(const std::string& _strValue, std::string& _strResult)
 
 void StdStringToLowerSelf(std::string& _strValue)
 {
-    std::transform(_strValue.begin(), _strValue.end(), _strValue.begin(), ::tolower);
+    std::locale loc;
+    std::transform(_strValue.begin(), _strValue.end(), _strValue.begin(),
+        [&loc](const unsigned char c) { return std::tolower(c, loc); });
 }
 
 std::string StdStringToUpper(const std::string& _strValue)
@@ -172,7 +173,9 @@ void StdStringToUpper(const std::string& _strValue, std::string& _strResult)
 
 void StdStringToUpperSelf(std::string& _strValue)
 {
-    std::transform(_strValue.begin(), _strValue.end(), _strValue.begin(), ::toupper);
+    std::locale loc;
+    std::transform(_strValue.begin(), _strValue.end(), _strValue.begin(),
+        [&loc](const unsigned char c) { return std::toupper(c, loc); });
 }
 
 bool StdStringStartsWith(const std::string& _strValue, const std::string& _strSub)

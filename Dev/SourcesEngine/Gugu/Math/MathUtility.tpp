@@ -78,7 +78,7 @@ T Power(const T& n, const int& p)
 template <typename T>
 T Lerp(const T& min, const T& max, float ratio)
 {
-    return min * (1.f - ratio) + max * ratio;
+    return (T)(min * (1.f - ratio) + max * ratio);
 }
 
 template <typename T>

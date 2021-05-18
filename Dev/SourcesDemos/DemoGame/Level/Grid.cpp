@@ -47,8 +47,6 @@ void Grid::InitGrid(Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth
     {
         for (int x = 0; x < m_width; ++x)
         {
-            //Cell* pCell = (Cell*)m_aGrid[x][y];     //TODO: I will need a nicier GetCell. Template BaseClass ?
-
             m_pTileMap->SetTile(x, y, GetRandom(100) > 5 ? sf::IntRect(0, 0, 16, 16) : sf::IntRect(16, 0, 16, 16));
         }
     }

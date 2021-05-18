@@ -23,7 +23,6 @@
 #include "Gugu/World/World.h"
 #include "Gugu/World/Level.h"
 #include "Gugu/Misc/Grid/SquareGrid.h"
-#include "Gugu/Misc/Grid/GridCell.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/System/SystemUtility.h"

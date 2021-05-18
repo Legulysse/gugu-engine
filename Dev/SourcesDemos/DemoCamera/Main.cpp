@@ -3,8 +3,7 @@
 
 #include "Gugu/Common.h"
 
-#include "Game/Game.h"
-#include "Game/StateMenuMain.h"
+#include "Demo.h"
 
 #include "Gugu/Engine.h"
 
@@ -44,9 +43,7 @@ int main(int argc, char* argv[])
 
     //--------
     
-    Game* pGame = new Game;
-    pGame->PushStateNow(new StateMenuMain);
-    GetEngine()->SetApplication(pGame);
+    GetEngine()->SetApplication(new Demo);
 
     //--------
 

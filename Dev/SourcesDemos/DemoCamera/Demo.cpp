@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 // Header
 
-#include "Game/Game.h"
+#include "Demo.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
@@ -12,6 +12,7 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Manager/ManagerResources.h"
 #include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementTile.h"
 #include "Gugu/World/World.h"
@@ -27,7 +28,7 @@ using namespace gugu;
 
 namespace demoproject {
 
-Game::Game()
+Demo::Demo()
 {
     m_characterA = nullptr;
     m_controllerA = nullptr;
@@ -36,11 +37,11 @@ Game::Game()
     m_controllerB = nullptr;
 }
 
-Game::~Game()
+Demo::~Demo()
 {
 }
 
-void Game::AppStart()
+void Demo::AppStart()
 {
     RegisterHandlerEvents(GetGameWindow());
 
@@ -66,32 +67,33 @@ void Game::AppStart()
     pConfig->RegisterInput("Player_2_Right",    pConfig->BuildKeyboardEvent(sf::Keyboard::Right));
 
     pConfig->RegisterInput("Exit",              pConfig->BuildKeyboardEvent(sf::Keyboard::Escape));
+
+    // Run demo
+    CreateScenario();
 }
 
-void Game::AppStop()
-{
-}
-
-void Game::AppStep(const DeltaTime& dt)
+void Demo::AppStep(const DeltaTime& dt)
 {
     StateMachine::Step(dt);
 }
 
-void Game::AppUpdate(const DeltaTime& dt)
+void Demo::AppUpdate(const DeltaTime& dt)
 {
     StateMachine::Update(dt);
 }
 
-bool Game::OnSFEvent(const sf::Event& _oSFEvent)
+void Demo::CreateScenario()
 {
-    if(!EventListener::OnSFEvent(_oSFEvent))
-        return false;
+    //Root UI
+    m_menu = GetGameWindow()->GetUINode()->AddChild<Element>();
+    m_menu->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
-    return true;
-}
+    ElementSprite* pSeparator = m_menu->AddChild<ElementSprite>();
+    pSeparator->SetTexture("Separator.png");
+    pSeparator->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+    pSeparator->SetUnifiedPosition(UDim2::POSITION_CENTER);
+    pSeparator->SetUnifiedSize(UDim2(UDim(0.f, 6.f), UDim(1.f, 0.f)));
 
-void Game::CreateScenario()
-{
     //Init Level and Cameras
     Camera* pCameraA = new Camera;     //TODO: Simplify (auto AddCamera)
     pCameraA->SetViewport(sf::FloatRect(0.f, 0.f, 0.5f, 1.f));
@@ -137,17 +139,66 @@ void Game::CreateScenario()
     m_controllerB->InitController(m_characterB, 1);
 }
 
-void Game::ClearScenario()
+void Demo::ClearScenario()
 {
     GetGameWindow()->DeleteAllCameras();
 
     GetWorld()->ResetWorld();
 }
 
-
-Game* GetGame()
+bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
 {
-    return (Game*)GetEngine()->GetApplication();
+    if (!EventListener::OnSFEvent(_oSFEvent))
+        return false;
+
+    ManagerConfig* pConfig = GetConfig();
+
+    if (pConfig->IsInputReleased("Exit", _oSFEvent))
+    {
+        GetEngine()->StopLooping();
+        return false;
+    }
+
+    if (_oSFEvent.type == sf::Event::MouseButtonPressed)
+    {
+        if (_oSFEvent.mouseButton.button == sf::Mouse::Left)
+        {
+            sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
+            Camera* pCameraA = GetGameWindow()->GetCamera(0);
+            Camera* pCameraB = GetGameWindow()->GetCamera(1);
+            Camera* pCamera = nullptr;
+
+            if (pCameraA && pCameraA->IsMouseOverCamera(kMouseCoords))
+            {
+                pCamera = pCameraA;
+                WriteInConsole("Picked Camera A");
+            }
+            if (pCameraB && pCameraB->IsMouseOverCamera(kMouseCoords))
+            {
+                pCamera = pCameraB;
+                WriteInConsole("Picked Camera B");
+            }
+
+            if (pCamera)
+            {
+                if (pCamera->IsMouseOverElement(kMouseCoords, m_characterA->m_sprite))
+                {
+                    WriteInConsole("Picked Character A");
+                }
+                if (pCamera->IsMouseOverElement(kMouseCoords, m_characterB->m_sprite))
+                {
+                    WriteInConsole("Picked Character B");
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+Demo* GetGame()
+{
+    return (Demo*)GetEngine()->GetApplication();
 }
 
 }   //namespace demoproject

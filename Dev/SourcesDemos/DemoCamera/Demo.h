@@ -16,21 +16,24 @@ namespace demoproject
     class ControllerPlayer;
 }
 
+namespace gugu
+{
+    class Element;
+}
+
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace demoproject {
 
-class Game : public gugu::Application, public gugu::StateMachine, public gugu::EventListener
+class Demo : public gugu::Application, public gugu::StateMachine, public gugu::EventListener
 {
 public:
 
-    Game();
-    virtual ~Game();
+    Demo();
+    virtual ~Demo();
 
     virtual void AppStart() override;
-    virtual void AppStop() override;
-
     virtual void AppStep(const gugu::DeltaTime& dt) override;
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
 
@@ -39,7 +42,9 @@ public:
     void CreateScenario();
     void ClearScenario();
 
-public:
+private:
+
+    gugu::Element* m_menu;
 
     Character* m_characterA;
     ControllerPlayer* m_controllerA;
@@ -48,6 +53,6 @@ public:
     ControllerPlayer* m_controllerB;
 };
 
-Game* GetGame();
+Demo* GetGame();
 
 }   //namespace demoproject

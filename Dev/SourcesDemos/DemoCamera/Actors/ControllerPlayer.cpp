@@ -9,7 +9,7 @@
 
 #include "Actors/Character.h"
 
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Window/Window.h"
 

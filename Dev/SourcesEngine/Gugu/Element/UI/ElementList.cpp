@@ -8,19 +8,19 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerConfig.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Inputs/ManagerInputs.h"
+#include "Gugu/Resources/ManagerResources.h"
 
 #include "Gugu/Window/Window.h"
-#include "Gugu/Render/Renderer.h"
+#include "Gugu/Window/Renderer.h"
 
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/UI/ElementListItem.h"
 
-#include "Gugu/Utility/Types.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Action.h"
-#include "Gugu/Utility/Math.h"
+#include "Gugu/System/Types.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Misc/Action.h"
+#include "Gugu/Math/MathUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

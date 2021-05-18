@@ -11,8 +11,8 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/CircleShape.hpp>
 

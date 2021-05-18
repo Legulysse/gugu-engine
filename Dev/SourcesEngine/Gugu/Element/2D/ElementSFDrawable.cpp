@@ -7,8 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Render/Renderer.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/Window/Renderer.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

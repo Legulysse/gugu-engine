@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/DeltaTime.h"
+#include "Gugu/Core/DeltaTime.h"
 
 #include <vector>
 #include <string>

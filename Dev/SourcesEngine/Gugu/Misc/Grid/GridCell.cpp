@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/World/Grid/GridCell.h"
+#include "Gugu/Misc/Grid/GridCell.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes

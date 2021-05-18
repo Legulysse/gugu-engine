@@ -2,12 +2,12 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/World/Grid/BaseGrid.h"
+#include "Gugu/Misc/Grid/BaseGrid.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/World/Grid/GridCell.h"
+#include "Gugu/Misc/Grid/GridCell.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

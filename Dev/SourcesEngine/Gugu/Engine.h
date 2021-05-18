@@ -3,9 +3,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Singleton.h"
-#include "Gugu/Utility/DeltaTime.h"
-#include "Gugu/Utility/Types.h"
+#include "Gugu/Misc/Patterns/Singleton.h"
+#include "Gugu/Core/DeltaTime.h"
+#include "Gugu/System/Types.h"
 
 #include <SFML/Graphics/Color.hpp>
 

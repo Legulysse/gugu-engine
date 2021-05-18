@@ -8,9 +8,9 @@
 // Includes
 
 #include "Gugu/Element/UI/ElementList.h"
-#include "Gugu/Render/Renderer.h"
-#include "Gugu/Utility/Action.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/Window/Renderer.h"
+#include "Gugu/Misc/Action.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>

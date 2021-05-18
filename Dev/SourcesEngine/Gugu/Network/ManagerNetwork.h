@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Types.h"
+#include "Gugu/System/Types.h"
 #include "Gugu/Network/EnumsNetwork.h"
 #include "Gugu/Network/ClientInfo.h"
 #include "Gugu/Network/NetworkPacket.h"

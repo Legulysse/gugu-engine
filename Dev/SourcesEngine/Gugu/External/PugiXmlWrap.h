@@ -3,8 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Vector2.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/Vector2.h"
 
 #include <PugiXml/pugixml.hpp>
 

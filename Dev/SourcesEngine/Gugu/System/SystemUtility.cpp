@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////
 // Header
 
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Math.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <iostream>
 #include <fstream>

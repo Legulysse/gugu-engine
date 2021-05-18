@@ -11,7 +11,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
 

@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

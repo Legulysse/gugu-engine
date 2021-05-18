@@ -9,7 +9,7 @@
 
 #include "Gugu/World/Level.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
-#include "Gugu/Utility/Math.h"
+#include "Gugu/Math/MathUtility.h"
 
 using namespace gugu;
 

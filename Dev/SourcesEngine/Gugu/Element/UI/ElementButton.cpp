@@ -8,13 +8,13 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Action.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Misc/Action.h"
 #include "Gugu/Resources/Texture.h"
-#include "Gugu/Render/Renderer.h"
+#include "Gugu/Window/Renderer.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

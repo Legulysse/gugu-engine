@@ -2,23 +2,23 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Window/HandlerEvents.h"
+#include "Gugu/Events/HandlerEvents.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 
-#include "Gugu/Misc/EventListener.h"
-#include "Gugu/Misc/Trace.h"
+#include "Gugu/Events/EventListener.h"
+#include "Gugu/Debug/Trace.h"
 
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Action.h"
-#include "Gugu/Utility/DeltaTime.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Misc/Action.h"
+#include "Gugu/Core/DeltaTime.h"
 
 #include "Gugu/Element/Element.h"
 

@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Types.h"
-#include "Gugu/Utility/Hash.h"
-#include "Gugu/Utility/Delegate.h"
-#include "Gugu/Utility/FileInfo.h"
+#include "Gugu/System/Types.h"
+#include "Gugu/System/Hash.h"
+#include "Gugu/Misc/Delegate.h"
+#include "Gugu/System/FileInfo.h"
 #include "Gugu/Resources/EnumsResources.h"
 
 #include <map>

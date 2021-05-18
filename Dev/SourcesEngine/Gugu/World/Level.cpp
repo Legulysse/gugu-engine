@@ -10,7 +10,7 @@
 #include "Gugu/Engine.h"
 #include "Gugu/World/Actor.h"
 #include "Gugu/Element/Element.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

@@ -8,9 +8,9 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <imgui.h>
 #include <imgui_internal.h>

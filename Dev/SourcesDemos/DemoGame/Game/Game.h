@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Misc/Application.h"
-#include "Gugu/Misc/EventListener.h"
-#include "Gugu/Utility/StateMachine.h"
-#include "Gugu/Utility/Vector2.h"
+#include "Gugu/Core/Application.h"
+#include "Gugu/Events/EventListener.h"
+#include "Gugu/Misc/Patterns/StateMachine.h"
+#include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

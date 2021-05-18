@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/World/Grid/SquareGrid.h"
+#include "Gugu/Misc/Grid/SquareGrid.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

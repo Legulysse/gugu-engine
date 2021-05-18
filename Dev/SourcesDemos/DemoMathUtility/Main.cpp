@@ -3,9 +3,9 @@
 
 #include "Gugu/Common.h"
 
-#include "Gugu/Utility/Math.h"
-#include "Gugu/Utility/Random.h"
-#include "Gugu/Misc/UDim.h"
+#include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/Random.h"
+#include "Gugu/Math/UDim.h"
 
 #include <map>
 #include <set>

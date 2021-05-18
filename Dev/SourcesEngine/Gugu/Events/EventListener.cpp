@@ -2,13 +2,13 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Misc/EventListener.h"
+#include "Gugu/Events/EventListener.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Window/HandlerEvents.h"
+#include "Gugu/Events/HandlerEvents.h"
 #include "Gugu/Window/Window.h"
 
 #include <SFML/Window/Event.hpp>

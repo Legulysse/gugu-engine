@@ -11,8 +11,8 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/UI/ElementButton.h"
-#include "Gugu/Manager/ManagerNetwork.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/Network/ManagerNetwork.h"
+#include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
 

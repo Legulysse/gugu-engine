@@ -9,7 +9,7 @@
 
 #include "Actors/Characters/Character.h"
 
-#include "Gugu/Utility/Random.h"
+#include "Gugu/Math/Random.h"
 
 using namespace gugu;
 

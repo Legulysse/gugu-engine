@@ -16,10 +16,10 @@
 
 #include "Gugu/World/Level.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
-#include "Gugu/Manager/ManagerResources.h"
-#include "Gugu/Utility/Math.h"
-#include "Gugu/Utility/Random.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/Random.h"
+#include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
 

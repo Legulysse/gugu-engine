@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
 
 using namespace gugu;

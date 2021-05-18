@@ -8,11 +8,11 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerAudio.h"
+#include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/UI/ElementButton.h"
-#include "Gugu/Utility/Action.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/Misc/Action.h"
+#include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
 

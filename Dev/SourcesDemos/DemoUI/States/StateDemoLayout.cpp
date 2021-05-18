@@ -8,9 +8,9 @@
 
 #include "States/StateMenuMain.h"
 
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Element/UI/ElementUILayout.h"
 
 using namespace gugu;

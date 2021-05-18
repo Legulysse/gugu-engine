@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Math.h"
+#include "Gugu/Math/MathUtility.h"
 
 using namespace gugu;
 

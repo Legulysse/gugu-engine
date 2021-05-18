@@ -2,12 +2,12 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Misc/Logger.h"
+#include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <iostream>
 #include <fstream>

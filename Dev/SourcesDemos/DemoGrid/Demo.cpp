@@ -10,14 +10,14 @@
 #include "DemoGridData.h"
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementTileMap.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
-#include "Gugu/World/Grid/SquareGrid.h"
-#include "Gugu/World/Grid/HexGrid.h"
-#include "Gugu/World/Grid/GridUtility.h"
+#include "Gugu/Misc/Grid/SquareGrid.h"
+#include "Gugu/Misc/Grid/HexGrid.h"
+#include "Gugu/Misc/Grid/GridUtility.h"
 
 #include <imgui.h>
 

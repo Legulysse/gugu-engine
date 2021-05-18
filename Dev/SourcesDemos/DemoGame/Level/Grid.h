@@ -3,8 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/World/Grid/SquareGrid.h"
-#include "Gugu/Utility/Vector2.h"
+#include "Gugu/Misc/Grid/SquareGrid.h"
+#include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

@@ -7,8 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Manager/ManagerResources.h"
-#include "Gugu/Render/Renderer.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Window/Renderer.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 

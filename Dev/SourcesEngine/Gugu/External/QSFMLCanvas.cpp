@@ -9,8 +9,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Action.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/Misc/Action.h"
+#include "Gugu/System/SystemUtility.h"
 
 // Platform-specific headers
 #ifdef Q_WS_X11

@@ -8,10 +8,10 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

@@ -7,8 +7,8 @@
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/2D/ElementTile.h"
 
-#include "Gugu/Misc/Logger.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/Debug/Logger.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <SFML/Graphics/Sprite.hpp>
 

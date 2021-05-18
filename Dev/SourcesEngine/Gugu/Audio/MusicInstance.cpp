@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Resources/Music.h"
 
 #include <SFML/Audio/Music.hpp>

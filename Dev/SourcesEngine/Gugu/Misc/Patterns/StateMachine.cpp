@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////
 // Header
 
-#include "Gugu/Utility/StateMachine.h"
+#include "Gugu/Misc/Patterns/StateMachine.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/State.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Misc/Patterns/State.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

@@ -13,9 +13,9 @@
 
 #include "Gugu/World/Level.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
-#include "Gugu/Utility/Random.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/Random.h"
 
 using namespace gugu;
 

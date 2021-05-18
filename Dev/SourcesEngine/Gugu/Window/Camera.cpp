@@ -10,10 +10,10 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/World/Level.h"
-#include "Gugu/Render/Renderer.h"
+#include "Gugu/Window/Renderer.h"
 #include "Gugu/Element/Element.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 

@@ -7,10 +7,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Audio/MusicInstance.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 #include "Gugu/Resources/Music.h"
 
 ////////////////////////////////////////////////////////////////

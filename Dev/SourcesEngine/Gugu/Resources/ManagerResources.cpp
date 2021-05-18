@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
@@ -20,11 +20,11 @@
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Resources/Datasheet.h"
 
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Delegate.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Misc/Delegate.h"
 
-#include "Gugu/Misc/Application.h"
-#include "Gugu/Misc/Logger.h"
+#include "Gugu/Core/Application.h"
+#include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

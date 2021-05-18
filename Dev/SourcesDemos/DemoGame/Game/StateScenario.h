@@ -3,8 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/State.h"
-#include "Gugu/Misc/EventListener.h"
+#include "Gugu/Misc/Patterns/State.h"
+#include "Gugu/Events/EventListener.h"
 
 #include <string>
 

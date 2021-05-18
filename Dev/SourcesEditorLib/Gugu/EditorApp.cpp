@@ -10,9 +10,9 @@
 #include "Gugu/EditorCore.h"
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <imgui.h>
 

@@ -9,21 +9,21 @@
 
 #include "Gugu/Version.h"
 
-#include "Gugu/Manager/ManagerConfig.h"
-#include "Gugu/Manager/ManagerAudio.h"
-#include "Gugu/Manager/ManagerNetwork.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Inputs/ManagerInputs.h"
+#include "Gugu/Audio/ManagerAudio.h"
+#include "Gugu/Network/ManagerNetwork.h"
+#include "Gugu/Resources/ManagerResources.h"
 
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
-#include "Gugu/Utility/Random.h"
-#include "Gugu/Utility/Action.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/Random.h"
+#include "Gugu/Misc/Action.h"
 
-#include "Gugu/Misc/Logger.h"
-#include "Gugu/Misc/Trace.h"
-#include "Gugu/Misc/Application.h"
+#include "Gugu/Debug/Logger.h"
+#include "Gugu/Debug/Trace.h"
+#include "Gugu/Core/Application.h"
 
-#include "Gugu/Render/Renderer.h"
+#include "Gugu/Window/Renderer.h"
 #include "Gugu/Window/Window.h"
 
 #include "Gugu/World/World.h"

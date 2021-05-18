@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Types.h"
+#include "Gugu/System/Types.h"
 
 #include <cmath>
 #include <algorithm>
@@ -127,4 +127,4 @@ float EaseInOutBounce(float ratio);
 ////////////////////////////////////////////////////////////////
 // Template Implementation
 
-#include "Gugu/Utility/Math.tpp"
+#include "Gugu/Math/MathUtility.tpp"

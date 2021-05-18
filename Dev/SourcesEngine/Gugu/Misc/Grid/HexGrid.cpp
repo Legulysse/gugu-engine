@@ -2,12 +2,12 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/World/Grid/HexGrid.h"
+#include "Gugu/Misc/Grid/HexGrid.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Math.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <array>
 

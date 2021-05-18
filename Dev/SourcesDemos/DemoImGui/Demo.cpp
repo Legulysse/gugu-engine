@@ -8,14 +8,14 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/UI/ElementButton.h"
-#include "Gugu/Utility/Action.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
+#include "Gugu/Misc/Action.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <imgui.h>
 

@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
-#include "Gugu/Utility/DeltaTime.h"
+#include "Gugu/Core/DeltaTime.h"
 
 #include <SFML/Audio/Music.hpp>
 

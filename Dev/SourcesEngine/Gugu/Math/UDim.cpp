@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Misc/UDim.h"
+#include "Gugu/Math/UDim.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

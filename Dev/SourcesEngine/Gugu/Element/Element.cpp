@@ -8,10 +8,10 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Render/Renderer.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Action.h"
-#include "Gugu/Render/Renderer.h"
+#include "Gugu/Window/Renderer.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Misc/Action.h"
+#include "Gugu/Window/Renderer.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
 #include <SFML/Graphics/RectangleShape.hpp>

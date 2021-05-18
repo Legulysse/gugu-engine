@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Render/Renderer.h"
+#include "Gugu/Window/Renderer.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes

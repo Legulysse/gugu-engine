@@ -3,8 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Misc/Application.h"
-#include "Gugu/Misc/EventListener.h"
+#include "Gugu/Core/Application.h"
+#include "Gugu/Events/EventListener.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

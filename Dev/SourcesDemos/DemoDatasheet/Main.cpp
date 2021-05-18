@@ -6,8 +6,8 @@
 #include "DatasheetBinding.h"
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
-#include "Gugu/Manager/ManagerAudio.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Audio/ManagerAudio.h"
 
 #if defined(GUGU_ENV_VISUAL )
 

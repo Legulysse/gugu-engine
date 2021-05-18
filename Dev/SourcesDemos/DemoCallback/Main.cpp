@@ -3,8 +3,8 @@
 
 #include "Gugu/Common.h"
 
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Action.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Misc/Action.h"
 
 #include <functional>
 

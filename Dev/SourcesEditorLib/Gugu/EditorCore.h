@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/DeltaTime.h"
+#include "Gugu/Core/DeltaTime.h"
 
 #include <imgui.h>  // TODO: see if I can get rid of this include.
 

@@ -2,16 +2,16 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Manager/ManagerNetwork.h"
+#include "Gugu/Network/ManagerNetwork.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Network/NetworkPacket.h"
-#include "Gugu/Misc/Application.h"
-#include "Gugu/Misc/Logger.h"
+#include "Gugu/Core/Application.h"
+#include "Gugu/Debug/Logger.h"
 
 #include <SFML/System/Thread.hpp>
 #include <SFML/Network/TcpSocket.hpp>

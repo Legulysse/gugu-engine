@@ -2,15 +2,15 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Misc/BaseAnimation2D.h"
+#include "Gugu/Element/BaseAnimation2D.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"
-#include "Gugu/Utility/Math.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/Math/MathUtility.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <sstream>
 

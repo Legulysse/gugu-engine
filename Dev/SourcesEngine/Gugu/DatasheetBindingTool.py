@@ -400,8 +400,8 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp):
     fileSource.write('////////////////////////////////////////////////////////////////\n')
     fileSource.write('// Includes\n')
     fileSource.write('\n')
-    fileSource.write('#include <Gugu/Manager/ManagerResources.h>\n')
-    fileSource.write('#include <Gugu/Utility/System.h>\n')
+    fileSource.write('#include "Gugu/Resources/ManagerResources.h"\n')
+    fileSource.write('#include "Gugu/System/SystemUtility.h"\n')
     fileSource.write('\n')
     
     # Namespace

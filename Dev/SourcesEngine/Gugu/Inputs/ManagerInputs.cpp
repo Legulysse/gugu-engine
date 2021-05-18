@@ -2,13 +2,13 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
 #include <assert.h>

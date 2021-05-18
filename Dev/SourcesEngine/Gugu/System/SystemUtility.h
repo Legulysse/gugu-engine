@@ -4,8 +4,8 @@
 // Includes
 
 #include "Gugu/Common.h"
-#include "Gugu/Utility/Types.h"
-#include "Gugu/Utility/FileInfo.h"
+#include "Gugu/System/Types.h"
+#include "Gugu/System/FileInfo.h"
 
 #include <string>
 #include <sstream>
@@ -157,4 +157,4 @@ std::string GetTimestampAsString();
 ////////////////////////////////////////////////////////////////
 // Template Implementation
 
-#include "Gugu/Utility/System.tpp"
+#include "Gugu/System/SystemUtility.tpp"

@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Types.h"
+#include "Gugu/System/Types.h"
 
 #include <SFML/Window/Event.hpp>
 

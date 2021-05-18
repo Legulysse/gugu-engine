@@ -10,8 +10,8 @@
 #include "Actors/Character.h"
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementTile.h"
@@ -19,7 +19,7 @@
 #include "Gugu/World/Level.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
 

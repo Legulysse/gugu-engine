@@ -17,17 +17,17 @@
 #include "DatasheetBinding.h"
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
-#include "Gugu/Manager/ManagerConfig.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/World/World.h"
 #include "Gugu/World/Level.h"
-#include "Gugu/World/Grid/SquareGrid.h"
-#include "Gugu/World/Grid/GridCell.h"
+#include "Gugu/Misc/Grid/SquareGrid.h"
+#include "Gugu/Misc/Grid/GridCell.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 using namespace gugu;
 

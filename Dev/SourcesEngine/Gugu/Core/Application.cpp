@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Misc/Application.h"
+#include "Gugu/Core/Application.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes

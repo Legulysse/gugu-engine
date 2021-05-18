@@ -8,10 +8,10 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 
-#include "Gugu/Render/Renderer.h"
-#include "Gugu/Window/HandlerEvents.h"
+#include "Gugu/Window/Renderer.h"
+#include "Gugu/Events/HandlerEvents.h"
 #include "Gugu/Window/Camera.h"
 
 #include "Gugu/Element/Element.h"
@@ -20,11 +20,11 @@
 
 #include "Gugu/World/Level.h"
 
-#include "Gugu/Utility/System.h"
-#include "Gugu/Utility/Math.h"
-#include "Gugu/Utility/Action.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
+#include "Gugu/Misc/Action.h"
 
-#include "Gugu/Misc/Trace.h"
+#include "Gugu/Debug/Trace.h"
 
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/Font.h"

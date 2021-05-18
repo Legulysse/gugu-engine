@@ -7,10 +7,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Manager/ManagerResources.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
-#include "Gugu/Render/Renderer.h"
+#include "Gugu/Window/Renderer.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>

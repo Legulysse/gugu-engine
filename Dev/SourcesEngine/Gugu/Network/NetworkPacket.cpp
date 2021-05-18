@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <SFML/Network/Packet.hpp>
 

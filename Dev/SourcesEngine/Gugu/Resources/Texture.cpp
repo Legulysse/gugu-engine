@@ -8,9 +8,9 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Manager/ManagerResources.h"
-#include "Gugu/Utility/System.h"
-#include "Gugu/Misc/Logger.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/Texture.hpp>
 

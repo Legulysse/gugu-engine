@@ -3,8 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/DeltaTime.h"
-#include "Gugu/Utility/Vector2.h"
+#include "Gugu/Core/DeltaTime.h"
+#include "Gugu/Math/Vector2.h"
 
 #include <SFML/Graphics/Sprite.hpp>   //TODO: use pointers + forward declaration
 #include <SFML/Graphics/Text.hpp>   //TODO: use pointers + forward declaration

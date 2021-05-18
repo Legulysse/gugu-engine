@@ -2,13 +2,13 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Misc/Trace.h"
+#include "Gugu/Debug/Trace.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Utility/System.h"
+#include "Gugu/System/SystemUtility.h"
 
 #include <fstream>
 

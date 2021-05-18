@@ -24,4 +24,4 @@ void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridD
 ////////////////////////////////////////////////////////////////
 // Template Implementation
 
-#include "Gugu/World/Grid/GridUtility.tpp"
+#include "Gugu/Misc/Grid/GridUtility.tpp"

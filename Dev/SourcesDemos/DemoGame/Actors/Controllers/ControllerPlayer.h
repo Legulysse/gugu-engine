@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/World/Actor.h"
-#include "Gugu/Misc/EventListener.h"
+#include "Gugu/Events/EventListener.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

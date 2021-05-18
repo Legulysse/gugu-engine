@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Misc/BaseAnimation2D.h"
+#include "Gugu/Element/BaseAnimation2D.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

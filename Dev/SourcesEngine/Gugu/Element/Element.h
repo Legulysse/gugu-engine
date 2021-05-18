@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Utility/Types.h"
-#include "Gugu/Utility/DeltaTime.h"
-#include "Gugu/Misc/UDim.h"
-#include "Gugu/Utility/Vector2.h"
+#include "Gugu/System/Types.h"
+#include "Gugu/Core/DeltaTime.h"
+#include "Gugu/Math/UDim.h"
+#include "Gugu/Math/Vector2.h"
 
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>

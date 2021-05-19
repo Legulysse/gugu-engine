@@ -69,7 +69,6 @@ int main(int argc, char* argv[])
 
     //--------
 
-    //GetEngine()->StartLooping();
     GetEngine()->Release();
 
     return 0;

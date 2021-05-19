@@ -114,7 +114,7 @@ void EditorCore::Update(const DeltaTime& dt)
             if (ImGui::MenuItem("Quit"))
             {
                 // TODO: Only close the application in standalone mode, prefer hiding the editor when used as an overlay.
-                GetEngine()->StopLooping();
+                GetEngine()->StopMainLoop();
             }
 
             ImGui::EndMenu();

@@ -4,9 +4,6 @@
 #include "Gugu/Common.h"
 
 #include "Game/Game.h"
-#include "Game/StateMenuMain.h"
-#include "Game/StateScenario.h"
-
 #include "DatasheetBinding.h"
 
 #include "Gugu/Engine.h"
@@ -49,14 +46,7 @@ int main(int argc, char* argv[])
 
     DatasheetBinding_Register();
 
-    Game* pGame = new Game;
-    GetEngine()->SetApplication(pGame);
-    pGame->PushStateNow(new StateScenario);
-
-    //--------
-
-    GetEngine()->StartLooping();
-    GetEngine()->Release();
+    GetEngine()->RunApplication(new Game);
 
     return 0;
 }

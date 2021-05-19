@@ -138,9 +138,11 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-    void StartLooping();
+    void RunApplication(Application* application);
+
+    void RunMainLoop();
     void RunSingleLoop(const DeltaTime& dt);
-    void StopLooping();
+    void StopMainLoop();
 
     void            SetApplication(Application* application);
     Application*    GetApplication() const;

@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     
     //--------
 
-    GetEngine()->StartLooping();
+    GetEngine()->RunMainLoop();
     GetEngine()->Release();
 
     return 0;

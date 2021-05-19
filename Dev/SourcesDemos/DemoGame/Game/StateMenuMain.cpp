@@ -107,7 +107,7 @@ bool StateMenuMain::OnSFEvent(const sf::Event& _oSFEvent)
 
     if (inputs->IsInputReleased("Exit", _oSFEvent))
     {
-        GetEngine()->StopLooping();
+        GetEngine()->StopMainLoop();
         return false;
     }
 
@@ -118,7 +118,7 @@ void StateMenuMain::OnButtonClick(int _iButtonID)
 {
     if (_iButtonID == 0)
     {
-        GetEngine()->StopLooping();
+        GetEngine()->StopMainLoop();
     }
     else if (_iButtonID == 1)
     {

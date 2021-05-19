@@ -155,7 +155,7 @@ bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
 
     if (inputs->IsInputReleased("Exit", _oSFEvent))
     {
-        GetEngine()->StopLooping();
+        GetEngine()->StopMainLoop();
         return false;
     }
 

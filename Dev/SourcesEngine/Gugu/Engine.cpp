@@ -169,7 +169,14 @@ void Engine::Release()
     DeleteInstance();
 }
 
-void Engine::StartLooping()
+void Engine::RunApplication(Application* application)
+{
+    SetApplication(application);
+    RunMainLoop();
+    Release();
+}
+
+void Engine::RunMainLoop()
 {
     m_stopLoop = false;
 
@@ -255,7 +262,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
                 bool isMainWindow = (pWindow == m_gameWindow);
                 if (isMainWindow)
                 {
-                    GetEngine()->StopLooping();
+                    GetEngine()->StopMainLoop();
                     return;
                 }
             }
@@ -345,7 +352,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     }
 }
 
-void Engine::StopLooping()
+void Engine::StopMainLoop()
 {
     m_stopLoop = true;
 }

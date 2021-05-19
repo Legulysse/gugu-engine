@@ -64,7 +64,7 @@ bool EditorApp::OnSFEvent(const sf::Event& event)
 
     if (inputs->IsInputReleased("CloseApp", event))
     {
-        GetEngine()->StopLooping();
+        GetEngine()->StopMainLoop();
         return false;
     }
     else if (inputs->IsInputReleased("ResetPanels", event))

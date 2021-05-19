@@ -202,7 +202,7 @@ void Demo::OnButtonClick(int _eButton)
     }
     else if (_eButton == EButton::Exit)
     {
-        GetEngine()->StopLooping();
+        GetEngine()->StopMainLoop();
     }
 }
 

@@ -141,7 +141,7 @@ bool Demo::OnSFEvent(const sf::Event& event)
     }
     else if (inputs->IsInputReleased("CloseGame", event))
     {
-        GetEngine()->StopLooping();
+        GetEngine()->StopMainLoop();
         return false;
     }
 

@@ -6,6 +6,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Game/StateMenuMain.h"
+#include "Game/StateScenario.h"
 #include "Actors/Controllers/ControllerPlayer.h"
 #include "Actors/Controllers/ControllerAI.h"
 #include "Actors/Characters/Character.h"
@@ -75,6 +77,9 @@ void Game::AppStart()
     inputs->RegisterInput("Screenshot", inputs->BuildKeyboardEvent(sf::Keyboard::F10));
 
     inputs->RegisterInput("ToggleCharacterSheet", inputs->BuildKeyboardEvent(sf::Keyboard::I));
+
+    // Push the entry-point State.
+    PushStateNow(new StateScenario);
 }
 
 void Game::AppStop()

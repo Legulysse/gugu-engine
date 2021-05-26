@@ -20,7 +20,6 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
-#include "Gugu/Element/2D/ElementTile.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/Element/UI/ElementList.h"
@@ -50,8 +49,9 @@ void StateGuiTest::Init()
     m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
     //Background
-    ElementTile* pTile = m_root->AddChild<ElementTile>();
+    ElementSprite* pTile = m_root->AddChild<ElementSprite>();
     pTile->SetTexture("Background.jpg");
+    pTile->SetRepeatTexture(true);
     pTile->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
     //Test EditLine

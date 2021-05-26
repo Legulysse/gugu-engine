@@ -20,7 +20,6 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
-#include "Gugu/Element/2D/ElementTile.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/UI/ElementButton.h"

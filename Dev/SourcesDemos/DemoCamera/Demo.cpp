@@ -14,7 +14,6 @@
 #include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Element/2D/ElementTile.h"
 #include "Gugu/World/World.h"
 #include "Gugu/World/Level.h"
 #include "Gugu/Window/Window.h"
@@ -113,8 +112,9 @@ void Demo::CreateScenario()
     GetGameWindow()->BindLevel(pLevelB, pCameraB);
     
     //Fill Level
-    ElementTile* pGroundA = pLevelA->GetRootNode()->AddChild<ElementTile>();
+    ElementSprite* pGroundA = pLevelA->GetRootNode()->AddChild<ElementSprite>();
     pGroundA->SetTexture("Background.jpg");
+    pGroundA->SetRepeatTexture(true);
     pGroundA->SetSize(1024.f, 1024.f);
     
     ElementSprite* pGroundB = pLevelB->GetRootNode()->AddChild<ElementSprite>();

@@ -12,7 +12,6 @@
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
-#include "Gugu/Element/2D/ElementTile.h"
 #include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
@@ -58,7 +57,8 @@ void Demo::AppStart()
     m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
     //Background
-    ElementTile* pTile = m_root->AddChild<ElementTile>();
+    ElementSprite* pTile = m_root->AddChild<ElementSprite>();
+    pTile->SetRepeatTexture(true);
     pTile->SetTexture("BraidBackground.jpg");
     pTile->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 }

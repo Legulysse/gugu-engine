@@ -38,6 +38,8 @@ public:
     void SetSubRect(const sf::IntRect& _oRect);
     sf::IntRect GetSubRect() const;
 
+    void SetRepeatTexture(bool repeatTexture);
+
     void SetFlipTextureX(bool _bFlipTextureX);  // Flip Top-Bottom
     void SetFlipTextureY(bool _bFlipTextureY);  // Flip Left-Right
     void SetFlipTexture(bool _bFlipTextureX, bool _bFlipTextureY);  // Flip Top-Bottom and Left-Right
@@ -49,8 +51,7 @@ public:
 
 protected:
 
-    void RecomputeVerticesPosition();
-    void RecomputeVerticesTexture();
+    void RecomputeVerticesPositionAndTextureCoords();
     void RecomputeVerticesColor();
 
     virtual void DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
@@ -63,7 +64,9 @@ protected:
     sf::Color m_color;
 
     sf::VertexArray m_vertices;
+    bool m_dirtyVertices;
 
+    bool m_repeatTexture;
     bool m_flipTextureX;
     bool m_flipTextureY;
 };

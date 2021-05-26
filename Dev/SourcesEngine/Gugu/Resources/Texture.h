@@ -32,6 +32,9 @@ public:
     void SetSmooth(bool smooth);
     bool IsSmooth() const;
 
+    void SetRepeated(bool repeated);
+    bool IsRepeated() const;
+
     virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;

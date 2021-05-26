@@ -57,6 +57,24 @@ bool Texture::IsSmooth() const
     return false;
 }
 
+void Texture::SetRepeated(bool repeated)
+{
+    if (m_sfTexture)
+    {
+        m_sfTexture->setRepeated(repeated);
+    }
+}
+
+bool Texture::IsRepeated() const
+{
+    if (m_sfTexture)
+    {
+        return m_sfTexture->isRepeated();
+    }
+
+    return false;
+}
+
 EResourceType::Type Texture::GetResourceType() const
 {
     return EResourceType::Texture;

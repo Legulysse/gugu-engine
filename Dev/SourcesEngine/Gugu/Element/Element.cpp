@@ -457,10 +457,6 @@ void Element::SetSize(sf::Vector2f _kNewSize)
     }
 }
 
-void Element::SetSizeImpl(sf::Vector2f _kOldSize)
-{
-}
-
 const sf::Vector2f& Element::GetSize() const
 {
     return m_size;
@@ -683,17 +679,15 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
     {
         sf::Transform combinedTransform = _kTransformParent * GetTransform();
         
-        OnPreDraw(_kRenderPass);
-
         if ((_kRenderPass.pass & m_renderPass) != GUGU_RENDERPASS_INVALID)
+        {
             DrawSelf(_kRenderPass, combinedTransform);
+        }
         
         for (size_t i = 0; i < m_children.size(); ++i)
         {
             m_children[i]->Render(_kRenderPass, combinedTransform);
         }
-
-        OnPostDraw(_kRenderPass);
 
         //Debug Bounds
         if (m_showDebugBounds || (_kRenderPass.frameInfos && _kRenderPass.frameInfos->showBounds))

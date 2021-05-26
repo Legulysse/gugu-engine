@@ -236,13 +236,10 @@ public:
 
 protected:
 
-    virtual void DrawSelf           (RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
-    virtual void OnPreDraw          (RenderPass& _kRenderPass) {}
-    virtual void OnPostDraw         (RenderPass& _kRenderPass) {}
+    virtual void DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
+    virtual void SetSizeImpl(sf::Vector2f _kOldSize) {}
 
-    virtual void SetSizeImpl        (sf::Vector2f _kOldSize);
-
-    static  bool CompareZIndex      (Element* _pLeft, Element* _pRight);
+    static bool CompareZIndex(Element* _pLeft, Element* _pRight);
 
 protected:
 

@@ -46,6 +46,8 @@ public:
     void UpdateTileColor(int index, const sf::Color& color);
     void UpdateTileColor(int x, int y, int width, const sf::Color& color);
 
+    int GetTileCount() const;
+
 protected:
 
     virtual void DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;

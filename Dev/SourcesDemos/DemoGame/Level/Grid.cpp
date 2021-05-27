@@ -35,19 +35,15 @@ void Grid::InitGrid(Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth
     
     Element* pRoot = _pLevel->GetRootNode()->AddChild<Element>();
     pRoot->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
-    //pRoot->Rotate(45);
 
     m_pTileMap = pRoot->AddChild<ElementTileMap>();
-    m_pTileMap->BuildFromTileDimensions(m_width, m_height, sf::Vector2f(m_cellWidth, m_cellHeight));
+    m_pTileMap->BuildFromSquareGrid(this);
     m_pTileMap->SetTexture("LevelFloor.png");
     m_pTileMap->SetPosition(m_pTileMap->GetSize() / -2.f);
 
-    for (int y = 0; y < m_height; ++y)
+    for (int i = 0; i < m_pTileMap->GetTileCount(); ++i)
     {
-        for (int x = 0; x < m_width; ++x)
-        {
-            m_pTileMap->UpdateTileTextureCoords(x, y, m_width, GetRandom(100) > 5 ? sf::IntRect(0, 0, 16, 16) : sf::IntRect(16, 0, 16, 16));
-        }
+        m_pTileMap->UpdateTileTextureCoords(i, GetRandom(100) > 5 ? sf::IntRect(0, 0, 16, 16) : sf::IntRect(16, 0, 16, 16));
     }
 }
 

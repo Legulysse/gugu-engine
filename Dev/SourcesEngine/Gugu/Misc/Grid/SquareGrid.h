@@ -31,6 +31,7 @@ public:
     // TODO: rename as rows/columns or rowWidth/columnHeight to differentiate from graphic size ?
     int GetWidth() const;
     int GetHeight() const;
+    int GetCellCount() const;
 
     sf::Vector2f GetGridSize() const;
 

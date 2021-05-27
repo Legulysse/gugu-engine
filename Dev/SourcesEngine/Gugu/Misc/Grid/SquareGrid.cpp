@@ -85,6 +85,11 @@ int SquareGrid::GetHeight() const
     return m_height;
 }
 
+int SquareGrid::GetCellCount() const
+{
+    return m_width * m_height;
+}
+
 sf::Vector2f SquareGrid::GetGridSize() const
 {
     return sf::Vector2f(m_width * m_cellWidth, m_height * m_cellHeight);

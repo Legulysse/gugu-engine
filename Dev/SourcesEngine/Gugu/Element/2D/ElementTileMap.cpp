@@ -48,6 +48,11 @@ Texture* ElementTileMap::GetTexture() const
     return m_texture;
 }
 
+int ElementTileMap::GetTileCount() const
+{
+    return m_vertices.getVertexCount() / 6;
+}
+
 void ElementTileMap::BuildFromSquareGrid(SquareGrid* grid)
 {
     int width = grid->GetWidth();

@@ -85,6 +85,11 @@ int SquareGrid::GetHeight() const
     return m_height;
 }
 
+sf::Vector2f SquareGrid::GetGridSize() const
+{
+    return sf::Vector2f(m_width * m_cellWidth, m_height * m_cellHeight);
+}
+
 float SquareGrid::GetCellWidth() const
 {
     return m_cellWidth;
@@ -93,6 +98,11 @@ float SquareGrid::GetCellWidth() const
 float SquareGrid::GetCellHeight() const
 {
     return m_cellHeight;
+}
+
+sf::Vector2f SquareGrid::GetCellSize() const
+{
+    return sf::Vector2f(m_cellWidth, m_cellHeight);
 }
 
 }   // namespace gugu

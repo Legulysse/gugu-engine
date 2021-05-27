@@ -65,15 +65,14 @@ void Demo::AppStart()
 
     m_pTileMapA = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapA->SetTexture("SquareGrid.png");
-    m_pTileMapA->SetTileCount(m_grid4->GetWidth(), m_grid4->GetHeight());
-    m_pTileMapA->SetTileSize(sf::Vector2f(m_grid4->GetCellWidth(), m_grid4->GetCellHeight()));
+    m_pTileMapA->BuildFromSquareGrid(m_grid4);
     m_pTileMapA->SetPosition(10, 10);
 
     for (int y = 0; y < m_grid4->GetHeight(); ++y)
     {
         for (int x = 0; x < m_grid4->GetWidth(); ++x)
         {
-            m_pTileMapA->SetTile(x, y, sf::IntRect(0, 0, 32, 32));
+            m_pTileMapA->UpdateTileTextureCoords(x, y, m_grid4->GetWidth(), sf::IntRect(0, 0, 32, 32));
         }
     }
 
@@ -86,15 +85,14 @@ void Demo::AppStart()
 
     m_pTileMapB = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapB->SetTexture("SquareGrid.png");
-    m_pTileMapB->SetTileCount(m_grid8->GetWidth(), m_grid8->GetHeight());
-    m_pTileMapB->SetTileSize(sf::Vector2f(m_grid8->GetCellWidth(), m_grid8->GetCellHeight()));
+    m_pTileMapB->BuildFromSquareGrid(m_grid8);
     m_pTileMapB->SetPosition(350, 10);
 
     for (int y = 0; y < m_grid8->GetHeight(); ++y)
     {
         for (int x = 0; x < m_grid8->GetWidth(); ++x)
         {
-            m_pTileMapB->SetTile(x, y, sf::IntRect(0, 0, 32, 32));
+            m_pTileMapB->UpdateTileTextureCoords(x, y, m_grid8->GetWidth(), sf::IntRect(0, 0, 32, 32));
         }
     }
 
@@ -105,21 +103,16 @@ void Demo::AppStart()
     m_gridData6 = new DemoGridData;
     m_gridData6->GenerateCells(m_grid6->GetWidth(), m_grid6->GetHeight());
 
-    m_pTileMapC = gridsLayer->AddChild<ElementSpriteGroup>();
+    m_pTileMapC = gridsLayer->AddChild<ElementTileMap>();
     m_pTileMapC->SetTexture("HexGrid.png");
+    m_pTileMapC->BuildFromHexGrid(m_grid6);
     m_pTileMapC->SetPosition(690, 10);
-    m_pTileMapC->SetSize(32.f * m_grid6->GetWidth(), 32.f * m_grid6->GetHeight());
 
     for (int y = 0; y < m_grid6->GetHeight(); ++y)
     {
         for (int x = 0; x < m_grid6->GetWidth(); ++x)
         {
-            ElementSpriteGroupItem* item = new ElementSpriteGroupItem;
-            item->SetSubRect(sf::IntRect(0, 0, 32, 37));
-            item->SetPosition(m_grid6->GetCellPosition(sf::Vector2i(x, y)));
-            item->SetSize(m_grid6->GetCellWidth(), m_grid6->GetCellHeight());
-
-            m_pTileMapC->AddItem(item);
+            m_pTileMapC->UpdateTileTextureCoords(x, y, m_grid6->GetWidth(), sf::IntRect(0, 0, 32, 37));
         }
     }
 
@@ -139,18 +132,18 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid4->GetWidth(); ++x)
         {
-            m_pTileMapA->SetTile(x, y, m_gridData4->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
+            m_pTileMapA->UpdateTileTextureCoords(x, y, m_grid4->GetWidth(), m_gridData4->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
         }
     }
 
-    m_pTileMapA->SetTile(m_referenceCoords4.x, m_referenceCoords4.y, sf::IntRect(32, 32, 32, 32));
+    m_pTileMapA->UpdateTileTextureCoords(m_referenceCoords4.x, m_referenceCoords4.y, m_grid4->GetWidth(), sf::IntRect(32, 32, 32, 32));
 
     std::vector<sf::Vector2i> neighboursRangeA;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid4, *m_gridData4, m_referenceCoords4, m_neighboursRange, neighboursRangeA);
 
     for (sf::Vector2i coords : neighboursRangeA)
     {
-        m_pTileMapA->SetTile(coords.x, coords.y, sf::IntRect(32, 0, 32, 32));
+        m_pTileMapA->UpdateTileTextureCoords(coords.x, coords.y, m_grid4->GetWidth(), sf::IntRect(32, 0, 32, 32));
     }
 
     // Square-8 grid.
@@ -158,18 +151,18 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid8->GetWidth(); ++x)
         {
-            m_pTileMapB->SetTile(x, y, m_gridData8->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
+            m_pTileMapB->UpdateTileTextureCoords(x, y, m_grid8->GetWidth(), m_gridData8->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
         }
     }
 
-    m_pTileMapB->SetTile(m_referenceCoords8.x, m_referenceCoords8.y, sf::IntRect(32, 32, 32, 32));
+    m_pTileMapB->UpdateTileTextureCoords(m_referenceCoords8.x, m_referenceCoords8.y, m_grid8->GetWidth(), sf::IntRect(32, 32, 32, 32));
 
     std::vector<sf::Vector2i> neighboursRangeB;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid8, *m_gridData8, m_referenceCoords8, m_neighboursRange, neighboursRangeB);
 
     for (sf::Vector2i coords : neighboursRangeB)
     {
-        m_pTileMapB->SetTile(coords.x, coords.y, sf::IntRect(32, 0, 32, 32));
+        m_pTileMapB->UpdateTileTextureCoords(coords.x, coords.y, m_grid8->GetWidth(), sf::IntRect(32, 0, 32, 32));
     }
 
     // Hex grid.
@@ -177,24 +170,18 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid6->GetWidth(); ++x)
         {
-            int tileIndex = x + y * m_grid6->GetWidth();
-            m_pTileMapC->GetItem(tileIndex)->SetSubRect(m_gridData6->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 37, 32, 37) : sf::IntRect(0, 0, 32, 37));
-            m_pTileMapC->RecomputeItemVertices(tileIndex);
+            m_pTileMapC->UpdateTileTextureCoords(x, y, m_grid6->GetWidth(), m_gridData6->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 37, 32, 37) : sf::IntRect(0, 0, 32, 37));
         }
     }
 
-    int referenceTileIndex = m_referenceCoords6.x + m_referenceCoords6.y * m_grid6->GetWidth();
-    m_pTileMapC->GetItem(referenceTileIndex)->SetSubRect(sf::IntRect(32, 37, 32, 37));
-    m_pTileMapC->RecomputeItemVertices(referenceTileIndex);
+    m_pTileMapC->UpdateTileTextureCoords(m_referenceCoords6.x, m_referenceCoords6.y, m_grid6->GetWidth(), sf::IntRect(32, 37, 32, 37));
 
     std::vector<sf::Vector2i> neighboursRangeC;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid6, *m_gridData6, m_referenceCoords6, m_neighboursRange, neighboursRangeC);
 
     for (sf::Vector2i coords : neighboursRangeC)
     {
-        int tileIndex = coords.x + coords.y * m_grid6->GetWidth();
-        m_pTileMapC->GetItem(tileIndex)->SetSubRect(sf::IntRect(32, 0, 32, 37));
-        m_pTileMapC->RecomputeItemVertices(tileIndex);
+        m_pTileMapC->UpdateTileTextureCoords(coords.x, coords.y, m_grid6->GetWidth(), sf::IntRect(32, 0, 32, 37));
     }
 }
 

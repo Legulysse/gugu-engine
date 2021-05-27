@@ -136,6 +136,11 @@ int HexGrid::GetHeight() const
     return m_height;
 }
 
+sf::Vector2f HexGrid::GetGridSize() const
+{
+	return sf::Vector2f((m_width + 0.5f) * m_cellWidth, ((m_height - 1) * 1.5f + 2.f) * m_hexagonRadius);
+}
+
 float HexGrid::GetCellWidth() const
 {
     return m_cellWidth;
@@ -144,6 +149,11 @@ float HexGrid::GetCellWidth() const
 float HexGrid::GetCellHeight() const
 {
     return m_cellHeight;
+}
+
+sf::Vector2f HexGrid::GetCellSize() const
+{
+	return sf::Vector2f(m_cellWidth, m_cellHeight);
 }
 
 }   // namespace gugu

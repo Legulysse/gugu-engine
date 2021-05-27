@@ -28,11 +28,15 @@ public:
 
     void GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i>& neighbours) const;
 
+    // TODO: rename as rows/columns or rowWidth/columnHeight to differentiate from graphic size ?
     int GetWidth() const;
     int GetHeight() const;
 
+    sf::Vector2f GetGridSize() const;
+
     float GetCellWidth() const;
     float GetCellHeight() const;
+    sf::Vector2f GetCellSize() const;
 
 protected:
 

@@ -13,6 +13,8 @@
 namespace gugu
 {
     class Texture;
+    class SquareGrid;
+    class HexGrid;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -32,27 +34,26 @@ public:
 
     Texture* GetTexture() const;
 
-    void SetTileCount(int _iWidth, int _iHeight);
-    void SetTileSize(const sf::Vector2f& _kTileSize);
+    void BuildFromSquareGrid(SquareGrid* grid);
+    void BuildFromHexGrid(HexGrid* grid);
+    void BuildFromTileDimensions(int width, int height, const sf::Vector2f& tileSize);
+    void BuildFromTileCount(int count, const sf::Vector2f& mapSize);
 
-    // Improve interface with more explicit functions and parameters (settilesubrect, settilecolor, settileposition, etc...).
-    bool SetTile(int x, int y, const sf::IntRect& _kSubRect);
+    void UpdateTilePositionAndSize(int index, const sf::FloatRect& rect);
+    void UpdateTilePositionAndSize(int x, int y, int width, const sf::FloatRect& rect);
+    void UpdateTileTextureCoords(int index, const sf::IntRect& rect);
+    void UpdateTileTextureCoords(int x, int y, int width, const sf::IntRect& rect);
+    void UpdateTileColor(int index, const sf::Color& color);
+    void UpdateTileColor(int x, int y, int width, const sf::Color& color);
 
 protected:
 
     virtual void DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
-    virtual void SetSizeImpl(sf::Vector2f _kOldSize) override;
 
 protected:
 
     Texture* m_texture;
-
-    int m_width;
-    int m_height;
-    sf::Vector2f m_tileSize;
-
     sf::VertexArray m_vertices;
-    bool m_needRecompute;
 };
 
 }   // namespace gugu

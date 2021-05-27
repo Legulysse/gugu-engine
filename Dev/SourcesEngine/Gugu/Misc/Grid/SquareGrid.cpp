@@ -4,6 +4,8 @@
 #include "Gugu/Common.h"
 #include "Gugu/Misc/Grid/SquareGrid.h"
 
+#include <array>
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -55,22 +57,36 @@ bool SquareGrid::PickCoords(const sf::Vector2f& position, sf::Vector2i& pickedCo
 
 void SquareGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i>& neighbours) const
 {
+    static const std::array<sf::Vector2i, 12> neighbourDirections = {
+        // Four sides.
+        sf::Vector2i(-1, 0),
+        sf::Vector2i(0, -1),
+        sf::Vector2i(1, 0),
+        sf::Vector2i(0, 1),
+
+        // Eight sides.
+        sf::Vector2i(-1, 0),
+        sf::Vector2i(-1, -1),
+        sf::Vector2i(0, -1),
+        sf::Vector2i(1, -1),
+        sf::Vector2i(1, 0),
+        sf::Vector2i(1, 1),
+        sf::Vector2i(0, 1),
+        sf::Vector2i(-1, 1),
+    };
+
     neighbours.reserve(m_eightSides ? 8 : 4);
 
-    for (int offsetY = -1; offsetY <= 1; ++offsetY)
+    size_t from = m_eightSides ? 4 : 0;
+    size_t to = m_eightSides ? 12 : 4;
+    for (size_t i = from; i < to; ++i)
     {
-        for (int offsetX = -1; offsetX <= 1; ++offsetX)
-        {
-            int testX = coords.x + offsetX;
-            int testY = coords.y + offsetY;
+        sf::Vector2i neighbour = coords + neighbourDirections[i];
 
-            if ((offsetY != 0 || offsetX != 0)
-                && (m_eightSides || offsetY == 0 || offsetX == 0)
-                && testX >= 0 && testX < m_width
-                && testY >= 0 && testY < m_height)
-            {
-                neighbours.push_back(sf::Vector2i(testX, testY));
-            }
+        if (neighbour.x >= 0 && neighbour.x < m_width
+            && neighbour.y >= 0 && neighbour.y < m_height)
+        {
+            neighbours.push_back(neighbour);
         }
     }
 }

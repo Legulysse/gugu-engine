@@ -3,16 +3,13 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Element/Element.h"
-
-#include <SFML/Graphics/VertexArray.hpp>
+#include "Gugu/Element/2D/ElementSpriteBase.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
 namespace gugu
 {
-    class Texture;
     class SubImage;
 }
 
@@ -21,7 +18,7 @@ namespace gugu
 
 namespace gugu {
     
-class ElementSprite : public Element
+class ElementSprite : public ElementSpriteBase
 {
 public:
 
@@ -35,18 +32,6 @@ public:
 
     Texture* GetTexture() const;
 
-    void SetSubRect(const sf::IntRect& _oRect);
-    sf::IntRect GetSubRect() const;
-
-    void SetRepeatTexture(bool repeatTexture);
-
-    void SetFlipTextureX(bool _bFlipTextureX);  // Flip Top-Bottom
-    void SetFlipTextureY(bool _bFlipTextureY);  // Flip Left-Right
-    void SetFlipTexture(bool _bFlipTextureX, bool _bFlipTextureY);  // Flip Top-Bottom and Left-Right
-
-    void SetColor(const sf::Color& _oColor);
-    sf::Color GetColor() const;
-
     virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement) override;
 
 protected:
@@ -55,20 +40,11 @@ protected:
     void RecomputeVerticesColor();
 
     virtual void DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
-    virtual void SetSizeImpl(sf::Vector2f _kOldSize) override;
 
 protected:
 
     Texture* m_texture;
-    sf::IntRect m_subRect;
-    sf::Color m_color;
-
     sf::VertexArray m_vertices;
-    bool m_dirtyVertices;
-
-    bool m_repeatTexture;
-    bool m_flipTextureX;
-    bool m_flipTextureY;
 };
 
 }   // namespace gugu

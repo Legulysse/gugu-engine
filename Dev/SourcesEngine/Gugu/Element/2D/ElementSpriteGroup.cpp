@@ -13,6 +13,9 @@
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
+#include "Gugu/Engine.h"
+#include "Gugu/Debug/Logger.h"
+
 #include <SFML/Graphics/RenderTarget.hpp>
 
 ////////////////////////////////////////////////////////////////
@@ -21,7 +24,7 @@
 namespace gugu {
 
 ElementSpriteGroupItem::ElementSpriteGroupItem()
-: m_tiled(false)
+    : m_cachedVertexCount(0)
 {
 }
 
@@ -29,57 +32,41 @@ ElementSpriteGroupItem::~ElementSpriteGroupItem()
 {
 }
 
-void ElementSpriteGroupItem::SetSubRect(const sf::IntRect& _kSubRect)
+void ElementSpriteGroupItem::RaiseDirtyVertices()
 {
-    m_subRect = _kSubRect;
+    m_dirtyVertices = true;
 }
 
-void ElementSpriteGroupItem::SetTiled(bool tiled)
+bool ElementSpriteGroupItem::HasDirtyVertices() const
 {
-    m_tiled = tiled;
+    return m_dirtyVertices;
 }
 
-int ElementSpriteGroupItem::GetItemVertexCount() const
+size_t ElementSpriteGroupItem::RecomputeVertexCount()
 {
-    return 6;
+    m_cachedVertexCount = ElementSpriteBase::GetRequiredVertexCount();
+    return m_cachedVertexCount;
 }
 
-bool ElementSpriteGroupItem::ComputeItemVertices(sf::VertexArray& vertices, int& indexFirstVertex) const
+size_t ElementSpriteGroupItem::GetCachedVertexCount() const
 {
-    sf::Vertex* quad = &vertices[indexFirstVertex];
-    const sf::Transform& kTransform = GetTransform();
+    return m_cachedVertexCount;
+}
 
-    // Position
-    float fSurfaceLeft = 0.f;
-    float fSurfaceTop = 0.f;
-    float fSurfaceRight = GetSize().x;
-    float fSurfaceBottom = GetSize().y;
+size_t ElementSpriteGroupItem::RecomputeItemVertices(sf::VertexArray& vertices, size_t indexFirstVertex)
+{
+    m_dirtyVertices = false;
 
-    quad[0].position = kTransform * sf::Vector2f(fSurfaceLeft, fSurfaceTop);
-    quad[1].position = kTransform * sf::Vector2f(fSurfaceRight, fSurfaceTop);
-    quad[2].position = kTransform * sf::Vector2f(fSurfaceLeft, fSurfaceBottom);
+    ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(&vertices[indexFirstVertex]);
 
-    quad[3].position = kTransform * sf::Vector2f(fSurfaceRight, fSurfaceTop);
-    quad[4].position = kTransform * sf::Vector2f(fSurfaceLeft, fSurfaceBottom);
-    quad[5].position = kTransform * sf::Vector2f(fSurfaceRight, fSurfaceBottom);
+    // Combine generated vertices with the item transform.
+    const sf::Transform& transform = GetTransform();
+    for (size_t i = 0; i < m_cachedVertexCount; ++i)
+    {
+        vertices[indexFirstVertex + i].position = transform * vertices[indexFirstVertex + i].position;
+    }
 
-    // Texture
-    float fTextureLeft = (float)m_subRect.left;
-    float fTextureTop = (float)m_subRect.top;
-    float fTextureRight = fTextureLeft + m_subRect.width;
-    float fTextureBottom = fTextureTop + m_subRect.height;
-
-    quad[0].texCoords = sf::Vector2f(fTextureLeft, fTextureTop);
-    quad[1].texCoords = sf::Vector2f(fTextureRight, fTextureTop);
-    quad[2].texCoords = sf::Vector2f(fTextureLeft, fTextureBottom);
-
-    quad[3].texCoords = sf::Vector2f(fTextureRight, fTextureTop);
-    quad[4].texCoords = sf::Vector2f(fTextureLeft, fTextureBottom);
-    quad[5].texCoords = sf::Vector2f(fTextureRight, fTextureBottom);
-
-    // Update the current group index for the next item
-    indexFirstVertex += 6;
-    return true;
+    return m_cachedVertexCount;
 }
 
 
@@ -134,29 +121,57 @@ void ElementSpriteGroup::DrawSelf(RenderPass& _kRenderPass, const sf::Transform&
     {
         if (m_needRecompute)
         {
+            GetLogEngine()->Print(ELog::Info, "ElementSpriteGroup Recompute Begin");
+
             m_needRecompute = false;
 
-            int nbVertices = 0;
+            size_t indexForceRecompute = (size_t)-1;
+
+            size_t totalVertexCount = 0;
             for (size_t i = 0; i < m_items.size(); ++i)
             {
+                size_t cachedVertexCount = m_items[i]->GetCachedVertexCount();
+                
+                size_t currentVertexCount = 0;
                 if (m_items[i]->IsVisible(false))
                 {
-                    nbVertices += m_items[i]->GetItemVertexCount();
+                    currentVertexCount = m_items[i]->RecomputeVertexCount();
+                    totalVertexCount += currentVertexCount;
+                }
+
+                if (indexForceRecompute == (size_t)-1 && cachedVertexCount != currentVertexCount)
+                {
+                    indexForceRecompute = i;
                 }
             }
 
             // Reset vertices
             m_vertices.setPrimitiveType(sf::Triangles);
-            m_vertices.resize(nbVertices);
+            m_vertices.resize(totalVertexCount);
 
-            if (nbVertices > 0)
+            if (totalVertexCount > 0)
             {
-                int indexFirstVertex = 0;
+                size_t indexItemVertices = 0;
                 for (size_t i = 0; i < m_items.size(); ++i)
                 {
                     if (m_items[i]->IsVisible(false))
                     {
-                        m_items[i]->ComputeItemVertices(m_vertices, indexFirstVertex);
+                        if (i >= indexForceRecompute || m_items[i]->HasDirtyVertices())
+                        {
+                            GetLogEngine()->Print(ELog::Info, StringFormat("Recompute dirty item"));
+
+                            indexItemVertices += m_items[i]->RecomputeItemVertices(m_vertices, indexItemVertices);
+                        }
+                        else
+                        {
+                            GetLogEngine()->Print(ELog::Info, StringFormat("Skip item computation"));
+
+                            indexItemVertices += m_items[i]->GetCachedVertexCount();
+                        }
+                    }
+                    else
+                    {
+                        GetLogEngine()->Print(ELog::Info, StringFormat("invisible item"));
                     }
                 }
             }
@@ -180,26 +195,29 @@ void ElementSpriteGroup::DrawSelf(RenderPass& _kRenderPass, const sf::Transform&
 
 void ElementSpriteGroup::RecomputeItemVertices(int _iIndex)
 {
-    // TODO: if called explicitly, maybe I should allow it ? or add a "force" parameter ?
-    if (m_needRecompute)
-        return;
+    m_items[_iIndex]->RaiseDirtyVertices();
+    m_needRecompute = true;
 
-    int indexFirstVertex = 0;
-    for (size_t i = 0; i < m_items.size(); ++i)
-    {
-        if ((int)i == _iIndex)
-        {
-            m_items[i]->ComputeItemVertices(m_vertices, indexFirstVertex);
-            break;
-        }
-        else
-        {
-            if (m_items[i]->IsVisible(false))
-            {
-                indexFirstVertex += m_items[i]->GetItemVertexCount();
-            }
-        }
-    }
+    // TODO: if called explicitly, maybe I should allow it ? or add a "force" parameter ?
+    //if (m_needRecompute)
+    //    return;
+
+    //int indexFirstVertex = 0;
+    //for (size_t i = 0; i < m_items.size(); ++i)
+    //{
+    //    if ((int)i == _iIndex)
+    //    {
+    //        m_items[i]->ComputeItemVertices(m_vertices, indexFirstVertex);
+    //        break;
+    //    }
+    //    else
+    //    {
+    //        if (m_items[i]->IsVisible(false))
+    //        {
+    //            indexFirstVertex += m_items[i]->GetItemVertexCount();
+    //        }
+    //    }
+    //}
 }
 
 int ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
@@ -282,7 +300,7 @@ void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)
             ElementSpriteGroupItem* pNewTile = new ElementSpriteGroupItem;
             pNewElement = pNewTile;
 
-            pNewTile->SetTiled(true);
+            pNewTile->SetRepeatTexture(true);
         }
 
         if (pNewElement)

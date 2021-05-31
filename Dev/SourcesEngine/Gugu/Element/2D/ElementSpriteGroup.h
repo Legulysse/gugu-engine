@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Element/Element.h"
+#include "Gugu/Element/2D/ElementSpriteBase.h"
 
 #include <SFML/Graphics/VertexArray.hpp>
 
@@ -20,23 +20,23 @@ namespace gugu
 
 namespace gugu {
 
-class ElementSpriteGroupItem : public Element
+class ElementSpriteGroupItem : public ElementSpriteBase
 {
 public:
 
     ElementSpriteGroupItem();
     virtual ~ElementSpriteGroupItem();
 
-    void SetSubRect(const sf::IntRect& _kSubRect);
-    void SetTiled(bool tiled);
+    void RaiseDirtyVertices();
+    bool HasDirtyVertices() const;
 
-    int GetItemVertexCount() const;
-    bool ComputeItemVertices(sf::VertexArray& vertices, int& indexFirstVertex) const;
+    size_t RecomputeVertexCount();
+    size_t GetCachedVertexCount() const;
+    size_t RecomputeItemVertices(sf::VertexArray& vertices, size_t indexFirstVertex);
 
 protected:
 
-    sf::IntRect m_subRect;
-    bool m_tiled;   //TODO: Handle tiling
+    size_t m_cachedVertexCount;
 };
 
 class ElementSpriteGroup : public Element

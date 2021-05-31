@@ -27,6 +27,10 @@ public:
 
     void InitBar(BarColor _eColor, float _fBarBorderSizeX);
     void SetValue(float _fCurrent, float _fMax);
+
+protected:
+
+    float m_lastValue;
 };
 
 }   //namespace demoproject

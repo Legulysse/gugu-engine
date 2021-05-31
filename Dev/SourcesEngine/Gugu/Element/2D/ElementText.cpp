@@ -461,7 +461,7 @@ void ElementText::SetOnValidate(Action* _pAction)
     m_actionOnValidate = _pAction;
 }
 
-void ElementText::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(sf::Vector2f(), m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
@@ -496,7 +496,7 @@ void ElementText::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTran
     }
 }
 
-void ElementText::SetSizeImpl(sf::Vector2f _kOldSize)
+void ElementText::OnSizeChanged(sf::Vector2f _kOldSize)
 {
     if (!m_skipRecomputeOnResize)
         Recompute();

@@ -447,7 +447,7 @@ void Element::SetSize(sf::Vector2f _kNewSize)
     sf::Vector2f kOldSize = m_size;
     m_size = _kNewSize;
 
-    SetSizeImpl(kOldSize);
+    OnSizeChanged(kOldSize);
 
     ComputeUnifiedOrigin();
     
@@ -681,7 +681,7 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
         
         if ((_kRenderPass.pass & m_renderPass) != GUGU_RENDERPASS_INVALID)
         {
-            DrawSelf(_kRenderPass, combinedTransform);
+            RenderImpl(_kRenderPass, combinedTransform);
         }
         
         for (size_t i = 0; i < m_children.size(); ++i)

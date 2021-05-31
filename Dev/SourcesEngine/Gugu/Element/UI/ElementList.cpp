@@ -375,7 +375,7 @@ void ElementList::GetPropagationList(std::vector<Element*>& _vecPropagationList)
     }
 }
 
-void ElementList::SetSizeImpl(sf::Vector2f _kOldSize)
+void ElementList::OnSizeChanged(sf::Vector2f _kOldSize)
 {
     RecomputeScrollBar();
 
@@ -389,7 +389,7 @@ void ElementList::SetSizeImpl(sf::Vector2f _kOldSize)
     RecomputeItems();
 }
 
-void ElementList::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementList::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
     {

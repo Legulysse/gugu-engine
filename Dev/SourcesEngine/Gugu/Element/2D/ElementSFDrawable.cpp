@@ -40,7 +40,7 @@ sf::Drawable* ElementSFDrawable::GetSFDrawable() const
     return m_sfDrawable;
 }
 
-void ElementSFDrawable::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementSFDrawable::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     if (m_sfDrawable)
     {

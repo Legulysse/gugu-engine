@@ -131,7 +131,7 @@ sf::Color ElementSpriteBase::GetColor() const
     return m_color;
 }
 
-void ElementSpriteBase::SetSizeImpl(sf::Vector2f _kOldSize)
+void ElementSpriteBase::OnSizeChanged(sf::Vector2f _kOldSize)
 {
     m_dirtyVertices = true;
 }

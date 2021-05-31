@@ -109,7 +109,7 @@ bool ElementListItem::OnMousePressed()
     return false;
 }
 
-void ElementListItem::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementListItem::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     if (m_isSelected)
     {

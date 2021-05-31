@@ -45,7 +45,7 @@ protected:
     void RecomputeVerticesPositionAndTextureCoords(sf::Vertex* vertices) const;
     void RecomputeVerticesColor(sf::Vertex* vertices, size_t count) const;
 
-    virtual void SetSizeImpl(sf::Vector2f _kOldSize) override;
+    virtual void OnSizeChanged(sf::Vector2f _kOldSize) override;
 
 protected:
 

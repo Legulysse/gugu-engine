@@ -67,7 +67,7 @@ private:
     //void OnPreDraw            (RenderPass& _kRenderPass);
     //void OnPostDraw           (RenderPass& _kRenderPass);
 
-    //void SetSizeImpl        (sf::Vector2f _kOldSize);
+    //void OnSizeChanged        (sf::Vector2f _kOldSize);
     
 protected:
 

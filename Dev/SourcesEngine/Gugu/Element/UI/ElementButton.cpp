@@ -167,7 +167,7 @@ void ElementButton::OnMouseLeave()
     }
 }
 
-void ElementButton::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementButton::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(sf::Vector2f(), m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
@@ -177,7 +177,7 @@ void ElementButton::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTr
     }
 }
 
-void ElementButton::SetSizeImpl(sf::Vector2f _kOldSize)
+void ElementButton::OnSizeChanged(sf::Vector2f _kOldSize)
 {
     m_text->ComputeUnifiedDimensions();
     m_sprite->ComputeUnifiedDimensions();

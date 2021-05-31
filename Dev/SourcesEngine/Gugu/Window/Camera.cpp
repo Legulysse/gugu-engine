@@ -74,7 +74,7 @@ const sf::View& Camera::GetSFView() const
     m_extendOnResize = _bExtendOnResize;
 }*/
 
-/*void Camera::SetSizeImpl(sf::Vector2f _kOldSize)
+/*void Camera::OnSizeChanged(sf::Vector2f _kOldSize)
 {
     if (m_extendOnResize)
     {

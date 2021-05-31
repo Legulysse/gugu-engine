@@ -190,7 +190,7 @@ void ElementTileMap::UpdateTileColor(int index, const sf::Color& color)
     quad[5].color = color;
 }
 
-void ElementTileMap::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementTileMap::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     if (!m_texture || !m_texture->GetSFTexture())
         return;

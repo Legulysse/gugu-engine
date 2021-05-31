@@ -100,7 +100,7 @@ Texture* ElementSpriteGroup::GetTexture() const
     return m_texture;
 }
 
-void ElementSpriteGroup::SetSizeImpl(sf::Vector2f _kOldSize)
+void ElementSpriteGroup::OnSizeChanged(sf::Vector2f _kOldSize)
 {
     for (size_t i = 0; i < m_items.size(); ++i)
     {
@@ -110,7 +110,7 @@ void ElementSpriteGroup::SetSizeImpl(sf::Vector2f _kOldSize)
     m_needRecompute = true;
 }
 
-void ElementSpriteGroup::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     if (!m_texture || !m_texture->GetSFTexture())
         return;
@@ -359,7 +359,7 @@ void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)
     }
 
     m_needRecompute = true;
-    //SetSizeImpl(GetSize());
+    //OnSizeChanged(GetSize());
 }
 
 }   // namespace gugu

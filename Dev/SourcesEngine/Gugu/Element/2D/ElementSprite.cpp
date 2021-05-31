@@ -65,7 +65,7 @@ Texture* ElementSprite::GetTexture() const
     return m_texture;
 }
 
-void ElementSprite::DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     if (!m_texture || !m_texture->GetSFTexture())
         return;

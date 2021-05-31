@@ -236,8 +236,11 @@ public:
 
 protected:
 
-    virtual void DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
-    virtual void SetSizeImpl(sf::Vector2f _kOldSize) {}
+    virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
+
+    //virtual void OnTransformChanged() {}
+    //virtual void OnVisibleChanged() {}
+    virtual void OnSizeChanged(sf::Vector2f _kOldSize) {}
 
     static bool CompareZIndex(Element* _pLeft, Element* _pRight);
 

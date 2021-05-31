@@ -63,8 +63,8 @@ public:
     
 protected:
 
-    virtual void DrawSelf(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
-    virtual void SetSizeImpl(sf::Vector2f _kOldSize) override;
+    virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
+    virtual void OnSizeChanged(sf::Vector2f _kOldSize) override;
     
 protected:
 

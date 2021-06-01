@@ -228,6 +228,7 @@ sf::Vector2f Element::TransformToGlobalFull(const sf::Vector2f& _oPoint) const
 void Element::SetVisible(bool _bIsVisible)
 {
     m_isVisible = _bIsVisible;
+    OnVisibleChanged();
 }
 
 bool Element::IsVisible(bool _bCheckParent) const
@@ -293,31 +294,37 @@ UDim2 Element::GetUnifiedSize() const
 void Element::SetPositionX(float _fPosX)
 {
     m_transform.setPosition(_fPosX, m_transform.getPosition().y);
+    OnTransformChanged();
 }
 
 void Element::SetPositionY(float _fPosY)
 {
     m_transform.setPosition(m_transform.getPosition().x, _fPosY);
+    OnTransformChanged();
 }
 
 void Element::SetPosition(float _fPosX, float _fPosY)
 {
     m_transform.setPosition(_fPosX, _fPosY);
+    OnTransformChanged();
 }
 
 void Element::SetPosition(const sf::Vector2f& _kPosition)
 {
     m_transform.setPosition(_kPosition);
+    OnTransformChanged();
 }
 
 void Element::Move(float _fOffsetX, float _fOffsetY)
 {
     m_transform.move(_fOffsetX, _fOffsetY);
+    OnTransformChanged();
 }
 
 void Element::Move(const sf::Vector2f& _kOffset)
 {
     m_transform.move(_kOffset);
+    OnTransformChanged();
 }
 
 const sf::Vector2f& Element::GetPosition() const
@@ -328,11 +335,13 @@ const sf::Vector2f& Element::GetPosition() const
 void Element::SetRotation(float _fAngle)
 {
     m_transform.setRotation(_fAngle);
+    OnTransformChanged();
 }
 
 void Element::Rotate(float _fAngle)
 {
     m_transform.rotate(_fAngle);
+    OnTransformChanged();
 }
 
 float Element::GetRotation() const
@@ -342,74 +351,78 @@ float Element::GetRotation() const
 
 void Element::SetScaleX(float _fScaleX)
 {
-    if (m_flipY)
-        _fScaleX = -_fScaleX;
+    _fScaleX = m_flipY ? -_fScaleX : _fScaleX;
     m_transform.setScale(_fScaleX, m_transform.getScale().y);
+    OnTransformChanged();
 }
 
 void Element::SetScaleY(float _fScaleY)
 {
-    if (m_flipX)
-        _fScaleY = -_fScaleY;
+    _fScaleY = m_flipX ? -_fScaleY : _fScaleY;
     m_transform.setScale(m_transform.getScale().x, _fScaleY);
+    OnTransformChanged();
 }
 
 void Element::SetScale(float _fScale)
 {
-    SetScaleX(_fScale);
-    SetScaleY(_fScale);
+    SetScale(_fScale, _fScale);
 }
 
 void Element::SetScale(float _fScaleX, float _fScaleY)
 {
-    SetScaleX(_fScaleX);
-    SetScaleY(_fScaleY);
+    _fScaleX = m_flipY ? -_fScaleX : _fScaleX;
+    _fScaleY = m_flipX ? -_fScaleY : _fScaleY;
+    m_transform.setScale(_fScaleX, _fScaleY);
+    OnTransformChanged();
 }
 
 void Element::SetScale(const sf::Vector2f& _kScale)
 {
-    SetScaleX(_kScale.x);
-    SetScaleY(_kScale.y);
+    SetScale(_kScale.x, _kScale.y);
 }
 
-void Element::Scale(float _fScaleX, float _fScaleY)
+void Element::Scale(float factorX, float factorY)
 {
-    m_transform.scale(_fScaleX, _fScaleY);
+    m_transform.scale(factorX, factorY);
+    OnTransformChanged();
 }
 
-void Element::Scale(const sf::Vector2f& _kScale)
+void Element::Scale(const sf::Vector2f& factor)
 {
-    m_transform.scale(_kScale);
+    m_transform.scale(factor);
+    OnTransformChanged();
 }
 
 sf::Vector2f Element::GetScale() const
 {
-    sf::Vector2f kScale = m_transform.getScale();
-    if (m_flipY)
-        kScale.x = -kScale.x;
-    if (m_flipX)
-        kScale.y = -kScale.y;
-    return kScale;
+    sf::Vector2f scale = m_transform.getScale();
+    scale.x = m_flipY ? -scale.x : scale.x;
+    scale.y = m_flipX ? -scale.y : scale.y;
+    return scale;
 }
 
 void Element::SetOriginX(float _fOriginX)
 {
     m_transform.setOrigin(_fOriginX, m_transform.getOrigin().y);
+    OnTransformChanged();
 }
 
 void Element::SetOriginY(float _fOriginY)
 {
     m_transform.setOrigin(m_transform.getOrigin().x, _fOriginY);
+    OnTransformChanged();
 }
 
 void Element::SetOrigin(float _fOriginX, float _fOriginY)
 {
     m_transform.setOrigin(_fOriginX, _fOriginY);
+    OnTransformChanged();
 }
 
 void Element::SetOrigin(const sf::Vector2f& _kOrigin)
 {
     m_transform.setOrigin(_kOrigin);
+    OnTransformChanged();
 }
 
 const sf::Vector2f& Element::GetOrigin() const
@@ -446,7 +459,6 @@ void Element::SetSize(sf::Vector2f _kNewSize)
 {
     sf::Vector2f kOldSize = m_size;
     m_size = _kNewSize;
-
     OnSizeChanged(kOldSize);
 
     ComputeUnifiedOrigin();
@@ -499,16 +511,12 @@ void Element::SetFlipY(bool _bFlip)
 
 void Element::SetFlip(bool _bFlipX, bool _bFlipY)
 {
-    sf::Vector2f kScale = m_transform.getScale();
-    if (m_flipY != _bFlipY)
-        kScale.x = -kScale.x;
-    if (m_flipX != _bFlipX)
-        kScale.y = -kScale.y;
-
-    m_transform.setScale(kScale);
+    sf::Vector2f scale = GetScale();
 
     m_flipX = _bFlipX;
     m_flipY = _bFlipY;
+
+    SetScale(scale);
 }
 
 bool Element::GetFlipX() const

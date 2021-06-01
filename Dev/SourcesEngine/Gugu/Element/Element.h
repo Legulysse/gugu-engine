@@ -111,8 +111,8 @@ public:
             int                             GetChildCount    () const;
             const std::vector<Element*>&    GetChildren     () const;
 
-            sf::Vector2f    TransformToLocalFull    (const sf::Vector2f& _oPoint) const;
-            sf::Vector2f    TransformToGlobalFull   (const sf::Vector2f& _oPoint) const;  //TODO: Check this works !
+            sf::Vector2f    TransformToLocalFull    (const sf::Vector2f& _oPoint) const;    // TODO: rename as TransformToLocal and TransformToGlobal.
+            sf::Vector2f    TransformToGlobalFull   (const sf::Vector2f& _oPoint) const;    //TODO: Check this works !
 
             void            SetVisible              (bool _bIsVisible);
             bool            IsVisible               (bool _bCheckParent = true) const;
@@ -153,8 +153,8 @@ public:
             void                SetScale                (float _fScale);
             void                SetScale                (float _fScaleX, float _fScaleY);
             void                SetScale                (const sf::Vector2f& _kScale);
-            void                Scale                   (float _fScaleX, float _fScaleY);
-            void                Scale                   (const sf::Vector2f& _kScale);
+            void                Scale                   (float factorX, float factorY);
+            void                Scale                   (const sf::Vector2f& factor);
 
             sf::Vector2f        GetScale                () const;
 
@@ -238,9 +238,9 @@ protected:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
 
-    //virtual void OnTransformChanged() {}
-    //virtual void OnVisibleChanged() {}
-    virtual void OnSizeChanged(sf::Vector2f _kOldSize) {}
+    virtual void OnTransformChanged() {}
+    virtual void OnVisibleChanged() {}
+    virtual void OnSizeChanged(sf::Vector2f _kOldSize) {}   // TODO: remove the oldSize param ?
 
     static bool CompareZIndex(Element* _pLeft, Element* _pRight);
 

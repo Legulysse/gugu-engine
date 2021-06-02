@@ -24,7 +24,8 @@
 namespace gugu {
 
 ElementSpriteGroupItem::ElementSpriteGroupItem()
-    : m_cachedVertexCount(0)
+    : m_spriteGroup(nullptr)
+    , m_cachedVertexCount(0)
 {
 }
 
@@ -32,9 +33,34 @@ ElementSpriteGroupItem::~ElementSpriteGroupItem()
 {
 }
 
+void ElementSpriteGroupItem::SetSpriteGroup(ElementSpriteGroup* spriteGroup)
+{
+    m_spriteGroup = spriteGroup;
+
+    if (!m_parent)
+    {
+        SetParent(m_spriteGroup, false);
+    }
+}
+
 void ElementSpriteGroupItem::RaiseDirtyVertices()
 {
-    m_dirtyVertices = true;
+    ElementSpriteBase::RaiseDirtyVertices();
+
+    if (m_spriteGroup)
+    {
+        m_spriteGroup->RaiseNeedRecompute();
+    }
+}
+
+void ElementSpriteGroupItem::OnTransformChanged()
+{
+    RaiseDirtyVertices();
+}
+
+void ElementSpriteGroupItem::OnVisibleChanged()
+{
+    RaiseDirtyVertices();
 }
 
 bool ElementSpriteGroupItem::HasDirtyVertices() const
@@ -91,7 +117,6 @@ void ElementSpriteGroup::SetTexture(Texture* _pTexture)
     if (_pTexture)
     {
         m_texture = _pTexture;
-        m_needRecompute = true;
     }
 }
 
@@ -106,8 +131,6 @@ void ElementSpriteGroup::OnSizeChanged(sf::Vector2f _kOldSize)
     {
         m_items[i]->OnParentResized(_kOldSize, GetSize());
     }
-
-    m_needRecompute = true;
 }
 
 void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
@@ -193,36 +216,14 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
     }
 }
 
-void ElementSpriteGroup::RecomputeItemVertices(int _iIndex)
+void ElementSpriteGroup::RaiseNeedRecompute()
 {
-    m_items[_iIndex]->RaiseDirtyVertices();
     m_needRecompute = true;
-
-    // TODO: if called explicitly, maybe I should allow it ? or add a "force" parameter ?
-    //if (m_needRecompute)
-    //    return;
-
-    //int indexFirstVertex = 0;
-    //for (size_t i = 0; i < m_items.size(); ++i)
-    //{
-    //    if ((int)i == _iIndex)
-    //    {
-    //        m_items[i]->ComputeItemVertices(m_vertices, indexFirstVertex);
-    //        break;
-    //    }
-    //    else
-    //    {
-    //        if (m_items[i]->IsVisible(false))
-    //        {
-    //            indexFirstVertex += m_items[i]->GetItemVertexCount();
-    //        }
-    //    }
-    //}
 }
 
 int ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
 {
-    _pNewItem->SetParent(this, false);
+    _pNewItem->SetSpriteGroup(this);
     m_items.push_back(_pNewItem);
 
     m_needRecompute = true;
@@ -359,7 +360,6 @@ void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)
     }
 
     m_needRecompute = true;
-    //OnSizeChanged(GetSize());
 }
 
 }   // namespace gugu

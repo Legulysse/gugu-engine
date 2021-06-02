@@ -56,7 +56,7 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect)
         SetSize(sf::Vector2f((float)m_subRect.width, (float)m_subRect.height));
     }
 
-    m_dirtyVertices = true;
+    RaiseDirtyVertices();
 }
 
 sf::IntRect ElementSpriteBase::GetSubRect() const
@@ -83,7 +83,7 @@ void ElementSpriteBase::SetRepeatTexture(bool repeatTexture)
     if (m_repeatTexture != repeatTexture)
     {
         m_repeatTexture = repeatTexture;
-        m_dirtyVertices = true;
+        RaiseDirtyVertices();
     }
 }
 
@@ -116,14 +116,14 @@ void ElementSpriteBase::SetFlipTexture(bool _bFlipTextureX, bool _bFlipTextureY)
         m_flipTextureX = _bFlipTextureX;
         m_flipTextureY = _bFlipTextureY;
 
-        m_dirtyVertices = true;
+        RaiseDirtyVertices();
     }
 }
 
 void ElementSpriteBase::SetColor(const sf::Color& _oColor)
 {
     m_color = _oColor;
-    m_dirtyVertices = true;
+    RaiseDirtyVertices();
 }
 
 sf::Color ElementSpriteBase::GetColor() const
@@ -132,6 +132,11 @@ sf::Color ElementSpriteBase::GetColor() const
 }
 
 void ElementSpriteBase::OnSizeChanged(sf::Vector2f _kOldSize)
+{
+    RaiseDirtyVertices();
+}
+
+void ElementSpriteBase::RaiseDirtyVertices()
 {
     m_dirtyVertices = true;
 }

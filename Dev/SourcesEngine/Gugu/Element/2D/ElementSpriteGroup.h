@@ -12,6 +12,7 @@
 
 namespace gugu
 {
+    class ElementSpriteGroup;
     class Texture;
 }
 
@@ -27,7 +28,8 @@ public:
     ElementSpriteGroupItem();
     virtual ~ElementSpriteGroupItem();
 
-    void RaiseDirtyVertices();
+    void SetSpriteGroup(ElementSpriteGroup* spriteGroup);
+
     bool HasDirtyVertices() const;
 
     size_t RecomputeVertexCount();
@@ -36,6 +38,14 @@ public:
 
 protected:
 
+    virtual void RaiseDirtyVertices() override;
+
+    virtual void OnTransformChanged() override;
+    virtual void OnVisibleChanged() override;
+
+protected:
+
+    ElementSpriteGroup* m_spriteGroup;
     size_t m_cachedVertexCount;
 };
 
@@ -54,8 +64,7 @@ public:
     int AddItem(ElementSpriteGroupItem* _pNewItem);
     ElementSpriteGroupItem* GetItem(int _iIndex) const;
 
-    // TODO: add a method to trigger a recompute during the update.
-    void RecomputeItemVertices(int _iIndex);
+    void RaiseNeedRecompute();
 
     virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) override;
 
@@ -69,7 +78,6 @@ protected:
 protected:
 
     Texture* m_texture;
-
     sf::VertexArray m_vertices;
     bool m_needRecompute;
 

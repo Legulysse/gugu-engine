@@ -107,17 +107,9 @@ void ElementBar::SetValue(float _fCurrent, float _fMax)
         // If we want to hide/show some items, we need a full recompute.
         if (leftVisible != pSpriteLeft->IsVisible(false) || rightVisible != pSpriteRight->IsVisible(false))
         {
-            m_needRecompute = true;
-
             pSpriteLeft->SetVisible(leftVisible);
             pSpriteRight->SetVisible(rightVisible);
-
-            RecomputeItemVertices(3);
-            RecomputeItemVertices(5);
         }
-
-        // Only recompute the center item vertices when we can.
-        RecomputeItemVertices(4);
     }
 }
 

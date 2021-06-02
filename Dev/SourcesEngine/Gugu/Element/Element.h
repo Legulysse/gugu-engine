@@ -95,16 +95,18 @@ public:
     template<typename T>
     T* AddChild()
     {
-        T* pNewChild = new T;
-        AddChild( pNewChild );
-        return pNewChild;
+        T* child = new T;
+        AddChild(child);
+        return child;
     }
 
-            void            AddChild                (Element* _pNewChild);
-            void            RemoveChild             (Element* _pChild);
-            void            DeleteAllChildren       ();
-            void            SetParent               (Element* _pNewParent, bool _bUpdateParents = true);
-            
+            void AddChild(Element* child);
+            void RemoveChild(Element* child);
+            void DeleteAllChildren();
+
+            // Set the Element's parent, without registering it in the parent's children list.
+            void SetParent(Element* parent);
+
             Element*        GetParent               () const;
             Element*        GetTopParent            () const;
             
@@ -198,6 +200,8 @@ public:
             //TODO: Handle shaders properly
             //> Need to share shaders between objects ?
             //> Where/how do I manage/load/delete them ?
+            //> It should probably only appear in the same places where I use textures.
+            //> Maybe it would be a good occasion to add a Material pipeline.
             //void          SetShader               (sf::Shader* _pShader);
 
             void    SetInteractionFlags     (int _iFlags);

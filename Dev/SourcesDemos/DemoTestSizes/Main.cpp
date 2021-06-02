@@ -86,29 +86,41 @@ public:
 
 class TestBool1
 {
-    int margin;
-
     bool b1;
 };
 class TestBool4
 {
-    int margin;
-
     bool b1; bool b2; bool b3; bool b4;
 };
 class TestBool5
 {
-    int margin;
-
     bool b1; bool b2; bool b3; bool b4; bool b5;
 };
 class TestBool8
 {
-    int margin;
-
     bool b1; bool b2; bool b3; bool b4; bool b5; bool b6; bool b7; bool b8;
 };
 
+class TestMarginBool1
+{
+    int margin;
+    bool b1;
+};
+class TestMarginBool4
+{
+    int margin;
+    bool b1; bool b2; bool b3; bool b4;
+};
+class TestMarginBool5
+{
+    int margin;
+    bool b1; bool b2; bool b3; bool b4; bool b5;
+};
+class TestMarginBool8
+{
+    int margin;
+    bool b1; bool b2; bool b3; bool b4; bool b5; bool b6; bool b7; bool b8;
+};
 
 int main(int argc, char* argv[])
 {
@@ -118,7 +130,28 @@ int main(int argc, char* argv[])
 
 #endif
 
-    //--------
+    //--------------------------------
+    // Here is some tests for the standard tree functions on the Element class.
+
+    // Create a new Element A.
+    Element* elementA = new Element;
+
+    // Create a new Element B, add it as a child to A.
+    Element* elementB = new Element;
+    elementA->AddChild(elementB);
+
+    // Create a new Element C directly as a child to A.
+    Element* elementC = elementA->AddChild<Element>();
+
+    // Remove then Add B to A, it should now be placed after C in the list of A's children.
+    elementA->RemoveChild(elementB);
+    elementA->AddChild(elementB);
+
+    // Add C as a child to B, it should be properly removed from A's children.
+    elementB->AddChild(elementC);
+
+    //--------------------------------
+    // Here is some tests on various Element class sizes, and attempts to reduce those that could be applied in the future.
 
     Logger log;
     log.SetUseTimestamp(false);
@@ -134,6 +167,11 @@ int main(int argc, char* argv[])
     log.Print(ELog::Info, StringFormat(" TestBool4 : {0}", sizeof(TestBool4)));
     log.Print(ELog::Info, StringFormat(" TestBool5 : {0}", sizeof(TestBool5)));
     log.Print(ELog::Info, StringFormat(" TestBool8 : {0}", sizeof(TestBool8)));
+    log.Print(ELog::Info, StringFormat("---------------------------------------"));
+    log.Print(ELog::Info, StringFormat(" TestMarginBool1 : {0}", sizeof(TestMarginBool1)));
+    log.Print(ELog::Info, StringFormat(" TestMarginBool4 : {0}", sizeof(TestMarginBool4)));
+    log.Print(ELog::Info, StringFormat(" TestMarginBool5 : {0}", sizeof(TestMarginBool5)));
+    log.Print(ELog::Info, StringFormat(" TestMarginBool8 : {0}", sizeof(TestMarginBool8)));
     log.Print(ELog::Info, StringFormat("---------------------------------------"));
     log.Print(ELog::Info, StringFormat(" sf::Vector2f : {0}", sizeof(sf::Vector2f)));
     log.Print(ELog::Info, StringFormat(" sf::Transformable : {0}", sizeof(sf::Transformable)));
@@ -155,7 +193,7 @@ int main(int argc, char* argv[])
     log.Print(ELog::Info, StringFormat(" TestElementSprite : {0}", sizeof(TestElementSprite)));
     log.Print(ELog::Info, StringFormat("---------------------------------------"));
 
-    //--------
+    //--------------------------------
 
     return 0;
 }

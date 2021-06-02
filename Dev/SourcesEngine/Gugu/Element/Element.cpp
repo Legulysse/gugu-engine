@@ -143,16 +143,31 @@ Element::~Element()
     DeleteAllChildren();
 }
 
-void Element::AddChild(Element* _pNewChild)
+void Element::AddChild(Element* child)
 {
-    m_children.push_back(_pNewChild);
-    _pNewChild->m_parent = this;
+    child->SetParent(this);
+
+    m_children.push_back(child);
 }
 
-void Element::RemoveChild(Element* _pChild)
+void Element::SetParent(Element* parent)
 {
-    StdVectorRemove(m_children, _pChild);
-    _pChild->m_parent = nullptr;
+    if (m_parent)
+    {
+        // Ensure this Element is not attached anymore to another Element.
+        m_parent->RemoveChild(this);
+    }
+
+    m_parent = parent;
+}
+
+void Element::RemoveChild(Element* child)
+{
+    if (child->m_parent == this)
+    {
+        StdVectorRemove(m_children, child);
+        child->m_parent = nullptr;
+    }
 }
 
 void Element::DeleteAllChildren()
@@ -166,21 +181,6 @@ void Element::DeleteAllChildren()
     }
 
     m_children.clear();
-}
-
-void Element::SetParent(Element* _pNewParent, bool _bUpdateParents)
-{
-    if (_bUpdateParents)
-    {
-        if (m_parent)
-            StdVectorRemove(m_parent->m_children, this);
-
-        _pNewParent->AddChild(this);
-    }
-    else
-    {
-        m_parent = _pNewParent;
-    }
 }
 
 Element* Element::GetParent() const

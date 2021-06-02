@@ -41,6 +41,8 @@ ElementListItem::~ElementListItem()
 void ElementListItem::SetList(ElementList* _pList)
 {
     //TODO : remove from previous List
+    SetParent(_pList);
+
     m_list = _pList;
     
     AddInteractionFlag(EInteraction::Focus);

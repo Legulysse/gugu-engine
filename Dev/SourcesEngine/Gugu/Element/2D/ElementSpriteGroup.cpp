@@ -39,7 +39,7 @@ void ElementSpriteGroupItem::SetSpriteGroup(ElementSpriteGroup* spriteGroup)
 
     if (!m_parent)
     {
-        SetParent(m_spriteGroup, false);
+        SetParent(m_spriteGroup);
     }
 }
 

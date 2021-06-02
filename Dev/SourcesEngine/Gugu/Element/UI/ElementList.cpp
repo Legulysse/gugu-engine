@@ -37,21 +37,21 @@ ElementList::ElementList()
     ElementSprite* pSprite;
 
     pSprite = new ElementSprite;
-    pSprite->SetParent(this, false);
+    pSprite->SetParent(this);
     pSprite->SetSize(30.f, 30.f);
     pSprite->SetVisible(false);
     m_scrollBackground = pSprite;
 
     pSprite = new ElementSprite;
-    pSprite->SetParent(this, false);
+    pSprite->SetParent(this);
     pSprite->SetSize(30.f, 30.f);
     m_scrollSlider = pSprite;
 
     m_scrollButtonTop = new ElementSprite;
-    m_scrollButtonTop->SetParent(this, false);
+    m_scrollButtonTop->SetParent(this);
 
     m_scrollButtonBottom = new ElementSprite;
-    m_scrollButtonBottom->SetParent(this, false);
+    m_scrollButtonBottom->SetParent(this);
 
     AddInteractionFlag(EInteraction::Scroll);
     m_scrollButtonTop->AddInteractionFlag(EInteraction::Click);
@@ -101,7 +101,6 @@ void ElementList::SetMultipleSelection(bool _bMultiple)
 
 void ElementList::AddItem(ElementListItem* _pNewItem)
 {
-    _pNewItem->SetParent(this, false);
     _pNewItem->SetList(this);
 
     sf::Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);

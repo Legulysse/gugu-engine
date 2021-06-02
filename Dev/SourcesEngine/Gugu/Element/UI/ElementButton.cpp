@@ -26,8 +26,8 @@ ElementButton::ElementButton()
     m_sprite            = new ElementSprite;
     m_text              = new ElementText;
 
-    m_sprite->SetParent(this, false);
-    m_text->SetParent(this, false);
+    m_sprite->SetParent(this);
+    m_text->SetParent(this);
 
     m_sprite->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 

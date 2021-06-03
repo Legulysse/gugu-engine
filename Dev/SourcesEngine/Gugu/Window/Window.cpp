@@ -624,12 +624,12 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
         m_statTextDrawCalls.setPosition(fPositionX, fPositionY + fCurveHeight);
         m_statTextDrawCalls.setFillColor(kColorCurveDrawCalls);
         m_statTextDrawCalls.setCharacterSize(iFontSize);
-        m_statTextDrawCalls.setString(StringFormat("Draw calls: {0}", kFrameInfos.statDrawCalls));
+        m_statTextDrawCalls.setString(StringFormat("Draw calls: {0} (tris: {1})", kFrameInfos.statDrawCalls, kFrameInfos.statTriangles));
         m_statTextDrawCalls.setFont(*pFont);
         m_sfWindow->draw(m_statTextDrawCalls);
 
         // Step Times
-        m_statTextStepTime.setPosition(fPositionX + 180.f, fPositionY + fCurveHeight);
+        m_statTextStepTime.setPosition(fPositionX + 280.f, fPositionY + fCurveHeight);
         m_statTextStepTime.setFillColor(colorCurveStepTimes);
         m_statTextStepTime.setCharacterSize(iFontSize);
         m_statTextStepTime.setString(StringFormat("Step time: {0} ms", lastStepTime));

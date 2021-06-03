@@ -39,6 +39,7 @@ struct FrameInfos
     sf::RectangleShape defaultBoundsShape;
 
     int statDrawCalls = 0;
+    int statTriangles = 0;
 };
 
 struct RenderPass

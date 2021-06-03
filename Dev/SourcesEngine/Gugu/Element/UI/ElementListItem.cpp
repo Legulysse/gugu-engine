@@ -121,7 +121,10 @@ void ElementListItem::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& 
 
         // Stats
         if (_kRenderPass.frameInfos)
+        {
             _kRenderPass.frameInfos->statDrawCalls += 1;
+            // TODO: find  away to retrieve triangles count.
+        }
     }
 
     m_elementImpl->Render(_kRenderPass, _kTransformSelf);

@@ -156,7 +156,7 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
                 size_t cachedVertexCount = m_items[i]->GetCachedVertexCount();
                 
                 size_t currentVertexCount = 0;
-                if (m_items[i]->IsVisible(false))
+                if (m_items[i]->IsVisible())
                 {
                     currentVertexCount = m_items[i]->RecomputeVertexCount();
                     totalVertexCount += currentVertexCount;
@@ -177,7 +177,7 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
                 size_t indexItemVertices = 0;
                 for (size_t i = 0; i < m_items.size(); ++i)
                 {
-                    if (m_items[i]->IsVisible(false))
+                    if (m_items[i]->IsVisible())
                     {
                         if (i >= indexForceRecompute || m_items[i]->HasDirtyVertices())
                         {
@@ -209,7 +209,10 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
 
             //Stats
             if (_kRenderPass.frameInfos)
+            {
                 _kRenderPass.frameInfos->statDrawCalls += 1;
+                _kRenderPass.frameInfos->statTriangles += m_vertices.getVertexCount() / 3;
+            }
 
             //TODO: special stat category for ElementSpriteGroup
         }

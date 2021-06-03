@@ -89,7 +89,10 @@ void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
 
         // Stats
         if (_kRenderPass.frameInfos)
+        {
             _kRenderPass.frameInfos->statDrawCalls += 1;
+            _kRenderPass.frameInfos->statTriangles += m_vertices.getVertexCount() / 3;
+        }
 
         _kRenderPass.statRenderedSprites += 1;
     }

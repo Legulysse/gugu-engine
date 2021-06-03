@@ -48,7 +48,10 @@ void ElementSFDrawable::RenderImpl(RenderPass& _kRenderPass, const sf::Transform
 
         //Stats
         if (_kRenderPass.frameInfos)
+        {
             _kRenderPass.frameInfos->statDrawCalls += 1;
+            // TODO: find  away to retrieve triangles count.
+        }
 
         _kRenderPass.statRenderedDrawables += 1;
     }

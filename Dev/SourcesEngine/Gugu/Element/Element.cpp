@@ -112,8 +112,8 @@ Element::Element()
 {
     m_parent        = nullptr;
 
-    m_flipX     = false;
-    m_flipY     = false;
+    m_flipV     = false;
+    m_flipH     = false;
 
     m_renderPass    = GUGU_RENDERPASS_DEFAULT;
     m_isVisible = true;
@@ -351,14 +351,14 @@ float Element::GetRotation() const
 
 void Element::SetScaleX(float _fScaleX)
 {
-    _fScaleX = m_flipY ? -_fScaleX : _fScaleX;
+    _fScaleX = m_flipH ? -_fScaleX : _fScaleX;
     m_transform.setScale(_fScaleX, m_transform.getScale().y);
     OnTransformChanged();
 }
 
 void Element::SetScaleY(float _fScaleY)
 {
-    _fScaleY = m_flipX ? -_fScaleY : _fScaleY;
+    _fScaleY = m_flipV ? -_fScaleY : _fScaleY;
     m_transform.setScale(m_transform.getScale().x, _fScaleY);
     OnTransformChanged();
 }
@@ -370,8 +370,8 @@ void Element::SetScale(float _fScale)
 
 void Element::SetScale(float _fScaleX, float _fScaleY)
 {
-    _fScaleX = m_flipY ? -_fScaleX : _fScaleX;
-    _fScaleY = m_flipX ? -_fScaleY : _fScaleY;
+    _fScaleX = m_flipH ? -_fScaleX : _fScaleX;
+    _fScaleY = m_flipV ? -_fScaleY : _fScaleY;
     m_transform.setScale(_fScaleX, _fScaleY);
     OnTransformChanged();
 }
@@ -396,8 +396,8 @@ void Element::Scale(const sf::Vector2f& factor)
 sf::Vector2f Element::GetScale() const
 {
     sf::Vector2f scale = m_transform.getScale();
-    scale.x = m_flipY ? -scale.x : scale.x;
-    scale.y = m_flipX ? -scale.y : scale.y;
+    scale.x = m_flipH ? -scale.x : scale.x;
+    scale.y = m_flipV ? -scale.y : scale.y;
     return scale;
 }
 
@@ -498,35 +498,34 @@ sf::Vector2f Element::GetSizeOnScreen() const
     return fSize;
 }
 
-void Element::SetFlipX(bool _bFlip)
+void Element::SetFlipV(bool _bFlip)
 {
-    //TODO: Rename FlipH and FlipV ?
-    SetFlip(_bFlip, m_flipY);
+    SetFlip(_bFlip, m_flipH);
 }
 
-void Element::SetFlipY(bool _bFlip)
+void Element::SetFlipH(bool _bFlip)
 {
-    SetFlip(m_flipX, _bFlip);
+    SetFlip(m_flipV, _bFlip);
 }
 
-void Element::SetFlip(bool _bFlipX, bool _bFlipY)
+void Element::SetFlip(bool _bFlipV, bool _bFlipH)
 {
     sf::Vector2f scale = GetScale();
 
-    m_flipX = _bFlipX;
-    m_flipY = _bFlipY;
+    m_flipV = _bFlipV;
+    m_flipH = _bFlipH;
 
     SetScale(scale);
 }
 
-bool Element::GetFlipX() const
+bool Element::GetFlipV() const
 {
-    return m_flipX;
+    return m_flipV;
 }
 
-bool Element::GetFlipY() const
+bool Element::GetFlipH() const
 {
-    return m_flipY;
+    return m_flipH;
 }
 
 void Element::ComputeUnifiedOrigin()

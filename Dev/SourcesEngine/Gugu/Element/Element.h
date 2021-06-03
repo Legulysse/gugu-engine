@@ -179,12 +179,12 @@ public:
             sf::Vector2f        GetSizeScaled           () const;     //Get Element Size, with its scale applied (TODO: Useless ?)
             sf::Vector2f        GetSizeOnScreen         () const;     //Get Element Size, with all its upper hierarchy's scales applied (TODO: Useless ?)
             
-            void                SetFlipX                (bool _bFlip);  //Flip Top-Bottom
-            void                SetFlipY                (bool _bFlip);  //Flip Left-Right
-            void                SetFlip                 (bool _bFlipX, bool _bFlipY);
+            void                SetFlipV                (bool _bFlip);  //Flip Top-Bottom
+            void                SetFlipH                (bool _bFlip);  //Flip Left-Right
+            void                SetFlip                 (bool _bFlipV, bool _bFlipH);
 
-            bool                GetFlipX                () const;
-            bool                GetFlipY                () const;
+            bool                GetFlipV                () const;
+            bool                GetFlipH                () const;
 
             void            SetZIndex               (int32 _iZIndex);
             int32           GetZIndex               () const;
@@ -257,8 +257,8 @@ protected:
     //Render
     sf::Transformable   m_transform;
     sf::Vector2f        m_size;
-    bool                m_flipX;
-    bool                m_flipY;
+    bool                m_flipV;
+    bool                m_flipH;
 
     int                 m_renderPass;
     bool                m_isVisible;

@@ -70,9 +70,9 @@ void ElementSpriteAnimated::InitCurrentAnimationFrame()
         if (m_moveFromAnimation)
         {
             sf::Vector2f kMove = pCurrentFrame->GetMoveOffset();
-            if (m_flipY)
+            if (m_flipH)
                 kMove.x = -kMove.x;
-            if (m_flipX)
+            if (m_flipV)
                 kMove.y = -kMove.y;
             Move(kMove);
         }

@@ -64,24 +64,24 @@ void Demo::AppStart()
     float lineE = margin + cellSize * 4;
 
 
-    // Test Animation Idle (no origin set)
+    // Test Animation Idle (no origin set) with a flipped texture.
     ElementSpriteAnimated* animationIdle = m_root->AddChild<ElementSpriteAnimated>();
     animationIdle->SetPosition(lineA, lineB);
     animationIdle->SetScale(0.5f);
     animationIdle->ChangeAnimSet("Dinosaur.animset.xml");
     animationIdle->StartAnimation("Idle");
-    animationIdle->SetFlipTextureY(true);
+    animationIdle->SetFlipTextureH(true);
     //animationIdle->AddEventCallback("Footstep", new ActionStatic(PlayFootStep)); //TODO: optionnal event demo (like a button to trigger the walk, or an archer shooting arrows)
 
 
-    // Test Animation Walk (no origin set : top left)
+    // Test Animation Walk (no origin set : top left).
     ElementSpriteAnimated* animationWalk1 = m_root->AddChild<ElementSpriteAnimated>();
     animationWalk1->SetPosition(lineB, lineB);
     animationWalk1->SetScale(0.5f);
     animationWalk1->ChangeAnimSet("Dinosaur.animset.xml");
     animationWalk1->StartAnimation("Walk");
 
-    // Test Animation Walk (origin set manually : bottom center)
+    // Test Animation Walk (origin set manually : bottom center).
     ElementSpriteAnimated* animationWalk2 = m_root->AddChild<ElementSpriteAnimated>();
     animationWalk2->SetPosition(lineC, lineB);
     animationWalk2->SetScale(0.5f);
@@ -89,7 +89,7 @@ void Demo::AppStart()
     animationWalk2->ChangeAnimSet("Dinosaur.animset.xml");
     animationWalk2->StartAnimation("Walk");
 
-    // Test Animation Walk (origin set in animation)
+    // Test Animation Walk (origin set in animation).
     ElementSpriteAnimated* animationWalk3 = m_root->AddChild<ElementSpriteAnimated>();
     animationWalk3->SetPosition(lineD, lineB);
     animationWalk3->SetScale(0.5f);
@@ -98,7 +98,7 @@ void Demo::AppStart()
     animationWalk3->StartAnimation("Walk");
 
 
-    // Test Animation Walk (origin and move set in animation)
+    // Test Animation Walk (origin and move set in animation).
     m_movingAnimationA = m_root->AddChild<ElementSpriteAnimated>();
     m_movingAnimationA->SetPosition(lineD, lineD);
     m_movingAnimationA->SetScale(0.5f);
@@ -108,7 +108,7 @@ void Demo::AppStart()
     m_movingAnimationA->ChangeAnimSet("Dinosaur.animset.xml");
     m_movingAnimationA->StartAnimation("Walk");
 
-    // Test fake shadow (reversed animation)
+    // Test fake shadow (reversed animation).
     m_movingAnimationB = m_root->AddChild<ElementSpriteAnimated>();
     m_movingAnimationB->SetPosition(lineD, lineD);
     m_movingAnimationB->SetScale(0.5f, 0.25f);
@@ -117,7 +117,7 @@ void Demo::AppStart()
     m_movingAnimationB->SetMoveFromAnimation(true);
     m_movingAnimationB->ChangeAnimSet("Dinosaur.animset.xml");
     m_movingAnimationB->StartAnimation("Walk");
-    m_movingAnimationB->SetFlipX(true);
+    m_movingAnimationB->SetFlipV(true);
     m_movingAnimationB->SetColor(sf::Color(80, 80, 80, 128));
 }
 
@@ -138,13 +138,13 @@ void Demo::AppStep(const DeltaTime& dt)
 
     if (m_movingAnimationA->GetPosition().x <= lineB)
     {
-        m_movingAnimationA->SetFlipY(true);
-        m_movingAnimationB->SetFlipY(true);
+        m_movingAnimationA->SetFlipH(true);
+        m_movingAnimationB->SetFlipH(true);
     }
     else if (m_movingAnimationA->GetPosition().x >= lineE)
     {
-        m_movingAnimationA->SetFlipY(false);
-        m_movingAnimationB->SetFlipY(false);
+        m_movingAnimationA->SetFlipH(false);
+        m_movingAnimationB->SetFlipH(false);
     }
 }
 

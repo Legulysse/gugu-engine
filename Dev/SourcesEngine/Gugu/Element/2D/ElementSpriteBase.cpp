@@ -25,8 +25,8 @@ ElementSpriteBase::ElementSpriteBase()
 : m_color(sf::Color::White)
 , m_dirtyVertices(true)
 , m_repeatTexture(false)
-, m_flipTextureX(false)
-, m_flipTextureY(false)
+, m_flipTextureV(false)
+, m_flipTextureH(false)
 {
 }
 
@@ -39,13 +39,13 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect)
     sf::IntRect kOldRect = m_subRect;
     m_subRect = _oRect;
 
-    if (m_flipTextureX)
+    if (m_flipTextureV)
     {
         m_subRect.top += m_subRect.height;
         m_subRect.height = -m_subRect.height;
     }
 
-    if (m_flipTextureY)
+    if (m_flipTextureH)
     {
         m_subRect.left += m_subRect.width;
         m_subRect.width = -m_subRect.width;
@@ -63,13 +63,13 @@ sf::IntRect ElementSpriteBase::GetSubRect() const
 {
     sf::IntRect kRect = m_subRect;
 
-    if (m_flipTextureX)
+    if (m_flipTextureV)
     {
         kRect.top += kRect.height;
         kRect.height = -kRect.height;
     }
 
-    if (m_flipTextureY)
+    if (m_flipTextureH)
     {
         kRect.left += kRect.width;
         kRect.width = -kRect.width;
@@ -87,34 +87,34 @@ void ElementSpriteBase::SetRepeatTexture(bool repeatTexture)
     }
 }
 
-void ElementSpriteBase::SetFlipTextureX(bool _bFlipTextureX)
+void ElementSpriteBase::SetFlipTextureV(bool _bFlipTextureV)
 {
-    SetFlipTexture(_bFlipTextureX, m_flipTextureY);
+    SetFlipTexture(_bFlipTextureV, m_flipTextureH);
 }
 
-void ElementSpriteBase::SetFlipTextureY(bool _bFlipTextureY)
+void ElementSpriteBase::SetFlipTextureH(bool _bFlipTextureH)
 {
-    SetFlipTexture(m_flipTextureX, _bFlipTextureY);
+    SetFlipTexture(m_flipTextureV, _bFlipTextureH);
 }
 
-void ElementSpriteBase::SetFlipTexture(bool _bFlipTextureX, bool _bFlipTextureY)
+void ElementSpriteBase::SetFlipTexture(bool _bFlipTextureV, bool _bFlipTextureH)
 {
-    if (_bFlipTextureX != m_flipTextureX || _bFlipTextureY != m_flipTextureY)
+    if (_bFlipTextureV != m_flipTextureV || _bFlipTextureH != m_flipTextureH)
     {
-        if (_bFlipTextureX != m_flipTextureX)
+        if (_bFlipTextureV != m_flipTextureV)
         {
             m_subRect.top += m_subRect.height;
             m_subRect.height = -m_subRect.height;
         }
 
-        if (_bFlipTextureY != m_flipTextureY)
+        if (_bFlipTextureH != m_flipTextureH)
         {
             m_subRect.left += m_subRect.width;
             m_subRect.width = -m_subRect.width;
         }
 
-        m_flipTextureX = _bFlipTextureX;
-        m_flipTextureY = _bFlipTextureY;
+        m_flipTextureV = _bFlipTextureV;
+        m_flipTextureH = _bFlipTextureH;
 
         RaiseDirtyVertices();
     }

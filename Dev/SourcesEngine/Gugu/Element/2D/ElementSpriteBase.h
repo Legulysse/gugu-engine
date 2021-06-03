@@ -32,9 +32,9 @@ public:
 
     void SetRepeatTexture(bool repeatTexture);
 
-    void SetFlipTextureX(bool _bFlipTextureX);  // Flip Top-Bottom
-    void SetFlipTextureY(bool _bFlipTextureY);  // Flip Left-Right
-    void SetFlipTexture(bool _bFlipTextureX, bool _bFlipTextureY);  // Flip Top-Bottom and Left-Right
+    void SetFlipTextureV(bool _bFlipTextureV);  // Flip Top-Bottom
+    void SetFlipTextureH(bool _bFlipTextureH);  // Flip Left-Right
+    void SetFlipTexture(bool _bFlipTextureV, bool _bFlipTextureH);  // Flip Top-Bottom and Left-Right
 
     void SetColor(const sf::Color& _oColor);
     sf::Color GetColor() const;
@@ -60,8 +60,9 @@ protected:
     // TODO: Split into m_repeatTextureX and m_repeatTextureY ?
     // TODO: Add m_repeatTextureSize as a UDim2 to stretch the tiling quads ?
     bool m_repeatTexture;
-    bool m_flipTextureX;
-    bool m_flipTextureY;
+
+    bool m_flipTextureV;
+    bool m_flipTextureH;
 };
 
 }   // namespace gugu

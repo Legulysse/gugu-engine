@@ -60,8 +60,8 @@ public:
     UDim2       m_oDimSize;
 
     bool        m_bIsVisible;
-    bool        m_bFlipX;
-    bool        m_bFlipY;
+    bool        m_bFlipV;
+    bool        m_bFlipH;
     bool        m_bDimOrigin;
     bool        m_bDimPos;
     bool        m_bDimSize;

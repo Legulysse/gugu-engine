@@ -116,8 +116,8 @@ public:
             sf::Vector2f    TransformToLocalFull    (const sf::Vector2f& _oPoint) const;    // TODO: rename as TransformToLocal and TransformToGlobal.
             sf::Vector2f    TransformToGlobalFull   (const sf::Vector2f& _oPoint) const;    //TODO: Check this works !
 
-            void            SetVisible              (bool _bIsVisible);
-            bool            IsVisible               (bool _bCheckParent = true) const;
+            void            SetVisible              (bool visible);
+            bool            IsVisible               (bool checkParents = false) const;
 
     virtual void            Step                    (const DeltaTime& dt); //TODO: Remove ? let Actors handle step related stuff ?
     virtual void            Update                  (const DeltaTime& dt); //TODO: Call this from Render instead of additional loop ?

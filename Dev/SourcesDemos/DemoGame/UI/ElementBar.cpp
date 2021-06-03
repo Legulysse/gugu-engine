@@ -105,7 +105,7 @@ void ElementBar::SetValue(float _fCurrent, float _fMax)
         bool rightVisible = fValue + gugu::Math::Epsilon >= 1.f;
 
         // If we want to hide/show some items, we need a full recompute.
-        if (leftVisible != pSpriteLeft->IsVisible(false) || rightVisible != pSpriteRight->IsVisible(false))
+        if (leftVisible != pSpriteLeft->IsVisible() || rightVisible != pSpriteRight->IsVisible())
         {
             pSpriteLeft->SetVisible(leftVisible);
             pSpriteRight->SetVisible(rightVisible);

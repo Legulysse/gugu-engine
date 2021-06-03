@@ -33,7 +33,7 @@ bool XmlReadAttribute   (const pugi::xml_node& _kNode, const std::string& _strNa
 bool XmlReadAttribute   (const pugi::xml_node& _kNode, const std::string& _strName, std::string& _strValue);
 
 //Read a data structure from a node
-bool XmlReadUDimension  (const pugi::xml_node& _kNode, UDim2& _oDim);
+bool XmlReadUDimension  (const pugi::xml_node& _kNode, UDim2& _oDim);   // TODO: Rename as XmlReadUDim2
 bool XmlReadVector2     (const pugi::xml_node& _kNode, sf::Vector2f& _kVector);
 
 //Read a value inside a node

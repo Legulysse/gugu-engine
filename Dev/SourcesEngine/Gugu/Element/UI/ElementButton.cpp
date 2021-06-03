@@ -23,8 +23,8 @@ namespace gugu {
 
 ElementButton::ElementButton()
 {
-    m_sprite            = new ElementSprite;
-    m_text              = new ElementText;
+    m_sprite = new ElementSprite;
+    m_text = new ElementText;
 
     m_sprite->SetParent(this);
     m_text->SetParent(this);
@@ -37,8 +37,8 @@ ElementButton::ElementButton()
     m_textureFocused = nullptr;
     m_textureDisabled = nullptr;
 
-    m_actionOnPressed   = nullptr;
-    m_actionOnReleased  = nullptr;
+    m_actionOnPressed = nullptr;
+    m_actionOnReleased = nullptr;
     
     AddInteractionFlag(EInteraction::Focus);
     AddInteractionFlag(EInteraction::Click);

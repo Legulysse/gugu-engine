@@ -225,15 +225,15 @@ sf::Vector2f Element::TransformToGlobalFull(const sf::Vector2f& _oPoint) const
     return GetTransform().transformPoint(_oPoint);
 }
 
-void Element::SetVisible(bool _bIsVisible)
+void Element::SetVisible(bool visible)
 {
-    m_isVisible = _bIsVisible;
+    m_isVisible = visible;
     OnVisibleChanged();
 }
 
-bool Element::IsVisible(bool _bCheckParent) const
+bool Element::IsVisible(bool checkParents) const
 {
-    return m_isVisible && (!_bCheckParent || !m_parent || m_parent->IsVisible());
+    return m_isVisible && (!checkParents || !m_parent || m_parent->IsVisible(true));
 }
 
 void Element::Step(const DeltaTime& dt)

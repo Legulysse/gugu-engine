@@ -44,11 +44,6 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
         filter { "system:windows", "action:codelite", "platforms:x64" }
 			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x64", }
 
-        filter { "system:windows", "action:vs2013", "platforms:x86" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x86", }
-        filter { "system:windows", "action:vs2013", "platforms:x64" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x64", }
-            
         filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x86" }
             libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
         filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x64" }
@@ -138,11 +133,6 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
         filter { "system:windows", "action:codelite", "platforms:x64" }
 			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x64", }
 
-        filter { "system:windows", "action:vs2013", "platforms:x86" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x86", }
-        filter { "system:windows", "action:vs2013", "platforms:x64" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x64", }
-            
         filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x86" }
             libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
         filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x64" }

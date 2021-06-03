@@ -23,7 +23,6 @@ def Main():
         dictChoices['vs2019'] = 'Visual 2019'
         dictChoices['vs2017'] = 'Visual 2017'
         dictChoices['vs2015'] = 'Visual 2015'
-        dictChoices['vs2013'] = 'Visual 2013'
         dictChoices['gmake'] = 'GNU Makefiles'
         dictChoices['xcode4'] = 'XCode'
         dictChoices['codelite'] = 'CodeLite'

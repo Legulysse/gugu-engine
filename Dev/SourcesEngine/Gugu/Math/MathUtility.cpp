@@ -8,7 +8,7 @@
 
 namespace gugu {
 
-//--------------------------------
+//----------------------------------------------
 // Angles
 
 double ToRadians(double _fDegrees)
@@ -31,7 +31,7 @@ float ToDegreesf(float _fRadians)
     return _fRadians * Math::RadiansToDegrees;
 }
 
-//--------------------------------
+//----------------------------------------------
 // Interpolations
 
 namespace impl

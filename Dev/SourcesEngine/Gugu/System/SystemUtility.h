@@ -20,7 +20,7 @@
 
 namespace gugu {
     
-//--------------------------------
+//----------------------------------------------
 // General
 
 template<typename T>
@@ -29,7 +29,7 @@ void SafeDelete(T*& _pObject);
 template<typename T>
 void SafeDeleteArray(T*& _aObjects);
 
-//--------------------------------
+//----------------------------------------------
 // Strings
 
 template<typename T>
@@ -91,7 +91,7 @@ std::string StringFormat(const std::string& _tValue, const FormatParameters& Par
 template<typename T>
 std::string StringNumberFormat(const T& _tValue, const std::string& _strDelimiter = " ");
 
-//--------------------------------
+//----------------------------------------------
 // Paths
 
 // Convert all '\\' to '/', strip all "/xxx/.." parts, strip leading '/' if needed, add trailing '/' if folder.
@@ -99,7 +99,7 @@ std::string NormalizePath(const std::string& _strPath, bool _bIsFolder);
 void NormalizePath(const std::string& _strPath, bool _bIsFolder, std::string& _strNormalized);
 void NormalizePathSelf(std::string& _strPath, bool _bIsFolder);
 
-//--------------------------------
+//----------------------------------------------
 // Containers
 
 template<typename T>
@@ -135,7 +135,7 @@ void StdVectorDifference(const std::vector<T>& _vecFrom, const std::vector<T>& _
 template<typename T>
 void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vector<T>& _vecContainerB, std::vector<T>& _vecIntersection);
 
-//--------------------------------
+//----------------------------------------------
 // OS
 
 void WriteInConsole(const std::string& _strLine);

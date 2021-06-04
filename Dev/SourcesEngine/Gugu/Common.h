@@ -3,13 +3,13 @@
 ////////////////////////////////////////////////////////////////
 // Macros
 
-//--------------------------------
+//----------------------------------------------
 // Helpers for string conversion in macros
 
 #define GUGU_STRINGIZE_IMPL(A) #A
 #define GUGU_STRINGIZE(A) GUGU_STRINGIZE_IMPL(A)
 
-//--------------------------------
+//----------------------------------------------
 // Operating System
 
 #if defined(_WIN32) || defined(__WIN32__)
@@ -31,14 +31,14 @@
 
 #endif
 
-//--------------------------------
+//----------------------------------------------
 // Development Environment
 
 #if defined(_MSC_VER)
     #define GUGU_ENV_VISUAL
 #endif
 
-//--------------------------------
+//----------------------------------------------
 // Debug / Release
 
 #if defined(_DEBUG)

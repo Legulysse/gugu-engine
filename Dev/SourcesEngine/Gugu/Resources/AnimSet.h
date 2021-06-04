@@ -27,7 +27,7 @@ namespace gugu
 
 namespace gugu {
     
-//--------------------------------
+//----------------------------------------------
 // AnimationFrame
 // Single Frame used by an Animation.
 // May use a SubImage from the owner's ImageSet or a Texture.
@@ -71,7 +71,7 @@ protected:
     sf::Vector2f    m_moveOffset;
 };
 
-//--------------------------------
+//----------------------------------------------
 // Animation
 
 class Animation
@@ -103,7 +103,7 @@ protected:
     std::vector<AnimationFrame*> m_frames;
 };
 
-//--------------------------------
+//----------------------------------------------
 // AnimSet
 // Set of Animations available for an Entity.
 

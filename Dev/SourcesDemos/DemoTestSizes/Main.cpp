@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
 
 #endif
 
-    //--------------------------------
+    //----------------------------------------------
     // Here is some tests for the standard tree functions on the Element class.
 
     // Create a new Element A.
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
     // Add C as a child to B, it should be properly removed from A's children.
     elementB->AddChild(elementC);
 
-    //--------------------------------
+    //----------------------------------------------
     // Here is some tests on various Element class sizes, and attempts to reduce those that could be applied in the future.
 
     Logger log;
@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
     log.Print(ELog::Info, StringFormat(" TestElementSprite : {0}", sizeof(TestElementSprite)));
     log.Print(ELog::Info, StringFormat("---------------------------------------"));
 
-    //--------------------------------
+    //----------------------------------------------
 
     return 0;
 }

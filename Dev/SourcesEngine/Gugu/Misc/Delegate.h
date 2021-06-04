@@ -5,7 +5,7 @@
 
 namespace gugu {
 
-//--------------------------------
+//----------------------------------------------
 // Class Delegate
 
 template<typename TClass, typename TReturn = void>
@@ -80,7 +80,7 @@ public:
     TReturn operator() (TParam1 _oValue1, TParam2 _oValue2) { return Call(_oValue1, _oValue2); }
 };
 
-//--------------------------------
+//----------------------------------------------
 // Static Delegate
 
 template<typename TReturn = void>

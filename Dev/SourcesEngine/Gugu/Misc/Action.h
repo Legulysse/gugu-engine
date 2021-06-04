@@ -5,7 +5,7 @@
 
 namespace gugu {
         
-//--------------------------------
+//----------------------------------------------
 // Abstract Action
 
 class Action
@@ -19,7 +19,7 @@ public:
     void operator()     () { Call(); }
 };
 
-//--------------------------------
+//----------------------------------------------
 // Class Action
 
 template<typename TClass>
@@ -103,7 +103,7 @@ public:
     }
 };
 
-//--------------------------------
+//----------------------------------------------
 // Static Action
 
 class ActionStatic : public Action

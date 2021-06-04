@@ -30,7 +30,7 @@ sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians);
 
 }   // namespace gugu
 
-//--------------------------------
+//----------------------------------------------
 // Comparators for containers
 
 namespace std {

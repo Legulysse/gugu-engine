@@ -13,7 +13,7 @@
 
 namespace gugu {
     
-//--------------------------------
+//----------------------------------------------
 // Constants
 
 namespace Math
@@ -30,7 +30,7 @@ namespace Math
     const float Epsilon     = 0.001f;
 }
 
-//--------------------------------
+//----------------------------------------------
 // General
 
 template <typename T>
@@ -60,7 +60,7 @@ T Absolute(T _tValue);    //Visual has a good abs() templated for int, float, et
 template <typename T>
 T Power(const T& n, const int& p);
 
-//--------------------------------
+//----------------------------------------------
 // Angles
 
 double ToRadians(double _fDegrees);
@@ -69,7 +69,7 @@ double ToDegrees(double _fRadians);
 float ToRadiansf(float _fDegrees);
 float ToDegreesf(float _fRadians);
 
-//--------------------------------
+//----------------------------------------------
 // Interpolations
 
 template <typename T>

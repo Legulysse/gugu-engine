@@ -20,6 +20,7 @@ public:
     virtual ~HexGrid();
 
     void InitHexGrid(int _iWidth, int _iHeight, float _hexagonWidth);
+    void InitHexGrid(int _iWidth, int _iHeight, float _hexagonWidth, float _hexagonHeight);
 
     sf::Vector2f GetCellPosition(const sf::Vector2i& coords) const;
     sf::Vector2f GetCellCenter(const sf::Vector2i& coords) const;

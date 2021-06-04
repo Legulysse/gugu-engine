@@ -42,6 +42,18 @@ void HexGrid::InitHexGrid(int _iWidth, int _iHeight, float _hexagonWidth)
     m_cellHeight = m_hexagonRadius * 2.f;
 }
 
+void HexGrid::InitHexGrid(int _iWidth, int _iHeight, float _hexagonWidth, float _hexagonHeight)
+{
+	m_width = _iWidth;
+	m_height = _iHeight;
+
+	m_hexagonApothem = _hexagonWidth * 0.5f;
+	m_hexagonRadius = _hexagonHeight * 0.5f;
+
+	m_cellWidth = m_hexagonApothem * 2.f;
+	m_cellHeight = m_hexagonRadius * 2.f;
+}
+
 sf::Vector2f HexGrid::GetCellPosition(const sf::Vector2i& coords) const
 {
     return sf::Vector2f(coords.x * m_cellWidth + (coords.y % 2) * m_hexagonApothem, coords.y * (1.5f * m_hexagonRadius));
@@ -54,61 +66,59 @@ sf::Vector2f HexGrid::GetCellCenter(const sf::Vector2i& coords) const
 
 bool HexGrid::PickCoords(const sf::Vector2f& position, sf::Vector2i& pickedCoords) const
 {
-	// This algorithm uses an approximation using circular distance, based on hexagons center and their radius.
-	// TODO: narrow down the tested coords to an approximated region.
-	for (int y = 0; y < m_height; ++y)
-	{
-		for (int x = 0; x < m_width; ++x)
-		{
-			sf::Vector2i testCoords(x, y);
-			sf::Vector2f testCenter = GetCellCenter(testCoords);
+	// Picking formula based on Sam Hocevar sample :
+	// https://gamedev.stackexchange.com/questions/20742/how-can-i-implement-hexagonal-tilemap-picking-in-xna
 
-			// Pick the first hexagon we find that is in radius range from the pick position.
-			if (LengthSquare(testCenter - position) <= std::powf(m_hexagonRadius, 2))
-			{
-				//Check if a neighbour is nearer.
-				std::vector<sf::Vector2i> neighbours;
-				GetNeighbours(testCoords, neighbours);
+	// Convert picking position to the algorithm coordinates system.
+	float posY = position.y - m_hexagonRadius;
+	float posX = position.x - m_hexagonApothem;
 
-				sf::Vector2i nearestCoords = testCoords;
-				for (sf::Vector2i neighbourCoords : neighbours)
-				{
-					sf::Vector2f nearestCenter = GetCellCenter(nearestCoords);
-					sf::Vector2f neighbourCenter = GetCellCenter(neighbourCoords);
+	float a = m_hexagonRadius;
+	float b = m_hexagonApothem;
+	float c = m_hexagonRadius / 2.f;
 
-					if (LengthSquare(nearestCenter - position) > LengthSquare(neighbourCenter - position))
-					{
-						nearestCoords = neighbourCoords;
-					}
-				}
+	// Find out which major row and column we are on:
+	int pickedX = (int)std::floor(posX / b);
+	int pickedY = (int)std::floor(posY / (a + c));
 
-				pickedCoords = nearestCoords;
-				return true;
-			}
-		}
-	}
+	// Compute the offset into these row and column:
+	float dy = posX - (float)pickedX * b;
+	float dx = posY - (float)pickedY * (a + c);
 
-	return false;
+	// Are we on the left of the hexagon edge, or on the right?
+	dy = ((pickedX ^ pickedY) & 1) == 0 ? b - dy : dy;
+	int right = dy * (a - c) < b * (dx - c) ? 1 : 0;
+
+	// Now we have all the information we need, just fine-tune row and column.
+	pickedX += (pickedY ^ pickedX ^ right) & 1;
+	pickedY += right;
+
+	// Convert result to my own coordinates system.
+	pickedCoords.x = (pickedX - (pickedX & 1)) / 2;
+	pickedCoords.y = pickedY;
+
+	return (pickedCoords.x >= 0 && pickedCoords.x < m_width
+		&& pickedCoords.y >= 0 && pickedCoords.y < m_height);
 }
 
 void HexGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i>& neighbours) const
 {
 	static const std::array<sf::Vector2i, 12> neighbourDirections = {
-            // Even row.
-			sf::Vector2i(-1, 0),
-			sf::Vector2i(-1, -1),
-			sf::Vector2i(0, -1),
-			sf::Vector2i(1, 0),
-			sf::Vector2i(0, 1),
-			sf::Vector2i(-1, 1),
+        // Even row.
+		sf::Vector2i(-1, 0),
+		sf::Vector2i(-1, -1),
+		sf::Vector2i(0, -1),
+		sf::Vector2i(1, 0),
+		sf::Vector2i(0, 1),
+		sf::Vector2i(-1, 1),
 
-            // Odd row.
-			sf::Vector2i(-1, 0),
-			sf::Vector2i(0, -1),
-			sf::Vector2i(1, -1),
-			sf::Vector2i(1, 0),
-			sf::Vector2i(1, 1),
-			sf::Vector2i(0, 1),
+        // Odd row.
+		sf::Vector2i(-1, 0),
+		sf::Vector2i(0, -1),
+		sf::Vector2i(1, -1),
+		sf::Vector2i(1, 0),
+		sf::Vector2i(1, 1),
+		sf::Vector2i(0, 1),
 	};
 
     neighbours.reserve(6);

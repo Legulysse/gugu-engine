@@ -244,7 +244,7 @@ void DatasheetBinding_Register()
 {
     EWeaponType::Register();
 
-    gugu::GetResources()->RegisterDatasheetFactory(new gugu::DelegateStatic1P<const std::string&, gugu::Datasheet*>(&DatasheetBinding_InstanciateDatasheet));
+    gugu::GetResources()->RegisterDatasheetFactory(DatasheetBinding_InstanciateDatasheet);
 }
 
 ////////////////////////////////////////////////////////////////

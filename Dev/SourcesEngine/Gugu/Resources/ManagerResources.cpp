@@ -83,7 +83,8 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
 
 void ManagerResources::Release()
 {
-    ClearStdVector(m_datasheetFactories);
+    m_datasheetFactories.clear();
+
     ClearStdMap(m_datasheetEnums);
     ClearStdMap(m_customTextures);
     ClearStdMap(m_resources);
@@ -628,9 +629,9 @@ void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>
     std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
 }
 
-void ManagerResources::RegisterDatasheetFactory(DelegateStatic1P<const std::string&, Datasheet*>* _pDatasheetFactory)
+void ManagerResources::RegisterDatasheetFactory(DelegateDatasheetFactory delegateDatasheetFactory)
 {
-    m_datasheetFactories.push_back(_pDatasheetFactory);
+    m_datasheetFactories.push_back(delegateDatasheetFactory);
 }
 
 Datasheet* ManagerResources::InstanciateDatasheet(const std::string& _strType)
@@ -644,7 +645,7 @@ Datasheet* ManagerResources::InstanciateDatasheet(const std::string& _strType)
         Datasheet* pDatasheet = nullptr;
         for (size_t i = 0; i < m_datasheetFactories.size(); ++i)
         {
-            pDatasheet = m_datasheetFactories[i]->Call(_strType);
+            pDatasheet = m_datasheetFactories[i](_strType);
             if (pDatasheet)
                 return pDatasheet;
         }

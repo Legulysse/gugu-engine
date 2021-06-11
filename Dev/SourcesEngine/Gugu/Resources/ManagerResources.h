@@ -5,7 +5,7 @@
 
 #include "Gugu/System/Types.h"
 #include "Gugu/System/Hash.h"
-#include "Gugu/Misc/Delegate.h"
+#include "Gugu/Misc/Callback.h"
 #include "Gugu/System/FileInfo.h"
 #include "Gugu/Resources/EnumsResources.h"
 
@@ -46,6 +46,10 @@ namespace gugu {
 
 class ManagerResources
 {
+public:
+
+    using DelegateDatasheetFactory = std::function<Datasheet* (const std::string&)>;
+
 public:
 
     ManagerResources();
@@ -113,7 +117,7 @@ public:
     Font*           GetDefaultFont();
     Font*           GetDebugFont();
     
-    void                RegisterDatasheetFactory    (DelegateStatic1P<const std::string&, Datasheet*>* _pDatasheetFactory);
+    void                RegisterDatasheetFactory    (DelegateDatasheetFactory delegateDatasheetFactory);
     Datasheet*          InstanciateDatasheet        (const std::string& _strType);
 
     void                RegisterDatasheetEnum       (const std::string& _strName, DatasheetEnum* _pEnum);
@@ -138,7 +142,7 @@ private:
     std::map<ResourceMapKey, ResourceInfo*> m_resources;
     std::map<ResourceMapKey, Texture*> m_customTextures;
 
-    std::vector<DelegateStatic1P<const std::string&, Datasheet*>*> m_datasheetFactories;
+    std::vector<DelegateDatasheetFactory> m_datasheetFactories;
     std::map<ResourceMapKey, DatasheetEnum*>  m_datasheetEnums;
 };
 

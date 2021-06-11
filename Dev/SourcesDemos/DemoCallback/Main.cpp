@@ -23,7 +23,8 @@ using namespace gugu;
 
 //--------
 
-using ActionType = std::function<void()>;
+using Callable = std::function<void()>;
+using DelegateFactory = std::function<int(int, bool)>;
 
 template <typename TReturn>
 using DelegateType = std::function<TReturn()>;
@@ -35,22 +36,34 @@ void TestFunction1(int value)
     WriteInConsole(ToString(value));
 }
 
+int TestFactoryFunction(int a, bool b)
+{
+    return b ? a : a * 2;
+}
+
 class HolderClass
 {
 public:
 
     std::function<void()> m_Action;
-    std::function<int(int)> m_Delegate;
+    std::function<int(int, bool)> m_Delegate;
 
-    ActionType m_ActionType;
+    Callable m_ActionType;
     DelegateType1P<int, int> m_DelegateType;
-    ActionType m_ActionType2;
+    Callable m_ActionType2;
+    DelegateFactory m_Factory;
+    DelegateFactory m_Factory2;
 
 public:
 
     void ComputeTest(std::string value)
     {
         WriteInConsole(value);
+    }
+
+    int TestObjectFactoryFunction(int a, bool b)
+    {
+        return b ? a : a * 2;
     }
 };
 
@@ -86,10 +99,12 @@ int main(int argc, char* argv[])
 
     HolderClass* object = new HolderClass();
     object->m_Action = []() { TestFunction1(66); };
-    object->m_Delegate = [](int value) { return value; };
+    object->m_Delegate = [](int value, bool test) { return value; };
     object->m_ActionType = []() { TestFunction1(88); };
     object->m_DelegateType = [](int value) { return value; };
     object->m_ActionType2 = [object]() { object->ComputeTest("plop"); };
+    object->m_Factory = TestFactoryFunction;
+    object->m_Factory2 = std::bind(&HolderClass::TestObjectFactoryFunction, object, std::placeholders::_1, std::placeholders::_2);
 
     action1->Call();
     functor1();
@@ -97,10 +112,12 @@ int main(int argc, char* argv[])
     functor3(44);
     WriteInConsole(ToString(functor4(55)));
     object->m_Action();
-    WriteInConsole(ToString(object->m_Delegate(77)));
+    WriteInConsole(ToString(object->m_Delegate(77, false)));
     object->m_ActionType();
     WriteInConsole(ToString(object->m_DelegateType(99)));
     object->m_ActionType2();
+    WriteInConsole(ToString(object->m_Factory(42, false)));
+    WriteInConsole(ToString(object->m_Factory2(42, true)));
 
     SafeDelete(action1);
     SafeDelete(object);

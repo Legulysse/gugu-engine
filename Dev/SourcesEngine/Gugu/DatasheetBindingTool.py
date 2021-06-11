@@ -428,7 +428,7 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp):
             newEnum.SaveRegisterMethodCpp(fileSource)
         fileSource.write('\n')
         
-    fileSource.write('    gugu::GetResources()->RegisterDatasheetFactory(new gugu::DelegateStatic1P<const std::string&, gugu::Datasheet*>(&DatasheetBinding_InstanciateDatasheet));\n')
+    fileSource.write('    gugu::GetResources()->RegisterDatasheetFactory(DatasheetBinding_InstanciateDatasheet);\n')
     fileSource.write('}\n')
     
     fileSource.write('\n')

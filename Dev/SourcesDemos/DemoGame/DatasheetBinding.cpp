@@ -299,7 +299,7 @@ void DatasheetBinding_Register()
     EEffectCenter::Register();
     EProjectileAim::Register();
 
-    gugu::GetResources()->RegisterDatasheetFactory(new gugu::DelegateStatic1P<const std::string&, gugu::Datasheet*>(&DatasheetBinding_InstanciateDatasheet));
+    gugu::GetResources()->RegisterDatasheetFactory(DatasheetBinding_InstanciateDatasheet);
 }
 
 ////////////////////////////////////////////////////////////////

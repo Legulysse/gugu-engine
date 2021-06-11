@@ -144,8 +144,6 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
     {
         if (m_needRecompute)
         {
-            GetLogEngine()->Print(ELog::Info, "ElementSpriteGroup Recompute Begin");
-
             m_needRecompute = false;
 
             size_t indexForceRecompute = (size_t)-1;
@@ -181,20 +179,12 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
                     {
                         if (i >= indexForceRecompute || m_items[i]->HasDirtyVertices())
                         {
-                            GetLogEngine()->Print(ELog::Info, StringFormat("Recompute dirty item"));
-
                             indexItemVertices += m_items[i]->RecomputeItemVertices(m_vertices, indexItemVertices);
                         }
                         else
                         {
-                            GetLogEngine()->Print(ELog::Info, StringFormat("Skip item computation"));
-
                             indexItemVertices += m_items[i]->GetCachedVertexCount();
                         }
-                    }
-                    else
-                    {
-                        GetLogEngine()->Print(ELog::Info, StringFormat("invisible item"));
                     }
                 }
             }

@@ -12,9 +12,9 @@
 
 namespace gugu {
 
-typedef sf::Vector2i Vector2i;
-typedef sf::Vector2u Vector2u;
-typedef sf::Vector2f Vector2f;
+using Vector2i = sf::Vector2i;
+using Vector2u = sf::Vector2u;
+using Vector2f = sf::Vector2f;
 
 template <typename T>
 float LengthSquare(const sf::Vector2<T>& _kVector);

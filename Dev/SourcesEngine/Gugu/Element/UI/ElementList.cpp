@@ -62,9 +62,9 @@ ElementList::ElementList()
     m_scrollButtonBottom->InitInteractions();
     m_scrollSlider->InitInteractions();
     
-    m_scrollButtonTop->GetInteractions()->AddCallback(EInteraction::Click, new ActionClass1P<ElementList, int>(this, &ElementList::OnMouseScrolled, 1));
-    m_scrollButtonBottom->GetInteractions()->AddCallback(EInteraction::Click, new ActionClass1P<ElementList, int>(this, &ElementList::OnMouseScrolled, -1));
-    m_scrollSlider->GetInteractions()->AddCallback(EInteraction::Drag, new ActionClass<ElementList>(this, &ElementList::OnScrollDrag));
+    m_scrollButtonTop->GetInteractions()->AddCallback(EInteraction::Click, std::bind(&ElementList::OnMouseScrolled, this, 1));
+    m_scrollButtonBottom->GetInteractions()->AddCallback(EInteraction::Click, std::bind(&ElementList::OnMouseScrolled, this, -1));
+    m_scrollSlider->GetInteractions()->AddCallback(EInteraction::Drag, std::bind(&ElementList::OnScrollDrag, this));
 }
 
 ElementList::~ElementList()

@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
+#include "Gugu/Misc/Callback.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -13,7 +14,6 @@ namespace gugu
     class ElementSprite;
     class ElementText;
     class Texture;
-    class Action;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -45,8 +45,8 @@ public:
     void SetTextureDisabled(const std::string& _strTexture);
     void SetButtonDisabled(bool _bDisabled);
 
-    void SetOnMousePressed(Action* _pActionOnPressed);
-    void SetOnMouseReleased(Action* _pActionOnReleased);
+    void SetOnMousePressed(Callback _pActionOnPressed);
+    void SetOnMouseReleased(Callback _pActionOnReleased);
 
     void SetText(const std::string& _strText);
 
@@ -75,8 +75,8 @@ protected:
 
     ElementText* m_text;
 
-    Action* m_actionOnPressed;
-    Action* m_actionOnReleased;
+    Callback m_actionOnPressed;
+    Callback m_actionOnReleased;
 
     bool m_isButtonDisabled;
 };

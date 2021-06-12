@@ -6,6 +6,7 @@
 #include "Gugu/Misc/Patterns/Singleton.h"
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/System/Types.h"
+#include "Gugu/Misc/Callback.h"
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -30,7 +31,6 @@ namespace gugu
     class Level;
     class LoggerEngine;
     class TraceGroup;
-    class Action;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -122,7 +122,7 @@ struct Timer
     uint32 currentTime;
     uint32 ticks;
 
-    Action* action;
+    Callback callback;
 
     Timer();
     ~Timer();
@@ -152,7 +152,7 @@ public:
     void            SetGameWindow   (Window* window);
     Window*         GetGameWindow   () const;
     
-    bool            SetTimer    (const std::string& name, uint32 delay, uint32 ticks, bool tickNow, Action* action);
+    bool            SetTimer    (const std::string& name, uint32 delay, uint32 ticks, bool tickNow, Callback callback);
     void            ClearTimer  (const std::string& name);
     const Timer*    GetTimer    (const std::string& name) const;
     void            TickTimers  (const DeltaTime& dt);

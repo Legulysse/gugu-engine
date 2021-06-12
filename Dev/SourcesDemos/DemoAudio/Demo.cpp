@@ -47,7 +47,7 @@ void Demo::AppStart()
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Bubbles");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::SoundBubbles));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += 20.f;
@@ -56,21 +56,21 @@ void Demo::AppStart()
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Track Colors");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::TrackColors));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackColors));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Track Abyss");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::TrackAbyss));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackAbyss));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Stop Music");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::StopAll));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::StopAll));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += 20.f;
@@ -79,7 +79,7 @@ void Demo::AppStart()
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Quit");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::Exit));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::Exit));
     pButton->SetPosition(fPosX, fPosY);
 
     //Second column
@@ -93,28 +93,28 @@ void Demo::AppStart()
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Track Mighty 3310 Fight");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::TrackMighty3310Fight));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Fight));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Track Mighty 3310 Boss");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::TrackMighty3310Boss));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Boss));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Track Mighty 3310 Final");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::TrackMighty3310Final));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Final));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Playlist Mighty 3310");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, int>(this, &Demo::OnButtonClick, (int)EButton::PlaylistMighty3310));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::PlaylistMighty3310));
     pButton->SetPosition(fPosX, fPosY);
 }
 

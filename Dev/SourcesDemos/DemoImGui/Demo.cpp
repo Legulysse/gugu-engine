@@ -79,14 +79,14 @@ void Demo::AppStart()
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Toggle Text A");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, EButton>(this, &Demo::OnButtonClick, EButton::ToggleTextA));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, EButton::ToggleTextA));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapButtonY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Toggle Text B");
-    pButton->SetOnMouseReleased(new ActionClass1P<Demo, EButton>(this, &Demo::OnButtonClick, EButton::ToggleTextB));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, EButton::ToggleTextB));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapButtonY;

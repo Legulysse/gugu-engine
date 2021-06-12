@@ -38,7 +38,7 @@ ElementText::ElementText()
     m_isTickDisplayed   = false;
     m_timeSinceTick = 0.f;
 
-    m_actionOnValidate = nullptr;
+    m_callbackOnValidate = nullptr;
 
     m_sfText = new sf::Text;
     m_sfText->setFillColor(sf::Color(0, 0, 0));
@@ -51,8 +51,6 @@ ElementText::ElementText()
 
 ElementText::~ElementText()
 {
-    SafeDelete(m_actionOnValidate);
-
     SafeDelete(m_sfTextCursor);
     SafeDelete(m_sfText);
 
@@ -375,9 +373,9 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
     if(!m_isEditing || _oSFEvent.type != sf::Event::KeyPressed)
         return true;
 
-    if (_oSFEvent.key.code == sf::Keyboard::Return && !m_isMultiline && m_actionOnValidate)
+    if (_oSFEvent.key.code == sf::Keyboard::Return && !m_isMultiline && m_callbackOnValidate)
     {
-        m_actionOnValidate->Call();
+        m_callbackOnValidate();
         return false;
     }
 
@@ -454,11 +452,9 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
     return true;
 }
 
-void ElementText::SetOnValidate(Action* _pAction)
+void ElementText::SetOnValidate(Callback callbackOnValidate)
 {
-    SafeDelete(m_actionOnValidate);
-
-    m_actionOnValidate = _pAction;
+    m_callbackOnValidate = callbackOnValidate;
 }
 
 void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)

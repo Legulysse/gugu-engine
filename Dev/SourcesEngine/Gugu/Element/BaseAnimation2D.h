@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Misc/Action.h"
+#include "Gugu/Misc/Callback.h"
 #include "Gugu/Core/DeltaTime.h"
 
 #include <string>
@@ -56,7 +56,7 @@ public:
     void    SetOriginFromAnimation  (bool _bOriginFromAnimation);
     void    SetMoveFromAnimation    (bool _bMoveFromAnimation);
 
-    void    AddEventCallback(const std::string& _strEvent, Action* _pAction);
+    void    AddEventCallback(const std::string& _strEvent, Callback callbackEvent);
 
     void    StepAnimation           (const DeltaTime& dt);
 
@@ -87,7 +87,7 @@ protected:
     size_t      m_animIndexCurrent;
     float       m_animDurationCurrent;
 
-    std::map<std::string, Action*> m_events;
+    std::map<std::string, Callback> m_events;
 };
 
 }   // namespace gugu

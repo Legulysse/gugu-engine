@@ -7,6 +7,7 @@
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Math/UDim.h"
 #include "Gugu/Math/Vector2.h"
+#include "Gugu/Misc/Callback.h"
 
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
@@ -20,7 +21,6 @@
 namespace gugu
 {
     struct RenderPass;
-    class Action;
 }
 
 namespace pugi
@@ -69,7 +69,7 @@ public:
     bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
     bool HasInteractionFlag(EInteraction::Type _eFlag) const;
 
-    void AddCallback(EInteraction::Type _eFlag, Action* _pCallback);
+    void AddCallback(EInteraction::Type _eFlag, Callback callback);
     void RemoveCallbacks(EInteraction::Type _eFlag);
     void RemoveCallbacks();
 
@@ -80,7 +80,7 @@ private:
     struct CallbackInfos
     {
         EInteraction::Type interactionFlag;
-        Action* action;
+        Callback callback;
     };
 
     int m_interactionFlags;

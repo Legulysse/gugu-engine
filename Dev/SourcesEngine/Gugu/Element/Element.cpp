@@ -62,14 +62,14 @@ bool ElementInteractions::HasInteractionFlag(EInteraction::Type _eFlag) const
     return ((m_interactionFlags & _eFlag) != EInteraction::None);
 }
 
-void ElementInteractions::AddCallback(EInteraction::Type _eFlag, Action* _pCallback)
+void ElementInteractions::AddCallback(EInteraction::Type _eFlag, Callback callback)
 {
-    if (!_pCallback || _eFlag == EInteraction::None)
+    if (!callback || _eFlag == EInteraction::None)
         return;
 
     CallbackInfos kInfos;
     kInfos.interactionFlag = _eFlag;
-    kInfos.action = _pCallback;
+    kInfos.callback = callback;
     m_callbacks.push_back(kInfos);
 }
 
@@ -79,7 +79,6 @@ void ElementInteractions::RemoveCallbacks(EInteraction::Type _eFlag)
     {
         if (iteCallback->interactionFlag == _eFlag)
         {
-            SafeDelete(iteCallback->action);
             iteCallback = m_callbacks.erase(iteCallback);
         }
         else
@@ -91,10 +90,6 @@ void ElementInteractions::RemoveCallbacks(EInteraction::Type _eFlag)
 
 void ElementInteractions::RemoveCallbacks()
 {
-    for (size_t i = 0; i < m_callbacks.size(); ++i)
-    {
-        SafeDelete(m_callbacks[i].action);
-    }
     m_callbacks.clear();
 }
 
@@ -103,7 +98,9 @@ void ElementInteractions::FireCallbacks(EInteraction::Type _eFlag)
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {
         if (m_callbacks[i].interactionFlag == _eFlag)
-            m_callbacks[i].action->Call();
+        {
+            m_callbacks[i].callback();
+        }
     }
 }
 

@@ -5,6 +5,7 @@
 
 #include "Gugu/Element/Element.h"
 #include "Gugu/System/Types.h"
+#include "Gugu/Misc/Callback.h"
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -14,7 +15,6 @@
 namespace gugu
 {
     class Font;
-    class Action;
 }
 
 namespace sf
@@ -71,7 +71,7 @@ public:
     virtual bool OnMouseDeselected() override;
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 
-    void SetOnValidate      (Action* _pAction);
+    void SetOnValidate(Callback callbackOnValidate);
 
 private:
 
@@ -103,7 +103,7 @@ protected:
 
     //std::vector<sf::Text*> m_components;
 
-    Action* m_actionOnValidate;
+    Callback m_callbackOnValidate;
 };
 
 }   // namespace gugu

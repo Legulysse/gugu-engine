@@ -62,7 +62,7 @@ void StateMenuMain::Init()
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->GetElementText()->SetFont("Spaceranger.ttf");
     pButton->SetText("New Game");
-    pButton->SetOnMouseReleased( new ActionClass1P<StateMenuMain,int>(this, &StateMenuMain::OnButtonClick, 1) );
+    pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 1));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
@@ -70,7 +70,7 @@ void StateMenuMain::Init()
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->GetElementText()->SetFont("Spaceranger.ttf");
     pButton->SetText("Quit");
-    pButton->SetOnMouseReleased( new ActionClass1P<StateMenuMain,int>(this, &StateMenuMain::OnButtonClick, 0) );
+    pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
     pButton->SetPosition(fPosX, fPosY);
 
     pBox->SetSize(pButton->GetSize().x + 40.f, fPosY + pButton->GetSize().y + 20.f);

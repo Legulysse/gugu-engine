@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
+#include "Gugu/Misc/Callback.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -11,7 +12,6 @@
 namespace gugu
 {
     class ElementList;
-    class Action;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -35,8 +35,8 @@ public:
 
     void        OnListResized   (sf::Vector2f _oListSize);
     
-    void        SetOnSelected   (Action* _pAction);
-    void        SetOnDeselected (Action* _pAction);
+    void        SetOnSelected   (Callback callback);
+    void        SetOnDeselected (Callback callback);
 
     virtual void OnMouseEnter() override;
     virtual void OnMouseLeave() override;
@@ -52,8 +52,8 @@ protected:
     Element*        m_elementImpl;
     bool            m_isSelected;
 
-    Action*         m_actionOnSelected;
-    Action*         m_actionOnDeselected;
+    Callback m_callbackOnSelected;
+    Callback m_callbackOnDeselected;
 };
 
 }

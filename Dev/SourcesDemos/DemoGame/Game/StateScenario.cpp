@@ -188,7 +188,7 @@ void StateScenario::Init()
 
         positionY += positionOffsetYBig;
         AddCharacterSheetAttribute("Attack Speed", m_textAttackSpeedValue, positionX, positionY, positionColumnX,
-            new gugu::ActionClass2P<StateScenario, EButtonUpdateStat, int>(this, &StateScenario::OnButtonUpdateStat, EButtonUpdateStat::AttackSpeed, 1));
+            std::bind(&StateScenario::OnButtonUpdateStat, this, EButtonUpdateStat::AttackSpeed, 1));
 
         positionY += positionOffsetYSmall;
         AddCharacterSheetAttribute("Stamina Cost", m_textAttackStaminaCostValue, positionX, positionY, positionColumnX, nullptr);
@@ -197,7 +197,7 @@ void StateScenario::Init()
     RefreshCharacterSheet();
 }
 
-void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, gugu::Action* onClick)
+void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, Callback onClick)
 {
     float positionColumnOffsetXLeftButton = -40.f;
     float positionColumnOffsetXRightButton = 40.f;

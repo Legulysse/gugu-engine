@@ -37,7 +37,6 @@ BaseAnimation2D::BaseAnimation2D()
 
 BaseAnimation2D::~BaseAnimation2D()
 {
-    ClearStdMap(m_events);
 }
 
 void BaseAnimation2D::ChangeAnimSet(const std::string& _strFilePath)
@@ -153,9 +152,9 @@ void BaseAnimation2D::SetMoveFromAnimation(bool _bMoveFromAnimation)
     m_moveFromAnimation = _bMoveFromAnimation;
 }
 
-void BaseAnimation2D::AddEventCallback(const std::string& _strEvent, Action* _pAction)
+void BaseAnimation2D::AddEventCallback(const std::string& _strEvent, Callback callbackEvent)
 {
-    m_events[_strEvent] = _pAction;
+    m_events[_strEvent] = callbackEvent;
 }
 
 void BaseAnimation2D::SetCurrentFrame(size_t _uiIndex)
@@ -169,7 +168,7 @@ void BaseAnimation2D::SetCurrentFrame(size_t _uiIndex)
         AnimationFrame* pCurrentFrame = GetAnimationFrame();
         if (pCurrentFrame)
         {
-            //Events frame start
+            // Events frame start.
             std::istringstream ss(pCurrentFrame->GetEvents());
             while (!ss.eof())
             {
@@ -181,7 +180,8 @@ void BaseAnimation2D::SetCurrentFrame(size_t _uiIndex)
                 auto kvp = m_events.find(field);
                 if (kvp != m_events.end())
                 {
-                    kvp->second->Call();
+                    // Fire callback.
+                    kvp->second();
                 }
             }
         }

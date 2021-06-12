@@ -44,7 +44,6 @@ Timer::Timer()
 
 Timer::~Timer()
 {
-    SafeDelete(action);
 }
 
 Engine::Engine()
@@ -452,9 +451,9 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
     }
 }
 
-bool Engine::SetTimer(const std::string& name, uint32 delay, uint32 ticks, bool tickNow, Action* action)
+bool Engine::SetTimer(const std::string& name, uint32 delay, uint32 ticks, bool tickNow, Callback callback)
 {
-    if (!action)
+    if (!callback)
         return false;
 
     Timer* pNewTimer = new Timer;
@@ -465,11 +464,11 @@ bool Engine::SetTimer(const std::string& name, uint32 delay, uint32 ticks, bool 
     pNewTimer->ticks = 0;
     pNewTimer->maxTicks = ticks;
 
-    pNewTimer->action = action;
+    pNewTimer->callback = callback;
 
     if (tickNow)
     {
-        pNewTimer->action->Call();
+        pNewTimer->callback();
 
         if (ticks == 1)
         {
@@ -520,8 +519,8 @@ void Engine::TickTimers(const DeltaTime& dt)
         {
             pTimer->currentTime -= pTimer->tickDelay;
 
-            if (pTimer->action)
-                pTimer->action->Call();
+            if (pTimer->callback)
+                pTimer->callback();
 
             if (pTimer->maxTicks == 0)  //infinite
                 continue;

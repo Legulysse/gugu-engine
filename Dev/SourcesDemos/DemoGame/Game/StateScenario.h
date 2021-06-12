@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Misc/Patterns/State.h"
+#include "Gugu/Misc/Callback.h"
 #include "Gugu/Events/EventListener.h"
 
 #include <string>
@@ -13,7 +14,6 @@
 
 namespace gugu
 {
-    class Action;
     class Element;
     class ElementSprite;
     class ElementText;
@@ -44,7 +44,7 @@ public:
 
 private:
 
-    void AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, gugu::Action* onClick);
+    void AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, gugu::Callback onClick);
     void RefreshCharacterSheet();
 
     enum class EButtonUpdateStat

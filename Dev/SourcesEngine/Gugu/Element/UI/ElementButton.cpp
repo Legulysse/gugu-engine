@@ -50,8 +50,6 @@ ElementButton::~ElementButton()
 {
     SafeDelete(m_sprite);
     SafeDelete(m_text);
-    SafeDelete(m_actionOnPressed);
-    SafeDelete(m_actionOnReleased);
 }
 
 void ElementButton::SetTexture(const std::string& _strTexturePathIdle, const std::string& _strTexturePathFocus)
@@ -108,15 +106,13 @@ void ElementButton::SetButtonDisabled(bool _bDisabled)
     }
 }
 
-void ElementButton::SetOnMousePressed(Action* _pActionOnPressed)
+void ElementButton::SetOnMousePressed(Callback _pActionOnPressed)
 {
-    SafeDelete(m_actionOnPressed);
     m_actionOnPressed = _pActionOnPressed;
 }
 
-void ElementButton::SetOnMouseReleased(Action* _pActionOnReleased)
+void ElementButton::SetOnMouseReleased(Callback _pActionOnReleased)
 {
-    SafeDelete(m_actionOnReleased);
     m_actionOnReleased = _pActionOnReleased;
 }
 
@@ -129,7 +125,7 @@ bool ElementButton::OnMousePressed()
 {
     if (m_actionOnPressed)
     {
-        m_actionOnPressed->Call();
+        m_actionOnPressed();
         return false;
     }
 
@@ -140,7 +136,7 @@ bool ElementButton::OnMouseReleased()
 {
     if (m_actionOnReleased)
     {
-        m_actionOnReleased->Call();
+        m_actionOnReleased();
         return false;
     }
 

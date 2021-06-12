@@ -70,21 +70,21 @@ void StateMenuMain::Init()
     pButton = pBox->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("GuiTest");
-    pButton->SetOnMouseReleased( new ActionClass1P<StateMenuMain,int>(this, &StateMenuMain::OnButtonClick, 6) );
+    pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 6));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = pBox->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("DemoLayout");
-    pButton->SetOnMouseReleased( new ActionClass1P<StateMenuMain,int>(this, &StateMenuMain::OnButtonClick, 4) );
+    pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 4));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = pBox->AddChild<ElementButton>();
     pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
     pButton->SetText("Quit");
-    pButton->SetOnMouseReleased( new ActionClass1P<StateMenuMain,int>(this, &StateMenuMain::OnButtonClick, 0) );
+    pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
     pButton->SetPosition(fPosX, fPosY);
 
     pBox->SetSize(pButton->GetSize().x + 40.f, fPosY + pButton->GetSize().y + 20.f);

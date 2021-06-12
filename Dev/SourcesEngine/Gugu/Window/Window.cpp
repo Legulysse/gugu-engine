@@ -185,7 +185,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_consoleTextEntry->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT);
     m_consoleTextEntry->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     m_consoleTextEntry->SetUnifiedSize(UDim2(1.f, 0.f, 0.f, 30.f));
-    m_consoleTextEntry->SetOnValidate(new ActionClass<Window>(this, &Window::OnConsoleCommandValidated));
+    m_consoleTextEntry->SetOnValidate(std::bind(&Window::OnConsoleCommandValidated, this));
 
     // Stats
     m_showStats = config.showStats;

@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 
 #endif
 
-    //--------
+    //----------------------------------------------
     
     // Common
     double fDegreesA = ToDegrees(Math::Pi);
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
 
     UDim2 dim2C = UDim2::POSITION_BOTTOM_RIGHT + sf::Vector2f(-10.f, -10.f);
 
-    //--------
+    //----------------------------------------------
 
     return 0;
 }

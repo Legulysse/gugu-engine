@@ -15,6 +15,14 @@ using namespace gugu;
 
 int main(int argc, char* argv[])
 {
+#if defined(GUGU_ENV_VISUAL )
+
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+#endif
+
+    //----------------------------------------------
+
     //Init engine
     EngineConfig config;
     config.applicationName = "GuguEngine Demo HelloWorld";
@@ -28,7 +36,7 @@ int main(int argc, char* argv[])
     
     GetEngine()->Init(config);
 
-    //--------
+    //----------------------------------------------
     
     ElementText* pText = GetGameWindow()->GetUINode()->AddChild<ElementText>();
     pText->SetFont("mplus-1p-medium.ttf");
@@ -37,7 +45,7 @@ int main(int argc, char* argv[])
     pText->SetUnifiedOrigin(UDim2::POSITION_CENTER);
     pText->SetUnifiedPosition(UDim2::POSITION_CENTER);
     
-    //--------
+    //----------------------------------------------
 
     GetEngine()->RunMainLoop();
     GetEngine()->Release();

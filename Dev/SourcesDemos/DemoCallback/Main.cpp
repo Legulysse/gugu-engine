@@ -21,9 +21,10 @@ using namespace gugu;
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
-//--------
+//----------------------------------------------
 
 using Callable = std::function<void()>;
+using CallableReturn = std::function<bool()>;
 using DelegateFactory = std::function<int(int, bool)>;
 
 template <typename TReturn>
@@ -53,6 +54,7 @@ public:
     Callable m_ActionType2;
     DelegateFactory m_Factory;
     DelegateFactory m_Factory2;
+    CallableReturn m_actionType3;
 
 public:
 
@@ -61,13 +63,18 @@ public:
         WriteInConsole(value);
     }
 
+    bool ReturnTest(int a, int b)
+    {
+        return a > b;
+    }
+
     int TestObjectFactoryFunction(int a, bool b)
     {
         return b ? a : a * 2;
     }
 };
 
-//--------
+//----------------------------------------------
 
 int main(int argc, char* argv[])
 {
@@ -77,7 +84,7 @@ int main(int argc, char* argv[])
 
 #endif
 
-    //--------
+    //----------------------------------------------
 
     Action* action1 = new ActionStatic1P<int>(TestFunction1, 11);
 
@@ -105,6 +112,7 @@ int main(int argc, char* argv[])
     object->m_ActionType2 = [object]() { object->ComputeTest("plop"); };
     object->m_Factory = TestFactoryFunction;
     object->m_Factory2 = std::bind(&HolderClass::TestObjectFactoryFunction, object, std::placeholders::_1, std::placeholders::_2);
+    object->m_actionType3 = [object]() { return object->ReturnTest(5, 10); };
 
     action1->Call();
     functor1();
@@ -118,11 +126,12 @@ int main(int argc, char* argv[])
     object->m_ActionType2();
     WriteInConsole(ToString(object->m_Factory(42, false)));
     WriteInConsole(ToString(object->m_Factory2(42, true)));
+    WriteInConsole(object->m_actionType3() ? "true" : "false");
 
     SafeDelete(action1);
     SafeDelete(object);
 
-    //--------
+    //----------------------------------------------
 
     return 0;
 }

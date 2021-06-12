@@ -27,6 +27,8 @@ int main(int argc, char* argv[])
 
     #endif
 
+    //----------------------------------------------
+
     //Init engine
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
@@ -40,12 +42,9 @@ int main(int argc, char* argv[])
 
     GetEngine()->Init(config);
 
-    //--------
+    //----------------------------------------------
 
     GetEngine()->SetApplication(new EditorApp);
-
-    //--------
-
     GetEngine()->RunMainLoop();
     GetEngine()->Release();
 

@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 
 #endif
 
-    //--------
+    //----------------------------------------------
 
     int64 iTimestamp = GetTimestamp();
 
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
     paramsAA.Add("gold", 77);
     std::string strFormatAA = StringFormat("hello {name}, do you have {gold} gold ?", paramsAA);
 
-    //--------
+    //----------------------------------------------
 
     size_t nbLoops = 100000;
 
@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
         WriteInConsole(StringFormat("{0} : {1} ms", strFormat, ms));
     }
 
-    //--------
+    //----------------------------------------------
 
     return 0;
 }

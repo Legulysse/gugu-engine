@@ -22,11 +22,13 @@ using namespace gugu;
 
 int main(int argc, char* argv[])
 {
-    #if defined(GUGU_ENV_VISUAL )
+#if defined(GUGU_ENV_VISUAL )
 
-        _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    #endif
+#endif
+
+    //----------------------------------------------
 
     //Init engine
     EngineConfig config;
@@ -39,12 +41,9 @@ int main(int argc, char* argv[])
 
     GetEngine()->Init(config);
 
-    //--------
+    //----------------------------------------------
 
     GetEngine()->SetApplication(new Demo);
-
-    //--------
-
     GetEngine()->RunMainLoop();
     GetEngine()->Release();
 

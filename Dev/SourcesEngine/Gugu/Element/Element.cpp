@@ -10,7 +10,6 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Misc/Action.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/External/PugiXmlWrap.h"
 

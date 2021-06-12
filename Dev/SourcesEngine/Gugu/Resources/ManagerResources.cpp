@@ -21,7 +21,6 @@
 #include "Gugu/Resources/Datasheet.h"
 
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Misc/Delegate.h"
 
 #include "Gugu/Core/Application.h"
 #include "Gugu/Debug/Logger.h"

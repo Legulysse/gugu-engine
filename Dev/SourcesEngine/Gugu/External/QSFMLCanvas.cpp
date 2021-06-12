@@ -9,7 +9,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Misc/Action.h"
 #include "Gugu/System/SystemUtility.h"
 
 // Platform-specific headers
@@ -50,7 +49,6 @@ QSFMLCanvas::QSFMLCanvas(QWidget* Parent, const QPoint& Position, const QSize& S
 
 QSFMLCanvas::~QSFMLCanvas()
 {
-    SafeDelete(m_callbackResize);
 }
 
 void QSFMLCanvas::SetWindow(gugu::Window* _pWindow)
@@ -58,10 +56,9 @@ void QSFMLCanvas::SetWindow(gugu::Window* _pWindow)
     m_window = _pWindow;
 }
 
-void QSFMLCanvas::SetCallbackResize(Action* _pAction)
+void QSFMLCanvas::SetCallbackResize(gugu::Callback callback)
 {
-    SafeDelete(m_callbackResize);
-    m_callbackResize = _pAction;
+    m_callbackResize = callback;
 }
 
 void QSFMLCanvas::OnInit()
@@ -128,7 +125,7 @@ void QSFMLCanvas::resizeEvent(QResizeEvent* _pEvent)
         m_window->ComputeSize(_pEvent->size().width(), _pEvent->size().height());
 
     if (m_callbackResize)
-        m_callbackResize->Call();
+        m_callbackResize();
 }
 
 }   // namespace gugu

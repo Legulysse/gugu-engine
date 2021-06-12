@@ -13,7 +13,6 @@
 #include "Gugu/Resources/Font.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Misc/Action.h"
 
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

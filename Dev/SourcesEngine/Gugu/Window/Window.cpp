@@ -22,7 +22,6 @@
 
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
-#include "Gugu/Misc/Action.h"
 
 #include "Gugu/Debug/Trace.h"
 

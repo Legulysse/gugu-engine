@@ -17,7 +17,6 @@
 #include "Gugu/Debug/Trace.h"
 
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Misc/Action.h"
 #include "Gugu/Core/DeltaTime.h"
 
 #include "Gugu/Element/Element.h"

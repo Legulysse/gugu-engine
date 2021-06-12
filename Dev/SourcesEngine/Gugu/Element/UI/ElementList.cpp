@@ -19,7 +19,6 @@
 
 #include "Gugu/System/Types.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Misc/Action.h"
 #include "Gugu/Math/MathUtility.h"
 
 ////////////////////////////////////////////////////////////////

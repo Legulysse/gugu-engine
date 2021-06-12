@@ -21,7 +21,6 @@
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Misc/Action.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"

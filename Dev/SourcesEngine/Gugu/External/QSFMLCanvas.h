@@ -6,19 +6,12 @@
 // Includes
 
 #include "Gugu/Window/Window.h"
+#include "Gugu/Core/Callback.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include <QtWidgets/QWidget>
 #include <qtimer>
-
-////////////////////////////////////////////////////////////////
-// Forward Declarations
-
-namespace gugu
-{
-    class Action;
-}
 
 ////////////////////////////////////////////////////////////////
 // File Declarations
@@ -47,7 +40,7 @@ public :
     virtual ~QSFMLCanvas();
 
     void SetWindow          (gugu::Window* _pWindow);
-    void SetCallbackResize  (gugu::Action* _pAction);
+    void SetCallbackResize  (gugu::Callback callback);
 
 private :
 
@@ -95,8 +88,8 @@ private :
 
 protected:
 
-    gugu::Window*   m_window;
-    gugu::Action*   m_callbackResize;
+    gugu::Window* m_window;
+    gugu::Callback m_callbackResize;
 };
 
 }   // namespace gugu

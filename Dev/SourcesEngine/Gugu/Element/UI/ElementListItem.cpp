@@ -9,7 +9,6 @@
 
 #include "Gugu/Element/UI/ElementList.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/Misc/Action.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>

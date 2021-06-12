@@ -3,9 +3,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Misc/Patterns/State.h"
-#include "Gugu/Misc/Callback.h"
+#include "Gugu/Misc/Pattern/State.h"
 #include "Gugu/Events/EventListener.h"
+#include "Gugu/Core/Callback.h"
 
 #include <string>
 

@@ -5,7 +5,6 @@
 
 #include "Gugu/Element/Element.h"
 #include "Gugu/System/Types.h"
-#include "Gugu/Misc/Callback.h"
 
 #include <SFML/Graphics/Color.hpp>
 

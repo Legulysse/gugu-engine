@@ -5,7 +5,7 @@
 
 #include "Gugu/Core/Application.h"
 #include "Gugu/Events/EventListener.h"
-#include "Gugu/Misc/Patterns/StateMachine.h"
+#include "Gugu/Misc/Pattern/StateMachine.h"
 #include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////

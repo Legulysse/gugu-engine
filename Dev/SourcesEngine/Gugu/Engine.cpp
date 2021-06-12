@@ -17,7 +17,6 @@
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
-#include "Gugu/Misc/Action.h"
 
 #include "Gugu/Debug/Logger.h"
 #include "Gugu/Debug/Trace.h"

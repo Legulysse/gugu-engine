@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Misc/Patterns/Singleton.h"
+#include "Gugu/Misc/Pattern/Singleton.h"
 #include "Gugu/Core/DeltaTime.h"
+#include "Gugu/Core/Callback.h"
 #include "Gugu/System/Types.h"
-#include "Gugu/Misc/Callback.h"
 
 #include <SFML/Graphics/Color.hpp>
 

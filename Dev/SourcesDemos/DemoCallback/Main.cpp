@@ -4,9 +4,7 @@
 #include "Gugu/Common.h"
 
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Misc/Action.h"
-
-#include <functional>
+#include "Gugu/Core/Callback.h"
 
 #if defined(GUGU_ENV_VISUAL )
 
@@ -86,8 +84,6 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
-    Action* action1 = new ActionStatic1P<int>(TestFunction1, 11);
-
     auto functor1 = [](){
         WriteInConsole(ToString(22));
     };
@@ -114,7 +110,6 @@ int main(int argc, char* argv[])
     object->m_Factory2 = std::bind(&HolderClass::TestObjectFactoryFunction, object, std::placeholders::_1, std::placeholders::_2);
     object->m_actionType3 = [object]() { return object->ReturnTest(5, 10); };
 
-    action1->Call();
     functor1();
     functor2();
     functor3(44);
@@ -128,7 +123,6 @@ int main(int argc, char* argv[])
     WriteInConsole(ToString(object->m_Factory2(42, true)));
     WriteInConsole(object->m_actionType3() ? "true" : "false");
 
-    SafeDelete(action1);
     SafeDelete(object);
 
     //----------------------------------------------

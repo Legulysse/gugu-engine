@@ -21,12 +21,13 @@ public:
     virtual ~Music();
 
     bool    LoadSFMusic (sf::Music* _pMusic);
+
+    // TODO: I shouldnt use DeltaTime for this.
+    DeltaTime GetDuration() const;
     
     virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;
-
-    DeltaTime GetDuration() const;
 };
 
 }   // namespace gugu

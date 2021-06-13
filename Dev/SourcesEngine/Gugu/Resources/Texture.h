@@ -35,12 +35,12 @@ public:
     void SetRepeated(bool repeated);
     bool IsRepeated() const;
 
+    sf::Vector2i GetSize() const;
+
     virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;
     virtual bool ReloadFromFile() override;
-
-    sf::Vector2f GetSize() const;
 
 protected:
 

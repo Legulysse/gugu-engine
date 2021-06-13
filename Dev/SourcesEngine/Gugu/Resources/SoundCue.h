@@ -28,13 +28,13 @@ public:
     SoundCue();
     virtual ~SoundCue();
     
-    virtual EResourceType::Type GetResourceType() const override;
-
-    virtual bool    LoadFromFile() override;
-
     int     GetSoundCount   () const;
     bool    GetSound        (int _iIndex, SoundParameters& _kParameters) const;
     bool    GetRandomSound  (SoundParameters& _kParameters) const;
+
+    virtual EResourceType::Type GetResourceType() const override;
+
+    virtual bool    LoadFromFile() override;
 
 protected:
 

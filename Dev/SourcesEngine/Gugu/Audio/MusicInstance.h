@@ -46,6 +46,7 @@ public:
     void    Pause           ();
     void    Stop            ();
 
+    // TODO: I shouldnt use DeltaTime for this.
     DeltaTime GetDuration() const;
     DeltaTime GetPlayOffset() const;
     void SetPlayOffset(DeltaTime _kOffset);

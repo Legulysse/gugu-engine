@@ -40,7 +40,7 @@ void ElementSprite::SetTexture(Texture* _pTexture)
     if (_pTexture)
     {
         m_texture = _pTexture;
-        SetSubRect(sf::IntRect(sf::Vector2i(), sf::Vector2i(m_texture->GetSize())));
+        SetSubRect(sf::IntRect(sf::Vector2i(), m_texture->GetSize()));
     }
 }
 

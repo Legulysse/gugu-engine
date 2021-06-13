@@ -68,7 +68,8 @@ public:
 
     virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) override;
 
-    void LoadFromXml(const std::string& _strPath);  //TODO: use a different name from the function used by Layouts loading ?
+    bool LoadFromFile(const std::string& _strPath);
+    virtual bool LoadFromXml(const pugi::xml_node& nodeSelf) override;
 
 protected:
 

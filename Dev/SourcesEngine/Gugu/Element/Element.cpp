@@ -709,7 +709,7 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
 
 bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
 {
-    pugi::xml_node oNodeUDimPosition = _oNodeElement.child("UDimPosition");
+    pugi::xml_node oNodeUDimPosition = _oNodeElement.child("UPosition");
     if (!oNodeUDimPosition.empty())
     {
         UDim2 oDim;
@@ -720,7 +720,7 @@ bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
         SetUnifiedPosition(oDim);
     }
 
-    pugi::xml_node oNodeUDimSize = _oNodeElement.child("UDimSize");
+    pugi::xml_node oNodeUDimSize = _oNodeElement.child("USize");
     if (!oNodeUDimSize.empty())
     {
         UDim2 oDim;

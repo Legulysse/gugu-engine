@@ -100,7 +100,7 @@ void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
 
 bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
 {
-    if (!Element::LoadFromXml(_oNodeElement))
+    if (!ElementSpriteBase::LoadFromXml(_oNodeElement))
         return false;
 
     pugi::xml_node oNodeTexture = _oNodeElement.child("Texture");

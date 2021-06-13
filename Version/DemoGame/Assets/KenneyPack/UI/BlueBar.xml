@@ -1,29 +1,32 @@
-<ElementSpriteGroup ImageSet="uipack_rpg.imageset.xml" >
-
-    <Component Type="Sprite" SubImage="barBack_horizontalLeft">
-        <Position XRel="0" XAbs="0" YRel="0" YAbs="0" />
-        <Size XRel="0" XAbs="9" YRel="0" YAbs="18" />
-    </Component>
-    <Component Type="Tile" SubImage="barBack_horizontalMid">
-        <Position XRel="0" XAbs="9" YRel="0" YAbs="0" />
-        <Size XRel="1" XAbs="-18" YRel="0" YAbs="18" />
-    </Component>
-    <Component Type="Sprite" SubImage="barBack_horizontalRight">
-        <Position XRel="1" XAbs="-9" YRel="0" YAbs="0" />
-        <Size XRel="0" XAbs="9" YRel="0" YAbs="18" />
-    </Component>
+<Element Type="ElementSpriteGroup">
+    <ImageSet Source="uipack_rpg.imageset.xml" />
+    <Components>
     
-    <Component Type="Sprite" SubImage="barBlue_horizontalLeft">
-        <Position XRel="0" XAbs="0" YRel="0" YAbs="0" />
-        <Size XRel="0" XAbs="9" YRel="0" YAbs="18" />
-    </Component>
-    <Component Type="Tile" SubImage="barBlue_horizontalMid">
-        <Position XRel="0" XAbs="9" YRel="0" YAbs="0" />
-        <Size XRel="1" XAbs="-18" YRel="0" YAbs="18" />
-    </Component>
-    <Component Type="Sprite" SubImage="barBlue_horizontalRight">
-        <Position XRel="1" XAbs="-9" YRel="0" YAbs="0" />
-        <Size XRel="0" XAbs="9" YRel="0" YAbs="18" />
-    </Component>
-    
-</ElementSpriteGroup>
+        <Component SubImage="barBack_horizontalLeft">
+            <UPosition XRel="0" XAbs="0" YRel="0" YAbs="0" />
+            <USize XRel="0" XAbs="9" YRel="0" YAbs="18" />
+        </Component>
+        <Component SubImage="barBack_horizontalMid">
+            <UPosition XRel="0" XAbs="9" YRel="0" YAbs="0" />
+            <USize XRel="1" XAbs="-18" YRel="0" YAbs="18" />
+        </Component>
+        <Component SubImage="barBack_horizontalRight">
+            <UPosition XRel="1" XAbs="-9" YRel="0" YAbs="0" />
+            <USize XRel="0" XAbs="9" YRel="0" YAbs="18" />
+        </Component>
+        
+        <Component SubImage="barBlue_horizontalLeft">
+            <UPosition XRel="0" XAbs="0" YRel="0" YAbs="0" />
+            <USize XRel="0" XAbs="9" YRel="0" YAbs="18" />
+        </Component>
+        <Component SubImage="barBlue_horizontalMid">
+            <UPosition XRel="0" XAbs="9" YRel="0" YAbs="0" />
+            <USize XRel="1" XAbs="-18" YRel="0" YAbs="18" />
+        </Component>
+        <Component SubImage="barBlue_horizontalRight">
+            <UPosition XRel="1" XAbs="-9" YRel="0" YAbs="0" />
+            <USize XRel="0" XAbs="9" YRel="0" YAbs="18" />
+        </Component>
+        
+    </Components>
+</Element>

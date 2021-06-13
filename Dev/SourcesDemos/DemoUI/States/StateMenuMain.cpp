@@ -55,7 +55,7 @@ void StateMenuMain::Init()
 
     //Box Menu
     ElementSpriteGroup* pBox = m_root->AddChild<ElementSpriteGroup>();
-    pBox->LoadFromXml("Box9_02.xml");
+    pBox->LoadFromFile("Box9_02.xml");
     pBox->SetUnifiedPosition(UDim2(0.f, 50.f, 0.f, 50.f));
 
     m_menu = pBox;

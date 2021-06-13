@@ -51,10 +51,10 @@ protected:
 
 protected:
 
+    // TODO: Rename as TextureRect ? or TextureCoords ? (sfml uses textureRect for sprites and texCoords for vertices).
     sf::IntRect m_subRect;
     sf::Color m_color;
 
-    // TODO: replace by a virtual RaiseDirtyVertices ?
     bool m_dirtyVertices;
 
     // TODO: Split into m_repeatTextureX and m_repeatTextureY ?

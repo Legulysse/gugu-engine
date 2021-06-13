@@ -20,7 +20,6 @@ public:
     virtual ~ElementUILayout();
 
     bool LoadFromFile(const std::string& _strPath);
-    
     virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement) override;
 
 private:

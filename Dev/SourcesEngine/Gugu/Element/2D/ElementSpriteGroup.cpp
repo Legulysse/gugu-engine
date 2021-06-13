@@ -232,124 +232,120 @@ void ElementSpriteGroup::GetPropagationList(std::vector<Element*>& _vecPropagati
     StdVectorAppend(m_items, _vecPropagationList);
 }
 
-void ElementSpriteGroup::LoadFromXml(const std::string& _strPath)
+bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
 {
-    pugi::xml_document kDoc;
-    pugi::xml_parse_result kResult = kDoc.load_file(GetResources()->GetResourcePathName(_strPath).c_str());
-    if (!kResult)
-        return;
+    pugi::xml_document document;
+    pugi::xml_parse_result result = document.load_file(GetResources()->GetResourcePathName(_strPath).c_str());
+    if (!result)
+        return false;
 
-    pugi::xml_node kNodeRoot = kDoc.child("ElementSpriteGroup");
-    if (!kNodeRoot)
-        return;
+    pugi::xml_node nodeRoot = document.child("Element");
+    if (!nodeRoot)
+        return false;
+
+    pugi::xml_attribute nodeRootType = nodeRoot.attribute("Type");
+    if (!nodeRootType)
+        return false;
+
+    if (std::strcmp(nodeRootType.value(), "ElementSpriteGroup") != 0)
+        return false;
+
+    return LoadFromXml(nodeRoot);
+}
+
+bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node & nodeSelf)
+{
+    if (!Element::LoadFromXml(nodeSelf))
+        return false;
 
     // Either use an ImageSet + SubImages, or a Texture + Rects
-    ImageSet* pImageSet = nullptr;
-    Texture* pTexture = nullptr;
+    ImageSet* imageSet = nullptr;
+    Texture* texture = nullptr;
 
-    pugi::xml_attribute kAttrImageSet = kNodeRoot.attribute("ImageSet");
-    if (kAttrImageSet)
+    pugi::xml_node nodeImageSet = nodeSelf.child("ImageSet");
+    if (!nodeImageSet.empty())
     {
-        pImageSet = GetResources()->GetImageSet(kAttrImageSet.as_string());
+        std::string imageSetID = nodeImageSet.attribute("Source").as_string("");
+        imageSet = GetResources()->GetImageSet(imageSetID);
     }
 
-    if (!pImageSet)
+    if (!imageSet)
     {
-        pugi::xml_attribute kAttrTexture = kNodeRoot.attribute("Texture");
-        if (kAttrTexture)
+        pugi::xml_node nodeTexture = nodeSelf.child("Texture");
+        if (!nodeTexture.empty())
         {
-            pTexture = GetResources()->GetTexture(kAttrTexture.as_string());
-        }
-        
-        if (!pTexture)
-        {
-            return;
+            std::string textureID = nodeTexture.attribute("Source").as_string("");
+            texture = GetResources()->GetTexture(textureID);
         }
     }
 
-    if (pImageSet)
-        SetTexture(pImageSet->GetTexture());
-    else if (pTexture)
-        SetTexture(pTexture);
-
-    for (pugi::xml_node kNodeComponent = kNodeRoot.child("Component"); kNodeComponent; kNodeComponent = kNodeComponent.next_sibling("Component"))
+    if (imageSet)
     {
-        pugi::xml_attribute kAttrType = kNodeComponent.attribute("Type");
-        if (!kAttrType)
-            continue;
+        SetTexture(imageSet->GetTexture());
+    }
+    else if (texture)
+    {
+        SetTexture(texture);
+    }
+    else
+    {
+        return false;
+    }
 
-        std::string strType = kAttrType.as_string();
-        ElementSpriteGroupItem* pNewElement = nullptr;
-
-        if (strType == "Sprite")
+    pugi::xml_node nodeComponents = nodeSelf.child("Components");
+    if (nodeComponents)
+    {
+        for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
         {
-            ElementSpriteGroupItem* pNewSprite = new ElementSpriteGroupItem;
-            pNewElement = pNewSprite;
-        }
-        else if (strType == "Tile")
-        {
-            ElementSpriteGroupItem* pNewTile = new ElementSpriteGroupItem;
-            pNewElement = pNewTile;
+            ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
 
-            pNewTile->SetRepeatTexture(true);
-        }
+            // Parse default ElementSpriteBase data.
+            component->LoadFromXml(nodeComponent);
 
-        if (pNewElement)
-        {
-            // Texture
-            if (pImageSet)
+            // Read additional SubImage/TextureRect data.
+            if (imageSet)
             {
-                pugi::xml_attribute kAttrSubImage = kNodeComponent.attribute("SubImage");
-                if (kAttrSubImage)
+                pugi::xml_attribute attrSubImage = nodeComponent.attribute("SubImage");
+                if (attrSubImage)
                 {
-                    SubImage* pSubImage = pImageSet->GetSubImage(kAttrSubImage.as_string());
-                    if (pSubImage)
-                        pNewElement->SetSubRect(pSubImage->GetRect());
+                    SubImage* subImage = imageSet->GetSubImage(attrSubImage.as_string());
+                    if (subImage)
+                        component->SetSubRect(subImage->GetRect());
                 }
             }
-            else if (pTexture)
+            else if (texture)
             {
-                pugi::xml_node kNodeRect = kNodeComponent.child("TextureRect");
-                if (kNodeRect)
+                // TODO: move this part into ElementSpriteBase::LoadFromXml ?
+                pugi::xml_node nodeTextureRect = nodeComponent.child("TextureRect");
+                if (nodeTextureRect)
                 {
-                    pugi::xml_attribute kAttrX = kNodeRect.attribute("X");
-                    pugi::xml_attribute kAttrY = kNodeRect.attribute("Y");
-                    pugi::xml_attribute kAttrW = kNodeRect.attribute("W");
-                    pugi::xml_attribute kAttrH = kNodeRect.attribute("H");
+                    pugi::xml_attribute attrX = nodeTextureRect.attribute("X");
+                    pugi::xml_attribute attrY = nodeTextureRect.attribute("Y");
+                    pugi::xml_attribute attrW = nodeTextureRect.attribute("W");
+                    pugi::xml_attribute attrH = nodeTextureRect.attribute("H");
 
-                    if (kAttrX
-                        && kAttrY
-                        && kAttrW
-                        && kAttrH)
+                    if (attrX
+                        && attrY
+                        && attrW
+                        && attrH)
                     {
-                        int x = kAttrX.as_int();
-                        int y = kAttrY.as_int();
-                        int w = kAttrW.as_int();
-                        int h = kAttrH.as_int();
+                        int x = attrX.as_int();
+                        int y = attrY.as_int();
+                        int w = attrW.as_int();
+                        int h = attrH.as_int();
 
-                        pNewElement->SetSubRect(sf::IntRect(x, y, w, h));
+                        component->SetSubRect(sf::IntRect(x, y, w, h));
                     }
                 }
             }
 
-            // Position and Size
-            pugi::xml_node kNodePosition = kNodeComponent.child("Position");
-            pugi::xml_node kNodeSize = kNodeComponent.child("Size");
-
-            UDim2 kDim;
-
-            if (kNodePosition && XmlReadUDimension(kNodePosition, kDim))
-                pNewElement->SetUnifiedPosition(kDim);
-
-            if (kNodeSize && XmlReadUDimension(kNodeSize, kDim))
-                pNewElement->SetUnifiedSize(kDim);
-
-            // Finalize
-            AddItem(pNewElement);
+            // Finalize.
+            AddItem(component);
         }
     }
 
     m_needRecompute = true;
+    return true;
 }
 
 }   // namespace gugu

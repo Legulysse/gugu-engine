@@ -44,7 +44,7 @@ void ElementBar::InitBar(BarColor _eColor, float _fBarBorderSizeX)
         break;
     }
 
-    LoadFromXml(strTemplate);
+    LoadFromFile(strTemplate);
 
     float fBarBorderSizeX = _fBarBorderSizeX;
 

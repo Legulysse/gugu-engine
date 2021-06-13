@@ -594,9 +594,4 @@ Engine* GetEngine()
     return Singleton<Engine>::GetInstance();
 }
 
-LoggerEngine* GetLogEngine()
-{
-    return GetEngine()->GetLogEngine();
-}
-
 }   // namespace gugu

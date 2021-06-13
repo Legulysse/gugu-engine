@@ -13,9 +13,6 @@
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
-#include "Gugu/Engine.h"
-#include "Gugu/Debug/Logger.h"
-
 #include <SFML/Graphics/RenderTarget.hpp>
 
 ////////////////////////////////////////////////////////////////

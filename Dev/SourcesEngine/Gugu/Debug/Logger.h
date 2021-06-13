@@ -81,4 +81,6 @@ public:
     void Print(ELog::Type _eLogLevel, ELogEngine::Type _eLogEngineCategory, const std::string& _strText);
 };
 
+LoggerEngine* GetLogEngine();
+
 }   // namespace gugu

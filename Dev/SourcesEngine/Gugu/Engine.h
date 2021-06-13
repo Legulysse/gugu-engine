@@ -202,6 +202,5 @@ private:
 };
 
 Engine* GetEngine();
-LoggerEngine* GetLogEngine();
 
 }   // namespace gugu

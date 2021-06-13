@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Engine.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include <iostream>
@@ -158,6 +159,11 @@ void LoggerEngine::Print(ELog::Type _eLogLevel, ELogEngine::Type _eLogEngineCate
         strCategory = "Audio";
 
     PrintImpl(_eLogLevel, strCategory, _strText);
+}
+
+LoggerEngine* GetLogEngine()
+{
+    return GetEngine()->GetLogEngine();
 }
 
 }   // namespace gugu

@@ -145,7 +145,7 @@ DeltaTime MusicInstance::GetPlayOffset() const
 void MusicInstance::SetPlayOffset(DeltaTime _kOffset)
 {
     if (m_sfMusic)
-        return m_sfMusic->setPlayingOffset(_kOffset);
+        return m_sfMusic->setPlayingOffset(_kOffset.GetSFTime());
 }
 
 bool MusicInstance::IsFinished() const

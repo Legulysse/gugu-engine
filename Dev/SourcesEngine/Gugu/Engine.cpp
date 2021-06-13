@@ -308,7 +308,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
 
         if (m_gameWindow)
         {
-            ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), sf::Time(dt));
+            ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), sf::Time(dt.GetSFTime()));
         }
 
         //Update

@@ -20,11 +20,10 @@ public:
 
     float   GetSeconds() const;
     int     GetMilliseconds() const;
+    sf::Time GetSFTime() const;
     
     float   s() const;
     int     ms() const;
-
-    operator sf::Time() const;
 
     DeltaTime& operator += (const DeltaTime& _kOther);
     DeltaTime& operator -= (const DeltaTime& _kOther);

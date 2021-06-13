@@ -43,7 +43,7 @@ int DeltaTime::ms() const
     return m_delta;
 }
 
-DeltaTime::operator sf::Time() const
+sf::Time DeltaTime::GetSFTime() const
 {
     return sf::milliseconds(ms());
 }

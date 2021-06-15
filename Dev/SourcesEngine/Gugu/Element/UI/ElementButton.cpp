@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"

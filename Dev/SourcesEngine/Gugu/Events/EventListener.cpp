@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Engine.h"
 #include "Gugu/Events/HandlerEvents.h"
 #include "Gugu/Window/Window.h"
 

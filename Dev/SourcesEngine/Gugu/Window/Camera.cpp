@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Engine.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/World/Level.h"
 #include "Gugu/Window/Renderer.h"

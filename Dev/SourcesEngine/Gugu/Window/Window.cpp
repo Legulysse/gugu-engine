@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Engine.h"
+#include "Gugu/Core/EngineConfig.h"
 #include "Gugu/Resources/ManagerResources.h"
 
 #include "Gugu/Window/Renderer.h"

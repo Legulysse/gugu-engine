@@ -7,16 +7,13 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Resources/Font.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

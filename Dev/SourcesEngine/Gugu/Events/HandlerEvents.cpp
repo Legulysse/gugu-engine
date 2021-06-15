@@ -7,18 +7,12 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Engine.h"
-#include "Gugu/Resources/ManagerResources.h"
-
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
-
 #include "Gugu/Events/EventListener.h"
 #include "Gugu/Debug/Trace.h"
-
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Core/DeltaTime.h"
-
 #include "Gugu/Element/Element.h"
 
 ////////////////////////////////////////////////////////////////

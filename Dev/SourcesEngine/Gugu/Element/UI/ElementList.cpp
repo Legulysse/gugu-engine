@@ -7,17 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Engine.h"
-#include "Gugu/Inputs/ManagerInputs.h"
-#include "Gugu/Resources/ManagerResources.h"
-
-#include "Gugu/Window/Window.h"
 #include "Gugu/Window/Renderer.h"
-
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/UI/ElementListItem.h"
-
-#include "Gugu/System/Types.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 

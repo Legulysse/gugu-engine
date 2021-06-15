@@ -7,11 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Engine.h"
-#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"
-#include "Gugu/System/SystemUtility.h"
-#include "Gugu/Math/MathUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

@@ -8,23 +8,18 @@
 // Includes
 
 #include "Gugu/Version.h"
-
+#include "Gugu/Core/Application.h"
 #include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Network/ManagerNetwork.h"
 #include "Gugu/Resources/ManagerResources.h"
-
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
-
 #include "Gugu/Debug/Logger.h"
 #include "Gugu/Debug/Trace.h"
-#include "Gugu/Core/Application.h"
-
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Window/Window.h"
-
 #include "Gugu/World/World.h"
 
 #include <SFML/System/Sleep.hpp>
@@ -36,14 +31,6 @@
 // File Implementation
 
 namespace gugu {
-
-Timer::Timer()
-{
-}
-
-Timer::~Timer()
-{
-}
 
 Engine::Engine()
 {

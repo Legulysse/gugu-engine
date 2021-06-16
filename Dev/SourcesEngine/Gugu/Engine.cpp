@@ -129,6 +129,13 @@ void Engine::Release()
 
     SafeDelete(m_application);
 
+    if (m_gameWindow)
+    {
+        m_gameWindow = nullptr;
+
+        ImGui::SFML::Shutdown();
+    }
+
     ClearStdVector(m_windows);
     //SafeDelete(m_gameWindow);
 
@@ -145,8 +152,6 @@ void Engine::Release()
     SafeDelete(m_managerResources);
 
     SafeDelete(m_traceGroupMain);
-
-    ImGui::SFML::Shutdown();
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, "Gugu::Engine Stop");
     SafeDelete(m_logEngine);

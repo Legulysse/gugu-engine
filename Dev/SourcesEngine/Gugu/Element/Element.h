@@ -71,12 +71,12 @@ public:
     void SetPositionX(float _fPosX);
     void SetPositionY(float _fPosY);
     void SetPosition(float _fPosX, float _fPosY);
-    void SetPosition(const sf::Vector2f& _kPosition);
+    void SetPosition(const Vector2f& _kPosition);
 
     void Move(float _fOffsetX, float _fOffsetY);
-    void Move(const sf::Vector2f& _kOffset);
+    void Move(const Vector2f& _kOffset);
 
-    const sf::Vector2f& GetPosition() const;
+    const Vector2f& GetPosition() const;
 
     //----------------------------------------------
     // Rotation
@@ -93,12 +93,12 @@ public:
     void SetScaleY(float _fScaleY);
     void SetScale(float _fScale);
     void SetScale(float _fScaleX, float _fScaleY);
-    void SetScale(const sf::Vector2f& _kScale);
+    void SetScale(const Vector2f& _kScale);
 
     void Scale(float factorX, float factorY);
-    void Scale(const sf::Vector2f& factor);
+    void Scale(const Vector2f& factor);
 
-    sf::Vector2f GetScale() const;
+    Vector2f GetScale() const;
 
     //----------------------------------------------
     // Origin
@@ -106,9 +106,9 @@ public:
     void SetOriginX(float _fOriginX);
     void SetOriginY(float _fOriginY);
     void SetOrigin(float _fOriginX, float _fOriginY);
-    void SetOrigin(const sf::Vector2f& _kOrigin);
+    void SetOrigin(const Vector2f& _kOrigin);
 
-    const sf::Vector2f& GetOrigin() const;
+    const Vector2f& GetOrigin() const;
 
     //----------------------------------------------
     // Size
@@ -116,11 +116,11 @@ public:
     void SetSizeX(float _fNewSizeX);
     void SetSizeY(float _fNewSizeY);
     void SetSize(float _fNewSizeX, float _fNewSizeY);
-    void SetSize(sf::Vector2f _kNewSize);
+    void SetSize(Vector2f _kNewSize);
 
-    const sf::Vector2f& GetSize() const;       // Get Element Size
-    sf::Vector2f GetSizeScaled() const;        // Get Element Size, with its scale applied (TODO: Useless ?)
-    sf::Vector2f GetSizeOnScreen() const;      // Get Element Size, with all its upper hierarchy's scales applied (TODO: Useless ?)
+    const Vector2f& GetSize() const;       // Get Element Size
+    Vector2f GetSizeScaled() const;        // Get Element Size, with its scale applied (TODO: Useless ?)
+    Vector2f GetSizeOnScreen() const;      // Get Element Size, with all its upper hierarchy's scales applied (TODO: Useless ?)
 
     //----------------------------------------------
     // Flip
@@ -135,10 +135,10 @@ public:
     //----------------------------------------------
     // Transform
 
-    virtual bool IsPicked(const sf::Vector2f& _kGlobalCoords) const;
+    virtual bool IsPicked(const Vector2f& _kGlobalCoords) const;
 
-    sf::Vector2f TransformToLocalFull(const sf::Vector2f& _oPoint) const;    // TODO: rename as TransformToLocal and TransformToGlobal.
-    sf::Vector2f TransformToGlobalFull(const sf::Vector2f& _oPoint) const;    //TODO: Check this works !
+    Vector2f TransformToLocalFull(const Vector2f& _oPoint) const;    // TODO: rename as TransformToLocal and TransformToGlobal.
+    Vector2f TransformToGlobalFull(const Vector2f& _oPoint) const;    //TODO: Check this works !
 
     const sf::Transform& GetTransform() const;
     const sf::Transform& GetInverseTransform() const;
@@ -192,7 +192,7 @@ public:
     UDim2 GetUnifiedPosition() const;
     UDim2 GetUnifiedSize() const;
 
-    void OnParentResized(sf::Vector2f _kOldSize, sf::Vector2f _kNewSize);
+    void OnParentResized(Vector2f _kOldSize, Vector2f _kNewSize);
     void ComputeUnifiedOrigin();
     void ComputeUnifiedDimensions();
 
@@ -249,7 +249,7 @@ protected:
 
     virtual void OnTransformChanged() {}
     virtual void OnVisibleChanged() {}
-    virtual void OnSizeChanged(sf::Vector2f _kOldSize) {}   // TODO: remove the oldSize param ?
+    virtual void OnSizeChanged(Vector2f _kOldSize) {}   // TODO: remove the oldSize param ?
 
     //----------------------------------------------
     // Z-Index
@@ -268,7 +268,7 @@ protected:
     // Render
 
     sf::Transformable m_transform;
-    sf::Vector2f m_size;
+    Vector2f m_size;
     bool m_flipV;
     bool m_flipH;
 

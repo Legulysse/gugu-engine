@@ -94,7 +94,7 @@ void ElementList::AddItem(ElementListItem* _pNewItem)
 {
     _pNewItem->SetList(this);
 
-    sf::Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
+    Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
     _pNewItem->OnListResized(kListSize);
 
     m_items.push_back(_pNewItem);
@@ -365,11 +365,11 @@ void ElementList::GetPropagationList(std::vector<Element*>& _vecPropagationList)
     }
 }
 
-void ElementList::OnSizeChanged(sf::Vector2f _kOldSize)
+void ElementList::OnSizeChanged(Vector2f _kOldSize)
 {
     RecomputeScrollBar();
 
-    sf::Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
+    Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
     
     for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
     {

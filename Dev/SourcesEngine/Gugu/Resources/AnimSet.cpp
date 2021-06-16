@@ -76,22 +76,22 @@ std::string AnimationFrame::GetEvents() const
     return m_events;
 }
 
-void AnimationFrame::SetOrigin(const sf::Vector2f _kOrigin)
+void AnimationFrame::SetOrigin(const Vector2f _kOrigin)
 {
     m_origin = _kOrigin;
 }
 
-sf::Vector2f AnimationFrame::GetOrigin() const
+Vector2f AnimationFrame::GetOrigin() const
 {
     return m_origin;
 }
 
-void AnimationFrame::SetMoveOffset(const sf::Vector2f _kMoveOffset)
+void AnimationFrame::SetMoveOffset(const Vector2f _kMoveOffset)
 {
     m_moveOffset = _kMoveOffset;
 }
 
-sf::Vector2f AnimationFrame::GetMoveOffset() const
+Vector2f AnimationFrame::GetMoveOffset() const
 {
     return m_moveOffset;
 }
@@ -294,11 +294,11 @@ bool AnimSet::LoadFromFile()
                 if (oAttributeEvents)
                     pNewFrame->SetEvents(oAttributeEvents.as_string());
 
-                sf::Vector2f kOrigin;
+                Vector2f kOrigin;
                 if (XmlReadVector2(oNodeFrame.child("Origin"), kOrigin))
                     pNewFrame->SetOrigin(kOrigin);
 
-                sf::Vector2f kMove;
+                Vector2f kMove;
                 if (XmlReadVector2(oNodeFrame.child("Move"), kMove))
                     pNewFrame->SetMoveOffset(kMove);
             }

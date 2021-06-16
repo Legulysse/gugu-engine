@@ -123,7 +123,7 @@ void ElementText::SetText(const sf::String& value /*, bool _bResize */)
     //if (/*_bResize && */ !m_bIsMultiline)
     /*if (m_eResizeRule == TextResizeRule::FitSize)
     {
-        SetSize(sf::Vector2f(m_pSFText->GetRect().Width, m_pSFText->GetRect().Height));
+        SetSize(Vector2f(m_pSFText->GetRect().Width, m_pSFText->GetRect().Height));
     }*/
 }
 
@@ -455,7 +455,7 @@ void ElementText::SetOnValidate(Callback callbackOnValidate)
 
 void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(sf::Vector2f(), m_size));
+    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2f(), m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
         {
@@ -494,7 +494,7 @@ void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTr
     }
 }
 
-void ElementText::OnSizeChanged(sf::Vector2f _kOldSize)
+void ElementText::OnSizeChanged(Vector2f _kOldSize)
 {
     if (!m_skipRecomputeOnResize)
         Recompute();

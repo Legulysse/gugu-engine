@@ -63,7 +63,7 @@ public:
 protected:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
-    virtual void OnSizeChanged(sf::Vector2f _kOldSize) override;
+    virtual void OnSizeChanged(Vector2f _kOldSize) override;
     
 protected:
 

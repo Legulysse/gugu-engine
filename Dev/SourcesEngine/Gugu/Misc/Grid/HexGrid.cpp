@@ -54,17 +54,17 @@ void HexGrid::InitHexGrid(int _iWidth, int _iHeight, float _hexagonWidth, float 
 	m_cellHeight = m_hexagonRadius * 2.f;
 }
 
-sf::Vector2f HexGrid::GetCellPosition(const sf::Vector2i& coords) const
+Vector2f HexGrid::GetCellPosition(const Vector2i& coords) const
 {
-    return sf::Vector2f(coords.x * m_cellWidth + (coords.y % 2) * m_hexagonApothem, coords.y * (1.5f * m_hexagonRadius));
+    return Vector2f(coords.x * m_cellWidth + (coords.y % 2) * m_hexagonApothem, coords.y * (1.5f * m_hexagonRadius));
 }
 
-sf::Vector2f HexGrid::GetCellCenter(const sf::Vector2i& coords) const
+Vector2f HexGrid::GetCellCenter(const Vector2i& coords) const
 {
-    return sf::Vector2f(m_hexagonApothem + coords.x * m_cellWidth + (coords.y % 2) * m_hexagonApothem, m_hexagonRadius + coords.y * (1.5f * m_hexagonRadius));
+    return Vector2f(m_hexagonApothem + coords.x * m_cellWidth + (coords.y % 2) * m_hexagonApothem, m_hexagonRadius + coords.y * (1.5f * m_hexagonRadius));
 }
 
-bool HexGrid::PickCoords(const sf::Vector2f& position, sf::Vector2i& pickedCoords) const
+bool HexGrid::PickCoords(const Vector2f& position, Vector2i& pickedCoords) const
 {
 	// Picking formula based on Sam Hocevar sample :
 	// https://gamedev.stackexchange.com/questions/20742/how-can-i-implement-hexagonal-tilemap-picking-in-xna
@@ -101,24 +101,24 @@ bool HexGrid::PickCoords(const sf::Vector2f& position, sf::Vector2i& pickedCoord
 		&& pickedCoords.y >= 0 && pickedCoords.y < m_height);
 }
 
-void HexGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i>& neighbours) const
+void HexGrid::GetNeighbours(const Vector2i& coords, std::vector<Vector2i>& neighbours) const
 {
-	static const std::array<sf::Vector2i, 12> neighbourDirections = {
+	static const std::array<Vector2i, 12> neighbourDirections = {
         // Even row.
-		sf::Vector2i(-1, 0),
-		sf::Vector2i(-1, -1),
-		sf::Vector2i(0, -1),
-		sf::Vector2i(1, 0),
-		sf::Vector2i(0, 1),
-		sf::Vector2i(-1, 1),
+		Vector2i(-1, 0),
+		Vector2i(-1, -1),
+		Vector2i(0, -1),
+		Vector2i(1, 0),
+		Vector2i(0, 1),
+		Vector2i(-1, 1),
 
         // Odd row.
-		sf::Vector2i(-1, 0),
-		sf::Vector2i(0, -1),
-		sf::Vector2i(1, -1),
-		sf::Vector2i(1, 0),
-		sf::Vector2i(1, 1),
-		sf::Vector2i(0, 1),
+		Vector2i(-1, 0),
+		Vector2i(0, -1),
+		Vector2i(1, -1),
+		Vector2i(1, 0),
+		Vector2i(1, 1),
+		Vector2i(0, 1),
 	};
 
     neighbours.reserve(6);
@@ -126,7 +126,7 @@ void HexGrid::GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i
     size_t offset = (coords.y % 2 == 0) ? 0 : 6;
     for (size_t i = offset; i < offset + 6; ++i)
     {
-        sf::Vector2i neighbour = coords + neighbourDirections[i];
+        Vector2i neighbour = coords + neighbourDirections[i];
 
         if (neighbour.x >= 0 && neighbour.x < m_width
             && neighbour.y >= 0 && neighbour.y < m_height)
@@ -151,9 +151,9 @@ int HexGrid::GetCellCount() const
 	return m_width * m_height;
 }
 
-sf::Vector2f HexGrid::GetGridSize() const
+Vector2f HexGrid::GetGridSize() const
 {
-	return sf::Vector2f((m_width + 0.5f) * m_cellWidth, ((m_height - 1) * 1.5f + 2.f) * m_hexagonRadius);
+	return Vector2f((m_width + 0.5f) * m_cellWidth, ((m_height - 1) * 1.5f + 2.f) * m_hexagonRadius);
 }
 
 float HexGrid::GetCellWidth() const
@@ -166,9 +166,9 @@ float HexGrid::GetCellHeight() const
     return m_cellHeight;
 }
 
-sf::Vector2f HexGrid::GetCellSize() const
+Vector2f HexGrid::GetCellSize() const
 {
-	return sf::Vector2f(m_cellWidth, m_cellHeight);
+	return Vector2f(m_cellWidth, m_cellHeight);
 }
 
 }   // namespace gugu

@@ -35,7 +35,7 @@ public:
     void SetRepeated(bool repeated);
     bool IsRepeated() const;
 
-    sf::Vector2i GetSize() const;
+    Vector2i GetSize() const;
 
     virtual EResourceType::Type GetResourceType() const override;
 

@@ -108,7 +108,7 @@ bool XmlReadUDimension(const pugi::xml_node& _kNode, UDim2& _oDim)
             );
 }
 
-bool XmlReadVector2(const pugi::xml_node& _kNode, sf::Vector2f& _kVector)
+bool XmlReadVector2(const pugi::xml_node& _kNode, Vector2f& _kVector)
 {
     return (    XmlReadAttribute(_kNode, "X", _kVector.x)
             &&  XmlReadAttribute(_kNode, "Y", _kVector.y)

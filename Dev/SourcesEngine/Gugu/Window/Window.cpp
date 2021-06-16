@@ -520,7 +520,7 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
             kCurve.resize(m_statFrameTimes.size());
             for (int iValue : m_statFrameTimes)
             {
-                kCurve[iIndex] = (sf::Vertex(sf::Vector2f(fPositionX + iIndex * fCurvePointScaleX, fPositionY + fCurveHeight - iValue * fCurvePointScaleY), kColorCurveFrameTimes));
+                kCurve[iIndex] = (sf::Vertex(Vector2f(fPositionX + iIndex * fCurvePointScaleX, fPositionY + fCurveHeight - iValue * fCurvePointScaleY), kColorCurveFrameTimes));
                 ++iIndex;
             }
             m_sfWindow->draw(kCurve);
@@ -536,7 +536,7 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
             kCurve.resize(m_statDrawCalls.size());
             for (int iValue : m_statDrawCalls)
             {
-                kCurve[iIndex] = (sf::Vertex(sf::Vector2f(fPositionX + iIndex * fCurvePointScaleX, fPositionY + fCurveHeight - iValue * fCurvePointScaleY), kColorCurveDrawCalls));
+                kCurve[iIndex] = (sf::Vertex(Vector2f(fPositionX + iIndex * fCurvePointScaleX, fPositionY + fCurveHeight - iValue * fCurvePointScaleY), kColorCurveDrawCalls));
                 ++iIndex;
             }
             m_sfWindow->draw(kCurve);
@@ -552,7 +552,7 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
             curve.resize(engineStats.stepTimes.size());
             for (int value : engineStats.stepTimes)
             {
-                curve[index] = (sf::Vertex(sf::Vector2f(fPositionX + index * curvePointScaleX, fPositionY + fCurveHeight - value * curvePointScaleY), colorCurveStepTimes));
+                curve[index] = (sf::Vertex(Vector2f(fPositionX + index * curvePointScaleX, fPositionY + fCurveHeight - value * curvePointScaleY), colorCurveStepTimes));
                 ++index;
             }
             m_sfWindow->draw(curve);
@@ -561,10 +561,10 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
         // Borders
         sf::VertexArray kBorder(sf::PrimitiveType::LineStrip);
         kBorder.resize(4);
-        kBorder[0] = (sf::Vertex(sf::Vector2f(fPositionX, fPositionY), kColorCurveBox));
-        kBorder[1] = (sf::Vertex(sf::Vector2f(fPositionX, fPositionY + fCurveHeight), kColorCurveBox));
-        kBorder[2] = (sf::Vertex(sf::Vector2f(fPositionX + fCurveWidth, fPositionY + fCurveHeight), kColorCurveBox));
-        kBorder[3] = (sf::Vertex(sf::Vector2f(fPositionX + fCurveWidth, fPositionY), kColorCurveBox));
+        kBorder[0] = (sf::Vertex(Vector2f(fPositionX, fPositionY), kColorCurveBox));
+        kBorder[1] = (sf::Vertex(Vector2f(fPositionX, fPositionY + fCurveHeight), kColorCurveBox));
+        kBorder[2] = (sf::Vertex(Vector2f(fPositionX + fCurveWidth, fPositionY + fCurveHeight), kColorCurveBox));
+        kBorder[3] = (sf::Vertex(Vector2f(fPositionX + fCurveWidth, fPositionY), kColorCurveBox));
         m_sfWindow->draw(kBorder);
     }
 
@@ -677,7 +677,7 @@ void Window::OnConsoleCommandValidated()
     m_consoleNode->SetVisible(false);
 }
 
-sf::Vector2u Window::GetSize() const
+Vector2u Window::GetSize() const
 {
     return m_sfWindow->getSize();
 }
@@ -838,14 +838,14 @@ void Window::SetMouseTexture(const std::string& _strFile)
     m_mouseNode->SetTexture(_strFile);
 }
 
-sf::Vector2i Window::GetMousePixelCoords() const
+Vector2i Window::GetMousePixelCoords() const
 {
     return sf::Mouse::getPosition(*m_sfWindow);
 }
 
-sf::Vector2f Window::GetMousePosition() const
+Vector2f Window::GetMousePosition() const
 {
-    return sf::Vector2f(sf::Mouse::getPosition(*m_sfWindow));
+    return Vector2f(sf::Mouse::getPosition(*m_sfWindow));
 }
 
 sf::RenderWindow* Window::GetSFRenderWindow() const

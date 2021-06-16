@@ -86,7 +86,7 @@ void ElementButton::SetButtonDisabled(bool _bDisabled)
 
         if (m_textureDisabled)
         {
-            sf::Vector2f kSize = m_size;
+            Vector2f kSize = m_size;
             m_sprite->SetTexture(m_textureDisabled);
             SetSize(kSize);
         }
@@ -97,7 +97,7 @@ void ElementButton::SetButtonDisabled(bool _bDisabled)
 
         if (m_textureIdle)
         {
-            sf::Vector2f kSize = m_size;
+            Vector2f kSize = m_size;
             m_sprite->SetTexture(m_textureIdle);
             SetSize(kSize);
         }
@@ -145,7 +145,7 @@ void ElementButton::OnMouseEnter()
 {
     if (m_textureFocused)
     {
-        sf::Vector2f kSize = m_size;
+        Vector2f kSize = m_size;
         m_sprite->SetTexture(m_textureFocused);   //TODO: a boolean param to allow the size reset ?
         SetSize(kSize);
     }
@@ -155,7 +155,7 @@ void ElementButton::OnMouseLeave()
 {
     if (m_textureIdle)
     {
-        sf::Vector2f kSize = m_size;
+        Vector2f kSize = m_size;
         m_sprite->SetTexture(m_textureIdle);
         SetSize(kSize);
     }
@@ -163,7 +163,7 @@ void ElementButton::OnMouseLeave()
 
 void ElementButton::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(sf::Vector2f(), m_size));
+    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2f(), m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
         m_sprite->Render(_kRenderPass, _kTransformSelf);
@@ -171,7 +171,7 @@ void ElementButton::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
     }
 }
 
-void ElementButton::OnSizeChanged(sf::Vector2f _kOldSize)
+void ElementButton::OnSizeChanged(Vector2f _kOldSize)
 {
     m_text->ComputeUnifiedDimensions();
     m_sprite->ComputeUnifiedDimensions();

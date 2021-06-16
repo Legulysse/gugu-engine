@@ -65,7 +65,7 @@ private:
     Element* m_elementMouseFocused;     //Mouse is over this element
     Element* m_elementMouseSelected;    //This element has been selected by the mouse
     Element* m_elementMouseDragged;
-    sf::Vector2f m_lastMouseCoords;
+    Vector2f m_lastMouseCoords;
 };
 
 }   // namespace gugu

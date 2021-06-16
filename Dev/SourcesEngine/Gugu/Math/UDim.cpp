@@ -71,26 +71,26 @@ UDim2::UDim2(float _fRelX, float _fAbsX, float _fRelY, float _fAbsY)
     y = UDim(_fRelY, _fAbsY);
 }
 
-UDim2& UDim2::operator+=(const sf::Vector2f& _kAbs)
+UDim2& UDim2::operator+=(const Vector2f& _kAbs)
 {
     x.absolute += _kAbs.x;
     y.absolute += _kAbs.y;
     return *this;
 }
 
-const UDim2 UDim2::operator+(const sf::Vector2f& _kAbs) const
+const UDim2 UDim2::operator+(const Vector2f& _kAbs) const
 {
     return UDim2(*this) += _kAbs;
 }
 
-sf::Vector2f UDim2::GetComputedDimension(float _fReferenceX, float _fReferenceY) const
+Vector2f UDim2::GetComputedDimension(float _fReferenceX, float _fReferenceY) const
 {
-    return GetComputedDimension(sf::Vector2f(_fReferenceX, _fReferenceY));
+    return GetComputedDimension(Vector2f(_fReferenceX, _fReferenceY));
 }
 
-sf::Vector2f UDim2::GetComputedDimension(sf::Vector2f _kReferenceSize) const
+Vector2f UDim2::GetComputedDimension(Vector2f _kReferenceSize) const
 {
-    return sf::Vector2f(x.relative * _kReferenceSize.x + x.absolute, y.relative * _kReferenceSize.y + y.absolute);
+    return Vector2f(x.relative * _kReferenceSize.x + x.absolute, y.relative * _kReferenceSize.y + y.absolute);
 }
 
 const UDim UDim::ZERO = UDim(0.f, 0.f);

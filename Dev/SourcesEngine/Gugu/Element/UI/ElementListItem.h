@@ -32,7 +32,7 @@ public:
     void        SetSelected (bool _bIsSelected);
     bool        IsSelected  () const;
 
-    void        OnListResized   (sf::Vector2f _oListSize);
+    void        OnListResized   (Vector2f _oListSize);
     
     void        SetOnSelected   (Callback callback);
     void        SetOnDeselected (Callback callback);

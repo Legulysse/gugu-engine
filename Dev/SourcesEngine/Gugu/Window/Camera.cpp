@@ -25,7 +25,7 @@ Camera::Camera()
 {
     m_zoomMultiplier = 1.f;
 
-    m_targetPosition = sf::Vector2f(0.f, 0.f);
+    m_targetPosition = Vector2f(0.f, 0.f);
     m_centerOnTarget = false;
 
     m_window = nullptr;
@@ -73,11 +73,11 @@ const sf::View& Camera::GetSFView() const
     m_extendOnResize = _bExtendOnResize;
 }*/
 
-/*void Camera::OnSizeChanged(sf::Vector2f _kOldSize)
+/*void Camera::OnSizeChanged(Vector2f _kOldSize)
 {
     if (m_extendOnResize)
     {
-        sf::Vector2f kComputedSize;
+        Vector2f kComputedSize;
 
         if (_kOldSize.x != 0.f)
         {
@@ -103,16 +103,16 @@ const sf::View& Camera::GetSFView() const
 
 void Camera::SetSize(float _fSizeX, float _fSizeY)
 {
-    SetSize(sf::Vector2f(_fSizeX, _fSizeY));
+    SetSize(Vector2f(_fSizeX, _fSizeY));
 }
 
-void Camera::SetSize(sf::Vector2f _kSize)
+void Camera::SetSize(Vector2f _kSize)
 {
     m_sfView.setSize(_kSize);
     ComputeViewCenter();
 }
 
-sf::Vector2f Camera::GetSize() const
+Vector2f Camera::GetSize() const
 {
     return m_sfView.getSize();
 }
@@ -130,16 +130,16 @@ float Camera::GetZoom() const
 
 void Camera::SetTarget(float _fTargetX, float _fTargetY)
 {
-    SetTarget(sf::Vector2f(_fTargetX, _fTargetY));
+    SetTarget(Vector2f(_fTargetX, _fTargetY));
 }
 
-void Camera::SetTarget(sf::Vector2f _kTarget)
+void Camera::SetTarget(Vector2f _kTarget)
 {
     m_targetPosition = _kTarget;
     ComputeViewCenter();
 }
 
-sf::Vector2f Camera::GetTarget() const
+Vector2f Camera::GetTarget() const
 {
     return m_targetPosition;
 }
@@ -162,7 +162,7 @@ void Camera::SetViewport(const sf::FloatRect& _kViewport)
 
 void Camera::ComputeViewSize()
 {
-    sf::Vector2f kWindowSize = sf::Vector2f(m_window->GetSize());
+    Vector2f kWindowSize = Vector2f(m_window->GetSize());
     const sf::FloatRect& kViewport = m_sfView.getViewport();
     
     SetSize((kWindowSize.x * kViewport.width) * m_zoomMultiplier, (kWindowSize.y * kViewport.height) * m_zoomMultiplier); //Will call ComputeViewCenter
@@ -180,18 +180,18 @@ void Camera::ComputeViewCenter()
     }
 }
 
-sf::Vector2f Camera::GetPickedPosition(const sf::Vector2i& _kMouseCoords) const
+Vector2f Camera::GetPickedPosition(const Vector2i& _kMouseCoords) const
 {
     return m_window->GetSFRenderWindow()->mapPixelToCoords(_kMouseCoords, m_sfView);
 }
 
-bool Camera::IsMouseOverCamera(const sf::Vector2i& _kMouseCoords) const
+bool Camera::IsMouseOverCamera(const Vector2i& _kMouseCoords) const
 {
-    sf::Vector2f kWindowSize = sf::Vector2f(m_window->GetSize());
+    Vector2f kWindowSize = Vector2f(m_window->GetSize());
     const sf::FloatRect& kViewport = m_sfView.getViewport();
     
-    sf::Vector2f kViewportPosition = sf::Vector2f(kWindowSize.x * kViewport.left, kWindowSize.y * kViewport.top);
-    sf::Vector2f kViewportSize = sf::Vector2f(kWindowSize.x * kViewport.width, kWindowSize.y * kViewport.height);
+    Vector2f kViewportPosition = Vector2f(kWindowSize.x * kViewport.left, kWindowSize.y * kViewport.top);
+    Vector2f kViewportSize = Vector2f(kWindowSize.x * kViewport.width, kWindowSize.y * kViewport.height);
 
     if (IsInRange((float)_kMouseCoords.x, kViewportPosition.x, kViewportPosition.x + kViewportSize.x - 1.f)
     &&  IsInRange((float)_kMouseCoords.y, kViewportPosition.y, kViewportPosition.y + kViewportSize.y - 1.f) )
@@ -202,7 +202,7 @@ bool Camera::IsMouseOverCamera(const sf::Vector2i& _kMouseCoords) const
     return false;
 }
 
-bool Camera::IsMouseOverElement(const sf::Vector2i& _kMouseCoords, Element* _pElement) const
+bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElement) const
 {
     if (!IsMouseOverCamera(_kMouseCoords))
         return false;

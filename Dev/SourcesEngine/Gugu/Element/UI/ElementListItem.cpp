@@ -72,7 +72,7 @@ bool ElementListItem::IsSelected() const
     return m_isSelected;
 }
 
-void ElementListItem::OnListResized(sf::Vector2f _oListSize)
+void ElementListItem::OnListResized(Vector2f _oListSize)
 {
     //Resize ElementImpl first
     m_elementImpl->SetSizeX(_oListSize.x);

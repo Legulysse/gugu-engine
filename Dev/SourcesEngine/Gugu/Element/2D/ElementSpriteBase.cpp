@@ -53,7 +53,7 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect)
 
     if (m_subRect.width != kOldRect.width || m_subRect.height != kOldRect.height)
     {
-        SetSize(sf::Vector2f((float)m_subRect.width, (float)m_subRect.height));
+        SetSize(Vector2f((float)m_subRect.width, (float)m_subRect.height));
     }
 
     RaiseDirtyVertices();
@@ -131,7 +131,7 @@ sf::Color ElementSpriteBase::GetColor() const
     return m_color;
 }
 
-void ElementSpriteBase::OnSizeChanged(sf::Vector2f _kOldSize)
+void ElementSpriteBase::OnSizeChanged(Vector2f _kOldSize)
 {
     RaiseDirtyVertices();
 }
@@ -149,7 +149,7 @@ size_t ElementSpriteBase::GetRequiredVertexCount() const
     }
     else
     {
-        sf::Vector2f kAreaSize = GetSize();
+        Vector2f kAreaSize = GetSize();
 
         // Actual subrect size (= used texture size)
         int iTextureSizeX = Absolute(m_subRect.width);
@@ -171,15 +171,15 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
 {
     if (!m_repeatTexture)
     {
-        sf::Vector2f kAreaSize = GetSize();
+        Vector2f kAreaSize = GetSize();
 
         // Recompute vertices position.
-        vertices[0].position = sf::Vector2f(0.f, 0.f);
-        vertices[1].position = sf::Vector2f(kAreaSize.x, 0.f);
-        vertices[2].position = sf::Vector2f(0.f, kAreaSize.y);
-        vertices[3].position = sf::Vector2f(kAreaSize.x, 0.f);
-        vertices[4].position = sf::Vector2f(0.f, kAreaSize.y);
-        vertices[5].position = sf::Vector2f(kAreaSize.x, kAreaSize.y);
+        vertices[0].position = Vector2f(0.f, 0.f);
+        vertices[1].position = Vector2f(kAreaSize.x, 0.f);
+        vertices[2].position = Vector2f(0.f, kAreaSize.y);
+        vertices[3].position = Vector2f(kAreaSize.x, 0.f);
+        vertices[4].position = Vector2f(0.f, kAreaSize.y);
+        vertices[5].position = Vector2f(kAreaSize.x, kAreaSize.y);
 
         // Recompute texture coords.
         float fLeft = (float)m_subRect.left;
@@ -187,16 +187,16 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
         float fRight = fLeft + m_subRect.width;
         float fBottom = fTop + m_subRect.height;
 
-        vertices[0].texCoords = sf::Vector2f(fLeft, fTop);
-        vertices[1].texCoords = sf::Vector2f(fRight, fTop);
-        vertices[2].texCoords = sf::Vector2f(fLeft, fBottom);
-        vertices[3].texCoords = sf::Vector2f(fRight, fTop);
-        vertices[4].texCoords = sf::Vector2f(fLeft, fBottom);
-        vertices[5].texCoords = sf::Vector2f(fRight, fBottom);
+        vertices[0].texCoords = Vector2f(fLeft, fTop);
+        vertices[1].texCoords = Vector2f(fRight, fTop);
+        vertices[2].texCoords = Vector2f(fLeft, fBottom);
+        vertices[3].texCoords = Vector2f(fRight, fTop);
+        vertices[4].texCoords = Vector2f(fLeft, fBottom);
+        vertices[5].texCoords = Vector2f(fRight, fBottom);
     }
     else
     {
-        sf::Vector2f kAreaSize = GetSize();
+        Vector2f kAreaSize = GetSize();
 
         // Actual subrect size (= used texture size)
         int iTextureSizeX = Absolute(m_subRect.width);
@@ -234,21 +234,21 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
                 {
                     sf::Vertex* quad = &vertices[(x + y * iNbTilesX) * 6];
 
-                    quad[0].position = sf::Vector2f(x * fTextureSizeX, y * fTextureSizeY);
-                    quad[1].position = sf::Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY);
-                    quad[2].position = sf::Vector2f(x * fTextureSizeX, (y + 1) * fTextureSizeY);
+                    quad[0].position = Vector2f(x * fTextureSizeX, y * fTextureSizeY);
+                    quad[1].position = Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY);
+                    quad[2].position = Vector2f(x * fTextureSizeX, (y + 1) * fTextureSizeY);
 
-                    quad[3].position = sf::Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY);
-                    quad[4].position = sf::Vector2f(x * fTextureSizeX, (y + 1) * fTextureSizeY);
-                    quad[5].position = sf::Vector2f((x + 1) * fTextureSizeX, (y + 1) * fTextureSizeY);
+                    quad[3].position = Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY);
+                    quad[4].position = Vector2f(x * fTextureSizeX, (y + 1) * fTextureSizeY);
+                    quad[5].position = Vector2f((x + 1) * fTextureSizeX, (y + 1) * fTextureSizeY);
 
-                    quad[0].texCoords = sf::Vector2f(fLeft, fTop);
-                    quad[1].texCoords = sf::Vector2f(fRight, fTop);
-                    quad[2].texCoords = sf::Vector2f(fLeft, fBottom);
+                    quad[0].texCoords = Vector2f(fLeft, fTop);
+                    quad[1].texCoords = Vector2f(fRight, fTop);
+                    quad[2].texCoords = Vector2f(fLeft, fBottom);
 
-                    quad[3].texCoords = sf::Vector2f(fRight, fTop);
-                    quad[4].texCoords = sf::Vector2f(fLeft, fBottom);
-                    quad[5].texCoords = sf::Vector2f(fRight, fBottom);
+                    quad[3].texCoords = Vector2f(fRight, fTop);
+                    quad[4].texCoords = Vector2f(fLeft, fBottom);
+                    quad[5].texCoords = Vector2f(fRight, fBottom);
                 }
             }
         }
@@ -260,21 +260,21 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
             {
                 sf::Vertex* quad = &vertices[(x + y * iNbTilesX) * 6];
 
-                quad[0].position = sf::Vector2f(x * fTextureSizeX, y * fTextureSizeY);
-                quad[1].position = sf::Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY);
-                quad[2].position = sf::Vector2f(x * fTextureSizeX, (y + 1) * fTextureSizeY);
+                quad[0].position = Vector2f(x * fTextureSizeX, y * fTextureSizeY);
+                quad[1].position = Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY);
+                quad[2].position = Vector2f(x * fTextureSizeX, (y + 1) * fTextureSizeY);
 
-                quad[3].position = sf::Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY);
-                quad[4].position = sf::Vector2f(x * fTextureSizeX, (y + 1) * fTextureSizeY);
-                quad[5].position = sf::Vector2f(x * fTextureSizeX + fRemainingAreaX, (y + 1) * fTextureSizeY);
+                quad[3].position = Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY);
+                quad[4].position = Vector2f(x * fTextureSizeX, (y + 1) * fTextureSizeY);
+                quad[5].position = Vector2f(x * fTextureSizeX + fRemainingAreaX, (y + 1) * fTextureSizeY);
 
-                quad[0].texCoords = sf::Vector2f(fLeft, fTop);
-                quad[1].texCoords = sf::Vector2f(fRemainingRight, fTop);
-                quad[2].texCoords = sf::Vector2f(fLeft, fBottom);
+                quad[0].texCoords = Vector2f(fLeft, fTop);
+                quad[1].texCoords = Vector2f(fRemainingRight, fTop);
+                quad[2].texCoords = Vector2f(fLeft, fBottom);
 
-                quad[3].texCoords = sf::Vector2f(fRemainingRight, fTop);
-                quad[4].texCoords = sf::Vector2f(fLeft, fBottom);
-                quad[5].texCoords = sf::Vector2f(fRemainingRight, fBottom);
+                quad[3].texCoords = Vector2f(fRemainingRight, fTop);
+                quad[4].texCoords = Vector2f(fLeft, fBottom);
+                quad[5].texCoords = Vector2f(fRemainingRight, fBottom);
             }
         }
 
@@ -285,21 +285,21 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
             {
                 sf::Vertex* quad = &vertices[(x + y * iNbTilesX) * 6];
 
-                quad[0].position = sf::Vector2f(x * fTextureSizeX, y * fTextureSizeY);
-                quad[1].position = sf::Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY);
-                quad[2].position = sf::Vector2f(x * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
+                quad[0].position = Vector2f(x * fTextureSizeX, y * fTextureSizeY);
+                quad[1].position = Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY);
+                quad[2].position = Vector2f(x * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
 
-                quad[3].position = sf::Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY);
-                quad[4].position = sf::Vector2f(x * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
-                quad[5].position = sf::Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
+                quad[3].position = Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY);
+                quad[4].position = Vector2f(x * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
+                quad[5].position = Vector2f((x + 1) * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
 
-                quad[0].texCoords = sf::Vector2f(fLeft, fTop);
-                quad[1].texCoords = sf::Vector2f(fRight, fTop);
-                quad[2].texCoords = sf::Vector2f(fLeft, fRemainingBottom);
+                quad[0].texCoords = Vector2f(fLeft, fTop);
+                quad[1].texCoords = Vector2f(fRight, fTop);
+                quad[2].texCoords = Vector2f(fLeft, fRemainingBottom);
 
-                quad[3].texCoords = sf::Vector2f(fRight, fTop);
-                quad[4].texCoords = sf::Vector2f(fLeft, fRemainingBottom);
-                quad[5].texCoords = sf::Vector2f(fRight, fRemainingBottom);
+                quad[3].texCoords = Vector2f(fRight, fTop);
+                quad[4].texCoords = Vector2f(fLeft, fRemainingBottom);
+                quad[5].texCoords = Vector2f(fRight, fRemainingBottom);
             }
         }
 
@@ -311,21 +311,21 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
 
             sf::Vertex* quad = &vertices[(x + y * iNbTilesX) * 6];
 
-            quad[0].position = sf::Vector2f(x * fTextureSizeX, y * fTextureSizeY);
-            quad[1].position = sf::Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY);
-            quad[2].position = sf::Vector2f(x * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
+            quad[0].position = Vector2f(x * fTextureSizeX, y * fTextureSizeY);
+            quad[1].position = Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY);
+            quad[2].position = Vector2f(x * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
 
-            quad[3].position = sf::Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY);
-            quad[4].position = sf::Vector2f(x * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
-            quad[5].position = sf::Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY + fRemainingAreaY);
+            quad[3].position = Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY);
+            quad[4].position = Vector2f(x * fTextureSizeX, y * fTextureSizeY + fRemainingAreaY);
+            quad[5].position = Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY + fRemainingAreaY);
 
-            quad[0].texCoords = sf::Vector2f(fLeft, fTop);
-            quad[1].texCoords = sf::Vector2f(fRemainingRight, fTop);
-            quad[2].texCoords = sf::Vector2f(fLeft, fRemainingBottom);
+            quad[0].texCoords = Vector2f(fLeft, fTop);
+            quad[1].texCoords = Vector2f(fRemainingRight, fTop);
+            quad[2].texCoords = Vector2f(fLeft, fRemainingBottom);
 
-            quad[3].texCoords = sf::Vector2f(fRemainingRight, fTop);
-            quad[4].texCoords = sf::Vector2f(fLeft, fRemainingBottom);
-            quad[5].texCoords = sf::Vector2f(fRemainingRight, fRemainingBottom);
+            quad[3].texCoords = Vector2f(fRemainingRight, fTop);
+            quad[4].texCoords = Vector2f(fLeft, fRemainingBottom);
+            quad[5].texCoords = Vector2f(fRemainingRight, fRemainingBottom);
         }
     }
 }

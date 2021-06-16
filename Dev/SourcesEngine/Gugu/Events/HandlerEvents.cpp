@@ -26,7 +26,7 @@ HandlerEvents::HandlerEvents()
     m_elementMouseSelected = nullptr;
     m_elementMouseDragged = nullptr;
 
-    m_lastMouseCoords = sf::Vector2f(0.f, 0.f);
+    m_lastMouseCoords = Vector2f(0.f, 0.f);
 }
 
 HandlerEvents::~HandlerEvents()
@@ -167,14 +167,14 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
         return;     //the event has been closed by a listener
     }
 
-    sf::Vector2i oMouseCoords = GetGameWindow()->GetMousePixelCoords();
+    Vector2i oMouseCoords = GetGameWindow()->GetMousePixelCoords();
     bool bContinue = true;
 
     if (_oSFEvent.type == sf::Event::MouseMoved)
     {
         if (m_elementMouseDragged)
         {
-            sf::Vector2f fLocalCoord = sf::Vector2f(oMouseCoords);
+            Vector2f fLocalCoord = Vector2f(oMouseCoords);
             if (m_elementMouseDragged->GetParent())
                 fLocalCoord = m_elementMouseDragged->GetParent()->TransformToLocalFull(fLocalCoord);
 
@@ -287,7 +287,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
                         m_elementMouseDragged = pElement;
                         m_elementMouseDragged->OnMouseDragStart();
 
-                        sf::Vector2f fLocalCoord = sf::Vector2f(oMouseCoords);
+                        Vector2f fLocalCoord = Vector2f(oMouseCoords);
                         if (m_elementMouseDragged->GetParent())
                             fLocalCoord = m_elementMouseDragged->GetParent()->TransformToLocalFull(fLocalCoord);
                         m_lastMouseCoords = fLocalCoord - m_elementMouseDragged->GetPosition();

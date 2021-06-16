@@ -114,7 +114,7 @@ const std::vector<Element*>& Element::GetChildren() const
     return m_children;
 }
 
-sf::Vector2f Element::TransformToLocalFull(const sf::Vector2f& _oPoint) const
+Vector2f Element::TransformToLocalFull(const Vector2f& _oPoint) const
 {
     if (m_parent)
     {
@@ -124,7 +124,7 @@ sf::Vector2f Element::TransformToLocalFull(const sf::Vector2f& _oPoint) const
     return GetInverseTransform().transformPoint(_oPoint);
 }
 
-sf::Vector2f Element::TransformToGlobalFull(const sf::Vector2f& _oPoint) const
+Vector2f Element::TransformToGlobalFull(const Vector2f& _oPoint) const
 {
     if (m_parent)
     {
@@ -218,7 +218,7 @@ void Element::SetPosition(float _fPosX, float _fPosY)
     OnTransformChanged();
 }
 
-void Element::SetPosition(const sf::Vector2f& _kPosition)
+void Element::SetPosition(const Vector2f& _kPosition)
 {
     m_transform.setPosition(_kPosition);
     OnTransformChanged();
@@ -230,13 +230,13 @@ void Element::Move(float _fOffsetX, float _fOffsetY)
     OnTransformChanged();
 }
 
-void Element::Move(const sf::Vector2f& _kOffset)
+void Element::Move(const Vector2f& _kOffset)
 {
     m_transform.move(_kOffset);
     OnTransformChanged();
 }
 
-const sf::Vector2f& Element::GetPosition() const
+const Vector2f& Element::GetPosition() const
 {
     return m_transform.getPosition();
 }
@@ -285,7 +285,7 @@ void Element::SetScale(float _fScaleX, float _fScaleY)
     OnTransformChanged();
 }
 
-void Element::SetScale(const sf::Vector2f& _kScale)
+void Element::SetScale(const Vector2f& _kScale)
 {
     SetScale(_kScale.x, _kScale.y);
 }
@@ -296,15 +296,15 @@ void Element::Scale(float factorX, float factorY)
     OnTransformChanged();
 }
 
-void Element::Scale(const sf::Vector2f& factor)
+void Element::Scale(const Vector2f& factor)
 {
     m_transform.scale(factor);
     OnTransformChanged();
 }
 
-sf::Vector2f Element::GetScale() const
+Vector2f Element::GetScale() const
 {
-    sf::Vector2f scale = m_transform.getScale();
+    Vector2f scale = m_transform.getScale();
     scale.x = m_flipH ? -scale.x : scale.x;
     scale.y = m_flipV ? -scale.y : scale.y;
     return scale;
@@ -328,13 +328,13 @@ void Element::SetOrigin(float _fOriginX, float _fOriginY)
     OnTransformChanged();
 }
 
-void Element::SetOrigin(const sf::Vector2f& _kOrigin)
+void Element::SetOrigin(const Vector2f& _kOrigin)
 {
     m_transform.setOrigin(_kOrigin);
     OnTransformChanged();
 }
 
-const sf::Vector2f& Element::GetOrigin() const
+const Vector2f& Element::GetOrigin() const
 {
     return m_transform.getOrigin();
 }
@@ -351,22 +351,22 @@ const sf::Transform& Element::GetInverseTransform() const
 
 void Element::SetSizeX(float _fNewSizeX)
 {
-    SetSize(sf::Vector2f(_fNewSizeX, m_size.y));
+    SetSize(Vector2f(_fNewSizeX, m_size.y));
 }
 
 void Element::SetSizeY(float _fNewSizeY)
 {
-    SetSize(sf::Vector2f(m_size.x, _fNewSizeY));
+    SetSize(Vector2f(m_size.x, _fNewSizeY));
 }
 
 void Element::SetSize(float _fNewSizeX, float _fNewSizeY)
 {
-    SetSize(sf::Vector2f(_fNewSizeX, _fNewSizeY));
+    SetSize(Vector2f(_fNewSizeX, _fNewSizeY));
 }
 
-void Element::SetSize(sf::Vector2f _kNewSize)
+void Element::SetSize(Vector2f _kNewSize)
 {
-    sf::Vector2f kOldSize = m_size;
+    Vector2f kOldSize = m_size;
     m_size = _kNewSize;
     OnSizeChanged(kOldSize);
 
@@ -378,22 +378,22 @@ void Element::SetSize(sf::Vector2f _kNewSize)
     }
 }
 
-const sf::Vector2f& Element::GetSize() const
+const Vector2f& Element::GetSize() const
 {
     return m_size;
 }
 
-sf::Vector2f Element::GetSizeScaled() const
+Vector2f Element::GetSizeScaled() const
 {
-    sf::Vector2f fSize = GetSize();
+    Vector2f fSize = GetSize();
     fSize.x *= GetScale().x;
     fSize.y *= GetScale().y;
     return fSize;
 }
 
-sf::Vector2f Element::GetSizeOnScreen() const
+Vector2f Element::GetSizeOnScreen() const
 {
-    sf::Vector2f fSize = GetSizeScaled();
+    Vector2f fSize = GetSizeScaled();
 
     Element* pParent = m_parent;
     while (pParent)
@@ -419,7 +419,7 @@ void Element::SetFlipH(bool _bFlip)
 
 void Element::SetFlip(bool _bFlipV, bool _bFlipH)
 {
-    sf::Vector2f scale = GetScale();
+    Vector2f scale = GetScale();
 
     m_flipV = _bFlipV;
     m_flipH = _bFlipH;
@@ -449,7 +449,7 @@ void Element::ComputeUnifiedDimensions()
 {
     if (m_parent)
     {
-        sf::Vector2f oParentSize = m_parent->GetSize();
+        Vector2f oParentSize = m_parent->GetSize();
 
         if (m_useDimPosition)
         {
@@ -463,7 +463,7 @@ void Element::ComputeUnifiedDimensions()
     }
 }
 
-void Element::OnParentResized(sf::Vector2f _kOldSize, sf::Vector2f _kNewSize)
+void Element::OnParentResized(Vector2f _kOldSize, Vector2f _kNewSize)
 {
     ComputeUnifiedDimensions();
 
@@ -575,10 +575,10 @@ ElementInteractions* Element::GetInteractions() const
     return m_interactions;
 }
 
-bool Element::IsPicked(const sf::Vector2f& _kGlobalCoords) const
+bool Element::IsPicked(const Vector2f& _kGlobalCoords) const
 {
-    sf::Vector2f oPosMouse          = TransformToLocalFull(_kGlobalCoords);
-    sf::Vector2f oPosBottomRight    = GetSize();
+    Vector2f oPosMouse          = TransformToLocalFull(_kGlobalCoords);
+    Vector2f oPosBottomRight    = GetSize();
 
     if (    oPosMouse.x >= 0 && oPosMouse.x < oPosBottomRight.x
         &&  oPosMouse.y >= 0 && oPosMouse.y < oPosBottomRight.y )

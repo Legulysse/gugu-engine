@@ -40,7 +40,7 @@ void ElementSprite::SetTexture(Texture* _pTexture)
     if (_pTexture)
     {
         m_texture = _pTexture;
-        SetSubRect(sf::IntRect(sf::Vector2i(), m_texture->GetSize()));
+        SetSubRect(sf::IntRect(Vector2i(), m_texture->GetSize()));
     }
 }
 
@@ -70,7 +70,7 @@ void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
     if (!m_texture || !m_texture->GetSFTexture())
         return;
 
-    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(sf::Vector2f(), m_size));
+    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2f(), m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
         if (m_dirtyVertices)

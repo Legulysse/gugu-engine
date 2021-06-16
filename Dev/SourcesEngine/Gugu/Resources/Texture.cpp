@@ -117,9 +117,9 @@ bool Texture::ReloadFromFile()
     return false;
 }
 
-sf::Vector2i Texture::GetSize() const
+Vector2i Texture::GetSize() const
 {
-    return m_sfTexture ? sf::Vector2i(m_sfTexture->getSize()) : sf::Vector2i();
+    return m_sfTexture ? Vector2i(m_sfTexture->getSize()) : Vector2i();
 }
 
 }   // namespace gugu

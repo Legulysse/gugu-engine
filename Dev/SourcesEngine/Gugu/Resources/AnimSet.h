@@ -53,11 +53,11 @@ public:
     void        SetEvents(const std::string& _strEvents);
     std::string GetEvents() const;
 
-    void            SetOrigin(const sf::Vector2f _kOrigin);
-    sf::Vector2f    GetOrigin() const;
+    void            SetOrigin(const Vector2f _kOrigin);
+    Vector2f    GetOrigin() const;
     
-    void            SetMoveOffset(const sf::Vector2f _kMoveOffset);
-    sf::Vector2f    GetMoveOffset() const;
+    void            SetMoveOffset(const Vector2f _kMoveOffset);
+    Vector2f    GetMoveOffset() const;
 
 protected:
 
@@ -67,8 +67,8 @@ protected:
     SubImage*       m_subImage;
     float           m_duration;
     std::string     m_events;
-    sf::Vector2f    m_origin;
-    sf::Vector2f    m_moveOffset;
+    Vector2f    m_origin;
+    Vector2f    m_moveOffset;
 };
 
 //----------------------------------------------

@@ -21,23 +21,23 @@ public:
 
     void InitSquareGrid(int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight, bool eightSides);
 
-    sf::Vector2f GetCellPosition(const sf::Vector2i& coords) const;
-    sf::Vector2f GetCellCenter(const sf::Vector2i& coords) const;
+    Vector2f GetCellPosition(const Vector2i& coords) const;
+    Vector2f GetCellCenter(const Vector2i& coords) const;
 
-    bool PickCoords(const sf::Vector2f& position, sf::Vector2i& pickedCoords) const;
+    bool PickCoords(const Vector2f& position, Vector2i& pickedCoords) const;
 
-    void GetNeighbours(const sf::Vector2i& coords, std::vector<sf::Vector2i>& neighbours) const;
+    void GetNeighbours(const Vector2i& coords, std::vector<Vector2i>& neighbours) const;
 
     // TODO: rename as rows/columns or rowWidth/columnHeight to differentiate from graphic size ?
     int GetWidth() const;
     int GetHeight() const;
     int GetCellCount() const;
 
-    sf::Vector2f GetGridSize() const;
+    Vector2f GetGridSize() const;
 
     float GetCellWidth() const;
     float GetCellHeight() const;
-    sf::Vector2f GetCellSize() const;
+    Vector2f GetCellSize() const;
 
 protected:
 

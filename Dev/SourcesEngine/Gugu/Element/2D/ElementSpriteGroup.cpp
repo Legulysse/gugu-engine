@@ -122,7 +122,7 @@ Texture* ElementSpriteGroup::GetTexture() const
     return m_texture;
 }
 
-void ElementSpriteGroup::OnSizeChanged(sf::Vector2f _kOldSize)
+void ElementSpriteGroup::OnSizeChanged(Vector2f _kOldSize)
 {
     for (size_t i = 0; i < m_items.size(); ++i)
     {
@@ -136,7 +136,7 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
         return;
 
     //TODO: maybe need a parameter to bypass this check ?
-    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(sf::Vector2f(), m_size));
+    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2f(), m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
         if (m_needRecompute)

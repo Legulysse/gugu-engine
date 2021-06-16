@@ -36,8 +36,8 @@ public:
 
     void BuildFromSquareGrid(SquareGrid* grid);
     void BuildFromHexGrid(HexGrid* grid);
-    void BuildFromTileDimensions(int width, int height, const sf::Vector2f& tileSize);
-    void BuildFromTileCount(int count, const sf::Vector2f& mapSize);
+    void BuildFromTileDimensions(int width, int height, const Vector2f& tileSize);
+    void BuildFromTileCount(int count, const Vector2f& mapSize);
 
     void UpdateTilePositionAndSize(int index, const sf::FloatRect& rect);
     void UpdateTilePositionAndSize(int x, int y, int width, const sf::FloatRect& rect);

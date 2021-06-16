@@ -72,14 +72,14 @@ public:
 
     void        Refresh         (const DeltaTime& dt, const EngineStats& engineStats);
     
-    sf::Vector2u    GetSize     () const;
+    Vector2u    GetSize     () const;
 
     void            SetSystemMouseVisible   (bool _bIsVisible);
     void            SetMouseVisible         (bool _bIsVisible);
     void            SetMouseTexture         (const std::string& _strTexture);
 
-    sf::Vector2i    GetMousePixelCoords     () const;   //Exact mouse position
-    sf::Vector2f    GetMousePosition        () const;   //GetMouseCoords() converted to float
+    Vector2i    GetMousePixelCoords     () const;   //Exact mouse position
+    Vector2f    GetMousePosition        () const;   //GetMouseCoords() converted to float
     
     Element*            GetRootNode     () const;   //Should not be used directly, prefer using UINode
     Element*            GetUINode       () const;

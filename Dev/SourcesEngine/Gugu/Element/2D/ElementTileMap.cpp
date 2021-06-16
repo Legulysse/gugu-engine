@@ -63,13 +63,13 @@ void ElementTileMap::BuildFromSquareGrid(SquareGrid* grid)
     m_vertices.resize(width * height * 6);
 
     // Compute all tiles position and size.
-    sf::Vector2f tileSize = grid->GetCellSize();
+    Vector2f tileSize = grid->GetCellSize();
 
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
-            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(grid->GetCellPosition(sf::Vector2i(x, y)), tileSize));
+            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(grid->GetCellPosition(Vector2i(x, y)), tileSize));
         }
     }
 
@@ -86,20 +86,20 @@ void ElementTileMap::BuildFromHexGrid(HexGrid* grid)
     m_vertices.resize(width * height * 6);
 
     // Compute all tiles position and size.
-    sf::Vector2f tileSize = grid->GetCellSize();
+    Vector2f tileSize = grid->GetCellSize();
 
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
-            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(grid->GetCellPosition(sf::Vector2i(x, y)), tileSize));
+            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(grid->GetCellPosition(Vector2i(x, y)), tileSize));
         }
     }
 
     SetSize(grid->GetGridSize());
 }
 
-void ElementTileMap::BuildFromTileDimensions(int width, int height, const sf::Vector2f& tileSize)
+void ElementTileMap::BuildFromTileDimensions(int width, int height, const Vector2f& tileSize)
 {
     // Reset vertices.
     m_vertices.setPrimitiveType(sf::Triangles);
@@ -110,14 +110,14 @@ void ElementTileMap::BuildFromTileDimensions(int width, int height, const sf::Ve
     {
         for (int x = 0; x < width; ++x)
         {
-            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(sf::Vector2f(x * tileSize.x, y * tileSize.y), tileSize));
+            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(Vector2f(x * tileSize.x, y * tileSize.y), tileSize));
         }
     }
 
     SetSize(tileSize.x * width, tileSize.y * height);
 }
 
-void ElementTileMap::BuildFromTileCount(int count, const sf::Vector2f& mapSize)
+void ElementTileMap::BuildFromTileCount(int count, const Vector2f& mapSize)
 {
     // Reset vertices.
     m_vertices.setPrimitiveType(sf::Triangles);
@@ -140,13 +140,13 @@ void ElementTileMap::UpdateTilePositionAndSize(int index, const sf::FloatRect& r
 
     sf::Vertex* quad = &m_vertices[index * 6];
 
-    quad[0].position = sf::Vector2f(left, top);
-    quad[1].position = sf::Vector2f(right, top);
-    quad[2].position = sf::Vector2f(left, bottom);
+    quad[0].position = Vector2f(left, top);
+    quad[1].position = Vector2f(right, top);
+    quad[2].position = Vector2f(left, bottom);
 
-    quad[3].position = sf::Vector2f(right, top);
-    quad[4].position = sf::Vector2f(left, bottom);
-    quad[5].position = sf::Vector2f(right, bottom);
+    quad[3].position = Vector2f(right, top);
+    quad[4].position = Vector2f(left, bottom);
+    quad[5].position = Vector2f(right, bottom);
 }
 
 void ElementTileMap::UpdateTileTextureCoords(int x, int y, int width, const sf::IntRect& rect)
@@ -163,13 +163,13 @@ void ElementTileMap::UpdateTileTextureCoords(int index, const sf::IntRect& rect)
 
     sf::Vertex* quad = &m_vertices[index * 6];
 
-    quad[0].texCoords = sf::Vector2f(left, top);
-    quad[1].texCoords = sf::Vector2f(right, top);
-    quad[2].texCoords = sf::Vector2f(left, bottom);
+    quad[0].texCoords = Vector2f(left, top);
+    quad[1].texCoords = Vector2f(right, top);
+    quad[2].texCoords = Vector2f(left, bottom);
 
-    quad[3].texCoords = sf::Vector2f(right, top);
-    quad[4].texCoords = sf::Vector2f(left, bottom);
-    quad[5].texCoords = sf::Vector2f(right, bottom);
+    quad[3].texCoords = Vector2f(right, top);
+    quad[4].texCoords = Vector2f(left, bottom);
+    quad[5].texCoords = Vector2f(right, bottom);
 }
 
 void ElementTileMap::UpdateTileColor(int x, int y, int width, const sf::Color& color)
@@ -196,7 +196,7 @@ void ElementTileMap::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _
         return;
 
     //TODO: maybe need a parameter to bypass this check ?
-    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(sf::Vector2f(), m_size));
+    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2f(), m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
         if (m_vertices.getVertexCount() > 0)

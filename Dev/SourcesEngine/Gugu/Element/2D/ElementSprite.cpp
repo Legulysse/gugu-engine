@@ -98,21 +98,6 @@ void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
     }
 }
 
-bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
-{
-    if (!ElementSpriteBase::LoadFromXml(_oNodeElement))
-        return false;
-
-    pugi::xml_node oNodeTexture = _oNodeElement.child("Texture");
-    if (!oNodeTexture.empty())
-    {
-        std::string strTexturePath = oNodeTexture.attribute("Source").as_string("");
-        SetTexture(strTexturePath);
-    }
-
-    return true;
-}
-
 void ElementSprite::RecomputeVerticesPositionAndTextureCoords()
 {
     size_t count = GetRequiredVertexCount();
@@ -127,6 +112,21 @@ void ElementSprite::RecomputeVerticesPositionAndTextureCoords()
 void ElementSprite::RecomputeVerticesColor()
 {
     ElementSpriteBase::RecomputeVerticesColor(&m_vertices[0], m_vertices.getVertexCount());
+}
+
+bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
+{
+    if (!ElementSpriteBase::LoadFromXml(_oNodeElement))
+        return false;
+
+    pugi::xml_node oNodeTexture = _oNodeElement.child("Texture");
+    if (!oNodeTexture.empty())
+    {
+        std::string strTexturePath = oNodeTexture.attribute("Source").as_string("");
+        SetTexture(strTexturePath);
+    }
+
+    return true;
 }
 
 }   // namespace gugu

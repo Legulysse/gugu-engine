@@ -23,6 +23,7 @@
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/UI/ElementButton.h"
@@ -56,10 +57,10 @@ void StateScenario::Init()
 
     // Character skills
     {
-        ElementSprite* panelCharacterSkills = m_root->AddChild<ElementSprite>();
+        ElementSpriteGroup* panelCharacterSkills = m_root->AddChild<ElementSpriteGroup>();
         panelCharacterSkills->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
         panelCharacterSkills->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + sf::Vector2f(210, 0.f));
-        panelCharacterSkills->SetSubImage("uipack_rpg.imageset.xml", "panel_blue");
+        panelCharacterSkills->LoadFromFile("Box9_blue.xml");
         panelCharacterSkills->SetSize(300, 100);
 
         m_skillSprite1 = panelCharacterSkills->AddChild<ElementSprite>();
@@ -83,10 +84,10 @@ void StateScenario::Init()
 
     // Character bars
     {
-        ElementSprite* panelCharacterBars = m_root->AddChild<ElementSprite>();
+        ElementSpriteGroup* panelCharacterBars = m_root->AddChild<ElementSpriteGroup>();
         panelCharacterBars->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
         panelCharacterBars->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT);
-        panelCharacterBars->SetSubImage("uipack_rpg.imageset.xml", "panel_blue");
+        panelCharacterBars->LoadFromFile("Box9_blue.xml");
         panelCharacterBars->SetSize(230, 110);
 
         float fSizeX = 200.f;
@@ -132,10 +133,10 @@ void StateScenario::Init()
 
     // Status panel
     {
-        ElementSprite* panelStatus = m_root->AddChild<ElementSprite>();
+        ElementSpriteGroup* panelStatus = m_root->AddChild<ElementSpriteGroup>();
         panelStatus->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
         panelStatus->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT);
-        panelStatus->SetSubImage("uipack_rpg.imageset.xml", "panel_blue");
+        panelStatus->LoadFromFile("Box9_blue.xml");
         panelStatus->SetSize(180, 60);
 
         m_textStatus = panelStatus->AddChild<ElementText>();
@@ -145,10 +146,10 @@ void StateScenario::Init()
 
     // Character sheet
     {
-        ElementSprite* characterSheetBackground = m_root->AddChild<ElementSprite>();
+        ElementSpriteGroup* characterSheetBackground = m_root->AddChild<ElementSpriteGroup>();
         characterSheetBackground->SetUnifiedOrigin(UDim2::POSITION_TOP_RIGHT);
         characterSheetBackground->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT);
-        characterSheetBackground->SetSubImage("uipack_rpg.imageset.xml", "panel_beige");
+        characterSheetBackground->LoadFromFile("Box9_beige_big.xml");
         characterSheetBackground->SetSize(400, 600);
 
         m_characterSheet = characterSheetBackground;

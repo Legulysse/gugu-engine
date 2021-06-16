@@ -302,7 +302,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node & nodeSelf)
             // Parse default ElementSpriteBase data.
             component->LoadFromXml(nodeComponent);
 
-            // Read additional SubImage/TextureRect data.
+            // Read additional SubImage data (TextureRect is handled in the ElementSpriteBase parser).
             if (imageSet)
             {
                 pugi::xml_attribute attrSubImage = nodeComponent.attribute("SubImage");
@@ -311,31 +311,6 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node & nodeSelf)
                     SubImage* subImage = imageSet->GetSubImage(attrSubImage.as_string());
                     if (subImage)
                         component->SetSubRect(subImage->GetRect());
-                }
-            }
-            else if (texture)
-            {
-                // TODO: move this part into ElementSpriteBase::LoadFromXml ?
-                pugi::xml_node nodeTextureRect = nodeComponent.child("TextureRect");
-                if (nodeTextureRect)
-                {
-                    pugi::xml_attribute attrX = nodeTextureRect.attribute("X");
-                    pugi::xml_attribute attrY = nodeTextureRect.attribute("Y");
-                    pugi::xml_attribute attrW = nodeTextureRect.attribute("W");
-                    pugi::xml_attribute attrH = nodeTextureRect.attribute("H");
-
-                    if (attrX
-                        && attrY
-                        && attrW
-                        && attrH)
-                    {
-                        int x = attrX.as_int();
-                        int y = attrY.as_int();
-                        int w = attrW.as_int();
-                        int h = attrH.as_int();
-
-                        component->SetSubRect(sf::IntRect(x, y, w, h));
-                    }
                 }
             }
 

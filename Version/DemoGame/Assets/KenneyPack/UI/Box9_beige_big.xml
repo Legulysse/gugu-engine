@@ -1,0 +1,58 @@
+<Element Type="ElementSpriteGroup">
+    <Texture Source="panel_beige_big.png" />
+    <Components>
+    
+        <Component>
+            <TextureRect X="0" Y="0" W="16" H="16" />
+            <UPosition XRel="0" XAbs="0" YRel="0" YAbs="0" />
+            <USize XRel="0" XAbs="16" YRel="0" YAbs="16" />
+        </Component>
+        <Component>
+            <TextureRect X="16" Y="0" W="168" H="16" />
+            <UPosition XRel="0" XAbs="16" YRel="0" YAbs="0" />
+            <USize XRel="1" XAbs="-32" YRel="0" YAbs="16" />
+            <RepeatTexture Value="True" />
+        </Component>
+        <Component>
+            <TextureRect X="184" Y="0" W="16" H="16" />
+            <UPosition XRel="1" XAbs="-16" YRel="0" YAbs="0" />
+            <USize XRel="0" XAbs="16" YRel="0" YAbs="16" />
+        </Component>
+        
+        <Component>
+            <TextureRect X="0" Y="16" W="16" H="168" />
+            <UPosition XRel="0" XAbs="0" YRel="0" YAbs="16" />
+            <USize XRel="0" XAbs="16" YRel="1" YAbs="-32" />
+            <RepeatTexture Value="True" />
+        </Component>
+        <Component>
+            <TextureRect X="16" Y="16" W="168" H="168" />
+            <UPosition XRel="0" XAbs="16" YRel="0" YAbs="16" />
+            <USize XRel="1" XAbs="-32" YRel="1" YAbs="-32" />
+        </Component>
+        <Component>
+            <TextureRect X="184" Y="16" W="16" H="168" />
+            <UPosition XRel="1" XAbs="-16" YRel="0" YAbs="16" />
+            <USize XRel="0" XAbs="16" YRel="1" YAbs="-32" />
+            <RepeatTexture Value="True" />
+        </Component>
+        
+        <Component>
+            <TextureRect X="0" Y="184" W="16" H="16" />
+            <UPosition XRel="0" XAbs="0" YRel="1" YAbs="-16" />
+            <USize XRel="0" XAbs="16" YRel="0" YAbs="16" />
+        </Component>
+        <Component>
+            <TextureRect X="16" Y="184" W="168" H="16" />
+            <UPosition XRel="0" XAbs="16" YRel="1" YAbs="-16" />
+            <USize XRel="1" XAbs="-32" YRel="0" YAbs="16" />
+            <RepeatTexture Value="True" />
+        </Component>
+        <Component>
+            <TextureRect X="184" Y="184" W="16" H="16" />
+            <UPosition XRel="1" XAbs="-16" YRel="1" YAbs="-16" />
+            <USize XRel="0" XAbs="16" YRel="0" YAbs="16" />
+        </Component>
+        
+    </Components>
+</Element>

@@ -1,0 +1,58 @@
+<Element Type="ElementSpriteGroup">
+    <Texture Source="panel_beige.png" />
+    <Components>
+    
+        <Component>
+            <TextureRect X="0" Y="0" W="8" H="8" />
+            <UPosition XRel="0" XAbs="0" YRel="0" YAbs="0" />
+            <USize XRel="0" XAbs="8" YRel="0" YAbs="8" />
+        </Component>
+        <Component>
+            <TextureRect X="8" Y="0" W="84" H="8" />
+            <UPosition XRel="0" XAbs="8" YRel="0" YAbs="0" />
+            <USize XRel="1" XAbs="-16" YRel="0" YAbs="8" />
+            <RepeatTexture Value="True" />
+        </Component>
+        <Component>
+            <TextureRect X="92" Y="0" W="8" H="8" />
+            <UPosition XRel="1" XAbs="-8" YRel="0" YAbs="0" />
+            <USize XRel="0" XAbs="8" YRel="0" YAbs="8" />
+        </Component>
+        
+        <Component>
+            <TextureRect X="0" Y="8" W="8" H="84" />
+            <UPosition XRel="0" XAbs="0" YRel="0" YAbs="8" />
+            <USize XRel="0" XAbs="8" YRel="1" YAbs="-16" />
+            <RepeatTexture Value="True" />
+        </Component>
+        <Component>
+            <TextureRect X="8" Y="8" W="84" H="84" />
+            <UPosition XRel="0" XAbs="8" YRel="0" YAbs="8" />
+            <USize XRel="1" XAbs="-16" YRel="1" YAbs="-16" />
+        </Component>
+        <Component>
+            <TextureRect X="92" Y="8" W="8" H="84" />
+            <UPosition XRel="1" XAbs="-8" YRel="0" YAbs="8" />
+            <USize XRel="0" XAbs="8" YRel="1" YAbs="-16" />
+            <RepeatTexture Value="True" />
+        </Component>
+        
+        <Component>
+            <TextureRect X="0" Y="92" W="8" H="8" />
+            <UPosition XRel="0" XAbs="0" YRel="1" YAbs="-8" />
+            <USize XRel="0" XAbs="8" YRel="0" YAbs="8" />
+        </Component>
+        <Component>
+            <TextureRect X="8" Y="92" W="84" H="8" />
+            <UPosition XRel="0" XAbs="8" YRel="1" YAbs="-8" />
+            <USize XRel="1" XAbs="-16" YRel="0" YAbs="8" />
+            <RepeatTexture Value="True" />
+        </Component>
+        <Component>
+            <TextureRect X="92" Y="92" W="8" H="8" />
+            <UPosition XRel="1" XAbs="-8" YRel="1" YAbs="-8" />
+            <USize XRel="0" XAbs="8" YRel="0" YAbs="8" />
+        </Component>
+        
+    </Components>
+</Element>

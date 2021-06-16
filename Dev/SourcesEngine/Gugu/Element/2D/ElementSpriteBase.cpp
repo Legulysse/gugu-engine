@@ -338,4 +338,37 @@ void ElementSpriteBase::RecomputeVerticesColor(sf::Vertex* vertices, size_t coun
     }
 }
 
+bool ElementSpriteBase::LoadFromXml(const pugi::xml_node& _oNodeElement)
+{
+    if (!Element::LoadFromXml(_oNodeElement))
+        return false;
+
+    pugi::xml_node nodeTextureRect = _oNodeElement.child("TextureRect");
+    if (nodeTextureRect)
+    {
+        pugi::xml_attribute attrX = nodeTextureRect.attribute("X");
+        pugi::xml_attribute attrY = nodeTextureRect.attribute("Y");
+        pugi::xml_attribute attrW = nodeTextureRect.attribute("W");
+        pugi::xml_attribute attrH = nodeTextureRect.attribute("H");
+
+        if (attrX && attrY && attrW && attrH)
+        {
+            int x = attrX.as_int(0);
+            int y = attrY.as_int(0);
+            int w = attrW.as_int(0);
+            int h = attrH.as_int(0);
+
+            SetSubRect(sf::IntRect(x, y, w, h));
+        }
+    }
+
+    pugi::xml_node oNodeRepeatTexture = _oNodeElement.child("RepeatTexture");
+    if (!oNodeRepeatTexture.empty())
+    {
+        SetRepeatTexture(oNodeRepeatTexture.attribute("Value").as_bool(false));
+    }
+
+    return true;
+}
+
 }   // namespace gugu

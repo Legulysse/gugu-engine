@@ -162,6 +162,8 @@ void Character::Update(const DeltaTime& dt)
     {
         m_lifeBar->SetValue(m_currentLife, m_maxLife);
     }
+
+    m_sprite->SetZIndex(m_sprite->GetPosition().y);
 }
 
 sf::Vector2f Character::GetPosition() const

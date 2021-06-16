@@ -39,6 +39,7 @@ namespace demoproject {
 
 Game::Game()
 {
+    m_charactersNode = nullptr;
     m_character = nullptr;
     m_controllerPlayer = nullptr;
 
@@ -80,6 +81,7 @@ void Game::AppStart()
 
     // Push the entry-point State.
     PushStateNow(new StateScenario);
+    //PushStateNow(new StateMenuMain);
 }
 
 void Game::AppStop()
@@ -94,6 +96,11 @@ void Game::AppStep(const DeltaTime& dt)
 void Game::AppUpdate(const DeltaTime& dt)
 {
     StateMachine::Update(dt);
+
+    if (m_charactersNode)
+    {
+        m_charactersNode->SortOnZIndex();  //TODO: Should this be automatic even for Level nodes ?
+    }
 }
 
 void Game::StepScenario(const DeltaTime& dt)
@@ -140,8 +147,6 @@ void Game::StepScenario(const DeltaTime& dt)
     {
         m_delayReset = 2000;
     }
-
-    //m_level->GetRootNode()->SortOnZIndex();  //TODO: Should this be automatic even for Level nodes ?
 }
 
 bool Game::OnSFEvent(const sf::Event& _oSFEvent)
@@ -178,13 +183,15 @@ void Game::CreateScenario()
     m_grid = new Grid();
     m_grid->InitGrid(m_level, 50, 50, 32.f, 32.f);
 
+    m_charactersNode = m_level->GetRootNode()->AddChild<Element>();
+
     //Init Player
     DS_Hero* sheetHero = GetResources()->GetDatasheet<DS_Hero>("Hero.hero");
 
     m_character = new CharacterHero;
     m_level->AddActor(m_character);
 
-    m_character->InitHero(sheetHero, 600.f, m_grid);
+    m_character->InitHero(sheetHero, 600.f, m_grid, m_charactersNode);
 
     m_controllerPlayer = new ControllerPlayer;
     m_level->AddActor(m_controllerPlayer);
@@ -220,11 +227,9 @@ void Game::SpawnFloor()
         CharacterEnemy* pEnemy = new CharacterEnemy;
         m_level->AddActor(pEnemy);
 
-        pEnemy->InitEnemy(sheetEnemy, 100.f, m_grid);
+        pEnemy->InitEnemy(sheetEnemy, 100.f, m_grid, m_charactersNode);
         pControllerAI->m_character = pEnemy;
     }
-
-    m_level->GetRootNode()->SortOnZIndex();  //TODO: Should this be automatic even for Level nodes ?
 }
 
 void Game::ClearScenario()
@@ -234,6 +239,8 @@ void Game::ClearScenario()
     m_controllersAI.clear();
     m_character = nullptr;
     m_controllerPlayer = nullptr;
+
+    m_charactersNode = nullptr;
 
     SafeDelete(m_grid);
 

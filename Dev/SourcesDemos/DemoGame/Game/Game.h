@@ -23,6 +23,7 @@ namespace demoproject
 namespace gugu
 {
     class Level;
+    class Element;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -60,6 +61,7 @@ public:
 public:
 
     gugu::Level* m_level;
+    gugu::Element* m_charactersNode;
 
     CharacterHero* m_character;
     ControllerPlayer* m_controllerPlayer;

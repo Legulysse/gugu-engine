@@ -31,7 +31,7 @@ CharacterEnemy::~CharacterEnemy()
 {
 }
 
-void CharacterEnemy::InitEnemy(DS_Enemy* sheetEnemy, float _fSpeed, Grid* grid)
+void CharacterEnemy::InitEnemy(DS_Enemy* sheetEnemy, float _fSpeed, Grid* grid, Element* parentNode)
 {
     m_grid = grid;
 
@@ -41,7 +41,7 @@ void CharacterEnemy::InitEnemy(DS_Enemy* sheetEnemy, float _fSpeed, Grid* grid)
 
     m_currentLife = m_maxLife;
 
-    m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
+    m_sprite = parentNode->AddChild<ElementSpriteAnimated>();
 
     //if (GetRandom(0, 1) == 0)
     //    m_sprite->ChangeAnimSet("Orc.animset.xml");

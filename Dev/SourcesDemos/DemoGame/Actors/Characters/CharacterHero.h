@@ -17,7 +17,7 @@ public:
     CharacterHero();
     virtual ~CharacterHero();
 
-    void InitHero(class DS_Hero* sheetHero, float _fSpeed, class Grid* grid);
+    void InitHero(class DS_Hero* sheetHero, float _fSpeed, class Grid* grid, gugu::Element* parentNode);
 
     void UseSkillByIndex(int index, const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt);
     void UseSkill(DS_Skill* skill, const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt);

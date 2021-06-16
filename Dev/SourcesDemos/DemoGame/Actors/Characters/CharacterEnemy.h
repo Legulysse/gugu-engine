@@ -17,7 +17,7 @@ public:
     CharacterEnemy();
     virtual ~CharacterEnemy();
 
-    void InitEnemy(class DS_Enemy* sheetEnemy, float _fSpeed, class Grid* grid);
+    void InitEnemy(class DS_Enemy* sheetEnemy, float _fSpeed, class Grid* grid, gugu::Element* parentNode);
 };
 
 }   //namespace demoproject

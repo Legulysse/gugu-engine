@@ -45,7 +45,7 @@ CharacterHero::~CharacterHero()
 {
 }
 
-void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid)
+void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid, Element* parentNode)
 {
     m_grid = grid;
 
@@ -65,13 +65,13 @@ void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid)
     m_currentMana = m_maxMana;
 
     // Sprite
-    m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
+    m_sprite = parentNode->AddChild<ElementSpriteAnimated>();
     m_sprite->ChangeAnimSet(sheetHero->sprite->animSet);
     m_sprite->StartAnimation("IdleDown");
     m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
 
     //m_pSprite->SetColor(sf::Color::Cyan);
-    m_sprite->SetZIndex(1000);
+    //m_sprite->SetZIndex(1000);
 }
 
 void CharacterHero::UseSkillByIndex(int index, const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt)

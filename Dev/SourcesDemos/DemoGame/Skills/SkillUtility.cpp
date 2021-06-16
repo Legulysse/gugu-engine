@@ -33,7 +33,7 @@ namespace SkillUtility
         ApplySkillEffectList(skillContext, skillContext.skill->effects, nullptr);
     }
 
-    void ApplySkillEffectList(const SkillContext& skillContext, std::vector<DS_Effect*> effects, Character* affected, const sf::Vector2f& affectedPosition)
+    void ApplySkillEffectList(const SkillContext& skillContext, std::vector<DS_Effect*> effects, Character* affected, const Vector2f& affectedPosition)
     {
         for (DS_Effect* effect : effects)
         {
@@ -41,7 +41,7 @@ namespace SkillUtility
         }
     }
 
-    void ApplySkillEffect(const SkillContext& skillContext, DS_Effect* effect, Character* affectedCharacter, const sf::Vector2f& affectedPosition)
+    void ApplySkillEffect(const SkillContext& skillContext, DS_Effect* effect, Character* affectedCharacter, const Vector2f& affectedPosition)
     {
         // TODO: maybe find a more elegant way to retrieve the affectedPosition (avoid the implicit parameter).
         // TODO: affected character should be a list, to ensure we only call this code once per effect application (and avoid calling a caster effect for each affected characters in an area).

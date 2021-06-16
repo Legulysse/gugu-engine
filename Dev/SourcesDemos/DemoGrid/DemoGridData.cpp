@@ -35,12 +35,12 @@ void DemoGridData::ResetCells()
     m_cells.resize(m_width * m_height);
 }
 
-bool DemoGridData::IsBlocked(const sf::Vector2i& coords) const
+bool DemoGridData::IsBlocked(const Vector2i& coords) const
 {
     return m_cells[coords.x + m_width * coords.y].blocked;
 }
 
-void DemoGridData::SetBlocked(const sf::Vector2i& coords, bool blocked)
+void DemoGridData::SetBlocked(const Vector2i& coords, bool blocked)
 {
     m_cells[coords.x + m_width * coords.y].blocked = blocked;
 }
@@ -55,16 +55,16 @@ void DemoGridData::SetDiagonalsRestricted(bool restrictDiagonals)
     m_restrictDiagonals = restrictDiagonals;
 }
 
-bool DemoGridData::IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo) const
+bool DemoGridData::IsWalkable(const Vector2i& coordsFrom, const Vector2i& coordsTo) const
 {
     // Check diagonal move (only works for square-8 grids).
     if (m_restrictDiagonals)
     {
-        sf::Vector2i direction = coordsTo - coordsFrom;
+        Vector2i direction = coordsTo - coordsFrom;
         if (direction.x != 0 && direction.y != 0)
         {
-            sf::Vector2i testA = coordsFrom + sf::Vector2i(direction.x, 0);
-            sf::Vector2i testB = coordsFrom + sf::Vector2i(0, direction.y);
+            Vector2i testA = coordsFrom + Vector2i(direction.x, 0);
+            Vector2i testB = coordsFrom + Vector2i(0, direction.y);
             if (m_cells[testA.x + m_width * testA.y].blocked || m_cells[testB.x + m_width * testB.y].blocked)
             {
                 return false;
@@ -75,7 +75,7 @@ bool DemoGridData::IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i
     return !m_cells[coordsTo.x + m_width * coordsTo.y].blocked;
 }
 
-bool DemoGridData::IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo, float& cost) const
+bool DemoGridData::IsWalkable(const Vector2i& coordsFrom, const Vector2i& coordsTo, float& cost) const
 {
     cost = 1.f;
     return !m_cells[coordsTo.x + m_width * coordsTo.y].blocked;

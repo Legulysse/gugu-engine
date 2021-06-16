@@ -42,7 +42,7 @@ void ControllerPlayer::Step(const DeltaTime& dt)
 
     ManagerInputs* inputs = GetInputs();
 
-    sf::Vector2f kDirection;
+    Vector2f kDirection;
 
     if (m_playerIndex == 0)
     {

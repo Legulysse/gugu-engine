@@ -47,7 +47,7 @@ void Grid::InitGrid(Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth
     }
 }
 
-void Grid::ClampPositionInsideBounds(sf::Vector2f& position) const
+void Grid::ClampPositionInsideBounds(Vector2f& position) const
 {
     position.x = Clamp(position.x, m_pTileMap->GetPosition().x, m_pTileMap->GetPosition().x + m_pTileMap->GetSize().x);
     position.y = Clamp(position.y, m_pTileMap->GetPosition().y, m_pTileMap->GetPosition().y + m_pTileMap->GetSize().y);

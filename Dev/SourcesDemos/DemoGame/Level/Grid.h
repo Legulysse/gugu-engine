@@ -29,7 +29,7 @@ public:
     
     void InitGrid(gugu::Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight);
     
-    void ClampPositionInsideBounds(sf::Vector2f& position) const;
+    void ClampPositionInsideBounds(gugu::Vector2f& position) const;
 
 private:
 

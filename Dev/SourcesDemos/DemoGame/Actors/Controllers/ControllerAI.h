@@ -32,7 +32,7 @@ public:
 
     Character* m_character;
 
-    sf::Vector2f m_direction;
+    gugu::Vector2f m_direction;
     int m_delay;
 };
 

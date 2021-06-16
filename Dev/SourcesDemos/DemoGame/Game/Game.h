@@ -56,7 +56,7 @@ public:
 
     void GetStatus(int& floor, int& enemies) const;
 
-    void GetCharactersInRange(std::vector<class Character*>& characters, const sf::Vector2f& center, float radius) const;
+    void GetCharactersInRange(std::vector<class Character*>& characters, const gugu::Vector2f& center, float radius) const;
 
 public:
 

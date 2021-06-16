@@ -48,22 +48,22 @@ void ControllerPlayer::Step(const DeltaTime& dt)
     //Attack
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
     {
-        sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
+        Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
         Camera* pCamera = GetGameWindow()->GetCamera(0);
-        sf::Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
+        Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
         m_character->UseSkillByIndex(0, kPickedPosition, dt);       //TODO: test with varrying world transform
     }
 
     if (inputs->IsInputDown("Player_1_Skill_1"))
     {
-        sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
+        Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
         Camera* pCamera = GetGameWindow()->GetCamera(0);
-        sf::Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);
+        Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);
         m_character->UseSkillByIndex(1, kPickedPosition, dt);
     }
 
     //Movement
-    sf::Vector2f kDirection;
+    Vector2f kDirection;
 
     if (inputs->IsInputDown("Player_1_Up"))
     {
@@ -92,7 +92,7 @@ void ControllerPlayer::Step(const DeltaTime& dt)
     }
 
     //Orientation
-    //sf::Vector2f kMousePosition = GetGameWindow()->GetMousePosition();
+    //Vector2f kMousePosition = GetGameWindow()->GetMousePosition();
 }
 
 bool ControllerPlayer::OnSFEvent(const sf::Event& _oSFEvent)
@@ -107,9 +107,9 @@ bool ControllerPlayer::OnSFEvent(const sf::Event& _oSFEvent)
     {
         if (_oSFEvent.mouseButton.button == sf::Mouse::Left)
         {
-            sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
+            Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
             //Camera* pCamera = GetGameWindow()->GetCamera(0);
-            //sf::Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
+            //Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
             //m_pCharacter->Attack(kPickedPosition);      //TODO: test with varrying world transform
         }
     }

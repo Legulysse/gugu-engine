@@ -27,8 +27,8 @@ public:
     Character();
     virtual ~Character();
     
-    void            Move        (sf::Vector2f _kDirection, const gugu::DeltaTime& dt);
-    sf::Vector2f    GetPosition () const;
+    void            Move        (gugu::Vector2f _kDirection, const gugu::DeltaTime& dt);
+    gugu::Vector2f    GetPosition () const;
 
     bool TestCollision(class Projectile* _pProjectile);
 

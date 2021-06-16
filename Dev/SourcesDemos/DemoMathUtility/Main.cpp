@@ -69,10 +69,10 @@ int main(int argc, char* argv[])
     int iLerpRemapC = RemapLerp(20, 30, 1, 5, 0);
 
     // Vectors
-    sf::Vector2f kVectorNormalized(10.f, 20.f);
+    Vector2f kVectorNormalized(10.f, 20.f);
     kVectorNormalized = Normalize(kVectorNormalized);
 
-    sf::Vector2f kVectorRotated(10.f, 20.f);
+    Vector2f kVectorRotated(10.f, 20.f);
     kVectorRotated = Rotate(kVectorRotated, Math::PiDivTwo);
 
     float fLengthA = Length(kVectorNormalized);
@@ -118,10 +118,10 @@ int main(int argc, char* argv[])
     UDim dimB = dimA + 1.f;
 
     UDim2 dim2A(UDim2::POSITION_CENTER);
-    dim2A += sf::Vector2f(5.f, 10.f);
-    UDim2 dim2B = dim2A + sf::Vector2f(5.f, 10.f);
+    dim2A += Vector2f(5.f, 10.f);
+    UDim2 dim2B = dim2A + Vector2f(5.f, 10.f);
 
-    UDim2 dim2C = UDim2::POSITION_BOTTOM_RIGHT + sf::Vector2f(-10.f, -10.f);
+    UDim2 dim2C = UDim2::POSITION_BOTTOM_RIGHT + Vector2f(-10.f, -10.f);
 
     //----------------------------------------------
 

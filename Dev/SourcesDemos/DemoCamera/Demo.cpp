@@ -163,7 +163,7 @@ bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
     {
         if (_oSFEvent.mouseButton.button == sf::Mouse::Left)
         {
-            sf::Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
+            Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
             Camera* pCameraA = GetGameWindow()->GetCamera(0);
             Camera* pCameraB = GetGameWindow()->GetCamera(1);
             Camera* pCamera = nullptr;

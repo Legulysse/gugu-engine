@@ -256,7 +256,7 @@ void Game::GetStatus(int& floor, int& enemies) const
     enemies = m_controllersAI.size();
 }
 
-void Game::GetCharactersInRange(std::vector<Character*>& characters, const sf::Vector2f& center, float radius) const
+void Game::GetCharactersInRange(std::vector<Character*>& characters, const Vector2f& center, float radius) const
 {
     for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
     {

@@ -36,7 +36,7 @@ Projectile::~Projectile()
     SafeDelete(m_sprite);
 }
 
-void Projectile::InitProjectile(const SkillContext& skillContext, DS_EffectProjectile* effectSource, const sf::Vector2f& _kFrom, const sf::Vector2f& _kTo)
+void Projectile::InitProjectile(const SkillContext& skillContext, DS_EffectProjectile* effectSource, const Vector2f& _kFrom, const Vector2f& _kTo)
 {
     m_skillContext = skillContext;
     m_effectSource = effectSource;
@@ -59,10 +59,10 @@ void Projectile::InitProjectile(const SkillContext& skillContext, DS_EffectProje
     }
     else
     {
-        m_direction = sf::Vector2f(1.f, 0.f);
+        m_direction = Vector2f(1.f, 0.f);
     }
 
-    sf::Vector2f kOffset = sf::Vector2f();
+    Vector2f kOffset = Vector2f();
     if (!m_hasDestination)
     {
         // Add random amplitude
@@ -114,7 +114,7 @@ void Projectile::Step(const DeltaTime& dt)
     Actor::Step(dt);
 
     bool reachedDestination = false;
-    sf::Vector2f moveStep = m_direction * dt.s() * m_speed;
+    Vector2f moveStep = m_direction * dt.s() * m_speed;
 
     if (m_hasDestination)
     {

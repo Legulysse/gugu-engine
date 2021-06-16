@@ -32,15 +32,15 @@ struct SkillContext
     DS_Skill* skill;
     Character* caster;
     Character* target;
-    sf::Vector2f aim;
+    gugu::Vector2f aim;
     gugu::Level* level;
 };
 
 namespace SkillUtility
 {
     void UseSkill(const SkillContext& skillContext);
-    void ApplySkillEffectList(const SkillContext& skillContext, std::vector<DS_Effect*> effects, Character* affected, const sf::Vector2f& affectedPosition = sf::Vector2f());
-    void ApplySkillEffect(const SkillContext& skillContext, DS_Effect* effect, Character* affected, const sf::Vector2f& affectedPosition = sf::Vector2f());
+    void ApplySkillEffectList(const SkillContext& skillContext, std::vector<DS_Effect*> effects, Character* affected, const gugu::Vector2f& affectedPosition = gugu::Vector2f());
+    void ApplySkillEffect(const SkillContext& skillContext, DS_Effect* effect, Character* affected, const gugu::Vector2f& affectedPosition = gugu::Vector2f());
 }
 
 }   //namespace demoproject

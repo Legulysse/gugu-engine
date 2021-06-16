@@ -117,9 +117,9 @@ void Demo::AppStart()
     }
 
     // Finalize.
-    m_referenceCoords4 = sf::Vector2i(4, 3);
-    m_referenceCoords8 = sf::Vector2i(4, 3);
-    m_referenceCoords6 = sf::Vector2i(4, 3);
+    m_referenceCoords4 = Vector2i(4, 3);
+    m_referenceCoords8 = Vector2i(4, 3);
+    m_referenceCoords6 = Vector2i(4, 3);
     m_neighboursRange = 4;
 
     RefreshGrids();
@@ -132,16 +132,16 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid4->GetWidth(); ++x)
         {
-            m_pTileMapA->UpdateTileTextureCoords(x, y, m_grid4->GetWidth(), m_gridData4->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
+            m_pTileMapA->UpdateTileTextureCoords(x, y, m_grid4->GetWidth(), m_gridData4->IsBlocked(Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
         }
     }
 
     m_pTileMapA->UpdateTileTextureCoords(m_referenceCoords4.x, m_referenceCoords4.y, m_grid4->GetWidth(), sf::IntRect(32, 32, 32, 32));
 
-    std::vector<sf::Vector2i> neighboursRangeA;
+    std::vector<Vector2i> neighboursRangeA;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid4, *m_gridData4, m_referenceCoords4, m_neighboursRange, neighboursRangeA);
 
-    for (sf::Vector2i coords : neighboursRangeA)
+    for (Vector2i coords : neighboursRangeA)
     {
         m_pTileMapA->UpdateTileTextureCoords(coords.x, coords.y, m_grid4->GetWidth(), sf::IntRect(32, 0, 32, 32));
     }
@@ -151,16 +151,16 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid8->GetWidth(); ++x)
         {
-            m_pTileMapB->UpdateTileTextureCoords(x, y, m_grid8->GetWidth(), m_gridData8->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
+            m_pTileMapB->UpdateTileTextureCoords(x, y, m_grid8->GetWidth(), m_gridData8->IsBlocked(Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
         }
     }
 
     m_pTileMapB->UpdateTileTextureCoords(m_referenceCoords8.x, m_referenceCoords8.y, m_grid8->GetWidth(), sf::IntRect(32, 32, 32, 32));
 
-    std::vector<sf::Vector2i> neighboursRangeB;
+    std::vector<Vector2i> neighboursRangeB;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid8, *m_gridData8, m_referenceCoords8, m_neighboursRange, neighboursRangeB);
 
-    for (sf::Vector2i coords : neighboursRangeB)
+    for (Vector2i coords : neighboursRangeB)
     {
         m_pTileMapB->UpdateTileTextureCoords(coords.x, coords.y, m_grid8->GetWidth(), sf::IntRect(32, 0, 32, 32));
     }
@@ -170,16 +170,16 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid6->GetWidth(); ++x)
         {
-            m_pTileMapC->UpdateTileTextureCoords(x, y, m_grid6->GetWidth(), m_gridData6->IsBlocked(sf::Vector2i(x, y)) ? sf::IntRect(0, 37, 32, 37) : sf::IntRect(0, 0, 32, 37));
+            m_pTileMapC->UpdateTileTextureCoords(x, y, m_grid6->GetWidth(), m_gridData6->IsBlocked(Vector2i(x, y)) ? sf::IntRect(0, 37, 32, 37) : sf::IntRect(0, 0, 32, 37));
         }
     }
 
     m_pTileMapC->UpdateTileTextureCoords(m_referenceCoords6.x, m_referenceCoords6.y, m_grid6->GetWidth(), sf::IntRect(32, 37, 32, 37));
 
-    std::vector<sf::Vector2i> neighboursRangeC;
+    std::vector<Vector2i> neighboursRangeC;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid6, *m_gridData6, m_referenceCoords6, m_neighboursRange, neighboursRangeC);
 
-    for (sf::Vector2i coords : neighboursRangeC)
+    for (Vector2i coords : neighboursRangeC)
     {
         m_pTileMapC->UpdateTileTextureCoords(coords.x, coords.y, m_grid6->GetWidth(), sf::IntRect(32, 0, 32, 37));
     }
@@ -194,11 +194,11 @@ void Demo::AppUpdate(const DeltaTime& dt)
     {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
         {
-            sf::Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-            sf::Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-            sf::Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
 
-            sf::Vector2i pickedCoords;
+            Vector2i pickedCoords;
             if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
             {
                 m_gridData4->SetBlocked(pickedCoords, true);
@@ -217,11 +217,11 @@ void Demo::AppUpdate(const DeltaTime& dt)
         }
         else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
         {
-            sf::Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-            sf::Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-            sf::Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
 
-            sf::Vector2i pickedCoords;
+            Vector2i pickedCoords;
             if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
             {
                 m_referenceCoords4 = pickedCoords;
@@ -265,9 +265,9 @@ void Demo::AppUpdate(const DeltaTime& dt)
             m_gridData8->ResetCells();
             m_gridData6->ResetCells();
 
-            m_referenceCoords4 = sf::Vector2i(4, 3);
-            m_referenceCoords8 = sf::Vector2i(4, 3);
-            m_referenceCoords6 = sf::Vector2i(4, 3);
+            m_referenceCoords4 = Vector2i(4, 3);
+            m_referenceCoords8 = Vector2i(4, 3);
+            m_referenceCoords6 = Vector2i(4, 3);
             m_neighboursRange = 4;
 
             refresh = true;

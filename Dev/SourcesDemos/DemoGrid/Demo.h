@@ -52,9 +52,9 @@ private:
     class DemoGridData* m_gridData8;
     class DemoGridData* m_gridData6;
 
-    sf::Vector2i m_referenceCoords4;
-    sf::Vector2i m_referenceCoords8;
-    sf::Vector2i m_referenceCoords6;
+    gugu::Vector2i m_referenceCoords4;
+    gugu::Vector2i m_referenceCoords8;
+    gugu::Vector2i m_referenceCoords6;
 
     int m_neighboursRange;
 };

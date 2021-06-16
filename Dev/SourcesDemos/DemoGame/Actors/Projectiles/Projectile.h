@@ -37,7 +37,7 @@ public:
     Projectile();
     virtual ~Projectile();
 
-    void InitProjectile(const SkillContext& skillContext, DS_EffectProjectile* effectSource, const sf::Vector2f& _kFrom, const sf::Vector2f& _kTo);
+    void InitProjectile(const SkillContext& skillContext, DS_EffectProjectile* effectSource, const gugu::Vector2f& _kFrom, const gugu::Vector2f& _kTo);
     bool OnHit(Character* character);
 
     virtual void Step(const gugu::DeltaTime& dt) override;
@@ -48,8 +48,8 @@ public:
     DS_EffectProjectile* m_effectSource;
     Character* m_characterSource;
     gugu::ElementSprite* m_sprite;
-    sf::Vector2f m_direction;
-    sf::Vector2f m_destination;
+    gugu::Vector2f m_direction;
+    gugu::Vector2f m_destination;
     float m_speed;
     float m_lifetime;
     bool m_hasLifetime;

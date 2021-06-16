@@ -59,7 +59,7 @@ void StateScenario::Init()
     {
         ElementSpriteGroup* panelCharacterSkills = m_root->AddChild<ElementSpriteGroup>();
         panelCharacterSkills->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-        panelCharacterSkills->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + sf::Vector2f(210, 0.f));
+        panelCharacterSkills->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + Vector2f(210, 0.f));
         panelCharacterSkills->LoadFromFile("Box9_blue.xml");
         panelCharacterSkills->SetSize(300, 100);
 
@@ -141,7 +141,7 @@ void StateScenario::Init()
 
         m_textStatus = panelStatus->AddChild<ElementText>();
         m_textStatus->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
-        m_textStatus->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + sf::Vector2f(15, 5));
+        m_textStatus->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(15, 5));
     }
 
     // Character sheet
@@ -203,23 +203,23 @@ void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::E
     float positionColumnOffsetXRightButton = 40.f;
 
     ElementText* textLabel = m_characterSheet->AddChild<ElementText>();
-    textLabel->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + sf::Vector2f(positionX, positionY));
+    textLabel->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(positionX, positionY));
     textLabel->SetText(label);
 
     textValue = m_characterSheet->AddChild<ElementText>();
-    textValue->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + sf::Vector2f(positionColumnX, positionY));
+    textValue->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(positionColumnX, positionY));
     textValue->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
     textValue->SetText("---");
 
     if (onClick)
     {
         ElementSprite* buttonValueLeft = m_characterSheet->AddChild<ElementSprite>();
-        buttonValueLeft->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + sf::Vector2f(positionColumnX + positionColumnOffsetXLeftButton, positionY));
+        buttonValueLeft->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(positionColumnX + positionColumnOffsetXLeftButton, positionY));
         buttonValueLeft->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
         buttonValueLeft->SetSubImage("uipack_rpg.imageset.xml", "arrowBrown_left");
 
         ElementSprite* buttonValueRight = m_characterSheet->AddChild<ElementSprite>();
-        buttonValueRight->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + sf::Vector2f(positionColumnX + positionColumnOffsetXRightButton, positionY));
+        buttonValueRight->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(positionColumnX + positionColumnOffsetXRightButton, positionY));
         buttonValueRight->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
         buttonValueRight->SetSubImage("uipack_rpg.imageset.xml", "arrowBrown_right");
         buttonValueRight->AddInteractionFlag(EInteraction::Click);

@@ -44,9 +44,9 @@ Character::~Character()
     m_grid = nullptr;
 }
 
-void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
+void Character::Move(Vector2f _kDirection, const DeltaTime& dt)
 {
-    if (_kDirection == sf::Vector2f())  //TODO: Constant for Zero vector
+    if (_kDirection == Vector2f())  //TODO: Constant for Zero vector
     {
         //if(!m_sprite->IsAnimationPlaying("IdleDown") && m_attackCooldown <= 0.f)  //TODO: param on StartAnimation to check current anim
         //    m_sprite->StartAnimation("IdleDown");
@@ -57,7 +57,7 @@ void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
     {
         _kDirection = Normalize(_kDirection);
 
-        sf::Vector2f position = Character::GetPosition();
+        Vector2f position = Character::GetPosition();
         position += _kDirection * dt.s() * m_walkSpeed;
 
         m_grid->ClampPositionInsideBounds(position);
@@ -166,7 +166,7 @@ void Character::Update(const DeltaTime& dt)
     m_sprite->SetZIndex((int32)m_sprite->GetPosition().y);
 }
 
-sf::Vector2f Character::GetPosition() const
+Vector2f Character::GetPosition() const
 {
     return m_sprite->GetPosition();
 }

@@ -21,15 +21,15 @@ public:
     void GenerateCells(int width, int height);
     void ResetCells();
 
-    bool IsBlocked(const sf::Vector2i& coords) const;
-    void SetBlocked(const sf::Vector2i& coords, bool blocked);
+    bool IsBlocked(const gugu::Vector2i& coords) const;
+    void SetBlocked(const gugu::Vector2i& coords, bool blocked);
 
     // Check diagonal move (only works for square-8 grids).
     bool AreDiagonalsRestricted() const;
     void SetDiagonalsRestricted(bool restrictDiagonals);
 
-    bool IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo) const;
-    bool IsWalkable(const sf::Vector2i& coordsFrom, const sf::Vector2i& coordsTo, float& cost) const;
+    bool IsWalkable(const gugu::Vector2i& coordsFrom, const gugu::Vector2i& coordsTo) const;
+    bool IsWalkable(const gugu::Vector2i& coordsFrom, const gugu::Vector2i& coordsTo, float& cost) const;
 
 private:
 

@@ -53,7 +53,7 @@ void RendererDemo::RenderWindow(FrameInfos& _pFrameInfos, Window* _pWindow, Came
     sf::RenderTarget* pTarget = _pWindow->GetSFRenderWindow();
 
     //Handle resize
-    sf::Vector2u kSize = pTarget->getSize();
+    Vector2u kSize = pTarget->getSize();
     if (m_renderTarget_Main->getSize() != kSize)
     {
         m_renderTarget_Main->create(kSize.x, kSize.y);

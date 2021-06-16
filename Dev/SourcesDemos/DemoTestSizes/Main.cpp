@@ -25,10 +25,10 @@ public:
 
     ~TestSFTransformable() {}
 
-    sf::Vector2f m_origin;
-    sf::Vector2f m_position;
+    Vector2f m_origin;
+    Vector2f m_position;
     float m_rotation;
-    sf::Vector2f m_scale;
+    Vector2f m_scale;
     mutable sf::Transform m_transform;
     mutable sf::Transform m_inverseTransform;
     mutable bool m_inverseTransformNeedUpdate;
@@ -48,7 +48,7 @@ public:
     std::vector<Element*> m_listChildren;
 
     TestSFTransformable m_kTransform;
-    sf::Vector2f        m_kSize;
+    Vector2f        m_kSize;
 
     int                 m_iRenderPass;
     int32               m_iZIndex;
@@ -173,7 +173,7 @@ int main(int argc, char* argv[])
     log.Print(ELog::Info, StringFormat(" TestMarginBool5 : {0}", sizeof(TestMarginBool5)));
     log.Print(ELog::Info, StringFormat(" TestMarginBool8 : {0}", sizeof(TestMarginBool8)));
     log.Print(ELog::Info, StringFormat("---------------------------------------"));
-    log.Print(ELog::Info, StringFormat(" sf::Vector2f : {0}", sizeof(sf::Vector2f)));
+    log.Print(ELog::Info, StringFormat(" Vector2f : {0}", sizeof(Vector2f)));
     log.Print(ELog::Info, StringFormat(" sf::Transformable : {0}", sizeof(sf::Transformable)));
     log.Print(ELog::Info, StringFormat(" sf::Transform : {0}", sizeof(sf::Transform)));
     log.Print(ELog::Info, StringFormat(" sf::Sprite : {0}", sizeof(sf::Sprite)));

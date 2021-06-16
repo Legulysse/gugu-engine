@@ -40,13 +40,13 @@ void Character::InitCharacter(int index)
     m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
 }
 
-void Character::Move(sf::Vector2f _kDirection, const DeltaTime& dt)
+void Character::Move(Vector2f _kDirection, const DeltaTime& dt)
 {
     _kDirection = Normalize(_kDirection);
     m_sprite->Move(_kDirection * dt.s() * 200.f);
 }
 
-sf::Vector2f Character::GetPosition() const
+Vector2f Character::GetPosition() const
 {
     return m_sprite->GetPosition();
 }

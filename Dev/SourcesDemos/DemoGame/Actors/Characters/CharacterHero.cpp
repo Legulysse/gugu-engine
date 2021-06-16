@@ -74,7 +74,7 @@ void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid, Elem
     //m_sprite->SetZIndex(1000);
 }
 
-void CharacterHero::UseSkillByIndex(int index, const sf::Vector2f& _kCoords, const gugu::DeltaTime& dt)
+void CharacterHero::UseSkillByIndex(int index, const Vector2f& _kCoords, const gugu::DeltaTime& dt)
 {
     // Index 0 is the base attack skill.
     if (index == 0)
@@ -89,7 +89,7 @@ void CharacterHero::UseSkillByIndex(int index, const sf::Vector2f& _kCoords, con
     }
 }
 
-void CharacterHero::UseSkill(DS_Skill* skill, const sf::Vector2f& _kCoords, const DeltaTime& dt)
+void CharacterHero::UseSkill(DS_Skill* skill, const Vector2f& _kCoords, const DeltaTime& dt)
 {
     m_isActingThisFrame = true;
 
@@ -148,14 +148,14 @@ void CharacterHero::UseSkill(DS_Skill* skill, const sf::Vector2f& _kCoords, cons
             SkillUtility::UseSkill(context);
         }
 
-        sf::Vector2f direction;
+        Vector2f direction;
         if (_kCoords != GetPosition())
         {
             direction = Normalize(_kCoords - GetPosition());
         }
         else
         {
-            direction = sf::Vector2f(1.f, 0.f);
+            direction = Vector2f(1.f, 0.f);
         }
 
         float fAngleDegrees = ToDegreesf(atan2f(direction.y, direction.x));

@@ -102,6 +102,8 @@ void EditorCore::Start()
 
 void EditorCore::Stop()
 {
+    RecursiveDeleteTreeNodes(m_rootNode);
+    SafeDelete(m_rootNode);
 }
 
 void EditorCore::Update(const DeltaTime& dt)
@@ -304,6 +306,15 @@ void EditorCore::RecursiveSortTreeNodes(TreeNode* node)
     }
 
     std::sort(node->children.begin(), node->children.end(), EditorCore::CompareTreeNodes);
+}
+
+void EditorCore::RecursiveDeleteTreeNodes(TreeNode* node)
+{
+    for (size_t i = 0; i < node->children.size(); ++i)
+    {
+        RecursiveDeleteTreeNodes(node->children[i]);
+        SafeDelete(node->children[i]);
+    }
 }
 
 void EditorCore::DisplayTreeNode(TreeNode* node, ImGuiTreeNodeFlags directoryFlags, ImGuiTreeNodeFlags fileFlags, bool test_drag_and_drop, bool isTable, int depth, bool expandAll, bool collapseAll)

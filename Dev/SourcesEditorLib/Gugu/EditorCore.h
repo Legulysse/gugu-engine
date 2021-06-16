@@ -43,6 +43,7 @@ private:
     void UpdateAssetsExplorer();
 
     void RecursiveSortTreeNodes(TreeNode* node);
+    void RecursiveDeleteTreeNodes(TreeNode* node);
     void DisplayTreeNode(TreeNode* node, ImGuiTreeNodeFlags directoryFlags, ImGuiTreeNodeFlags fileFlags, bool test_drag_and_drop, bool table, int depth, bool expandAll, bool collapseAll);
 
     static bool CompareTreeNodes(const TreeNode* left, const TreeNode* right);

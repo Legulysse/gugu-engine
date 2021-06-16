@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Datasheet base="Robert.general">
+<Datasheet parent="Robert.general">
     <Data name="name" value="Joffrey" />
     <Data name="speed" value="30" />
     <Data name="sprite" />

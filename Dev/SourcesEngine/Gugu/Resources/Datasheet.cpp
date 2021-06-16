@@ -49,12 +49,12 @@ bool Datasheet::LoadFromDatasheet(const std::string& _strPathName)
     if (oNodeRoot.empty())
         return false;
     
-    pugi::xml_attribute pAttributeBase = oNodeRoot.attribute("base");
-    if (pAttributeBase)
+    pugi::xml_attribute pAttributeParent = oNodeRoot.attribute("parent");
+    if (pAttributeParent)
     {
         //TODO: check same type
         //TODO: check loophole in recursivity
-        Datasheet* pParent = ResolveDatasheetLink(pAttributeBase.as_string(""));
+        Datasheet* pParent = ResolveDatasheetLink(pAttributeParent.as_string(""));
         if (pParent)
         {
             LoadFromDatasheet(pParent->GetFileInfoRef().GetPathName());     //TODO: error message if invalid base

@@ -158,7 +158,6 @@ private:
     bool        ReadEnumValue           (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue);
     bool        ReadEnumValues          (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues);
 
-
     pugi::xml_node  FindNodeData        (DatasheetParserContext& _kContext, const std::string& _strName);
 };
 

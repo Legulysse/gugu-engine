@@ -34,44 +34,37 @@ namespace gugu {
 
 Engine::Engine()
 {
-    //This constructor should stay empty.
-    //Because it's a singleton, if a GetInstance() is called by someone but the constructor isn't finished,
-    //the GetInstance will try to create an other instance (loop).
+    // This constructor should stay empty.
+    // Because it's a singleton, if a GetInstance() is called inside by another system but the constructor isn't finished,
+    // the GetInstance will try to create an other instance (loop).
 }
 
 Engine::~Engine()
 {
-    //Because of the constructor problem, I prefer to let the destructor also empty.
+    // Because of the constructor problem, I prefer to let the destructor also empty.
 }
 
 void Engine::Init(const EngineConfig& config)
 {
-    //-- Init low-level stuff
-
+    //-- Init low-level stuff --//
     ResetRandSeed();
 
-
-    //-- Init engine log and trace group
-
+    //-- Init engine log and trace group --//
     m_logEngine = new LoggerEngine();
     m_logEngine->SetFile("Engine.log");
-
-    GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, "Gugu::Engine Start");
 
     m_traceGroupMain = new TraceGroup;
     m_traceLifetime = 0;
 
+    GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, "Gugu::Engine Start");
 
-    //-- Pre-compute config parameters
-
+    //-- Pre-compute config parameters --//
     EngineConfig computedConfig = config;
 
     NormalizePathSelf(computedConfig.pathAssets, true);
     NormalizePathSelf(computedConfig.pathScreenshots, true);
 
-
-    //-- Init Engine core & Main Window
-
+    //-- Init Engine core --//
     m_stopLoop = false;
     m_stepSpeed = 10;
 
@@ -80,9 +73,7 @@ void Engine::Init(const EngineConfig& config)
     m_gameWindow = nullptr;
     m_world = nullptr;
 
-
-    //-- Init Managers
-
+    //-- Init Managers --//
     m_managerResources = new ManagerResources;
     m_managerResources->Init(computedConfig);
 
@@ -94,22 +85,18 @@ void Engine::Init(const EngineConfig& config)
 
     m_managerNetwork = new ManagerNetwork;
 
-
-    //-- Init Default Renderer
-
+    //-- Init Default Renderer --//
     m_renderer = new Renderer;
 
-
-    //-- Init World
-
+    //-- Init World --//
     m_world = new World;   //TODO: Should I really create a default World ?
     m_world->ResetWorld();
 
-
-    //-- Init Window
-
+    //-- Init Window --//
     if (computedConfig.gameWindow == EGameWindow::Sfml)
+    {
         m_gameWindow = new Window;
+    }
 
     if (m_gameWindow)
     {
@@ -173,14 +160,14 @@ void Engine::RunMainLoop()
     if (m_application)
         m_application->AppStart();
 
-    //Init loop clock
+    // Init loop clock.
     sf::Clock oClock;
 
-    //Init loop variables
-    sf::Time dtLoop = sf::Time::Zero;   //Time (ms) since last Loop
-    m_dtSinceLastStep = DeltaTime(0);   //Time (ms) since last Step
+    // Init loop variables.
+    sf::Time dtLoop = sf::Time::Zero;   //Time (ms) since last Loop.
+    m_dtSinceLastStep = DeltaTime(0);   //Time (ms) since last Step.
 
-    //Loop !
+    // Loop !
     while (!m_stopLoop)
     {
         if (m_traceLifetime > 0)
@@ -188,6 +175,7 @@ void Engine::RunMainLoop()
             if (!m_traceGroupMain->IsActive())
             {
                 m_traceGroupMain->Start();
+                m_stats.isTracing = true;
             }
             else
             {
@@ -196,6 +184,7 @@ void Engine::RunMainLoop()
                 {
                     m_traceGroupMain->Stop();
                     m_traceLifetime = 0;
+                    m_stats.isTracing = false;
                 }
             }
         }
@@ -206,11 +195,12 @@ void Engine::RunMainLoop()
         dtLoop = oClock.restart();
         RunSingleLoop(DeltaTime(dtLoop.asMilliseconds()));
 
-        //Safeguard if there is no render in the loop, to avoid using cpu and risking dt times of zero
+        // Safeguard if there is no render in the loop, to avoid using cpu and risking dt times of zero.
         if (m_windows.empty())
             sf::sleep(sf::milliseconds(16));
     }
 
+    // Loop stop.
     m_managerNetwork->StopReceptionThread();
 
     if (m_application)
@@ -226,13 +216,14 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     sf::Clock clockStatLoop;
     sf::Clock clockStatSteps;
 
-    //Network Step
+    //-- Network Reception --//
     if (m_managerNetwork->IsListening())
     {
         //m_managerNetwork->StepReception();
         m_managerNetwork->ProcessWaitingPackets();
     }
 
+    //-- Events --//
     {
         GUGU_SCOPE_TRACE_MAIN("Windows Events");
         clockStatSteps.restart();
@@ -259,6 +250,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
         }
     }
 
+    //-- Step --//
     {
         GUGU_SCOPE_TRACE_MAIN("Step");
         clockStatSteps.restart();
@@ -303,6 +295,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
         }
     }
 
+    //-- Update --//
     {
         GUGU_SCOPE_TRACE_MAIN("Update");
         clockStatSteps.restart();
@@ -312,7 +305,6 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
             ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), sf::Time(dt.GetSFTime()));
         }
 
-        //Update
         if (m_application)
             m_application->AppUpdate(dt);
 
@@ -322,15 +314,13 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
         for (size_t i = 0; i < m_windows.size(); ++i)
             m_windows[i]->Update(dt);
 
-        //Audio
         m_managerAudio->Update(dt);
     }
 
-    //Network
+    //-- Network Thread --//
     m_managerNetwork->StartReceptionThread();
 
-    m_stats.isTracing = m_traceGroupMain->IsActive();
-
+    //-- Render --//
     {
         GUGU_SCOPE_TRACE_MAIN("Render");
 

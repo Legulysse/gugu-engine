@@ -434,12 +434,12 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
     sf::Font* pFont = GetResources()->GetDebugFont()->GetSFFont();
 
     // Compute Values
-    uint32 iNbCurvePointsMax = 150;
+    uint32 iNbCurvePointsMax = engineStats.maxStatCount;
 
     // Frame Times
     int iFrameTime = _kFrameTime.ms();
     int iMinFrameTime = 9999999;
-    int iMaxFrameTime = 1;
+    int iMaxFrameTime = 0;
     float fAvgFrameTime = 0.f;
     int iFPS = 1000 / ((_kTimeSinceLastFrame.ms() > 0) ? _kTimeSinceLastFrame.ms() : 1);
 
@@ -447,8 +447,9 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
     int iMaxDrawCalls = 1;
 
     // Step Times
-    int maxStepTime = 1;
-    int lastStepTime = (engineStats.stepTimes.empty()) ? 0 : engineStats.stepTimes.front();
+    int minStepTime = 9999999;
+    int maxStepTime = 0;
+    int lastStepTime = -1;
 
     {
         GUGU_SCOPE_TRACE_MAIN("Compute Values");
@@ -485,8 +486,12 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
         // Step Times
         for (int value : engineStats.stepTimes)
         {
-            maxStepTime = Max(maxStepTime, value);
+            maxStepTime = value >= 0 ? Max(maxStepTime, value) : maxStepTime;
+            minStepTime = value >= 0 ? Min(minStepTime, value) : minStepTime;
+            lastStepTime = lastStepTime == -1 && value >= 0 ? value : lastStepTime;
         }
+
+        lastStepTime = Max(0, lastStepTime);
     }
 
     // Draw Curves
@@ -510,10 +515,30 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
         m_statsBackground.setScale((fCurveWidth + fPositionX + 200.f) / textureBackground->GetSize().x, (fCurveHeight + fPositionY + 22.f) / textureBackground->GetSize().y);
         m_sfWindow->draw(m_statsBackground);
 
+        // Step Times
+        {
+            int curveTopValue = Max(4, maxStepTime);
+            float curvePointScaleX = fCurveWidth / (iNbCurvePointsMax - 1);
+            float curvePointScaleY = (fCurveHeight - fMarginTop) / curveTopValue;
+
+            int index = 0;
+            sf::VertexArray curve(sf::PrimitiveType::Lines);
+            curve.resize(engineStats.stepTimes.size() * 2);
+            for (int value : engineStats.stepTimes)
+            {
+                value = Max(0, value);
+                curve[index * 2] = (sf::Vertex(Vector2f(fPositionX + index * curvePointScaleX, fPositionY + fCurveHeight /* - value * curvePointScaleY*/), colorCurveStepTimes));
+                curve[index * 2 + 1] = (sf::Vertex(Vector2f(fPositionX + index * curvePointScaleX, fPositionY + fCurveHeight - value * curvePointScaleY), colorCurveStepTimes));
+                ++index;
+            }
+            m_sfWindow->draw(curve);
+        }
+
         // Frame Times
         {
+            int curveTopValue = Max(4, iMaxFrameTime);
             float fCurvePointScaleX = fCurveWidth / (iNbCurvePointsMax - 1);
-            float fCurvePointScaleY = (fCurveHeight - fMarginTop) / iMaxFrameTime;
+            float fCurvePointScaleY = (fCurveHeight - fMarginTop) / curveTopValue;
 
             int iIndex = 0;
             sf::VertexArray kCurve(sf::PrimitiveType::LineStrip);
@@ -528,8 +553,9 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
 
         // Draw Calls
         {
+            int curveTopValue = Max(4, iMaxDrawCalls);
             float fCurvePointScaleX = fCurveWidth / (iNbCurvePointsMax - 1);
-            float fCurvePointScaleY = (fCurveHeight - fMarginTop) / iMaxDrawCalls;
+            float fCurvePointScaleY = (fCurveHeight - fMarginTop) / curveTopValue;
 
             int iIndex = 0;
             sf::VertexArray kCurve(sf::PrimitiveType::LineStrip);
@@ -540,22 +566,6 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
                 ++iIndex;
             }
             m_sfWindow->draw(kCurve);
-        }
-
-        // Step Times
-        {
-            float curvePointScaleX = fCurveWidth / (iNbCurvePointsMax - 1);
-            float curvePointScaleY = (fCurveHeight - fMarginTop) / maxStepTime;
-
-            int index = 0;
-            sf::VertexArray curve(sf::PrimitiveType::LineStrip);
-            curve.resize(engineStats.stepTimes.size());
-            for (int value : engineStats.stepTimes)
-            {
-                curve[index] = (sf::Vertex(Vector2f(fPositionX + index * curvePointScaleX, fPositionY + fCurveHeight - value * curvePointScaleY), colorCurveStepTimes));
-                ++index;
-            }
-            m_sfWindow->draw(curve);
         }
 
         // Borders
@@ -632,7 +642,7 @@ void Window::DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTi
         m_statTextStepTime.setPosition(fPositionX + 280.f, fPositionY + fCurveHeight);
         m_statTextStepTime.setFillColor(colorCurveStepTimes);
         m_statTextStepTime.setCharacterSize(iFontSize);
-        m_statTextStepTime.setString(StringFormat("Step time: {0} ms", lastStepTime));
+        m_statTextStepTime.setString(StringFormat("Step time: {0} ms (min: {1} ms, max: {2} ms)", lastStepTime, minStepTime, maxStepTime));
         m_statTextStepTime.setFont(*pFont);
         m_sfWindow->draw(m_statTextStepTime);
 

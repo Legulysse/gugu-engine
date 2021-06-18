@@ -202,6 +202,7 @@ void Engine::RunMainLoop()
 
         GUGU_SCOPE_TRACE_MAIN("Engine Loop");
 
+        // TODO: use microseconds as a base instead of milliseconds.
         dtLoop = oClock.restart();
         RunSingleLoop(DeltaTime(dtLoop.asMilliseconds()));
 
@@ -222,7 +223,6 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     DeltaTime dtConstantStep((20));
     DeltaTime dtSpeedModulatedStep(2 * m_stepSpeed);    // Default step speed multiplier is 10, minimum is 1.
 
-    uint32 statMaxNbValues = 150;
     sf::Clock clockStatLoop;
     sf::Clock clockStatSteps;
 
@@ -287,7 +287,16 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
 
             // Step Stats
             m_stats.stepTimes.push_front(clockStatSteps.getElapsedTime().asMilliseconds());
-            if (m_stats.stepTimes.size() > statMaxNbValues)
+            if (m_stats.stepTimes.size() > m_stats.maxStatCount)
+            {
+                m_stats.stepTimes.pop_back();
+            }
+        }
+        else
+        {
+            // Step Stats
+            m_stats.stepTimes.push_front(-1);
+            if (m_stats.stepTimes.size() > m_stats.maxStatCount)
             {
                 m_stats.stepTimes.pop_back();
             }
@@ -336,7 +345,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
 
     // Loop Stats
     m_stats.loopTimes.push_front(clockStatLoop.getElapsedTime().asMilliseconds());
-    if (m_stats.loopTimes.size() > statMaxNbValues)
+    if (m_stats.loopTimes.size() > m_stats.maxStatCount)
     {
         m_stats.loopTimes.pop_back();
     }

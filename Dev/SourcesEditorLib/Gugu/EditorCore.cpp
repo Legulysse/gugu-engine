@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/ImageSetPanel.h"
+
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
@@ -25,6 +27,7 @@ EditorCore::EditorCore()
     , m_showSearchResults(true)
     , m_showImGuiDemo(false)
     , m_rootNode(nullptr)
+    , m_imageSetPanel(nullptr)
 {
 }
 
@@ -98,10 +101,15 @@ void EditorCore::Start()
     }
 
     RecursiveSortTreeNodes(m_rootNode);
+
+    // Create a default ImageSet Panel.
+    m_imageSetPanel = new ImageSetPanel;
 }
 
 void EditorCore::Stop()
 {
+    SafeDelete(m_imageSetPanel);
+
     RecursiveDeleteTreeNodes(m_rootNode);
     SafeDelete(m_rootNode);
 }
@@ -183,16 +191,19 @@ void EditorCore::Update(const DeltaTime& dt)
     }
     ImGui::End();
 
-    if (ImGui::Begin("ImageSet Editor", false))
-    {
-        ImGui::Text("Here lies the future ImageSet Editor.");
+    //if (ImGui::Begin("ImageSet Editor", false))
+    //{
+    //    ImGui::Text("Here lies the future ImageSet Editor.");
 
-        if (!m_testFileOpen.empty())
-        {
-            ImGui::Text("Last opened file : %s.", m_testFileOpen.c_str());
-        }
-    }
-    ImGui::End();
+    //    if (!m_testFileOpen.empty())
+    //    {
+    //        ImGui::Text("Last opened file : %s.", m_testFileOpen.c_str());
+    //    }
+    //}
+    //ImGui::End();
+
+    // Update ImageSet panel.
+    m_imageSetPanel->Update(dt);
 
     if (ImGui::Begin("AnimSet Editor", false))
     {

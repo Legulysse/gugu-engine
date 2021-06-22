@@ -11,6 +11,14 @@
 #include <string>
 
 ////////////////////////////////////////////////////////////////
+// Forward Declarations
+
+namespace gugu
+{
+    class ImageSetPanel;
+}
+
+////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
@@ -57,6 +65,8 @@ private:
     TreeNode* m_rootNode;
 
     std::string m_testFileOpen;
+
+    ImageSetPanel* m_imageSetPanel;
 };
 
 }   //namespace gugu

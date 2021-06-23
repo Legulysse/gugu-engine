@@ -32,16 +32,20 @@ public:
     ~RenderViewport();
 
     void BeginRender();
-    void Render(const sf::Drawable* drawable);
     void FinalizeRender();
 
     void SetSize(Vector2u size);
+    void SetZoom(float zoomMultiplier);
+
+    Vector2f GetPickedPosition(const Vector2i& pixelCoords) const;
 
     Element* GetRoot() const;
 
 private:
 
     Vector2u m_size;
+    float m_zoomMultiplier;
+
     sf::RenderTexture* m_renderTexture;
     Element* m_root;
 };

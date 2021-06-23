@@ -11,6 +11,7 @@
 namespace gugu
 {
     class RenderViewport;
+    class ElementSFDrawable;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -30,6 +31,7 @@ public:
 private:
 
     RenderViewport* m_renderViewport;
+    ElementSFDrawable* m_drawable;
 };
 
 }   //namespace gugu

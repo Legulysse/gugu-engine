@@ -29,6 +29,7 @@ RenderViewport::RenderViewport()
     : m_renderTexture(nullptr)
     , m_root(nullptr)
     , m_size(100, 100)
+    , m_zoomMultiplier(1.f)
 {
     m_renderTexture = new sf::RenderTexture;
     m_renderTexture->create(m_size.x, m_size.y);
@@ -45,11 +46,11 @@ RenderViewport::~RenderViewport()
 void RenderViewport::BeginRender()
 {
     // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
-    ImVec2 canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
+    Vector2f canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
     //ImVec2 canvas_sz = ImGui::GetContentRegionAvail();   // Resize canvas to what's available
     //if (canvas_sz.x < 50.0f) canvas_sz.x = 50.0f;
     //if (canvas_sz.y < 50.0f) canvas_sz.y = 50.0f;
-    Vector2u canvas_sz(m_size);
+    Vector2u canvas_sz((uint32)((float)m_size.x * m_zoomMultiplier), (uint32)((float)m_size.y * m_zoomMultiplier));
 
     //ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.y);
 
@@ -77,10 +78,26 @@ void RenderViewport::BeginRender()
         m_renderTexture->create(canvas_sz.x, canvas_sz.y);
     }
 
-    m_root->SetSize(Vector2f(canvas_sz));
+    m_root->SetSize(Vector2f(m_size));
+    //m_root->SetSize(Vector2f(canvas_sz));
+    //m_root->SetScale(m_zoomMultiplier);
 
+    sf::View view;
+    view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
+    m_renderTexture->setView(view);
+}
+
+void RenderViewport::FinalizeRender()
+{
     // Render the scene.
     m_renderTexture->clear(sf::Color(128, 128, 128, 255));
+
+    // Save View
+    //sf::View backupView = m_renderTexture->getView();
+
+    //sf::View view;
+    //view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
+    //m_renderTexture->setView(view);
 
     sf::FloatRect viewport;
     viewport.left = m_renderTexture->getView().getCenter().x - m_renderTexture->getView().getSize().x / 2.f;
@@ -94,23 +111,27 @@ void RenderViewport::BeginRender()
     renderPass.rectViewport = viewport;
 
     m_root->Render(renderPass, sf::Transform());
-}
 
-void RenderViewport::Render(const sf::Drawable* drawable)
-{
-    m_renderTexture->draw(*drawable);
-}
-
-void RenderViewport::FinalizeRender()
-{
     m_renderTexture->display();
 
     ImGui::Image(*m_renderTexture);
+
+    // Restore View
+    //m_renderTexture->setView(backupView);
 }
 
 void RenderViewport::SetSize(Vector2u size)
 {
     m_size = size;
+}
+
+void RenderViewport::SetZoom(float zoomMultiplier)
+{
+    m_zoomMultiplier = zoomMultiplier;
+}
+Vector2f RenderViewport::GetPickedPosition(const Vector2i& pixelCoords) const
+{
+    return m_renderTexture->mapPixelToCoords(pixelCoords, m_renderTexture->getView());
 }
 
 Element* RenderViewport::GetRoot() const

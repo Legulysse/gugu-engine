@@ -19,8 +19,9 @@
 namespace gugu {
     
 ElementSFDrawable::ElementSFDrawable()
+    : m_sfDrawable(nullptr)
+    , m_callbackOnSizeChanged(nullptr)
 {
-    m_sfDrawable = nullptr;
 }
 
 ElementSFDrawable::~ElementSFDrawable()
@@ -38,6 +39,19 @@ void ElementSFDrawable::SetSFDrawable(sf::Drawable* _pSFDrawable)
 sf::Drawable* ElementSFDrawable::GetSFDrawable() const
 {
     return m_sfDrawable;
+}
+
+void ElementSFDrawable::SetCallbackOnSizeChanged(DelegateElementSizeChanged callbackOnSizeChanged)
+{
+    m_callbackOnSizeChanged = callbackOnSizeChanged;
+}
+
+void ElementSFDrawable::OnSizeChanged(Vector2f _kOldSize)
+{
+    if (m_callbackOnSizeChanged)
+    {
+        m_callbackOnSizeChanged(this);
+    }
 }
 
 void ElementSFDrawable::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)

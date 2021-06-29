@@ -45,67 +45,82 @@ ImageSetPanel::ImageSetPanel()
     shapeCenter->setOutlineThickness(1.f);
     shapeCenter->setOutlineColor(sf::Color(255, 0, 0, 255));
     shapeCenter->setFillColor(sf::Color(255, 0, 255, 100));
-    shapeCenter->setSize(sf::Vector2f(50, 50));
+    shapeCenter->setSize(sf::Vector2f(20, 20));
+
+    auto resizeRectangle = [](ElementSFDrawable* element)
+        {
+            sf::RectangleShape* shape = (sf::RectangleShape*)element->GetSFDrawable();
+            shape->setSize(element->GetSize());
+        };
 
     m_gizmoCenter = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
     m_gizmoCenter->SetSFDrawable(shapeCenter);
-    m_gizmoCenter->SetSize(shapeCenter->getSize());
+    m_gizmoCenter->SetCallbackOnSizeChanged(resizeRectangle);
+    m_gizmoCenter->SetSize(100, 50);
 
     const Vector2f sizeEdge(6.f, 6.f);
-    auto createEdgeShape = [&sizeEdge]() -> sf::RectangleShape*
-    {
-        sf::RectangleShape* shapeEdge = new sf::RectangleShape;
-        //shapeEdge->setOutlineThickness(1.f);
-        //shapeEdge->setOutlineColor(sf::Color(255, 0, 0, 255));
-        shapeEdge->setFillColor(sf::Color(255, 0, 0, 255));
-        shapeEdge->setSize(sizeEdge);
-        return shapeEdge;
-    };
+    auto createEdgeShape = []() -> sf::RectangleShape*
+        {
+            sf::RectangleShape* shapeEdge = new sf::RectangleShape;
+            //shapeEdge->setOutlineThickness(1.f);
+            //shapeEdge->setOutlineColor(sf::Color(255, 0, 0, 255));
+            shapeEdge->setFillColor(sf::Color(255, 0, 0, 255));
+            shapeEdge->setSize(sf::Vector2f(20, 20));
+            return shapeEdge;
+        };
 
     m_gizmoEdgeTopLeft = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeTopLeft->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeTopLeft->SetCallbackOnSizeChanged(resizeRectangle);
     m_gizmoEdgeTopLeft->SetUnifiedOrigin(UDim2(1.f, 0.f, 1.f, 0.f));
     m_gizmoEdgeTopLeft->SetUnifiedPosition(UDim2(0.f, 0.f, 0.f, 0.f));
     m_gizmoEdgeTopLeft->SetSize(sizeEdge);
 
     m_gizmoEdgeTop = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeTop->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeTop->SetCallbackOnSizeChanged(resizeRectangle);
     m_gizmoEdgeTop->SetUnifiedOrigin(UDim2(.5f, 0.f, 1.f, 8.f));
     m_gizmoEdgeTop->SetUnifiedPosition(UDim2(0.5f, 0.f, 0.f, 0.f));
     m_gizmoEdgeTop->SetSize(sizeEdge);
 
     m_gizmoEdgeTopRight = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeTopRight->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeTopRight->SetCallbackOnSizeChanged(resizeRectangle);
     m_gizmoEdgeTopRight->SetUnifiedOrigin(UDim2(0.f, 0.f, 1.f, 0.f));
     m_gizmoEdgeTopRight->SetUnifiedPosition(UDim2(1.f, 0.f, 0.f, 0.f));
     m_gizmoEdgeTopRight->SetSize(sizeEdge);
 
     m_gizmoEdgeRight = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeRight->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeRight->SetCallbackOnSizeChanged(resizeRectangle);
     m_gizmoEdgeRight->SetUnifiedOrigin(UDim2(0.f, -8.f, .5f, 0.f));
     m_gizmoEdgeRight->SetUnifiedPosition(UDim2(1.f, 0.f, 0.5f, 0.f));
     m_gizmoEdgeRight->SetSize(sizeEdge);
 
     m_gizmoEdgeBottomRight = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeBottomRight->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeBottomRight->SetCallbackOnSizeChanged(resizeRectangle);
     m_gizmoEdgeBottomRight->SetUnifiedOrigin(UDim2(0.f, 0.f, 0.f, 0.f));
     m_gizmoEdgeBottomRight->SetUnifiedPosition(UDim2(1.f, 0.f, 1.f, 0.f));
     m_gizmoEdgeBottomRight->SetSize(sizeEdge);
 
     m_gizmoEdgeBottom = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeBottom->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeBottom->SetCallbackOnSizeChanged(resizeRectangle);
     m_gizmoEdgeBottom->SetUnifiedOrigin(UDim2(0.5f, 0.f, 0.f, -8.f));
     m_gizmoEdgeBottom->SetUnifiedPosition(UDim2(.5f, 0.f, 1.f, 0.f));
     m_gizmoEdgeBottom->SetSize(sizeEdge);
 
     m_gizmoEdgeBottomLeft = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeBottomLeft->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeBottomLeft->SetCallbackOnSizeChanged(resizeRectangle);
     m_gizmoEdgeBottomLeft->SetUnifiedOrigin(UDim2(1.f, 0.f, 0.f, 0.f));
     m_gizmoEdgeBottomLeft->SetUnifiedPosition(UDim2(0.f, 0.f, 1.f, 0.f));
     m_gizmoEdgeBottomLeft->SetSize(sizeEdge);
 
     m_gizmoEdgeLeft = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeLeft->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeLeft->SetCallbackOnSizeChanged(resizeRectangle);
     m_gizmoEdgeLeft->SetUnifiedOrigin(UDim2(1.f, 8.f, 0.5f, 0.f));
     m_gizmoEdgeLeft->SetUnifiedPosition(UDim2(0.f, 0.f, .5f, 0.f));
     m_gizmoEdgeLeft->SetSize(sizeEdge);

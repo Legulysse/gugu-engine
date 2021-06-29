@@ -45,6 +45,9 @@ RenderViewport::~RenderViewport()
 
 void RenderViewport::BeginRender()
 {
+    ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
+    ImGui::BeginChild("RenderViewport", ImVec2(0, 0), false, flags);
+
     // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
     Vector2f canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
     //ImVec2 canvas_sz = ImGui::GetContentRegionAvail();   // Resize canvas to what's available
@@ -61,7 +64,7 @@ void RenderViewport::BeginRender()
     //draw_list->AddRect(canvas_p0, canvas_p1, IM_COL32(255, 255, 255, 255));
 
     // This will catch our interactions
-    ImGui::InvisibleButton("canvasInvisibleButton", canvas_sz, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
+    ImGui::InvisibleButton("RenderViewportInvisibleButton", canvas_sz, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
     //const bool is_hovered = ImGui::IsItemHovered(); // Hovered
     //const bool is_active = ImGui::IsItemActive();   // Held
     ////const ImVec2 origin(canvas_p0.x + scrolling.x, canvas_p0.y + scrolling.y); // Lock scrolled origin
@@ -118,6 +121,8 @@ void RenderViewport::FinalizeRender()
 
     // Restore View
     //m_renderTexture->setView(backupView);
+
+    ImGui::EndChild();
 }
 
 void RenderViewport::SetSize(Vector2u size)

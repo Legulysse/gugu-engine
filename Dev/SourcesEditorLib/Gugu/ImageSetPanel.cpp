@@ -26,24 +26,89 @@ namespace gugu {
 
 ImageSetPanel::ImageSetPanel()
     : m_renderViewport(nullptr)
-    , m_drawable(nullptr)
+    , m_gizmoCenter(nullptr)
+    , m_isDraggingGizmo(false)
+    , m_draggedGizmo(nullptr)
+    , m_dragStartPosition(0, 0)
+    , m_gizmoStartPosition(0, 0)
 {
+    // Setup render viewport.
     m_renderViewport = new RenderViewport;
 
     ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
     sprite->SetTexture("uipack_rpg.png");
 
-    sf::RectangleShape* testShape = new sf::RectangleShape;
-    testShape->setOutlineThickness(1.f);
-    testShape->setOutlineColor(sf::Color(255, 0, 0, 255));
-    testShape->setFillColor(sf::Color(255, 0, 255, 100));
-    testShape->setSize(sf::Vector2f(50, 50));
-
-    m_drawable = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
-    m_drawable->SetSFDrawable(testShape);
-    m_drawable->SetSize(testShape->getSize());
-
     m_renderViewport->SetSize(Vector2u(sprite->GetSize()));
+
+    // Setup gizmo.
+    sf::RectangleShape* shapeCenter = new sf::RectangleShape;
+    shapeCenter->setOutlineThickness(1.f);
+    shapeCenter->setOutlineColor(sf::Color(255, 0, 0, 255));
+    shapeCenter->setFillColor(sf::Color(255, 0, 255, 100));
+    shapeCenter->setSize(sf::Vector2f(50, 50));
+
+    m_gizmoCenter = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
+    m_gizmoCenter->SetSFDrawable(shapeCenter);
+    m_gizmoCenter->SetSize(shapeCenter->getSize());
+
+    const Vector2f sizeEdge(6.f, 6.f);
+    auto createEdgeShape = [&sizeEdge]() -> sf::RectangleShape*
+    {
+        sf::RectangleShape* shapeEdge = new sf::RectangleShape;
+        //shapeEdge->setOutlineThickness(1.f);
+        //shapeEdge->setOutlineColor(sf::Color(255, 0, 0, 255));
+        shapeEdge->setFillColor(sf::Color(255, 0, 0, 255));
+        shapeEdge->setSize(sizeEdge);
+        return shapeEdge;
+    };
+
+    m_gizmoEdgeTopLeft = m_gizmoCenter->AddChild<ElementSFDrawable>();
+    m_gizmoEdgeTopLeft->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeTopLeft->SetUnifiedOrigin(UDim2(1.f, 0.f, 1.f, 0.f));
+    m_gizmoEdgeTopLeft->SetUnifiedPosition(UDim2(0.f, 0.f, 0.f, 0.f));
+    m_gizmoEdgeTopLeft->SetSize(sizeEdge);
+
+    m_gizmoEdgeTop = m_gizmoCenter->AddChild<ElementSFDrawable>();
+    m_gizmoEdgeTop->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeTop->SetUnifiedOrigin(UDim2(.5f, 0.f, 1.f, 8.f));
+    m_gizmoEdgeTop->SetUnifiedPosition(UDim2(0.5f, 0.f, 0.f, 0.f));
+    m_gizmoEdgeTop->SetSize(sizeEdge);
+
+    m_gizmoEdgeTopRight = m_gizmoCenter->AddChild<ElementSFDrawable>();
+    m_gizmoEdgeTopRight->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeTopRight->SetUnifiedOrigin(UDim2(0.f, 0.f, 1.f, 0.f));
+    m_gizmoEdgeTopRight->SetUnifiedPosition(UDim2(1.f, 0.f, 0.f, 0.f));
+    m_gizmoEdgeTopRight->SetSize(sizeEdge);
+
+    m_gizmoEdgeRight = m_gizmoCenter->AddChild<ElementSFDrawable>();
+    m_gizmoEdgeRight->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeRight->SetUnifiedOrigin(UDim2(0.f, -8.f, .5f, 0.f));
+    m_gizmoEdgeRight->SetUnifiedPosition(UDim2(1.f, 0.f, 0.5f, 0.f));
+    m_gizmoEdgeRight->SetSize(sizeEdge);
+
+    m_gizmoEdgeBottomRight = m_gizmoCenter->AddChild<ElementSFDrawable>();
+    m_gizmoEdgeBottomRight->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeBottomRight->SetUnifiedOrigin(UDim2(0.f, 0.f, 0.f, 0.f));
+    m_gizmoEdgeBottomRight->SetUnifiedPosition(UDim2(1.f, 0.f, 1.f, 0.f));
+    m_gizmoEdgeBottomRight->SetSize(sizeEdge);
+
+    m_gizmoEdgeBottom = m_gizmoCenter->AddChild<ElementSFDrawable>();
+    m_gizmoEdgeBottom->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeBottom->SetUnifiedOrigin(UDim2(0.5f, 0.f, 0.f, -8.f));
+    m_gizmoEdgeBottom->SetUnifiedPosition(UDim2(.5f, 0.f, 1.f, 0.f));
+    m_gizmoEdgeBottom->SetSize(sizeEdge);
+
+    m_gizmoEdgeBottomLeft = m_gizmoCenter->AddChild<ElementSFDrawable>();
+    m_gizmoEdgeBottomLeft->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeBottomLeft->SetUnifiedOrigin(UDim2(1.f, 0.f, 0.f, 0.f));
+    m_gizmoEdgeBottomLeft->SetUnifiedPosition(UDim2(0.f, 0.f, 1.f, 0.f));
+    m_gizmoEdgeBottomLeft->SetSize(sizeEdge);
+
+    m_gizmoEdgeLeft = m_gizmoCenter->AddChild<ElementSFDrawable>();
+    m_gizmoEdgeLeft->SetSFDrawable(createEdgeShape());
+    m_gizmoEdgeLeft->SetUnifiedOrigin(UDim2(1.f, 8.f, 0.5f, 0.f));
+    m_gizmoEdgeLeft->SetUnifiedPosition(UDim2(0.f, 0.f, .5f, 0.f));
+    m_gizmoEdgeLeft->SetSize(sizeEdge);
 }
 
 ImageSetPanel::~ImageSetPanel()
@@ -54,156 +119,63 @@ ImageSetPanel::~ImageSetPanel()
 void ImageSetPanel::Update(const DeltaTime& dt)
 {
     ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
-
     if (ImGui::Begin("ImageSet Editor", false, flags))
     {
-        ImGui::Text("ImageSet panel goes here.");
-
+        // Toolbar.
         static float zoomFactor = 1.f;
         if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
         {
             m_renderViewport->SetZoom(zoomFactor);
         }
 
-
-
+        // Render viewport.
         m_renderViewport->BeginRender();
 
-
-        ImGuiIO& io = ImGui::GetIO();
-        const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
-        const bool is_hovered = ImGui::IsItemHovered();
-        const bool is_active = ImGui::IsItemActive();
-
-        const Vector2f origin(canvas_p0.x, canvas_p0.y);
-        const Vector2f mouse_pos_in_canvas(io.MousePos.x - origin.x, io.MousePos.y - origin.y);
-
-        // TODO: check the drag start via ImGui::IsMouseClicked(ImGuiMouseButton_Left)
-        static Vector2f itemPosition(0, 0);
-        static bool isDraggingGizmo = false;
-        static Vector2f dragStartPosition(0, 0);
-        static Vector2f itemStartPosition(0, 0);
-
-        if (!isDraggingGizmo && is_hovered && is_active && ImGui::IsMouseDown(ImGuiMouseButton_Left))
-        {
-            // TODO: test actual picking
-            if (true)
-            {
-                isDraggingGizmo = true;
-                dragStartPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
-                itemStartPosition = m_drawable->GetPosition();
-            }
-        }
-
-        if (isDraggingGizmo)
-        {
-            if (/*is_hovered && */ is_active && ImGui::IsMouseDown(ImGuiMouseButton_Left))
-            {
-                itemPosition = itemStartPosition - dragStartPosition + m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
-
-                // Snap to pixel.
-                itemPosition = Vector2f(Vector2i(itemPosition));
-            }
-            else
-            {
-                isDraggingGizmo = false;
-            }
-        }
-
-        // TODO: Render
-        // - maybe I can reuse camera + renderer inside the RenderViewport with a little bit of refacto ?
-        // - I need to check if saving/resetting the view is useful
-        // - In my use case I probably can ignore reusing renderer + camera and the view backup
-
-        // TODO: Gizmo
-        // - register a list of pickable gizmos
-        // - method to pick an Element from a list of pickable elements, through the RenderViewport context
-        // - click : pick and register as dragged Element
-        // - is_active : move dragged Element depending on the offset with the starting position
-        // - update coords every frame from the gizmo position
-
-        m_drawable->SetPosition(itemPosition);
-
-        //sf::RectangleShape testShape;
-        //testShape.setOutlineThickness(1.f);
-        //testShape.setOutlineColor(sf::Color(255, 0, 0, 255));
-        //testShape.setFillColor(sf::Color(255, 0, 255, 100));
-        //testShape.setPosition(itemPosition);
-        //testShape.setSize(sf::Vector2f(50, 50));
-        //m_renderViewport->Render(&testShape);
-
+        UpdateGizmo();
 
         m_renderViewport->FinalizeRender();
-
-#if 0
-        static Vector2f itemPosition(0, 0);
-
-        // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
-        ImVec2 canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
-        //ImVec2 canvas_sz = ImGui::GetContentRegionAvail();   // Resize canvas to what's available
-        //if (canvas_sz.x < 50.0f) canvas_sz.x = 50.0f;
-        //if (canvas_sz.y < 50.0f) canvas_sz.y = 50.0f;
-        Vector2u canvas_sz(1024, 512);
-
-        //ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.y);
-
-        // Draw border and background color
-        ImGuiIO& io = ImGui::GetIO();
-        //ImDrawList* draw_list = ImGui::GetWindowDrawList();
-        //draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(50, 50, 50, 255));
-        //draw_list->AddRect(canvas_p0, canvas_p1, IM_COL32(255, 255, 255, 255));
-
-        // This will catch our interactions
-        ImGui::InvisibleButton("canvasInvisibleButton", canvas_sz, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
-        const bool is_hovered = ImGui::IsItemHovered(); // Hovered
-        const bool is_active = ImGui::IsItemActive();   // Held
-        //const ImVec2 origin(canvas_p0.x + scrolling.x, canvas_p0.y + scrolling.y); // Lock scrolled origin
-        //const ImVec2 mouse_pos_in_canvas(io.MousePos.x - origin.x, io.MousePos.y - origin.y);
-        const ImVec2 origin(canvas_p0.x, canvas_p0.y); // Lock scrolled origin
-        const ImVec2 mouse_pos_in_canvas(io.MousePos.x - origin.x, io.MousePos.y - origin.y);
-
-
-        // Little trick : draw an invisible button the size of the texture, then draw the texture all over it.
-        ImGui::SetCursorScreenPos(canvas_p0);
-
-
-        // TODO: check the drag start via ImGui::IsMouseClicked(ImGuiMouseButton_Left)
-        if (/*is_hovered && */ is_active && ImGui::IsMouseDown(ImGuiMouseButton_Left))
-        {
-            itemPosition = mouse_pos_in_canvas;
-        }
-
-
-        if (m_renderTexture->getSize() != canvas_sz)
-        {
-            m_renderTexture->create(canvas_sz.x, canvas_sz.y);
-        }
-
-        m_renderTexture->clear(sf::Color(128, 128, 128, 255));
-
-        sf::RectangleShape testShape;
-        testShape.setOutlineThickness(1.f);
-        testShape.setOutlineColor(sf::Color::Blue);
-        testShape.setFillColor(sf::Color::Transparent);
-        testShape.setPosition(itemPosition);
-        testShape.setSize(sf::Vector2f(20, 20));
-
-        m_renderTexture->draw(testShape);
-#endif
-
-        ImGui::Text("Now for some other tests.");
-
-        ImGui::BeginChild("testtesttest", ImVec2(200, 100));
-
-        for (int i = 0; i < 20; ++i)
-        {
-            ImGui::Text("Blah blah blah.");
-            ImGui::Text("Bleh blih bloh.");
-        }
-
-        ImGui::EndChild();
     }
     ImGui::End();
+}
+
+void ImageSetPanel::UpdateGizmo()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
+    const bool is_hovered = ImGui::IsItemHovered();
+    const bool is_active = ImGui::IsItemActive();
+
+    const Vector2f origin(canvas_p0.x, canvas_p0.y);
+    const Vector2f mouse_pos_in_canvas(io.MousePos.x - origin.x, io.MousePos.y - origin.y);
+    Vector2f pickedPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
+
+    if (!m_isDraggingGizmo && is_hovered && is_active && ImGui::IsMouseDown(ImGuiMouseButton_Left))
+    {
+        if (m_gizmoCenter->IsPicked(pickedPosition))
+        {
+            m_isDraggingGizmo = true;
+            m_draggedGizmo = m_gizmoCenter;
+            m_dragStartPosition = pickedPosition;
+            m_gizmoStartPosition = m_gizmoCenter->GetPosition();
+        }
+    }
+
+    if (m_isDraggingGizmo)
+    {
+        if (is_active && ImGui::IsMouseDown(ImGuiMouseButton_Left))
+        {
+            Vector2f itemPosition = m_gizmoStartPosition - m_dragStartPosition + pickedPosition;
+
+            // Snap to pixel.
+            itemPosition = Vector2f(Vector2i(itemPosition));
+
+            m_draggedGizmo->SetPosition(itemPosition);
+        }
+        else
+        {
+            m_isDraggingGizmo = false;
+        }
+    }
 }
 
 }   //namespace gugu

@@ -28,7 +28,8 @@ public:
     ImageSetPanel();
     ~ImageSetPanel();
 
-    void Update(const gugu::DeltaTime& dt);
+    void UpdatePanel(const gugu::DeltaTime& dt);
+    void UpdateProperties(const gugu::DeltaTime& dt);
 
 private:
 

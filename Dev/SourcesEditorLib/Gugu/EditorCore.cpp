@@ -203,7 +203,7 @@ void EditorCore::Update(const DeltaTime& dt)
     //ImGui::End();
 
     // Update ImageSet panel.
-    m_imageSetPanel->Update(dt);
+    m_imageSetPanel->UpdatePanel(dt);
 
     if (ImGui::Begin("AnimSet Editor", false))
     {
@@ -219,7 +219,9 @@ void EditorCore::Update(const DeltaTime& dt)
     ImGui::Begin("Output Log", false);
     ImGui::End();
 
+    // Update Properties panel.
     ImGui::Begin("Properties", false);
+    m_imageSetPanel->UpdateProperties(dt);
     ImGui::End();
 
     if (m_showSearchResults)

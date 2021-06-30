@@ -8,16 +8,13 @@
 // Includes
 
 #include "Gugu/Engine.h"
-//#include "Gugu/Window/Window.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include <SFML/Graphics/RenderTexture.hpp>
-//#include <SFML/Graphics/RectangleShape.hpp>
 
 #include <imgui.h>
-#include <imgui_internal.h>
 #include <imgui-SFML.h>
 
 ////////////////////////////////////////////////////////////////

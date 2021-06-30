@@ -18,7 +18,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 
 #include <imgui.h>
-#include <imgui_internal.h>
+#include <imgui_stdlib.h>
 
 #include <array>
 
@@ -51,7 +51,7 @@ ImageSetPanel::~ImageSetPanel()
     SafeDelete(m_renderViewport);
 }
 
-void ImageSetPanel::Update(const DeltaTime& dt)
+void ImageSetPanel::UpdatePanel(const DeltaTime& dt)
 {
     ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
     if (ImGui::Begin("ImageSet Editor", false, flags))
@@ -71,6 +71,85 @@ void ImageSetPanel::Update(const DeltaTime& dt)
         m_renderViewport->FinalizeRender();
     }
     ImGui::End();
+}
+
+void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
+{
+    // Test gizmo sync.
+    int position[2] = { (int)m_gizmoCenter->GetPosition().x, (int)m_gizmoCenter->GetPosition().y };
+    int size[2] = { (int)m_gizmoCenter->GetSize().x, (int)m_gizmoCenter->GetSize().y };
+
+    if (ImGui::InputInt2("Position", position))
+    {
+        m_gizmoCenter->SetPosition((float)position[0], (float)position[1]);
+    }
+
+    if (ImGui::InputInt2("Size", size))
+    {
+        m_gizmoCenter->SetSize((float)size[0], (float)size[1]);
+    }
+
+    // SubImages list.
+    ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_NoPadInnerX;
+    if (ImGui::BeginTable("SubImages Table", 6, flags))
+    {
+        ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
+        ImGui::TableSetupColumn("#", columnFlags, 30.f);
+        ImGui::TableSetupColumn("name", columnFlags, 150.f);
+        ImGui::TableSetupColumn("x", columnFlags, 40.f);
+        ImGui::TableSetupColumn("y", columnFlags, 40.f);
+        ImGui::TableSetupColumn("w", columnFlags, 40.f);
+        ImGui::TableSetupColumn("h", columnFlags, 40.f);
+        ImGui::TableSetupScrollFreeze(0, 1);
+        ImGui::TableHeadersRow();
+
+        // TODO: handle sort (ImGuiTableSortSpecs).
+        // TODO: handle big list (ImGuiListClipper).
+        for (int rowIndex = 0; rowIndex < 500; ++rowIndex)
+        {
+            ImGui::TableNextRow();
+
+            if (rowIndex == 0)
+            {
+                // Setup ItemWidth once.
+                int headerIndex = 0;
+
+                ImGui::TableSetColumnIndex(headerIndex++);
+                ImGui::PushItemWidth(-1);
+                ImGui::TableSetColumnIndex(headerIndex++);
+                ImGui::PushItemWidth(-1);
+                ImGui::TableSetColumnIndex(headerIndex++);
+                ImGui::PushItemWidth(-1);
+                ImGui::TableSetColumnIndex(headerIndex++);
+                ImGui::PushItemWidth(-1);
+                ImGui::TableSetColumnIndex(headerIndex++);
+                ImGui::PushItemWidth(-1);
+                ImGui::TableSetColumnIndex(headerIndex++);
+                ImGui::PushItemWidth(-1);
+            }
+
+            int columnIndex = 0;
+            static std::string dummy_c = "my name";
+            static int dummy_i = 0;
+
+            ImGui::PushID(rowIndex);
+            ImGui::TableSetColumnIndex(columnIndex++);
+            ImGui::Text("%d", rowIndex);
+            ImGui::TableSetColumnIndex(columnIndex++);
+            ImGui::InputText("##name", &dummy_c);
+            ImGui::TableSetColumnIndex(columnIndex++);
+            ImGui::InputInt("##x", &dummy_i, 0);
+            ImGui::TableSetColumnIndex(columnIndex++);
+            ImGui::InputInt("##y", &dummy_i, 0);
+            ImGui::TableSetColumnIndex(columnIndex++);
+            ImGui::InputInt("##w", &dummy_i, 0);
+            ImGui::TableSetColumnIndex(columnIndex++);
+            ImGui::InputInt("##w", &dummy_i, 0);
+            ImGui::PopID();
+        }
+
+        ImGui::EndTable();
+    }
 }
 
 void ImageSetPanel::CreateGizmo()

@@ -25,11 +25,12 @@
 
 namespace gugu {
 
-RenderViewport::RenderViewport()
+RenderViewport::RenderViewport(bool fillAvailableArea)
     : m_renderTexture(nullptr)
     , m_root(nullptr)
     , m_size(100, 100)
     , m_zoomMultiplier(1.f)
+    , m_fillAvailableArea(fillAvailableArea)
 {
     m_renderTexture = new sf::RenderTexture;
     m_renderTexture->create(m_size.x, m_size.y);
@@ -45,15 +46,19 @@ RenderViewport::~RenderViewport()
 
 void RenderViewport::BeginRender()
 {
+    // Compute canvas size and area size.
+    Vector2u canvas_sz((uint32)((float)m_size.x * m_zoomMultiplier), (uint32)((float)m_size.y * m_zoomMultiplier));
+    Vector2u areaSize = m_fillAvailableArea ? Vector2u(0, 0) : canvas_sz;
+
+    // Begin imgui area.
     ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
-    ImGui::BeginChild("RenderViewport", ImVec2(0, 0), false, flags);
+    ImGui::BeginChild("RenderViewport", areaSize, false, flags);
 
     // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
     Vector2f canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
     //ImVec2 canvas_sz = ImGui::GetContentRegionAvail();   // Resize canvas to what's available
     //if (canvas_sz.x < 50.0f) canvas_sz.x = 50.0f;
     //if (canvas_sz.y < 50.0f) canvas_sz.y = 50.0f;
-    Vector2u canvas_sz((uint32)((float)m_size.x * m_zoomMultiplier), (uint32)((float)m_size.y * m_zoomMultiplier));
 
     //ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.y);
 
@@ -82,8 +87,6 @@ void RenderViewport::BeginRender()
     }
 
     m_root->SetSize(Vector2f(m_size));
-    //m_root->SetSize(Vector2f(canvas_sz));
-    //m_root->SetScale(m_zoomMultiplier);
 
     sf::View view;
     view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
@@ -92,15 +95,8 @@ void RenderViewport::BeginRender()
 
 void RenderViewport::FinalizeRender()
 {
-    // Render the scene.
+    // Prepare render.
     m_renderTexture->clear(sf::Color(128, 128, 128, 255));
-
-    // Save View
-    //sf::View backupView = m_renderTexture->getView();
-
-    //sf::View view;
-    //view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
-    //m_renderTexture->setView(view);
 
     sf::FloatRect viewport;
     viewport.left = m_renderTexture->getView().getCenter().x - m_renderTexture->getView().getSize().x / 2.f;
@@ -113,15 +109,14 @@ void RenderViewport::FinalizeRender()
     renderPass.target = m_renderTexture;
     renderPass.rectViewport = viewport;
 
+    // Render elements.
     m_root->Render(renderPass, sf::Transform());
 
+    // Render the scene.
     m_renderTexture->display();
-
     ImGui::Image(*m_renderTexture);
 
-    // Restore View
-    //m_renderTexture->setView(backupView);
-
+    // Finalize imgui area.
     ImGui::EndChild();
 }
 

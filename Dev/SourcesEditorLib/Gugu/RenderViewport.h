@@ -28,7 +28,7 @@ class RenderViewport
 {
 public:
 
-    RenderViewport();
+    RenderViewport(bool fillAvailableArea);
     ~RenderViewport();
 
     void BeginRender();
@@ -45,6 +45,7 @@ private:
 
     Vector2u m_size;
     float m_zoomMultiplier;
+    bool m_fillAvailableArea;
 
     sf::RenderTexture* m_renderTexture;
     Element* m_root;

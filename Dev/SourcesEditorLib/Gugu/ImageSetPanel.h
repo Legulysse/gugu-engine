@@ -29,9 +29,11 @@ public:
     ~ImageSetPanel();
 
     void Update(const gugu::DeltaTime& dt);
-    void UpdateGizmo();
 
 private:
+
+    void CreateGizmo();
+    void UpdateGizmo();
 
     void OnDragGizmoEdge(Element* edge, Vector2f position);
 

@@ -35,7 +35,7 @@ ImageSetPanel::ImageSetPanel()
     , m_gizmoOffsetGlobalPosition(0, 0)
 {
     // Setup render viewport.
-    m_renderViewport = new RenderViewport;
+    m_renderViewport = new RenderViewport(true);
 
     ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
     sprite->SetTexture("uipack_rpg.png");
@@ -43,6 +43,38 @@ ImageSetPanel::ImageSetPanel()
     m_renderViewport->SetSize(Vector2u(sprite->GetSize()));
 
     // Setup gizmo.
+    CreateGizmo();
+}
+
+ImageSetPanel::~ImageSetPanel()
+{
+    SafeDelete(m_renderViewport);
+}
+
+void ImageSetPanel::Update(const DeltaTime& dt)
+{
+    ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
+    if (ImGui::Begin("ImageSet Editor", false, flags))
+    {
+        // Toolbar.
+        static float zoomFactor = 1.f;
+        if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
+        {
+            m_renderViewport->SetZoom(zoomFactor);
+        }
+
+        // Render viewport.
+        m_renderViewport->BeginRender();
+
+        UpdateGizmo();
+
+        m_renderViewport->FinalizeRender();
+    }
+    ImGui::End();
+}
+
+void ImageSetPanel::CreateGizmo()
+{
     sf::RectangleShape* shapeCenter = new sf::RectangleShape;
     //shapeCenter->setOutlineThickness(1.f);
     //shapeCenter->setOutlineColor(sf::Color(255, 0, 0, 255));
@@ -50,10 +82,10 @@ ImageSetPanel::ImageSetPanel()
     shapeCenter->setSize(sf::Vector2f(20, 20));
 
     auto resizeRectangle = [](ElementSFDrawable* element)
-        {
-            sf::RectangleShape* shape = (sf::RectangleShape*)element->GetSFDrawable();
-            shape->setSize(element->GetSize());
-        };
+    {
+        sf::RectangleShape* shape = (sf::RectangleShape*)element->GetSFDrawable();
+        shape->setSize(element->GetSize());
+    };
 
     m_gizmoCenter = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
     m_gizmoCenter->SetSFDrawable(shapeCenter);
@@ -64,17 +96,17 @@ ImageSetPanel::ImageSetPanel()
     const float offsetSideEdge = 13.f;
 
     auto createEdgeShape = []() -> sf::RectangleShape*
-        {
-            sf::RectangleShape* shapeEdge = new sf::RectangleShape;
-            //shapeEdge->setOutlineThickness(1.f);
-            //shapeEdge->setOutlineColor(sf::Color(255, 0, 0, 255));
-            //shapeEdge->setFillColor(sf::Color(255, 0, 0, 255));
-            shapeEdge->setOutlineThickness(-1.f);
-            shapeEdge->setOutlineColor(sf::Color(0, 0, 0, 255));
-            shapeEdge->setFillColor(sf::Color(255, 255, 255, 255));
-            shapeEdge->setSize(sf::Vector2f(20, 20));
-            return shapeEdge;
-        };
+    {
+        sf::RectangleShape* shapeEdge = new sf::RectangleShape;
+        //shapeEdge->setOutlineThickness(1.f);
+        //shapeEdge->setOutlineColor(sf::Color(255, 0, 0, 255));
+        //shapeEdge->setFillColor(sf::Color(255, 0, 0, 255));
+        shapeEdge->setOutlineThickness(-1.f);
+        shapeEdge->setOutlineColor(sf::Color(0, 0, 0, 255));
+        shapeEdge->setFillColor(sf::Color(255, 255, 255, 255));
+        shapeEdge->setSize(sf::Vector2f(20, 20));
+        return shapeEdge;
+    };
 
     m_gizmoEdgeTopLeft = m_gizmoCenter->AddChild<ElementSFDrawable>();
     m_gizmoEdgeTopLeft->SetSFDrawable(createEdgeShape());
@@ -131,33 +163,6 @@ ImageSetPanel::ImageSetPanel()
     m_gizmoEdgeLeft->SetUnifiedOrigin(UDim2(1.f, offsetSideEdge, 0.5f, 0.f));
     m_gizmoEdgeLeft->SetUnifiedPosition(UDim2(0.f, 0.f, .5f, 0.f));
     m_gizmoEdgeLeft->SetSize(sizeEdge);
-}
-
-ImageSetPanel::~ImageSetPanel()
-{
-    SafeDelete(m_renderViewport);
-}
-
-void ImageSetPanel::Update(const DeltaTime& dt)
-{
-    ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
-    if (ImGui::Begin("ImageSet Editor", false, flags))
-    {
-        // Toolbar.
-        static float zoomFactor = 1.f;
-        if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
-        {
-            m_renderViewport->SetZoom(zoomFactor);
-        }
-
-        // Render viewport.
-        m_renderViewport->BeginRender();
-
-        UpdateGizmo();
-
-        m_renderViewport->FinalizeRender();
-    }
-    ImGui::End();
 }
 
 void ImageSetPanel::UpdateGizmo()

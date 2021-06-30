@@ -33,6 +33,10 @@ public:
 
 private:
 
+    void OnDragGizmoEdge(Element* edge, Vector2f position);
+
+private:
+
     RenderViewport* m_renderViewport;
 
     ElementSFDrawable* m_gizmoCenter;
@@ -47,8 +51,7 @@ private:
 
     bool m_isDraggingGizmo;
     Element* m_draggedGizmo;
-    Vector2f m_dragStartPosition;
-    Vector2f m_gizmoStartPosition;
+    Vector2f m_gizmoOffsetGlobalPosition;
 };
 
 }   //namespace gugu

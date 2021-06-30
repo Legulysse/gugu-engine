@@ -137,8 +137,8 @@ public:
 
     virtual bool IsPicked(const Vector2f& _kGlobalCoords) const;
 
-    Vector2f TransformToLocalFull(const Vector2f& _oPoint) const;    // TODO: rename as TransformToLocal and TransformToGlobal.
-    Vector2f TransformToGlobalFull(const Vector2f& _oPoint) const;    //TODO: Check this works !
+    Vector2f TransformToLocalFull(const Vector2f& _oPoint) const;    // TODO: rename as TransformToLocal and TransformToGlobal, maybe add TransformToParent.
+    Vector2f TransformToGlobalFull(const Vector2f& _oPoint) const;
 
     const sf::Transform& GetTransform() const;
     const sf::Transform& GetInverseTransform() const;

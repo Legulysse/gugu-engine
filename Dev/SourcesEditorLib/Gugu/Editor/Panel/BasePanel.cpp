@@ -10,11 +10,17 @@
 namespace gugu {
 
 BasePanel::BasePanel()
+    : m_focused(false)
 {
 }
 
 BasePanel::~BasePanel()
 {
+}
+
+bool BasePanel::IsFocused() const
+{
+    return m_focused;
 }
 
 }   //namespace gugu

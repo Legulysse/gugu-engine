@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/EditorCore.h"
+
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/System/SystemUtility.h"
@@ -248,7 +250,7 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
 
         if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
         {
-            m_testFileOpen = node->name;
+            GetEditor()->OpenDocument(node->name);
         }
         else if (ImGui::IsItemClicked())
         {

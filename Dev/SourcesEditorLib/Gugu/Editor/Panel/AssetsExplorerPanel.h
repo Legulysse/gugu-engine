@@ -22,7 +22,7 @@ public:
     AssetsExplorerPanel();
     virtual ~AssetsExplorerPanel();
 
-    void UpdatePanel(const gugu::DeltaTime& dt);
+    virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
 
 private:
 
@@ -44,7 +44,6 @@ private:
 private:
 
     TreeNode* m_rootNode;
-    std::string m_testFileOpen;
 };
 
 }   //namespace gugu

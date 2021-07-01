@@ -26,15 +26,19 @@ EditorCore::EditorCore()
     , m_showSearchResults(true)
     , m_showImGuiDemo(false)
     , m_assetsExplorerPanel(nullptr)
-    , m_imageSetPanel(nullptr)
+    , m_lastActiveDocument(nullptr)
 {
+    // This constructor should stay empty.
+    // Because it's a singleton, if a GetInstance() is called inside by another system but the constructor isn't finished,
+    // the GetInstance will try to create an other instance (loop).
 }
 
 EditorCore::~EditorCore()
 {
+    // Because of the constructor problem, I prefer to let the destructor also empty.
 }
 
-void EditorCore::Start()
+void EditorCore::Init()
 {
     // Additional ImGui Setup.
     ImGuiIO& io = ImGui::GetIO();
@@ -45,15 +49,16 @@ void EditorCore::Start()
 
     // Create the AssetsExplorer Panel.
     m_assetsExplorerPanel = new AssetsExplorerPanel;
-
-    // Create a default ImageSet Panel.
-    m_imageSetPanel = new ImageSetPanel;
 }
 
-void EditorCore::Stop()
+void EditorCore::Release()
 {
-    SafeDelete(m_imageSetPanel);
+    m_lastActiveDocument = nullptr;
+    ClearStdVector(m_documentPanels);
+
     SafeDelete(m_assetsExplorerPanel);
+
+    EditorCore::DeleteInstance();
 }
 
 void EditorCore::Update(const DeltaTime& dt)
@@ -101,8 +106,10 @@ void EditorCore::Update(const DeltaTime& dt)
     ImGui::PopStyleVar(3);
 
     // Editor panels preset.
+    bool resetDocuments = false;
     if (ImGui::DockBuilderGetNode(dockspace_id) == NULL || m_resetPanels)
     {
+        resetDocuments = true;
         m_resetPanels = false;
 
         ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
@@ -116,8 +123,8 @@ void EditorCore::Update(const DeltaTime& dt)
         ImGuiID dock_id_down = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
 
         ImGui::DockBuilderDockWindow("Assets Explorer", dock_id_left);
-        ImGui::DockBuilderDockWindow("ImageSet Editor", dock_main_id);
-        ImGui::DockBuilderDockWindow("AnimSet Editor", dock_main_id);
+        //ImGui::DockBuilderDockWindow("ImageSet Editor", dock_main_id);
+        //ImGui::DockBuilderDockWindow("AnimSet Editor", dock_main_id);
         ImGui::DockBuilderDockWindow("Output Log", dock_id_down);
         ImGui::DockBuilderDockWindow("Search Results", dock_id_down);
         ImGui::DockBuilderDockWindow("Properties", dock_id_right);
@@ -130,23 +137,36 @@ void EditorCore::Update(const DeltaTime& dt)
     // Update AssetsExplorer panel.
     m_assetsExplorerPanel->UpdatePanel(dt);
 
-    // Update ImageSet panel.
-    m_imageSetPanel->UpdatePanel(dt);
+    //if (ImGui::Begin("AnimSet Editor", false))
+    //{
+    //    ImGui::Text("Here lies the future AnimSet Editor.");
+    //}
+    //ImGui::End();
 
-    if (ImGui::Begin("AnimSet Editor", false))
+    // Update Documents panels.
+    for (DocumentPanel* document : m_documentPanels)
     {
-        ImGui::Text("Here lies the future AnimSet Editor.");
-    }
-    ImGui::End();
+        ImGui::SetNextWindowDockID(dockspace_id, resetDocuments ? ImGuiCond_Always  : ImGuiCond_FirstUseEver);
+        document->UpdatePanel(dt);
 
-    ImGui::Begin("Output Log", false);
-    ImGui::End();
+        if (document->IsFocused())
+        {
+            m_lastActiveDocument = document;
+        }
+    }
 
     // Update Properties panel.
-    if (ImGui::Begin("Properties", false))
+    if (m_lastActiveDocument)
     {
-        m_imageSetPanel->UpdateProperties(dt);
+        if (ImGui::Begin("Properties", false))
+        {
+            m_lastActiveDocument->UpdateProperties(dt);
+        }
+        ImGui::End();
     }
+
+    // Update OutputLog panel.
+    ImGui::Begin("Output Log", false);
     ImGui::End();
 
     if (m_showSearchResults)
@@ -164,10 +184,31 @@ void EditorCore::Update(const DeltaTime& dt)
     ImGui::End();
 }
 
+void EditorCore::OpenDocument(const std::string& resourceID)
+{
+    for (DocumentPanel* document : m_documentPanels)
+    {
+        if (document->IsResource(resourceID))
+            return;
+    }
+
+    // TODO: I should use FileInfo or ResourceInfos.
+    if (StdStringEndsWith(resourceID, ".imageset.xml"))
+    {
+        DocumentPanel* document = new ImageSetPanel(resourceID);
+        m_documentPanels.push_back(document);
+    }
+}
+
 void EditorCore::ResetPanels()
 {
     m_resetPanels = true;
     m_showSearchResults = true;
+}
+
+EditorCore* GetEditor()
+{
+    return EditorCore::GetInstance();
 }
 
 }   //namespace gugu

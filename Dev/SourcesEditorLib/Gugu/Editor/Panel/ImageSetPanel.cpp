@@ -10,6 +10,8 @@
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
 #include "Gugu/Engine.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
 #include "Gugu/System/SystemUtility.h"
@@ -27,18 +29,22 @@
 
 namespace gugu {
 
-ImageSetPanel::ImageSetPanel()
+ImageSetPanel::ImageSetPanel(const std::string& resourceID)
     : m_renderViewport(nullptr)
     , m_gizmoCenter(nullptr)
     , m_isDraggingGizmo(false)
     , m_draggedGizmo(nullptr)
     , m_gizmoOffsetGlobalPosition(0, 0)
 {
+    m_resourceID = resourceID;
+
+    ImageSet* imageSet = GetResources()->GetImageSet(resourceID);
+
     // Setup render viewport.
     m_renderViewport = new RenderViewport(true);
 
     ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
-    sprite->SetTexture("uipack_rpg.png");
+    sprite->SetTexture(imageSet->GetTexture());
 
     m_renderViewport->SetSize(Vector2u(sprite->GetSize()));
 
@@ -53,9 +59,16 @@ ImageSetPanel::~ImageSetPanel()
 
 void ImageSetPanel::UpdatePanel(const DeltaTime& dt)
 {
+    m_focused = false;
+
     ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
-    if (ImGui::Begin("ImageSet Editor", false, flags))
+    if (ImGui::Begin(m_resourceID.c_str(), false, flags))
     {
+        if (ImGui::IsWindowFocused())
+        {
+            m_focused = true;
+        }
+
         // Toolbar.
         static float zoomFactor = 1.f;
         if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))

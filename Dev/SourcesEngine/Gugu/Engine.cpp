@@ -143,7 +143,7 @@ void Engine::Release()
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, "Gugu::Engine Stop");
     SafeDelete(m_logEngine);
 
-    DeleteInstance();
+    Engine::DeleteInstance();
 }
 
 void Engine::RunApplication(Application* application)
@@ -582,7 +582,7 @@ TraceGroup* Engine::GetTraceGroupMain() const
 
 Engine* GetEngine()
 {
-    return Singleton<Engine>::GetInstance();
+    return Engine::GetInstance();
 }
 
 }   // namespace gugu

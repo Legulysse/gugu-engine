@@ -17,4 +17,9 @@ DocumentPanel::~DocumentPanel()
 {
 }
 
+bool DocumentPanel::IsResource(const std::string& resourceID) const
+{
+    return m_resourceID == resourceID;
+}
+
 }   //namespace gugu

@@ -22,7 +22,6 @@
 namespace gugu {
     
 EditorApp::EditorApp()
-    : m_editorCore(nullptr)
 {
 }
 
@@ -40,19 +39,17 @@ void EditorApp::AppStart()
     inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
 
     // Setup EditorCore.
-    m_editorCore = new EditorCore;
-    m_editorCore->Start();
+    GetEditor()->Init();
 }
 
 void EditorApp::AppStop()
 {
-    m_editorCore->Stop();
-    SafeDelete(m_editorCore);
+    GetEditor()->Release();
 }
 
 void EditorApp::AppUpdate(const DeltaTime& dt)
 {
-    m_editorCore->Update(dt);
+    GetEditor()->Update(dt);
 }
 
 bool EditorApp::OnSFEvent(const sf::Event& event)
@@ -69,7 +66,7 @@ bool EditorApp::OnSFEvent(const sf::Event& event)
     }
     else if (inputs->IsInputReleased("ResetPanels", event))
     {
-        m_editorCore->ResetPanels();
+        GetEditor()->ResetPanels();
         return false;
     }
 

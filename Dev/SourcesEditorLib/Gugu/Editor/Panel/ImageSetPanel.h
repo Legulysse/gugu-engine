@@ -27,11 +27,11 @@ class ImageSetPanel : public DocumentPanel
 {
 public:
 
-    ImageSetPanel();
+    ImageSetPanel(const std::string& resourceID);
     virtual ~ImageSetPanel();
 
-    void UpdatePanel(const gugu::DeltaTime& dt);
-    void UpdateProperties(const gugu::DeltaTime& dt);
+    virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
+    virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
 
 private:
 

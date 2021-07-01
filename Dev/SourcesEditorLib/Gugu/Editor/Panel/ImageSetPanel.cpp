@@ -2,12 +2,12 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/ImageSetPanel.h"
+#include "Gugu/Editor/Panel/ImageSetPanel.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/RenderViewport.h"
+#include "Gugu/Editor/Widget/RenderViewport.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Element/2D/ElementSprite.h"

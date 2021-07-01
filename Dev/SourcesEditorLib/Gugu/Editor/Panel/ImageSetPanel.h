@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Panel/DocumentPanel.h"
+
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Math/Vector2.h"
 
@@ -21,12 +23,12 @@ namespace gugu
 
 namespace gugu {
 
-class ImageSetPanel
+class ImageSetPanel : public DocumentPanel
 {
 public:
 
     ImageSetPanel();
-    ~ImageSetPanel();
+    virtual ~ImageSetPanel();
 
     void UpdatePanel(const gugu::DeltaTime& dt);
     void UpdateProperties(const gugu::DeltaTime& dt);

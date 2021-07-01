@@ -2,12 +2,12 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/EditorApp.h"
+#include "Gugu/Editor/EditorApp.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/EditorCore.h"
+#include "Gugu/Editor/EditorCore.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Inputs/ManagerInputs.h"

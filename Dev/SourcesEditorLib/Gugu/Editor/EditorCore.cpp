@@ -2,13 +2,13 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/EditorCore.h"
+#include "Gugu/Editor/EditorCore.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Panel/AssetsExplorerPanel.h"
-#include "Gugu/ImageSetPanel.h"
+#include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
+#include "Gugu/Editor/Panel/ImageSetPanel.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/System/SystemUtility.h"

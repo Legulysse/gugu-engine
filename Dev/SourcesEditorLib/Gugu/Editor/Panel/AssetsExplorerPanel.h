@@ -3,7 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Panel/BasePanel.h"
+#include "Gugu/Editor/Panel/BasePanel.h"
+
 #include "Gugu/Core/DeltaTime.h"
 
 #include <string>

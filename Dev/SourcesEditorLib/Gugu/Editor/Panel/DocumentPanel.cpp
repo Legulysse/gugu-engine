@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Panel/DocumentPanel.h"
+#include "Gugu/Editor/Panel/DocumentPanel.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

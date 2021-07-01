@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Panel/AssetsExplorerPanel.h"
+#include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes

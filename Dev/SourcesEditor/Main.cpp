@@ -2,7 +2,7 @@
 // Includes
 
 #include "Gugu/Common.h"
-#include "Gugu/EditorApp.h"
+#include "Gugu/Editor/EditorApp.h"
 
 #include "Gugu/Engine.h"
 

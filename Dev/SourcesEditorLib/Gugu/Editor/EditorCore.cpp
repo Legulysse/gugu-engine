@@ -156,14 +156,14 @@ void EditorCore::Update(const DeltaTime& dt)
     }
 
     // Update Properties panel.
-    if (m_lastActiveDocument)
+    if (ImGui::Begin("Properties", false))
     {
-        if (ImGui::Begin("Properties", false))
+        if (m_lastActiveDocument)
         {
             m_lastActiveDocument->UpdateProperties(dt);
         }
-        ImGui::End();
     }
+    ImGui::End();
 
     // Update OutputLog panel.
     ImGui::Begin("Output Log", false);

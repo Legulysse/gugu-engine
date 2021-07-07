@@ -30,7 +30,9 @@
 namespace gugu {
 
 ImageSetPanel::ImageSetPanel(const std::string& resourceID)
-    : m_renderViewport(nullptr)
+    : m_imageSet(nullptr)
+    , m_selectedIndex(-1)
+    , m_renderViewport(nullptr)
     , m_gizmoCenter(nullptr)
     , m_isDraggingGizmo(false)
     , m_draggedGizmo(nullptr)
@@ -38,13 +40,13 @@ ImageSetPanel::ImageSetPanel(const std::string& resourceID)
 {
     m_resourceID = resourceID;
 
-    ImageSet* imageSet = GetResources()->GetImageSet(resourceID);
+    m_imageSet = GetResources()->GetImageSet(resourceID);
 
     // Setup render viewport.
     m_renderViewport = new RenderViewport(true);
 
     ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
-    sprite->SetTexture(imageSet->GetTexture());
+    sprite->SetTexture(m_imageSet->GetTexture());
 
     m_renderViewport->SetSize(Vector2u(sprite->GetSize()));
 
@@ -62,6 +64,11 @@ void ImageSetPanel::UpdatePanel(const DeltaTime& dt)
     m_focused = false;
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
+    if (m_dirty)
+    {
+        flags |= ImGuiWindowFlags_UnsavedDocument;
+    }
+
     if (ImGui::Begin(m_resourceID.c_str(), false, flags))
     {
         if (ImGui::IsWindowFocused())
@@ -88,39 +95,60 @@ void ImageSetPanel::UpdatePanel(const DeltaTime& dt)
 
 void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
 {
-    // Test gizmo sync.
-    int position[2] = { (int)m_gizmoCenter->GetPosition().x, (int)m_gizmoCenter->GetPosition().y };
-    int size[2] = { (int)m_gizmoCenter->GetSize().x, (int)m_gizmoCenter->GetSize().y };
-
-    if (ImGui::InputInt2("Position", position))
+    // Selected SubImage edition.
+    if (m_selectedIndex >= 0)
     {
-        m_gizmoCenter->SetPosition((float)position[0], (float)position[1]);
+        std::string name = m_imageSet->GetSubImage(m_selectedIndex)->GetName();
+        sf::IntRect rect = m_imageSet->GetSubImage(m_selectedIndex)->GetRect();
+
+        int position[2] = { rect.left, rect.top };
+        int size[2] = { rect.width, rect.height };
+
+        if (ImGui::InputInt2("Position", position))
+        {
+            m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(position[0], position[1], size[0], size[1]));
+            m_dirty = true;
+        }
+
+        if (ImGui::InputInt2("Size", size))
+        {
+            m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(position[0], position[1], size[0], size[1]));
+            m_dirty = true;
+        }
     }
-
-    if (ImGui::InputInt2("Size", size))
+    else
     {
-        m_gizmoCenter->SetSize((float)size[0], (float)size[1]);
+        // TODO: use PushDisabled when it will be available in imgui.
+        int dummy[2] = { 0, 0 };
+        ImGui::InputInt2("Position", dummy);
+        ImGui::InputInt2("Size", dummy);
     }
 
     // SubImages list.
-    ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_NoPadInnerX;
+    ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /* | ImGuiTableFlags_NoPadInnerX */;
     if (ImGui::BeginTable("SubImages Table", 6, flags))
     {
         ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
         ImGui::TableSetupColumn("#", columnFlags, 30.f);
         ImGui::TableSetupColumn("name", columnFlags, 150.f);
-        ImGui::TableSetupColumn("x", columnFlags, 40.f);
-        ImGui::TableSetupColumn("y", columnFlags, 40.f);
-        ImGui::TableSetupColumn("w", columnFlags, 40.f);
-        ImGui::TableSetupColumn("h", columnFlags, 40.f);
+        ImGui::TableSetupColumn("left", columnFlags, 40.f);
+        ImGui::TableSetupColumn("top", columnFlags, 40.f);
+        ImGui::TableSetupColumn("width", columnFlags, 40.f);
+        ImGui::TableSetupColumn("height", columnFlags, 40.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 
+        std::vector<SubImage*> subImages;
+        m_imageSet->GetSubImages(subImages);
+
         // TODO: handle sort (ImGuiTableSortSpecs).
         // TODO: handle big list (ImGuiListClipper).
-        for (int rowIndex = 0; rowIndex < 500; ++rowIndex)
+        for (size_t rowIndex = 0; rowIndex < subImages.size(); ++rowIndex)
         {
-            ImGui::TableNextRow();
+            ImGui::PushID(rowIndex);
+
+            float row_min_height = 0.f;
+            ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
 
             if (rowIndex == 0)
             {
@@ -141,24 +169,93 @@ void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
                 ImGui::PushItemWidth(-1);
             }
 
-            int columnIndex = 0;
-            static std::string dummy_c = "my name";
-            static int dummy_i = 0;
+#if 1
+            std::string name = subImages[rowIndex]->GetName();
+            sf::IntRect rect = subImages[rowIndex]->GetRect();
 
-            ImGui::PushID(rowIndex);
+            int columnIndex = 0;
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%d", rowIndex);
+
+            char label[32];
+            sprintf(label, "%04d", rowIndex);
+            ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
+            if (ImGui::Selectable(label, (int)rowIndex == m_selectedIndex, selectable_flags, ImVec2(0, row_min_height)))
+            {
+                m_selectedIndex = rowIndex;
+            }
+
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::InputText("##name", &dummy_c);
+            ImGui::Text(name.c_str());
+
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::InputInt("##x", &dummy_i, 0);
+            ImGui::Text("%d", rect.left);
+
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::InputInt("##y", &dummy_i, 0);
+            ImGui::Text("%d", rect.top);
+
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::InputInt("##w", &dummy_i, 0);
+            ImGui::Text("%d", rect.width);
+
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::InputInt("##w", &dummy_i, 0);
+            ImGui::Text("%d", rect.height);
+
             ImGui::PopID();
+#else
+            std::string name = subImages[rowIndex]->GetName();
+            sf::IntRect rect = subImages[rowIndex]->GetRect();
+
+            int columnIndex = 0;
+            bool dirtyName = false;
+            bool dirtyRect = false;
+            bool forceFocus = false;
+
+            ImGui::TableSetColumnIndex(columnIndex++);
+
+            char label[32];
+            sprintf(label, "%04d", rowIndex);
+            ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
+            if (ImGui::Selectable(label, (int)rowIndex == m_selectedIndex, selectable_flags , ImVec2(0, row_min_height)))
+            {
+                m_selectedIndex = rowIndex;
+            }
+
+            ImGui::TableSetColumnIndex(columnIndex++);
+            dirtyName |= ImGui::InputText("##name", &name);
+            forceFocus |= ImGui::IsItemFocused();
+
+            ImGui::TableSetColumnIndex(columnIndex++);
+            dirtyRect |= ImGui::InputInt("##left", &rect.left, 0);
+            forceFocus |= ImGui::IsItemFocused();
+
+            ImGui::TableSetColumnIndex(columnIndex++);
+            dirtyRect |= ImGui::InputInt("##top", &rect.top, 0);
+            forceFocus |= ImGui::IsItemFocused();
+
+            ImGui::TableSetColumnIndex(columnIndex++);
+            dirtyRect |= ImGui::InputInt("##width", &rect.width, 0);
+            forceFocus |= ImGui::IsItemFocused();
+
+            ImGui::TableSetColumnIndex(columnIndex++);
+            dirtyRect |= ImGui::InputInt("##height", &rect.height, 0);
+            forceFocus |= ImGui::IsItemFocused();
+
+            ImGui::PopID();
+
+            if (dirtyName)
+            {
+                subImages[rowIndex]->SetName(name);
+            }
+
+            if (dirtyRect)
+            {
+                subImages[rowIndex]->SetRect(rect);
+            }
+
+            if (forceFocus || dirtyName || dirtyRect)
+            {
+                m_selectedIndex = rowIndex;
+            }
+#endif
         }
 
         ImGui::EndTable();
@@ -259,6 +356,21 @@ void ImageSetPanel::CreateGizmo()
 
 void ImageSetPanel::UpdateGizmo()
 {
+    if (m_selectedIndex == -1)
+    {
+        m_gizmoCenter->SetVisible(false);
+        return;
+    }
+
+    m_gizmoCenter->SetVisible(true);
+
+    // Sync with selected SubImage
+    SubImage* subImage = m_imageSet->GetSubImage(m_selectedIndex);
+
+    sf::IntRect rectBefore = subImage->GetRect();
+    m_gizmoCenter->SetPosition((float)rectBefore.left, (float)rectBefore.top);
+    m_gizmoCenter->SetSize((float)rectBefore.width, (float)rectBefore.height);
+
     ImGuiIO& io = ImGui::GetIO();
     const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
     const bool is_hovered = ImGui::IsItemHovered();
@@ -328,6 +440,14 @@ void ImageSetPanel::UpdateGizmo()
             m_draggedGizmo = nullptr;
             m_isDraggingGizmo = false;
         }
+    }
+
+    // Apply modifications if needed.
+    sf::IntRect rectAfter(sf::Vector2i(m_gizmoCenter->GetPosition()), sf::Vector2i(m_gizmoCenter->GetSize()));
+    if (rectBefore != rectAfter)
+    {
+        subImage->SetRect(rectAfter);
+        m_dirty = true;
     }
 }
 

@@ -26,6 +26,7 @@ public:
 protected:
 
     std::string m_resourceID;
+    bool m_dirty;
 };
 
 }   //namespace gugu

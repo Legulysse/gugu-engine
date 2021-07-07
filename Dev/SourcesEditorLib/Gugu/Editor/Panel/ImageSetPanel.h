@@ -13,6 +13,7 @@
 
 namespace gugu
 {
+    class ImageSet;
     class RenderViewport;
     class Element;
     class ElementSFDrawable;
@@ -41,6 +42,9 @@ private:
     void OnDragGizmoEdge(Element* edge, Vector2f position);
 
 private:
+
+    ImageSet* m_imageSet;
+    int m_selectedIndex;
 
     RenderViewport* m_renderViewport;
 

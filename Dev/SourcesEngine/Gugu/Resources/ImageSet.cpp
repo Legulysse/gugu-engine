@@ -132,7 +132,7 @@ SubImage* ImageSet::GetSubImage(const std::string& _strName) const
     return nullptr;
 }
 
-void ImageSet::GetSubImages(std::vector<SubImage *> &_vecSubImages) const
+void ImageSet::GetSubImages(std::vector<SubImage*>& _vecSubImages) const
 {
     _vecSubImages = m_subImages;
 }

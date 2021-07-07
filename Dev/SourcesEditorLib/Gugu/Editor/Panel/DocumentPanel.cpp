@@ -10,6 +10,7 @@
 namespace gugu {
 
 DocumentPanel::DocumentPanel()
+    : m_dirty(false)
 {
 }
 

@@ -498,4 +498,14 @@ void ImageSetPanel::OnDragGizmoEdge(Element* edge, Vector2f edgePosition)
     m_gizmoCenter->SetSize(kSize);
 }
 
+bool ImageSetPanel::Save()
+{
+    if (m_imageSet->SaveToFile())
+    {
+        m_dirty = false;
+    }
+
+    return !m_dirty;
+}
+
 }   //namespace gugu

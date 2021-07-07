@@ -19,6 +19,11 @@ namespace gugu
     class ImageSetPanel;
 }
 
+namespace sf
+{
+    class Event;
+}
+
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
@@ -35,9 +40,15 @@ public:
     void Release();
 
     void Update(const gugu::DeltaTime& dt);
+    bool OnSFEvent(const sf::Event& event);
 
     void OpenDocument(const std::string& resourceID);
     void ResetPanels();
+    void CloseEditor();
+
+private:
+
+    bool SaveActiveDocument();
 
 private:
 

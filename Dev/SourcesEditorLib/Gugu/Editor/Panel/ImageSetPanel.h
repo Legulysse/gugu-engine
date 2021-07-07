@@ -33,6 +33,7 @@ public:
 
     virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
     virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
+    virtual bool Save() override;
 
 private:
 

@@ -20,6 +20,7 @@ public:
     virtual ~DocumentPanel();
 
     virtual void UpdateProperties(const gugu::DeltaTime& dt) = 0;
+    virtual bool Save() = 0;
 
     bool IsResource(const std::string& resourceID) const;
 

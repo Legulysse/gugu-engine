@@ -11,6 +11,7 @@
 #include "Gugu/Editor/Panel/ImageSetPanel.h"
 
 #include "Gugu/Engine.h"
+#include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include <imgui.h>
@@ -40,6 +41,12 @@ EditorCore::~EditorCore()
 
 void EditorCore::Init()
 {
+    // Register Inputs.
+    ManagerInputs* inputs = GetInputs();
+    inputs->RegisterInput("CloseEditor", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
+    inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
+    inputs->RegisterInput("SaveDocument", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, false, false));
+
     // Additional ImGui Setup.
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -61,6 +68,29 @@ void EditorCore::Release()
     EditorCore::DeleteInstance();
 }
 
+bool EditorCore::OnSFEvent(const sf::Event& event)
+{
+    ManagerInputs* inputs = GetInputs();
+
+    if (inputs->IsInputReleased("CloseEditor", event))
+    {
+        CloseEditor();
+        return false;
+    }
+    else if (inputs->IsInputReleased("ResetPanels", event))
+    {
+        ResetPanels();
+        return false;
+    }
+    else if (inputs->IsInputReleased("SaveDocument", event))
+    {
+        SaveActiveDocument();
+        return false;
+    }
+
+    return true;
+}
+
 void EditorCore::Update(const DeltaTime& dt)
 {
     // Main menu bar.
@@ -68,10 +98,19 @@ void EditorCore::Update(const DeltaTime& dt)
     {
         if (ImGui::BeginMenu("Editor"))
         {
-            if (ImGui::MenuItem("Quit"))
+            if (ImGui::MenuItem("Quit", "ALT+F4"))
             {
-                // TODO: Only close the application in standalone mode, prefer hiding the editor when used as an overlay.
-                GetEngine()->StopMainLoop();
+                CloseEditor();
+            }
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Document"))
+        {
+            if (ImGui::MenuItem("Save", "CTRL+S"))
+            {
+                SaveActiveDocument();
             }
 
             ImGui::EndMenu();
@@ -200,10 +239,24 @@ void EditorCore::OpenDocument(const std::string& resourceID)
     }
 }
 
+bool EditorCore::SaveActiveDocument()
+{
+    if (!m_lastActiveDocument)
+        return false;
+
+    return m_lastActiveDocument->Save();
+}
+
 void EditorCore::ResetPanels()
 {
     m_resetPanels = true;
     m_showSearchResults = true;
+}
+
+void EditorCore::CloseEditor()
+{
+    // TODO: Only close the application in standalone mode, prefer hiding the editor when used as an overlay.
+    GetEngine()->StopMainLoop();
 }
 
 EditorCore* GetEditor()

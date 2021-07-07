@@ -104,6 +104,12 @@ void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
         int position[2] = { rect.left, rect.top };
         int size[2] = { rect.width, rect.height };
 
+        if (ImGui::InputText("Name", &name, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            m_imageSet->GetSubImage(m_selectedIndex)->SetName(name);
+            m_dirty = true;
+        }
+
         if (ImGui::InputInt2("Position", position))
         {
             m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(position[0], position[1], size[0], size[1]));
@@ -119,9 +125,12 @@ void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
     else
     {
         // TODO: use PushDisabled when it will be available in imgui.
-        int dummy[2] = { 0, 0 };
-        ImGui::InputInt2("Position", dummy);
-        ImGui::InputInt2("Size", dummy);
+        std::string dummyStr;
+        int dummyVecA[2] = { 0, 0 };
+        int dummyVecB[2] = { 0, 0 };
+        ImGui::InputText("Name", &dummyStr);
+        ImGui::InputInt2("Position", dummyVecA);
+        ImGui::InputInt2("Size", dummyVecB);
     }
 
     // SubImages list.

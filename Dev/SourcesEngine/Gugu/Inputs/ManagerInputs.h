@@ -73,11 +73,14 @@ public:
     bool IsInputPressed     (const std::string& _strInputName, const sf::Event& _oSFEvent) const;
     bool IsInputReleased    (const std::string& _strInputName, const sf::Event& _oSFEvent) const;
     bool IsInputDown        (const std::string& _strInputName) const;
+    bool IsControlDown      () const;
     bool IsShiftDown        () const;
+    bool IsAltDown          () const;
 
     bool IsKeyDown          (sf::Keyboard::Key _eKey) const;
 
     static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key);
+    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt);
     static sf::Event BuildJoystickEvent(EPadButton button, int joystickId = 0);
     static sf::Event BuildJoystickEvent(int button, int joystickId = 0);
 

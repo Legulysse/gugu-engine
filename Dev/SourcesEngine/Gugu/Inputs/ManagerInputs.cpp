@@ -146,7 +146,10 @@ bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
             // Keyboard
             if (oStoredEvent.type == sf::Event::KeyPressed)
             {
-                if (sf::Keyboard::isKeyPressed(oStoredEvent.key.code))
+                if (sf::Keyboard::isKeyPressed(oStoredEvent.key.code)
+                    && (!oStoredEvent.key.control || IsControlDown())
+                    && (!oStoredEvent.key.shift || IsShiftDown())
+                    && (!oStoredEvent.key.alt || IsAltDown()))
                     return true;
             }
             // Joystick
@@ -161,9 +164,19 @@ bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
     return false;
 }
 
+bool ManagerInputs::IsControlDown() const
+{
+    return (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl));
+}
+
 bool ManagerInputs::IsShiftDown() const
 {
     return (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift));
+}
+
+bool ManagerInputs::IsAltDown() const
+{
+    return (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt));
 }
 
 bool ManagerInputs::IsKeyDown(sf::Keyboard::Key _eKey) const
@@ -173,18 +186,23 @@ bool ManagerInputs::IsKeyDown(sf::Keyboard::Key _eKey) const
 
 sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key)
 {
+    return ManagerInputs::BuildKeyboardEvent(key, false, false, false);
+}
+
+sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt)
+{
     sf::Event event;
     event.type = sf::Event::KeyPressed;
     event.key.code = key;
-    event.key.alt = false;
-    event.key.shift = false;
-    event.key.control = false;
+    event.key.alt = alt;
+    event.key.shift = shift;
+    event.key.control = control;
     return event;
 }
 
 sf::Event ManagerInputs::BuildJoystickEvent(EPadButton button, int joystickId)
 {
-    return BuildJoystickEvent((int)button, joystickId);
+    return ManagerInputs::BuildJoystickEvent((int)button, joystickId);
 }
 
 sf::Event ManagerInputs::BuildJoystickEvent(int button, int joystickId)

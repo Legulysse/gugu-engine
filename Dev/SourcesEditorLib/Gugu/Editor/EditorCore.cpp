@@ -43,9 +43,9 @@ void EditorCore::Init()
 {
     // Register Inputs.
     ManagerInputs* inputs = GetInputs();
-    inputs->RegisterInput("CloseEditor", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
     inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
     inputs->RegisterInput("SaveDocument", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, false, false));
+    inputs->RegisterInput("SaveAllDocuments", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, true, false));
 
     // Additional ImGui Setup.
     ImGuiIO& io = ImGui::GetIO();
@@ -72,14 +72,14 @@ bool EditorCore::OnSFEvent(const sf::Event& event)
 {
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputReleased("CloseEditor", event))
-    {
-        CloseEditor();
-        return false;
-    }
-    else if (inputs->IsInputReleased("ResetPanels", event))
+    if (inputs->IsInputReleased("ResetPanels", event))
     {
         ResetPanels();
+        return false;
+    }
+    else if (inputs->IsInputReleased("SaveAllDocuments", event))
+    {
+        SaveAllDocuments();
         return false;
     }
     else if (inputs->IsInputReleased("SaveDocument", event))
@@ -98,7 +98,7 @@ void EditorCore::Update(const DeltaTime& dt)
     {
         if (ImGui::BeginMenu("Editor"))
         {
-            if (ImGui::MenuItem("Quit", "ALT+F4"))
+            if (ImGui::MenuItem("Quit", "Alt+F4"))
             {
                 CloseEditor();
             }
@@ -108,9 +108,14 @@ void EditorCore::Update(const DeltaTime& dt)
 
         if (ImGui::BeginMenu("Document"))
         {
-            if (ImGui::MenuItem("Save", "CTRL+S"))
+            if (ImGui::MenuItem("Save", "Ctrl+S"))
             {
                 SaveActiveDocument();
+            }
+
+            if (ImGui::MenuItem("Save All", "Ctrl+Shift+S"))
+            {
+                SaveAllDocuments();
             }
 
             ImGui::EndMenu();
@@ -245,6 +250,17 @@ bool EditorCore::SaveActiveDocument()
         return false;
 
     return m_lastActiveDocument->Save();
+}
+
+bool EditorCore::SaveAllDocuments()
+{
+    bool result = true;
+    for (DocumentPanel* document : m_documentPanels)
+    {
+        result &= document->Save();
+    }
+
+    return result;
 }
 
 void EditorCore::ResetPanels()

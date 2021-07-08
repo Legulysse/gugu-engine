@@ -49,6 +49,7 @@ public:
 private:
 
     bool SaveActiveDocument();
+    bool SaveAllDocuments();
 
 private:
 

@@ -126,6 +126,7 @@ void RenderViewport::SetZoom(float zoomMultiplier)
 {
     m_zoomMultiplier = zoomMultiplier;
 }
+
 Vector2f RenderViewport::GetPickedPosition(const Vector2i& pixelCoords) const
 {
     return m_renderTexture->mapPixelToCoords(pixelCoords, m_renderTexture->getView());

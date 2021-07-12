@@ -365,21 +365,7 @@ void ImageSetPanel::CreateGizmo()
 
 void ImageSetPanel::UpdateGizmo()
 {
-    if (m_selectedIndex == -1)
-    {
-        m_gizmoCenter->SetVisible(false);
-        return;
-    }
-
-    m_gizmoCenter->SetVisible(true);
-
-    // Sync with selected SubImage
-    SubImage* subImage = m_imageSet->GetSubImage(m_selectedIndex);
-
-    sf::IntRect rectBefore = subImage->GetRect();
-    m_gizmoCenter->SetPosition((float)rectBefore.left, (float)rectBefore.top);
-    m_gizmoCenter->SetSize((float)rectBefore.width, (float)rectBefore.height);
-
+    // Handle picking.
     ImGuiIO& io = ImGui::GetIO();
     const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
     const bool is_hovered = ImGui::IsItemHovered();
@@ -389,74 +375,104 @@ void ImageSetPanel::UpdateGizmo()
     const Vector2f mouse_pos_in_canvas(io.MousePos.x - origin.x, io.MousePos.y - origin.y);
     Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
 
-    if (!m_isDraggingGizmo && is_hovered && is_active && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+    if (m_selectedIndex == -1)
     {
-        const std::array<Element*, 9> gizmoElements = {
-                m_gizmoCenter,
-                m_gizmoEdgeTopLeft,
-                m_gizmoEdgeTop,
-                m_gizmoEdgeTopRight,
-                m_gizmoEdgeRight,
-                m_gizmoEdgeBottomRight,
-                m_gizmoEdgeBottom,
-                m_gizmoEdgeBottomLeft,
-                m_gizmoEdgeLeft,
+        m_gizmoCenter->SetVisible(false);
+    }
+    else
+    {
+        m_gizmoCenter->SetVisible(true);
+
+        // Sync with selected SubImage.
+        SubImage* subImage = m_imageSet->GetSubImage(m_selectedIndex);
+
+        sf::IntRect rectBefore = subImage->GetRect();
+        m_gizmoCenter->SetPosition((float)rectBefore.left, (float)rectBefore.top);
+        m_gizmoCenter->SetSize((float)rectBefore.width, (float)rectBefore.height);
+
+        // Test the selected gizmo drag&drop.
+        if (!m_isDraggingGizmo && is_hovered && is_active && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+        {
+            const std::array<Element*, 9> gizmoElements = {
+                    m_gizmoCenter,
+                    m_gizmoEdgeTopLeft,
+                    m_gizmoEdgeTop,
+                    m_gizmoEdgeTopRight,
+                    m_gizmoEdgeRight,
+                    m_gizmoEdgeBottomRight,
+                    m_gizmoEdgeBottom,
+                    m_gizmoEdgeBottomLeft,
+                    m_gizmoEdgeLeft,
             };
 
-        for (Element* gizmoElement : gizmoElements)
-        {
-            if (gizmoElement->IsPicked(pickedGlobalPosition))
+            for (Element* gizmoElement : gizmoElements)
             {
-                m_isDraggingGizmo = true;
-                m_draggedGizmo = gizmoElement;
-
-                if (gizmoElement == m_gizmoCenter)
+                if (gizmoElement->IsPicked(pickedGlobalPosition))
                 {
-                    m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobalFull(Vector2f());
+                    m_isDraggingGizmo = true;
+                    m_draggedGizmo = gizmoElement;
+
+                    if (gizmoElement == m_gizmoCenter)
+                    {
+                        m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobalFull(Vector2f());
+                    }
+                    else
+                    {
+                        m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobalFull(Vector2f() + gizmoElement->GetOrigin());
+                    }
+                }
+            }
+        }
+
+        if (m_isDraggingGizmo)
+        {
+            if (is_active && ImGui::IsMouseDown(ImGuiMouseButton_Left))
+            {
+                if (m_draggedGizmo == m_gizmoCenter)
+                {
+                    Vector2f elementGlobalPosition = pickedGlobalPosition - m_gizmoOffsetGlobalPosition;
+
+                    // Snap to pixel.
+                    elementGlobalPosition = Vector2f(Vector2i(elementGlobalPosition));
+
+                    m_draggedGizmo->SetPosition(elementGlobalPosition);
                 }
                 else
                 {
-                    m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobalFull(Vector2f() + gizmoElement->GetOrigin());
+                    Vector2f elementGlobalPosition = pickedGlobalPosition - m_gizmoOffsetGlobalPosition;
+                    OnDragGizmoEdge(m_draggedGizmo, elementGlobalPosition);
                 }
-            }
-        }
-    }
-
-    if (m_isDraggingGizmo)
-    {
-        if (is_active && ImGui::IsMouseDown(ImGuiMouseButton_Left))
-        {
-            if (m_draggedGizmo == m_gizmoCenter)
-            {
-                Vector2f elementGlobalPosition = pickedGlobalPosition - m_gizmoOffsetGlobalPosition;
-
-                // Snap to pixel.
-                elementGlobalPosition = Vector2f(Vector2i(elementGlobalPosition));
-
-                m_draggedGizmo->SetPosition(elementGlobalPosition);
-                //ComputePostDrag();
             }
             else
             {
-                Vector2f elementGlobalPosition = pickedGlobalPosition - m_gizmoOffsetGlobalPosition;
-
-                OnDragGizmoEdge(m_draggedGizmo, elementGlobalPosition);
-                //ComputePostDrag();
+                m_draggedGizmo = nullptr;
+                m_isDraggingGizmo = false;
             }
-        }
-        else
-        {
-            m_draggedGizmo = nullptr;
-            m_isDraggingGizmo = false;
+
+            // Apply modifications if needed.
+            sf::IntRect rectAfter(sf::Vector2i(m_gizmoCenter->GetPosition()), sf::Vector2i(m_gizmoCenter->GetSize()));
+            if (rectBefore != rectAfter)
+            {
+                subImage->SetRect(rectAfter);
+                m_dirty = true;
+            }
         }
     }
 
-    // Apply modifications if needed.
-    sf::IntRect rectAfter(sf::Vector2i(m_gizmoCenter->GetPosition()), sf::Vector2i(m_gizmoCenter->GetSize()));
-    if (rectBefore != rectAfter)
+    // Handle picking of other SubImages (gizmo will be sync next frame).
+    if (!m_isDraggingGizmo && is_hovered && is_active && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
-        subImage->SetRect(rectAfter);
-        m_dirty = true;
+        std::vector<SubImage*> subImages;
+        m_imageSet->GetSubImages(subImages);
+
+        for (size_t rowIndex = 0; rowIndex < subImages.size(); ++rowIndex)
+        {
+            if (subImages[rowIndex]->GetRect().contains(Vector2i(pickedGlobalPosition)))
+            {
+                m_selectedIndex = rowIndex;
+                break;
+            }
+        }
     }
 }
 

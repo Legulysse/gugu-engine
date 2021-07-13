@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Editor/EditorApp.h"
+#include "EditorApp.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
@@ -31,9 +31,6 @@ EditorApp::~EditorApp()
 void EditorApp::AppStart()
 {
     RegisterHandlerEvents(GetGameWindow());
-
-    // Setup EditorCore.
-    GetEditor()->Init();
 }
 
 void EditorApp::AppStop()

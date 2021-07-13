@@ -3,7 +3,7 @@
 
 #include "Gugu/Common.h"
 #include "Gugu/Editor/EditorApp.h"
-
+#include "Gugu/Editor/EditorCore.h"
 #include "Gugu/Engine.h"
 
 #if defined(GUGU_ENV_VISUAL )
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
-    //Init engine
+    //Init engine.
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
     config.applicationIcon = "Icon.png";
@@ -41,6 +41,14 @@ int main(int argc, char* argv[])
     config.maximizeWindow = true;
 
     GetEngine()->Init(config);
+
+    //----------------------------------------------
+
+    //Init editor.
+    EditorConfig editorConfig;
+    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/DemoGame/Binding.xml";
+
+    GetEditor()->Init(editorConfig);
 
     //----------------------------------------------
 

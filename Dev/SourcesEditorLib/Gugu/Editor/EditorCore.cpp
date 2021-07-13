@@ -39,8 +39,10 @@ EditorCore::~EditorCore()
     // Because of the constructor problem, I prefer to let the destructor also empty.
 }
 
-void EditorCore::Init()
+void EditorCore::Init(const EditorConfig& editorConfig)
 {
+    m_editorConfig = editorConfig;
+
     // Register Inputs.
     ManagerInputs* inputs = GetInputs();
     inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));

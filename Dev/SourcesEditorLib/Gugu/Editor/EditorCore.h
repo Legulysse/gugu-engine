@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/EditorConfig.h"
+
 #include "Gugu/Misc/Pattern/Singleton.h"
 #include "Gugu/Core/DeltaTime.h"
 
@@ -36,7 +38,7 @@ public:
     EditorCore();
     virtual ~EditorCore();
 
-    void Init();
+    void Init(const EditorConfig& editorConfig);
     void Release();
 
     void Update(const gugu::DeltaTime& dt);
@@ -52,6 +54,8 @@ private:
     bool SaveAllDocuments();
 
 private:
+
+    EditorConfig m_editorConfig;
 
     bool m_resetPanels;
     bool m_showSearchResults;

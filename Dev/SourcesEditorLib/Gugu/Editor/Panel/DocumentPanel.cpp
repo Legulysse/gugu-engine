@@ -18,7 +18,7 @@ DocumentPanel::~DocumentPanel()
 {
 }
 
-bool DocumentPanel::IsResource(const std::string& resourceID) const
+bool DocumentPanel::IsSameResource(const std::string& resourceID) const
 {
     return m_resourceID == resourceID;
 }

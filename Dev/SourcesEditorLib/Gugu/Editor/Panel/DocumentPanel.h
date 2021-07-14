@@ -22,7 +22,7 @@ public:
     virtual void UpdateProperties(const gugu::DeltaTime& dt) = 0;
     virtual bool Save() = 0;
 
-    bool IsResource(const std::string& resourceID) const;
+    bool IsSameResource(const std::string& resourceID) const;
 
 protected:
 

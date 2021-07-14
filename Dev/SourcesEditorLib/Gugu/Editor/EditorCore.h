@@ -19,6 +19,7 @@ namespace gugu
     class DocumentPanel;
     class AssetsExplorerPanel;
     class ImageSetPanel;
+    class DatasheetParser;
 }
 
 namespace sf
@@ -48,6 +49,8 @@ public:
     void ResetPanels();
     void CloseEditor();
 
+    DatasheetParser* GetDatasheetParser() const;
+
 private:
 
     bool SaveActiveDocument();
@@ -65,6 +68,8 @@ private:
     std::vector<DocumentPanel*> m_documentPanels;
 
     DocumentPanel* m_lastActiveDocument;
+
+    DatasheetParser* m_datasheetParser;
 };
 
 EditorCore* GetEditor();

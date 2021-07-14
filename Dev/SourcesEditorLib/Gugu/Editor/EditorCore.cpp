@@ -8,10 +8,14 @@
 // Includes
 
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
+#include "Gugu/Editor/Panel/DatasheetPanel.h"
 #include "Gugu/Editor/Panel/ImageSetPanel.h"
+#include "Gugu/Editor/Parser/DatasheetParser.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Inputs/ManagerInputs.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/Resource.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include <imgui.h>
@@ -28,6 +32,7 @@ EditorCore::EditorCore()
     , m_showImGuiDemo(false)
     , m_assetsExplorerPanel(nullptr)
     , m_lastActiveDocument(nullptr)
+    , m_datasheetParser(nullptr)
 {
     // This constructor should stay empty.
     // Because it's a singleton, if a GetInstance() is called inside by another system but the constructor isn't finished,
@@ -58,6 +63,10 @@ void EditorCore::Init(const EditorConfig& editorConfig)
 
     // Create the AssetsExplorer Panel.
     m_assetsExplorerPanel = new AssetsExplorerPanel;
+
+    // Create the DatasheetParser.
+    m_datasheetParser = new DatasheetParser;
+    m_datasheetParser->ParseBinding(m_editorConfig.pathDatasheetBinding);
 }
 
 void EditorCore::Release()
@@ -66,6 +75,7 @@ void EditorCore::Release()
     ClearStdVector(m_documentPanels);
 
     SafeDelete(m_assetsExplorerPanel);
+    SafeDelete(m_datasheetParser);
 
     EditorCore::DeleteInstance();
 }
@@ -232,17 +242,39 @@ void EditorCore::Update(const DeltaTime& dt)
 
 void EditorCore::OpenDocument(const std::string& resourceID)
 {
+    FileInfo resourceFileInfo;
+    if (!GetResources()->GetResourceFileInfo(resourceID, resourceFileInfo))
+        return;
+
     for (DocumentPanel* document : m_documentPanels)
     {
-        if (document->IsResource(resourceID))
+        if (document->IsSameResource(resourceID))
+        {
+            // TODO: Force focus on the existing document.
             return;
+        }
     }
 
-    // TODO: I should use FileInfo or ResourceInfos.
-    if (StdStringEndsWith(resourceID, ".imageset.xml"))
+    DocumentPanel* newDocument = nullptr;
+
+    // Check native resource types.
+    EResourceType::Type resourceType = GetResources()->GetResourceType(resourceFileInfo);
+    if (resourceType == EResourceType::ImageSet)
     {
-        DocumentPanel* document = new ImageSetPanel(resourceID);
-        m_documentPanels.push_back(document);
+        newDocument = new ImageSetPanel(resourceID);
+    }
+    else if (resourceType == EResourceType::Unknown)
+    {
+        // Check datasheets.
+        if (m_datasheetParser->IsDatasheet(resourceFileInfo))
+        {
+            newDocument = new DatasheetPanel(resourceID, resourceFileInfo);
+        }
+    }
+
+    if (newDocument)
+    {
+        m_documentPanels.push_back(newDocument);
     }
 }
 
@@ -275,6 +307,11 @@ void EditorCore::CloseEditor()
 {
     // TODO: Only close the application in standalone mode, prefer hiding the editor when used as an overlay.
     GetEngine()->StopMainLoop();
+}
+
+DatasheetParser* EditorCore::GetDatasheetParser() const
+{
+    return m_datasheetParser;
 }
 
 EditorCore* GetEditor()

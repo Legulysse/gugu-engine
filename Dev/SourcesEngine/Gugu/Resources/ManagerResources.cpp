@@ -106,18 +106,6 @@ bool ManagerResources::HasResource(const std::string& _strName) const
     return (iteElement != m_resources.end());
 }
 
-bool ManagerResources::HasResource(const std::string& _strName, FileInfo& _oFileInfo) const
-{
-    auto iteElement = m_resources.find(_strName);
-    if (iteElement != m_resources.end())
-    {
-        _oFileInfo = (*iteElement).second->fileInfo;
-        return true;
-    }
-
-    return false;
-}
-
 bool ManagerResources::IsResourceLoaded(const std::string& _strName) const
 {
     auto iteElement = m_resources.find(_strName);
@@ -129,13 +117,25 @@ bool ManagerResources::IsResourceLoaded(const std::string& _strName) const
     return false;
 }
 
-bool ManagerResources::IsResourceLoaded(const std::string& _strName, FileInfo& _oFileInfo) const
+bool ManagerResources::GetResourceFileInfo(const std::string& _strName, FileInfo& fileInfo) const
 {
     auto iteElement = m_resources.find(_strName);
     if (iteElement != m_resources.end())
     {
-        _oFileInfo = (*iteElement).second->fileInfo;
-        return (*iteElement).second->resource != nullptr;
+        fileInfo = (*iteElement).second->fileInfo;
+        return true;
+    }
+    
+    return false;
+}
+
+bool ManagerResources::GetResourcePathName(const std::string& _strName, std::string& pathName) const
+{
+    auto iteElement = m_resources.find(_strName);
+    if (iteElement != m_resources.end())
+    {
+        pathName = (*iteElement).second->fileInfo.GetPathName();
+        return true;
     }
 
     return false;
@@ -143,18 +143,16 @@ bool ManagerResources::IsResourceLoaded(const std::string& _strName, FileInfo& _
 
 FileInfo ManagerResources::GetResourceFileInfo(const std::string& _strName) const
 {
-    auto iteElement = m_resources.find(_strName);
-    if (iteElement != m_resources.end())
-    {
-        return (*iteElement).second->fileInfo;
-    }
-
-    return FileInfo();
+    FileInfo fileInfo;
+    GetResourceFileInfo(_strName, fileInfo);
+    return fileInfo;
 }
 
 std::string ManagerResources::GetResourcePathName(const std::string& _strName) const
 {
-    return GetResourceFileInfo(_strName).GetPathName();
+    std::string pathName;
+    GetResourcePathName(_strName, pathName);
+    return pathName;
 }
 
 void ManagerResources::PreloadAll()
@@ -178,92 +176,84 @@ void ManagerResources::SaveAll()
     }
 }
 
+EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) const
+{
+    if (fileInfo.GetExtension() == "png" || fileInfo.GetExtension() == "jpg")
+    {
+        return EResourceType::Texture;
+    }
+    else if (fileInfo.GetExtension() == "ttf")
+    {
+        return EResourceType::Font;
+    }
+    //else if (fileInfo.GetExtension() == "sound.xml")  // TODO: sound and music files are basically the same thing, I cant deduce them from file extension alone.
+    //{
+    //    return EResourceType::Sound;
+    //}
+    //else if (fileInfo.GetExtension() == "music.xml")
+    //{
+    //    return EResourceType::Music;
+    //}
+    else if (fileInfo.GetExtension() == "sound.xml" || fileInfo.GetExtension() == "sound")
+    {
+        return EResourceType::SoundCue;
+    }
+    else if (fileInfo.GetExtension() == "imageset.xml" || fileInfo.GetExtension() == "imageset")
+    {
+        return EResourceType::ImageSet;
+    }
+    else if (fileInfo.GetExtension() == "animset.xml" || fileInfo.GetExtension() == "animset")
+    {
+        return EResourceType::AnimSet;
+    }
+    //else if ()
+    //{
+    //    //TODO: check if the extension is a datasheet
+    //}
+    else
+    {
+        return EResourceType::Unknown;
+    }
+}
+
 Texture* ManagerResources::GetTexture(const std::string& _strName)
 {
-    Resource* pResource = GetResource(_strName, EResourceType::Texture);
-    if (pResource)
-    {
-        return (dynamic_cast<Texture*>(pResource));
-    }
-
-    return nullptr;
+    return dynamic_cast<Texture*>(GetResource(_strName, EResourceType::Texture));
 }
 
 Font* ManagerResources::GetFont(const std::string& _strName)
 {
-    Resource* pResource = GetResource(_strName, EResourceType::Font);
-    if (pResource)
-    {
-        return (dynamic_cast<Font*>(pResource));
-    }
-
-    return nullptr;
+    return dynamic_cast<Font*>(GetResource(_strName, EResourceType::Font));
 }
 
 Sound* ManagerResources::GetSound(const std::string& _strName)
 {
-    Resource* pResource = GetResource(_strName, EResourceType::Sound);
-    if (pResource)
-    {
-        return (dynamic_cast<Sound*>(pResource));
-    }
-
-    return nullptr;
+    return dynamic_cast<Sound*>(GetResource(_strName, EResourceType::Sound));
 }
 
 Music* ManagerResources::GetMusic(const std::string& _strName)
 {
-    Resource* pResource = GetResource(_strName, EResourceType::Music);
-    if (pResource)
-    {
-        return (dynamic_cast<Music*>(pResource));
-    }
-
-    return nullptr;
+    return dynamic_cast<Music*>(GetResource(_strName, EResourceType::Music));
 }
 
 SoundCue* ManagerResources::GetSoundCue(const std::string& _strName)
 {
-    Resource* pResource = GetResource(_strName, EResourceType::SoundCue);
-    if (pResource)
-    {
-        return (dynamic_cast<SoundCue*>(pResource));
-    }
-
-    return nullptr;
+    return dynamic_cast<SoundCue*>(GetResource(_strName, EResourceType::SoundCue));
 }
 
 ImageSet* ManagerResources::GetImageSet(const std::string& _strName)
 {
-    Resource* pResource = GetResource(_strName, EResourceType::ImageSet);
-    if (pResource)
-    {
-        return (dynamic_cast<ImageSet*>(pResource));
-    }
-
-    return nullptr;
+    return dynamic_cast<ImageSet*>(GetResource(_strName, EResourceType::ImageSet));
 }
 
 AnimSet* ManagerResources::GetAnimSet(const std::string& _strName)
 {
-    Resource* pResource = GetResource(_strName, EResourceType::AnimSet);
-    if (pResource)
-    {
-        return (dynamic_cast<AnimSet*>(pResource));
-    }
-
-    return nullptr;
+    return dynamic_cast<AnimSet*>(GetResource(_strName, EResourceType::AnimSet));
 }
 
 Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)
 {
-    Resource* pResource = GetResource(_strName, EResourceType::Datasheet);
-    if (pResource)
-    {
-        return (dynamic_cast<Datasheet*>(pResource));
-    }
-
-    return nullptr;
+    return dynamic_cast<Datasheet*>(GetResource(_strName, EResourceType::Datasheet));
 }
 
 Resource* ManagerResources::GetResource(const std::string& _strName, EResourceType::Type _eExplicitType)
@@ -306,35 +296,40 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     FileInfo oFileInfo = _pResourceInfo->fileInfo;
     Resource* pResource = nullptr;
 
-    if (_eExplicitType == EResourceType::Texture || oFileInfo.GetExtension() == "png" || oFileInfo.GetExtension() == "jpg")
+    if (_eExplicitType == EResourceType::Unknown)
+    {
+        _eExplicitType = GetResourceType(oFileInfo);
+    }
+
+    if (_eExplicitType == EResourceType::Texture)
     {
         pResource = new Texture;
     }
-    else if (_eExplicitType == EResourceType::Font || oFileInfo.GetExtension() == "ttf")
+    else if (_eExplicitType == EResourceType::Font)
     {
         pResource = new Font;
     }
-    else if (_eExplicitType == EResourceType::Sound || oFileInfo.GetExtension() == "sound.xml")
+    else if (_eExplicitType == EResourceType::Sound)
     {
         pResource = new Sound;
     }
-    else if (_eExplicitType == EResourceType::Music || oFileInfo.GetExtension() == "music.xml")
+    else if (_eExplicitType == EResourceType::Music)
     {
         pResource = new Music;
     }
-    else if (_eExplicitType == EResourceType::SoundCue || StdStringEndsWith(oFileInfo.GetExtension(), "sound.xml") || StdStringEndsWith(oFileInfo.GetExtension(), "sound"))
+    else if (_eExplicitType == EResourceType::SoundCue)
     {
         pResource = new SoundCue;
     }
-    else if (_eExplicitType == EResourceType::ImageSet || StdStringEndsWith(oFileInfo.GetExtension(), "imageset.xml") || StdStringEndsWith(oFileInfo.GetExtension(), "imageset"))
+    else if (_eExplicitType == EResourceType::ImageSet)
     {
         pResource = new ImageSet;
     }
-    else if (_eExplicitType == EResourceType::AnimSet || StdStringEndsWith(oFileInfo.GetExtension(), "animset.xml") || StdStringEndsWith(oFileInfo.GetExtension(), "animset"))
+    else if (_eExplicitType == EResourceType::AnimSet)
     {
         pResource = new AnimSet;
     }
-    else if (_eExplicitType == EResourceType::Datasheet)    //TODO: check if the extension is a datasheet
+    else if (_eExplicitType == EResourceType::Datasheet)
     {
         pResource = InstanciateDatasheet(oFileInfo.GetExtension());
         if (!pResource)

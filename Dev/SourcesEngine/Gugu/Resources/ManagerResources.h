@@ -61,17 +61,19 @@ public:
     std::string GetPathAssets       () const;
     std::string GetPathScreenshots  () const;
     
-    bool        HasResource         (const std::string& _strName) const;
-    bool        HasResource         (const std::string& _strName, FileInfo& _oFileInfo) const;
-    bool        IsResourceLoaded    (const std::string& _strName) const;
-    bool        IsResourceLoaded    (const std::string& _strName, FileInfo& _oFileInfo) const;
+    bool HasResource(const std::string& _strName) const;
+    bool IsResourceLoaded(const std::string& _strName) const;
 
-    FileInfo    GetResourceFileInfo (const std::string& _strName) const;
+    bool GetResourceFileInfo(const std::string& _strName, FileInfo& fileInfo) const;
+    bool GetResourcePathName(const std::string& _strName, std::string& pathName) const;
+    FileInfo GetResourceFileInfo (const std::string& _strName) const;
     std::string GetResourcePathName (const std::string& _strName) const;
 
     void        ParseDirectory  (const std::string& _strPath);
     void        PreloadAll      ();
     void        SaveAll         ();
+
+    EResourceType::Type GetResourceType(const FileInfo& fileInfo) const;
 
     Texture*    GetTexture      (const std::string& _strName);
     Font*       GetFont         (const std::string& _strName);
@@ -91,6 +93,7 @@ public:
     Resource*   GetResource     (const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown); //TODO: Whats the difference with LoadResource ? make this more clear
     Resource*   LoadResource    (const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
 
+    // TODO: Obsolete editor getters ?
     std::string GetResourceID   (const Resource* _pResource) const;
     std::string GetResourceID   (const FileInfo& _oFileInfo) const;
 

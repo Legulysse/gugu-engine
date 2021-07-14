@@ -32,6 +32,7 @@ public:
     virtual ~Demo();
 
     virtual void AppStart() override;
+    virtual void AppStop() override;
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 

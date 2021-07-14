@@ -15,6 +15,7 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementTileMap.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
+#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Misc/Grid/SquareGrid.h"
 #include "Gugu/Misc/Grid/HexGrid.h"
 #include "Gugu/Misc/Grid/GridUtility.h"
@@ -123,6 +124,16 @@ void Demo::AppStart()
     m_neighboursRange = 4;
 
     RefreshGrids();
+}
+
+void Demo::AppStop()
+{
+    SafeDelete(m_grid4);
+    SafeDelete(m_grid6);
+    SafeDelete(m_grid8);
+    SafeDelete(m_gridData4);
+    SafeDelete(m_gridData6);
+    SafeDelete(m_gridData8);
 }
 
 void Demo::RefreshGrids()

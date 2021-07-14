@@ -12,7 +12,7 @@
 
 namespace gugu
 {
-    class FileInfo;
+    class VirtualDatasheet;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ class DatasheetPanel : public DocumentPanel
 {
 public:
 
-    DatasheetPanel(const std::string& resourceID, const FileInfo& resourceFileInfo);
+    DatasheetPanel(VirtualDatasheet* datasheet);
     virtual ~DatasheetPanel();
 
     virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
@@ -33,7 +33,7 @@ public:
 
 protected:
 
-    FileInfo m_resourceFileInfo;
+    VirtualDatasheet* m_datasheet;
 };
 
 }   //namespace gugu

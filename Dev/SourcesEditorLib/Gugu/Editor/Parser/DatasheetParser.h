@@ -12,6 +12,7 @@
 namespace gugu
 {
     class FileInfo;
+    class VirtualDatasheet;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -29,7 +30,7 @@ public:
         std::vector<std::string> values;
     };
 
-    struct ClassDataDefinition
+    struct DataMemberDefinition
     {
         std::string type;   // TODO: I may need a combo of flags for base types, is array, is instance, is reference, and custom types reference.
         std::string name;
@@ -40,7 +41,7 @@ public:
     {
         std::string name;
         std::string base;
-        std::vector<ClassDataDefinition> dataMembers;
+        std::vector<DataMemberDefinition*> dataMembers;
     };
 
 public:
@@ -52,13 +53,14 @@ public:
     void ClearBinding();
 
     bool IsDatasheet(const FileInfo& fileInfo) const;
+    bool GetClassDefinition(const std::string& name, ClassDefinition*& classDefinition) const;
 
-    bool GetClassDefinition(const std::string& name, ClassDefinition& classDefinition) const;
+    VirtualDatasheet* InstanciateDatasheetResource(const std::string& resourceID);
 
 private:
 
-    std::vector<EnumDefinition> m_enumDefinitions;
-    std::vector<ClassDefinition> m_classDefinitions;
+    std::vector<EnumDefinition*> m_enumDefinitions;
+    std::vector<ClassDefinition*> m_classDefinitions;
 };
 
 }   //namespace gugu

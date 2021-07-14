@@ -273,16 +273,16 @@ Resource* ManagerResources::GetResource(const std::string& _strName, EResourceTy
     return nullptr;
 }
 
-Resource* ManagerResources::LoadResource(const std::string& _strName, EResourceType::Type _eExplicitType)
+bool ManagerResources::LoadResource(const std::string& _strName, EResourceType::Type _eExplicitType)
 {
     auto iteElement = m_resources.find(_strName);
     if (iteElement == m_resources.end())
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource : {0}", _strName));
-        return nullptr;
+        return false;
     }
 
-    return LoadResource(iteElement->second, _eExplicitType);
+    return LoadResource(iteElement->second, _eExplicitType) != nullptr;
 }
 
 Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType)
@@ -344,15 +344,42 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
 
     if (pResource)
     {
-        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", oFileInfo.GetName()));
-
         _pResourceInfo->resource = pResource;
-
         pResource->Init(_pResourceInfo);
         pResource->LoadFromFile();
+
+        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", oFileInfo.GetName()));
     }
 
     return pResource;
+}
+
+bool ManagerResources::InjectResource(const std::string& _strResourceID, Resource* _pResource)
+{
+    ResourceMapKey mapKey(_strResourceID);
+
+    auto iteAsset = m_resources.find(mapKey);
+    if (iteAsset != m_resources.end())
+    {
+        if (iteAsset->second->resource == nullptr)
+        {
+            iteAsset->second->resource = _pResource;
+            _pResource->Init(iteAsset->second);
+
+            GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Injected Resource : {0}", _strResourceID));
+            return true;
+        }
+        else
+        {
+            GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("InjectResource failed, the resource is already loaded : {0}", _strResourceID));
+        }
+    }
+    else
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("InjectResource failed, the resource is unknown : {0}", _strResourceID));
+    }
+
+    return false;
 }
 
 std::string ManagerResources::GetResourceID(const Resource* _pResource) const
@@ -384,7 +411,7 @@ std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
     return "";
 }
 
-bool ManagerResources::RegisterResourceInfo(std::string _strResourceID, const FileInfo& _kFileInfos)
+bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos)
 {
     ResourceMapKey mapKey(_strResourceID);
 

@@ -90,14 +90,15 @@ public:
         return static_cast<T*>(GetDatasheet(_strName));
     }
 
-    Resource*   GetResource     (const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown); //TODO: Whats the difference with LoadResource ? make this more clear
-    Resource*   LoadResource    (const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
+    Resource* GetResource(const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
+    bool LoadResource(const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
+    bool InjectResource(const std::string& _strName, Resource* _pResource);
 
     // TODO: Obsolete editor getters ?
     std::string GetResourceID   (const Resource* _pResource) const;
     std::string GetResourceID   (const FileInfo& _oFileInfo) const;
 
-    bool        RegisterResourceInfo(std::string _strResourceID, const FileInfo& _kFileInfos);
+    bool        RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos);
     bool        AddResource     (Resource* _pNewResource, const FileInfo& _oFileInfo);
     bool        MoveResource    (Resource* _pResource, const FileInfo& _oFileInfo);
     bool        RemoveResource  (Resource* _pResource);
@@ -128,7 +129,7 @@ public:
 
 private:
 
-    Resource*   LoadResource    (ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
+    Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
 
 private:
 

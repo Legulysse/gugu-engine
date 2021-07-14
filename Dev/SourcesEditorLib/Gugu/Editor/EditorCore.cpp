@@ -11,6 +11,7 @@
 #include "Gugu/Editor/Panel/DatasheetPanel.h"
 #include "Gugu/Editor/Panel/ImageSetPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
+#include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Inputs/ManagerInputs.h"
@@ -268,7 +269,22 @@ void EditorCore::OpenDocument(const std::string& resourceID)
         // Check datasheets.
         if (m_datasheetParser->IsDatasheet(resourceFileInfo))
         {
-            newDocument = new DatasheetPanel(resourceID, resourceFileInfo);
+            VirtualDatasheet* datasheet = nullptr;
+            
+            if (GetResources()->IsResourceLoaded(resourceID))
+            {
+                // TODO: check this case once I handle closing documents.
+                datasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(resourceID));
+            }
+            else
+            {
+                datasheet = m_datasheetParser->InstanciateDatasheetResource(resourceID);
+            }
+
+            if (datasheet)
+            {
+                newDocument = new DatasheetPanel(datasheet);
+            }
         }
     }
 

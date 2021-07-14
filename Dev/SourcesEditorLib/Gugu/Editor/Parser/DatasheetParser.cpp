@@ -7,6 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Resources/VirtualDatasheet.h"
+
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
@@ -23,6 +26,7 @@ DatasheetParser::DatasheetParser()
 
 DatasheetParser::~DatasheetParser()
 {
+    ClearBinding();
 }
 
 bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
@@ -38,13 +42,13 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
 
     for (pugi::xml_node nodeEnum = nodeBinding.child("Enum"); nodeEnum; nodeEnum = nodeEnum.next_sibling("Enum"))
     {
-        EnumDefinition enumDefinition;
-        enumDefinition.name = nodeEnum.attribute("name").value();
+        EnumDefinition* enumDefinition = new EnumDefinition;
+        enumDefinition->name = nodeEnum.attribute("name").value();
 
         for (pugi::xml_node nodeEnumValue = nodeEnum.child("Value"); nodeEnumValue; nodeEnumValue = nodeEnumValue.next_sibling("Value"))
         {
             std::string enumValue = nodeEnumValue.attribute("name").value();
-            enumDefinition.values.push_back(enumValue);
+            enumDefinition->values.push_back(enumValue);
         }
 
         m_enumDefinitions.push_back(enumDefinition);
@@ -52,18 +56,18 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
 
     for (pugi::xml_node nodeClass = nodeBinding.child("Class"); nodeClass; nodeClass = nodeClass.next_sibling("Class"))
     {
-        ClassDefinition classDefinition;
-        classDefinition.name = nodeClass.attribute("name").value();
-        classDefinition.base = nodeClass.attribute("base").value();
+        ClassDefinition* classDefinition = new ClassDefinition;
+        classDefinition->name = nodeClass.attribute("name").value();
+        classDefinition->base = nodeClass.attribute("base").value();
 
         for (pugi::xml_node nodeClassData = nodeClass.child("Data"); nodeClassData; nodeClassData = nodeClassData.next_sibling("Data"))
         {
-            ClassDataDefinition dataDefinition;
-            dataDefinition.type = nodeClassData.attribute("type").value();
-            dataDefinition.name = nodeClassData.attribute("name").value();
-            dataDefinition.defaultValue = nodeClassData.attribute("default").value();
+            DataMemberDefinition* dataDefinition = new DataMemberDefinition;
+            dataDefinition->type = nodeClassData.attribute("type").value();
+            dataDefinition->name = nodeClassData.attribute("name").value();
+            dataDefinition->defaultValue = nodeClassData.attribute("default").value();
 
-            classDefinition.dataMembers.push_back(dataDefinition);
+            classDefinition->dataMembers.push_back(dataDefinition);
         }
 
         m_classDefinitions.push_back(classDefinition);
@@ -74,15 +78,20 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
 
 void DatasheetParser::ClearBinding()
 {
-    m_enumDefinitions.clear();
-    m_classDefinitions.clear();
+    for (ClassDefinition* classDefinition : m_classDefinitions)
+    {
+        ClearStdVector(classDefinition->dataMembers);
+    }
+
+    ClearStdVector(m_classDefinitions);
+    ClearStdVector(m_enumDefinitions);
 }
 
 bool DatasheetParser::IsDatasheet(const FileInfo& fileInfo) const
 {
-    for (auto classDefinition : m_classDefinitions)
+    for (ClassDefinition* classDefinition : m_classDefinitions)
     {
-        if (fileInfo.GetExtension() == classDefinition.name)
+        if (fileInfo.GetExtension() == classDefinition->name)
         {
             return true;
         }
@@ -91,11 +100,11 @@ bool DatasheetParser::IsDatasheet(const FileInfo& fileInfo) const
     return false;
 }
 
-bool DatasheetParser::GetClassDefinition(const std::string& name, ClassDefinition& classDefinition) const
+bool DatasheetParser::GetClassDefinition(const std::string& name, ClassDefinition*& classDefinition) const
 {
-    for (const ClassDefinition& definition : m_classDefinitions)
+    for (ClassDefinition* definition : m_classDefinitions)
     {
-        if (definition.name == name)
+        if (definition->name == name)
         {
             classDefinition = definition;
             return true;
@@ -103,6 +112,23 @@ bool DatasheetParser::GetClassDefinition(const std::string& name, ClassDefinitio
     }
 
     return false;
+}
+
+VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::string& resourceID)
+{
+    VirtualDatasheet* datasheet = new VirtualDatasheet;
+    if (GetResources()->InjectResource(resourceID, datasheet))
+    {
+        std::string className = datasheet->GetFileInfo().GetExtension();
+        if (GetClassDefinition(className, datasheet->classDefinition))
+        {
+            datasheet->LoadFromFile();
+            return datasheet;
+        }
+    }
+
+    SafeDelete(datasheet);
+    return nullptr;
 }
 
 }   //namespace gugu

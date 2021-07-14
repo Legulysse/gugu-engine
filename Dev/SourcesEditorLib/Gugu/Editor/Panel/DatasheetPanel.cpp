@@ -9,6 +9,7 @@
 
 #include "Gugu/Editor/EditorCore.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
+#include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -18,10 +19,10 @@
 
 namespace gugu {
 
-DatasheetPanel::DatasheetPanel(const std::string& resourceID, const FileInfo& resourceFileInfo)
+DatasheetPanel::DatasheetPanel(VirtualDatasheet* datasheet)
 {
-    m_resourceID = resourceID;
-    m_resourceFileInfo = resourceFileInfo;
+    m_resourceID = datasheet->GetID();
+    m_datasheet = datasheet;
 }
 
 DatasheetPanel::~DatasheetPanel()
@@ -45,16 +46,17 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
             m_focused = true;
         }
 
-        std::string className = m_resourceFileInfo.GetExtension();
-        DatasheetParser::ClassDefinition classDefinition;
-        if (GetEditor()->GetDatasheetParser()->GetClassDefinition(className, classDefinition))
+        for (DatasheetParser::DataMemberDefinition* dataDefinition : m_datasheet->rootObject->classDefinition->dataMembers)
         {
-            for (const DatasheetParser::ClassDataDefinition& dataDefinition : classDefinition.dataMembers)
-            {
-                ImGui::Text(dataDefinition.name.c_str());
-                ImGui::Text(dataDefinition.type.c_str());
-                ImGui::Text(dataDefinition.defaultValue.c_str());
-            }
+            ImGui::Text(dataDefinition->name.c_str());
+            ImGui::Text(dataDefinition->type.c_str());
+            ImGui::Text(dataDefinition->defaultValue.c_str());
+        }
+
+        for (VirtualDatasheetObject::DataValue* dataValue : m_datasheet->rootObject->dataValues)
+        {
+            ImGui::Text(dataValue->name.c_str());
+            ImGui::Text(dataValue->value.c_str());
         }
     }
     ImGui::End();

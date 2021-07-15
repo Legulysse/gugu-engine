@@ -40,6 +40,7 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
     if (!nodeBinding)
         return false;
 
+    // Parse all enums.
     for (pugi::xml_node nodeEnum = nodeBinding.child("Enum"); nodeEnum; nodeEnum = nodeEnum.next_sibling("Enum"))
     {
         EnumDefinition* enumDefinition = new EnumDefinition;
@@ -54,11 +55,13 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
         m_enumDefinitions.push_back(enumDefinition);
     }
 
+    // Parse all classes.
     for (pugi::xml_node nodeClass = nodeBinding.child("Class"); nodeClass; nodeClass = nodeClass.next_sibling("Class"))
     {
         ClassDefinition* classDefinition = new ClassDefinition;
         classDefinition->name = nodeClass.attribute("name").value();
-        classDefinition->base = nodeClass.attribute("base").value();
+        classDefinition->baseName = nodeClass.attribute("base").value();
+        classDefinition->baseDefinition = nullptr;
 
         for (pugi::xml_node nodeClassData = nodeClass.child("Data"); nodeClassData; nodeClassData = nodeClassData.next_sibling("Data"))
         {
@@ -71,6 +74,12 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
         }
 
         m_classDefinitions.push_back(classDefinition);
+    }
+
+    // Resolve base class definitions.
+    for (ClassDefinition* classDefinition : m_classDefinitions)
+    {
+        GetClassDefinition(classDefinition->baseName, classDefinition->baseDefinition);
     }
 
     return true;

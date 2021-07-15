@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Editor/Panel/DocumentPanel.h"
+#include "Gugu/Editor/Parser/DatasheetParser.h"
 
 #include "Gugu/System/SystemUtility.h"
 
@@ -33,7 +34,16 @@ public:
 
 protected:
 
+    struct ClassDefinitionEntry
+    {
+        DatasheetParser::ClassDefinition* classDefinition;
+    };
+
+protected:
+
     VirtualDatasheet* m_datasheet;
+
+    std::vector<ClassDefinitionEntry> m_classEntries;
 };
 
 }   //namespace gugu

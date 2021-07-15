@@ -40,7 +40,8 @@ public:
     struct ClassDefinition
     {
         std::string name;
-        std::string base;
+        std::string baseName;
+        ClassDefinition* baseDefinition;
         std::vector<DataMemberDefinition*> dataMembers;
     };
 

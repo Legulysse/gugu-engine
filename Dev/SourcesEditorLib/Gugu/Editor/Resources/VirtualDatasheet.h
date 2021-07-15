@@ -45,7 +45,7 @@ public:
 
 public:
 
-    DatasheetParser::ClassDefinition* classDefinition;
+    DatasheetParser::ClassDefinition* classDefinition = nullptr;
     std::vector<VirtualDatasheetObject::DataValue*> dataValues;
 };
 
@@ -62,8 +62,8 @@ public:
 
 public:
 
-    DatasheetParser::ClassDefinition* classDefinition;
-    VirtualDatasheetObject* rootObject;
+    DatasheetParser::ClassDefinition* classDefinition = nullptr;
+    VirtualDatasheetObject* rootObject = nullptr;
 };
 
 }   // namespace gugu

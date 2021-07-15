@@ -63,16 +63,6 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
         classDefinition->baseName = nodeClass.attribute("base").value();
         classDefinition->baseDefinition = nullptr;
 
-        for (pugi::xml_node nodeClassData = nodeClass.child("Data"); nodeClassData; nodeClassData = nodeClassData.next_sibling("Data"))
-        {
-            DataMemberDefinition* dataDefinition = new DataMemberDefinition;
-            dataDefinition->type = nodeClassData.attribute("type").value();
-            dataDefinition->name = nodeClassData.attribute("name").value();
-            dataDefinition->defaultValue = nodeClassData.attribute("default").value();
-
-            classDefinition->dataMembers.push_back(dataDefinition);
-        }
-
         m_classDefinitions.push_back(classDefinition);
     }
 
@@ -80,6 +70,112 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
     for (ClassDefinition* classDefinition : m_classDefinitions)
     {
         GetClassDefinition(classDefinition->baseName, classDefinition->baseDefinition);
+    }
+
+    // Parse all classes data.
+    for (pugi::xml_node nodeClass = nodeBinding.child("Class"); nodeClass; nodeClass = nodeClass.next_sibling("Class"))
+    {
+        ClassDefinition* classDefinition;
+        if (GetClassDefinition(nodeClass.attribute("name").value(), classDefinition))
+        {
+            for (pugi::xml_node nodeClassData = nodeClass.child("Data"); nodeClassData; nodeClassData = nodeClassData.next_sibling("Data"))
+            {
+                DataMemberDefinition* dataDefinition = new DataMemberDefinition;
+                dataDefinition->name = nodeClassData.attribute("name").value();
+
+                std::string parseType = nodeClassData.attribute("type").value();
+                std::string parseDefaultValue = nodeClassData.attribute("default").value();
+
+                DataMemberDefinition::Type dataType = DataMemberDefinition::Unknown;
+                std::string deducedType = parseType;
+
+                std::vector<std::string> tokens;
+                StdStringSplit(parseType, ":", tokens);
+                if (tokens.size() >= 2 && tokens[0] == "array")
+                {
+                    dataDefinition->isArray = true;
+
+                    if (tokens.size() == 2)
+                    {
+                        deducedType = tokens[1];
+                    }
+                    else if (tokens.size() == 3 && tokens[1] == "reference")
+                    {
+                        dataType = DataMemberDefinition::ObjectReference;
+                        deducedType = tokens[2];
+                    }
+                    else if (tokens.size() == 3 && tokens[1] == "instance")
+                    {
+                        dataType = DataMemberDefinition::ObjectInstance;
+                        deducedType = tokens[2];
+                    }
+                }
+                else if (tokens.size() == 2 && tokens[0] == "reference")
+                {
+                    dataType = DataMemberDefinition::ObjectReference;
+                    deducedType = tokens[1];
+                }
+                else if (tokens.size() == 2 && tokens[0] == "instance")
+                {
+                    dataType = DataMemberDefinition::ObjectInstance;
+                    deducedType = tokens[1];
+                }
+
+                if (dataType == DataMemberDefinition::Unknown)
+                {
+                    if (deducedType == "bool")
+                    {
+                        dataType = DataMemberDefinition::Bool;
+                    }
+                    else if (deducedType == "int")
+                    {
+                        dataType = DataMemberDefinition::Int;
+                    }
+                    else if (deducedType == "float")
+                    {
+                        dataType = DataMemberDefinition::Float;
+                    }
+                    else if (deducedType == "string")
+                    {
+                        dataType = DataMemberDefinition::String;
+                    }
+                }
+
+                if (dataType == DataMemberDefinition::Unknown && GetEnumDefinition(deducedType, dataDefinition->enumDefinition))
+                {
+                    dataType = DataMemberDefinition::Enum;
+                }
+                
+                if (dataType == DataMemberDefinition::ObjectInstance || dataType == DataMemberDefinition::ObjectReference)
+                {
+                    GetClassDefinition(deducedType, dataDefinition->objectDefinition);
+                }
+
+                dataDefinition->type = dataType;
+
+                if (!dataDefinition->isArray)
+                {
+                    if (dataDefinition->type == DataMemberDefinition::Bool)
+                    {
+                        FromString<bool>(parseDefaultValue, dataDefinition->defaultValue_bool);
+                    }
+                    else if (dataDefinition->type == DataMemberDefinition::Int)
+                    {
+                        FromString<int>(parseDefaultValue, dataDefinition->defaultValue_int);
+                    }
+                    else if (dataDefinition->type == DataMemberDefinition::Float)
+                    {
+                        FromString<float>(parseDefaultValue, dataDefinition->defaultValue_float);
+                    }
+                    else if (dataDefinition->type == DataMemberDefinition::String || dataDefinition->type == DataMemberDefinition::Enum)
+                    {
+                        dataDefinition->defaultValue_string = parseDefaultValue;
+                    }
+                }
+
+                classDefinition->dataMembers.push_back(dataDefinition);
+            }
+        }
     }
 
     return true;
@@ -102,6 +198,20 @@ bool DatasheetParser::IsDatasheet(const FileInfo& fileInfo) const
     {
         if (fileInfo.GetExtension() == classDefinition->name)
         {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool DatasheetParser::GetEnumDefinition(const std::string& name, EnumDefinition*& enumDefinition) const
+{
+    for (EnumDefinition* definition : m_enumDefinitions)
+    {
+        if (definition->name == name)
+        {
+            enumDefinition = definition;
             return true;
         }
     }

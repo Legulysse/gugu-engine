@@ -24,6 +24,10 @@ class DatasheetParser
 {
 public:
 
+    struct EnumDefinition;
+    struct ClassDefinition;
+    struct DataMemberDefinition;
+
     struct EnumDefinition
     {
         std::string name;
@@ -32,16 +36,40 @@ public:
 
     struct DataMemberDefinition
     {
-        std::string type;   // TODO: I may need a combo of flags for base types, is array, is instance, is reference, and custom types reference.
+        enum Type
+        {
+            Unknown,
+            Bool,
+            Int,
+            Float,
+            String,
+            Enum,
+            ObjectInstance,
+            ObjectReference,
+        };
+
         std::string name;
-        std::string defaultValue;   // TODO: union ?
+        DataMemberDefinition::Type type = DataMemberDefinition::Unknown;
+        ClassDefinition* objectDefinition = nullptr;
+        EnumDefinition* enumDefinition = nullptr;
+        bool isArray = false;
+
+        // TODO: std::variant ?
+        bool defaultValue_bool = false;
+        int defaultValue_int = 0;
+        float defaultValue_float = 0.f;
+        std::string defaultValue_string;
+        // TODO: enum value (reuse string ?).
+        // TODO: object instance value (always null in definition).
+        // TODO: object reference value (always null in definition).
+        // TODO: array of MemberValue (always empty in definition).
     };
 
     struct ClassDefinition
     {
         std::string name;
         std::string baseName;
-        ClassDefinition* baseDefinition;
+        ClassDefinition* baseDefinition = nullptr;
         std::vector<DataMemberDefinition*> dataMembers;
     };
 
@@ -54,6 +82,7 @@ public:
     void ClearBinding();
 
     bool IsDatasheet(const FileInfo& fileInfo) const;
+    bool GetEnumDefinition(const std::string& name, EnumDefinition*& enumDefinition) const;
     bool GetClassDefinition(const std::string& name, ClassDefinition*& classDefinition) const;
 
     VirtualDatasheet* InstanciateDatasheetResource(const std::string& resourceID);

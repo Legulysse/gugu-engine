@@ -70,8 +70,8 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
             for (DatasheetParser::DataMemberDefinition* dataDefinition : baseDefinition->dataMembers)
             {
                 ImGui::Text(dataDefinition->name.c_str());
-                ImGui::Text(dataDefinition->type.c_str());
-                ImGui::Text(dataDefinition->defaultValue.c_str());
+                //ImGui::Text(dataDefinition->type.c_str());
+                //ImGui::Text(dataDefinition->defaultValue.c_str());
             }
 
             baseDefinition = baseDefinition->baseDefinition;
@@ -82,8 +82,8 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
         for (DatasheetParser::DataMemberDefinition* dataDefinition : m_datasheet->rootObject->classDefinition->dataMembers)
         {
             ImGui::Text(dataDefinition->name.c_str());
-            ImGui::Text(dataDefinition->type.c_str());
-            ImGui::Text(dataDefinition->defaultValue.c_str());
+            //ImGui::Text(dataDefinition->type.c_str());
+            //ImGui::Text(dataDefinition->defaultValue.c_str());
         }
 
         ImGui::Text("---- values ----");
@@ -99,19 +99,60 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
 
 void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
 {
+    // TODO: display parent datasheet.
+
     for (ClassDefinitionEntry classEntry : m_classEntries)
     {
         ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
         if (ImGui::CollapsingHeader(classEntry.classDefinition->name.c_str(), headerFlags))
         {
+            ImGui::Indent();
+
             for (DatasheetParser::DataMemberDefinition* dataDefinition : classEntry.classDefinition->dataMembers)
             {
-                ImGui::Text(dataDefinition->name.c_str());
-                ImGui::SameLine();
-                ImGui::Text(dataDefinition->type.c_str());
-                ImGui::SameLine();
-                ImGui::Text(dataDefinition->defaultValue.c_str());
+                if (!dataDefinition->isArray)
+                {
+                    if (dataDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
+                    {
+                        bool dummy = dataDefinition->defaultValue_bool;
+                        ImGui::Checkbox(dataDefinition->name.c_str(), &dummy);
+                    }
+                    else if (dataDefinition->type == DatasheetParser::DataMemberDefinition::Int)
+                    {
+                        int dummy = dataDefinition->defaultValue_int;
+                        ImGui::InputInt(dataDefinition->name.c_str(), &dummy);
+                    }
+                    else if (dataDefinition->type == DatasheetParser::DataMemberDefinition::Float)
+                    {
+                        float dummy = dataDefinition->defaultValue_float;
+                        ImGui::InputFloat(dataDefinition->name.c_str(), &dummy);
+                    }
+                    else if (dataDefinition->type == DatasheetParser::DataMemberDefinition::String)
+                    {
+                        std::string dummy = dataDefinition->defaultValue_string;
+                        ImGui::InputText(dataDefinition->name.c_str(), &dummy);
+                    }
+                    else if (dataDefinition->type == DatasheetParser::DataMemberDefinition::Enum)
+                    {
+                        std::string dummy = dataDefinition->defaultValue_string;
+                        ImGui::InputText(dataDefinition->name.c_str(), &dummy);
+                    }
+                    else
+                    {
+                        ImGui::Text("object");
+                        ImGui::SameLine();
+                        ImGui::Text(dataDefinition->name.c_str());
+                    }
+                }
+                else
+                {
+                    ImGui::Text("array");
+                    ImGui::SameLine();
+                    ImGui::Text(dataDefinition->name.c_str());
+                }
             }
+
+            ImGui::Unindent();
         }
     }
 }

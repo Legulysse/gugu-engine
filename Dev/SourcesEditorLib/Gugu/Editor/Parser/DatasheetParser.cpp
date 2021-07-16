@@ -103,7 +103,7 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                 dataDefinition->name = nodeClassData.attribute("name").value();
 
                 std::string parseType = nodeClassData.attribute("type").value();
-                std::string parseDefaultValue = nodeClassData.attribute("default").value();
+                pugi::xml_attribute attributeDefaultValue = nodeClassData.attribute("default");
 
                 DataMemberDefinition::Type dataType = DataMemberDefinition::Unknown;
                 std::string deducedType = parseType;
@@ -176,19 +176,19 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                 {
                     if (dataDefinition->type == DataMemberDefinition::Bool)
                     {
-                        FromString<bool>(parseDefaultValue, dataDefinition->defaultValue_bool);
+                        dataDefinition->defaultValue_bool = attributeDefaultValue.as_bool();
                     }
                     else if (dataDefinition->type == DataMemberDefinition::Int)
                     {
-                        FromString<int>(parseDefaultValue, dataDefinition->defaultValue_int);
+                        dataDefinition->defaultValue_int = attributeDefaultValue.as_int();
                     }
                     else if (dataDefinition->type == DataMemberDefinition::Float)
                     {
-                        FromString<float>(parseDefaultValue, dataDefinition->defaultValue_float);
+                        dataDefinition->defaultValue_float = attributeDefaultValue.as_float();
                     }
                     else if (dataDefinition->type == DataMemberDefinition::String || dataDefinition->type == DataMemberDefinition::Enum)
                     {
-                        dataDefinition->defaultValue_string = parseDefaultValue;
+                        dataDefinition->defaultValue_string = attributeDefaultValue.value();
                     }
                 }
 

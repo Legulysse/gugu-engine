@@ -43,10 +43,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     {
         VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
         dataValue->name = nodeData.attribute("name").value();
-        std::string parsedValue = nodeData.attribute("value").value();
-
-        // Backup data in case it is deprecated.
-        dataValue->backupValue = parsedValue;
+        pugi::xml_attribute attributeValue = nodeData.attribute("value");
 
         DatasheetParser::DataMemberDefinition* dataMemberDef = m_classDefinition->GetDataMemberDefinition(dataValue->name);
         if (dataMemberDef)
@@ -55,19 +52,19 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
             {
                 if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Bool)
                 {
-                    FromString<bool>(parsedValue, dataValue->value_bool);
+                    dataValue->value_bool = attributeValue.as_bool();
                 }
                 else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Int)
                 {
-                    FromString<int>(parsedValue, dataValue->value_int);
+                    dataValue->value_int = attributeValue.as_int();
                 }
                 else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Float)
                 {
-                    FromString<float>(parsedValue, dataValue->value_float);
+                    dataValue->value_float = attributeValue.as_float();
                 }
                 else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::String || dataMemberDef->type == DatasheetParser::DataMemberDefinition::Enum)
                 {
-                    dataValue->value_string = parsedValue;
+                    dataValue->value_string = attributeValue.value();
                 }
             }
 
@@ -76,6 +73,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
         else
         {
             // TODO: store deprecated data in a dedicated array ? add a special flag ?
+            dataValue->backupValue = attributeValue.value();
             m_dataValues.push_back(dataValue);
         }
     }

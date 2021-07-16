@@ -15,36 +15,86 @@
 
 namespace gugu {
 
+VirtualDatasheetObject::DataValue::~DataValue()
+{
+    SafeDelete(value_objectInstance);
+    ClearStdVector(value_children);
+
+    overrideObjectDefinition = nullptr;
+    value_objectReference = nullptr;
+}
+
 VirtualDatasheetObject::VirtualDatasheetObject()
-    : classDefinition(nullptr)
+    : m_classDefinition(nullptr)
 {
 }
 
 VirtualDatasheetObject::~VirtualDatasheetObject()
 {
-    classDefinition = nullptr;
-    ClearStdVector(dataValues);
+    m_classDefinition = nullptr;
+    ClearStdVector(m_dataValues);
 }
 
-bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* definition)
+bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition)
 {
-    classDefinition = definition;
+    m_classDefinition = classDefinition;
 
     for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
     {
         VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
         dataValue->name = nodeData.attribute("name").value();
-        dataValue->value = nodeData.attribute("value").value();
+        std::string parsedValue = nodeData.attribute("value").value();
 
-        dataValues.push_back(dataValue);
+        // Backup data in case it is deprecated.
+        dataValue->backupValue = parsedValue;
+
+        DatasheetParser::DataMemberDefinition* dataMemberDef = m_classDefinition->GetDataMemberDefinition(dataValue->name);
+        if (dataMemberDef)
+        {
+            if (!dataMemberDef->isArray)
+            {
+                if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Bool)
+                {
+                    FromString<bool>(parsedValue, dataValue->value_bool);
+                }
+                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Int)
+                {
+                    FromString<int>(parsedValue, dataValue->value_int);
+                }
+                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Float)
+                {
+                    FromString<float>(parsedValue, dataValue->value_float);
+                }
+                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::String || dataMemberDef->type == DatasheetParser::DataMemberDefinition::Enum)
+                {
+                    dataValue->value_string = parsedValue;
+                }
+            }
+
+            m_dataValues.push_back(dataValue);
+        }
+        else
+        {
+            // TODO: store deprecated data in a dedicated array ? add a special flag ?
+            m_dataValues.push_back(dataValue);
+        }
     }
 
     return true;
 }
 
-VirtualDatasheetObject::DataValue::~DataValue()
+VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name) const
 {
-    ClearStdVector(children);
+    // TODO: parse parent data, return a flag to indicate its a parent data.
+    for (VirtualDatasheetObject::DataValue* dataValue : m_dataValues)
+    {
+        if (dataValue->name == name)
+        {
+            return dataValue;
+        }
+    }
+
+    return nullptr;
 }
 
 VirtualDatasheet::VirtualDatasheet()

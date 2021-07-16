@@ -50,15 +50,15 @@ public:
 
         std::string name;
         DataMemberDefinition::Type type = DataMemberDefinition::Unknown;
+        bool isArray = false;
         ClassDefinition* objectDefinition = nullptr;
         EnumDefinition* enumDefinition = nullptr;
-        bool isArray = false;
 
-        // TODO: std::variant ?
         bool defaultValue_bool = false;
         int defaultValue_int = 0;
         float defaultValue_float = 0.f;
         std::string defaultValue_string;
+
         // TODO: enum value (reuse string ?).
         // TODO: object instance value (always null in definition).
         // TODO: object reference value (always null in definition).
@@ -67,10 +67,12 @@ public:
 
     struct ClassDefinition
     {
-        std::string name;
+        std::string m_name;
         std::string baseName;
         ClassDefinition* baseDefinition = nullptr;
         std::vector<DataMemberDefinition*> dataMembers;
+
+        DataMemberDefinition* GetDataMemberDefinition(const std::string& name) const;
     };
 
 public:

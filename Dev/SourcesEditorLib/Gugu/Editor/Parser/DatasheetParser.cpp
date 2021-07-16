@@ -20,6 +20,25 @@
 
 namespace gugu {
 
+DatasheetParser::DataMemberDefinition* DatasheetParser::ClassDefinition::GetDataMemberDefinition(const std::string& name) const
+{
+    const ClassDefinition* classDefinition = this;
+    while (classDefinition)
+    {
+        for (DatasheetParser::DataMemberDefinition* dataMemberDef : classDefinition->dataMembers)
+        {
+            if (dataMemberDef->name == name)
+            {
+                return dataMemberDef;
+            }
+        }
+
+        classDefinition = classDefinition->baseDefinition;
+    }
+
+    return nullptr;
+}
+
 DatasheetParser::DatasheetParser()
 {
 }
@@ -59,7 +78,7 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
     for (pugi::xml_node nodeClass = nodeBinding.child("Class"); nodeClass; nodeClass = nodeClass.next_sibling("Class"))
     {
         ClassDefinition* classDefinition = new ClassDefinition;
-        classDefinition->name = nodeClass.attribute("name").value();
+        classDefinition->m_name = nodeClass.attribute("name").value();
         classDefinition->baseName = nodeClass.attribute("base").value();
         classDefinition->baseDefinition = nullptr;
 
@@ -196,7 +215,7 @@ bool DatasheetParser::IsDatasheet(const FileInfo& fileInfo) const
 {
     for (ClassDefinition* classDefinition : m_classDefinitions)
     {
-        if (fileInfo.GetExtension() == classDefinition->name)
+        if (fileInfo.GetExtension() == classDefinition->m_name)
         {
             return true;
         }
@@ -223,7 +242,7 @@ bool DatasheetParser::GetClassDefinition(const std::string& name, ClassDefinitio
 {
     for (ClassDefinition* definition : m_classDefinitions)
     {
-        if (definition->name == name)
+        if (definition->m_name == name)
         {
             classDefinition = definition;
             return true;

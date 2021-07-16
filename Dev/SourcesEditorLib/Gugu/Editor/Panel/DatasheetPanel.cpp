@@ -65,7 +65,7 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
         DatasheetParser::ClassDefinition* baseDefinition = m_datasheet->classDefinition->baseDefinition;
         while (baseDefinition != nullptr)
         {
-            ImGui::Text("---- base: %s ----", baseDefinition->name.c_str());
+            ImGui::Text("---- base: %s ----", baseDefinition->m_name.c_str());
 
             for (DatasheetParser::DataMemberDefinition* dataDefinition : baseDefinition->dataMembers)
             {
@@ -77,9 +77,9 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
             baseDefinition = baseDefinition->baseDefinition;
         }
 
-        ImGui::Text("---- class: %s ----", m_datasheet->rootObject->classDefinition->name.c_str());
+        ImGui::Text("---- class: %s ----", m_datasheet->rootObject->m_classDefinition->m_name.c_str());
 
-        for (DatasheetParser::DataMemberDefinition* dataDefinition : m_datasheet->rootObject->classDefinition->dataMembers)
+        for (DatasheetParser::DataMemberDefinition* dataDefinition : m_datasheet->rootObject->m_classDefinition->dataMembers)
         {
             ImGui::Text(dataDefinition->name.c_str());
             //ImGui::Text(dataDefinition->type.c_str());
@@ -88,10 +88,10 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
 
         ImGui::Text("---- values ----");
 
-        for (VirtualDatasheetObject::DataValue* dataValue : m_datasheet->rootObject->dataValues)
+        for (VirtualDatasheetObject::DataValue* dataValue : m_datasheet->rootObject->m_dataValues)
         {
             ImGui::Text(dataValue->name.c_str());
-            ImGui::Text(dataValue->value.c_str());
+            //ImGui::Text(dataValue->value.c_str());
         }
     }
     ImGui::End();
@@ -104,56 +104,75 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
     for (ClassDefinitionEntry classEntry : m_classEntries)
     {
         ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
-        if (ImGui::CollapsingHeader(classEntry.classDefinition->name.c_str(), headerFlags))
+        if (ImGui::CollapsingHeader(classEntry.classDefinition->m_name.c_str(), headerFlags))
         {
             ImGui::Indent();
 
-            for (DatasheetParser::DataMemberDefinition* dataDefinition : classEntry.classDefinition->dataMembers)
-            {
-                if (!dataDefinition->isArray)
-                {
-                    if (dataDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
-                    {
-                        bool dummy = dataDefinition->defaultValue_bool;
-                        ImGui::Checkbox(dataDefinition->name.c_str(), &dummy);
-                    }
-                    else if (dataDefinition->type == DatasheetParser::DataMemberDefinition::Int)
-                    {
-                        int dummy = dataDefinition->defaultValue_int;
-                        ImGui::InputInt(dataDefinition->name.c_str(), &dummy);
-                    }
-                    else if (dataDefinition->type == DatasheetParser::DataMemberDefinition::Float)
-                    {
-                        float dummy = dataDefinition->defaultValue_float;
-                        ImGui::InputFloat(dataDefinition->name.c_str(), &dummy);
-                    }
-                    else if (dataDefinition->type == DatasheetParser::DataMemberDefinition::String)
-                    {
-                        std::string dummy = dataDefinition->defaultValue_string;
-                        ImGui::InputText(dataDefinition->name.c_str(), &dummy);
-                    }
-                    else if (dataDefinition->type == DatasheetParser::DataMemberDefinition::Enum)
-                    {
-                        std::string dummy = dataDefinition->defaultValue_string;
-                        ImGui::InputText(dataDefinition->name.c_str(), &dummy);
-                    }
-                    else
-                    {
-                        ImGui::Text("object");
-                        ImGui::SameLine();
-                        ImGui::Text(dataDefinition->name.c_str());
-                    }
-                }
-                else
-                {
-                    ImGui::Text("array");
-                    ImGui::SameLine();
-                    ImGui::Text(dataDefinition->name.c_str());
-                }
-            }
+            DisplayDataClass(classEntry.classDefinition, m_datasheet->rootObject);
 
             ImGui::Unindent();
         }
+    }
+}
+
+void DatasheetPanel::DisplayDataClass(DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* dataObject)
+{
+    for (DatasheetParser::DataMemberDefinition* dataMemberDef : classDefinition->dataMembers)
+    {
+        DisplayDataMember(dataMemberDef, dataObject);
+    }
+}
+
+void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject)
+{
+    if (!dataMemberDefinition->isArray)
+    {
+        if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
+        {
+            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
+            bool dummy = dataValue ? dataValue->value_bool : dataMemberDefinition->defaultValue_bool;
+            ImGui::Checkbox(dataMemberDefinition->name.c_str(), &dummy);
+        }
+        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Int)
+        {
+            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
+            int dummy = dataValue ? dataValue->value_int : dataMemberDefinition->defaultValue_int;
+            ImGui::InputInt(dataMemberDefinition->name.c_str(), &dummy);
+        }
+        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Float)
+        {
+            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
+            float dummy = dataValue ? dataValue->value_float : dataMemberDefinition->defaultValue_float;
+            ImGui::InputFloat(dataMemberDefinition->name.c_str(), &dummy);
+        }
+        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::String)
+        {
+            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
+            std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
+            ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+        }
+        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Enum)
+        {
+            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
+            std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
+            ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+        }
+        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
+        {
+            std::string dummy = "datasheet asset reference...";
+            ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+        }
+        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+        {
+            std::string dummy = "datasheet object instance...";
+            ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+        }
+    }
+    else
+    {
+        ImGui::Text("array");
+        ImGui::SameLine();
+        ImGui::Text(dataMemberDefinition->name.c_str());
     }
 }
 

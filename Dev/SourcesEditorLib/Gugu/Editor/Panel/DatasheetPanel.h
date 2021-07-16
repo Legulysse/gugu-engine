@@ -14,6 +14,7 @@
 namespace gugu
 {
     class VirtualDatasheet;
+    class VirtualDatasheetObject;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -38,6 +39,9 @@ protected:
     {
         DatasheetParser::ClassDefinition* classDefinition;
     };
+
+    void DisplayDataClass(DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* dataObject);
+    void DisplayDataMember(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject);
 
 protected:
 

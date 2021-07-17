@@ -384,6 +384,13 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
             m_renderer->RenderWindow(kFrameInfos, this, m_mainCamera);
     }
 
+    if (m_hostImGui)
+    {
+        GUGU_SCOPE_TRACE_MAIN("ImGui");
+
+        ImGui::SFML::Render(*m_sfWindow);
+    }
+
     {
         GUGU_SCOPE_TRACE_MAIN("Stats");
 
@@ -392,13 +399,6 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
             DrawStats(kFrameInfos, DeltaTime(kRenderClock.getElapsedTime()), dt, engineStats);
         else if (m_showFPS)
             DrawFPS(dt);
-    }
-
-    if (m_hostImGui)
-    {
-        GUGU_SCOPE_TRACE_MAIN("ImGui");
-
-        ImGui::SFML::Render(*m_sfWindow);
     }
 
     {

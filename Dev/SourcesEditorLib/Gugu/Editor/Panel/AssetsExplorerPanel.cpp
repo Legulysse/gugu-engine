@@ -23,6 +23,8 @@ namespace gugu {
 AssetsExplorerPanel::AssetsExplorerPanel()
     : m_rootNode(nullptr)
 {
+    m_title = "Assets Explorer";
+
     // Refresh assets tree structure.
     std::vector<const gugu::ResourceInfo*> vecInfos;
     gugu::GetResources()->GetAllResourceInfos(vecInfos);
@@ -90,7 +92,7 @@ AssetsExplorerPanel::~AssetsExplorerPanel()
 
 void AssetsExplorerPanel::UpdatePanel(const gugu::DeltaTime& dt)
 {
-    if (ImGui::Begin("Assets Explorer", false))
+    if (ImGui::Begin(m_title.c_str(), false))
     {
         // Using those as a base value to create width/height that are factor of the size of our font
         const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;

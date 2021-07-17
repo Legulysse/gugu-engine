@@ -251,7 +251,7 @@ void EditorCore::OpenDocument(const std::string& resourceID)
     {
         if (document->IsSameResource(resourceID))
         {
-            // TODO: Force focus on the existing document.
+            document->ForceFocus();
             return;
         }
     }

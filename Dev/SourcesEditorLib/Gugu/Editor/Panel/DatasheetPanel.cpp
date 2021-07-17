@@ -24,6 +24,8 @@ DatasheetPanel::DatasheetPanel(VirtualDatasheet* datasheet)
     m_resourceID = datasheet->GetID();
     m_datasheet = datasheet;
 
+    m_title = m_resourceID;
+
     // Parse definition.
     ClassDefinitionEntry classEntry;
     classEntry.classDefinition = m_datasheet->m_classDefinition;
@@ -54,7 +56,7 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
         flags |= ImGuiWindowFlags_UnsavedDocument;
     }
 
-    if (ImGui::Begin(m_resourceID.c_str(), false, flags))
+    if (ImGui::Begin(m_title.c_str(), false, flags))
     {
         if (ImGui::IsWindowFocused())
         {

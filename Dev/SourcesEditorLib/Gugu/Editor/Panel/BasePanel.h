@@ -5,6 +5,8 @@
 
 #include "Gugu/Core/DeltaTime.h"
 
+#include <string>
+
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
@@ -20,9 +22,11 @@ public:
     virtual void UpdatePanel(const gugu::DeltaTime& dt) = 0;
 
     bool IsFocused() const;
+    void ForceFocus();
 
 protected:
 
+    std::string m_title;
     bool m_focused;
 };
 

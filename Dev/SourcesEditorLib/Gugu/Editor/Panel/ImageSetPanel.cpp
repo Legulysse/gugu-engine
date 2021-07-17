@@ -39,8 +39,9 @@ ImageSetPanel::ImageSetPanel(const std::string& resourceID)
     , m_gizmoOffsetGlobalPosition(0, 0)
 {
     m_resourceID = resourceID;
-
     m_imageSet = GetResources()->GetImageSet(resourceID);
+
+    m_title = m_resourceID;
 
     // Setup render viewport.
     m_renderViewport = new RenderViewport(true);
@@ -69,7 +70,7 @@ void ImageSetPanel::UpdatePanel(const DeltaTime& dt)
         flags |= ImGuiWindowFlags_UnsavedDocument;
     }
 
-    if (ImGui::Begin(m_resourceID.c_str(), false, flags))
+    if (ImGui::Begin(m_title.c_str(), false, flags))
     {
         if (ImGui::IsWindowFocused())
         {

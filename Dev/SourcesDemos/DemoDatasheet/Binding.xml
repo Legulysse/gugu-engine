@@ -21,8 +21,9 @@
     <!-- Entity -->
     
     <Class name="entity" code="DS_Entity">
-        <Data type="string"                     name="name"             code="m_name"    default="Plop" />
-        <Data type="int"                        name="life"             code="m_life"      default="0" />
+        <Data type="string"                     name="name"             code="m_name"       default="Plop" />
+        <Data type="int"                        name="life"             code="m_life"       default="0" />
+        <Data type="int"                        name="stamina"          code="m_stamina"    default="10" />
     </Class>
     
     <Class name="general" code="DS_General" base="entity">

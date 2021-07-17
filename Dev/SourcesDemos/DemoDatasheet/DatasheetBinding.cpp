@@ -75,6 +75,7 @@ DS_Entity::DS_Entity()
 {
     m_name = "Plop";
     m_life = 0;
+    m_stamina = 10;
 }
 
 DS_Entity::~DS_Entity()
@@ -87,6 +88,7 @@ void DS_Entity::ParseMembers(gugu::DatasheetParserContext& context)
 
     ReadString(context, "name", m_name);
     ReadInt(context, "life", m_life);
+    ReadInt(context, "stamina", m_stamina);
 }
 
 ////////////////////////////////////////////////////////////////

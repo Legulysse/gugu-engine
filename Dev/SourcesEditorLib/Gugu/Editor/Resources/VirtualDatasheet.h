@@ -49,12 +49,13 @@ public:
     VirtualDatasheetObject();
     ~VirtualDatasheetObject();
 
-    bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition);
+    bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* parentObject);
 
-    VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name) const;
+    VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name, bool& isParentData) const;
 
 public:
 
+    VirtualDatasheetObject* m_parentObject;
     DatasheetParser::ClassDefinition* m_classDefinition = nullptr;
     std::vector<VirtualDatasheetObject::DataValue*> m_dataValues;
 };
@@ -72,8 +73,9 @@ public:
 
 public:
 
-    DatasheetParser::ClassDefinition* classDefinition = nullptr;
-    VirtualDatasheetObject* rootObject = nullptr;
+    DatasheetParser::ClassDefinition* m_classDefinition;
+    VirtualDatasheetObject* m_rootObject;
+    VirtualDatasheet* m_parentDatasheet;
 };
 
 }   // namespace gugu

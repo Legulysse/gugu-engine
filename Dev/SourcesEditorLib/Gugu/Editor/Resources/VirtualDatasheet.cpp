@@ -7,6 +7,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/EditorCore.h"
+#include "Gugu/Editor/Parser/DatasheetParser.h"
+
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
@@ -25,18 +29,21 @@ VirtualDatasheetObject::DataValue::~DataValue()
 }
 
 VirtualDatasheetObject::VirtualDatasheetObject()
-    : m_classDefinition(nullptr)
+    : m_parentObject(nullptr)
+    , m_classDefinition(nullptr)
 {
 }
 
 VirtualDatasheetObject::~VirtualDatasheetObject()
 {
+    m_parentObject = nullptr;
     m_classDefinition = nullptr;
     ClearStdVector(m_dataValues);
 }
 
-bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition)
+bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* parentObject)
 {
+    m_parentObject = parentObject;
     m_classDefinition = classDefinition;
 
     for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
@@ -81,28 +88,40 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     return true;
 }
 
-VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name) const
+VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name, bool& isParentData) const
 {
-    // TODO: parse parent data, return a flag to indicate its a parent data.
-    for (VirtualDatasheetObject::DataValue* dataValue : m_dataValues)
+    isParentData = false;
+    const VirtualDatasheetObject* dataObject = this;
+    while (dataObject)
     {
-        if (dataValue->name == name)
+        for (VirtualDatasheetObject::DataValue* dataValue : dataObject->m_dataValues)
         {
-            return dataValue;
+            if (dataValue->name == name)
+            {
+                return dataValue;
+            }
         }
+
+        isParentData = true;
+        dataObject = dataObject->m_parentObject;
     }
 
+    isParentData = false;
     return nullptr;
 }
 
 VirtualDatasheet::VirtualDatasheet()
-    : rootObject(nullptr)
+    : m_classDefinition(nullptr)
+    , m_rootObject(nullptr)
+    , m_parentDatasheet(nullptr)
 {
 }
 
 VirtualDatasheet::~VirtualDatasheet()
 {
-    SafeDelete(rootObject);
+    SafeDelete(m_rootObject);
+    m_classDefinition = nullptr;
+    m_parentDatasheet = nullptr;
 }
 
 EResourceType::Type VirtualDatasheet::GetResourceType() const
@@ -121,15 +140,24 @@ bool VirtualDatasheet::LoadFromFile()
     if (!nodeDatasheetObject)
         return false;
 
-    rootObject = new VirtualDatasheetObject;
+    m_rootObject = new VirtualDatasheetObject;
 
     pugi::xml_attribute attributeParent = nodeDatasheetObject.attribute("parent");
     if (attributeParent)
     {
-        // TODO: read parent data.
+        // TODO: I should encapsulate this in some kind of GetOrLoad method.
+        std::string parentResourceID = attributeParent.value();
+        if (GetResources()->IsResourceLoaded(parentResourceID))
+        {
+            m_parentDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(parentResourceID));
+        }
+        else
+        {
+            m_parentDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(parentResourceID);
+        }
     }
 
-    return rootObject->LoadFromXml(nodeDatasheetObject, classDefinition);
+    return m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition, m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
 }
 
 }   // namespace gugu

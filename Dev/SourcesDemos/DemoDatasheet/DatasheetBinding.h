@@ -70,6 +70,7 @@ public:
 
     std::string m_name;
     int m_life;
+    int m_stamina;
 
 protected:
 

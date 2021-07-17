@@ -270,10 +270,10 @@ void EditorCore::OpenDocument(const std::string& resourceID)
         if (m_datasheetParser->IsDatasheet(resourceFileInfo))
         {
             VirtualDatasheet* datasheet = nullptr;
-            
+
+            // TODO: I should encapsulate this in some kind of GetOrLoad method.
             if (GetResources()->IsResourceLoaded(resourceID))
             {
-                // TODO: check this case once I handle closing documents.
                 datasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(resourceID));
             }
             else

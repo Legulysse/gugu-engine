@@ -254,18 +254,25 @@ bool DatasheetParser::GetClassDefinition(const std::string& name, ClassDefinitio
 
 VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::string& resourceID)
 {
-    VirtualDatasheet* datasheet = new VirtualDatasheet;
-    if (GetResources()->InjectResource(resourceID, datasheet))
+    // TODO: Maybe I can use the manager factory delegate instead, along with a datasheet type detection delegate ?
+    if (GetResources()->HasResource(resourceID) && !GetResources()->IsResourceLoaded(resourceID))
     {
-        std::string className = datasheet->GetFileInfo().GetExtension();
-        if (GetClassDefinition(className, datasheet->classDefinition))
+        VirtualDatasheet* datasheet = new VirtualDatasheet;
+        if (GetResources()->InjectResource(resourceID, datasheet))
         {
-            datasheet->LoadFromFile();
-            return datasheet;
+            // TODO: I should move this part inside LoadFromFile, and move the LoadFromFile call inside InjectResource.
+            std::string className = datasheet->GetFileInfo().GetExtension();
+            if (GetClassDefinition(className, datasheet->m_classDefinition))
+            {
+                datasheet->LoadFromFile();
+                return datasheet;
+            }
         }
+
+        // Safety, should not happen, just in case.
+        SafeDelete(datasheet);
     }
 
-    SafeDelete(datasheet);
     return nullptr;
 }
 

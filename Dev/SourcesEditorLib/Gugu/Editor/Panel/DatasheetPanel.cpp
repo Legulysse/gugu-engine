@@ -26,10 +26,10 @@ DatasheetPanel::DatasheetPanel(VirtualDatasheet* datasheet)
 
     // Parse definition.
     ClassDefinitionEntry classEntry;
-    classEntry.classDefinition = m_datasheet->classDefinition;
+    classEntry.classDefinition = m_datasheet->m_classDefinition;
     m_classEntries.push_back(classEntry);
 
-    DatasheetParser::ClassDefinition* baseDefinition = m_datasheet->classDefinition->baseDefinition;
+    DatasheetParser::ClassDefinition* baseDefinition = m_datasheet->m_classDefinition->baseDefinition;
     while (baseDefinition != nullptr)
     {
         ClassDefinitionEntry baseClassEntry;
@@ -62,7 +62,7 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
         }
 
         // TODO: I should reverse-parse the bases to go top-bottom in the hierarchy.
-        DatasheetParser::ClassDefinition* baseDefinition = m_datasheet->classDefinition->baseDefinition;
+        DatasheetParser::ClassDefinition* baseDefinition = m_datasheet->m_classDefinition->baseDefinition;
         while (baseDefinition != nullptr)
         {
             ImGui::Text("---- base: %s ----", baseDefinition->m_name.c_str());
@@ -77,9 +77,9 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
             baseDefinition = baseDefinition->baseDefinition;
         }
 
-        ImGui::Text("---- class: %s ----", m_datasheet->rootObject->m_classDefinition->m_name.c_str());
+        ImGui::Text("---- class: %s ----", m_datasheet->m_rootObject->m_classDefinition->m_name.c_str());
 
-        for (DatasheetParser::DataMemberDefinition* dataDefinition : m_datasheet->rootObject->m_classDefinition->dataMembers)
+        for (DatasheetParser::DataMemberDefinition* dataDefinition : m_datasheet->m_rootObject->m_classDefinition->dataMembers)
         {
             ImGui::Text(dataDefinition->name.c_str());
             //ImGui::Text(dataDefinition->type.c_str());
@@ -88,7 +88,7 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
 
         ImGui::Text("---- values ----");
 
-        for (VirtualDatasheetObject::DataValue* dataValue : m_datasheet->rootObject->m_dataValues)
+        for (VirtualDatasheetObject::DataValue* dataValue : m_datasheet->m_rootObject->m_dataValues)
         {
             ImGui::Text(dataValue->name.c_str());
             //ImGui::Text(dataValue->value.c_str());
@@ -99,7 +99,8 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
 
 void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
 {
-    // TODO: display parent datasheet.
+    std::string dummyParent = m_datasheet->m_parentDatasheet ? m_datasheet->m_parentDatasheet->GetID() : "";
+    ImGui::InputText("parent##root", &dummyParent);
 
     for (ClassDefinitionEntry classEntry : m_classEntries)
     {
@@ -108,7 +109,8 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
         {
             ImGui::Indent();
 
-            DisplayDataClass(classEntry.classDefinition, m_datasheet->rootObject);
+            // TODO: imgui will probably need me to inject IDs to ensure fields are all unique in the stack.
+            DisplayDataClass(classEntry.classDefinition, m_datasheet->m_rootObject);
 
             ImGui::Unindent();
         }
@@ -125,35 +127,36 @@ void DatasheetPanel::DisplayDataClass(DatasheetParser::ClassDefinition* classDef
 
 void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject)
 {
+    bool isParentData = false;
+    VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
+
+    ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
+    ImGui::SameLine();
+
     if (!dataMemberDefinition->isArray)
     {
         if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
         {
-            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
             bool dummy = dataValue ? dataValue->value_bool : dataMemberDefinition->defaultValue_bool;
             ImGui::Checkbox(dataMemberDefinition->name.c_str(), &dummy);
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Int)
         {
-            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
             int dummy = dataValue ? dataValue->value_int : dataMemberDefinition->defaultValue_int;
             ImGui::InputInt(dataMemberDefinition->name.c_str(), &dummy);
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Float)
         {
-            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
             float dummy = dataValue ? dataValue->value_float : dataMemberDefinition->defaultValue_float;
             ImGui::InputFloat(dataMemberDefinition->name.c_str(), &dummy);
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::String)
         {
-            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
             std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
             ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Enum)
         {
-            VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
             std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
             ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
         }

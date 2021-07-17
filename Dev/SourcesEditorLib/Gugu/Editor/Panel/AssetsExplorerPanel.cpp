@@ -250,12 +250,10 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
 
         ImGui::TreeNodeEx(node->name.c_str(), nodeFlags);
 
-        if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
+        if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))     // ImGui::IsMouseDoubleClicked(0) 
         {
             GetEditor()->OpenDocument(node->name);
-        }
-        else if (ImGui::IsItemClicked())
-        {
+
             // TODO: handle selection.
         }
 

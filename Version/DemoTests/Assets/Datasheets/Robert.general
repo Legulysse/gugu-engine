@@ -9,6 +9,10 @@
         <Data name="imageset" value="Robert.imageset.xml" />
         <Data name="animset" value="Robert.animset.xml" />
     </Data>
+    <Data name="sprite 2">
+        <Data name="imageset" value="Robert.imageset.xml" />
+        <Data name="animset" value="Robert.animset.xml" />
+    </Data>
     <Data name="names list">
         <Child value="Bill" />
         <Child value="Bob" />

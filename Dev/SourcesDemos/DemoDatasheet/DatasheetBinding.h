@@ -91,6 +91,7 @@ public:
     bool m_isMonarch;
     DS_Faction* m_faction;
     DS_SpriteInfo* m_sprite;
+    DS_SpriteInfo* m_sprite2;
     std::vector< std::string > m_names;
     std::vector< int > m_stats;
     std::vector< DS_Faction* > m_factions;

@@ -31,6 +31,7 @@
         <Data type="bool"                       name="is monarch"           code="m_isMonarch" />
         <Data type="reference:faction"          name="faction"              code="m_faction" />
         <Data type="instance:spriteInfo"        name="sprite"               code="m_sprite" />
+        <Data type="instance:spriteInfo"        name="sprite 2"             code="m_sprite2" />
         <Data type="array:string"               name="names list"           code="m_names" />
         <Data type="array:int"                  name="stats list"           code="m_stats" />
         <Data type="array:reference:faction"    name="factions list"        code="m_factions" />

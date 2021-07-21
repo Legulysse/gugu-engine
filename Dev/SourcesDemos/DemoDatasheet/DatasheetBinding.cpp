@@ -98,6 +98,7 @@ DS_General::DS_General()
     m_isMonarch = false;
     m_faction = nullptr;
     m_sprite = nullptr;
+    m_sprite2 = nullptr;
     m_weapon = EWeaponType::Sword;
 }
 
@@ -105,6 +106,7 @@ DS_General::~DS_General()
 {
     m_faction = nullptr;
     SafeDelete(m_sprite);
+    SafeDelete(m_sprite2);
     m_factions.clear();
     ClearStdVector(m_sprites);
 }
@@ -117,6 +119,7 @@ void DS_General::ParseMembers(gugu::DatasheetParserContext& context)
     ReadBool(context, "is monarch", m_isMonarch);
     ReadReference(context, "faction", m_faction);
     ReadInstance(context, "sprite", "spriteInfo", m_sprite);
+    ReadInstance(context, "sprite 2", "spriteInfo", m_sprite2);
     ReadArrayString(context, "names list", m_names);
     ReadArrayInt(context, "stats list", m_stats);
     ReadArrayReference(context, "factions list", m_factions);

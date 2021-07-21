@@ -53,6 +53,11 @@ public:
 
     VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name, bool& isParentData) const;
 
+protected:
+
+    void ParseInlineDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue);
+    void ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue);
+
 public:
 
     VirtualDatasheetObject* m_parentObject;

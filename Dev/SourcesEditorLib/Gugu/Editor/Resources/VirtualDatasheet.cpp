@@ -50,60 +50,37 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     {
         VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
         dataValue->name = nodeData.attribute("name").value();
-        pugi::xml_attribute attributeValue = nodeData.attribute("value");
 
         DatasheetParser::DataMemberDefinition* dataMemberDef = m_classDefinition->GetDataMemberDefinition(dataValue->name);
         if (dataMemberDef)
         {
             if (!dataMemberDef->isArray)
             {
-                if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Bool)
+                if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                 {
-                    dataValue->value_bool = attributeValue.as_bool();
+                    ParseInstanceDataValue(nodeData, dataMemberDef, dataValue);
                 }
-                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Int)
+                else
                 {
-                    dataValue->value_int = attributeValue.as_int();
+                    ParseInlineDataValue(nodeData, dataMemberDef, dataValue);
                 }
-                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Float)
+            }
+            else
+            {
+                for (pugi::xml_node nodeChild = nodeData.child("Child"); nodeChild; nodeChild = nodeChild.next_sibling("Child"))
                 {
-                    dataValue->value_float = attributeValue.as_float();
-                }
-                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::String || dataMemberDef->type == DatasheetParser::DataMemberDefinition::Enum)
-                {
-                    dataValue->value_string = attributeValue.value();
-                }
-                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectReference)
-                {
-                    VirtualDatasheet* referenceDatasheet = nullptr;
-
-                    // TODO: I should encapsulate this in some kind of GetOrLoad method.
-                    std::string resourceID = attributeValue.value();
-                    if (GetResources()->IsResourceLoaded(resourceID))
+                    if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
-                        referenceDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(resourceID));
+                        VirtualDatasheetObject::DataValue* childDataValue = new VirtualDatasheetObject::DataValue;
+                        ParseInstanceDataValue(nodeChild, dataMemberDef, childDataValue);
+                        dataValue->value_children.push_back(childDataValue);
                     }
                     else
                     {
-                        referenceDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(resourceID);
+                        VirtualDatasheetObject::DataValue* childDataValue = new VirtualDatasheetObject::DataValue;
+                        ParseInlineDataValue(nodeChild, dataMemberDef, childDataValue);
+                        dataValue->value_children.push_back(childDataValue);
                     }
-
-                    dataValue->value_objectReference = referenceDatasheet;
-                }
-                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                {
-                    VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
-                    DatasheetParser::ClassDefinition* instanceDefinition = nullptr;
-
-                    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(nodeData.attribute("type").value(), instanceDefinition))
-                    {
-                        instanceDefinition = dataMemberDef->objectDefinition;
-                    }
-
-                    instanceObject->LoadFromXml(nodeData, instanceDefinition, nullptr);
-
-                    dataValue->value_objectInstanceDefinition = instanceDefinition;
-                    dataValue->value_objectInstance = instanceObject;
                 }
             }
 
@@ -112,12 +89,68 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
         else
         {
             // TODO: store deprecated data in a dedicated array ? add a special flag ?
+            pugi::xml_attribute attributeValue = nodeData.attribute("value");
             dataValue->backupValue = attributeValue.value();
             m_dataValues.push_back(dataValue);
         }
     }
 
     return true;
+}
+
+void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
+{
+    pugi::xml_attribute attributeValue = nodeData.attribute("value");
+
+    if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Bool)
+    {
+        dataValue->value_bool = attributeValue.as_bool();
+    }
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Int)
+    {
+        dataValue->value_int = attributeValue.as_int();
+    }
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Float)
+    {
+        dataValue->value_float = attributeValue.as_float();
+    }
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::String || dataMemberDef->type == DatasheetParser::DataMemberDefinition::Enum)
+    {
+        dataValue->value_string = attributeValue.value();
+    }
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectReference)
+    {
+        VirtualDatasheet* referenceDatasheet = nullptr;
+
+        // TODO: I should encapsulate this in some kind of GetOrLoad method.
+        std::string resourceID = attributeValue.value();
+        if (GetResources()->IsResourceLoaded(resourceID))
+        {
+            referenceDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(resourceID));
+        }
+        else
+        {
+            referenceDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(resourceID);
+        }
+
+        dataValue->value_objectReference = referenceDatasheet;
+    }
+}
+
+void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
+{
+    VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
+    DatasheetParser::ClassDefinition* instanceDefinition = nullptr;
+
+    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(nodeData.attribute("type").value(), instanceDefinition))
+    {
+        instanceDefinition = dataMemberDef->objectDefinition;
+    }
+
+    instanceObject->LoadFromXml(nodeData, instanceDefinition, nullptr);
+
+    dataValue->value_objectInstanceDefinition = instanceDefinition;
+    dataValue->value_objectInstance = instanceObject;
 }
 
 VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name, bool& isParentData) const

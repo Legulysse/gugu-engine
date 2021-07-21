@@ -5,6 +5,7 @@
 
 #include "Gugu/Editor/Panel/DocumentPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
+#include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
 #include "Gugu/System/SystemUtility.h"
 
@@ -42,6 +43,8 @@ protected:
 
     void DisplayDataClass(DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* dataObject);
     void DisplayDataMember(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject);
+    void DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue* dataValue);
+    void DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue* dataValue);
 
 protected:
 

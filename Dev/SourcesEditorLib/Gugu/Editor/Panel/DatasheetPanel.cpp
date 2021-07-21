@@ -144,63 +144,97 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
     if (!dataMemberDefinition->isArray)
     {
-        if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
+        if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
         {
-            bool dummy = dataValue ? dataValue->value_bool : dataMemberDefinition->defaultValue_bool;
-            ImGui::Checkbox(dataMemberDefinition->name.c_str(), &dummy);
+            DisplayInstanceDataMemberValue(dataMemberDefinition, dataValue);
         }
-        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Int)
+        else
         {
-            int dummy = dataValue ? dataValue->value_int : dataMemberDefinition->defaultValue_int;
-            ImGui::InputInt(dataMemberDefinition->name.c_str(), &dummy);
-        }
-        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Float)
-        {
-            float dummy = dataValue ? dataValue->value_float : dataMemberDefinition->defaultValue_float;
-            ImGui::InputFloat(dataMemberDefinition->name.c_str(), &dummy);
-        }
-        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::String)
-        {
-            std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
-            ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-        }
-        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Enum)
-        {
-            std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
-            ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-        }
-        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
-        {
-            std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
-            std::string dummy = dataValue && dataValue->value_objectReference ? "Ref: " + dataValue->value_objectReference->GetID() : StringFormat("Empty Ref (Def: {0})", objectDefinition);
-            ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-        }
-        else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-        {
-            if (dataValue)
-            {
-                // TODO: force PushDisable for instanced data if the data comes from the parent.
-                std::string objectDefinition = dataValue->value_objectInstanceDefinition ? dataValue->value_objectInstanceDefinition->m_name : "Invalid Definition";
-                std::string dummy = StringFormat("Instance (Def: {0})", objectDefinition);
-                ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-
-                ImGui::Indent();
-                DisplayDataClass(dataValue->value_objectInstanceDefinition, dataValue->value_objectInstance);
-                ImGui::Unindent();
-            }
-            else
-            {
-                std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
-                std::string dummy = StringFormat("Empty Instance (Def: {0})", objectDefinition);
-                ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-            }
+            DisplayInlineDataMemberValue(dataMemberDefinition, dataValue);
         }
     }
     else
     {
-        ImGui::Text("array");
-        ImGui::SameLine();
         ImGui::Text(dataMemberDefinition->name.c_str());
+        ImGui::Indent();
+
+        if (dataValue && !dataValue->value_children.empty())
+        {
+            // TODO: force PushDisable for instanced data if the data comes from the parent.
+            for (VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
+            {
+                if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+                {
+                    DisplayInstanceDataMemberValue(dataMemberDefinition, childDataValue);
+                }
+                else
+                {
+                    DisplayInlineDataMemberValue(dataMemberDefinition, childDataValue);
+                }
+            }
+        }
+        else
+        {
+            ImGui::Text("Empty Array");
+        }
+
+        ImGui::Unindent();
+    }
+}
+
+void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue* dataValue)
+{
+    if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
+    {
+        bool dummy = dataValue ? dataValue->value_bool : dataMemberDefinition->defaultValue_bool;
+        ImGui::Checkbox(dataMemberDefinition->name.c_str(), &dummy);
+    }
+    else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Int)
+    {
+        int dummy = dataValue ? dataValue->value_int : dataMemberDefinition->defaultValue_int;
+        ImGui::InputInt(dataMemberDefinition->name.c_str(), &dummy);
+    }
+    else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Float)
+    {
+        float dummy = dataValue ? dataValue->value_float : dataMemberDefinition->defaultValue_float;
+        ImGui::InputFloat(dataMemberDefinition->name.c_str(), &dummy);
+    }
+    else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::String)
+    {
+        std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
+        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+    }
+    else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Enum)
+    {
+        std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
+        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+    }
+    else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
+    {
+        std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
+        std::string dummy = dataValue && dataValue->value_objectReference ? "Ref: " + dataValue->value_objectReference->GetID() : StringFormat("Empty Ref (Def: {0})", objectDefinition);
+        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+    }
+}
+
+void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue* dataValue)
+{
+    if (dataValue)
+    {
+        // TODO: force PushDisable for instanced data if the data comes from the parent.
+        std::string objectDefinition = dataValue->value_objectInstanceDefinition ? dataValue->value_objectInstanceDefinition->m_name : "Invalid Definition";
+        std::string dummy = StringFormat("Instance (Def: {0})", objectDefinition);
+        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+
+        ImGui::Indent();
+        DisplayDataClass(dataValue->value_objectInstanceDefinition, dataValue->value_objectInstance);
+        ImGui::Unindent();
+    }
+    else
+    {
+        std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
+        std::string dummy = StringFormat("Empty Instance (Def: {0})", objectDefinition);
+        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
     }
 }
 

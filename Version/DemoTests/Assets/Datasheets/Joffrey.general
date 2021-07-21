@@ -3,9 +3,7 @@
     <Data name="name" value="Joffrey" />
     <Data name="speed" value="30" />
     <Data name="sprite" />
-    <Data name="stats list">
-        <Child value="5" />
-    </Data>
+    <Data name="stats list" />
     <Data name="factions list">
         <Child />
     </Data>

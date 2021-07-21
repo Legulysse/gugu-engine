@@ -73,6 +73,23 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
                 {
                     dataValue->value_string = attributeValue.value();
                 }
+                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectReference)
+                {
+                    VirtualDatasheet* referenceDatasheet = nullptr;
+
+                    // TODO: I should encapsulate this in some kind of GetOrLoad method.
+                    std::string resourceID = attributeValue.value();
+                    if (GetResources()->IsResourceLoaded(resourceID))
+                    {
+                        referenceDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(resourceID));
+                    }
+                    else
+                    {
+                        referenceDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(resourceID);
+                    }
+
+                    dataValue->value_objectReference = referenceDatasheet;
+                }
             }
 
             m_dataValues.push_back(dataValue);

@@ -101,7 +101,7 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
 
 void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
 {
-    std::string dummyParent = m_datasheet->m_parentDatasheet ? m_datasheet->m_parentDatasheet->GetID() : "";
+    std::string dummyParent = m_datasheet->m_parentDatasheet ? "Ref: " + m_datasheet->m_parentDatasheet->GetID() : "";
     ImGui::InputText("parent##root", &dummyParent);
 
     for (ClassDefinitionEntry classEntry : m_classEntries)
@@ -164,7 +164,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
         {
-            std::string dummy = "datasheet asset reference...";
+            std::string dummy = dataValue && dataValue->value_objectReference ? "Ref: " + dataValue->value_objectReference->GetID() : "Empty Reference";
             ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)

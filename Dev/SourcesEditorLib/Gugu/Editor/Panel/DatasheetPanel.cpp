@@ -109,12 +109,12 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
         ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
         if (ImGui::CollapsingHeader(classEntry.classDefinition->m_name.c_str(), headerFlags))
         {
-            ImGui::Indent();
+            //ImGui::Indent();
 
             // TODO: imgui will probably need me to inject IDs to ensure fields are all unique in the stack.
             DisplayDataClass(classEntry.classDefinition, m_datasheet->m_rootObject);
 
-            ImGui::Unindent();
+            //ImGui::Unindent();
         }
     }
 }
@@ -124,6 +124,13 @@ void DatasheetPanel::DisplayDataClass(DatasheetParser::ClassDefinition* classDef
     for (DatasheetParser::DataMemberDefinition* dataMemberDef : classDefinition->dataMembers)
     {
         DisplayDataMember(dataMemberDef, dataObject);
+    }
+
+    if (classDefinition->dataMembers.empty())
+    {
+        ImGui::Text("default");
+        ImGui::SameLine();
+        ImGui::Text("No Data Member");
     }
 }
 
@@ -165,13 +172,28 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
         {
             std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
-            std::string dummy = dataValue && dataValue->value_objectReference ? "Ref: " + dataValue->value_objectReference->GetID() : StringFormat("Empty Ref ({0})", objectDefinition);
+            std::string dummy = dataValue && dataValue->value_objectReference ? "Ref: " + dataValue->value_objectReference->GetID() : StringFormat("Empty Ref (Def: {0})", objectDefinition);
             ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
         {
-            std::string dummy = "datasheet object instance...";
-            ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+            if (dataValue)
+            {
+                // TODO: force PushDisable for instanced data if the data comes from the parent.
+                std::string objectDefinition = dataValue->value_objectInstanceDefinition ? dataValue->value_objectInstanceDefinition->m_name : "Invalid Definition";
+                std::string dummy = StringFormat("Instance (Def: {0})", objectDefinition);
+                ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+
+                ImGui::Indent();
+                DisplayDataClass(dataValue->value_objectInstanceDefinition, dataValue->value_objectInstance);
+                ImGui::Unindent();
+            }
+            else
+            {
+                std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
+                std::string dummy = StringFormat("Empty Instance (Def: {0})", objectDefinition);
+                ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+            }
         }
     }
     else

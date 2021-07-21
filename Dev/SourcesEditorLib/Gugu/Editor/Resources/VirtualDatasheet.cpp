@@ -90,6 +90,21 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 
                     dataValue->value_objectReference = referenceDatasheet;
                 }
+                else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+                {
+                    VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
+                    DatasheetParser::ClassDefinition* instanceDefinition = nullptr;
+
+                    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(nodeData.attribute("type").value(), instanceDefinition))
+                    {
+                        instanceDefinition = dataMemberDef->objectDefinition;
+                    }
+
+                    instanceObject->LoadFromXml(nodeData, instanceDefinition, nullptr);
+
+                    dataValue->value_objectInstanceDefinition = instanceDefinition;
+                    dataValue->value_objectInstance = instanceObject;
+                }
             }
 
             m_dataValues.push_back(dataValue);

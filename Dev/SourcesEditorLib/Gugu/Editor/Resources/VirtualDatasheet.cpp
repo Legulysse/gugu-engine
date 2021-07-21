@@ -24,7 +24,7 @@ VirtualDatasheetObject::DataValue::~DataValue()
     SafeDelete(value_objectInstance);
     ClearStdVector(value_children);
 
-    overrideObjectDefinition = nullptr;
+    value_objectInstanceDefinition = nullptr;
     value_objectReference = nullptr;
 }
 

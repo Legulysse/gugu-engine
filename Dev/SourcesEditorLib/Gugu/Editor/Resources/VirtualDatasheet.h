@@ -36,7 +36,7 @@ public:
         int value_int = 0;
         float value_float = 0.f;
         std::string value_string;
-        DatasheetParser::ClassDefinition* overrideObjectDefinition = nullptr;
+        DatasheetParser::ClassDefinition* value_objectInstanceDefinition = nullptr;
         VirtualDatasheetObject* value_objectInstance = nullptr;
         VirtualDatasheet* value_objectReference = nullptr;
         std::vector<VirtualDatasheetObject::DataValue*> value_children; // TODO: should I store objects, or dataValues holding the objects ?

@@ -164,7 +164,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
         {
-            std::string dummy = dataValue && dataValue->value_objectReference ? "Ref: " + dataValue->value_objectReference->GetID() : "Empty Reference";
+            std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
+            std::string dummy = dataValue && dataValue->value_objectReference ? "Ref: " + dataValue->value_objectReference->GetID() : StringFormat("Empty Ref ({0})", objectDefinition);
             ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
         }
         else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)

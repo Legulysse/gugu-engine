@@ -1,6 +1,5 @@
-
 gugu::Engine - A minimalist C++ game engine
-Copyright (C) 2018 Adrien Cambon de Lavalette (adrien.cdl@laposte.net)
+Copyright (C) 2021 Adrien Cambon de Lavalette
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -21,7 +20,5 @@ subject to the following restrictions:
 
 Original zlib/libpng License's text can be found here : http://www.opensource.org/licenses/zlib-license.php
 
-
-
-This software is mainly based on the SFML library. Official website and additional informations can be found here : http://www.sfml-dev.org
+__________
 I would be happy and proud to be informed that you are using my work for your project !

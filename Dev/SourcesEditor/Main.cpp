@@ -28,13 +28,13 @@ int main(int argc, char* argv[])
     #endif
 
     //----------------------------------------------
+    // Init engine
 
-    //Init engine.
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
     config.applicationIcon = "Icon.png";
-    config.pathAssets = "../../Version/DemoTests/Assets";    // TODO: find a way to separate and handle the application assets path and the edited project assets.
-    //config.pathAssets = "../../Version/DemoGame/Assets";
+    //config.pathAssets = "../../Version/DemoTests/Assets";    // TODO: find a way to separate and handle the application assets path and the edited project assets.
+    config.pathAssets = "../../Version/DemoGame/Assets";
     config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";
     config.windowWidth = 1440;
@@ -44,11 +44,11 @@ int main(int argc, char* argv[])
     GetEngine()->Init(config);
 
     //----------------------------------------------
+    // Init editor
 
-    //Init editor.
     EditorConfig editorConfig;
-    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/DemoDatasheet/Binding.xml";
-    //editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/DemoGame/Binding.xml";
+    //editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/DemoDatasheet/Binding.xml";
+    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/DemoGame/Binding.xml";
 
     GetEditor()->Init(editorConfig);
 

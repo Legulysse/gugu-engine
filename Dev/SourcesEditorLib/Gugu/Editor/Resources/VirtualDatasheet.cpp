@@ -153,6 +153,14 @@ void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeDa
     dataValue->value_objectInstance = instanceObject;
 }
 
+VirtualDatasheetObject::DataValue* VirtualDatasheetObject::RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef)
+{
+    VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
+    dataValue->name = dataMemberDef->name;
+    m_dataValues.push_back(dataValue);
+    return dataValue;
+}
+
 VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name, bool& isParentData) const
 {
     isParentData = false;

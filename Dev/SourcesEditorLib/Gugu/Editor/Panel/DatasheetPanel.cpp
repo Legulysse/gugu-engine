@@ -146,11 +146,11 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
     {
         if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
         {
-            DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, dataValue);
+            DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, dataValue, isParentData);
         }
         else
         {
-            DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, dataValue);
+            DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, dataValue, isParentData);
         }
     }
     else
@@ -165,11 +165,11 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             {
                 if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                 {
-                    DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, childDataValue);
+                    DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
                 }
                 else
                 {
-                    DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, childDataValue);
+                    DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
                 }
             }
         }
@@ -182,14 +182,14 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
     }
 }
 
-void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue* dataValue)
+void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue* dataValue, bool isParentData)
 {
     if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
     {
         bool dummy = dataValue ? dataValue->value_bool : dataMemberDefinition->defaultValue_bool;
         if (ImGui::Checkbox(dataMemberDefinition->name.c_str(), &dummy))
         {
-            if (!dataValue)
+            if (!dataValue || isParentData)
             {
                 dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
             }
@@ -203,7 +203,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         int dummy = dataValue ? dataValue->value_int : dataMemberDefinition->defaultValue_int;
         if (ImGui::InputInt(dataMemberDefinition->name.c_str(), &dummy))
         {
-            if (!dataValue)
+            if (!dataValue || isParentData)
             {
                 dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
             }
@@ -217,7 +217,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         float dummy = dataValue ? dataValue->value_float : dataMemberDefinition->defaultValue_float;
         if (ImGui::InputFloat(dataMemberDefinition->name.c_str(), &dummy))
         {
-            if (!dataValue)
+            if (!dataValue || isParentData)
             {
                 dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
             }
@@ -231,7 +231,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
         if (ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy))
         {
-            if (!dataValue)
+            if (!dataValue || isParentData)
             {
                 dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
             }
@@ -253,7 +253,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     }
 }
 
-void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue* dataValue)
+void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue* dataValue, bool isParentData)
 {
     if (dataValue)
     {
@@ -276,6 +276,11 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
 
 bool DatasheetPanel::Save()
 {
+    if (m_datasheet->SaveToFile())
+    {
+        m_dirty = false;
+    }
+
     return !m_dirty;
 }
 

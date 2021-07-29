@@ -51,7 +51,7 @@ public:
         std::string name;
         DataMemberDefinition::Type type = DataMemberDefinition::Unknown;
         bool isArray = false;
-        ClassDefinition* objectDefinition = nullptr;
+        ClassDefinition* objectDefinition = nullptr;    // TODO: rename as classDefinition.
         EnumDefinition* enumDefinition = nullptr;
 
         bool defaultValue_bool = false;
@@ -68,8 +68,8 @@ public:
     struct ClassDefinition
     {
         std::string m_name;
-        std::string baseName;
-        ClassDefinition* baseDefinition = nullptr;
+        std::string baseName;   // TODO: rename as baseClassName.
+        ClassDefinition* baseDefinition = nullptr;  // TODO: rename as baseClassDefinition.
         std::vector<DataMemberDefinition*> dataMembers;
 
         DataMemberDefinition* GetDataMemberDefinition(const std::string& name) const;

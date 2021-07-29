@@ -30,6 +30,7 @@ public:
     struct DataValue
     {
         std::string name;
+        DatasheetParser::DataMemberDefinition* dataMemberDefinition = nullptr;
         std::string backupValue;
 
         bool value_bool = false;
@@ -50,6 +51,7 @@ public:
     ~VirtualDatasheetObject();
 
     bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* parentObject);
+    bool SaveToXml(pugi::xml_node& nodeDatasheetObject) const;
 
     VirtualDatasheetObject::DataValue* RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
     VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name, bool& isParentData) const;
@@ -58,6 +60,9 @@ protected:
 
     void ParseInlineDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue);
     void ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue);
+
+    void SaveInlineDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::DataMemberDefinition::Type memberType) const;
+    void SaveInstanceDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const;
 
 public:
 
@@ -76,6 +81,7 @@ public:
     virtual EResourceType::Type GetResourceType() const override;
 
     virtual bool LoadFromFile() override;
+    virtual bool SaveToFile() override;
 
 public:
 

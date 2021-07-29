@@ -24,6 +24,7 @@ VirtualDatasheetObject::DataValue::~DataValue()
     SafeDelete(value_objectInstance);
     ClearStdVector(value_children);
 
+    dataMemberDefinition = nullptr;
     value_objectInstanceDefinition = nullptr;
     value_objectReference = nullptr;
 }
@@ -54,6 +55,8 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
         DatasheetParser::DataMemberDefinition* dataMemberDef = m_classDefinition->GetDataMemberDefinition(dataValue->name);
         if (dataMemberDef)
         {
+            dataValue->dataMemberDefinition = dataMemberDef;
+
             if (!dataMemberDef->isArray)
             {
                 if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
@@ -157,6 +160,7 @@ VirtualDatasheetObject::DataValue* VirtualDatasheetObject::RegisterDataValue(Dat
 {
     VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
     dataValue->name = dataMemberDef->name;
+    dataValue->dataMemberDefinition = dataMemberDef;
     m_dataValues.push_back(dataValue);
     return dataValue;
 }
@@ -182,6 +186,93 @@ VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const st
     isParentData = false;
     return nullptr;
 }
+
+bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheetObject) const
+{
+    // TODO: sort m_dataValues to match the definition.
+    for (const VirtualDatasheetObject::DataValue* dataValue : m_dataValues)
+    {
+        pugi::xml_node nodeData = nodeDatasheetObject.append_child("Data");
+        nodeData.append_attribute("name") = dataValue->name.c_str();
+
+        if (!dataValue->dataMemberDefinition)
+        {
+            // Store deprecated data as string.
+            nodeData.append_attribute("value") = dataValue->backupValue.c_str();
+        }
+        else
+        {
+            if (!dataValue->dataMemberDefinition->isArray)
+            {
+                if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+                {
+                    SaveInstanceDataValue(nodeData, dataValue, dataValue->dataMemberDefinition->objectDefinition);
+                }
+                else
+                {
+                    SaveInlineDataValue(nodeData, dataValue, dataValue->dataMemberDefinition->type);
+                }
+            }
+            else
+            {
+                for (const VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
+                {
+                    if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+                    {
+                        pugi::xml_node nodeChild = nodeData.append_child("Child");
+                        SaveInstanceDataValue(nodeChild, childDataValue, dataValue->dataMemberDefinition->objectDefinition);
+                    }
+                    else
+                    {
+                        pugi::xml_node nodeChild = nodeData.append_child("Child");
+                        SaveInlineDataValue(nodeChild, childDataValue, dataValue->dataMemberDefinition->type);
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::DataMemberDefinition::Type memberType) const
+{
+    if (memberType == DatasheetParser::DataMemberDefinition::Bool)
+    {
+        nodeData.append_attribute("value") = dataValue->value_bool;
+    }
+    else if (memberType == DatasheetParser::DataMemberDefinition::Int)
+    {
+        nodeData.append_attribute("value") = dataValue->value_int;
+    }
+    else if (memberType == DatasheetParser::DataMemberDefinition::Float)
+    {
+        nodeData.append_attribute("value") = dataValue->value_float;
+    }
+    else if (memberType == DatasheetParser::DataMemberDefinition::String)
+    {
+        nodeData.append_attribute("value") = dataValue->value_string.c_str();
+    }
+    else if (memberType == DatasheetParser::DataMemberDefinition::Enum)
+    {
+        nodeData.append_attribute("value") = dataValue->value_string.c_str();
+    }
+    else if (memberType == DatasheetParser::DataMemberDefinition::ObjectReference)
+    {
+        nodeData.append_attribute("value") = dataValue->value_objectReference ? dataValue->value_objectReference->GetID().c_str() : "";
+    }
+}
+
+void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const
+{
+    if (dataValue->value_objectInstanceDefinition && dataValue->value_objectInstanceDefinition != classDefinition)
+    {
+        nodeData.append_attribute("type") = dataValue->value_objectInstanceDefinition->m_name.c_str();
+    }
+
+    dataValue->value_objectInstance->SaveToXml(nodeData);
+}
+
 
 VirtualDatasheet::VirtualDatasheet()
     : m_classDefinition(nullptr)
@@ -231,6 +322,22 @@ bool VirtualDatasheet::LoadFromFile()
     }
 
     return m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition, m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
+}
+
+bool VirtualDatasheet::SaveToFile()
+{
+    pugi::xml_document xmlDocument;
+    pugi::xml_node nodeDatasheetObject = xmlDocument.append_child("Datasheet");
+
+    if (m_parentDatasheet)
+    {
+        nodeDatasheetObject.append_attribute("parent") = m_parentDatasheet->GetID().c_str();
+    }
+
+    if (!m_rootObject->SaveToXml(nodeDatasheetObject))
+        return false;
+
+    return xmlDocument.save_file(GetFileInfoRef().GetPathName().c_str());
 }
 
 }   // namespace gugu

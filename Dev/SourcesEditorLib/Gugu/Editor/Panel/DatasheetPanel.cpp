@@ -249,7 +249,33 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Enum)
     {
         std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
-        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+
+        ImGuiComboFlags flags = 0;
+        if (ImGui::BeginCombo(dataMemberDefinition->name.c_str(), dummy.c_str(), flags))
+        {
+            const std::vector<std::string>& enumValues = dataMemberDefinition->enumDefinition->values;
+            for (size_t i = 0; i < enumValues.size(); ++i)
+            {
+                bool selected = (dummy == enumValues[i]);
+                if (ImGui::Selectable(enumValues[i].c_str(), selected))
+                {
+                    if (!dataValue || isParentData)
+                    {
+                        dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
+                    }
+
+                    dataValue->value_string = enumValues[i];
+                    m_dirty = true;
+                }
+
+                if (selected)
+                {
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
     }
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
     {

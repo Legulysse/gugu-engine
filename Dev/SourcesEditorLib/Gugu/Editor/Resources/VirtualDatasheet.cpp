@@ -91,7 +91,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
         }
         else
         {
-            // TODO: store deprecated data in a dedicated array ? add a special flag ?
+            // TODO: store deprecated data in a dedicated array ? add a special flag ? For now I just use a null dataMemberDef.
             pugi::xml_attribute attributeValue = nodeData.attribute("value");
             dataValue->backupValue = attributeValue.value();
             m_dataValues.push_back(dataValue);

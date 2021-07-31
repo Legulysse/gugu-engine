@@ -110,10 +110,11 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
         if (ImGui::CollapsingHeader(classEntry.classDefinition->m_name.c_str(), headerFlags))
         {
             //ImGui::Indent();
+            ImGui::PushID(classEntry.classDefinition->m_name.c_str());
 
-            // TODO: imgui will probably need me to inject IDs to ensure fields are all unique in the stack.
             DisplayDataClass(classEntry.classDefinition, m_datasheet->m_rootObject);
 
+            ImGui::PopID();
             //ImGui::Unindent();
         }
     }
@@ -161,8 +162,11 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         if (dataValue && !dataValue->value_children.empty())
         {
             // TODO: force PushDisabled for instanced data if the data comes from the parent.
+            int childIndex = 0;
             for (VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
             {
+                ImGui::PushID(childIndex++);
+
                 if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                 {
                     DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
@@ -171,6 +175,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                 {
                     DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
                 }
+
+                ImGui::PopID();
             }
         }
         else
@@ -263,7 +269,11 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
         ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
 
         ImGui::Indent();
+        ImGui::PushID(dataMemberDefinition->name.c_str());
+
         DisplayDataClass(dataValue->value_objectInstanceDefinition, dataValue->value_objectInstance);
+
+        ImGui::PopID();
         ImGui::Unindent();
     }
     else

@@ -11,6 +11,8 @@
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
+#include "Gugu/Resources/ManagerResources.h"
+
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
@@ -101,8 +103,26 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
 
 void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
 {
-    std::string dummyParent = m_datasheet->m_parentDatasheet ? "Ref: " + m_datasheet->m_parentDatasheet->GetID() : "";
-    ImGui::InputText("parent##root", &dummyParent);
+    VirtualDatasheet* parentReference = m_datasheet->m_parentDatasheet;
+    std::string dummyParentRefID = m_datasheet->m_parentDatasheet ? m_datasheet->m_parentDatasheet->GetID() : "";
+    if (ImGui::InputText("parent##root", &dummyParentRefID))
+    {
+        parentReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyParentRefID));
+        if (parentReference && !parentReference->m_classDefinition->IsDerivedFromClass(m_datasheet->m_classDefinition))
+        {
+            parentReference = nullptr;
+        }
+
+        m_datasheet->m_parentDatasheet = parentReference;
+        m_dirty = true;
+    }
+
+    std::string parentObjectDefinition = m_datasheet->m_classDefinition->m_name;
+    std::string description = parentReference ? "Valid Ref" : (!parentReference && dummyParentRefID.empty() ? "Empty Ref" : "Invalid Ref");
+
+    ImGui::Indent();
+    ImGui::Text(StringFormat("{1} (Def: {0})", parentObjectDefinition, description).c_str());
+    ImGui::Unindent();
 
     for (ClassDefinitionEntry classEntry : m_classEntries)
     {
@@ -312,9 +332,40 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     }
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
     {
-        std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
-        std::string dummy = dataValue && dataValue->value_objectReference ? "Ref: " + dataValue->value_objectReference->GetID() : StringFormat("Empty Ref (Def: {0})", objectDefinition);
-        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+        if (!dataMemberDefinition->objectDefinition)
+        {
+            ImGui::Text("Invalid Definition");
+        }
+        else
+        {
+            VirtualDatasheet* objectReference = dataValue ? dataValue->value_objectReference : nullptr;
+            std::string dummyRefID = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
+            if (ImGui::InputText(dataMemberDefinition->name.c_str(), &dummyRefID))
+            {
+                if (!dataValue || isParentData)
+                {
+                    dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
+                }
+
+                // TODO: This may need to be refreshed more often, to handle created/deleted assets.
+                objectReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyRefID));
+                if (objectReference && !objectReference->m_classDefinition->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
+                {
+                    objectReference = nullptr;
+                }
+
+                dataValue->value_string = dummyRefID;
+                dataValue->value_objectReference = objectReference;
+                m_dirty = true;
+            }
+
+            std::string objectDefinition = dataMemberDefinition->objectDefinition->m_name;
+            std::string description = objectReference ? "Valid Ref" : (!objectReference && dummyRefID.empty() ? "Empty Ref" : "Invalid Ref");
+
+            ImGui::Indent();
+            ImGui::Text(StringFormat("{1} (Def: {0})", objectDefinition, description).c_str());
+            ImGui::Unindent();
+        }
     }
 }
 

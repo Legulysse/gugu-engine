@@ -73,6 +73,7 @@ public:
         std::vector<DataMemberDefinition*> dataMembers;
 
         DataMemberDefinition* GetDataMemberDefinition(const std::string& name) const;
+        bool IsDerivedFromClass(const ClassDefinition* baseClassDefinition) const;
     };
 
 public:

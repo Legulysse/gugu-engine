@@ -39,6 +39,23 @@ DatasheetParser::DataMemberDefinition* DatasheetParser::ClassDefinition::GetData
     return nullptr;
 }
 
+bool DatasheetParser::ClassDefinition::IsDerivedFromClass(const ClassDefinition* parentClassDefinition) const
+{
+    const ClassDefinition* baseClassDefinition = this;
+    while (baseClassDefinition)
+    {
+        if (baseClassDefinition == parentClassDefinition)
+        {
+            return true;
+        }
+
+        baseClassDefinition = baseClassDefinition->baseDefinition;
+    }
+
+    return false;
+}
+
+
 DatasheetParser::DatasheetParser()
 {
 }
@@ -187,7 +204,11 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                     {
                         dataDefinition->defaultValue_float = attributeDefaultValue.as_float();
                     }
-                    else if (dataDefinition->type == DataMemberDefinition::String || dataDefinition->type == DataMemberDefinition::Enum)
+                    else if (dataDefinition->type == DataMemberDefinition::String)
+                    {
+                        dataDefinition->defaultValue_string = attributeDefaultValue.value();
+                    }
+                    else if (dataDefinition->type == DataMemberDefinition::Enum)
                     {
                         dataDefinition->defaultValue_string = attributeDefaultValue.value();
                     }
@@ -258,6 +279,7 @@ VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::strin
     // TODO: Maybe I can use the manager factory delegate instead, along with a datasheet type detection delegate ?
     if (GetResources()->HasResource(resourceID) && !GetResources()->IsResourceLoaded(resourceID))
     {
+        // TODO: Maybe I should test the datasheet type against a provided base type, to avoid loading invalid references ?
         VirtualDatasheet* datasheet = new VirtualDatasheet;
         if (GetResources()->InjectResource(resourceID, datasheet))
         {

@@ -117,7 +117,11 @@ void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData
     {
         dataValue->value_float = attributeValue.as_float();
     }
-    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::String || dataMemberDef->type == DatasheetParser::DataMemberDefinition::Enum)
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::String)
+    {
+        dataValue->value_string = attributeValue.value();
+    }
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Enum)
     {
         dataValue->value_string = attributeValue.value();
     }
@@ -136,6 +140,13 @@ void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData
             referenceDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(resourceID);
         }
 
+        // TODO: This may need to be refreshed more often, to handle created/deleted assets.
+        if (referenceDatasheet && !referenceDatasheet->m_classDefinition->IsDerivedFromClass(dataMemberDef->objectDefinition))
+        {
+            referenceDatasheet = nullptr;
+        }
+
+        dataValue->value_string = resourceID;
         dataValue->value_objectReference = referenceDatasheet;
     }
 }
@@ -257,7 +268,8 @@ void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const
     }
     else if (memberType == DatasheetParser::DataMemberDefinition::ObjectReference)
     {
-        nodeData.append_attribute("value") = dataValue->value_objectReference ? dataValue->value_objectReference->GetID().c_str() : "";
+        //nodeData.append_attribute("value") = dataValue->value_objectReference ? dataValue->value_objectReference->GetID().c_str() : "";
+        nodeData.append_attribute("value") = dataValue->value_string.c_str();
     }
 }
 

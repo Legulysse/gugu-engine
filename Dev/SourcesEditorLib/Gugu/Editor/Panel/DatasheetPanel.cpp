@@ -156,12 +156,43 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
     }
     else
     {
+        ImGui::PushID(dataMemberDefinition->name.c_str());
+
+        // TODO: force PushDisabled for instanced data if the data comes from the parent.
         ImGui::Text(dataMemberDefinition->name.c_str());
+
+        // TODO: I need to design the user flow for overriding default and inherited arrays.
+        ImGui::SameLine();
+        if (ImGui::Button("+"))
+        {
+            if (!dataValue || isParentData)
+            {
+                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
+            }
+
+            // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
+            VirtualDatasheetObject::DataValue* newChildDataValue = new VirtualDatasheetObject::DataValue;
+            dataValue->value_children.push_back(newChildDataValue);
+            m_dirty = true;
+        }
+
+        if (dataValue && !isParentData && !dataValue->value_children.empty())
+        {
+            // TODO: This should be replaced by a "remove" button on each line.
+            ImGui::SameLine();
+            if (ImGui::Button("-"))
+            {
+                // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
+                SafeDelete(dataValue->value_children.back());
+                dataValue->value_children.pop_back();
+                m_dirty = true;
+            }
+        }
+
         ImGui::Indent();
 
         if (dataValue && !dataValue->value_children.empty())
         {
-            // TODO: force PushDisabled for instanced data if the data comes from the parent.
             int childIndex = 0;
             for (VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
             {
@@ -185,6 +216,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         }
 
         ImGui::Unindent();
+
+        ImGui::PopID();
     }
 }
 
@@ -287,10 +320,11 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
 
 void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue* dataValue, bool isParentData)
 {
-    if (dataValue)
+    // If the definition is null, then the instance itself is null.
+    if (dataValue && dataValue->value_objectInstanceDefinition)
     {
         // TODO: force PushDisabled for instanced data if the data comes from the parent.
-        std::string objectDefinition = dataValue->value_objectInstanceDefinition ? dataValue->value_objectInstanceDefinition->m_name : "Invalid Definition";
+        std::string objectDefinition = dataValue->value_objectInstanceDefinition->m_name;
         std::string dummy = StringFormat("Instance (Def: {0})", objectDefinition);
         ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
 
@@ -305,7 +339,7 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
     else
     {
         std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
-        std::string dummy = StringFormat("Empty Instance (Def: {0})", objectDefinition);
+        std::string dummy = StringFormat("Null Instance (Def: {0})", objectDefinition);
         ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
     }
 }

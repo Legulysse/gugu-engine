@@ -69,6 +69,7 @@
     <Class name="skill" code="DS_Skill">
         <Data type="string"                     name="name"                         code="m_name" />
         <Data type="instance:restriction"       name="empty restriction"            code="m_emptyRestriction" />
+        <Data type="instance:restriction"       name="null restriction"             code="m_nullRestriction" />
         <Data type="instance:restriction"       name="single restriction base"      code="m_singleRestrictionBase" />
         <Data type="instance:restriction"       name="single restriction faction"   code="m_singleRestrictionFaction" />
         <Data type="array:instance:restriction" name="restrictions"                 code="m_restrictions" />

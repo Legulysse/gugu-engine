@@ -142,18 +142,16 @@ void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData
 
 void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
 {
-    VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
+    // If the definition is null, then the instance itself is null.
     DatasheetParser::ClassDefinition* instanceDefinition = nullptr;
-
-    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(nodeData.attribute("type").value(), instanceDefinition))
+    if (GetEditor()->GetDatasheetParser()->GetClassDefinition(nodeData.attribute("type").value(), instanceDefinition))
     {
-        instanceDefinition = dataMemberDef->objectDefinition;
+        VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
+        instanceObject->LoadFromXml(nodeData, instanceDefinition, nullptr);
+
+        dataValue->value_objectInstanceDefinition = instanceDefinition;
+        dataValue->value_objectInstance = instanceObject;
     }
-
-    instanceObject->LoadFromXml(nodeData, instanceDefinition, nullptr);
-
-    dataValue->value_objectInstanceDefinition = instanceDefinition;
-    dataValue->value_objectInstance = instanceObject;
 }
 
 VirtualDatasheetObject::DataValue* VirtualDatasheetObject::RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef)
@@ -265,12 +263,12 @@ void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const
 
 void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const
 {
-    if (dataValue->value_objectInstanceDefinition && dataValue->value_objectInstanceDefinition != classDefinition)
+    // If the definition is null, then the instance itself is null.
+    if (dataValue->value_objectInstanceDefinition)
     {
         nodeData.append_attribute("type") = dataValue->value_objectInstanceDefinition->m_name.c_str();
+        dataValue->value_objectInstance->SaveToXml(nodeData);
     }
-
-    dataValue->value_objectInstance->SaveToXml(nodeData);
 }
 
 

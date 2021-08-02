@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <Datasheet>
     <Data name="name" value="Fireball" />
-    <Data name="single restriction base"/>
+    <Data name="null restriction"/>
+    <Data name="single restriction base" type="restriction"/>
     <Data name="single restriction faction" type="restrictionFaction">
         <Data name="faction" value="Yumeda.faction"/>
     </Data>

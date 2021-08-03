@@ -71,6 +71,7 @@ public:
         std::string baseName;   // TODO: rename as baseClassName.
         ClassDefinition* baseDefinition = nullptr;  // TODO: rename as baseClassDefinition.
         std::vector<DataMemberDefinition*> dataMembers;
+        std::vector<ClassDefinition*> m_derivedClasses;
 
         DataMemberDefinition* GetDataMemberDefinition(const std::string& name) const;
         bool IsDerivedFromClass(const ClassDefinition* baseClassDefinition) const;

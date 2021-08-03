@@ -107,7 +107,16 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
     std::string dummyParentRefID = m_datasheet->m_parentDatasheet ? m_datasheet->m_parentDatasheet->GetID() : "";
     if (ImGui::InputText("parent##root", &dummyParentRefID))
     {
-        parentReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyParentRefID));
+        // TODO: I should encapsulate this in some kind of GetOrLoad method.
+        if (GetResources()->IsResourceLoaded(dummyParentRefID))
+        {
+            parentReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyParentRefID));
+        }
+        else
+        {
+            parentReference = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(dummyParentRefID);
+        }
+
         if (parentReference && !parentReference->m_classDefinition->IsDerivedFromClass(m_datasheet->m_classDefinition))
         {
             parentReference = nullptr;
@@ -306,18 +315,18 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         ImGuiComboFlags flags = 0;
         if (ImGui::BeginCombo(dataMemberDefinition->name.c_str(), dummy.c_str(), flags))
         {
-            const std::vector<std::string>& enumValues = dataMemberDefinition->enumDefinition->values;
-            for (size_t i = 0; i < enumValues.size(); ++i)
+            const std::vector<std::string>& comboValues = dataMemberDefinition->enumDefinition->values;
+            for (size_t i = 0; i < comboValues.size(); ++i)
             {
-                bool selected = (dummy == enumValues[i]);
-                if (ImGui::Selectable(enumValues[i].c_str(), selected))
+                bool selected = (dummy == comboValues[i]);
+                if (ImGui::Selectable(comboValues[i].c_str(), selected))
                 {
                     if (!dataValue || isParentData)
                     {
                         dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
                     }
 
-                    dataValue->value_string = enumValues[i];
+                    dataValue->value_string = comboValues[i];
                     m_dirty = true;
                 }
 
@@ -327,6 +336,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                     ImGui::SetItemDefaultFocus();
                 }
             }
+
             ImGui::EndCombo();
         }
     }
@@ -347,8 +357,17 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                     dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
                 }
 
+                // TODO: I should encapsulate this in some kind of GetOrLoad method.
+                if (GetResources()->IsResourceLoaded(dummyRefID))
+                {
+                    objectReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyRefID));
+                }
+                else
+                {
+                    objectReference = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(dummyRefID);
+                }
+
                 // TODO: This may need to be refreshed more often, to handle created/deleted assets.
-                objectReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyRefID));
                 if (objectReference && !objectReference->m_classDefinition->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
                 {
                     objectReference = nullptr;
@@ -371,28 +390,78 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
 
 void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue* dataValue, bool isParentData)
 {
+    DatasheetParser::ClassDefinition* instanceDefinition = dataValue ? dataValue->value_objectInstanceDefinition : nullptr;
+    std::string dummyClassName = instanceDefinition ? instanceDefinition->m_name : "";
+
+    ImGuiComboFlags flags = 0;
+    if (ImGui::BeginCombo(dataMemberDefinition->name.c_str(), dummyClassName.c_str(), flags))
+    {
+        // TODO: precompute this in definition.
+        std::vector<std::string> comboValues;
+        comboValues.reserve(dataMemberDefinition->objectDefinition->m_derivedClasses.size() + 1);
+        comboValues.push_back("");
+        for (DatasheetParser::ClassDefinition* availableClass : dataMemberDefinition->objectDefinition->m_derivedClasses)
+        {
+            comboValues.push_back(availableClass->m_name);
+        }
+
+        for (size_t i = 0; i < comboValues.size(); ++i)
+        {
+            bool selected = (dummyClassName == comboValues[i]);
+            if (ImGui::Selectable(comboValues[i].c_str(), selected))
+            {
+                if (!dataValue || isParentData)
+                {
+                    dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
+                }
+
+                DatasheetParser::ClassDefinition* newInstanceDefinition = nullptr;
+                GetEditor()->GetDatasheetParser()->GetClassDefinition(comboValues[i], newInstanceDefinition);
+
+                if (newInstanceDefinition != instanceDefinition)
+                {
+                    SafeDelete(dataValue->value_objectInstance);
+
+                    VirtualDatasheetObject* newInstanceObject = new VirtualDatasheetObject;
+                    dataValue->value_objectInstanceDefinition = newInstanceDefinition;
+                    dataValue->value_objectInstance = newInstanceObject;
+                }
+
+                m_dirty = true;
+            }
+
+            if (selected)
+            {
+                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    //std::string objectDefinition = dataValue->value_objectInstanceDefinition->m_name;
+    //std::string dummy = StringFormat("Instance (Def: {0})", objectDefinition);
+    //ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+
     // If the definition is null, then the instance itself is null.
     if (dataValue && dataValue->value_objectInstanceDefinition)
     {
-        // TODO: force PushDisabled for instanced data if the data comes from the parent.
-        std::string objectDefinition = dataValue->value_objectInstanceDefinition->m_name;
-        std::string dummy = StringFormat("Instance (Def: {0})", objectDefinition);
-        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-
         ImGui::Indent();
         ImGui::PushID(dataMemberDefinition->name.c_str());
 
+        // TODO: force PushDisabled for instanced data if the data comes from the parent.
         DisplayDataClass(dataValue->value_objectInstanceDefinition, dataValue->value_objectInstance);
 
         ImGui::PopID();
         ImGui::Unindent();
     }
-    else
-    {
-        std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
-        std::string dummy = StringFormat("Null Instance (Def: {0})", objectDefinition);
-        ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-    }
+    //else
+    //{
+    //    std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
+    //    std::string dummy = StringFormat("Null Instance (Def: {0})", objectDefinition);
+    //    ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
+    //}
 }
 
 bool DatasheetPanel::Save()

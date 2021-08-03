@@ -108,6 +108,19 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
         GetClassDefinition(classDefinition->baseName, classDefinition->baseDefinition);
     }
 
+    // Gather derived classes.
+    for (ClassDefinition* classDefinition : m_classDefinitions)
+    {
+        for (ClassDefinition* otherClassDefinition : m_classDefinitions)
+        {
+            // TODO: should I include the class itself ? maybe rename the array as something like "availableInstancedClasses" ?
+            if (otherClassDefinition->IsDerivedFromClass(classDefinition))
+            {
+                classDefinition->m_derivedClasses.push_back(otherClassDefinition);
+            }
+        }
+    }
+
     // Parse all classes data.
     for (pugi::xml_node nodeClass = nodeBinding.child("Class"); nodeClass; nodeClass = nodeClass.next_sibling("Class"))
     {

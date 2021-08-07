@@ -90,7 +90,7 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
 {
     VirtualDatasheet* parentReference = m_datasheet->m_parentDatasheet;
     std::string dummyParentRefID = m_datasheet->m_parentDatasheet ? m_datasheet->m_parentDatasheet->GetID() : "";
-    if (ImGui::InputText("parent##root", &dummyParentRefID))
+    if (ImGui::InputText("parent datasheet", &dummyParentRefID))
     {
         // TODO: I should encapsulate this in some kind of GetOrLoad method.
         if (GetResources()->IsResourceLoaded(dummyParentRefID))
@@ -123,13 +123,11 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
         ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
         if (ImGui::CollapsingHeader(classDefinition->m_name.c_str(), headerFlags))
         {
-            //ImGui::Indent();
             ImGui::PushID(classDefinition->m_name.c_str());
 
             DisplayDataClass(classDefinition, m_datasheet->m_rootObject);
 
             ImGui::PopID();
-            //ImGui::Unindent();
         }
     }
 }
@@ -433,8 +431,12 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
 
         for (DatasheetParser::ClassDefinition* classDefinition : dataValue->value_objectInstanceDefinition->m_combinedInheritedClasses)
         {
+            ImGui::PushID(classDefinition->m_name.c_str());
+
             // TODO: force PushDisabled for instanced data if the data comes from the parent.
             DisplayDataClass(classDefinition, dataValue->value_objectInstance);
+
+            ImGui::PopID();
         }
 
         ImGui::PopID();

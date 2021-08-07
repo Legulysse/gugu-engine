@@ -108,16 +108,16 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
         GetClassDefinition(classDefinition->baseName, classDefinition->baseDefinition);
     }
 
-    // Gather derived classes.
+    // Gather inheritance trees.
     for (ClassDefinition* classDefinition : m_classDefinitions)
     {
-        for (ClassDefinition* otherClassDefinition : m_classDefinitions)
+        ClassDefinition* baseDefinition = classDefinition;
+        while (baseDefinition != nullptr)
         {
-            // TODO: should I include the class itself ? maybe rename the array as something like "availableInstancedClasses" ?
-            if (otherClassDefinition->IsDerivedFromClass(classDefinition))
-            {
-                classDefinition->m_derivedClasses.push_back(otherClassDefinition);
-            }
+            StdVectorPushFront(classDefinition->m_combinedInheritedClasses, baseDefinition);
+            baseDefinition->m_derivedClasses.push_back(classDefinition);
+
+            baseDefinition = baseDefinition->baseDefinition;
         }
     }
 

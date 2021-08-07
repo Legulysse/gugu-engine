@@ -27,21 +27,6 @@ DatasheetPanel::DatasheetPanel(VirtualDatasheet* datasheet)
     m_datasheet = datasheet;
 
     m_title = m_resourceID;
-
-    // Parse definition.
-    ClassDefinitionEntry classEntry;
-    classEntry.classDefinition = m_datasheet->m_classDefinition;
-    m_classEntries.push_back(classEntry);
-
-    DatasheetParser::ClassDefinition* baseDefinition = m_datasheet->m_classDefinition->baseDefinition;
-    while (baseDefinition != nullptr)
-    {
-        ClassDefinitionEntry baseClassEntry;
-        baseClassEntry.classDefinition = baseDefinition;
-        m_classEntries.insert(m_classEntries.begin(), baseClassEntry);
-
-        baseDefinition = baseDefinition->baseDefinition;
-    }
 }
 
 DatasheetPanel::~DatasheetPanel()
@@ -133,15 +118,15 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
     ImGui::Text(StringFormat("{1} (Def: {0})", parentObjectDefinition, description).c_str());
     ImGui::Unindent();
 
-    for (ClassDefinitionEntry classEntry : m_classEntries)
+    for (DatasheetParser::ClassDefinition* classDefinition : m_datasheet->m_classDefinition->m_combinedInheritedClasses)
     {
         ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
-        if (ImGui::CollapsingHeader(classEntry.classDefinition->m_name.c_str(), headerFlags))
+        if (ImGui::CollapsingHeader(classDefinition->m_name.c_str(), headerFlags))
         {
             //ImGui::Indent();
-            ImGui::PushID(classEntry.classDefinition->m_name.c_str());
+            ImGui::PushID(classDefinition->m_name.c_str());
 
-            DisplayDataClass(classEntry.classDefinition, m_datasheet->m_rootObject);
+            DisplayDataClass(classDefinition, m_datasheet->m_rootObject);
 
             ImGui::PopID();
             //ImGui::Unindent();
@@ -440,28 +425,21 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
         ImGui::EndCombo();
     }
 
-    //std::string objectDefinition = dataValue->value_objectInstanceDefinition->m_name;
-    //std::string dummy = StringFormat("Instance (Def: {0})", objectDefinition);
-    //ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-
     // If the definition is null, then the instance itself is null.
     if (dataValue && dataValue->value_objectInstanceDefinition)
     {
         ImGui::Indent();
         ImGui::PushID(dataMemberDefinition->name.c_str());
 
-        // TODO: force PushDisabled for instanced data if the data comes from the parent.
-        DisplayDataClass(dataValue->value_objectInstanceDefinition, dataValue->value_objectInstance);
+        for (DatasheetParser::ClassDefinition* classDefinition : dataValue->value_objectInstanceDefinition->m_combinedInheritedClasses)
+        {
+            // TODO: force PushDisabled for instanced data if the data comes from the parent.
+            DisplayDataClass(classDefinition, dataValue->value_objectInstance);
+        }
 
         ImGui::PopID();
         ImGui::Unindent();
     }
-    //else
-    //{
-    //    std::string objectDefinition = dataMemberDefinition->objectDefinition ? dataMemberDefinition->objectDefinition->m_name : "Invalid Definition";
-    //    std::string dummy = StringFormat("Null Instance (Def: {0})", objectDefinition);
-    //    ImGui::InputText(dataMemberDefinition->name.c_str(), &dummy);
-    //}
 }
 
 bool DatasheetPanel::Save()

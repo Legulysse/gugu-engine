@@ -71,7 +71,8 @@ public:
         std::string baseName;   // TODO: rename as baseClassName.
         ClassDefinition* baseDefinition = nullptr;  // TODO: rename as baseClassDefinition.
         std::vector<DataMemberDefinition*> dataMembers;
-        std::vector<ClassDefinition*> m_derivedClasses;
+        std::vector<ClassDefinition*> m_combinedInheritedClasses;
+        std::vector<ClassDefinition*> m_derivedClasses;  // TODO: should I include the class itself ? maybe rename the array as something like "availableInstancedClasses" ?
 
         DataMemberDefinition* GetDataMemberDefinition(const std::string& name) const;
         bool IsDerivedFromClass(const ClassDefinition* baseClassDefinition) const;

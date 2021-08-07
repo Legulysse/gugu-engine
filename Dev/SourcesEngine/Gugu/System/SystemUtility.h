@@ -118,6 +118,12 @@ template<typename T>
 bool StdVectorContains(const std::vector<T>& _vecContainer, T _tValue);
 
 template<typename T>
+void StdVectorPushFront(std::vector<T>& _vecContainer, T _tValue);
+
+template<typename T>
+void StdVectorInsertAt(std::vector<T>& _vecContainer, size_t _iIndex, T _tValue);
+
+template<typename T>
 void StdVectorRemove(std::vector<T>& _vecContainer, T _tValue);
 
 template<typename T>

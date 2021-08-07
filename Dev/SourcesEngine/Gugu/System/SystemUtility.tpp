@@ -239,6 +239,18 @@ bool StdVectorContains(const std::vector<T>& _vecContainer, T _tValue)
 }
 
 template<typename T>
+void StdVectorPushFront(std::vector<T>& _vecContainer, T _tValue)
+{
+    _vecContainer.insert(_vecContainer.begin(), _tValue);
+}
+
+template<typename T>
+void StdVectorInsertAt(std::vector<T>& _vecContainer, size_t _iIndex, T _tValue)
+{
+    _vecContainer.insert(_vecContainer.begin() + _iIndex, _tValue);
+}
+
+template<typename T>
 void StdVectorRemove(std::vector<T>& _vecContainer, T _tValue)
 {
     _vecContainer.erase(std::remove(_vecContainer.begin(), _vecContainer.end(), _tValue), _vecContainer.end());
@@ -247,10 +259,7 @@ void StdVectorRemove(std::vector<T>& _vecContainer, T _tValue)
 template<typename T>
 void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex)
 {
-    if (_iIndex >= 0 && _iIndex < _vecContainer.size())
-    {
-        _vecContainer.erase(_vecContainer.begin() + _iIndex);
-    }
+    _vecContainer.erase(_vecContainer.begin() + _iIndex);
 }
 
 template<typename T, typename P>

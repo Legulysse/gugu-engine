@@ -54,6 +54,7 @@ public:
     bool SaveToXml(pugi::xml_node& nodeDatasheetObject) const;
 
     VirtualDatasheetObject::DataValue* RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
+    bool RemoveDataValue(const std::string& name);
     VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name, bool& isParentData) const;
 
 protected:

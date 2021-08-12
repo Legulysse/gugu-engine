@@ -174,6 +174,21 @@ VirtualDatasheetObject::DataValue* VirtualDatasheetObject::RegisterDataValue(Dat
     return dataValue;
 }
 
+bool VirtualDatasheetObject::RemoveDataValue(const std::string& name)
+{
+    for (size_t i = 0; i < m_dataValues.size(); ++i)
+    {
+        if (m_dataValues[i]->name == name)
+        {
+            SafeDelete(m_dataValues[i]);
+            StdVectorRemoveAt(m_dataValues, i);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name, bool& isParentData) const
 {
     isParentData = false;

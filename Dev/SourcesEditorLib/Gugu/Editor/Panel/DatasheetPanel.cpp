@@ -102,11 +102,16 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
             parentReference = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(dummyParentRefID);
         }
 
-        if (parentReference && !parentReference->m_classDefinition->IsDerivedFromClass(m_datasheet->m_classDefinition))
+        if (parentReference && parentReference->m_classDefinition != m_datasheet->m_classDefinition)
+        {
+            parentReference = nullptr;
+        }
+        else if (dummyParentRefID.empty())
         {
             parentReference = nullptr;
         }
 
+        // TODO: refresh all m_parentObject references.
         m_datasheet->m_parentDatasheet = parentReference;
         m_dirty = true;
     }
@@ -151,6 +156,25 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 {
     bool isParentData = false;
     VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
+
+    if (dataValue && !isParentData)
+    {
+        // TODO: I will probably end up using a push ID for the whole data member edition.
+        if (ImGui::Button(StringFormat("Reset##{0}", dataMemberDefinition->name).c_str()))
+        {
+            if (dataObject->RemoveDataValue(dataMemberDefinition->name))
+            {
+                // Retrieve the parent data now that we have removed the self data.
+                dataValue = nullptr;
+                isParentData = false;
+                dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
+
+                m_dirty = true;
+            }
+        }
+
+        ImGui::SameLine();
+    }
 
     ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
     ImGui::SameLine();

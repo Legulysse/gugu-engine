@@ -175,19 +175,21 @@ void DatasheetPanel::DisplayDataClass(DatasheetParser::ClassDefinition* classDef
 
 void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject)
 {
+    ImGuiTreeNodeFlags nodeIndentFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
+    ImGuiTreeNodeFlags nodeLeafFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
+
     ImGui::TableNextRow();
 
     bool isParentData = false;
     VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
 
-    ImGui::TableNextColumn();
-    //ImGui::Text(dataMemberDefinition->name.c_str());
-    ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
-    ImGui::TreeNodeEx("##node", nodeFlags, dataMemberDefinition->name.c_str());
-
-    ImGui::TableNextColumn();
     if (!dataMemberDefinition->isArray)
     {
+        ImGui::TableNextColumn();
+        ImGuiTreeNodeFlags nodeFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && dataValue && dataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
+        bool nodeOpen = ImGui::TreeNodeEx("##node", nodeFlags, dataMemberDefinition->name.c_str());
+
+        ImGui::TableNextColumn();
         if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
         {
             DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, dataValue, isParentData);
@@ -218,13 +220,25 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             }
         }
 
-        if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+        if (nodeOpen)
         {
-            DisplayInstanceDataMemberContent(dataMemberDefinition, dataValue);
+            if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+            {
+                DisplayInstanceDataMemberContent(dataMemberDefinition, dataValue);
+
+            }
+
+            ImGui::TreePop();
         }
     }
     else
     {
+        ImGui::TableNextColumn();
+        ImGuiTreeNodeFlags nodeFlags = dataValue && !dataValue->value_children.empty() ? nodeIndentFlags : nodeLeafFlags;
+        bool nodeOpen = ImGui::TreeNodeEx("##node", nodeFlags, dataMemberDefinition->name.c_str());
+
+        ImGui::TableNextColumn();
+
         // TODO: force PushDisabled for instanced data if the data comes from the parent.
         ImGui::PushID(dataMemberDefinition->name.c_str());
 
@@ -281,49 +295,55 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             }
         }
 
-        if (dataValue && !dataValue->value_children.empty())
+        if (nodeOpen)
         {
-            int childIndex = 0;
-            for (VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
+            if (dataValue && !dataValue->value_children.empty())
             {
-                ImGui::PushID(childIndex);
-
-                ImGui::TableNextRow();
-
-                ImGui::TableNextColumn();
-                ImGuiTreeNodeFlags nodeItemFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
-                //ImGui::TreeNodeEx("##arrayitem", nodeItemFlags, "[%d]", childIndex);
-                ImGui::TreeNodeEx("##arrayitem", nodeItemFlags, "%s [%d]", dataMemberDefinition->name.c_str(), childIndex);
-
-                ImGui::TableNextColumn();
-                if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+                int childIndex = 0;
+                for (VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
                 {
-                    DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
+                    ImGui::PushID(childIndex);
+
+                    ImGui::TableNextRow();
+
+                    ImGui::TableNextColumn();
+                    ImGuiTreeNodeFlags nodeChildFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && childDataValue && childDataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
+                    //ImGui::TreeNodeEx("##arrayitem", nodeItemFlags, "[%d]", childIndex);
+                    bool nodeChildOpen = ImGui::TreeNodeEx("##arrayitem", nodeChildFlags, "%s [%d]", dataMemberDefinition->name.c_str(), childIndex);
+
+                    ImGui::TableNextColumn();
+                    if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+                    {
+                        DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
+                    }
+                    else
+                    {
+                        DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
+                    }
+
+                    ImGui::TableNextColumn();
+                    ImGui::TableNextColumn();
+
+                    if (nodeChildOpen)
+                    {
+                        if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+                        {
+                            DisplayInstanceDataMemberContent(dataMemberDefinition, childDataValue);
+                        }
+
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                    ++childIndex;
                 }
-                else
-                {
-                    DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
-                }
-
-                ImGui::TableNextColumn();
-                ImGui::TableNextColumn();
-
-                if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                {
-                    DisplayInstanceDataMemberContent(dataMemberDefinition, childDataValue);
-                }
-
-                ImGui::TreePop();
-
-                ImGui::PopID();
-                ++childIndex;
             }
+
+            ImGui::TreePop();
         }
 
         ImGui::PopID();
     }
-
-    ImGui::TreePop();
 }
 
 void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)

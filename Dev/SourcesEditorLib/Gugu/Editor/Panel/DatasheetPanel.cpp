@@ -14,6 +14,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <imgui_stdlib.h>
 
 ////////////////////////////////////////////////////////////////
@@ -190,6 +191,10 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         bool nodeOpen = ImGui::TreeNodeEx("##node", nodeFlags, dataMemberDefinition->name.c_str());
 
         ImGui::TableNextColumn();
+
+        // The PushItemWidth will hide the label of the next widget.
+        ImGui::PushItemWidth(-1);
+
         if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
         {
             DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, dataValue, isParentData);
@@ -198,6 +203,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         {
             DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, dataValue, isParentData);
         }
+
+        ImGui::PopItemWidth();
 
         ImGui::TableNextColumn();
         ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
@@ -258,15 +265,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
         if (dataValue && !isParentData && !dataValue->value_children.empty())
         {
-            // TODO: This should be replaced by a "remove" button on each line.
             ImGui::SameLine();
-            if (ImGui::Button("-"))
-            {
-                // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
-                SafeDelete(dataValue->value_children.back());
-                dataValue->value_children.pop_back();
-                m_dirty = true;
-            }
+            ImGui::Text("Array size : %d", dataValue->value_children.size());
         }
         else
         {
@@ -300,18 +300,25 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             if (dataValue && !dataValue->value_children.empty())
             {
                 int childIndex = 0;
-                for (VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
+                while (childIndex < dataValue->value_children.size())
                 {
+                    VirtualDatasheetObject::DataValue* childDataValue = dataValue->value_children[childIndex];
+
                     ImGui::PushID(childIndex);
 
                     ImGui::TableNextRow();
 
                     ImGui::TableNextColumn();
                     ImGuiTreeNodeFlags nodeChildFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && childDataValue && childDataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
-                    //ImGui::TreeNodeEx("##arrayitem", nodeItemFlags, "[%d]", childIndex);
                     bool nodeChildOpen = ImGui::TreeNodeEx("##arrayitem", nodeChildFlags, "%s [%d]", dataMemberDefinition->name.c_str(), childIndex);
 
                     ImGui::TableNextColumn();
+
+                    // The double PushItemWidth will hide the label of the next widget then force its size.
+                    const float button_size = ImGui::GetFrameHeight();
+                    ImGui::PushItemWidth(-1);
+                    ImGui::PushItemWidth(ImMax(1.0f, ImGui::CalcItemWidth() - (button_size + ImGui::GetStyle().ItemInnerSpacing.x)));
+
                     if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
                         DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
@@ -320,6 +327,14 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     {
                         DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
                     }
+
+                    ImGui::PopItemWidth();
+                    ImGui::PopItemWidth();
+
+                    ImGui::SameLine();
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemInnerSpacing.x);
+                    
+                    bool removeChild = ImGui::Button("X##arrayitemremove", ImVec2(button_size, button_size));
 
                     ImGui::TableNextColumn();
                     ImGui::TableNextColumn();
@@ -335,7 +350,19 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     }
 
                     ImGui::PopID();
-                    ++childIndex;
+
+                    // Handle child removal and array iteration.
+                    if (removeChild)
+                    {
+                        // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
+                        SafeDelete(dataValue->value_children[childIndex]);
+                        StdVectorRemoveAt(dataValue->value_children, childIndex);
+                        m_dirty = true;
+                    }
+                    else
+                    {
+                        ++childIndex;
+                    }
                 }
             }
 
@@ -348,7 +375,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
 void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)
 {
-    ImGui::PushItemWidth(-1);
+    //ImGui::PushItemWidth(-1);
 
     if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
     {
@@ -485,7 +512,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         }
     }
 
-    ImGui::PopItemWidth();
+    //ImGui::PopItemWidth();
 }
 
 void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)
@@ -493,7 +520,7 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
     DatasheetParser::ClassDefinition* instanceDefinition = dataValue ? dataValue->value_objectInstanceDefinition : nullptr;
     std::string dummyClassName = instanceDefinition ? instanceDefinition->m_name : "";
 
-    ImGui::PushItemWidth(-1);
+    //ImGui::PushItemWidth(-1);
 
     ImGuiComboFlags flags = 0;
     if (ImGui::BeginCombo("##value", dummyClassName.c_str(), flags))
@@ -542,7 +569,7 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
         ImGui::EndCombo();
     }
 
-    ImGui::PopItemWidth();
+    //ImGui::PopItemWidth();
 }
 
 void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue)

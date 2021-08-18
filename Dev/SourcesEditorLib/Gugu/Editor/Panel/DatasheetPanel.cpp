@@ -206,6 +206,11 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
         ImGui::PopItemWidth();
 
+        if (dataMemberDefinition->type != DatasheetParser::DataMemberDefinition::ObjectInstance)
+        {
+            DisplayInlineDataMemberContent(dataMemberDefinition, dataValue);
+        }
+
         ImGui::TableNextColumn();
         ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
 
@@ -232,7 +237,6 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
             {
                 DisplayInstanceDataMemberContent(dataMemberDefinition, dataValue);
-
             }
 
             ImGui::TreePop();
@@ -299,7 +303,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         {
             if (dataValue && !dataValue->value_children.empty())
             {
-                int childIndex = 0;
+                size_t childIndex = 0;
                 while (childIndex < dataValue->value_children.size())
                 {
                     VirtualDatasheetObject::DataValue* childDataValue = dataValue->value_children[childIndex];
@@ -335,6 +339,11 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemInnerSpacing.x);
                     
                     bool removeChild = ImGui::Button("X##arrayitemremove", ImVec2(button_size, button_size));
+
+                    if (dataMemberDefinition->type != DatasheetParser::DataMemberDefinition::ObjectInstance)
+                    {
+                        DisplayInlineDataMemberContent(dataMemberDefinition, childDataValue);
+                    }
 
                     ImGui::TableNextColumn();
                     ImGui::TableNextColumn();
@@ -502,7 +511,21 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                 dataValue->value_objectReference = objectReference;
                 m_dirty = true;
             }
+        }
+    }
 
+    //ImGui::PopItemWidth();
+}
+
+void DatasheetPanel::DisplayInlineDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue)
+{
+    // TODO: maybe I could inline those informations and avoid splitting the display method ?
+    if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
+    {
+        if (dataMemberDefinition->objectDefinition)
+        {
+            VirtualDatasheet* objectReference = dataValue ? dataValue->value_objectReference : nullptr;
+            std::string dummyRefID = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
             std::string objectDefinition = dataMemberDefinition->objectDefinition->m_name;
             std::string description = objectReference ? "Valid Ref" : (!objectReference && dummyRefID.empty() ? "Empty Ref" : "Invalid Ref");
 
@@ -511,8 +534,6 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
             ImGui::Unindent();
         }
     }
-
-    //ImGui::PopItemWidth();
 }
 
 void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)

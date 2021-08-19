@@ -50,8 +50,10 @@ public:
     VirtualDatasheetObject();
     ~VirtualDatasheetObject();
 
-    bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* parentObject);
+    bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition);
     bool SaveToXml(pugi::xml_node& nodeDatasheetObject) const;
+
+    void RefreshParentObject(VirtualDatasheetObject* parentObject);
 
     VirtualDatasheetObject::DataValue* RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
     bool RemoveDataValue(const std::string& name);
@@ -84,10 +86,14 @@ public:
     virtual bool LoadFromFile() override;
     virtual bool SaveToFile() override;
 
+    bool IsValidAsParent(VirtualDatasheet* parentDatasheet) const;
+    void SetParentDatasheet(std::string parentDatasheetID, VirtualDatasheet* parentDatasheet);
+
 public:
 
     DatasheetParser::ClassDefinition* m_classDefinition;
     VirtualDatasheetObject* m_rootObject;
+    std::string m_parentDatasheetID;
     VirtualDatasheet* m_parentDatasheet;
 };
 

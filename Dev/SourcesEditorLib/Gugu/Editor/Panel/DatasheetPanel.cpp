@@ -89,8 +89,10 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
 
 void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
 {
+    bool invalidRecursiveParent = false;
+    std::string dummyParentRefID = m_datasheet->m_parentDatasheetID;
     VirtualDatasheet* parentReference = m_datasheet->m_parentDatasheet;
-    std::string dummyParentRefID = m_datasheet->m_parentDatasheet ? m_datasheet->m_parentDatasheet->GetID() : "";
+
     if (ImGui::InputText("parent datasheet", &dummyParentRefID))
     {
         // TODO: I should encapsulate this in some kind of GetOrLoad method.
@@ -112,13 +114,42 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
             parentReference = nullptr;
         }
 
-        // TODO: refresh all m_parentObject references.
-        m_datasheet->m_parentDatasheet = parentReference;
+        if (!m_datasheet->IsValidAsParent(parentReference))
+        {
+            parentReference = nullptr;
+            invalidRecursiveParent = true;
+        }
+
+        m_datasheet->SetParentDatasheet(dummyParentRefID, parentReference);
         m_dirty = true;
+    }
+    else
+    {
+        if (!dummyParentRefID.empty() && !parentReference)
+        {
+            // If the current ID is defined but not valid, retry to find it.
+            if (GetResources()->IsResourceLoaded(dummyParentRefID))
+            {
+                VirtualDatasheet* checkParentReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyParentRefID));
+
+                if (m_datasheet->IsValidAsParent(checkParentReference))
+                {
+                    parentReference = checkParentReference;
+                    m_datasheet->SetParentDatasheet(dummyParentRefID, parentReference);
+
+                    // No need to dirty the file here, since we are not editing any value, just refreshing the view.
+                    //m_dirty = true;
+                }
+                else
+                {
+                    invalidRecursiveParent = true;
+                }
+            }
+        }
     }
 
     std::string parentObjectDefinition = m_datasheet->m_classDefinition->m_name;
-    std::string description = parentReference ? "Valid Ref" : (!parentReference && dummyParentRefID.empty() ? "Empty Ref" : "Invalid Ref");
+    std::string description = parentReference ? "Valid Ref" : (dummyParentRefID.empty() ? "Empty Ref" : (invalidRecursiveParent ? "Invalid Recursive Ref" : "Invalid Ref"));
 
     ImGui::Indent();
     ImGui::Text(StringFormat("{1} (Def: {0})", parentObjectDefinition, description).c_str());

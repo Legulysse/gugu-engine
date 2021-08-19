@@ -42,9 +42,8 @@ VirtualDatasheetObject::~VirtualDatasheetObject()
     ClearStdVector(m_dataValues);
 }
 
-bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* parentObject)
+bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition)
 {
-    m_parentObject = parentObject;
     m_classDefinition = classDefinition;
 
     for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
@@ -99,6 +98,12 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     }
 
     return true;
+}
+
+void VirtualDatasheetObject::RefreshParentObject(VirtualDatasheetObject* parentObject)
+{
+    // TODO: Handle recursive reparenting on child objects when it is supported.
+    m_parentObject = parentObject;
 }
 
 void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
@@ -158,7 +163,7 @@ void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeDa
     if (GetEditor()->GetDatasheetParser()->GetClassDefinition(nodeData.attribute("type").value(), instanceDefinition))
     {
         VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
-        instanceObject->LoadFromXml(nodeData, instanceDefinition, nullptr);
+        instanceObject->LoadFromXml(nodeData, instanceDefinition);
 
         dataValue->value_objectInstanceDefinition = instanceDefinition;
         dataValue->value_objectInstance = instanceObject;
@@ -331,22 +336,62 @@ bool VirtualDatasheet::LoadFromFile()
 
     m_rootObject = new VirtualDatasheetObject;
 
+    if (!m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
+    {
+        return false;
+    }
+
+    std::string parentResourceID = "";
+    VirtualDatasheet* parentDatasheet = nullptr;
+
     pugi::xml_attribute attributeParent = nodeDatasheetObject.attribute("parent");
     if (attributeParent)
     {
         // TODO: I should encapsulate this in some kind of GetOrLoad method.
-        std::string parentResourceID = attributeParent.value();
+        parentResourceID = attributeParent.value();
         if (GetResources()->IsResourceLoaded(parentResourceID))
         {
-            m_parentDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(parentResourceID));
+            parentDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(parentResourceID));
         }
         else
         {
-            m_parentDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(parentResourceID);
+            parentDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(parentResourceID);
         }
     }
 
-    return m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition, m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
+    if (!IsValidAsParent(parentDatasheet))
+    {
+        parentDatasheet = nullptr;
+    }
+
+    SetParentDatasheet(parentResourceID, parentDatasheet);
+
+    return true;
+}
+
+bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet) const
+{
+    const VirtualDatasheet* nextParent = parentDatasheet;
+    while (nextParent)
+    {
+        if (nextParent == this)
+        {
+            // We dont want an infinite loop of parent links.
+            return false;
+        }
+
+        nextParent = nextParent->m_parentDatasheet;
+    }
+
+    return true;
+}
+
+void VirtualDatasheet::SetParentDatasheet(std::string parentReferenceID, VirtualDatasheet* parentDatasheet)
+{
+    m_parentDatasheetID = parentReferenceID;
+    m_parentDatasheet = parentDatasheet;
+
+    m_rootObject->RefreshParentObject(m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
 }
 
 bool VirtualDatasheet::SaveToFile()
@@ -354,9 +399,9 @@ bool VirtualDatasheet::SaveToFile()
     pugi::xml_document xmlDocument;
     pugi::xml_node nodeDatasheetObject = xmlDocument.append_child("Datasheet");
 
-    if (m_parentDatasheet)
+    if (!m_parentDatasheetID.empty())
     {
-        nodeDatasheetObject.append_attribute("parent") = m_parentDatasheet->GetID().c_str();
+        nodeDatasheetObject.append_attribute("parent") = m_parentDatasheetID.c_str();
     }
 
     if (!m_rootObject->SaveToXml(nodeDatasheetObject))

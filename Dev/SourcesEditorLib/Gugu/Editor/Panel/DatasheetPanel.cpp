@@ -267,7 +267,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             m_dirty = true;
         }
 
-        if (dataValue && !isParentData && !dataValue->value_children.empty())
+        if (dataValue && !dataValue->value_children.empty())
         {
             ImGui::SameLine();
             ImGui::Text("Array size : %d", dataValue->value_children.size());

@@ -51,43 +51,51 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
             m_focused = true;
         }
 
-        // TODO: I should reverse-parse the bases to go top-bottom in the hierarchy.
-        DatasheetParser::ClassDefinition* baseDefinition = m_datasheet->m_classDefinition->baseDefinition;
-        while (baseDefinition != nullptr)
-        {
-            ImGui::Text("---- base: %s ----", baseDefinition->m_name.c_str());
-
-            for (DatasheetParser::DataMemberDefinition* dataDefinition : baseDefinition->dataMembers)
-            {
-                ImGui::Text(dataDefinition->name.c_str());
-                //ImGui::Text(dataDefinition->type.c_str());
-                //ImGui::Text(dataDefinition->defaultValue.c_str());
-            }
-
-            baseDefinition = baseDefinition->baseDefinition;
-        }
-
-        ImGui::Text("---- class: %s ----", m_datasheet->m_rootObject->m_classDefinition->m_name.c_str());
-
-        for (DatasheetParser::DataMemberDefinition* dataDefinition : m_datasheet->m_rootObject->m_classDefinition->dataMembers)
-        {
-            ImGui::Text(dataDefinition->name.c_str());
-            //ImGui::Text(dataDefinition->type.c_str());
-            //ImGui::Text(dataDefinition->defaultValue.c_str());
-        }
-
-        ImGui::Text("---- values ----");
-
-        for (VirtualDatasheetObject::DataValue* dataValue : m_datasheet->m_rootObject->m_dataValues)
-        {
-            ImGui::Text(dataValue->name.c_str());
-            //ImGui::Text(dataValue->value.c_str());
-        }
+        DisplayDatasheet();
     }
     ImGui::End();
 }
 
 void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
+{
+}
+
+void DatasheetPanel::DisplayDatasheet()
+{
+    DisplayParentReference();
+
+    // Using those as a base value to create width/height that are factor of the size of our font
+    const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
+    ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody;
+    if (ImGui::BeginTable("DatasheetPropertiesTable", 4, tableFlags))
+    {
+        // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
+        ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_NoHide;
+        ImGui::TableSetupColumn("name", columnFlags);
+        ImGui::TableSetupColumn("value", columnFlags);
+        ImGui::TableSetupColumn("depth", columnFlags);
+        ImGui::TableSetupColumn("reset", columnFlags);
+        ImGui::TableSetupScrollFreeze(0, 1);
+        ImGui::TableHeadersRow();
+
+        for (DatasheetParser::ClassDefinition* classDefinition : m_datasheet->m_classDefinition->m_combinedInheritedClasses)
+        {
+            //ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
+            //if (ImGui::CollapsingHeader(classDefinition->m_name.c_str(), headerFlags))
+            //{
+            ImGui::PushID(classDefinition->m_name.c_str());
+
+            DisplayDataClass(classDefinition, m_datasheet->m_rootObject);
+
+            ImGui::PopID();
+            //}
+        }
+
+        ImGui::EndTable();
+    }
+}
+
+void DatasheetPanel::DisplayParentReference()
 {
     bool invalidRecursiveParent = false;
     std::string dummyParentRefID = m_datasheet->m_parentDatasheetID;
@@ -144,36 +152,6 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
     ImGui::Indent();
     ImGui::Text(StringFormat("{1} (Def: {0})", parentObjectDefinition, description).c_str());
     ImGui::Unindent();
-
-    // Using those as a base value to create width/height that are factor of the size of our font
-    const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
-    ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody;
-    if (ImGui::BeginTable("DatasheetPropertiesTable", 4, tableFlags))
-    {
-        // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
-        ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_NoHide;
-        ImGui::TableSetupColumn("name", columnFlags);
-        ImGui::TableSetupColumn("value", columnFlags);
-        ImGui::TableSetupColumn("depth", columnFlags);
-        ImGui::TableSetupColumn("reset", columnFlags);
-        ImGui::TableSetupScrollFreeze(0, 1);
-        ImGui::TableHeadersRow();
-
-        for (DatasheetParser::ClassDefinition* classDefinition : m_datasheet->m_classDefinition->m_combinedInheritedClasses)
-        {
-            //ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
-            //if (ImGui::CollapsingHeader(classDefinition->m_name.c_str(), headerFlags))
-            //{
-                ImGui::PushID(classDefinition->m_name.c_str());
-
-                DisplayDataClass(classDefinition, m_datasheet->m_rootObject);
-
-                ImGui::PopID();
-            //}
-        }
-
-        ImGui::EndTable();
-    }
 }
 
 void DatasheetPanel::DisplayDataClass(DatasheetParser::ClassDefinition* classDefinition, VirtualDatasheetObject* dataObject)

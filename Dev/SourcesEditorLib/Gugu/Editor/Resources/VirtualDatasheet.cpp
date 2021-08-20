@@ -359,7 +359,7 @@ bool VirtualDatasheet::LoadFromFile()
         }
     }
 
-    if (!IsValidAsParent(parentDatasheet))
+    if (!IsValidAsParent(parentDatasheet, nullptr))
     {
         parentDatasheet = nullptr;
     }
@@ -369,14 +369,31 @@ bool VirtualDatasheet::LoadFromFile()
     return true;
 }
 
-bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet) const
+bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
 {
+    if (!parentDatasheet)
+    {
+        // A null parent is a valid case.
+        return true;
+    }
+
+    if (parentDatasheet->m_classDefinition != m_classDefinition)
+    {
+        // We dont want a parent of a different class.
+        return false;
+    }
+
     const VirtualDatasheet* nextParent = parentDatasheet;
     while (nextParent)
     {
         if (nextParent == this)
         {
             // We dont want an infinite loop of parent links.
+            if (invalidRecursiveParent)
+            {
+                *invalidRecursiveParent = true;
+            }
+
             return false;
         }
 

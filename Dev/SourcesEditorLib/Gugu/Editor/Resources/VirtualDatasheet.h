@@ -39,8 +39,8 @@ public:
         std::string value_string;
         DatasheetParser::ClassDefinition* value_objectInstanceDefinition = nullptr;
         VirtualDatasheetObject* value_objectInstance = nullptr;
-        VirtualDatasheet* value_objectReference = nullptr;
-        std::vector<VirtualDatasheetObject::DataValue*> value_children; // TODO: should I store objects, or dataValues holding the objects ?
+        VirtualDatasheet* value_objectReference = nullptr;  // TODO: this is more a helper than an actual serialized value data, the naming should reflect that.
+        std::vector<VirtualDatasheetObject::DataValue*> value_children;
 
         ~DataValue();
     };
@@ -86,7 +86,7 @@ public:
     virtual bool LoadFromFile() override;
     virtual bool SaveToFile() override;
 
-    bool IsValidAsParent(VirtualDatasheet* parentDatasheet) const;
+    bool IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const;    // TODO: I could use an enum for error returns, and reuse them in other cases of references error feedbacks.
     void SetParentDatasheet(std::string parentDatasheetID, VirtualDatasheet* parentDatasheet);
 
 public:

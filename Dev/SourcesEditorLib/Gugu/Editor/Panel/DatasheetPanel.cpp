@@ -105,19 +105,13 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
             parentReference = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(dummyParentRefID);
         }
 
-        if (parentReference && parentReference->m_classDefinition != m_datasheet->m_classDefinition)
+        if (!m_datasheet->IsValidAsParent(parentReference, &invalidRecursiveParent))
         {
             parentReference = nullptr;
         }
         else if (dummyParentRefID.empty())
         {
             parentReference = nullptr;
-        }
-
-        if (!m_datasheet->IsValidAsParent(parentReference))
-        {
-            parentReference = nullptr;
-            invalidRecursiveParent = true;
         }
 
         m_datasheet->SetParentDatasheet(dummyParentRefID, parentReference);
@@ -132,17 +126,13 @@ void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
             {
                 VirtualDatasheet* checkParentReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyParentRefID));
 
-                if (m_datasheet->IsValidAsParent(checkParentReference))
+                if (m_datasheet->IsValidAsParent(checkParentReference, &invalidRecursiveParent))
                 {
                     parentReference = checkParentReference;
                     m_datasheet->SetParentDatasheet(dummyParentRefID, parentReference);
 
                     // No need to dirty the file here, since we are not editing any value, just refreshing the view.
                     //m_dirty = true;
-                }
-                else
-                {
-                    invalidRecursiveParent = true;
                 }
             }
         }
@@ -532,7 +522,6 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                     objectReference = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(dummyRefID);
                 }
 
-                // TODO: This may need to be refreshed more often, to handle created/deleted assets.
                 if (objectReference && !objectReference->m_classDefinition->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
                 {
                     objectReference = nullptr;
@@ -541,6 +530,25 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                 dataValue->value_string = dummyRefID;
                 dataValue->value_objectReference = objectReference;
                 m_dirty = true;
+            }
+            else
+            {
+                if (dataValue && !dummyRefID.empty() && !objectReference)
+                {
+                    // If the current ID is defined but not valid, retry to find it.
+                    if (GetResources()->IsResourceLoaded(dummyRefID))
+                    {
+                        VirtualDatasheet* checkReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyRefID));
+
+                        if (checkReference && checkReference->m_classDefinition->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
+                        {
+                            dataValue->value_objectReference = checkReference;
+
+                            // No need to dirty the file here, since we are not editing any value, just refreshing the view.
+                            //m_dirty = true;
+                        }
+                    }
+                }
             }
         }
     }

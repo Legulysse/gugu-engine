@@ -58,9 +58,8 @@ void EditorCore::Init(const EditorConfig& editorConfig)
     // Additional ImGui Setup.
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // Does not seem supported by the SFML backend.
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // TODO: Does not seem supported by the SFML backend.
     io.ConfigWindowsResizeFromEdges = true;
-    io.ConfigDockingWithShift = false;
 
     // Create the AssetsExplorer Panel.
     m_assetsExplorerPanel = new AssetsExplorerPanel;

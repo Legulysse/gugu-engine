@@ -585,7 +585,7 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
                 DatasheetParser::ClassDefinition* newInstanceDefinition = nullptr;
                 GetEditor()->GetDatasheetParser()->GetClassDefinition(comboValues[i], newInstanceDefinition);
 
-                if (newInstanceDefinition != instanceDefinition)
+                if (newInstanceDefinition != instanceDefinition || isParentData)
                 {
                     SafeDelete(dataValue->value_objectInstance);
 

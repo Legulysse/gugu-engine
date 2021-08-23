@@ -235,7 +235,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         {
             if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
             {
-                DisplayInstanceDataMemberContent(dataMemberDefinition, dataValue);
+                DisplayInstanceDataMemberContent(dataMemberDefinition, dataValue, isParentData);
             }
 
             ImGui::TreePop();
@@ -249,7 +249,6 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
         ImGui::TableNextColumn();
 
-        // TODO: force PushDisabled for instanced data if the data comes from the parent.
         ImGui::PushID(dataMemberDefinition->name.c_str());
 
         // TODO: I need to design the user flow for overriding default and inherited arrays.
@@ -297,6 +296,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                 }
             }
         }
+
+        ImGui::BeginDisabled(isParentData);
 
         if (nodeOpen)
         {
@@ -351,7 +352,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     {
                         if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                         {
-                            DisplayInstanceDataMemberContent(dataMemberDefinition, childDataValue);
+                            DisplayInstanceDataMemberContent(dataMemberDefinition, childDataValue, isParentData);
                         }
 
                         ImGui::TreePop();
@@ -376,6 +377,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
             ImGui::TreePop();
         }
+
+        ImGui::EndDisabled();
 
         ImGui::PopID();
     }
@@ -610,26 +613,25 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
     //ImGui::PopItemWidth();
 }
 
-void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue)
+void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)
 {
     // If the definition is null, then the instance itself is null.
     if (dataValue && dataValue->value_objectInstanceDefinition)
     {
-        //ImGui::Indent();
         ImGui::PushID(dataMemberDefinition->name.c_str());
+        ImGui::BeginDisabled(isParentData);
 
         for (DatasheetParser::ClassDefinition* classDefinition : dataValue->value_objectInstanceDefinition->m_combinedInheritedClasses)
         {
             ImGui::PushID(classDefinition->m_name.c_str());
 
-            // TODO: force PushDisabled for instanced data if the data comes from the parent.
             DisplayDataClass(classDefinition, dataValue->value_objectInstance);
 
             ImGui::PopID();
         }
 
+        ImGui::EndDisabled();
         ImGui::PopID();
-        //ImGui::Unindent();
     }
 }
 

@@ -125,13 +125,16 @@ void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
     }
     else
     {
-        // TODO: use PushDisabled when it will be available in imgui.
+        ImGui::BeginDisabled();
+
         std::string dummyStr;
         int dummyVecA[2] = { 0, 0 };
         int dummyVecB[2] = { 0, 0 };
         ImGui::InputText("Name", &dummyStr);
         ImGui::InputInt2("Position", dummyVecA);
         ImGui::InputInt2("Size", dummyVecB);
+
+        ImGui::EndDisabled();
     }
 
     // SubImages list.

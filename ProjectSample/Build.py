@@ -21,9 +21,9 @@ def Main():
     aCompilers = []
     if any(x in ['premake'] for x in aActions):
         dictChoices = collections.OrderedDict()
-        dictChoices['vs2013'] = 'Visual 2013'
-        dictChoices['vs2015'] = 'Visual 2015'
+        dictChoices['vs2019'] = 'Visual 2019'
         dictChoices['vs2017'] = 'Visual 2017'
+        dictChoices['vs2015'] = 'Visual 2015'
         dictChoices['gmake'] = 'GNU Makefiles'
         dictChoices['xcode4'] = 'XCode'
         dictChoices['codelite'] = 'CodeLite'
@@ -32,7 +32,7 @@ def Main():
     # Premake
     for compiler in aCompilers:
         if 'premake' in aActions:
-            GuguEngine.Premake(dirEngineBuildScripts, 'BuildGame.lua', compiler)
+            GuguEngine.Premake(dirEngineBuildScripts, 'Build-premake.lua', compiler)
 
     # Finalize
     os.chdir(dirCurrent)

@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 {
     //Init engine
     EngineConfig config;
-    config.applicationName = "GuguEngine Project Sample";
+    config.applicationName = "GuguEngine Sample Application";
     config.pathAssets = "Assets";
     config.defaultFont = "Spaceranger.ttf";
     config.debugFont = "Roboto-Regular.ttf";
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     
     //--------
 
-    GetEngine()->StartLooping();
+    GetEngine()->RunMainLoop();
     GetEngine()->Release();
 
     return 0;

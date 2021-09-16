@@ -66,7 +66,7 @@ solution "GuguEngine"
     group "Engine"
     ProjectLibGuguEngine(BuildCfg)
     
-    group "External"
+    group "Externals"
     ProjectLibSFML(BuildCfg)
     ProjectLibPugiXml(BuildCfg)
     ProjectLibImGui(BuildCfg)

@@ -2,8 +2,8 @@ dirEngineBuildScripts = '../.'
 
 import sys
 sys.path.append(dirEngineBuildScripts)
-import Utility
+import GuguUtility
 
-Utility.ShellExecute('"Premake5.exe" --help')
+GuguUtility.ShellExecute('"Premake5.exe" --help')
 input('')
 

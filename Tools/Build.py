@@ -1,9 +1,10 @@
 
-dirScripts = 'Build'
+dirEngineBuildScripts = 'Build'
+dirProjectBuildScripts = '.'
 
 import sys, os, collections
 
-sys.path.append(dirScripts)
+sys.path.append(dirEngineBuildScripts)
 import Utility
 import GuguEngine
 
@@ -12,7 +13,7 @@ def Main():
     
     # Setup
     dirCurrent = os.getcwd()
-    os.chdir(dirScripts)
+    os.chdir(dirProjectBuildScripts)
 
     aActions = { 'premake' }
     
@@ -31,7 +32,7 @@ def Main():
     # Premake
     for compiler in aCompilers:
         if 'premake' in aActions:
-            GuguEngine.Premake('.', 'BuildAll.lua', compiler)
+            GuguEngine.Premake(dirEngineBuildScripts, 'Build-premake.lua', compiler)
 
     # Finalize
     os.chdir(dirCurrent)

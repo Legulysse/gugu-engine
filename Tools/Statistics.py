@@ -97,9 +97,12 @@ def CountLinesInDirectory(directory, verbose=False):
 
 # Main
 CountLinesInDirectory('../Dev/SourcesEngine')
+CountLinesInDirectory('../Dev/SourcesEditorLib')
+CountLinesInDirectory('../Dev/SourcesEditor')
 CountLinesInDirectory('../Dev/SourcesDemos')
 CountLinesInDirectory('../Dev/SourcesSFML')
 CountLinesInDirectory('../Dev/SourcesPugiXml')
+CountLinesInDirectory('../Dev/SourcesImGui')
 
 
 print('')

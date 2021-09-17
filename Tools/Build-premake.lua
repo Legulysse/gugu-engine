@@ -1,12 +1,16 @@
+
+-- Setup the include path of the engine build scripts directory
+package.path = package.path .. ";./Build/?.lua"
+
 require "PremakeEngine"
-require "PremakeDemos"
+require "PremakeProjects"
 
 
 -- Solution Configuration
-local pathDev 		= EnsureSlash("../../Dev")
+local pathDev 		= EnsureSlash(".../Dev")
 local pathSolution 	= EnsureSlash(pathDev.."Build/".._ACTION)
-local pathVersion 	= EnsureSlash("../../Version")
-local pathEditorVersion = EnsureSlash("../../Tools/GuguEditor")
+local pathVersion 	= EnsureSlash("../Version")
+local pathEditorVersion = EnsureSlash("../Tools/GuguEditor")
 
 BuildCfg = {
     -- Solution

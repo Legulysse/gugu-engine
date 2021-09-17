@@ -3,7 +3,7 @@
 package.path = package.path .. ";../Tools/Build/?.lua"
 
 require "PremakeEngine"
-require "PremakeDemos"
+require "PremakeProjects"
 
 
 -- Solution Configuration

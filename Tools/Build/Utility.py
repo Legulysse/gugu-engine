@@ -11,10 +11,16 @@ from subprocess import Popen, PIPE, STDOUT
 def ShellExecute(cmd, bSilent=False, bPrintCmd=True):
     if bPrintCmd:
         print('CMD : '+ cmd)
-    p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+    p = Popen(cmd,
+        shell=True,
+        universal_newlines=True,
+        stdin=PIPE,
+        stdout=PIPE,
+        stderr=STDOUT)
     output = p.stdout.read()
     if (not bSilent) and output:
-        print(output)
+        for outputLine in output.splitlines():
+            print(outputLine)
 
 # Get the size of a folder in bytes. Use ConvertBytes for a pretty print.
 def GetFolderSize(folder):
@@ -288,6 +294,7 @@ def PromptMenu(strMenu, dictChoices, bNoneMeansAll):
             else:
                 print('> Choice is not a number : '+ choice)
             
+    print('')
     return aReturn
 
 

@@ -1,6 +1,6 @@
 
 dirEngineBuildScripts = '../Tools/Build'
-dirGameBuildScripts = '.'
+dirProjectBuildScripts = '.'
 
 import sys, os, collections
 
@@ -13,7 +13,7 @@ def Main():
     
     # Setup
     dirCurrent = os.getcwd()
-    os.chdir(dirGameBuildScripts)
+    os.chdir(dirProjectBuildScripts)
 
     aActions = { 'premake' }
     

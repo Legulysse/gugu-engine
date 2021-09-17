@@ -20,7 +20,9 @@ def Premake(dirEngineBuildScripts, file, compiler):
 
 	#ShellExecute('"' + dirEngineBuildScripts + '/Premake/' + premakeExeName + '" --help')
     ShellExecute('"' + dirEngineBuildScripts + '/Premake/' + premakeExeName + '" --version')
+    print('')
     ShellExecute('"' + dirEngineBuildScripts + '/Premake/' + premakeExeName + '" --file="' + file + '" ' + compiler)
+    print('')
     
     
 #---------------------------------------------------------------------------------------------------

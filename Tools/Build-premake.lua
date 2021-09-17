@@ -7,7 +7,7 @@ require "PremakeProjects"
 
 
 -- Solution Configuration
-local pathDev 		= EnsureSlash(".../Dev")
+local pathDev 		= EnsureSlash("../Dev")
 local pathSolution 	= EnsureSlash(pathDev.."Build/".._ACTION)
 local pathVersion 	= EnsureSlash("../Version")
 local pathEditorVersion = EnsureSlash("../Tools/GuguEditor")

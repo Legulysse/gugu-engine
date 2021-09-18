@@ -256,7 +256,7 @@ void NormalizePathSelf(std::string& _strPath, bool _bIsFolder)
 
 void OpenWebBrowser(const std::string& _strURL)
 {
-#ifdef GUGU_OS_WIN32
+#if defined(GUGU_OS_WIN32)
 
     ShellExecuteA(nullptr, "open", _strURL.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 
@@ -268,7 +268,7 @@ bool EnsureDirectoryExists(const std::string& _strPath)
     if (_strPath.empty())
         return true;
 
-#ifdef GUGU_OS_WIN32
+#if defined(GUGU_OS_WIN32)
 
     std::vector<std::string> vecDirectories;
     StdStringSplit(_strPath, "/", vecDirectories);
@@ -368,7 +368,7 @@ void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles,
 
 bool RemoveFile(const std::string& _strPathName)
 {
-#ifdef GUGU_OS_WIN32
+#if defined(GUGU_OS_WIN32)
     return std::remove(_strPathName.c_str()) == 0;
 #else
     return false;

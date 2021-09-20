@@ -53,7 +53,7 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect)
 
     if (m_subRect.width != kOldRect.width || m_subRect.height != kOldRect.height)
     {
-        SetSize(Vector2f((float)m_subRect.width, (float)m_subRect.height));
+        SetSize(Vector2f((float)Absolute(m_subRect.width), (float)Absolute(m_subRect.height)));
     }
 
     RaiseDirtyVertices();

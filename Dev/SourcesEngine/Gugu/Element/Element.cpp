@@ -9,6 +9,7 @@
 
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/External/PugiXmlWrap.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -366,6 +367,10 @@ void Element::SetSize(float _fNewSizeX, float _fNewSizeY)
 
 void Element::SetSize(Vector2f _kNewSize)
 {
+    // Ensure we dont get a negative size.
+    _kNewSize.x = Max(0.f, _kNewSize.x);
+    _kNewSize.y = Max(0.f, _kNewSize.y);
+
     Vector2f kOldSize = m_size;
     m_size = _kNewSize;
     OnSizeChanged(kOldSize);

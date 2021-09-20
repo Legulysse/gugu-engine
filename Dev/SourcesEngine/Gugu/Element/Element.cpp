@@ -42,7 +42,12 @@ Element::Element()
 
 Element::~Element()
 {
-    SafeDelete(m_interactions);
+    if (m_interactions)
+    {
+        m_interactions->FireCallbacks(EInteraction::Destroyed);
+        SafeDelete(m_interactions);
+    }
+
     //SafeDelete(m_pShader);
 
     if (m_parent)

@@ -10,6 +10,7 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Animation/SpriteAnimation.h"
+#include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -59,7 +60,9 @@ SpriteAnimation* ManagerAnimations::AddAnimation(ElementSprite* sprite)
 
     SpriteAnimation* animation = new SpriteAnimation;
     animation->SetSprite(sprite);
-    // TODO: I should add a callback on Elements to catch their destruction, and auto-remove the associated animation.
+
+    sprite->InitInteractions();
+    sprite->GetInteractions()->AddCallback(EInteraction::Destroyed, [sprite]() { GetAnimations()->DeleteAnimation(sprite); });
 
     m_spriteAnimations.push_back(animation);
     return animation;
@@ -86,7 +89,9 @@ void ManagerAnimations::DeleteAnimation(ElementSprite* sprite)
     {
         if (m_spriteAnimations[i]->GetSprite() == sprite)
         {
+            SpriteAnimation* animation = m_spriteAnimations[i];
             StdVectorRemoveAt(m_spriteAnimations, i);
+            SafeDelete(animation);
         }
         else
         {
@@ -97,7 +102,7 @@ void ManagerAnimations::DeleteAnimation(ElementSprite* sprite)
 
 void ManagerAnimations::DeleteAllAnimations()
 {
-    //TODO: I should use some flag to tell if an animation is being destroyed, and avoid going back and forth between the manager and de destructors.
+    //TODO: I should use some flag to tell if an animation is being destroyed, and avoid going back and forth between the manager and the destructors.
     for (size_t i = 0; i < m_spriteAnimations.size(); ++i)
     {
         SpriteAnimation* animation = m_spriteAnimations[i];

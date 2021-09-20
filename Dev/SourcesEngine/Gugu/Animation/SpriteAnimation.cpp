@@ -41,6 +41,8 @@ SpriteAnimation::SpriteAnimation()
 
 SpriteAnimation::~SpriteAnimation()
 {
+    // TODO: I should also ensure we dont let a callback on the target sprite (I need a way to retrieve the right callback).
+    // - It's not necessarily a problem since the callback does not keep pointers on the animation.
     GetAnimations()->RemoveAnimation(this);
 }
 

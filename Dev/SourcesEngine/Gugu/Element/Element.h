@@ -175,10 +175,10 @@ public:
     void SetDebugBoundsVisible(bool showDebugBounds);
 
     //TODO: Handle shaders properly
-    //> Need to share shaders between objects ?
-    //> Where/how do I manage/load/delete them ?
-    //> It should probably only appear in the same places where I use textures.
-    //> Maybe it would be a good occasion to add a Material pipeline.
+    // - Need to share shaders between objects ?
+    // - Where/how do I manage/load/delete them ?
+    // - It should probably only appear in the same places where I use textures.
+    // - Maybe it would be a good occasion to add a Material pipeline.
     //void SetShader (sf::Shader* _pShader);
 
     //----------------------------------------------

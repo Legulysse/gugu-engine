@@ -141,7 +141,6 @@ void Demo::AppStart()
     m_movingSprite1->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
 
     m_movingAnimation1 = GetAnimations()->AddAnimation(m_movingSprite1);
-    //m_movingAnimation1->SetOriginFromAnimation(true);
     m_movingAnimation1->SetMoveFromAnimation(true);
     m_movingAnimation1->ChangeAnimSet("Dinosaur.animset.xml");
     m_movingAnimation1->StartAnimation("Walk");
@@ -155,7 +154,6 @@ void Demo::AppStart()
     m_movingSprite2->SetColor(sf::Color(80, 80, 80, 128));
 
     m_movingAnimation2 = GetAnimations()->AddAnimation(m_movingSprite2);
-    //m_movingAnimation2->SetOriginFromAnimation(true);
     m_movingAnimation2->SetMoveFromAnimation(true);
     m_movingAnimation2->ChangeAnimSet("Dinosaur.animset.xml");
     m_movingAnimation2->StartAnimation("Walk");
@@ -163,12 +161,6 @@ void Demo::AppStart()
 
 void Demo::AppStop()
 {
-    SafeDelete(m_movingAnimation1);
-    SafeDelete(m_movingAnimation2);
-
-    // TODO: Right now animations need to be manually removed, in the future they should detect when their sprite is destroyed to remove themselves.
-    GetAnimations()->DeleteAllAnimations();
-
     SafeDelete(m_root);
 }
 

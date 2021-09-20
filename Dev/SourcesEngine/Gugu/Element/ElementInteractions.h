@@ -21,8 +21,9 @@ namespace EInteraction
         Disabled    = 0x0001,   // Disable Events on self
         Absorb      = 0x0002,   // Disable Events on children
         
-        RawSFEvent  = 0x0004,
+        Destroyed   = 0x0003,   // Temporary hack to access callbacks
 
+        RawSFEvent  = 0x0004,
         Selection   = 0x0010,
         Focus       = 0x0020,
         Click       = 0x0040,
@@ -33,7 +34,7 @@ namespace EInteraction
 
 // TODO: Should be called ElementEvents.
 // TODO: disabled/absorb should be individual flags to not mess with interaction flags.
-// TODO: callbacks on additional events like element destruction.
+// TODO: split logic between interaction flags (selection, focus etc) and callback events (selected, focused, destroyed etc).
 class ElementInteractions
 {
 public:

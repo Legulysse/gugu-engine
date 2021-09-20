@@ -10,6 +10,7 @@
 #include "Gugu/Version.h"
 #include "Gugu/Core/Application.h"
 #include "Gugu/Inputs/ManagerInputs.h"
+#include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Network/ManagerNetwork.h"
 #include "Gugu/Resources/ManagerResources.h"
@@ -85,6 +86,9 @@ void Engine::Init(const EngineConfig& config)
 
     m_managerNetwork = new ManagerNetwork;
 
+    m_managerAnimations = new ManagerAnimations;
+    m_managerAnimations->Init(computedConfig);
+
     //-- Init Default Renderer --//
     m_renderer = new Renderer;
 
@@ -130,10 +134,12 @@ void Engine::Release()
     SafeDelete(m_renderer);
 
     m_managerInputs->Release();
+    m_managerAnimations->Release();
     m_managerAudio->Release();
     m_managerResources->Release();
 
     SafeDelete(m_managerInputs);
+    SafeDelete(m_managerAnimations);
     SafeDelete(m_managerAudio);
     SafeDelete(m_managerNetwork);
     SafeDelete(m_managerResources);
@@ -553,6 +559,11 @@ Renderer* Engine::GetDefaultRenderer() const
 ManagerInputs* Engine::GetManagerInputs() const
 {
     return m_managerInputs;
+}
+
+ManagerAnimations* Engine::GetManagerAnimations() const
+{
+    return m_managerAnimations;
 }
 
 ManagerAudio* Engine::GetManagerAudio() const

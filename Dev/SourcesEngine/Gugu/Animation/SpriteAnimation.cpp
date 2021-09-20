@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Element/BaseAnimation2D.h"
+#include "Gugu/Animation/SpriteAnimation.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
@@ -19,7 +19,7 @@
 
 namespace gugu {
     
-BaseAnimation2D::BaseAnimation2D()
+SpriteAnimation::SpriteAnimation()
 {
     m_animSet = nullptr;
     m_animation = nullptr;
@@ -35,16 +35,16 @@ BaseAnimation2D::BaseAnimation2D()
     m_animDurationCurrent = 0.f;
 }
 
-BaseAnimation2D::~BaseAnimation2D()
+SpriteAnimation::~SpriteAnimation()
 {
 }
 
-void BaseAnimation2D::ChangeAnimSet(const std::string& _strFilePath)
+void SpriteAnimation::ChangeAnimSet(const std::string& _strFilePath)
 {
     ChangeAnimSet(GetResources()->GetAnimSet(_strFilePath));
 }
 
-void BaseAnimation2D::ChangeAnimSet(AnimSet* _pAnimSet)
+void SpriteAnimation::ChangeAnimSet(AnimSet* _pAnimSet)
 {
     StopAnimation();
 
@@ -52,12 +52,12 @@ void BaseAnimation2D::ChangeAnimSet(AnimSet* _pAnimSet)
     OnAnimsetChanged();
 }
 
-bool BaseAnimation2D::HasAnimation(const std::string& _strNameAnim) const
+bool SpriteAnimation::HasAnimation(const std::string& _strNameAnim) const
 {
     return (m_animSet && m_animSet->GetAnimation(_strNameAnim));
 }
 
-void BaseAnimation2D::StartAnimation(const std::string& _strNameAnim, bool _bLoop, float _fSpeed)
+void SpriteAnimation::StartAnimation(const std::string& _strNameAnim, bool _bLoop, float _fSpeed)
 {
     StopAnimation();
 
@@ -69,7 +69,7 @@ void BaseAnimation2D::StartAnimation(const std::string& _strNameAnim, bool _bLoo
     RestartAnimation();
 }
 
-void BaseAnimation2D::RestartAnimation()
+void SpriteAnimation::RestartAnimation()
 {
     if (m_animation)
     {
@@ -82,7 +82,7 @@ void BaseAnimation2D::RestartAnimation()
     }
 }
 
-void BaseAnimation2D::StopAnimation()
+void SpriteAnimation::StopAnimation()
 {
     m_animation         = nullptr;
     m_animPause         = false;
@@ -93,12 +93,12 @@ void BaseAnimation2D::StopAnimation()
     //TODO: Call InitCurrentAnimationFrame() and force empty Sprites ?
 }
 
-bool BaseAnimation2D::IsAnimationPlaying() const
+bool SpriteAnimation::IsAnimationPlaying() const
 {
     return (m_animSet && m_animation);
 }
 
-bool BaseAnimation2D::IsAnimationPlaying(const std::string& _strNameAnim) const
+bool SpriteAnimation::IsAnimationPlaying(const std::string& _strNameAnim) const
 {
     if (m_animSet && m_animation)
     {
@@ -107,57 +107,57 @@ bool BaseAnimation2D::IsAnimationPlaying(const std::string& _strNameAnim) const
     return false;
 }
 
-bool BaseAnimation2D::IsAnimationPaused() const
+bool SpriteAnimation::IsAnimationPaused() const
 {
     return m_animPause;
 }
 
-void BaseAnimation2D::SetAnimationPause(bool _bPause)
+void SpriteAnimation::SetAnimationPause(bool _bPause)
 {
     m_animPause = _bPause;
 }
 
-void BaseAnimation2D::ToggleAnimationPause()
+void SpriteAnimation::ToggleAnimationPause()
 {
     m_animPause = !m_animPause;
 }
 
-bool BaseAnimation2D::IsAnimationLooped() const
+bool SpriteAnimation::IsAnimationLooped() const
 {
     return m_animLoop;
 }
 
-void BaseAnimation2D::SetAnimationLoop(bool _bLoop)
+void SpriteAnimation::SetAnimationLoop(bool _bLoop)
 {
     m_animLoop = _bLoop;
 }
 
-float BaseAnimation2D::GetAnimationSpeed() const
+float SpriteAnimation::GetAnimationSpeed() const
 {
     return m_animSpeed;
 }
 
-void BaseAnimation2D::SetAnimationSpeed(float _fSpeed)
+void SpriteAnimation::SetAnimationSpeed(float _fSpeed)
 {
     m_animSpeed = _fSpeed;
 }
 
-void BaseAnimation2D::SetOriginFromAnimation(bool _bOriginFromAnimation)
+void SpriteAnimation::SetOriginFromAnimation(bool _bOriginFromAnimation)
 {
     m_originFromAnimation = _bOriginFromAnimation;
 }
 
-void BaseAnimation2D::SetMoveFromAnimation(bool _bMoveFromAnimation)
+void SpriteAnimation::SetMoveFromAnimation(bool _bMoveFromAnimation)
 {
     m_moveFromAnimation = _bMoveFromAnimation;
 }
 
-void BaseAnimation2D::AddEventCallback(const std::string& _strEvent, Callback callbackEvent)
+void SpriteAnimation::AddEventCallback(const std::string& _strEvent, Callback callbackEvent)
 {
     m_events[_strEvent] = callbackEvent;
 }
 
-void BaseAnimation2D::SetCurrentFrame(size_t _uiIndex)
+void SpriteAnimation::SetCurrentFrame(size_t _uiIndex)
 {
     if (m_animation && _uiIndex >= 0 && _uiIndex < m_animation->GetFrameCount())
     {
@@ -188,7 +188,7 @@ void BaseAnimation2D::SetCurrentFrame(size_t _uiIndex)
     }
 }
 
-void BaseAnimation2D::SetCurrentFrame(AnimationFrame* _pFrame)
+void SpriteAnimation::SetCurrentFrame(AnimationFrame* _pFrame)
 {
     if (m_animation && _pFrame)
     {
@@ -196,7 +196,7 @@ void BaseAnimation2D::SetCurrentFrame(AnimationFrame* _pFrame)
     }
 }
 
-void BaseAnimation2D::StepAnimation(const DeltaTime& dt)
+void SpriteAnimation::StepAnimation(const DeltaTime& dt)
 {
     AnimationFrame* pCurrentFrame = GetAnimationFrame();
     if (pCurrentFrame && !m_animPause)
@@ -236,24 +236,24 @@ void BaseAnimation2D::StepAnimation(const DeltaTime& dt)
     }
 }
 
-AnimSet* BaseAnimation2D::GetAnimSet() const
+AnimSet* SpriteAnimation::GetAnimSet() const
 {
     return m_animSet;
 }
 
-Animation* BaseAnimation2D::GetAnimation() const
+Animation* SpriteAnimation::GetAnimation() const
 {
     return m_animation;
 }
 
-AnimationFrame* BaseAnimation2D::GetAnimationFrame() const
+AnimationFrame* SpriteAnimation::GetAnimationFrame() const
 {
     if (m_animation)
         return m_animation->GetFrame(m_animIndexCurrent);
     return nullptr;
 }
 
-void BaseAnimation2D::OnAnimsetChanged()
+void SpriteAnimation::OnAnimsetChanged()
 {
 }
 

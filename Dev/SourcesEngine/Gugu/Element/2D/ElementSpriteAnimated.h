@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Element/BaseAnimation2D.h"
+#include "Gugu/Animation/SpriteAnimation.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -20,7 +20,7 @@ namespace gugu
 
 namespace gugu {
     
-class ElementSpriteAnimated : public ElementSprite, public BaseAnimation2D
+class ElementSpriteAnimated : public ElementSprite, public SpriteAnimation
 {
 public:
 

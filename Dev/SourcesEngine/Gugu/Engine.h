@@ -19,6 +19,7 @@
 
 namespace gugu
 {
+    class ManagerAnimations;
     class ManagerInputs;
     class ManagerAudio;
     class ManagerNetwork;
@@ -96,6 +97,7 @@ public:
     ManagerAudio*       GetManagerAudio() const;
     ManagerNetwork*     GetManagerNetwork() const;
     ManagerResources*   GetManagerResources() const;
+    ManagerAnimations*  GetManagerAnimations() const;
 
     LoggerEngine*       GetLogEngine() const;
     TraceGroup*         GetTraceGroupMain() const;
@@ -114,6 +116,7 @@ private:
     ManagerAudio*       m_managerAudio;
     ManagerNetwork*     m_managerNetwork;
     ManagerResources*   m_managerResources;
+    ManagerAnimations*  m_managerAnimations;
 
     LoggerEngine*       m_logEngine;
     TraceGroup*         m_traceGroupMain;

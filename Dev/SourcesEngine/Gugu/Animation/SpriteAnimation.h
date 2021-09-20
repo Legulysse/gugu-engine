@@ -24,12 +24,12 @@ namespace gugu
 
 namespace gugu {
 
-class BaseAnimation2D
+class SpriteAnimation
 {
 public:
 
-    BaseAnimation2D();
-    virtual ~BaseAnimation2D();
+    SpriteAnimation();
+    virtual ~SpriteAnimation();
 
     void    ChangeAnimSet           (const std::string& _strFilePath);
     void    ChangeAnimSet           (AnimSet* _pAnimSet);

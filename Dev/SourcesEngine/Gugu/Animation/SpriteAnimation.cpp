@@ -7,8 +7,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"
+#include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/System/SystemUtility.h"
 
@@ -21,6 +23,8 @@ namespace gugu {
     
 SpriteAnimation::SpriteAnimation()
 {
+    m_sprite = nullptr;
+
     m_animSet = nullptr;
     m_animation = nullptr;
 
@@ -37,6 +41,17 @@ SpriteAnimation::SpriteAnimation()
 
 SpriteAnimation::~SpriteAnimation()
 {
+    GetAnimations()->RemoveAnimation(this);
+}
+
+void SpriteAnimation::SetSprite(ElementSprite* sprite)
+{
+    m_sprite = sprite;
+}
+
+ElementSprite* SpriteAnimation::GetSprite() const
+{
+    return m_sprite;
 }
 
 void SpriteAnimation::ChangeAnimSet(const std::string& _strFilePath)
@@ -255,6 +270,38 @@ AnimationFrame* SpriteAnimation::GetAnimationFrame() const
 
 void SpriteAnimation::OnAnimsetChanged()
 {
+}
+
+void SpriteAnimation::InitCurrentAnimationFrame()
+{
+    AnimationFrame* pCurrentFrame = GetAnimationFrame();
+
+    if (pCurrentFrame)
+    {
+        if (pCurrentFrame->GetSubImage())
+        {
+            m_sprite->SetSubImage(pCurrentFrame->GetSubImage());
+        }
+        else if (pCurrentFrame->GetTexture())
+        {
+            m_sprite->SetTexture(pCurrentFrame->GetTexture());
+        }
+
+        if (m_originFromAnimation)
+        {
+            m_sprite->SetOrigin(pCurrentFrame->GetOrigin());
+        }
+
+        if (m_moveFromAnimation)
+        {
+            Vector2f kMove = pCurrentFrame->GetMoveOffset();
+            if (m_sprite->GetFlipH())
+                kMove.x = -kMove.x;
+            if (m_sprite->GetFlipV())
+                kMove.y = -kMove.y;
+            m_sprite->Move(kMove);
+        }
+    }
 }
 
 }   // namespace gugu

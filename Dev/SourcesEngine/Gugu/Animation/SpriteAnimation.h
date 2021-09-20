@@ -17,6 +17,7 @@ namespace gugu
     class AnimSet;
     class Animation;
     class AnimationFrame;
+    class ElementSprite;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -30,6 +31,9 @@ public:
 
     SpriteAnimation();
     virtual ~SpriteAnimation();
+
+    void SetSprite(ElementSprite* sprite);
+    ElementSprite* GetSprite() const;
 
     void    ChangeAnimSet           (const std::string& _strFilePath);
     void    ChangeAnimSet           (AnimSet* _pAnimSet);
@@ -70,9 +74,11 @@ public:
 protected:
 
     virtual void    OnAnimsetChanged();
-    virtual void    InitCurrentAnimationFrame    () = 0;
+    virtual void    InitCurrentAnimationFrame();
 
 protected:
+
+    ElementSprite* m_sprite;
 
     AnimSet*    m_animSet;
     Animation*  m_animation;

@@ -276,6 +276,8 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
             if (m_world)
                 m_world->Step(dtSpeedModulatedStep);
 
+            m_managerAnimations->Step(dtSpeedModulatedStep);
+
             for (size_t i = 0; i < m_windows.size(); ++i)
                 m_windows[i]->Step(dtSpeedModulatedStep);
 
@@ -316,6 +318,8 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
 
         if (m_world)
             m_world->Update(dt);
+
+        m_managerAnimations->Update(dt);
 
         for (size_t i = 0; i < m_windows.size(); ++i)
             m_windows[i]->Update(dt);

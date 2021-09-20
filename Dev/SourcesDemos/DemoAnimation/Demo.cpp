@@ -8,8 +8,9 @@
 // Includes
 
 #include "Gugu/Window/Window.h"
+#include "Gugu/Animation/SpriteAnimation.h"
+#include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
 #include "Gugu/System/SystemUtility.h"
 
@@ -64,65 +65,110 @@ void Demo::AppStart()
     float lineE = margin + cellSize * 4;
 
 
-    // Test Animation Idle (no origin set) with a flipped texture.
-    ElementSpriteAnimated* animationIdle = m_root->AddChild<ElementSpriteAnimated>();
-    animationIdle->SetPosition(lineA, lineB);
-    animationIdle->SetScale(0.5f);
-    animationIdle->ChangeAnimSet("Dinosaur.animset.xml");
-    animationIdle->StartAnimation("Idle");
-    animationIdle->SetFlipTextureH(true);
-    //animationIdle->AddEventCallback("Footstep", new ActionStatic(PlayFootStep)); //TODO: optionnal event demo (like a button to trigger the walk, or an archer shooting arrows)
+    // Test Animation Idle 1 (no origin set).
+    ElementSprite* spriteIdle1 = m_root->AddChild<ElementSprite>();
+    spriteIdle1->SetPosition(lineA, lineA);
+    spriteIdle1->SetScale(0.5f);
 
+    SpriteAnimation* animationIdle1 = GetAnimations()->AddAnimation(spriteIdle1);
+    animationIdle1->ChangeAnimSet("Dinosaur.animset.xml");
+    animationIdle1->StartAnimation("Idle");
+
+    // Test Animation Idle 2 (no origin set) with a flipped texture.
+    ElementSprite* spriteIdle2 = m_root->AddChild<ElementSprite>();
+    spriteIdle2->SetPosition(lineB, lineA);
+    spriteIdle2->SetScale(0.5f);
+    spriteIdle2->SetFlipTextureH(true);
+
+    SpriteAnimation* animationIdle2 = GetAnimations()->AddAnimation(spriteIdle2);
+    animationIdle2->ChangeAnimSet("Dinosaur.animset.xml");
+    animationIdle2->StartAnimation("Idle");
+
+    // Test Animation Idle 3 (with flip).
+    ElementSprite* spriteIdle3 = m_root->AddChild<ElementSprite>();
+    spriteIdle3->SetPosition(lineC, lineA);
+    spriteIdle3->SetScale(0.5f);
+    spriteIdle3->SetFlipH(true);
+
+    SpriteAnimation* animationIdle3 = GetAnimations()->AddAnimation(spriteIdle3);
+    animationIdle3->ChangeAnimSet("Dinosaur.animset.xml");
+    animationIdle3->StartAnimation("Idle");
+
+    // Test Animation Idle 4 (with flip) with a flipped texture.
+    ElementSprite* spriteIdle4 = m_root->AddChild<ElementSprite>();
+    spriteIdle4->SetPosition(lineD, lineA);
+    spriteIdle4->SetScale(0.5f);
+    spriteIdle4->SetFlipTextureH(true);
+    spriteIdle4->SetFlipH(true);
+
+    SpriteAnimation* animationIdle4 = GetAnimations()->AddAnimation(spriteIdle4);
+    animationIdle4->ChangeAnimSet("Dinosaur.animset.xml");
+    animationIdle4->StartAnimation("Idle");
 
     // Test Animation Walk (no origin set : top left).
-    ElementSpriteAnimated* animationWalk1 = m_root->AddChild<ElementSpriteAnimated>();
-    animationWalk1->SetPosition(lineB, lineB);
-    animationWalk1->SetScale(0.5f);
+    ElementSprite* spriteWalk1 = m_root->AddChild<ElementSprite>();
+    spriteWalk1->SetPosition(lineA, lineB);
+    spriteWalk1->SetScale(0.5f);
+
+    SpriteAnimation* animationWalk1 = GetAnimations()->AddAnimation(spriteWalk1);
     animationWalk1->ChangeAnimSet("Dinosaur.animset.xml");
     animationWalk1->StartAnimation("Walk");
 
     // Test Animation Walk (origin set manually : bottom center).
-    ElementSpriteAnimated* animationWalk2 = m_root->AddChild<ElementSpriteAnimated>();
-    animationWalk2->SetPosition(lineC, lineB);
-    animationWalk2->SetScale(0.5f);
-    animationWalk2->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
+    ElementSprite* aspriteWalk2 = m_root->AddChild<ElementSprite>();
+    aspriteWalk2->SetPosition(lineB, lineB);
+    aspriteWalk2->SetScale(0.5f);
+    aspriteWalk2->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
+
+    SpriteAnimation* animationWalk2 = GetAnimations()->AddAnimation(aspriteWalk2);
     animationWalk2->ChangeAnimSet("Dinosaur.animset.xml");
     animationWalk2->StartAnimation("Walk");
 
     // Test Animation Walk (origin set in animation).
-    ElementSpriteAnimated* animationWalk3 = m_root->AddChild<ElementSpriteAnimated>();
-    animationWalk3->SetPosition(lineD, lineB);
-    animationWalk3->SetScale(0.5f);
+    ElementSprite* spriteWalk3 = m_root->AddChild<ElementSprite>();
+    spriteWalk3->SetPosition(lineC, lineB);
+    spriteWalk3->SetScale(0.5f);
+
+    SpriteAnimation* animationWalk3 = GetAnimations()->AddAnimation(spriteWalk3);
     animationWalk3->SetOriginFromAnimation(true);
     animationWalk3->ChangeAnimSet("Dinosaur.animset.xml");
     animationWalk3->StartAnimation("Walk");
 
-
     // Test Animation Walk (origin and move set in animation).
-    m_movingAnimationA = m_root->AddChild<ElementSpriteAnimated>();
-    m_movingAnimationA->SetPosition(lineD, lineD);
-    m_movingAnimationA->SetScale(0.5f);
-    m_movingAnimationA->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
-    //m_movingAnimationA->SetOriginFromAnimation(true);
-    m_movingAnimationA->SetMoveFromAnimation(true);
-    m_movingAnimationA->ChangeAnimSet("Dinosaur.animset.xml");
-    m_movingAnimationA->StartAnimation("Walk");
+    m_movingSprite1 = m_root->AddChild<ElementSprite>();
+    m_movingSprite1->SetPosition(lineD, lineC);
+    m_movingSprite1->SetScale(0.5f);
+    m_movingSprite1->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
+
+    m_movingAnimation1 = GetAnimations()->AddAnimation(m_movingSprite1);
+    //m_movingAnimation1->SetOriginFromAnimation(true);
+    m_movingAnimation1->SetMoveFromAnimation(true);
+    m_movingAnimation1->ChangeAnimSet("Dinosaur.animset.xml");
+    m_movingAnimation1->StartAnimation("Walk");
 
     // Test fake shadow (reversed animation).
-    m_movingAnimationB = m_root->AddChild<ElementSpriteAnimated>();
-    m_movingAnimationB->SetPosition(lineD, lineD);
-    m_movingAnimationB->SetScale(0.5f, 0.25f);
-    m_movingAnimationB->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
-    //m_movingAnimationB->SetOriginFromAnimation(true);
-    m_movingAnimationB->SetMoveFromAnimation(true);
-    m_movingAnimationB->ChangeAnimSet("Dinosaur.animset.xml");
-    m_movingAnimationB->StartAnimation("Walk");
-    m_movingAnimationB->SetFlipV(true);
-    m_movingAnimationB->SetColor(sf::Color(80, 80, 80, 128));
+    m_movingSprite2 = m_root->AddChild<ElementSprite>();
+    m_movingSprite2->SetPosition(lineD, lineC);
+    m_movingSprite2->SetScale(0.5f, 0.25f);
+    m_movingSprite2->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
+    m_movingSprite2->SetFlipV(true);
+    m_movingSprite2->SetColor(sf::Color(80, 80, 80, 128));
+
+    m_movingAnimation2 = GetAnimations()->AddAnimation(m_movingSprite2);
+    //m_movingAnimation2->SetOriginFromAnimation(true);
+    m_movingAnimation2->SetMoveFromAnimation(true);
+    m_movingAnimation2->ChangeAnimSet("Dinosaur.animset.xml");
+    m_movingAnimation2->StartAnimation("Walk");
 }
 
 void Demo::AppStop()
 {
+    SafeDelete(m_movingAnimation1);
+    SafeDelete(m_movingAnimation2);
+
+    // TODO: Right now animations need to be manually removed, in the future they should detect when their sprite is destroyed to remove themselves.
+    GetAnimations()->DeleteAllAnimations();
+
     SafeDelete(m_root);
 }
 
@@ -135,16 +181,16 @@ void Demo::AppStep(const DeltaTime& dt)
     float lineC = margin + cellSize * 2;
     float lineD = margin + cellSize * 3;
     float lineE = margin + cellSize * 4;
-
-    if (m_movingAnimationA->GetPosition().x <= lineB)
+    
+    if (m_movingSprite1->GetPosition().x <= lineB)
     {
-        m_movingAnimationA->SetFlipH(true);
-        m_movingAnimationB->SetFlipH(true);
+        m_movingSprite1->SetFlipH(true);
+        m_movingSprite2->SetFlipH(true);
     }
-    else if (m_movingAnimationA->GetPosition().x >= lineE)
+    else if (m_movingSprite1->GetPosition().x >= lineE)
     {
-        m_movingAnimationA->SetFlipH(false);
-        m_movingAnimationB->SetFlipH(false);
+        m_movingSprite1->SetFlipH(false);
+        m_movingSprite2->SetFlipH(false);
     }
 }
 

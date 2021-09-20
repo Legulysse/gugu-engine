@@ -31,6 +31,9 @@ namespace EInteraction
     };
 }
 
+// TODO: Should be called ElementEvents.
+// TODO: disabled/absorb should be individual flags to not mess with interaction flags.
+// TODO: callbacks on additional events like element destruction.
 class ElementInteractions
 {
 public:

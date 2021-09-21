@@ -13,7 +13,9 @@
 #include "DatasheetBinding.h"
 
 #include "Gugu/World/Level.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
+#include "Gugu/Animation/ManagerAnimations.h"
+#include "Gugu/Animation/SpriteAnimation.h"
+#include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Math/Random.h"
 
 using namespace gugu;
@@ -41,16 +43,17 @@ void CharacterEnemy::InitEnemy(DS_Enemy* sheetEnemy, float _fSpeed, Grid* grid, 
 
     m_currentLife = m_maxLife;
 
-    m_sprite = parentNode->AddChild<ElementSpriteAnimated>();
+    m_sprite = parentNode->AddChild<ElementSprite>();
+    m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
 
     //if (GetRandom(0, 1) == 0)
     //    m_sprite->ChangeAnimSet("Orc.animset.xml");
     //else
     //    m_sprite->ChangeAnimSet("Lady.animset.xml");
 
-    m_sprite->ChangeAnimSet(sheetEnemy->sprite->animSet);
-    m_sprite->StartAnimation("IdleDown");
-    m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+    m_animation = GetAnimations()->AddAnimation(m_sprite);
+    m_animation->ChangeAnimSet(sheetEnemy->sprite->animSet);
+    m_animation->StartAnimation("IdleDown");
 
     m_lifeBar = m_sprite->AddChild<ElementBar>();
     m_lifeBar->InitBar(ElementBar::BarColor::Red, 2.f);

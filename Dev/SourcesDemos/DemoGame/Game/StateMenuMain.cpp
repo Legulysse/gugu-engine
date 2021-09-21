@@ -9,20 +9,12 @@
 #include "Game/StateScenario.h"
 
 #include "Gugu/Engine.h"
-#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Inputs/ManagerInputs.h"
-#include "Gugu/Audio/ManagerAudio.h"
-#include "Gugu/Network/ManagerNetwork.h"
 #include "Gugu/Window/Window.h"
-#include "Gugu/Math/MathUtility.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Element/Element.h"
-#include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/UI/ElementButton.h"
-#include "Gugu/Element/UI/ElementList.h"
 
 using namespace gugu;
 

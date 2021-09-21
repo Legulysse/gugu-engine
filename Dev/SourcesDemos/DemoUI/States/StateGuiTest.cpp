@@ -19,7 +19,6 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/Element/UI/ElementList.h"
 #include "Gugu/Element/UI/ElementListItem.h"

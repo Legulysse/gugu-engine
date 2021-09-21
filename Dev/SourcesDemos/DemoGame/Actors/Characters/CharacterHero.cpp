@@ -15,7 +15,9 @@
 #include "DatasheetBinding.h"
 
 #include "Gugu/World/Level.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
+#include "Gugu/Animation/ManagerAnimations.h"
+#include "Gugu/Animation/SpriteAnimation.h"
+#include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
@@ -65,10 +67,12 @@ void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid, Elem
     m_currentMana = m_maxMana;
 
     // Sprite
-    m_sprite = parentNode->AddChild<ElementSpriteAnimated>();
-    m_sprite->ChangeAnimSet(sheetHero->sprite->animSet);
-    m_sprite->StartAnimation("IdleDown");
+    m_sprite = parentNode->AddChild<ElementSprite>();
     m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+
+    m_animation = GetAnimations()->AddAnimation(m_sprite);
+    m_animation->ChangeAnimSet(sheetHero->sprite->animSet);
+    m_animation->StartAnimation("IdleDown");
 
     //m_pSprite->SetColor(sf::Color::Cyan);
     //m_sprite->SetZIndex(1000);
@@ -170,8 +174,8 @@ void CharacterHero::UseSkill(DS_Skill* skill, const Vector2f& _kCoords, const De
         else if (fAngleDegrees <= -45.f && fAngleDegrees >= -135.f)
             strAnim = "AttackUp";
 
-        if (strAnim != "" && !m_sprite->IsAnimationPlaying(strAnim))
-            m_sprite->StartAnimation(strAnim);
+        if (strAnim != "" && !m_animation->IsAnimationPlaying(strAnim))
+            m_animation->StartAnimation(strAnim);
     }
 }
 

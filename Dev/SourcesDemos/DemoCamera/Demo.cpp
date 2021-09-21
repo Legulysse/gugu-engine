@@ -12,7 +12,6 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Inputs/ManagerInputs.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/World/World.h"
 #include "Gugu/World/Level.h"

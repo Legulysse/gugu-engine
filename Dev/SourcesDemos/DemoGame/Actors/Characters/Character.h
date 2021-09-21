@@ -12,7 +12,8 @@
 namespace gugu
 {
     class Element;
-    class ElementSpriteAnimated;
+    class ElementSprite;
+    class SpriteAnimation;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -50,7 +51,8 @@ public:
 
     class Grid* m_grid;
 
-    gugu::ElementSpriteAnimated* m_sprite;
+    gugu::ElementSprite* m_sprite;
+    gugu::SpriteAnimation* m_animation;
     class ElementBar* m_lifeBar;
 
     float m_currentLife;

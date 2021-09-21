@@ -8,7 +8,9 @@
 // Includes
 
 #include "Gugu/World/Level.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
+#include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Animation/ManagerAnimations.h"
+#include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Math/MathUtility.h"
 
 using namespace gugu;
@@ -29,15 +31,17 @@ Character::~Character()
 
 void Character::InitCharacter(int index)
 {
-    m_sprite = m_level->GetRootNode()->AddChild<ElementSpriteAnimated>();
+    m_sprite = m_level->GetRootNode()->AddChild<ElementSprite>();
+    m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+
+    m_spriteAnimation = GetAnimations()->AddAnimation(m_sprite);
 
     if (index == 0)
-        m_sprite->ChangeAnimSet("Human.animset.xml");
+        m_spriteAnimation->ChangeAnimSet("Human.animset.xml");
     else
-        m_sprite->ChangeAnimSet("Lady.animset.xml");
+        m_spriteAnimation->ChangeAnimSet("Lady.animset.xml");
 
-    m_sprite->StartAnimation("WalkDown");
-    m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+    m_spriteAnimation->StartAnimation("WalkDown");
 }
 
 void Character::Move(Vector2f _kDirection, const DeltaTime& dt)

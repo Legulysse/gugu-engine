@@ -4,7 +4,6 @@
 #include "Gugu/Common.h"
 
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
 
 #include "Gugu/Debug/Logger.h"
 #include "Gugu/System/SystemUtility.h"
@@ -185,7 +184,6 @@ int main(int argc, char* argv[])
     log.Print(ELog::Info, StringFormat(" UDim2 : {0}", sizeof(UDim2)));
     log.Print(ELog::Info, StringFormat(" Element : {0}", sizeof(Element)));
     log.Print(ELog::Info, StringFormat(" ElementSprite : {0}", sizeof(ElementSprite)));
-    log.Print(ELog::Info, StringFormat(" ElementSpriteAnimated : {0}", sizeof(ElementSpriteAnimated)));
     log.Print(ELog::Info, StringFormat(" ElementInteractions : {0}", sizeof(ElementInteractions)));
     log.Print(ELog::Info, StringFormat("---------------------------------------"));
     log.Print(ELog::Info, StringFormat(" TestSFTransformable : {0}", sizeof(TestSFTransformable)));

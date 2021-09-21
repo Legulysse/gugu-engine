@@ -12,7 +12,6 @@
 namespace gugu
 {
     class Element;
-    class ElementSpriteAnimated;
 }
 
 ////////////////////////////////////////////////////////////////

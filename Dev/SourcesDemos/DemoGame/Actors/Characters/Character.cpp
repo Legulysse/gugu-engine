@@ -12,7 +12,8 @@
 #include "Level/Grid.h"
 
 #include "Gugu/World/Level.h"
-#include "Gugu/Element/2D/ElementSpriteAnimated.h"
+#include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/System/SystemUtility.h"
@@ -75,8 +76,8 @@ void Character::Move(Vector2f _kDirection, const DeltaTime& dt)
         else if (fAngleDegrees <= -45.f && fAngleDegrees >= -135.f)
             strAnim = "WalkUp";
 
-        if (!m_sprite->IsAnimationPlaying(strAnim) && !m_isActingThisFrame)
-            m_sprite->StartAnimation(strAnim);
+        if (!m_animation->IsAnimationPlaying(strAnim) && !m_isActingThisFrame)
+            m_animation->StartAnimation(strAnim);
 
         m_isMovingThisFrame = true;
     }
@@ -148,9 +149,9 @@ void Character::Update(const DeltaTime& dt)
     Actor::Update(dt);
 
     // Animation
-    if ((m_steppedThisFrame && !m_isMovingThisFrame && !m_isActingThisFrame) || !m_sprite->IsAnimationPlaying())
+    if ((m_steppedThisFrame && !m_isMovingThisFrame && !m_isActingThisFrame) || !m_animation->IsAnimationPlaying())
     {
-        m_sprite->StartAnimation("IdleDown");
+        m_animation->StartAnimation("IdleDown");
     }
 
     m_steppedThisFrame = false;

@@ -12,7 +12,8 @@
 namespace gugu
 {
     class Element;
-    class ElementSpriteAnimated;
+    class ElementSprite;
+    class SpriteAnimation;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -34,7 +35,8 @@ public:
 
 public:
 
-    gugu::ElementSpriteAnimated* m_sprite;
+    gugu::ElementSprite* m_sprite;
+    gugu::SpriteAnimation* m_spriteAnimation;
 };
 
 }   //namespace demoproject

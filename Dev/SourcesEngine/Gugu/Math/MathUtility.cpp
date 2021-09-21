@@ -78,7 +78,7 @@ float EaseOutQuad(float ratio)
 
 float EaseInOutQuad(float ratio)
 {
-    return (ratio < 0.5f) ? 2 * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 2) / 2;
+    return (ratio < 0.5f) ? 2 * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 2.f) / 2;
 }
 
 float EaseInCubic(float ratio)
@@ -88,12 +88,12 @@ float EaseInCubic(float ratio)
 
 float EaseOutCubic(float ratio)
 {
-    return 1 - std::pow(1 - ratio, 3);
+    return 1 - std::pow(1 - ratio, 3.f);
 }
 
 float EaseInOutCubic(float ratio)
 {
-    return (ratio < 0.5f) ? 4 * ratio * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 3) / 2;
+    return (ratio < 0.5f) ? 4 * ratio * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 3.f) / 2;
 }
 
 float EaseInQuart(float ratio)
@@ -103,12 +103,12 @@ float EaseInQuart(float ratio)
 
 float EaseOutQuart(float ratio)
 {
-    return 1 - std::pow(1 - ratio, 4);
+    return 1 - std::pow(1 - ratio, 4.f);
 }
 
 float EaseInOutQuart(float ratio)
 {
-    return (ratio < 0.5f) ? 8 * ratio * ratio * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 4) / 2;
+    return (ratio < 0.5f) ? 8 * ratio * ratio * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 4.f) / 2;
 }
 
 float EaseInQuint(float ratio)
@@ -118,12 +118,12 @@ float EaseInQuint(float ratio)
 
 float EaseOutQuint(float ratio)
 {
-    return 1 - std::pow(1 - ratio, 5);
+    return 1 - std::pow(1 - ratio, 5.f);
 }
 
 float EaseInOutQuint(float ratio)
 {
-    return (ratio < 0.5) ? 16 * ratio * ratio * ratio * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 5) / 2;
+    return (ratio < 0.5) ? 16 * ratio * ratio * ratio * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 5.f) / 2;
 }
 
 float EaseInSine(float ratio)
@@ -160,17 +160,17 @@ float EaseInOutExpo(float ratio)
 
 float EaseInCirc(float ratio)
 {
-    return 1 - std::sqrt(1 - std::pow(ratio, 2));
+    return 1 - std::sqrt(1 - std::pow(ratio, 2.f));
 }
 
 float EaseOutCirc(float ratio)
 {
-    return std::sqrt(1 - std::pow(ratio - 1, 2));
+    return std::sqrt(1 - std::pow(ratio - 1, 2.f));
 }
 
 float EaseInOutCirc(float ratio)
 {
-    return (ratio < 0.5) ? (1 - std::sqrt(1 - std::pow(2 * ratio, 2))) / 2 : (std::sqrt(1 - std::pow(-2 * ratio + 2, 2)) + 1) / 2;
+    return (ratio < 0.5) ? (1 - std::sqrt(1 - std::pow(2 * ratio, 2.f))) / 2 : (std::sqrt(1 - std::pow(-2 * ratio + 2, 2.f)) + 1) / 2;
 }
 
 float EaseInBack(float ratio)
@@ -180,14 +180,14 @@ float EaseInBack(float ratio)
 
 float EaseOutBack(float ratio)
 {
-    return 1 + impl::c3 * std::pow(ratio - 1, 3) + impl::c1 * std::pow(ratio - 1, 2);
+    return 1 + impl::c3 * std::pow(ratio - 1, 3.f) + impl::c1 * std::pow(ratio - 1, 2.f);
 }
 
 float EaseInOutBack(float ratio)
 {
     return (ratio < 0.5f) ?
-        (std::pow(2 * ratio, 2) * ((impl::c2 + 1) * 2 * ratio - impl::c2)) / 2 :
-        (std::pow(2 * ratio - 2, 2) * ((impl::c2 + 1) * (ratio * 2 - 2) + impl::c2) + 2) / 2;
+        (std::pow(2 * ratio, 2.f) * ((impl::c2 + 1) * 2 * ratio - impl::c2)) / 2 :
+        (std::pow(2 * ratio - 2, 2.f) * ((impl::c2 + 1) * (ratio * 2 - 2) + impl::c2) + 2) / 2;
 }
 
 float EaseInElastic(float ratio)

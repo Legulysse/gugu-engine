@@ -49,9 +49,9 @@ void StateMenuMain::Init()
 
     //Logo
     ElementSprite* pLogoSfml = m_root->AddChild<ElementSprite>();
-    pLogoSfml->SetTexture("SfmlLogo.png");
-    pLogoSfml->SetUnifiedPosition(UDim2(0.65f, 0.f, 0.65f, 0.f));
-    pLogoSfml->SetUnifiedSize(UDim2(0.35f, 0.f, 0.35f, 0.f));
+    pLogoSfml->SetTexture("sfml-logo-small.png");
+    pLogoSfml->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_RIGHT);
+    pLogoSfml->SetUnifiedPosition(UDim2::POSITION_BOTTOM_RIGHT + Vector2f(-30.f, -10.f));
 
     //Box Menu
     ElementSpriteGroup* pBox = m_root->AddChild<ElementSpriteGroup>();

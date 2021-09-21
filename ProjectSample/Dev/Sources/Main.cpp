@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     //--------
     
     ElementSprite* sprite = GetGameWindow()->GetUINode()->AddChild<ElementSprite>();
-    sprite->SetTexture("SfmlLogo.png");
+    sprite->SetTexture("sfml-logo-small.png");
     sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
     sprite->SetUnifiedPosition(UDim2(0.5f, 0.75f));
 

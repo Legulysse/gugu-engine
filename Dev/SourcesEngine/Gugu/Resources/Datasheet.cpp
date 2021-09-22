@@ -35,10 +35,12 @@ EResourceType::Type Datasheet::GetResourceType() const
 
 bool Datasheet::LoadFromFile()
 {
-    return LoadFromDatasheet(GetFileInfoRef().GetPathName());
+    std::vector<Datasheet*> ancestors;
+    ancestors.push_back(this);
+    return LoadFromXml(GetFileInfoRef().GetPathName(), ancestors);
 }
 
-bool Datasheet::LoadFromDatasheet(const std::string& _strPathName)
+bool Datasheet::LoadFromXml(const std::string& _strPathName, std::vector<Datasheet*>& ancestors)
 {
     pugi::xml_document oDoc;
     pugi::xml_parse_result result = oDoc.load_file(_strPathName.c_str());
@@ -53,17 +55,32 @@ bool Datasheet::LoadFromDatasheet(const std::string& _strPathName)
     if (pAttributeParent)
     {
         //TODO: check same type
-        //TODO: check loophole in recursivity
-        Datasheet* pParent = ResolveDatasheetLink(pAttributeParent.as_string(""));
-        if (pParent)
+        //TODO: error message if invalid base
+        Datasheet* parentSheet = ResolveDatasheetLink(pAttributeParent.as_string());
+
+        if (parentSheet)
         {
-            LoadFromDatasheet(pParent->GetFileInfoRef().GetPathName());     //TODO: error message if invalid base
+            if (StdVectorContains(ancestors, parentSheet))
+            {
+                std::string ancestorsLog;
+                for (Datasheet* ancestor : ancestors)
+                {
+                    ancestorsLog += ancestor->GetFileInfoRef().GetName() + ", ";
+                }
+
+                ancestorsLog += parentSheet->GetFileInfoRef().GetName();
+                GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet {0} ancestors create an infinite loop : {1}", GetFileInfoRef().GetName(), ancestorsLog));
+            }
+            else
+            {
+                ancestors.push_back(parentSheet);
+                LoadFromXml(parentSheet->GetFileInfoRef().GetPathName(), ancestors);
+            }
         }
     }
 
     DatasheetParserContext kContext;
     kContext.currentNode = &oNodeRoot;
-
     ParseMembers(kContext);
 
     return true;

@@ -145,7 +145,7 @@ protected:
 
 private:
     
-    bool        LoadFromDatasheet       (const std::string& _strPathName);
+    bool        LoadFromXml(const std::string& _strPathName, std::vector<Datasheet*>& ancestors);
 
     Datasheet*  InstanciateDatasheet    (DatasheetParserContext& _kContext, const std::string& _strType);
     bool        InstanciateDatasheet    (DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, Datasheet*& _pInstance);

@@ -306,8 +306,12 @@ bool Datasheet::ResolveDatasheetLink(DatasheetParserContext& _kContext, const st
         if (pAttributeValue)
         {
             // Reference can be null.
-            std::string strSheetName = pAttributeValue.as_string("");
-            _pNewDatasheet = ResolveDatasheetLink(strSheetName);
+            std::string datasheetID = pAttributeValue.as_string();
+            if (datasheetID != "")
+            {
+                std::string strSheetName = pAttributeValue.as_string();
+                _pNewDatasheet = ResolveDatasheetLink(strSheetName);
+            }
         }
 
         return true;
@@ -328,8 +332,16 @@ bool Datasheet::ResolveDatasheetLinks(DatasheetParserContext& _kContext, const s
             if (pAttributeValue)
             {
                 // Reference can be null.
-                Datasheet* pDatasheet = ResolveDatasheetLink(pAttributeValue.as_string());
-                _vecDatasheets.push_back(pDatasheet);
+                std::string datasheetID = pAttributeValue.as_string();
+                if (datasheetID != "")
+                {
+                    Datasheet* pDatasheet = ResolveDatasheetLink(datasheetID);
+                    _vecDatasheets.push_back(pDatasheet);
+                }
+                else
+                {
+                    _vecDatasheets.push_back(nullptr);
+                }
             }
 
             pNodeChild = pNodeChild.next_sibling("Child");

@@ -102,9 +102,9 @@ protected:
 
             for (size_t i = 0; i < vecInstances.size(); ++i)
             {
+                // Fill the actual member values (may contain null values).
                 T* pInstance = dynamic_cast<T*>(vecInstances[i]);
-                if (pInstance)
-                    _vecMember.push_back(pInstance);
+                _vecMember.push_back(pInstance);
             }
         }
     }
@@ -120,9 +120,9 @@ protected:
 
             for (size_t i = 0; i < vecDatasheets.size(); ++i)
             {
+                // Fill the actual member values (may contain null values).
                 T* pDatasheet = dynamic_cast<T*>(vecDatasheets[i]);
-                if (pDatasheet)
-                    _vecMember.push_back(pDatasheet);
+                _vecMember.push_back(pDatasheet);
             }
         }
     }

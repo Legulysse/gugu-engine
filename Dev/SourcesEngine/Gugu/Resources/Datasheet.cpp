@@ -216,16 +216,19 @@ bool Datasheet::InstanciateDatasheet(DatasheetParserContext& _kContext, const st
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
     {
-        //Check type overload
+        // Check type overload. If serialized type is explicitely empty, we force a null instance.
         pugi::xml_attribute pAttributeType = pNode.attribute("type");
         std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
 
-        pugi::xml_node* pNodeParent = _kContext.currentNode;
-        _kContext.currentNode = &pNode;
+        if (strType != "")
+        {
+            pugi::xml_node* pNodeParent = _kContext.currentNode;
+            _kContext.currentNode = &pNode;
 
-        _pInstance = InstanciateDatasheet(_kContext, strType);
+            _pInstance = InstanciateDatasheet(_kContext, strType);
 
-        _kContext.currentNode = pNodeParent;
+            _kContext.currentNode = pNodeParent;
+        }
 
         return true;
     }
@@ -243,14 +246,23 @@ bool Datasheet::InstanciateDatasheets(DatasheetParserContext& _kContext, const s
         pugi::xml_node pNodeChild = pNode.child("Child");
         while (pNodeChild)
         {
-            //Check type overload
+            // Check type overload. If serialized type is explicitely empty, we force a null instance.
             pugi::xml_attribute pAttributeType = pNodeChild.attribute("type");
             std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
 
-            _kContext.currentNode = &pNodeChild;
-            Datasheet* pInstance = InstanciateDatasheet(_kContext, strType);
-            if (pInstance)
-                _vecInstances.push_back(pInstance);   //TODO: Allow null elements in datasheet arrays ?
+            if (strType != "")
+            {
+                _kContext.currentNode = &pNodeChild;
+                Datasheet* pInstance = InstanciateDatasheet(_kContext, strType);
+                if (pInstance)
+                {
+                    _vecInstances.push_back(pInstance);
+                }
+            }
+            else
+            {
+                _vecInstances.push_back(nullptr);
+            }
 
             pNodeChild = pNodeChild.next_sibling("Child");
         }
@@ -276,6 +288,7 @@ bool Datasheet::ResolveDatasheetLink(DatasheetParserContext& _kContext, const st
         pugi::xml_attribute pAttributeValue = pNode.attribute("value");
         if (pAttributeValue)
         {
+            // Reference can be null.
             std::string strSheetName = pAttributeValue.as_string("");
             _pNewDatasheet = ResolveDatasheetLink(strSheetName);
         }
@@ -297,10 +310,11 @@ bool Datasheet::ResolveDatasheetLinks(DatasheetParserContext& _kContext, const s
             pugi::xml_attribute pAttributeValue = pNodeChild.attribute("value");
             if (pAttributeValue)
             {
+                // Reference can be null.
                 Datasheet* pDatasheet = ResolveDatasheetLink(pAttributeValue.as_string());
-                if (pDatasheet)
-                    _vecDatasheets.push_back(pDatasheet);   //TODO: Allow null datasheets in datasheet arrays ?
+                _vecDatasheets.push_back(pDatasheet);
             }
+
             pNodeChild = pNodeChild.next_sibling("Child");
         }
 
@@ -333,6 +347,7 @@ bool Datasheet::ReadEnumValue(DatasheetParserContext& _kContext, const std::stri
             }
         }
     }
+
     return false;
 }
 
@@ -359,12 +374,14 @@ bool Datasheet::ReadEnumValues(DatasheetParserContext& _kContext, const std::str
                         }
                     }
                 }
+
                 pNodeChild = pNodeChild.next_sibling("Child");
             }
 
             return true;
         }
     }
+
     return false;
 }
 

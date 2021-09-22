@@ -158,15 +158,31 @@ void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData
 
 void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
 {
-    // If the definition is null, then the instance itself is null.
     DatasheetParser::ClassDefinition* instanceDefinition = nullptr;
-    if (GetEditor()->GetDatasheetParser()->GetClassDefinition(nodeData.attribute("type").value(), instanceDefinition))
-    {
-        VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
-        instanceObject->LoadFromXml(nodeData, instanceDefinition);
 
-        dataValue->value_objectInstanceDefinition = instanceDefinition;
-        dataValue->value_objectInstance = instanceObject;
+    pugi::xml_attribute attributeType = nodeData.attribute("type");
+    if (!attributeType.empty() && std::strcmp(attributeType.value(), "") == 0)
+    {
+        // If an empty type is explicitly declared, the instance is forced as null (should already be null).
+        dataValue->value_objectInstanceDefinition = nullptr;
+        dataValue->value_objectInstance = nullptr;
+    }
+    else
+    {
+        if (attributeType.empty())
+        {
+            // If the definition is not provided, we fallback on the default definition.
+            instanceDefinition = dataMemberDef->objectDefinition;
+        }
+
+        if (instanceDefinition || GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.value(), instanceDefinition))
+        {
+            VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
+            instanceObject->LoadFromXml(nodeData, instanceDefinition);
+
+            dataValue->value_objectInstanceDefinition = instanceDefinition;
+            dataValue->value_objectInstance = instanceObject;
+        }
     }
 }
 
@@ -295,11 +311,15 @@ void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const
 
 void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const
 {
-    // If the definition is null, then the instance itself is null.
     if (dataValue->value_objectInstanceDefinition)
     {
         nodeData.append_attribute("type") = dataValue->value_objectInstanceDefinition->m_name.c_str();
         dataValue->value_objectInstance->SaveToXml(nodeData);
+    }
+    else
+    {
+        // If the definition is null, then the instance itself is null, we use an empty type to explicitely declare that.
+        nodeData.append_attribute("type") = "";
     }
 }
 

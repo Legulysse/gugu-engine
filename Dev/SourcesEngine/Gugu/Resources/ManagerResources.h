@@ -27,6 +27,7 @@ namespace gugu
     class ImageSet;
     class AnimSet;
     class Datasheet;
+    class DatasheetObject;
     struct DatasheetEnum;
     struct EngineConfig;
 }
@@ -48,7 +49,7 @@ class ManagerResources
 {
 public:
 
-    using DelegateDatasheetFactory = std::function<Datasheet* (const std::string&)>;
+    using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (const std::string&)>;
 
 public:
 
@@ -85,9 +86,9 @@ public:
     Datasheet*  GetDatasheet    (const std::string& _strName);
 
     template<typename T>
-    T*          GetDatasheet    (const std::string& _strName)
+    T*          GetDatasheetObject    (const std::string& _strName)
     {
-        return static_cast<T*>(GetDatasheet(_strName));
+        return dynamic_cast<T*>(GetDatasheet(_strName)->GetRootObject());
     }
 
     Resource* GetResource(const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
@@ -121,8 +122,8 @@ public:
     Font*           GetDefaultFont();
     Font*           GetDebugFont();
     
-    void                RegisterDatasheetFactory    (DelegateDatasheetFactory delegateDatasheetFactory);
-    Datasheet*          InstanciateDatasheet        (const std::string& _strType);
+    void                RegisterDatasheetObjectFactory    (DelegateDatasheetObjectFactory delegateDatasheetObjectFactory);
+    DatasheetObject*    InstanciateDatasheetObject        (const std::string& _strType);
 
     void                RegisterDatasheetEnum       (const std::string& _strName, DatasheetEnum* _pEnum);
     DatasheetEnum*      GetDatasheetEnum            (const std::string& _strName);
@@ -146,7 +147,7 @@ private:
     std::map<ResourceMapKey, ResourceInfo*> m_resources;
     std::map<ResourceMapKey, Texture*> m_customTextures;
 
-    std::vector<DelegateDatasheetFactory> m_datasheetFactories;
+    std::vector<DelegateDatasheetObjectFactory> m_datasheetObjectFactories;
     std::map<ResourceMapKey, DatasheetEnum*>  m_datasheetEnums;
 };
 

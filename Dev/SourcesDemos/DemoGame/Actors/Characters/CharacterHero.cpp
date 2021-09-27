@@ -83,12 +83,12 @@ void CharacterHero::UseSkillByIndex(int index, const Vector2f& _kCoords, const g
     // Index 0 is the base attack skill.
     if (index == 0)
     {
-        DS_Skill* skill = GetResources()->GetDatasheet<DS_Skill>("BowAttack.skill");
+        DS_Skill* skill = GetResources()->GetDatasheetObject<DS_Skill>("BowAttack.skill");
         UseSkill(skill, _kCoords, dt);
     }
     else
     {
-        DS_Skill* skill = GetResources()->GetDatasheet<DS_Skill>("Fireball.skill");
+        DS_Skill* skill = GetResources()->GetDatasheetObject<DS_Skill>("Fireball.skill");
         UseSkill(skill, _kCoords, dt);
     }
 }

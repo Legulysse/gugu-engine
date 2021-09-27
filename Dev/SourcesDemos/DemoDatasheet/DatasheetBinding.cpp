@@ -64,7 +64,7 @@ DS_SpriteInfo::~DS_SpriteInfo()
 
 void DS_SpriteInfo::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadString(context, "imageset", m_imageSet);
     ReadString(context, "animset", m_animSet);
@@ -84,7 +84,7 @@ DS_Entity::~DS_Entity()
 
 void DS_Entity::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadString(context, "name", m_name);
     ReadInt(context, "life", m_life);
@@ -142,7 +142,7 @@ DS_Faction::~DS_Faction()
 
 void DS_Faction::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadString(context, "name", m_name);
     ReadReference(context, "leader", m_leader);
@@ -160,7 +160,7 @@ DS_Troop::~DS_Troop()
 
 void DS_Troop::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadString(context, "name", m_name);
 }
@@ -176,7 +176,7 @@ DS_Restriction::~DS_Restriction()
 
 void DS_Restriction::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
 }
 
@@ -221,6 +221,7 @@ DS_Skill::DS_Skill()
 {
     m_name = "";
     m_emptyRestriction = nullptr;
+    m_nullRestriction = nullptr;
     m_singleRestrictionBase = nullptr;
     m_singleRestrictionFaction = nullptr;
 }
@@ -228,6 +229,7 @@ DS_Skill::DS_Skill()
 DS_Skill::~DS_Skill()
 {
     SafeDelete(m_emptyRestriction);
+    SafeDelete(m_nullRestriction);
     SafeDelete(m_singleRestrictionBase);
     SafeDelete(m_singleRestrictionFaction);
     ClearStdVector(m_restrictions);
@@ -235,10 +237,11 @@ DS_Skill::~DS_Skill()
 
 void DS_Skill::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadString(context, "name", m_name);
     ReadInstance(context, "empty restriction", "restriction", m_emptyRestriction);
+    ReadInstance(context, "null restriction", "restriction", m_nullRestriction);
     ReadInstance(context, "single restriction base", "restriction", m_singleRestrictionBase);
     ReadInstance(context, "single restriction faction", "restriction", m_singleRestrictionFaction);
     ReadArrayInstance(context, "restrictions", "restriction", m_restrictions);
@@ -249,11 +252,11 @@ void DatasheetBinding_Register()
 {
     EWeaponType::Register();
 
-    gugu::GetResources()->RegisterDatasheetFactory(DatasheetBinding_InstanciateDatasheet);
+    gugu::GetResources()->RegisterDatasheetObjectFactory(DatasheetBinding_InstanciateDatasheetObject);
 }
 
 ////////////////////////////////////////////////////////////////
-gugu::Datasheet* DatasheetBinding_InstanciateDatasheet(const std::string& classType)
+gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType)
 {
     if (classType == "spriteInfo")
     {

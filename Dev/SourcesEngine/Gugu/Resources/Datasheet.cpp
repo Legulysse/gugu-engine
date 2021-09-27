@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/External/PugiXmlWrap.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Core/Application.h"
@@ -20,43 +21,31 @@
 
 namespace gugu {
 
-Datasheet::Datasheet()
+DatasheetObject::DatasheetObject()
 {
 }
 
-Datasheet::~Datasheet()
+DatasheetObject::~DatasheetObject()
 {
 }
 
-EResourceType::Type Datasheet::GetResourceType() const
-{
-    return EResourceType::Datasheet;
-}
-
-bool Datasheet::LoadFromFile()
-{
-    std::vector<Datasheet*> ancestors;
-    ancestors.push_back(this);
-    return LoadFromXml(GetFileInfoRef().GetPathName(), ancestors);
-}
-
-bool Datasheet::LoadFromXml(const std::string& _strPathName, std::vector<Datasheet*>& ancestors)
+bool DatasheetObject::LoadFromXml(const std::string& _strPathName, std::vector<Datasheet*>& ancestors)
 {
     pugi::xml_document oDoc;
     pugi::xml_parse_result result = oDoc.load_file(_strPathName.c_str());
     if (!result)
         return false;
-    
+
     pugi::xml_node oNodeRoot = oDoc.child("Datasheet");
     if (oNodeRoot.empty())
         return false;
-    
+
     pugi::xml_attribute pAttributeParent = oNodeRoot.attribute("parent");
     if (pAttributeParent)
     {
         //TODO: check same type
         //TODO: error message if invalid base
-        Datasheet* parentSheet = ResolveDatasheetLink(pAttributeParent.as_string());
+        Datasheet* parentSheet = GetResources()->GetDatasheet(pAttributeParent.as_string());
 
         if (parentSheet)
         {
@@ -69,7 +58,7 @@ bool Datasheet::LoadFromXml(const std::string& _strPathName, std::vector<Datashe
                 }
 
                 ancestorsLog += parentSheet->GetFileInfoRef().GetName();
-                GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet {0} ancestors create an infinite loop : {1}", GetFileInfoRef().GetName(), ancestorsLog));
+                GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet ancestors create an infinite loop : {0}", ancestorsLog));
             }
             else
             {
@@ -86,17 +75,12 @@ bool Datasheet::LoadFromXml(const std::string& _strPathName, std::vector<Datashe
     return true;
 }
 
-void Datasheet::ParseMembers(DatasheetParserContext& _kContext)
-{
-    //Virtual
-}
-
-pugi::xml_node Datasheet::FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName)
+pugi::xml_node DatasheetObject::FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName)
 {
     return _kContext.currentNode->find_child_by_attribute("Data", "name", _strName.c_str());
 }
 
-void Datasheet::ReadString(DatasheetParserContext& _kContext, const std::string& _strName, std::string& _strMember)
+void DatasheetObject::ReadString(DatasheetParserContext& _kContext, const std::string& _strName, std::string& _strMember)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -107,7 +91,7 @@ void Datasheet::ReadString(DatasheetParserContext& _kContext, const std::string&
     }
 }
 
-void Datasheet::ReadInt(DatasheetParserContext& _kContext, const std::string& _strName, int& _iMember)
+void DatasheetObject::ReadInt(DatasheetParserContext& _kContext, const std::string& _strName, int& _iMember)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -118,7 +102,7 @@ void Datasheet::ReadInt(DatasheetParserContext& _kContext, const std::string& _s
     }
 }
 
-void Datasheet::ReadFloat(DatasheetParserContext& _kContext, const std::string& _strName, float& _fMember)
+void DatasheetObject::ReadFloat(DatasheetParserContext& _kContext, const std::string& _strName, float& _fMember)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -129,7 +113,7 @@ void Datasheet::ReadFloat(DatasheetParserContext& _kContext, const std::string& 
     }
 }
 
-void Datasheet::ReadBool(DatasheetParserContext& _kContext, const std::string& _strName, bool& _bMember)
+void DatasheetObject::ReadBool(DatasheetParserContext& _kContext, const std::string& _strName, bool& _bMember)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -140,7 +124,7 @@ void Datasheet::ReadBool(DatasheetParserContext& _kContext, const std::string& _
     }
 }
 
-void Datasheet::ReadArrayString(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<std::string>& _vecMember)
+void DatasheetObject::ReadArrayString(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<std::string>& _vecMember)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -158,7 +142,7 @@ void Datasheet::ReadArrayString(DatasheetParserContext& _kContext, const std::st
     }
 }
 
-void Datasheet::ReadArrayInt(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember)
+void DatasheetObject::ReadArrayInt(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -176,7 +160,7 @@ void Datasheet::ReadArrayInt(DatasheetParserContext& _kContext, const std::strin
     }
 }
 
-void Datasheet::ReadArrayFloat(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember)
+void DatasheetObject::ReadArrayFloat(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -194,7 +178,7 @@ void Datasheet::ReadArrayFloat(DatasheetParserContext& _kContext, const std::str
     }
 }
 
-void Datasheet::ReadArrayBool(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<bool>& _vecMember)
+void DatasheetObject::ReadArrayBool(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<bool>& _vecMember)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -212,13 +196,13 @@ void Datasheet::ReadArrayBool(DatasheetParserContext& _kContext, const std::stri
     }
 }
 
-Datasheet* Datasheet::InstanciateDatasheet(DatasheetParserContext& _kContext, const std::string& _strType)
+DatasheetObject* DatasheetObject::InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType)
 {
-    Datasheet* pDatasheet = GetResources()->InstanciateDatasheet(_strType);
-    if (pDatasheet)
+    DatasheetObject* instance = GetResources()->InstanciateDatasheetObject(_strType);
+    if (instance)
     {
-        pDatasheet->ParseMembers(_kContext);
-        return pDatasheet;
+        instance->ParseMembers(_kContext);
+        return instance;
     }
     else
     {
@@ -228,7 +212,7 @@ Datasheet* Datasheet::InstanciateDatasheet(DatasheetParserContext& _kContext, co
     return nullptr;
 }
 
-bool Datasheet::InstanciateDatasheet(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, Datasheet*& _pInstance)
+bool DatasheetObject::InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DatasheetObject*& _pInstance)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -242,7 +226,7 @@ bool Datasheet::InstanciateDatasheet(DatasheetParserContext& _kContext, const st
             pugi::xml_node* pNodeParent = _kContext.currentNode;
             _kContext.currentNode = &pNode;
 
-            _pInstance = InstanciateDatasheet(_kContext, strType);
+            _pInstance = InstanciateDatasheetObject(_kContext, strType);
 
             _kContext.currentNode = pNodeParent;
         }
@@ -253,7 +237,7 @@ bool Datasheet::InstanciateDatasheet(DatasheetParserContext& _kContext, const st
     return false;
 }
 
-bool Datasheet::InstanciateDatasheets(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<Datasheet*>& _vecInstances)
+bool DatasheetObject::InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DatasheetObject*>& _vecInstances)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -270,7 +254,7 @@ bool Datasheet::InstanciateDatasheets(DatasheetParserContext& _kContext, const s
             if (strType != "")
             {
                 _kContext.currentNode = &pNodeChild;
-                Datasheet* pInstance = InstanciateDatasheet(_kContext, strType);
+                DatasheetObject* pInstance = InstanciateDatasheetObject(_kContext, strType);
                 if (pInstance)
                 {
                     _vecInstances.push_back(pInstance);
@@ -292,12 +276,13 @@ bool Datasheet::InstanciateDatasheets(DatasheetParserContext& _kContext, const s
     return false;
 }
 
-Datasheet* Datasheet::ResolveDatasheetLink(const std::string& _strName)
+DatasheetObject* DatasheetObject::ResolveDatasheetLink(const std::string& _strName)
 {
-    return GetResources()->GetDatasheet(_strName);
+    Datasheet* datasheet = GetResources()->GetDatasheet(_strName);
+    return datasheet ? datasheet->GetRootObject() : nullptr;
 }
 
-bool Datasheet::ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, Datasheet*& _pNewDatasheet)
+bool DatasheetObject::ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, DatasheetObject*& _pNewDatasheet)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -320,7 +305,7 @@ bool Datasheet::ResolveDatasheetLink(DatasheetParserContext& _kContext, const st
     return false;
 }
 
-bool Datasheet::ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<Datasheet*>& _vecDatasheets)
+bool DatasheetObject::ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<DatasheetObject*>& _vecReferences)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -335,12 +320,12 @@ bool Datasheet::ResolveDatasheetLinks(DatasheetParserContext& _kContext, const s
                 std::string datasheetID = pAttributeValue.as_string();
                 if (datasheetID != "")
                 {
-                    Datasheet* pDatasheet = ResolveDatasheetLink(datasheetID);
-                    _vecDatasheets.push_back(pDatasheet);
+                    DatasheetObject* reference = ResolveDatasheetLink(datasheetID);
+                    _vecReferences.push_back(reference);
                 }
                 else
                 {
-                    _vecDatasheets.push_back(nullptr);
+                    _vecReferences.push_back(nullptr);
                 }
             }
 
@@ -353,7 +338,7 @@ bool Datasheet::ResolveDatasheetLinks(DatasheetParserContext& _kContext, const s
     return false;
 }
 
-bool Datasheet::ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue)
+bool DatasheetObject::ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue)
 {
     DatasheetEnum* pEnum = GetResources()->GetDatasheetEnum(_strType);
     if (pEnum)
@@ -380,7 +365,7 @@ bool Datasheet::ReadEnumValue(DatasheetParserContext& _kContext, const std::stri
     return false;
 }
 
-bool Datasheet::ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues)
+bool DatasheetObject::ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues)
 {
     DatasheetEnum* pEnum = GetResources()->GetDatasheetEnum(_strType);
     if (pEnum)
@@ -412,6 +397,39 @@ bool Datasheet::ReadEnumValues(DatasheetParserContext& _kContext, const std::str
     }
 
     return false;
+}
+
+
+Datasheet::Datasheet()
+{
+}
+
+Datasheet::~Datasheet()
+{
+    SafeDelete(m_rootObject);
+}
+
+EResourceType::Type Datasheet::GetResourceType() const
+{
+    return EResourceType::Datasheet;
+}
+
+bool Datasheet::LoadFromFile()
+{
+    m_rootObject = GetResources()->InstanciateDatasheetObject(m_resourceInfos->fileInfo.GetExtension());
+    if (!m_rootObject)
+    {
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasheet : {0}", GetID()));
+    }
+
+    std::vector<Datasheet*> ancestors;
+    ancestors.push_back(this);
+    return m_rootObject->LoadFromXml(GetFileInfoRef().GetPathName(), ancestors);
+}
+
+DatasheetObject* Datasheet::GetRootObject() const
+{
+    return m_rootObject;
 }
 
 }   // namespace gugu

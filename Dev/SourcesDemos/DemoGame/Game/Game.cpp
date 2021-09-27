@@ -186,7 +186,7 @@ void Game::CreateScenario()
     m_charactersNode = m_level->GetRootNode()->AddChild<Element>();
 
     //Init Player
-    DS_Hero* sheetHero = GetResources()->GetDatasheet<DS_Hero>("Hero.hero");
+    DS_Hero* sheetHero = GetResources()->GetDatasheetObject<DS_Hero>("Hero.hero");
 
     m_character = new CharacterHero;
     m_level->AddActor(m_character);
@@ -217,7 +217,7 @@ void Game::SpawnFloor()
     size_t enemiesCount = m_floor * 50;
     for (size_t i = 0; i < enemiesCount; ++i)
     {
-        DS_Enemy* sheetEnemy = GetResources()->GetDatasheet<DS_Enemy>("DefaultEnemy.enemy");
+        DS_Enemy* sheetEnemy = GetResources()->GetDatasheetObject<DS_Enemy>("DefaultEnemy.enemy");
 
         ControllerAI* pControllerAI = new ControllerAI;
         m_level->AddActor(pControllerAI);

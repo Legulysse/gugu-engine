@@ -93,7 +93,7 @@ DS_SpriteInfo::~DS_SpriteInfo()
 
 void DS_SpriteInfo::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadString(context, "imageset", imageSet);
     ReadString(context, "animset", animSet);
@@ -115,7 +115,7 @@ DS_Character::~DS_Character()
 
 void DS_Character::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadString(context, "name", name);
     ReadFloat(context, "health", health);
@@ -180,7 +180,7 @@ DS_Skill::~DS_Skill()
 
 void DS_Skill::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadString(context, "name", name);
     ReadFloat(context, "staminaCost", staminaCost);
@@ -202,7 +202,7 @@ DS_Effect::~DS_Effect()
 
 void DS_Effect::ParseMembers(gugu::DatasheetParserContext& context)
 {
-    gugu::Datasheet::ParseMembers(context);
+    //gugu::DatasheetObject::ParseMembers(context);
 
     ReadEnum(context, "center", "effectCenter", center);
 }
@@ -299,11 +299,11 @@ void DatasheetBinding_Register()
     EEffectCenter::Register();
     EProjectileAim::Register();
 
-    gugu::GetResources()->RegisterDatasheetFactory(DatasheetBinding_InstanciateDatasheet);
+    gugu::GetResources()->RegisterDatasheetObjectFactory(DatasheetBinding_InstanciateDatasheetObject);
 }
 
 ////////////////////////////////////////////////////////////////
-gugu::Datasheet* DatasheetBinding_InstanciateDatasheet(const std::string& classType)
+gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType)
 {
     if (classType == "spriteInfo")
     {

@@ -83,7 +83,7 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
 
 void ManagerResources::Release()
 {
-    m_datasheetFactories.clear();
+    m_datasheetObjectFactories.clear();
 
     ClearStdMap(m_datasheetEnums);
     ClearStdMap(m_customTextures);
@@ -331,11 +331,7 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     }
     else if (_eExplicitType == EResourceType::Datasheet)
     {
-        pResource = InstanciateDatasheet(oFileInfo.GetExtension());
-        if (!pResource)
-        {
-            GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasheet : {0}", oFileInfo.GetName()));
-        }
+        pResource = new Datasheet;
     }
     else
     {
@@ -651,27 +647,30 @@ void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>
     std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
 }
 
-void ManagerResources::RegisterDatasheetFactory(DelegateDatasheetFactory delegateDatasheetFactory)
+void ManagerResources::RegisterDatasheetObjectFactory(DelegateDatasheetObjectFactory delegateDatasheetObjectFactory)
 {
-    m_datasheetFactories.push_back(delegateDatasheetFactory);
+    m_datasheetObjectFactories.push_back(delegateDatasheetObjectFactory);
 }
 
-Datasheet* ManagerResources::InstanciateDatasheet(const std::string& _strType)
+DatasheetObject* ManagerResources::InstanciateDatasheetObject(const std::string& _strType)
 {
-    if (m_datasheetFactories.empty())
+    if (m_datasheetObjectFactories.empty())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "No Datasheet Factory registered : Parsing Datasheets is ignored");
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "No Datasheet Object Factory registered : Parsing Datasheets is ignored");
     }
     else
     {
-        Datasheet* pDatasheet = nullptr;
-        for (size_t i = 0; i < m_datasheetFactories.size(); ++i)
+        DatasheetObject* datasheetObject = nullptr;
+        for (size_t i = 0; i < m_datasheetObjectFactories.size(); ++i)
         {
-            pDatasheet = m_datasheetFactories[i](_strType);
-            if (pDatasheet)
-                return pDatasheet;
+            datasheetObject = m_datasheetObjectFactories[i](_strType);
+            if (datasheetObject)
+            {
+                return datasheetObject;
+            }
         }
     }
+
     return nullptr;
 }
 

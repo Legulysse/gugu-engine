@@ -41,7 +41,7 @@ namespace EWeaponType {
 }
 
 ////////////////////////////////////////////////////////////////
-class DS_SpriteInfo : public gugu::Datasheet
+class DS_SpriteInfo : public gugu::DatasheetObject
 {
 public:
 
@@ -59,7 +59,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Entity : public gugu::Datasheet
+class DS_Entity : public gugu::DatasheetObject
 {
 public:
 
@@ -105,7 +105,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Faction : public gugu::Datasheet
+class DS_Faction : public gugu::DatasheetObject
 {
 public:
 
@@ -123,7 +123,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Troop : public gugu::Datasheet
+class DS_Troop : public gugu::DatasheetObject
 {
 public:
 
@@ -140,7 +140,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Restriction : public gugu::Datasheet
+class DS_Restriction : public gugu::DatasheetObject
 {
 public:
 
@@ -189,7 +189,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Skill : public gugu::Datasheet
+class DS_Skill : public gugu::DatasheetObject
 {
 public:
 
@@ -200,6 +200,7 @@ public:
 
     std::string m_name;
     DS_Restriction* m_emptyRestriction;
+    DS_Restriction* m_nullRestriction;
     DS_Restriction* m_singleRestrictionBase;
     DS_Restriction* m_singleRestrictionFaction;
     std::vector< DS_Restriction* > m_restrictions;
@@ -213,6 +214,6 @@ protected:
 void DatasheetBinding_Register();
 
 ////////////////////////////////////////////////////////////////
-gugu::Datasheet* DatasheetBinding_InstanciateDatasheet(const std::string& classType);
+gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType);
 
 } // namespace demoproject

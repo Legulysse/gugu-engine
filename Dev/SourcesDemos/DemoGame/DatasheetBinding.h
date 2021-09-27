@@ -54,7 +54,7 @@ namespace EProjectileAim {
 }
 
 ////////////////////////////////////////////////////////////////
-class DS_SpriteInfo : public gugu::Datasheet
+class DS_SpriteInfo : public gugu::DatasheetObject
 {
 public:
 
@@ -72,7 +72,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Character : public gugu::Datasheet
+class DS_Character : public gugu::DatasheetObject
 {
 public:
 
@@ -128,7 +128,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Skill : public gugu::Datasheet
+class DS_Skill : public gugu::DatasheetObject
 {
 public:
 
@@ -150,7 +150,7 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
-class DS_Effect : public gugu::Datasheet
+class DS_Effect : public gugu::DatasheetObject
 {
 public:
 
@@ -247,6 +247,6 @@ protected:
 void DatasheetBinding_Register();
 
 ////////////////////////////////////////////////////////////////
-gugu::Datasheet* DatasheetBinding_InstanciateDatasheet(const std::string& classType);
+gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType);
 
 } // namespace demoproject

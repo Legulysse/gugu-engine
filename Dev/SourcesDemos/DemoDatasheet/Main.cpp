@@ -47,12 +47,11 @@ int main(int argc, char* argv[])
 
     DatasheetBinding_Register();
 
-    //TODO: Rename Class to Sheet ?
-    DS_General* pGeneralA = GetResources()->GetDatasheet<DS_General>("Robert.general");
-    DS_General* pGeneralB = GetResources()->GetDatasheet<DS_General>("Joffrey.general");
-    DS_Faction* pFaction = GetResources()->GetDatasheet<DS_Faction>("Yumeda.faction");
-    DS_Troop* pTroop = GetResources()->GetDatasheet<DS_Troop>("Dragon.troop");
-    DS_Skill* pSkill = GetResources()->GetDatasheet<DS_Skill>("Fireball.skill");
+    DS_General* pGeneralA = GetResources()->GetDatasheetObject<DS_General>("Robert.general");
+    DS_General* pGeneralB = GetResources()->GetDatasheetObject<DS_General>("Joffrey.general");
+    DS_Faction* pFaction = GetResources()->GetDatasheetObject<DS_Faction>("Yumeda.faction");
+    DS_Troop* pTroop = GetResources()->GetDatasheetObject<DS_Troop>("Dragon.troop");
+    DS_Skill* pSkill = GetResources()->GetDatasheetObject<DS_Skill>("Fireball.skill");
 
     // Enums methods
     size_t iSizeWeaponTypesA = EWeaponType::GetSize();

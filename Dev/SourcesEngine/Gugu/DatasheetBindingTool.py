@@ -148,7 +148,7 @@ class DefinitionClass():
     def SaveDeclarationCpp(self, _file, _definitionBinding):
         _file.write('////////////////////////////////////////////////////////////////\n')
         
-        parentClassName = 'gugu::Datasheet'
+        parentClassName = 'gugu::DatasheetObject'
         if self.baseClassName != '' and self.baseClassName in _definitionBinding.dictClassNames:
             parentClassName = _definitionBinding.dictClassNames[self.baseClassName]
             
@@ -209,9 +209,12 @@ class DefinitionClass():
     def SaveImplementationCpp(self, _file, _definitionBinding):
         _file.write('////////////////////////////////////////////////////////////////\n')
         
-        parentClassName = 'gugu::Datasheet'
+        parentClassName = 'gugu::DatasheetObject'
+        hasConcreteParentClass = False;
+        
         if self.baseClassName != '' and self.baseClassName in _definitionBinding.dictClassNames:
             parentClassName = _definitionBinding.dictClassNames[self.baseClassName]
+            hasConcreteParentClass = True;
         
         # Constructor
         _file.write(''+ self.code +'::'+ self.code +'()\n')
@@ -277,8 +280,13 @@ class DefinitionClass():
         _file.write('\n')
         _file.write('void '+ self.code +'::ParseMembers(gugu::DatasheetParserContext& context)\n')
         _file.write('{\n')
-        _file.write('    '+ parentClassName +'::ParseMembers(context);\n')
-        _file.write('\n')
+        
+        if hasConcreteParentClass:
+            _file.write('    '+ parentClassName +'::ParseMembers(context);\n')
+            _file.write('\n')
+        else:
+            _file.write('    //'+ parentClassName +'::ParseMembers(context);\n')
+            _file.write('\n')
         
         for member in self.members:
             if member.type != '' and member.name != '' and member.code != '':
@@ -375,7 +383,7 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp):
     fileHeader.write('\n')
     
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
-    fileHeader.write('gugu::Datasheet* DatasheetBinding_InstanciateDatasheet(const std::string& classType);\n')
+    fileHeader.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType);\n')
     
     # Namespace
     if definitionBinding.namespace != '':
@@ -428,12 +436,12 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp):
             newEnum.SaveRegisterMethodCpp(fileSource)
         fileSource.write('\n')
         
-    fileSource.write('    gugu::GetResources()->RegisterDatasheetFactory(DatasheetBinding_InstanciateDatasheet);\n')
+    fileSource.write('    gugu::GetResources()->RegisterDatasheetObjectFactory(DatasheetBinding_InstanciateDatasheetObject);\n')
     fileSource.write('}\n')
     
     fileSource.write('\n')
     fileSource.write('////////////////////////////////////////////////////////////////\n')
-    fileSource.write('gugu::Datasheet* DatasheetBinding_InstanciateDatasheet(const std::string& classType)\n')
+    fileSource.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType)\n')
     fileSource.write('{\n')
     for newClass in definitionBinding.classes:
         newClass.SaveInstanciationCpp(fileSource)

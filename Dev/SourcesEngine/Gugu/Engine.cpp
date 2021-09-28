@@ -220,7 +220,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     DeltaTime dtSpeedModulatedStep(2 * m_stepSpeed);    // Default step speed multiplier is 10, minimum is 1.
 
     sf::Clock clockStatLoop;
-    sf::Clock clockStatSteps;
+    sf::Clock clockStatSection;
 
     //-- Network Reception --//
     if (m_managerNetwork->IsListening())
@@ -232,7 +232,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     //-- Events --//
     {
         GUGU_SCOPE_TRACE_MAIN("Windows Events");
-        clockStatSteps.restart();
+        clockStatSection.restart();
 
         //Window Events (will abort the Step if main window is closed !)
         for (size_t i = 0; i < m_windows.size(); ++i)
@@ -259,7 +259,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     //-- Step --//
     {
         GUGU_SCOPE_TRACE_MAIN("Step");
-        clockStatSteps.restart();
+        clockStatSection.restart();
 
         //Step
         m_dtSinceLastStep += dt;
@@ -286,7 +286,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
             m_managerNetwork->SetTurnPlayed();
 
             // Step Stats
-            m_stats.stepTimes.push_front(clockStatSteps.getElapsedTime().asMilliseconds());
+            m_stats.stepTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
             if (m_stats.stepTimes.size() > m_stats.maxStatCount)
             {
                 m_stats.stepTimes.pop_back();
@@ -306,7 +306,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     //-- Update --//
     {
         GUGU_SCOPE_TRACE_MAIN("Update");
-        clockStatSteps.restart();
+        clockStatSection.restart();
 
         if (m_gameWindow)
         {
@@ -325,6 +325,13 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
             m_windows[i]->Update(dt);
 
         m_managerAudio->Update(dt);
+
+        // Update Stats
+        m_stats.updateTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
+        if (m_stats.updateTimes.size() > m_stats.maxStatCount)
+        {
+            m_stats.updateTimes.pop_back();
+        }
     }
 
     //-- Network Thread --//
@@ -333,10 +340,22 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
     //-- Render --//
     {
         GUGU_SCOPE_TRACE_MAIN("Render");
+        clockStatSection.restart();
 
-        //Render (Note for Editor : For now, Render here instead of Qt draw event)
+        // Render
         for (size_t i = 0; i < m_windows.size(); ++i)
-            m_windows[i]->Refresh(dt, m_stats);
+            m_windows[i]->Render(dt, m_stats);
+
+        // Render Stats
+        m_stats.renderTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
+        if (m_stats.renderTimes.size() > m_stats.maxStatCount)
+        {
+            m_stats.renderTimes.pop_back();
+        }
+
+        // Display
+        for (size_t i = 0; i < m_windows.size(); ++i)
+            m_windows[i]->Display();
     }
 
     //m_managerNetwork->StopReceptionThread();

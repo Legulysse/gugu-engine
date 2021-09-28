@@ -70,8 +70,9 @@ public:
     void        BindLevel       (Level* _pLevel, Camera* _pCamera, Renderer* _pRenderer);
     void        OnLevelReleased (Level* _pLevel);
 
-    void        Refresh         (const DeltaTime& dt, const EngineStats& engineStats);
-    
+    void        Render          (const DeltaTime& dt, const EngineStats& engineStats);
+    void        Display         ();
+
     Vector2u    GetSize     () const;
 
     void            SetSystemMouseVisible   (bool _bIsVisible);
@@ -104,10 +105,6 @@ public:
     void ToggleShowBounds();
 
     virtual void ComputeSize    (int _iWidth, int _iHeight);
-
-protected:
-
-    virtual void Render(const DeltaTime& dt, const EngineStats& engineStats);
 
 private:
 
@@ -165,6 +162,8 @@ protected:
     sf::Text m_statTextFPS;
     sf::Text m_statTextDrawCalls;
     sf::Text m_statTextStepTime;
+    sf::Text m_statTextUpdateTime;
+    sf::Text m_statTextRenderTime;
     sf::Text m_statTextIsTracing;
 
     // Debug

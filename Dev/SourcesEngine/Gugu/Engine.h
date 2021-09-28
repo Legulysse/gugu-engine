@@ -43,6 +43,8 @@ struct EngineStats
     uint32 maxStatCount = 150;
     std::list<int> loopTimes;
     std::list<int> stepTimes;
+    std::list<int> updateTimes;
+    std::list<int> renderTimes;
     bool isTracing = false;
 };
 

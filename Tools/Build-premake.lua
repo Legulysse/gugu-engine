@@ -26,8 +26,8 @@ BuildCfg = {
     
     -- Editor
     DirEditorVersion    = EnsureSlash(pathEditorVersion),
-    DirSourcesEditorApp = EnsureSlash(pathDev.."SourcesEditor"),
-    DirSourcesEditorLib = EnsureSlash(pathDev.."SourcesEditorLib"),
+    DirSourcesEditorApp = EnsureSlash(pathDev.."SourcesEditorApp"),
+    DirSourcesEditor    = EnsureSlash(pathDev.."SourcesEditor"),
 }
 
 
@@ -64,7 +64,7 @@ solution "GuguEngine"
     ProjectDefault(BuildCfg, "DemoGrid"         , pathDev.."SourcesDemos/DemoGrid"   	    , pathVersion.."DemoTests", "8D7C0EBA-3EC7-4C66-A56C-E2AC18633890")
     
     group "Editor"
-    ProjectGuguEditor(BuildCfg)
+    ProjectAppGuguEditor(BuildCfg)
     ProjectLibGuguEditor(BuildCfg)
     
     group "Engine"

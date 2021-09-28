@@ -6,12 +6,12 @@ function EnsureSlash(path)
 	return path
 end
 
--- Project GuguEditor
-function ProjectGuguEditor(BuildCfg)
+-- Project GuguEditor App
+function ProjectAppGuguEditor(BuildCfg)
     
 	SubDirBinaries = EnsureSlash(BuildCfg.SubDirBinaries)
 	
-    project ("GuguEditor")
+    project ("GuguEditorApp")
         language "C++"
         defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
         systemversion "latest"
@@ -21,7 +21,7 @@ function ProjectGuguEditor(BuildCfg)
         uuid        ("E4D3697E-E0B5-4343-B000-E895BACF446A")
         
         -- Projects dependencies
-        dependson { "GuguEditorLib" }
+        dependson { "GuguEditor" }
         
         -- Files
         files {
@@ -34,7 +34,7 @@ function ProjectGuguEditor(BuildCfg)
         -- Includes directories
         includedirs {
             BuildCfg.DirSourcesEditorApp,
-            BuildCfg.DirSourcesEditorLib,
+            BuildCfg.DirSourcesEditor,
             BuildCfg.DirSourcesEngine,
             BuildCfg.DirSourcesSfml.."include/",
             BuildCfg.DirSourcesPugiXml,
@@ -102,10 +102,10 @@ function ProjectGuguEditor(BuildCfg)
             
 end
 
--- Project GuguEditor Lib
+-- Project GuguEditor
 function ProjectLibGuguEditor(BuildCfg)
 
-    project "GuguEditorLib"
+    project "GuguEditor"
         kind "StaticLib"
         language "C++"
         defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
@@ -115,13 +115,13 @@ function ProjectLibGuguEditor(BuildCfg)
         uuid "D56FC1A7-034F-4E7F-9DBB-B615C3C5C070"
         
         files {
-            BuildCfg.DirSourcesEditorLib.."**.h",
-            BuildCfg.DirSourcesEditorLib.."**.hpp",
-            BuildCfg.DirSourcesEditorLib.."**.cpp",
-            BuildCfg.DirSourcesEditorLib.."**.tpp",
+            BuildCfg.DirSourcesEditor.."**.h",
+            BuildCfg.DirSourcesEditor.."**.hpp",
+            BuildCfg.DirSourcesEditor.."**.cpp",
+            BuildCfg.DirSourcesEditor.."**.tpp",
         }
         includedirs ({
-            BuildCfg.DirSourcesEditorLib,
+            BuildCfg.DirSourcesEditor,
             BuildCfg.DirSourcesEngine,
             BuildCfg.DirSourcesSfml.."include/",
             BuildCfg.DirSourcesPugiXml,

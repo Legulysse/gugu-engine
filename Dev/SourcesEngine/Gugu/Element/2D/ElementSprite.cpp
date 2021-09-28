@@ -122,7 +122,7 @@ bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
     pugi::xml_node oNodeTexture = _oNodeElement.child("Texture");
     if (!oNodeTexture.empty())
     {
-        std::string strTexturePath = oNodeTexture.attribute("Source").as_string("");
+        std::string strTexturePath = oNodeTexture.attribute("source").as_string("");
         SetTexture(strTexturePath);
     }
 

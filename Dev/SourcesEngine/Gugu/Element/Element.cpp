@@ -636,10 +636,10 @@ bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
     if (!oNodeUDimPosition.empty())
     {
         UDim2 oDim;
-        oDim.x.relative = oNodeUDimPosition.attribute("XRel").as_float(0.f);
-        oDim.y.relative = oNodeUDimPosition.attribute("YRel").as_float(0.f);
-        oDim.x.absolute = oNodeUDimPosition.attribute("XAbs").as_float(0.f);
-        oDim.y.absolute = oNodeUDimPosition.attribute("YAbs").as_float(0.f);
+        oDim.x.relative = oNodeUDimPosition.attribute("xRel").as_float(0.f);
+        oDim.y.relative = oNodeUDimPosition.attribute("yRel").as_float(0.f);
+        oDim.x.absolute = oNodeUDimPosition.attribute("xAbs").as_float(0.f);
+        oDim.y.absolute = oNodeUDimPosition.attribute("yAbs").as_float(0.f);
         SetUnifiedPosition(oDim);
     }
 
@@ -647,10 +647,10 @@ bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
     if (!oNodeUDimSize.empty())
     {
         UDim2 oDim;
-        oDim.x.relative = oNodeUDimSize.attribute("XRel").as_float(0.f);
-        oDim.y.relative = oNodeUDimSize.attribute("YRel").as_float(0.f);
-        oDim.x.absolute = oNodeUDimSize.attribute("XAbs").as_float(0.f);
-        oDim.y.absolute = oNodeUDimSize.attribute("YAbs").as_float(0.f);
+        oDim.x.relative = oNodeUDimSize.attribute("xRel").as_float(0.f);
+        oDim.y.relative = oNodeUDimSize.attribute("yRel").as_float(0.f);
+        oDim.x.absolute = oNodeUDimSize.attribute("xAbs").as_float(0.f);
+        oDim.y.absolute = oNodeUDimSize.attribute("yAbs").as_float(0.f);
         SetUnifiedSize(oDim);
     }
 

@@ -346,10 +346,10 @@ bool ElementSpriteBase::LoadFromXml(const pugi::xml_node& _oNodeElement)
     pugi::xml_node nodeTextureRect = _oNodeElement.child("TextureRect");
     if (nodeTextureRect)
     {
-        pugi::xml_attribute attrX = nodeTextureRect.attribute("X");
-        pugi::xml_attribute attrY = nodeTextureRect.attribute("Y");
-        pugi::xml_attribute attrW = nodeTextureRect.attribute("W");
-        pugi::xml_attribute attrH = nodeTextureRect.attribute("H");
+        pugi::xml_attribute attrX = nodeTextureRect.attribute("x");
+        pugi::xml_attribute attrY = nodeTextureRect.attribute("y");
+        pugi::xml_attribute attrW = nodeTextureRect.attribute("w");
+        pugi::xml_attribute attrH = nodeTextureRect.attribute("h");
 
         if (attrX && attrY && attrW && attrH)
         {
@@ -365,7 +365,7 @@ bool ElementSpriteBase::LoadFromXml(const pugi::xml_node& _oNodeElement)
     pugi::xml_node oNodeRepeatTexture = _oNodeElement.child("RepeatTexture");
     if (!oNodeRepeatTexture.empty())
     {
-        SetRepeatTexture(oNodeRepeatTexture.attribute("Value").as_bool(false));
+        SetRepeatTexture(oNodeRepeatTexture.attribute("value").as_bool(false));
     }
 
     return true;

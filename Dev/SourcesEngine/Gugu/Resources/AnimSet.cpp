@@ -248,13 +248,13 @@ bool AnimSet::LoadFromFile()
     
     m_imageSet = nullptr;
 
-    pugi::xml_attribute oAttributeMainImageSet = oNodeAnimSet.attribute("ImageSet");
+    pugi::xml_attribute oAttributeMainImageSet = oNodeAnimSet.attribute("imageSet");
     if (oAttributeMainImageSet)
         m_imageSet = GetResources()->GetImageSet(oAttributeMainImageSet.as_string());
 
     for (pugi::xml_node oNodeAnimation = oNodeAnimSet.child("Animation"); oNodeAnimation; oNodeAnimation = oNodeAnimation.next_sibling("Animation"))
     {
-        pugi::xml_attribute oAttributeAnimName = oNodeAnimation.attribute("Name");
+        pugi::xml_attribute oAttributeAnimName = oNodeAnimation.attribute("name");
         if (oAttributeAnimName)
         {
             std::string strNameAnim = oAttributeAnimName.as_string();
@@ -267,17 +267,17 @@ bool AnimSet::LoadFromFile()
             {
                 AnimationFrame* pNewFrame = pNewAnimation->AddFrame();
 
-                pugi::xml_attribute oAttributeFrameTexture = oNodeFrame.attribute("Texture");
+                pugi::xml_attribute oAttributeFrameTexture = oNodeFrame.attribute("texture");
                 if (oAttributeFrameTexture)
                     pNewFrame->SetTexture(GetResources()->GetTexture(oAttributeFrameTexture.as_string()));
 
-                pugi::xml_attribute oAttributeSubImage = oNodeFrame.attribute("SubImage");
+                pugi::xml_attribute oAttributeSubImage = oNodeFrame.attribute("subImage");
                 if (oAttributeSubImage)
                 {
                     std::string strFrameSubImage = oAttributeSubImage.as_string();
                     ImageSet* pFrameImageSet = m_imageSet;
 
-                    pugi::xml_attribute oAttributeNameSet = oNodeFrame.attribute("NameSet");
+                    pugi::xml_attribute oAttributeNameSet = oNodeFrame.attribute("nameSet");
                     if (oAttributeNameSet)
                         pFrameImageSet = GetResources()->GetImageSet(oAttributeNameSet.as_string());
 
@@ -285,12 +285,12 @@ bool AnimSet::LoadFromFile()
                         pNewFrame->SetSubImage(pFrameImageSet->GetSubImage(strFrameSubImage));
                 }
 
-                pugi::xml_attribute oAttributeDuration = oNodeFrame.attribute("Duration");
+                pugi::xml_attribute oAttributeDuration = oNodeFrame.attribute("duration");
                 if (oAttributeDuration)
                     pNewFrame->SetDuration(oAttributeDuration.as_float());
 
                 //TODO: Make this a child node instead of an attribute
-                pugi::xml_attribute oAttributeEvents = oNodeFrame.attribute("Events");
+                pugi::xml_attribute oAttributeEvents = oNodeFrame.attribute("events");
                 if (oAttributeEvents)
                     pNewFrame->SetEvents(oAttributeEvents.as_string());
 
@@ -313,14 +313,14 @@ bool AnimSet::SaveToFile()
     pugi::xml_document docSave;
 
     pugi::xml_node nodeAnimSet = docSave.append_child("AnimSet");
-    nodeAnimSet.append_attribute("ImageSet") = (!m_imageSet) ? "" : m_imageSet->GetID().c_str();
+    nodeAnimSet.append_attribute("imageSet") = (!m_imageSet) ? "" : m_imageSet->GetID().c_str();
 
     for (size_t i = 0; i < m_animations.size(); ++i)
     {
         Animation* pAnimation = m_animations[i];
 
         pugi::xml_node nodeAnimation = nodeAnimSet.append_child("Animation");
-        nodeAnimation.append_attribute("Name") = pAnimation->GetName().c_str();
+        nodeAnimation.append_attribute("name") = pAnimation->GetName().c_str();
 
         std::vector<AnimationFrame*> vecFrames;
         pAnimation->GetFrames(vecFrames);
@@ -331,16 +331,16 @@ bool AnimSet::SaveToFile()
             pugi::xml_node nodeFrame = nodeAnimation.append_child("Frame");
             if (pFrame->GetTexture())
             {
-                nodeFrame.append_attribute("Texture") = pFrame->GetTexture()->GetID().c_str();
+                nodeFrame.append_attribute("texture") = pFrame->GetTexture()->GetID().c_str();
             }
             else if (pFrame->GetSubImage())
             {
                 if (m_imageSet != pFrame->GetSubImage()->GetImageSet())
-                    nodeFrame.append_attribute("NameSet") = pFrame->GetSubImage()->GetImageSet()->GetID().c_str();
-                nodeFrame.append_attribute("SubImage") = pFrame->GetSubImage()->GetName().c_str();
+                    nodeFrame.append_attribute("nameSet") = pFrame->GetSubImage()->GetImageSet()->GetID().c_str();
+                nodeFrame.append_attribute("subImage") = pFrame->GetSubImage()->GetName().c_str();
             }
-            nodeFrame.append_attribute("Duration") = pFrame->GetDuration();
-            nodeFrame.append_attribute("Events") = pFrame->GetEvents().c_str();
+            nodeFrame.append_attribute("duration") = pFrame->GetDuration();
+            nodeFrame.append_attribute("events") = pFrame->GetEvents().c_str();
         }
     }
 

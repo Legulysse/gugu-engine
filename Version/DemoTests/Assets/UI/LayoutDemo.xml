@@ -1,12 +1,12 @@
 <Layout>
-    <USize XRel="1" YRel="1" XAbs="0" YAbs="0" />
-    <Element Type="Sprite" Name="Sprite1" >
-        <Texture Source="ButtonNormal.png" />
-        <UPosition XRel="0.25" YRel="0.25" XAbs="0" YAbs="0" />
+    <USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
+    <Element type="Sprite" name="Sprite1" >
+        <Texture source="ButtonNormal.png" />
+        <UPosition xRel="0.25" yRel="0.25" xAbs="0" yAbs="0" />
         <Children>
-            <Element Type="Sprite" Name="Sprite2" >
-                <Texture Source="ButtonNormal.png" />
-                <UPosition XRel="0" YRel="0" XAbs="50" YAbs="100" />
+            <Element type="Sprite" name="Sprite2" >
+                <Texture source="ButtonNormal.png" />
+                <UPosition xRel="0" yRel="0" xAbs="50" yAbs="100" />
             </Element>
         </Children>
     </Element>

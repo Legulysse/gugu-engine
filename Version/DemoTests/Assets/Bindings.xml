@@ -1,17 +1,17 @@
 <Bindings>
-	<Input Name="Player_Up">
-		<Key Value="Z" />
+	<Input name="Player_Up">
+		<Key value="Z" />
 	</Input>
-	<Input Name="Player_Down">
-		<Key Value="S" />
+	<Input name="Player_Down">
+		<Key value="S" />
 	</Input>
-	<Input Name="Player_Left">
-		<Key Value="Q" />
+	<Input name="Player_Left">
+		<Key value="Q" />
 	</Input>
-	<Input Name="Player_Right">
-		<Key Value="D" />
+	<Input name="Player_Right">
+		<Key value="D" />
 	</Input>
-	<Input Name="Kick">
-		<Key Value="Space" />
+	<Input name="Kick">
+		<Key value="Space" />
 	</Input>
 </Bindings>

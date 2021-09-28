@@ -158,17 +158,17 @@ bool ImageSet::LoadFromFile()
     if (!oNodeImageSet)
         return false;
     
-    pugi::xml_attribute oAttributeTexture = oNodeImageSet.attribute("Texture");
+    pugi::xml_attribute oAttributeTexture = oNodeImageSet.attribute("texture");
     if (oAttributeTexture)
         m_texture = GetResources()->GetTexture(oAttributeTexture.as_string());
 
     for (pugi::xml_node oNodeSubImage = oNodeImageSet.child("SubImage"); oNodeSubImage; oNodeSubImage = oNodeSubImage.next_sibling("SubImage"))
     {
-        pugi::xml_attribute oAttributeName = oNodeSubImage.attribute("Name");
-        pugi::xml_attribute oAttributeX = oNodeSubImage.attribute("X");
-        pugi::xml_attribute oAttributeY = oNodeSubImage.attribute("Y");
-        pugi::xml_attribute oAttributeW = oNodeSubImage.attribute("W");
-        pugi::xml_attribute oAttributeH = oNodeSubImage.attribute("H");
+        pugi::xml_attribute oAttributeName = oNodeSubImage.attribute("name");
+        pugi::xml_attribute oAttributeX = oNodeSubImage.attribute("x");
+        pugi::xml_attribute oAttributeY = oNodeSubImage.attribute("y");
+        pugi::xml_attribute oAttributeW = oNodeSubImage.attribute("w");
+        pugi::xml_attribute oAttributeH = oNodeSubImage.attribute("h");
 
         //Try to read SubImage
         if ( oAttributeName
@@ -195,7 +195,7 @@ bool ImageSet::SaveToFile()
     pugi::xml_document docSave;
 
     pugi::xml_node nodeImageSet = docSave.append_child("ImageSet");
-    nodeImageSet.append_attribute("Texture") = (!m_texture)? "" : m_texture->GetID().c_str();
+    nodeImageSet.append_attribute("texture") = (!m_texture)? "" : m_texture->GetID().c_str();
 
     for (size_t i = 0; i < m_subImages.size(); ++i)
     {
@@ -204,11 +204,11 @@ bool ImageSet::SaveToFile()
         pugi::xml_node nodeSubImage = nodeImageSet.append_child("SubImage");
 
         sf::IntRect oRect = pSubImage->GetRect();
-        nodeSubImage.append_attribute("Name") = pSubImage->GetName().c_str();
-        nodeSubImage.append_attribute("X") = oRect.left;
-        nodeSubImage.append_attribute("Y") = oRect.top;
-        nodeSubImage.append_attribute("W") = oRect.width;
-        nodeSubImage.append_attribute("H") = oRect.height;
+        nodeSubImage.append_attribute("name") = pSubImage->GetName().c_str();
+        nodeSubImage.append_attribute("x") = oRect.left;
+        nodeSubImage.append_attribute("y") = oRect.top;
+        nodeSubImage.append_attribute("w") = oRect.width;
+        nodeSubImage.append_attribute("h") = oRect.height;
     }
 
     return docSave.save_file(GetFileInfoRef().GetPathName().c_str());

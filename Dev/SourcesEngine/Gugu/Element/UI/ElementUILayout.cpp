@@ -52,8 +52,8 @@ bool ElementUILayout::LoadFromFile(const std::string& _strPath)
 
 void ElementUILayout::LoadElement(const pugi::xml_node& _oNodeElement, Element* _pParent)
 {
-    std::string strType = _oNodeElement.attribute("Type").value();
-    std::string strName = _oNodeElement.attribute("Name").value();
+    std::string strType = _oNodeElement.attribute("type").value();
+    std::string strName = _oNodeElement.attribute("name").value();
 
     Element* pNewChild = nullptr;
     if (strType == "Sprite")

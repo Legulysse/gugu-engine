@@ -1,24 +1,23 @@
-<?xml version="1.0"?>
-<ImageSet Texture="Box9_Default.png">
-	<SubImage Name="Bottom" X="8" Y="0" W="4" H="16" />
-	<SubImage Name="BottomLeft_01" X="32" Y="32" W="16" H="16" />
-	<SubImage Name="BottomLeft_02" X="48" Y="32" W="16" H="16" />
-	<SubImage Name="BottomLeft_03" X="16" Y="32" W="16" H="16" />
-	<SubImage Name="BottomLeft_04" X="64" Y="32" W="16" H="16" />
-	<SubImage Name="BottomRight_01" X="0" Y="48" W="16" H="16" />
-	<SubImage Name="BottomRight_02" X="32" Y="48" W="16" H="16" />
-	<SubImage Name="BottomRight_03" X="48" Y="48" W="16" H="16" />
-	<SubImage Name="BottomRight_04" X="16" Y="48" W="16" H="16" />
-	<SubImage Name="Center" X="0" Y="0" W="4" H="4" />
-	<SubImage Name="Left" X="64" Y="16" W="16" H="4" />
-	<SubImage Name="Right" X="0" Y="16" W="16" H="4" />
-	<SubImage Name="Top" X="4" Y="0" W="4" H="16" />
-	<SubImage Name="TopLeft_01" X="12" Y="0" W="16" H="16" />
-	<SubImage Name="TopLeft_02" X="28" Y="0" W="16" H="16" />
-	<SubImage Name="TopLeft_03" X="44" Y="0" W="16" H="16" />
-	<SubImage Name="TopLeft_04" X="32" Y="16" W="16" H="16" />
-	<SubImage Name="TopRight_01" X="48" Y="16" W="16" H="16" />
-	<SubImage Name="TopRight_02" X="16" Y="16" W="16" H="16" />
-	<SubImage Name="TopRight_03" X="60" Y="0" W="16" H="16" />
-	<SubImage Name="TopRight_04" X="0" Y="32" W="16" H="16" />
+<ImageSet texture="Box9_Default.png">
+    <SubImage name="Bottom" x="8" y="0" w="4" h="16" />
+    <SubImage name="BottomLeft_01" x="32" y="32" w="16" h="16" />
+    <SubImage name="BottomLeft_02" x="48" y="32" w="16" h="16" />
+    <SubImage name="BottomLeft_03" x="16" y="32" w="16" h="16" />
+    <SubImage name="BottomLeft_04" x="64" y="32" w="16" h="16" />
+    <SubImage name="BottomRight_01" x="0" y="48" w="16" h="16" />
+    <SubImage name="BottomRight_02" x="32" y="48" w="16" h="16" />
+    <SubImage name="BottomRight_03" x="48" y="48" w="16" h="16" />
+    <SubImage name="BottomRight_04" x="16" y="48" w="16" h="16" />
+    <SubImage name="Center" x="0" y="0" w="4" h="4" />
+    <SubImage name="Left" x="64" y="16" w="16" h="4" />
+    <SubImage name="Right" x="0" y="16" w="16" h="4" />
+    <SubImage name="Top" x="4" y="0" w="4" h="16" />
+    <SubImage name="TopLeft_01" x="12" y="0" w="16" h="16" />
+    <SubImage name="TopLeft_02" x="28" y="0" w="16" h="16" />
+    <SubImage name="TopLeft_03" x="44" y="0" w="16" h="16" />
+    <SubImage name="TopLeft_04" x="32" y="16" w="16" h="16" />
+    <SubImage name="TopRight_01" x="48" y="16" w="16" h="16" />
+    <SubImage name="TopRight_02" x="16" y="16" w="16" h="16" />
+    <SubImage name="TopRight_03" x="60" y="0" w="16" h="16" />
+    <SubImage name="TopRight_04" x="0" y="32" w="16" h="16" />
 </ImageSet>

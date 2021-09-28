@@ -1,44 +1,44 @@
-<Element Type="ElementSpriteGroup">
-    <ImageSet Source="Box9_Default.imageset.xml" />
+<Element type="ElementSpriteGroup">
+    <ImageSet source="Box9_Default.imageset.xml" />
     <Components>
     
-        <Component SubImage="TopLeft_02">
-            <UPosition XRel="0" XAbs="0" YRel="0" YAbs="0" />
-            <USize XRel="0" XAbs="16" YRel="0" YAbs="16" />
+        <Component subImage="TopLeft_02">
+            <UPosition xRel="0" xAbs="0" yRel="0" yAbs="0" />
+            <USize xRel="0" xAbs="16" yRel="0" yAbs="16" />
         </Component>
-        <Component SubImage="Top">
-            <UPosition XRel="0" XAbs="16" YRel="0" YAbs="0" />
-            <USize XRel="1" XAbs="-32" YRel="0" YAbs="16" />
+        <Component subImage="Top">
+            <UPosition xRel="0" xAbs="16" yRel="0" yAbs="0" />
+            <USize xRel="1" xAbs="-32" yRel="0" yAbs="16" />
         </Component>
-        <Component SubImage="TopRight_02">
-            <UPosition XRel="1" XAbs="-16" YRel="0" YAbs="0" />
-            <USize XRel="0" XAbs="16" YRel="0" YAbs="16" />
-        </Component>
-        
-        <Component SubImage="Left">
-            <UPosition XRel="0" XAbs="0" YRel="0" YAbs="16" />
-            <USize XRel="0" XAbs="16" YRel="1" YAbs="-32" />
-        </Component>
-        <Component SubImage="Center">
-            <UPosition XRel="0" XAbs="16" YRel="0" YAbs="16" />
-            <USize XRel="1" XAbs="-32" YRel="1" YAbs="-32" />
-        </Component>
-        <Component SubImage="Right">
-            <UPosition XRel="1" XAbs="-16" YRel="0" YAbs="16" />
-            <USize XRel="0" XAbs="16" YRel="1" YAbs="-32" />
+        <Component subImage="TopRight_02">
+            <UPosition xRel="1" xAbs="-16" yRel="0" yAbs="0" />
+            <USize xRel="0" xAbs="16" yRel="0" yAbs="16" />
         </Component>
         
-        <Component SubImage="BottomLeft_02">
-            <UPosition XRel="0" XAbs="0" YRel="1" YAbs="-16" />
-            <USize XRel="0" XAbs="16" YRel="0" YAbs="16" />
+        <Component subImage="Left">
+            <UPosition xRel="0" xAbs="0" yRel="0" yAbs="16" />
+            <USize xRel="0" xAbs="16" yRel="1" yAbs="-32" />
         </Component>
-        <Component SubImage="Bottom">
-            <UPosition XRel="0" XAbs="16" YRel="1" YAbs="-16" />
-            <USize XRel="1" XAbs="-32" YRel="0" YAbs="16" />
+        <Component subImage="Center">
+            <UPosition xRel="0" xAbs="16" yRel="0" yAbs="16" />
+            <USize xRel="1" xAbs="-32" yRel="1" yAbs="-32" />
         </Component>
-        <Component SubImage="BottomRight_02">
-            <UPosition XRel="1" XAbs="-16" YRel="1" YAbs="-16" />
-            <USize XRel="0" XAbs="16" YRel="0" YAbs="16" />
+        <Component subImage="Right">
+            <UPosition xRel="1" xAbs="-16" yRel="0" yAbs="16" />
+            <USize xRel="0" xAbs="16" yRel="1" yAbs="-32" />
+        </Component>
+        
+        <Component subImage="BottomLeft_02">
+            <UPosition xRel="0" xAbs="0" yRel="1" yAbs="-16" />
+            <USize xRel="0" xAbs="16" yRel="0" yAbs="16" />
+        </Component>
+        <Component subImage="Bottom">
+            <UPosition xRel="0" xAbs="16" yRel="1" yAbs="-16" />
+            <USize xRel="1" xAbs="-32" yRel="0" yAbs="16" />
+        </Component>
+        <Component subImage="BottomRight_02">
+            <UPosition xRel="1" xAbs="-16" yRel="1" yAbs="-16" />
+            <USize xRel="0" xAbs="16" yRel="0" yAbs="16" />
         </Component>
         
     </Components>

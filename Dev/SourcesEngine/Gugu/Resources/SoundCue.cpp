@@ -73,7 +73,7 @@ bool SoundCue::LoadFromFile()
     for (pugi::xml_node oNodeFile = oNodeFiles.child("File"); oNodeFile; oNodeFile = oNodeFile.next_sibling("File"))
     {
         Sound* pSound = nullptr;
-        pugi::xml_attribute oAttributeName = oNodeFile.attribute("Name");
+        pugi::xml_attribute oAttributeName = oNodeFile.attribute("name");
         if (oAttributeName)
             pSound = GetResources()->GetSound(oAttributeName.as_string());
 
@@ -84,7 +84,7 @@ bool SoundCue::LoadFromFile()
         kParameters.sound = pSound;
         kParameters.volume = 100.f;
 
-        pugi::xml_attribute oAttributeVolume = oNodeFile.attribute("Volume");
+        pugi::xml_attribute oAttributeVolume = oNodeFile.attribute("volume");
         if (oAttributeVolume)
             kParameters.volume = oAttributeVolume.as_float(kParameters.volume);
 

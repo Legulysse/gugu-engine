@@ -71,13 +71,13 @@ void ManagerInputs::LoadInputFile(const std::string& _strPath)
 
     for (pugi::xml_node oNodeInput = oNodeBindings.child("Input"); oNodeInput; oNodeInput = oNodeInput.next_sibling("Input"))
     {
-        pugi::xml_attribute oAttributeName = oNodeInput.attribute("Name");
+        pugi::xml_attribute oAttributeName = oNodeInput.attribute("name");
         if (!oAttributeName)
             continue;
 
         for (pugi::xml_node oNodeKey = oNodeInput.child("Key"); oNodeKey; oNodeKey = oNodeKey.next_sibling("Key"))
         {
-            pugi::xml_attribute oAttributeValue = oNodeKey.attribute("Value");
+            pugi::xml_attribute oAttributeValue = oNodeKey.attribute("value");
 
             if (oAttributeValue && ReadKeyCode(oAttributeValue.as_string(), oKeyCode))
                 RegisterInput(oAttributeName.as_string(), BuildKeyboardEvent(oKeyCode));

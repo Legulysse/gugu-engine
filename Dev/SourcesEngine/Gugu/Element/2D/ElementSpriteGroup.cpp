@@ -243,7 +243,7 @@ bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
     if (!nodeRoot)
         return false;
 
-    pugi::xml_attribute nodeRootType = nodeRoot.attribute("Type");
+    pugi::xml_attribute nodeRootType = nodeRoot.attribute("type");
     if (!nodeRootType)
         return false;
 
@@ -265,7 +265,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node & nodeSelf)
     pugi::xml_node nodeImageSet = nodeSelf.child("ImageSet");
     if (!nodeImageSet.empty())
     {
-        std::string imageSetID = nodeImageSet.attribute("Source").as_string("");
+        std::string imageSetID = nodeImageSet.attribute("source").as_string("");
         imageSet = GetResources()->GetImageSet(imageSetID);
     }
 
@@ -274,7 +274,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node & nodeSelf)
         pugi::xml_node nodeTexture = nodeSelf.child("Texture");
         if (!nodeTexture.empty())
         {
-            std::string textureID = nodeTexture.attribute("Source").as_string("");
+            std::string textureID = nodeTexture.attribute("source").as_string("");
             texture = GetResources()->GetTexture(textureID);
         }
     }
@@ -305,7 +305,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node & nodeSelf)
             // Read additional SubImage data (TextureRect is handled in the ElementSpriteBase parser).
             if (imageSet)
             {
-                pugi::xml_attribute attrSubImage = nodeComponent.attribute("SubImage");
+                pugi::xml_attribute attrSubImage = nodeComponent.attribute("subImage");
                 if (attrSubImage)
                 {
                     SubImage* subImage = imageSet->GetSubImage(attrSubImage.as_string());

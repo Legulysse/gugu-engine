@@ -1,6 +1,6 @@
-<ImageSet Texture="ScrollBar01.png">
-	<SubImage Name="Background"     X="0"   Y="0"   W="24" H="24"/>
-	<SubImage Name="Slider"         X="0"   Y="24"  W="24" H="24"/>
-	<SubImage Name="ButtonTop"      X="24"  Y="0"   W="24" H="24"/>
-	<SubImage Name="ButtonBottom"   X="24"  Y="24"  W="24" H="24"/>
+<ImageSet texture="ScrollBar01.png">
+	<SubImage name="Background"     x="0"   y="0"   w="24" h="24"/>
+	<SubImage name="Slider"         x="0"   y="24"  w="24" h="24"/>
+	<SubImage name="ButtonTop"      x="24"  y="0"   w="24" h="24"/>
+	<SubImage name="ButtonBottom"   x="24"  y="24"  w="24" h="24"/>
 </ImageSet>

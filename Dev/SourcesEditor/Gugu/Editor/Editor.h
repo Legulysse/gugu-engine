@@ -32,12 +32,12 @@ namespace sf
 
 namespace gugu {
     
-class EditorCore : public Singleton<EditorCore>
+class Editor : public Singleton<Editor>
 {
 public:
 
-    EditorCore();
-    virtual ~EditorCore();
+    Editor();
+    virtual ~Editor();
 
     void Init(const EditorConfig& editorConfig);
     void Release();
@@ -72,6 +72,6 @@ private:
     DatasheetParser* m_datasheetParser;
 };
 
-EditorCore* GetEditor();
+Editor* GetEditor();
 
 }   //namespace gugu

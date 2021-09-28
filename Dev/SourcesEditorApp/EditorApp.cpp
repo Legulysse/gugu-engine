@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Editor/EditorCore.h"
+#include "Gugu/Editor/Editor.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Window/Window.h"

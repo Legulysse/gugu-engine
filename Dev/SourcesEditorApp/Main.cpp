@@ -3,7 +3,7 @@
 
 #include "Gugu/Common.h"
 #include "EditorApp.h"
-#include "Gugu/Editor/EditorCore.h"
+#include "Gugu/Editor/Editor.h"
 #include "Gugu/Engine.h"
 
 #if defined(GUGU_ENV_VISUAL )

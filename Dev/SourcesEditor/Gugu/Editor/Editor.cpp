@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Editor/EditorCore.h"
+#include "Gugu/Editor/Editor.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
@@ -27,7 +27,7 @@
 
 namespace gugu {
     
-EditorCore::EditorCore()
+Editor::Editor()
     : m_resetPanels(false)
     , m_showSearchResults(true)
     , m_showImGuiDemo(false)
@@ -40,12 +40,12 @@ EditorCore::EditorCore()
     // the GetInstance will try to create an other instance (loop).
 }
 
-EditorCore::~EditorCore()
+Editor::~Editor()
 {
     // Because of the constructor problem, I prefer to let the destructor also empty.
 }
 
-void EditorCore::Init(const EditorConfig& editorConfig)
+void Editor::Init(const EditorConfig& editorConfig)
 {
     m_editorConfig = editorConfig;
 
@@ -69,7 +69,7 @@ void EditorCore::Init(const EditorConfig& editorConfig)
     m_datasheetParser->ParseBinding(m_editorConfig.pathDatasheetBinding);
 }
 
-void EditorCore::Release()
+void Editor::Release()
 {
     m_lastActiveDocument = nullptr;
     ClearStdVector(m_documentPanels);
@@ -77,10 +77,10 @@ void EditorCore::Release()
     SafeDelete(m_assetsExplorerPanel);
     SafeDelete(m_datasheetParser);
 
-    EditorCore::DeleteInstance();
+    Editor::DeleteInstance();
 }
 
-bool EditorCore::OnSFEvent(const sf::Event& event)
+bool Editor::OnSFEvent(const sf::Event& event)
 {
     ManagerInputs* inputs = GetInputs();
 
@@ -103,7 +103,7 @@ bool EditorCore::OnSFEvent(const sf::Event& event)
     return true;
 }
 
-void EditorCore::Update(const DeltaTime& dt)
+void Editor::Update(const DeltaTime& dt)
 {
     // Main menu bar.
     if (ImGui::BeginMainMenuBar())
@@ -240,7 +240,7 @@ void EditorCore::Update(const DeltaTime& dt)
     ImGui::End();
 }
 
-void EditorCore::OpenDocument(const std::string& resourceID)
+void Editor::OpenDocument(const std::string& resourceID)
 {
     FileInfo resourceFileInfo;
     if (!GetResources()->GetResourceFileInfo(resourceID, resourceFileInfo))
@@ -293,7 +293,7 @@ void EditorCore::OpenDocument(const std::string& resourceID)
     }
 }
 
-bool EditorCore::SaveActiveDocument()
+bool Editor::SaveActiveDocument()
 {
     if (!m_lastActiveDocument)
         return false;
@@ -301,7 +301,7 @@ bool EditorCore::SaveActiveDocument()
     return m_lastActiveDocument->Save();
 }
 
-bool EditorCore::SaveAllDocuments()
+bool Editor::SaveAllDocuments()
 {
     bool result = true;
     for (DocumentPanel* document : m_documentPanels)
@@ -312,26 +312,26 @@ bool EditorCore::SaveAllDocuments()
     return result;
 }
 
-void EditorCore::ResetPanels()
+void Editor::ResetPanels()
 {
     m_resetPanels = true;
     m_showSearchResults = true;
 }
 
-void EditorCore::CloseEditor()
+void Editor::CloseEditor()
 {
     // TODO: Only close the application in standalone mode, prefer hiding the editor when used as an overlay.
     GetEngine()->StopMainLoop();
 }
 
-DatasheetParser* EditorCore::GetDatasheetParser() const
+DatasheetParser* Editor::GetDatasheetParser() const
 {
     return m_datasheetParser;
 }
 
-EditorCore* GetEditor()
+Editor* GetEditor()
 {
-    return EditorCore::GetInstance();
+    return Editor::GetInstance();
 }
 
 }   //namespace gugu

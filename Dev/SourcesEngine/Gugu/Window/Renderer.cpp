@@ -22,7 +22,6 @@ namespace gugu {
 
 void Renderer::RenderLevel(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Level* _pLevel)
 {
-    
     if (_pLevel)
     {
         RenderPass kRenderPass;

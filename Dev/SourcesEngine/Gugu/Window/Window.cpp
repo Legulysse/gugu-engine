@@ -508,7 +508,8 @@ bool Window::ProcessEvents()
             propagateEvent = false;
         }
 
-        if (m_hostImGui && propagateEvent)
+        if (m_hostImGui && propagateEvent
+            && !((event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && event.key.code == sf::Keyboard::Unknown))
         {
             // This will help disabling imgui text entries, but not the mouse events, they are handled in ImGui::SFML::Update.
             if (!m_consoleNode->IsVisible())

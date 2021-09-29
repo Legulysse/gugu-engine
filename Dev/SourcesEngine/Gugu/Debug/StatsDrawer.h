@@ -8,6 +8,7 @@
 
 #include <SFML/Graphics/Sprite.hpp>   //TODO: use pointers + forward declaration
 #include <SFML/Graphics/Text.hpp>   //TODO: use pointers + forward declaration
+#include <SFML/Graphics/VertexArray.hpp>   //TODO: use pointers + forward declaration
 
 #include <list>
 
@@ -23,6 +24,7 @@ namespace gugu
 
 namespace sf
 {
+    class RenderWindow;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -35,23 +37,40 @@ class StatsDrawer
 public:
 
     StatsDrawer();
-    virtual ~StatsDrawer();
+    ~StatsDrawer();
 
-    void DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTime, const DeltaTime& _kTimeSinceLastFrame, const EngineStats& engineStats, Window* window);
-    void DrawFPS(const DeltaTime& _kTimeSinceLastFrame, Window* window);
+    void DrawFPS(const DeltaTime& timeSinceLastFrame, Window* window);
+    void DrawStats(const FrameInfos& frameInfos, const DeltaTime& frameTime, const DeltaTime& timeSinceLastFrame, const EngineStats& engineStats, Window* window);
 
-protected:
+private:
+
+    struct StatsSummary
+    {
+        int min = 99999999;
+        int max = 0;
+        int last = -1;
+    };
+
+    void ComputeStatsSummary(const std::list<int>& statValues, StatsSummary& statsSummary);
+    void DrawCurve(const std::list<int>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow);
+    void DrawHistogram(const std::list<int>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow);
+    
+private:
 
     std::list<int> m_statFrameTimes;
     std::list<int> m_statDrawCalls;
 
+    float m_curveHeight;
+
+    sf::VertexArray m_borders;
+    sf::VertexArray m_curveSteps;
+    sf::VertexArray m_curveUpdates;
+    sf::VertexArray m_curveRenders;
+    sf::VertexArray m_curveDrawCalls;
+
     sf::Text m_statTextStandaloneFPS;
 
     sf::Sprite m_statsBackground;
-    sf::Text m_statTextFameTime;
-    sf::Text m_statTextFameTimeAverage;
-    sf::Text m_statTextFameTimeMin;
-    sf::Text m_statTextFameTimeMax;
     sf::Text m_statTextFPS;
     sf::Text m_statTextDrawCalls;
     sf::Text m_statTextStepTime;

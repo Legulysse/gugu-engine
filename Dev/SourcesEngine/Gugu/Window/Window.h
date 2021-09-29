@@ -26,6 +26,7 @@ namespace gugu
     class Renderer;
     struct FrameInfos;
     class Level;
+    class StatsDrawer;
 }
 
 namespace sf
@@ -112,9 +113,6 @@ private:
 
     void OnConsoleCommandValidated();
 
-    void DrawStats(const FrameInfos& kFrameInfos, const DeltaTime& _kFrameTime, const DeltaTime& _kTimeSinceLastFrame, const EngineStats& engineStats);
-    void DrawFPS(const DeltaTime& _kTimeSinceLastFrame);
-
 protected:
 
     //TODO: It should be better to directly use Cameras to store and handle their attachment to Windows and Levels
@@ -151,22 +149,9 @@ protected:
     // Stats
     bool                m_showStats;
     bool                m_showFPS;
-    std::list<int>      m_statFrameTimes;
-    std::list<int>      m_statDrawCalls;
-
-    sf::Sprite m_statsBackground;
-    sf::Text m_statTextFameTime;
-    sf::Text m_statTextFameTimeAverage;
-    sf::Text m_statTextFameTimeMin;
-    sf::Text m_statTextFameTimeMax;
-    sf::Text m_statTextFPS;
-    sf::Text m_statTextDrawCalls;
-    sf::Text m_statTextStepTime;
-    sf::Text m_statTextUpdateTime;
-    sf::Text m_statTextRenderTime;
-    sf::Text m_statTextIsTracing;
 
     // Debug
+    StatsDrawer* m_statsDrawer;
     bool m_showBounds;
 };
 

@@ -33,7 +33,7 @@ CharacterEnemy::~CharacterEnemy()
 {
 }
 
-void CharacterEnemy::InitEnemy(DS_Enemy* sheetEnemy, float _fSpeed, Grid* grid, Element* parentNode)
+void CharacterEnemy::InitEnemy(const DS_Enemy* sheetEnemy, float _fSpeed, Grid* grid, Element* parentNode)
 {
     m_grid = grid;
 

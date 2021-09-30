@@ -29,7 +29,7 @@ namespace demoproject {
 
 struct SkillContext
 {
-    DS_Skill* skill;
+    const DS_Skill* skill;
     Character* caster;
     Character* target;
     gugu::Vector2f aim;
@@ -39,8 +39,8 @@ struct SkillContext
 namespace SkillUtility
 {
     void UseSkill(const SkillContext& skillContext);
-    void ApplySkillEffectList(const SkillContext& skillContext, std::vector<DS_Effect*> effects, Character* affected, const gugu::Vector2f& affectedPosition = gugu::Vector2f());
-    void ApplySkillEffect(const SkillContext& skillContext, DS_Effect* effect, Character* affected, const gugu::Vector2f& affectedPosition = gugu::Vector2f());
+    void ApplySkillEffectList(const SkillContext& skillContext, std::vector<const DS_Effect*> effects, Character* affected, const gugu::Vector2f& affectedPosition = gugu::Vector2f());
+    void ApplySkillEffect(const SkillContext& skillContext, const DS_Effect* effect, Character* affected, const gugu::Vector2f& affectedPosition = gugu::Vector2f());
 }
 
 }   //namespace demoproject

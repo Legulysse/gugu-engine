@@ -25,7 +25,7 @@ namespace EEffectCenter
         gugu::GetResources()->RegisterDatasheetEnum("effectCenter", datasheetEnum);
     }
 
-    gugu::DatasheetEnum* GetDatasheetEnum()
+    const gugu::DatasheetEnum* GetDatasheetEnum()
     {
         return gugu::GetResources()->GetDatasheetEnum("effectCenter");
     }
@@ -40,7 +40,7 @@ namespace EEffectCenter
 
     size_t GetSize()
     {
-        gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("effectCenter");
+        const gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("effectCenter");
         if (datasheetEnum)
             return datasheetEnum->values.size();
         return 0;
@@ -59,7 +59,7 @@ namespace EProjectileAim
         gugu::GetResources()->RegisterDatasheetEnum("projectileAim", datasheetEnum);
     }
 
-    gugu::DatasheetEnum* GetDatasheetEnum()
+    const gugu::DatasheetEnum* GetDatasheetEnum()
     {
         return gugu::GetResources()->GetDatasheetEnum("projectileAim");
     }
@@ -73,7 +73,7 @@ namespace EProjectileAim
 
     size_t GetSize()
     {
-        gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("projectileAim");
+        const gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("projectileAim");
         if (datasheetEnum)
             return datasheetEnum->values.size();
         return 0;

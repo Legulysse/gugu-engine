@@ -17,12 +17,12 @@ public:
     CharacterHero();
     virtual ~CharacterHero();
 
-    void InitHero(class DS_Hero* sheetHero, float _fSpeed, class Grid* grid, gugu::Element* parentNode);
+    void InitHero(const class DS_Hero* sheetHero, float _fSpeed, class Grid* grid, gugu::Element* parentNode);
 
     void UseSkillByIndex(int index, const gugu::Vector2f& _kCoords, const gugu::DeltaTime& dt);
-    void UseSkill(DS_Skill* skill, const gugu::Vector2f& _kCoords, const gugu::DeltaTime& dt);
+    void UseSkill(const DS_Skill* skill, const gugu::Vector2f& _kCoords, const gugu::DeltaTime& dt);
 
-    virtual bool CanUseSkill(class DS_Skill* skill) const override;
+    virtual bool CanUseSkill(const class DS_Skill* skill) const override;
 
     virtual void Step(const gugu::DeltaTime& dt) override;
     virtual void Update(const gugu::DeltaTime& dt) override;

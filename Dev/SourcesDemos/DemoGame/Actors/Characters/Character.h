@@ -37,7 +37,7 @@ public:
     virtual void ReceiveHeal(float value);
     virtual void NotifyOpponentKilled(int value);
 
-    virtual bool CanUseSkill(class DS_Skill* skill) const;
+    virtual bool CanUseSkill(const class DS_Skill* skill) const;
 
     virtual void Step(const gugu::DeltaTime& dt) override;
     virtual void Update(const gugu::DeltaTime& dt) override;

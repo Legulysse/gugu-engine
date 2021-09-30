@@ -33,15 +33,15 @@ namespace SkillUtility
         ApplySkillEffectList(skillContext, skillContext.skill->effects, nullptr);
     }
 
-    void ApplySkillEffectList(const SkillContext& skillContext, std::vector<DS_Effect*> effects, Character* affected, const Vector2f& affectedPosition)
+    void ApplySkillEffectList(const SkillContext& skillContext, std::vector<const DS_Effect*> effects, Character* affected, const Vector2f& affectedPosition)
     {
-        for (DS_Effect* effect : effects)
+        for (const DS_Effect* effect : effects)
         {
             ApplySkillEffect(skillContext, effect, affected, affectedPosition);
         }
     }
 
-    void ApplySkillEffect(const SkillContext& skillContext, DS_Effect* effect, Character* affectedCharacter, const Vector2f& affectedPosition)
+    void ApplySkillEffect(const SkillContext& skillContext, const DS_Effect* effect, Character* affectedCharacter, const Vector2f& affectedPosition)
     {
         // TODO: maybe find a more elegant way to retrieve the affectedPosition (avoid the implicit parameter).
         // TODO: affected character should be a list, to ensure we only call this code once per effect application (and avoid calling a caster effect for each affected characters in an area).
@@ -59,18 +59,18 @@ namespace SkillUtility
             center = affectedCharacter;
         }
 
-        if (dynamic_cast<DS_EffectProjectile*>(effect) != nullptr)
+        if (dynamic_cast<const DS_EffectProjectile*>(effect) != nullptr)
         {
-            DS_EffectProjectile* effectProjectile = (DS_EffectProjectile*)effect;
+            const DS_EffectProjectile* effectProjectile = (const DS_EffectProjectile*)effect;
 
             Projectile* newProjectile = new Projectile();
             skillContext.level->AddActor(newProjectile);
 
             newProjectile->InitProjectile(skillContext, effectProjectile, skillContext.caster->GetPosition(), skillContext.aim);
         }
-        else if (dynamic_cast<DS_EffectArea*>(effect) != nullptr)
+        else if (dynamic_cast<const DS_EffectArea*>(effect) != nullptr)
         {
-            DS_EffectArea* effectArea = (DS_EffectArea*)effect;
+            const DS_EffectArea* effectArea = (const DS_EffectArea*)effect;
 
             std::vector<Character*> charactersInArea;
             GetGame()->GetCharactersInRange(charactersInArea, affectedPosition, effectArea->maxRadius);
@@ -91,18 +91,18 @@ namespace SkillUtility
                 ApplySkillEffectList(skillContext, effectArea->effectsOnHit, character);
             }
         }
-        else if (dynamic_cast<DS_EffectDamage*>(effect) != nullptr)
+        else if (dynamic_cast<const DS_EffectDamage*>(effect) != nullptr)
         {
-            DS_EffectDamage* effectDamage = (DS_EffectDamage*)effect;
+            const DS_EffectDamage* effectDamage = (const DS_EffectDamage*)effect;
 
             if (center)
             {
                 center->ReceiveDamage(skillContext.caster, effectDamage->damage);
             }
         }
-        else if (dynamic_cast<DS_EffectHeal*>(effect) != nullptr)
+        else if (dynamic_cast<const DS_EffectHeal*>(effect) != nullptr)
         {
-            DS_EffectHeal* effectHeal = (DS_EffectHeal*)effect;
+            const DS_EffectHeal* effectHeal = (const DS_EffectHeal*)effect;
 
             if (center)
             {

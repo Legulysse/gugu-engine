@@ -33,7 +33,7 @@ namespace EWeaponType {
         Crossbow,
     };
 
-    gugu::DatasheetEnum* GetDatasheetEnum();
+    const gugu::DatasheetEnum* GetDatasheetEnum();
     void GetEnumValues(std::vector<EWeaponType::Type>& enumValues);
     size_t GetSize();
 
@@ -89,13 +89,13 @@ public:
 
     float m_speed;
     bool m_isMonarch;
-    DS_Faction* m_faction;
-    DS_SpriteInfo* m_sprite;
-    DS_SpriteInfo* m_sprite2;
+    const DS_Faction* m_faction;
+    const DS_SpriteInfo* m_sprite;
+    const DS_SpriteInfo* m_sprite2;
     std::vector< std::string > m_names;
     std::vector< int > m_stats;
-    std::vector< DS_Faction* > m_factions;
-    std::vector< DS_SpriteInfo* > m_sprites;
+    std::vector< const DS_Faction* > m_factions;
+    std::vector< const DS_SpriteInfo* > m_sprites;
     EWeaponType::Type m_weapon;
     std::vector< EWeaponType::Type > m_availableWeapons;
 
@@ -115,7 +115,7 @@ public:
 public:
 
     std::string m_name;
-    DS_Entity* m_leader;
+    const DS_Entity* m_leader;
 
 protected:
 
@@ -164,7 +164,7 @@ public:
 
 public:
 
-    DS_Faction* m_faction;
+    const DS_Faction* m_faction;
 
 protected:
 
@@ -181,7 +181,7 @@ public:
 
 public:
 
-    DS_Troop* m_troop;
+    const DS_Troop* m_troop;
 
 protected:
 
@@ -199,11 +199,11 @@ public:
 public:
 
     std::string m_name;
-    DS_Restriction* m_emptyRestriction;
-    DS_Restriction* m_nullRestriction;
-    DS_Restriction* m_singleRestrictionBase;
-    DS_Restriction* m_singleRestrictionFaction;
-    std::vector< DS_Restriction* > m_restrictions;
+    const DS_Restriction* m_emptyRestriction;
+    const DS_Restriction* m_nullRestriction;
+    const DS_Restriction* m_singleRestrictionBase;
+    const DS_Restriction* m_singleRestrictionFaction;
+    std::vector< const DS_Restriction* > m_restrictions;
 
 protected:
 

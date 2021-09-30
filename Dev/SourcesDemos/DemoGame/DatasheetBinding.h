@@ -32,7 +32,7 @@ namespace EEffectCenter {
         Affected,
     };
 
-    gugu::DatasheetEnum* GetDatasheetEnum();
+    const gugu::DatasheetEnum* GetDatasheetEnum();
     void GetEnumValues(std::vector<EEffectCenter::Type>& enumValues);
     size_t GetSize();
 
@@ -46,7 +46,7 @@ namespace EProjectileAim {
         Cursor,
     };
 
-    gugu::DatasheetEnum* GetDatasheetEnum();
+    const gugu::DatasheetEnum* GetDatasheetEnum();
     void GetEnumValues(std::vector<EProjectileAim::Type>& enumValues);
     size_t GetSize();
 
@@ -84,7 +84,7 @@ public:
     std::string name;
     float health;
     float speed;
-    DS_SpriteInfo* sprite;
+    const DS_SpriteInfo* sprite;
 
 protected:
 
@@ -142,7 +142,7 @@ public:
     float manaCost;
     bool useAttackSpeed;
     float cooldown;
-    std::vector< DS_Effect* > effects;
+    std::vector< const DS_Effect* > effects;
 
 protected:
 
@@ -180,7 +180,7 @@ public:
     bool excludeTarget;
     float maxRadius;
     float angleFromDirection;
-    std::vector< DS_Effect* > effectsOnHit;
+    std::vector< const DS_Effect* > effectsOnHit;
 
 protected:
 
@@ -201,8 +201,8 @@ public:
     float speed;
     float lifetime;
     int maximumHits;
-    std::vector< DS_Effect* > effectsOnHit;
-    std::vector< DS_Effect* > effectsOnDestination;
+    std::vector< const DS_Effect* > effectsOnHit;
+    std::vector< const DS_Effect* > effectsOnDestination;
 
 protected:
 

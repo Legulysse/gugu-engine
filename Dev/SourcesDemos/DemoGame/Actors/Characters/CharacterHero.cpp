@@ -47,7 +47,7 @@ CharacterHero::~CharacterHero()
 {
 }
 
-void CharacterHero::InitHero(DS_Hero* sheetHero, float _fSpeed, Grid* grid, Element* parentNode)
+void CharacterHero::InitHero(const DS_Hero* sheetHero, float _fSpeed, Grid* grid, Element* parentNode)
 {
     m_grid = grid;
 
@@ -83,17 +83,17 @@ void CharacterHero::UseSkillByIndex(int index, const Vector2f& _kCoords, const g
     // Index 0 is the base attack skill.
     if (index == 0)
     {
-        DS_Skill* skill = GetResources()->GetDatasheetObject<DS_Skill>("BowAttack.skill");
+        const DS_Skill* skill = GetResources()->GetDatasheetObject<DS_Skill>("BowAttack.skill");
         UseSkill(skill, _kCoords, dt);
     }
     else
     {
-        DS_Skill* skill = GetResources()->GetDatasheetObject<DS_Skill>("Fireball.skill");
+        const DS_Skill* skill = GetResources()->GetDatasheetObject<DS_Skill>("Fireball.skill");
         UseSkill(skill, _kCoords, dt);
     }
 }
 
-void CharacterHero::UseSkill(DS_Skill* skill, const Vector2f& _kCoords, const DeltaTime& dt)
+void CharacterHero::UseSkill(const DS_Skill* skill, const Vector2f& _kCoords, const DeltaTime& dt)
 {
     m_isActingThisFrame = true;
 
@@ -179,7 +179,7 @@ void CharacterHero::UseSkill(DS_Skill* skill, const Vector2f& _kCoords, const De
     }
 }
 
-bool CharacterHero::CanUseSkill(DS_Skill* skill) const
+bool CharacterHero::CanUseSkill(const DS_Skill* skill) const
 {
     if (Character::CanUseSkill(skill))
     {

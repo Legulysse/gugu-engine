@@ -36,7 +36,7 @@ Projectile::~Projectile()
     SafeDelete(m_sprite);
 }
 
-void Projectile::InitProjectile(const SkillContext& skillContext, DS_EffectProjectile* effectSource, const Vector2f& _kFrom, const Vector2f& _kTo)
+void Projectile::InitProjectile(const SkillContext& skillContext, const DS_EffectProjectile* effectSource, const Vector2f& _kFrom, const Vector2f& _kTo)
 {
     m_skillContext = skillContext;
     m_effectSource = effectSource;

@@ -132,7 +132,7 @@ void Character::NotifyOpponentKilled(int value)
 {
 }
 
-bool Character::CanUseSkill(DS_Skill* skill) const
+bool Character::CanUseSkill(const DS_Skill* skill) const
 {
     return true;
 }

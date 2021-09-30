@@ -47,16 +47,16 @@ int main(int argc, char* argv[])
 
     DatasheetBinding_Register();
 
-    DS_General* pGeneralA = GetResources()->GetDatasheetObject<DS_General>("Robert.general");
-    DS_General* pGeneralB = GetResources()->GetDatasheetObject<DS_General>("Joffrey.general");
-    DS_Faction* pFaction = GetResources()->GetDatasheetObject<DS_Faction>("Yumeda.faction");
-    DS_Troop* pTroop = GetResources()->GetDatasheetObject<DS_Troop>("Dragon.troop");
-    DS_Skill* pSkill = GetResources()->GetDatasheetObject<DS_Skill>("Fireball.skill");
+    const DS_General* pGeneralA = GetResources()->GetDatasheetObject<DS_General>("Robert.general");
+    const DS_General* pGeneralB = GetResources()->GetDatasheetObject<DS_General>("Joffrey.general");
+    const DS_Faction* pFaction = GetResources()->GetDatasheetObject<DS_Faction>("Yumeda.faction");
+    const DS_Troop* pTroop = GetResources()->GetDatasheetObject<DS_Troop>("Dragon.troop");
+    const DS_Skill* pSkill = GetResources()->GetDatasheetObject<DS_Skill>("Fireball.skill");
 
     // Enums methods
     size_t iSizeWeaponTypesA = EWeaponType::GetSize();
     size_t iSizeWeaponTypesB = 0;
-    DatasheetEnum* pEnum = EWeaponType::GetDatasheetEnum();
+    const DatasheetEnum* pEnum = EWeaponType::GetDatasheetEnum();
     if (pEnum)
     {
         iSizeWeaponTypesB = pEnum->values.size();

@@ -27,7 +27,7 @@ namespace EWeaponType
         gugu::GetResources()->RegisterDatasheetEnum("weaponType", datasheetEnum);
     }
 
-    gugu::DatasheetEnum* GetDatasheetEnum()
+    const gugu::DatasheetEnum* GetDatasheetEnum()
     {
         return gugu::GetResources()->GetDatasheetEnum("weaponType");
     }
@@ -44,7 +44,7 @@ namespace EWeaponType
 
     size_t GetSize()
     {
-        gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("weaponType");
+        const gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("weaponType");
         if (datasheetEnum)
             return datasheetEnum->values.size();
         return 0;

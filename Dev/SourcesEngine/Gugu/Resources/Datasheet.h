@@ -57,24 +57,24 @@ protected:
 
     //Read instance (instanced datasheet structure)
     template<typename T>
-    void ReadInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T*& _pMember)
+    void ReadInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember)
     {
-        DatasheetObject* pInstance = nullptr;
+        const DatasheetObject* pInstance = nullptr;
         if (InstanciateDatasheetObject(_kContext, _strName, _strType, pInstance))
         {
             SafeDelete(_pMember);
-            _pMember = dynamic_cast<T*>(pInstance);
+            _pMember = dynamic_cast<const T*>(pInstance);
         }
     }
 
     //Read reference (reference to an other datasheet)
     template<typename T>
-    void ReadReference(DatasheetParserContext& _kContext, const std::string& _strName, T*& _pMember)
+    void ReadReference(DatasheetParserContext& _kContext, const std::string& _strName, const T*& _pMember)
     {
-        DatasheetObject* pReference = nullptr;
+        const DatasheetObject* pReference = nullptr;
         if (ResolveDatasheetLink(_kContext, _strName, pReference))
         {
-            _pMember = dynamic_cast<T*>(pReference);
+            _pMember = dynamic_cast<const T*>(pReference);
         }
     }
 
@@ -89,9 +89,9 @@ protected:
 
     //Read instance array (instanced datasheet structures)
     template<typename T>
-    void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T*>& _vecMember)
+    void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
     {
-        std::vector<DatasheetObject*> vecInstances;
+        std::vector<const DatasheetObject*> vecInstances;
         if (InstanciateDatasheetObjects(_kContext, _strName, _strType, vecInstances))
         {
             ClearStdVector(_vecMember);
@@ -99,7 +99,7 @@ protected:
             for (size_t i = 0; i < vecInstances.size(); ++i)
             {
                 // Fill the actual member values (may contain null values).
-                T* pInstance = dynamic_cast<T*>(vecInstances[i]);
+                const T* pInstance = dynamic_cast<const T*>(vecInstances[i]);
                 _vecMember.push_back(pInstance);
             }
         }
@@ -107,9 +107,9 @@ protected:
 
     //Read reference array (references to other datasheets)
     template<typename T>
-    void ReadArrayReference(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<T*>& _vecMember)
+    void ReadArrayReference(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const T*>& _vecMember)
     {
-        std::vector<DatasheetObject*> vecReferences;
+        std::vector<const DatasheetObject*> vecReferences;
         if (ResolveDatasheetLinks(_kContext, _strName, vecReferences))
         {
             _vecMember.clear();
@@ -117,7 +117,7 @@ protected:
             for (size_t i = 0; i < vecReferences.size(); ++i)
             {
                 // Fill the actual member values (may contain null values).
-                T* pReference = dynamic_cast<T*>(vecReferences[i]);
+                const T* pReference = dynamic_cast<const T*>(vecReferences[i]);
                 _vecMember.push_back(pReference);
             }
         }
@@ -141,16 +141,16 @@ protected:
 
 private:
 
-    DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType);
-    bool        InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DatasheetObject*& _pInstance);
-    bool        InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DatasheetObject*>& _vecInstances);
+    const DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType);
+    bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, const DatasheetObject*& _pInstance);
+    bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<const DatasheetObject*>& _vecInstances);
 
-    class DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
-    bool        ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, class DatasheetObject*& _pDatasheet);
-    bool        ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<class DatasheetObject*>& _vecDatasheets);
+    const DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
+    bool ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
+    bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
 
-    bool        ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue);
-    bool        ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues);
+    bool ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue);
+    bool ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues);
 
     pugi::xml_node FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName);
 };
@@ -168,7 +168,7 @@ public:
     virtual bool LoadFromFile() override;
 
     //TODO: Store reference to parent, at least a Getter
-    DatasheetObject* GetRootObject() const;
+    const DatasheetObject* GetRootObject() const;
 
 private:
 

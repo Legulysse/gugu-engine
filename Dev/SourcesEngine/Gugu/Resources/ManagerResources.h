@@ -86,9 +86,9 @@ public:
     Datasheet*  GetDatasheet    (const std::string& _strName);
 
     template<typename T>
-    T*          GetDatasheetObject    (const std::string& _strName)
+    const T* GetDatasheetObject(const std::string& _strName)
     {
-        return dynamic_cast<T*>(GetDatasheet(_strName)->GetRootObject());
+        return dynamic_cast<const T*>(GetDatasheet(_strName)->GetRootObject());
     }
 
     Resource* GetResource(const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
@@ -125,8 +125,8 @@ public:
     void                RegisterDatasheetObjectFactory    (DelegateDatasheetObjectFactory delegateDatasheetObjectFactory);
     DatasheetObject*    InstanciateDatasheetObject        (const std::string& _strType);
 
-    void                RegisterDatasheetEnum       (const std::string& _strName, DatasheetEnum* _pEnum);
-    DatasheetEnum*      GetDatasheetEnum            (const std::string& _strName);
+    void RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum);
+    const DatasheetEnum* GetDatasheetEnum(const std::string& _strName);
 
 private:
 
@@ -148,7 +148,7 @@ private:
     std::map<ResourceMapKey, Texture*> m_customTextures;
 
     std::vector<DelegateDatasheetObjectFactory> m_datasheetObjectFactories;
-    std::map<ResourceMapKey, DatasheetEnum*>  m_datasheetEnums;
+    std::map<ResourceMapKey, const DatasheetEnum*>  m_datasheetEnums;
 };
 
 ManagerResources* GetResources();

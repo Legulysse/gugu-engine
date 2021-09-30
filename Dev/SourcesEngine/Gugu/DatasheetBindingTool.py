@@ -55,7 +55,7 @@ class DefinitionEnum():
         _file.write('    };\n')
         
         _file.write('\n')
-        _file.write('    gugu::DatasheetEnum* GetDatasheetEnum();\n')
+        _file.write('    const gugu::DatasheetEnum* GetDatasheetEnum();\n')
         _file.write('    void GetEnumValues(std::vector<'+ self.code +'::Type>& enumValues);\n')
         _file.write('    size_t GetSize();\n')
         _file.write('\n')
@@ -80,7 +80,7 @@ class DefinitionEnum():
         _file.write('    }\n')
         
         _file.write('\n')
-        _file.write('    gugu::DatasheetEnum* GetDatasheetEnum()\n')
+        _file.write('    const gugu::DatasheetEnum* GetDatasheetEnum()\n')
         _file.write('    {\n')
         _file.write('        return gugu::GetResources()->GetDatasheetEnum("'+ self.name +'");\n')
         _file.write('    }\n')
@@ -96,7 +96,7 @@ class DefinitionEnum():
         _file.write('\n')
         _file.write('    size_t GetSize()\n')
         _file.write('    {\n')
-        _file.write('        gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("'+ self.name +'");\n')
+        _file.write('        const gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("'+ self.name +'");\n')
         _file.write('        if (datasheetEnum)\n')
         _file.write('            return datasheetEnum->values.size();\n')
         _file.write('        return 0;\n')
@@ -171,10 +171,12 @@ class DefinitionClass():
                 strType = ''
                     
                 if member.isReference:
-                    strType = _definitionBinding.dictClassNames[member.type]
+                    strType = 'const '
+                    strType += _definitionBinding.dictClassNames[member.type]
                     strType += '*'
                 elif member.isInstance:
-                    strType = _definitionBinding.dictClassNames[member.type]
+                    strType = 'const '
+                    strType += _definitionBinding.dictClassNames[member.type]
                     strType += '*'
                 elif member.type in _definitionBinding.dictEnums:
                     strType = _definitionBinding.dictEnums[member.type].code

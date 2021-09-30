@@ -674,7 +674,7 @@ DatasheetObject* ManagerResources::InstanciateDatasheetObject(const std::string&
     return nullptr;
 }
 
-void ManagerResources::RegisterDatasheetEnum(const std::string& _strName, DatasheetEnum* _pEnum)
+void ManagerResources::RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum)
 {
     auto iteElement = m_datasheetEnums.find(_strName);
     if (iteElement != m_datasheetEnums.end())
@@ -688,7 +688,7 @@ void ManagerResources::RegisterDatasheetEnum(const std::string& _strName, Datash
     }
 }
 
-DatasheetEnum* ManagerResources::GetDatasheetEnum(const std::string& _strName)
+const DatasheetEnum* ManagerResources::GetDatasheetEnum(const std::string& _strName)
 {
     auto iteElement = m_datasheetEnums.find(_strName);
     if (iteElement != m_datasheetEnums.end())

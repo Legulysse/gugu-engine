@@ -1,30 +1,41 @@
-01/10/2008 - Prototype de machine à états.
-01/12/2008 - Prototype de moteur de jeu 3D basé sur OpenGl.
-01/01/2009 - Prototype de moteur de jeu 2D basé sur SDL.
-21/03/2009 - Reboot du projet de moteur de jeu 2D sur SFML.
-03/04/2009 - Base plutôt bien avancée, première version des images de la démo Volley. Gestion des déplacements père/fils.
-05/05/2009 - Ajout de la gestion d'acteurs. Bases de Gui presque finies. Première passe de clean général.
-05/07/2009 - Grosse passe de clean : namespaces, includes, Game -> Engine (hamster check 1).
-07/07/2009 - Obtention d'un dépôt SVN, premier archivage (julz & pmcc hosted).
 
-11/06/2013 - Version 0.1
-
-03/08/2014 - Version 0.2
-    > Ajout de la gestion des resources par nom
-    > Ajout des bases pour les Datasheets
-    > Mise à jour du système Audio (SoundCues, MusicLayers and fades)
-    > Itération de l'Editeur (ImageSets et AnimSets)
-    > Ajout du MeshViewer
-    > Mise à jour Ogre 1.8 + bases d'archi pour le World 3D
+??/??/2021 - Version 0.6
+    > Ajout du nouvel Editor, basé sur ImGui (datasheet editor).
+    > Ajout d'un ManagerAnimation, refacto SpriteAnimation, suppression d'ElementSpriteAnimation.
+    > Itération datasheets (dissociation entre ressource et data gameplay, force const sur les datas, format xml, gestion des references/instances null).
+    > Refacto des classes de sprite (Ajout d'ElementSpriteBase, suppression d'ElementTile, refacto d'ElementSpriteGroup pour heriter d'ElementSpriteBase).
+    > Refacto ElementTileMap.
+    > Clean et ajout de callbacks (internes et publiques) sur la classe Element.
+    > Refacto Grids (square + hex grids), ajout d'algos generiques de breadth-first-search.
+    > Refacto des Actions et Delegates via des std::function (Callback wrapper).
+    > Refacto des fonctions de lancement (RunApplication).
+    > Ajout d'un gugu::Vector2 pour encapsuler sf::Vector2.
+    > Update des differents formats de fichier xml.
+    > Refacto de la commande stats.
+    > Itération démo Game (interfaces, loop gameplay, skill system).
+    > Clean des scripts de build.
+    > Reorganisation des dossiers.
+    > Ajout ImGui 1.84.1 (integration via ImGui-SFML 2.3).
+    > Mise à jour SFML 2.5.1.
+    > Mise à jour PugiXml 1.11.4.
     
-20/05/2015 - Version 0.3
-    > Ajout de petites démos (HelloWorld, Datasheets, Game)
-    > Ajout de la gestion d'un Renderer avec passes de rendu
-    > Remplacement du ManagerEvent par un HandlerEvents associé à chaque Window
-    > Itération sur les Datasheets (héritage, enums)
-    > Clean Elements : Gestion du sf::Transform en interne à la place d'un héritage sur sf::Transformable
-    > const correctness
-    > Mise à jour SFML trunk vers SFML 2.2 + integration des sources dans le projet
+06/04/2020 - Version 0.5.2
+    > Migration Bitbucket vers Github.
+    > Ajout des commandes speed et bounds.
+    > Ajout de la gestion des joysticks.
+    > Ajout des fonctions d'interpolation.
+    > Ajout du zoom sur les cameras.
+    
+04/07/2018 - Version 0.5.1
+    > Script de conversion des tabs en espaces
+    > Mise à jour SFML 2.5.0
+    
+30/06/2018 - Version 0.5
+    > Grosse refacto generale (arbo, renommages, camelCase) en preparation de la mise en open-source
+    > Update/Optimisation des ElementSprite et ElementTile avec l'utilisation d'un VertexArray à la place de sf::sprites
+    > Ajout de ElementTileMap et ElementSpriteGroup
+    > Separation entre les assets de la demo Game et des autres demos
+    > Separation des sources de PugiXml dans un projet dédié
     
 19/12/2017 - Version 0.4
     > Ajout démos (Camera, Audio, Callback, UI, Network, Math, System)
@@ -40,27 +51,33 @@
     > Mise à jour SFML 2.4.2
     > Mise à jour Editor Qt 5.7
     
-30/06/2018 - Version 0.5
-    > Grosse refacto generale (arbo, renommages, camelCase) en preparation de la mise en open-source
-    > Update/Optimisation des ElementSprite et ElementTile avec l'utilisation d'un VertexArray à la place de sf::sprites
-    > Ajout de ElementTileMap et ElementSpriteGroup
-    > Separation entre les assets de la demo Game et des autres demos
-    > Separation des sources de PugiXml dans un projet dédié
+20/05/2015 - Version 0.3
+    > Ajout de petites démos (HelloWorld, Datasheets, Game)
+    > Ajout de la gestion d'un Renderer avec passes de rendu
+    > Remplacement du ManagerEvent par un HandlerEvents associé à chaque Window
+    > Itération sur les Datasheets (héritage, enums)
+    > Clean Elements : Gestion du sf::Transform en interne à la place d'un héritage sur sf::Transformable
+    > const correctness
+    > Mise à jour SFML trunk vers SFML 2.2 + integration des sources dans le projet
     
-04/07/2018 - Version 0.5.1
-    > Script de conversion des tabs en espaces
-    > Mise à jour SFML 2.5.0
+03/08/2014 - Version 0.2
+    > Ajout de la gestion des resources par nom
+    > Ajout des bases pour les Datasheets
+    > Mise à jour du système Audio (SoundCues, MusicLayers and fades)
+    > Itération de l'Editeur (ImageSets et AnimSets)
+    > Ajout du MeshViewer
+    > Mise à jour Ogre 1.8 + bases d'archi pour le World 3D
     
-06/04/2020 - Version 0.5.2
-    > Migration Bitbucket vers Github.
-    > Ajout des commandes speed et bounds.
-    > Ajout de la gestion des joysticks.
-    > Ajout des fonctions d'interpolation.
-    > Ajout du zoom sur les cameras.
-    
-    
-    
-    
-    
-    
-    
+11/06/2013 - Version 0.1
+07/07/2009 - Obtention d'un dépôt SVN, premier archivage (julz & pmcc hosted).
+05/07/2009 - Grosse passe de clean : namespaces, includes, Game -> Engine (hamster check 1).
+05/05/2009 - Ajout de la gestion d'acteurs. Bases de Gui presque finies. Première passe de clean général.
+03/04/2009 - Base plutôt bien avancée, première version des images de la démo Volley. Gestion des déplacements père/fils.
+21/03/2009 - Reboot du projet de moteur de jeu 2D sur SFML.
+01/01/2009 - Prototype de moteur de jeu 2D basé sur SDL.
+01/12/2008 - Prototype de moteur de jeu 3D basé sur OpenGl.
+01/10/2008 - Prototype de machine à états.
+
+
+
+

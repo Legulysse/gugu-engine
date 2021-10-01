@@ -1,5 +1,5 @@
 
-??/??/2021 - Version 0.6
+01/10/2021 - Version 0.6
     > Ajout du nouvel Editor, basé sur ImGui (datasheet editor).
     > Ajout d'un ManagerAnimation, refacto SpriteAnimation, suppression d'ElementSpriteAnimation.
     > Itération datasheets (dissociation entre ressource et data gameplay, force const sur les datas, format xml, gestion des references/instances null).

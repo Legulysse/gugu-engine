@@ -30,8 +30,11 @@ def CountLinesInDirectory(directory, verbose=False):
     acceptableFileExtensions = ['.h', '.cpp', '.tpp'] #sys.argv[1:]
     if not acceptableFileExtensions:
         print ('Please pass at least one file extension as an argument.')
-        quit()
+        return
 
+    print ('--------------------')
+    print ('Directory:     ' + directory)
+    
     #currentDir = os.getcwd()
     currentDir = directory
 
@@ -46,15 +49,13 @@ def CountLinesInDirectory(directory, verbose=False):
 
     if not filesToCheck:
         print ('No files found.')
-        quit()
+        print ('')
+        return
 
     lineCount = 0
     totalBlankLineCount = 0
     totalCommentLineCount = 0
 
-    print ('--------------------')
-    print ('Directory:     ' + directory)
-    
     if verbose:
         print ('Filename\tlines\tblank lines\tcomment lines\tcode lines')
 
@@ -97,8 +98,8 @@ def CountLinesInDirectory(directory, verbose=False):
 
 # Main
 CountLinesInDirectory('../Dev/SourcesEngine')
-CountLinesInDirectory('../Dev/SourcesEditorLib')
 CountLinesInDirectory('../Dev/SourcesEditor')
+CountLinesInDirectory('../Dev/SourcesEditorApp')
 CountLinesInDirectory('../Dev/SourcesDemos')
 CountLinesInDirectory('../Dev/SourcesSFML')
 CountLinesInDirectory('../Dev/SourcesPugiXml')

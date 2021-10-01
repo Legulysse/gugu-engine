@@ -434,14 +434,20 @@ void VirtualDatasheet::SetParentDatasheet(std::string parentReferenceID, Virtual
 bool VirtualDatasheet::SaveToFile()
 {
     pugi::xml_document xmlDocument;
-    pugi::xml_node nodeDatasheetObject = xmlDocument.append_child("Datasheet");
+    pugi::xml_node nodeDatasheet = xmlDocument.append_child("Datasheet");
+
+    // Serialization version, could be used if the file format changes.
+    nodeDatasheet.append_attribute("serializationVersion") = 1;
+
+    // Binding version, could be used for application binding changes.
+    nodeDatasheet.append_attribute("bindingVersion") = 1;
 
     if (!m_parentDatasheetID.empty())
     {
-        nodeDatasheetObject.append_attribute("parent") = m_parentDatasheetID.c_str();
+        nodeDatasheet.append_attribute("parent") = m_parentDatasheetID.c_str();
     }
 
-    if (!m_rootObject->SaveToXml(nodeDatasheetObject))
+    if (!m_rootObject->SaveToXml(nodeDatasheet))
         return false;
 
     return xmlDocument.save_file(GetFileInfoRef().GetPathName().c_str());

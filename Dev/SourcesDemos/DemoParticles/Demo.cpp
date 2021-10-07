@@ -67,15 +67,17 @@ ParticleSystem::~ParticleSystem()
 {
 }
 
-void ParticleSystem::Init()
+void ParticleSystem::Init(const ParticleSystemSettings& settings)
 {
     Stop();
 
-    m_loop = true;
-    m_maxParticleCount = 1000;
-    m_verticesPerParticle = 6;
-    m_emitCountPerCycle = 5;
-    m_applyRenderLocalTransform = false;
+    m_settings = settings;
+
+    m_loop = settings.loop;
+    m_maxParticleCount = settings.maxParticleCount;
+    m_verticesPerParticle = settings.verticesPerParticle;
+    //m_emitCountPerCycle = settings.emitCountPerCycle;
+    m_applyRenderLocalTransform = settings.applyRenderLocalTransform;
 
     m_dataVertices.setPrimitiveType(m_verticesPerParticle == 6 ? sf::PrimitiveType::Triangles : sf::PrimitiveType::Points);
     m_dataVertices.resize(m_maxParticleCount * m_verticesPerParticle);
@@ -93,13 +95,15 @@ void ParticleSystem::Start()
     m_running = true;
 
     size_t i = 0;
-    while (i < Min(m_emitCountPerCycle, m_maxParticleCount))
+    size_t emitCount = GetRandom(m_settings.minEmitCountPerCycle, m_settings.maxEmitCountPerCycle);
+    while (i < Min(emitCount, m_maxParticleCount))
     {
         EmitParticle(i);
         ++i;
     }
 
     m_nextEmitIndex = i % m_maxParticleCount;
+    m_nextCycleDelay = Max(0, GetRandom(m_settings.minCycleDelay, m_settings.maxCycleDelay));
 }
 
 void ParticleSystem::Stop()
@@ -152,7 +156,7 @@ size_t ParticleSystem::GetActiveParticleCount() const
 void ParticleSystem::EmitParticle(size_t particleIndex)
 {
     // Reset lifetime.
-    m_dataLifetime[particleIndex] = GetRandom(2000, 3000);
+    m_dataLifetime[particleIndex] = GetRandom(m_settings.minLifetime, m_settings.maxLifetime);
     m_dataRemainingTime[particleIndex] = m_dataLifetime[particleIndex];
 
     // Reset position.
@@ -173,11 +177,11 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     // Reset color.
     for (size_t ii = 0; ii < m_verticesPerParticle; ++ii)
     {
-        m_dataVertices[particleIndex * m_verticesPerParticle + ii].color = sf::Color(0, 0, 0, 255);
+        m_dataVertices[particleIndex * m_verticesPerParticle + ii].color = m_settings.startColor;
     }
 
     // Reset velocity.
-    Vector2f velocity = Vector2f(GetRandomf(10.f, 70.f), 0.f);
+    Vector2f velocity = Vector2f(GetRandomf(m_settings.minVelocity, m_settings.maxVelocity), 0.f);
     velocity = Rotate(velocity, GetRandomf(Math::Pi * 2.f));
     m_dataVelocity[particleIndex] = velocity;
 }
@@ -210,20 +214,19 @@ void ParticleSystem::Update(const DeltaTime& dt)
 
         if (m_dataRemainingTime[i] <= 0)
         {
-            //if (m_loop)
-            //{
-            //    EmitParticle(i);
-            //}
-            //else
-            //{
-                ResetParticle(i);
-            //}
+            ResetParticle(i);
         }
         else
         {
             float vx = m_dataVelocity[i].x * dt.s();
             float vy = m_dataVelocity[i].y * dt.s();
-            sf::Color color = sf::Color(0, 0, 0, Lerp<sf::Uint8>(0, 255, (float)m_dataRemainingTime[i] / (float)m_dataLifetime[i]));
+
+            float lerpValue = (float)m_dataRemainingTime[i] / (float)m_dataLifetime[i];
+            sf::Color color = sf::Color(
+                Lerp<sf::Uint8>(m_settings.endColor.r, m_settings.startColor.r, lerpValue),
+                Lerp<sf::Uint8>(m_settings.endColor.g, m_settings.startColor.g, lerpValue),
+                Lerp<sf::Uint8>(m_settings.endColor.b, m_settings.startColor.b, lerpValue),
+                Lerp<sf::Uint8>(m_settings.endColor.a, m_settings.startColor.a, lerpValue));
 
             for (size_t ii = 0; ii < m_verticesPerParticle; ++ii)
             {
@@ -237,25 +240,32 @@ void ParticleSystem::Update(const DeltaTime& dt)
     // TODO: Stop running once all particles are disabled.
     if (m_loop || m_nextEmitIndex > 0)
     {
-        size_t i = m_nextEmitIndex;
-        size_t findCount = 0;
-        size_t emitCount = 0;
-        bool findNextAvailableParticle = true;
-        while (findNextAvailableParticle)
+        m_nextCycleDelay = Max(0, m_nextCycleDelay - dt.ms());
+
+        if (m_nextCycleDelay <= 0)
         {
-            if (m_dataLifetime[i] <= 0)
+            size_t i = m_nextEmitIndex;
+            size_t findCount = 0;
+            size_t emitCount = 0;
+            size_t emitLimit = GetRandom(m_settings.minEmitCountPerCycle, m_settings.maxEmitCountPerCycle);
+            bool findNextAvailableParticle = true;
+            while (findNextAvailableParticle)
             {
-                EmitParticle(i);
-                ++emitCount;
+                if (m_dataLifetime[i] <= 0)
+                {
+                    EmitParticle(i);
+                    ++emitCount;
+                }
+
+                i = (i + 1) % m_maxParticleCount;
+
+                ++findCount;
+                findNextAvailableParticle = (findCount < m_maxParticleCount) && (emitCount < emitLimit) && (m_loop || i != 0);
             }
 
-            i = (i + 1) % m_maxParticleCount;
-
-            ++findCount;
-            findNextAvailableParticle = (findCount < m_maxParticleCount) && (emitCount < m_emitCountPerCycle) && (m_loop || i != 0);
+            m_nextEmitIndex = i;
+            m_nextCycleDelay = Max(0, GetRandom(m_settings.minCycleDelay, m_settings.maxCycleDelay));
         }
-
-        m_nextEmitIndex = i;
     }
 }
 
@@ -309,28 +319,32 @@ void Demo::AppStart()
 
     for (size_t i = 0; i < 10; ++i)
     {
+        ParticleSystemSettings settings;
+        m_particleSystemSettings.push_back(settings);
+
         ParticleSystem* particleSystem = new ParticleSystem;
-        particleSystem->Init();
+        particleSystem->Init(m_particleSystemSettings[i]);
+        m_particleSystems.push_back(particleSystem);
 
         ElementParticleSystem* particleRenderer = m_root->AddChild<ElementParticleSystem>();
         particleRenderer->SetUnifiedPosition(UDim2::POSITION_CENTER + Vector2f(-300 + (i % 5) * 150.f, -100 + (i / 5) * 200.f));
         particleRenderer->SetParticleSystem(particleSystem);
 
         particleSystem->Start();
-
-        m_particleSystems.push_back(particleSystem);
     }
 
+    ParticleSystemSettings settings;
+    m_particleSystemSettings.push_back(settings);
+
     m_cursorParticleSystem = new ParticleSystem;
-    m_cursorParticleSystem->Init();
+    m_cursorParticleSystem->Init(settings);
+    m_particleSystems.push_back(m_cursorParticleSystem);
 
     ElementParticleSystem* particleRenderer = m_root->AddChild<ElementParticleSystem>();
     particleRenderer->SetParticleSystem(m_cursorParticleSystem);
     m_mouseFollow = particleRenderer;
 
     m_cursorParticleSystem->Start();
-
-    m_particleSystems.push_back(m_cursorParticleSystem);
 }
 
 void Demo::AppStop()
@@ -344,15 +358,72 @@ void Demo::AppUpdate(const DeltaTime& dt)
 
     if (ImGui::Begin("Particles"))
     {
-        ImGui::Text("Cursor ParticleSystem");
-        ImGui::Text("- Active Particles : %d/%d", m_cursorParticleSystem->GetActiveParticleCount(), m_cursorParticleSystem->GetMaxParticleCount());
+        auto ColorConvertSfmlToFloat4 = [](const sf::Color& color) -> ImVec4
+        {
+            return ImGui::ColorConvertU32ToFloat4((color.a << 24) | (color.b << 16) | (color.g << 8) | color.r);
+        };
+
+        auto ColorConvertFloat4ToSfml = [](const ImVec4& color) -> sf::Color
+        {
+            sf::Uint32 colorU32 = ImGui::ColorConvertFloat4ToU32(color);
+            return sf::Color(
+                (sf::Uint8)((colorU32 & 0x000000ff) >> 0),
+                (sf::Uint8)((colorU32 & 0x0000ff00) >> 8),
+                (sf::Uint8)((colorU32 & 0x00ff0000) >> 16),
+                (sf::Uint8)((colorU32 & 0xff000000) >> 24)
+            );
+        };
+
+        ImGui::Separator();
+        for (size_t i = 0; i < m_particleSystemSettings.size(); ++i)
+        {
+            ImGui::PushID(i);
+            if (ImGui::TreeNode("node", "%d", i))
+            {
+                ImGui::Text("Active Particles : % d / % d", m_particleSystems[i]->GetActiveParticleCount(), m_particleSystems[i]->GetMaxParticleCount());
+
+                ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount);
+
+                int emitPerCycle[2] = { m_particleSystemSettings[i].minEmitCountPerCycle, m_particleSystemSettings[i].maxEmitCountPerCycle };
+                ImGui::InputInt2("emit per cycle", emitPerCycle);
+                m_particleSystemSettings[i].minEmitCountPerCycle = emitPerCycle[0];
+                m_particleSystemSettings[i].maxEmitCountPerCycle = emitPerCycle[1];
+
+                int cycleDelay[2] = { m_particleSystemSettings[i].minCycleDelay, m_particleSystemSettings[i].maxCycleDelay };
+                ImGui::InputInt2("cycle delay", cycleDelay);
+                m_particleSystemSettings[i].minCycleDelay = cycleDelay[0];
+                m_particleSystemSettings[i].maxCycleDelay = cycleDelay[1];
+
+                int lifetime[2] = { m_particleSystemSettings[i].minLifetime, m_particleSystemSettings[i].maxLifetime };
+                ImGui::InputInt2("lifetime", lifetime);
+                m_particleSystemSettings[i].minLifetime = lifetime[0];
+                m_particleSystemSettings[i].maxLifetime = lifetime[1];
+
+                float velocity[2] = { m_particleSystemSettings[i].minVelocity, m_particleSystemSettings[i].maxVelocity };
+                ImGui::InputFloat2("velocity", velocity);
+                m_particleSystemSettings[i].minVelocity = velocity[0];
+                m_particleSystemSettings[i].maxVelocity = velocity[1];
+
+                ImVec4 startColor = ColorConvertSfmlToFloat4(m_particleSystemSettings[i].startColor);
+                ImGui::ColorEdit4("start color", (float*)&startColor);
+                m_particleSystemSettings[i].startColor = sf::Color(ColorConvertFloat4ToSfml(startColor));
+
+                ImVec4 endColor = ColorConvertSfmlToFloat4(m_particleSystemSettings[i].endColor);
+                ImGui::ColorEdit4("end color", (float*)&endColor);
+                m_particleSystemSettings[i].endColor = sf::Color(ColorConvertFloat4ToSfml(endColor));
+
+                ImGui::TreePop();
+            }
+            ImGui::PopID();
+        }
 
         ImGui::Separator();
         if (ImGui::Button("Restart All"))
         {
-            for (ParticleSystem* particleSystem : m_particleSystems)
+            for (size_t i = 0; i < m_particleSystems.size(); ++i)
             {
-                particleSystem->Restart();
+                m_particleSystems[i]->Init(m_particleSystemSettings[i]);
+                m_particleSystems[i]->Restart();
             }
         }
     }

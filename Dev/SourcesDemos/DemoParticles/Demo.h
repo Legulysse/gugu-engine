@@ -74,6 +74,7 @@ public:
     void Update(const DeltaTime& dt);
     void Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf);
 
+    void AttachEmitter(Element* element);
     void SetEmitterPosition(const Vector2f& position);
 
     size_t GetMaxParticleCount() const;
@@ -86,6 +87,8 @@ private:
 
 private:
 
+    Element* m_element;
+
     bool m_running;
     size_t m_nextEmitIndex;
     int m_nextCycleDelay;
@@ -96,7 +99,7 @@ private:
     size_t m_maxParticleCount;
     size_t m_verticesPerParticle;
     //size_t m_emitCountPerCycle;
-    bool m_applyRenderLocalTransform;
+    //bool m_applyRenderLocalTransform;
 
     sf::VertexArray m_dataVertices;
     std::vector<int> m_dataLifetime;
@@ -124,10 +127,14 @@ protected:
 
     gugu::Element* m_root;
     gugu::Element* m_mouseFollow;
+    gugu::Element* m_moveArm;
+
+    gugu::int64 m_startTime;
+    bool m_rotateArm;
 
     std::vector<gugu::ParticleSystemSettings> m_particleSystemSettings;
     std::vector<gugu::ParticleSystem*> m_particleSystems;
-    gugu::ParticleSystem* m_cursorParticleSystem;
+    std::vector<gugu::ElementParticleSystem*> m_particleRenderers;
 };
 
 }   //namespace demoproject

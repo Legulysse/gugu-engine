@@ -16,12 +16,16 @@
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Window/Renderer.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ImageSet.h"
+#include "Gugu/Resources/Texture.h"
 #include "Gugu/World/World.h"
 #include "Gugu/World/Level.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <imgui.h>
+#include <imgui_stdlib.h>
 
 using namespace gugu;
 
@@ -73,15 +77,13 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::Init(const ParticleSystemSettings& settings)
 {
-    Stop();
+    Release();
 
     m_settings = settings;
 
     m_loop = settings.loop;
     m_maxParticleCount = settings.maxParticleCount;
     m_verticesPerParticle = settings.verticesPerParticle;
-    //m_emitCountPerCycle = settings.emitCountPerCycle;
-    //m_applyRenderLocalTransform = settings.applyRenderLocalTransform;
 
     m_dataVertices.setPrimitiveType(m_verticesPerParticle == 6 ? sf::PrimitiveType::Triangles : sf::PrimitiveType::Points);
     m_dataVertices.resize(m_maxParticleCount * m_verticesPerParticle);
@@ -89,6 +91,24 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     m_dataLifetime.resize(m_maxParticleCount, 0);
     m_dataRemainingTime.resize(m_maxParticleCount, 0);
     m_dataVelocity.resize(m_maxParticleCount);
+
+    if (m_settings.imageSetID != "")
+    {
+        ImageSet* imageSet = GetResources()->GetImageSet(m_settings.imageSetID);
+        if (imageSet && imageSet->GetSubImageCount() > 0 && imageSet->GetTexture())
+        {
+            m_imageSet = imageSet;
+            m_texture = m_imageSet->GetTexture()->GetSFTexture();
+        }
+    }
+}
+
+void ParticleSystem::Release()
+{
+    Stop();
+
+    m_imageSet = nullptr;
+    m_texture = nullptr;
 }
 
 void ParticleSystem::Start()
@@ -96,7 +116,7 @@ void ParticleSystem::Start()
     if (m_running || m_dataVertices.getVertexCount() == 0)
         return;
 
-    if (m_element && !m_settings.applyRenderLocalTransform)
+    if (m_element && !m_settings.localSpace)
     {
         SetEmitterPosition(m_element->TransformToGlobalFull(Vector2f()));
     }
@@ -180,16 +200,52 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     // Reset position.
     if (m_verticesPerParticle == 6)
     {
-        m_dataVertices[particleIndex * 6 + 0].position = m_emitterPosition + Vector2f(-5.f, -5.f);
-        m_dataVertices[particleIndex * 6 + 1].position = m_emitterPosition + Vector2f(5, -5.f);
-        m_dataVertices[particleIndex * 6 + 2].position = m_emitterPosition + Vector2f(-5.f, 5);
-        m_dataVertices[particleIndex * 6 + 3].position = m_emitterPosition + Vector2f(5, -5.f);
-        m_dataVertices[particleIndex * 6 + 4].position = m_emitterPosition + Vector2f(-5.f, 5);
-        m_dataVertices[particleIndex * 6 + 5].position = m_emitterPosition + Vector2f(5, 5);
+        float x = 0.f;
+        float y = 0.f;
+        if (m_settings.keepSizeRatio)
+        {
+            float ratio = GetRandomf(1.f);
+            Vector2f testx = Lerp(m_settings.minStartSize, m_settings.maxStartSize, ratio);
+            x = Lerp(m_settings.minStartSize.x, m_settings.maxStartSize.x, ratio);
+            y = Lerp(m_settings.minStartSize.y, m_settings.maxStartSize.y, ratio);
+        }
+        else
+        {
+            x = GetRandomf(m_settings.minStartSize.x, m_settings.maxStartSize.x);
+            y = GetRandomf(m_settings.minStartSize.y, m_settings.maxStartSize.y);
+        }
+
+        x *= 0.5f;
+        y *= 0.5f;
+
+        m_dataVertices[particleIndex * 6 + 0].position = m_emitterPosition + Vector2f(-x, -y);
+        m_dataVertices[particleIndex * 6 + 1].position = m_emitterPosition + Vector2f(x, -y);
+        m_dataVertices[particleIndex * 6 + 2].position = m_emitterPosition + Vector2f(-x, y);
+        m_dataVertices[particleIndex * 6 + 3].position = m_emitterPosition + Vector2f(x, -y);
+        m_dataVertices[particleIndex * 6 + 4].position = m_emitterPosition + Vector2f(-x, y);
+        m_dataVertices[particleIndex * 6 + 5].position = m_emitterPosition + Vector2f(x, y);
     }
     else
     {
         m_dataVertices[particleIndex].position = m_emitterPosition + Vector2f(0.f, 0.f);
+    }
+
+    if (m_imageSet)
+    {
+        SubImage* subImage = m_imageSet->GetSubImage(GetRandom(m_imageSet->GetSubImageCount()));
+
+        sf::IntRect subRect = subImage->GetRect();
+        float fLeft = (float)subRect.left;
+        float fTop = (float)subRect.top;
+        float fRight = fLeft + subRect.width;
+        float fBottom = fTop + subRect.height;
+
+        m_dataVertices[particleIndex * 6 + 0].texCoords = Vector2f(fLeft, fTop);
+        m_dataVertices[particleIndex * 6 + 1].texCoords = Vector2f(fRight, fTop);
+        m_dataVertices[particleIndex * 6 + 2].texCoords = Vector2f(fLeft, fBottom);
+        m_dataVertices[particleIndex * 6 + 3].texCoords = Vector2f(fRight, fTop);
+        m_dataVertices[particleIndex * 6 + 4].texCoords = Vector2f(fLeft, fBottom);
+        m_dataVertices[particleIndex * 6 + 5].texCoords = Vector2f(fRight, fBottom);
     }
 
     // Reset color.
@@ -222,7 +278,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
     if (!m_running)
         return;
 
-    if (m_element && !m_settings.applyRenderLocalTransform)
+    if (m_element && !m_settings.localSpace)
     {
         SetEmitterPosition(m_element->TransformToGlobalFull(Vector2f()));
     }
@@ -302,7 +358,9 @@ void ParticleSystem::Render(RenderPass& _kRenderPass, const sf::Transform& _kTra
         return;
 
     sf::RenderStates states;
-    if (m_settings.applyRenderLocalTransform)
+    states.texture = m_texture;
+
+    if (m_settings.localSpace)
     {
         states.transform = _kTransformSelf;
     }
@@ -446,10 +504,6 @@ void Demo::AppUpdate(const DeltaTime& dt)
     {
         m_moveArm->Rotate(dt.s() * 90.f);
     }
-    else
-    {
-        m_moveArm->SetRotation(0.f);
-    }
 
     m_mouseFollow->SetPosition(GetGameWindow()->GetMousePosition());
 
@@ -486,7 +540,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::Text("Active Particles : % d / % d", m_particleSystems[i]->GetActiveParticleCount(), m_particleSystems[i]->GetMaxParticleCount());
 
                 ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount);
-                ImGui::Checkbox("apply render local transform", &m_particleSystemSettings[i].applyRenderLocalTransform);
+                ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
 
                 int emitPerCycle[2] = { m_particleSystemSettings[i].minEmitCountPerCycle, m_particleSystemSettings[i].maxEmitCountPerCycle };
                 ImGui::InputInt2("emit per cycle", emitPerCycle);
@@ -494,12 +548,12 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 m_particleSystemSettings[i].maxEmitCountPerCycle = emitPerCycle[1];
 
                 int cycleDelay[2] = { m_particleSystemSettings[i].minCycleDelay, m_particleSystemSettings[i].maxCycleDelay };
-                ImGui::InputInt2("cycle delay", cycleDelay);
+                ImGui::InputInt2("cycle delay (ms)", cycleDelay);
                 m_particleSystemSettings[i].minCycleDelay = cycleDelay[0];
                 m_particleSystemSettings[i].maxCycleDelay = cycleDelay[1];
 
                 int lifetime[2] = { m_particleSystemSettings[i].minLifetime, m_particleSystemSettings[i].maxLifetime };
-                ImGui::InputInt2("lifetime", lifetime);
+                ImGui::InputInt2("lifetime (ms)", lifetime);
                 m_particleSystemSettings[i].minLifetime = lifetime[0];
                 m_particleSystemSettings[i].maxLifetime = lifetime[1];
 
@@ -507,6 +561,17 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::InputFloat2("velocity", velocity);
                 m_particleSystemSettings[i].minVelocity = velocity[0];
                 m_particleSystemSettings[i].maxVelocity = velocity[1];
+
+                ImGui::Checkbox("keep size ratio", &m_particleSystemSettings[i].keepSizeRatio);
+
+                ImVec2 minStartSize = m_particleSystemSettings[i].minStartSize;
+                ImVec2 maxStartSize = m_particleSystemSettings[i].maxStartSize;
+                ImVec4 startSize = ImVec4(minStartSize.x, minStartSize.y, maxStartSize.x, maxStartSize.y);
+                ImGui::InputFloat4("start size", (float*)&startSize);
+                m_particleSystemSettings[i].minStartSize = Vector2f(startSize.x, startSize.y);
+                m_particleSystemSettings[i].maxStartSize = Vector2f(startSize.z, startSize.w);
+
+                ImGui::InputText("imageSet", &m_particleSystemSettings[i].imageSetID);
 
                 ImVec4 startColor = ColorConvertSfmlToFloat4(m_particleSystemSettings[i].startColor);
                 ImGui::ColorEdit4("start color", (float*)&startColor);

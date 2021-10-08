@@ -17,6 +17,7 @@ namespace gugu
 {
     class Element;
     class ElementSFDrawable;
+    class ImageSet;
     struct RenderPass;
 }
 
@@ -42,18 +43,29 @@ private:
 
 struct ParticleSystemSettings
 {
+    // Setup
     bool loop = true;
     int maxParticleCount = 50;
     int verticesPerParticle = 6;
+    bool localSpace = false;
+
+    // Behaviour
     int minLifetime = 500;
     int maxLifetime = 500;
     int minEmitCountPerCycle = 1;
     int maxEmitCountPerCycle = 1;
     int minCycleDelay = 20;
     int maxCycleDelay = 20;
-    bool applyRenderLocalTransform = false;
     float minVelocity = 50.f;
     float maxVelocity = 100.f;
+
+    // Render
+    bool keepSizeRatio = true;
+    Vector2f minStartSize = Vector2f(5.f, 5.f);
+    Vector2f maxStartSize = Vector2f(10.f, 10.f);
+    std::string imageSetID = "";
+    //Vector2f minEndSize = Vector2f(5.f, 5.f); // TODO: lerp particle size over lifetime, we need to store a reference position to recompute the vertices.
+    //Vector2f maxEndSize = Vector2f(10.f, 10.f);
     sf::Color startColor = sf::Color::Red;
     sf::Color endColor = sf::Color::Blue;
 };
@@ -66,6 +78,7 @@ public:
     ~ParticleSystem();
 
     void Init(const ParticleSystemSettings& settings);
+    void Release();
 
     void Start();
     void Stop();
@@ -98,8 +111,8 @@ private:
     bool m_loop;
     size_t m_maxParticleCount;
     size_t m_verticesPerParticle;
-    //size_t m_emitCountPerCycle;
-    //bool m_applyRenderLocalTransform;
+    ImageSet* m_imageSet;
+    sf::Texture* m_texture;
 
     sf::VertexArray m_dataVertices;
     std::vector<int> m_dataLifetime;

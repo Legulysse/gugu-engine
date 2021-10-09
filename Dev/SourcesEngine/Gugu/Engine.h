@@ -24,6 +24,7 @@ namespace gugu
     class ManagerAudio;
     class ManagerNetwork;
     class ManagerResources;
+    class ManagerVisualEffects;
     class Application;
     class Renderer;
     class Window;
@@ -100,6 +101,7 @@ public:
     ManagerNetwork*     GetManagerNetwork() const;
     ManagerResources*   GetManagerResources() const;
     ManagerAnimations*  GetManagerAnimations() const;
+    ManagerVisualEffects* GetManagerVisualEffects() const;
 
     LoggerEngine*       GetLogEngine() const;
     TraceGroup*         GetTraceGroupMain() const;
@@ -119,6 +121,7 @@ private:
     ManagerNetwork*     m_managerNetwork;
     ManagerResources*   m_managerResources;
     ManagerAnimations*  m_managerAnimations;
+    ManagerVisualEffects* m_managerVisualEffects;
 
     LoggerEngine*       m_logEngine;
     TraceGroup*         m_traceGroupMain;

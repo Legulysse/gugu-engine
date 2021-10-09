@@ -14,6 +14,7 @@
 #include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Network/ManagerNetwork.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/VisualEffects/ManagerVisualEffects.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
@@ -89,6 +90,9 @@ void Engine::Init(const EngineConfig& config)
     m_managerAnimations = new ManagerAnimations;
     m_managerAnimations->Init(computedConfig);
 
+    m_managerVisualEffects = new ManagerVisualEffects;
+    m_managerVisualEffects->Init(computedConfig);
+
     //-- Init Default Renderer --//
     m_renderer = new Renderer;
 
@@ -134,11 +138,13 @@ void Engine::Release()
     SafeDelete(m_renderer);
 
     m_managerInputs->Release();
+    m_managerVisualEffects->Release();
     m_managerAnimations->Release();
     m_managerAudio->Release();
     m_managerResources->Release();
 
     SafeDelete(m_managerInputs);
+    SafeDelete(m_managerVisualEffects);
     SafeDelete(m_managerAnimations);
     SafeDelete(m_managerAudio);
     SafeDelete(m_managerNetwork);
@@ -320,6 +326,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
             m_world->Update(dt);
 
         m_managerAnimations->Update(dt);
+        m_managerVisualEffects->Update(dt);
 
         for (size_t i = 0; i < m_windows.size(); ++i)
             m_windows[i]->Update(dt);
@@ -587,6 +594,11 @@ ManagerInputs* Engine::GetManagerInputs() const
 ManagerAnimations* Engine::GetManagerAnimations() const
 {
     return m_managerAnimations;
+}
+
+ManagerVisualEffects* Engine::GetManagerVisualEffects() const
+{
+    return m_managerVisualEffects;
 }
 
 ManagerAudio* Engine::GetManagerAudio() const

@@ -110,13 +110,13 @@ void Game::StepScenario(const DeltaTime& dt)
     {
         for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
         {
-            if (m_controllersAI[iController]->m_character->m_isDead)
-                continue;
+            m_controllersAI[iController]->m_character->TestCollision(m_projectiles[iProjectile]);
+        }
 
-            if (m_controllersAI[iController]->m_character->TestCollision(m_projectiles[iProjectile]))
-            {
-                SafeDelete(m_projectiles[iProjectile]);  //TODO: Use a DeleteActor method ?
-            }
+        // Purge dead Projectiles
+        if (m_projectiles[iProjectile]->m_pendingDestroy)
+        {
+            SafeDelete(m_projectiles[iProjectile]);  //TODO: Use a DeleteActor method ?
         }
     }
     StdVectorRemove<Projectile*>(m_projectiles, nullptr);

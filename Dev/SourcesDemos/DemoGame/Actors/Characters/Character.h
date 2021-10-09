@@ -31,7 +31,7 @@ public:
     void            Move        (gugu::Vector2f _kDirection, const gugu::DeltaTime& dt);
     gugu::Vector2f    GetPosition () const;
 
-    bool TestCollision(class Projectile* _pProjectile);
+    void TestCollision(class Projectile* _pProjectile);
 
     virtual void ReceiveDamage(Character* source, float value);
     virtual void ReceiveHeal(float value);

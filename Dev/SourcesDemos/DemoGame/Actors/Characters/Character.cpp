@@ -83,15 +83,15 @@ void Character::Move(Vector2f _kDirection, const DeltaTime& dt)
     }
 }
 
-bool Character::TestCollision(Projectile* _pProjectile)
+void Character::TestCollision(Projectile* _pProjectile)
 {
-    if (!_pProjectile)
-        return false;
+    if (!_pProjectile || m_isDead || _pProjectile->m_isDead)
+        return;
 
     if (LengthSquare(m_sprite->GetPosition() - _pProjectile->m_sprite->GetPosition()) > Power(32.f, 2))
-        return false;
+        return;
 
-    return _pProjectile->OnHit(this);;    // true = Destroy projectile
+    _pProjectile->OnHit(this);
 }
 
 void Character::ReceiveDamage(Character* source, float value)

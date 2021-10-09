@@ -13,6 +13,8 @@
 
 #include "Gugu/World/Level.h"
 #include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Element/2D/ElementParticles.h"
+#include "Gugu/VisualEffects/ParticleSystemSettings.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
@@ -27,13 +29,19 @@ namespace demoproject {
 Projectile::Projectile()
 {
     m_sprite = nullptr;
+    m_deathParticles = nullptr;
+    m_isFireball = false;
+    m_isBowAttack = false;
     m_speed = 650;
     m_lifetime = 2.f;
+    m_isDead = false;
+    m_pendingDestroy = false;
 }
 
 Projectile::~Projectile()
 {
     SafeDelete(m_sprite);
+    SafeDelete(m_deathParticles);
 }
 
 void Projectile::InitProjectile(const SkillContext& skillContext, const DS_EffectProjectile* effectSource, const Vector2f& _kFrom, const Vector2f& _kTo)
@@ -80,67 +88,177 @@ void Projectile::InitProjectile(const SkillContext& skillContext, const DS_Effec
 
     float fAngleDegrees = ToDegreesf(atan2f(m_direction.y, m_direction.x));     //TODO: Atan2 dans Math.h + AngleVector en version degrees + radians + rename ToDegrees
 
+    if (m_skillContext.skill->name == "Bow Attack")
+    {
+        m_isBowAttack = true;
+    }
+    else if (m_skillContext.skill->name == "Fireball")
+    {
+        m_isFireball = true;
+    }
+
     m_sprite = m_level->GetRootNode()->AddChild<ElementSprite>();
-    m_sprite->SetTexture("Arrow.png");
+    //m_sprite->SetTexture("Arrow.png");
     m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
     m_sprite->SetRotation(fAngleDegrees + 90.f);
     m_sprite->SetPosition(_kFrom + kOffset);
 
+    if (m_isFireball)
+    {
+        // Fireball trail
+        ParticleSystemSettings particleSettings;
+        particleSettings.maxParticleCount = 150;
+        particleSettings.minEmitCountPerCycle = 5;
+        particleSettings.maxEmitCountPerCycle = 5;
+        particleSettings.minStartSize = Vector2f(8.f, 8.f);
+        particleSettings.maxStartSize = Vector2f(16.f, 16.f);
+        particleSettings.startColor = sf::Color::Yellow;
+        particleSettings.endColor = sf::Color(255, 0, 0, 100);
+        ElementParticles* particles = m_sprite->AddChild<ElementParticles>();
+        particles->CreateParticleSystem(particleSettings, true);
+    }
+    else if (m_isBowAttack)
+    {
+        m_sprite->SetTexture("Arrow.png");
+
+        // Arrow trail
+        ParticleSystemSettings particleSettings;
+        particleSettings.maxParticleCount = 150;
+        particleSettings.minEmitCountPerCycle = 5;
+        particleSettings.maxEmitCountPerCycle = 5;
+        particleSettings.minLifetime = 250;
+        particleSettings.maxLifetime = 250;
+        particleSettings.minStartSize = Vector2f(1.f, 1.f);
+        particleSettings.maxStartSize = Vector2f(2.f, 2.f);
+        particleSettings.startColor = sf::Color::Red;
+        particleSettings.endColor = sf::Color(0, 0, 0, 0);
+        ElementParticles* particles = m_sprite->AddChild<ElementParticles>();
+        particles->CreateParticleSystem(particleSettings, true);
+    }
+
     GetGame()->m_projectiles.push_back(this);
 }
 
-bool Projectile::OnHit(Character* character)
+void Projectile::OnHit(Character* character)
 {
-    if (m_characterHits.find(character) != m_characterHits.end())
+    if (m_characterHits.find(character) == m_characterHits.end())
     {
-        return false;
+        m_characterHits.insert(character);
+        ++m_hitCount;
+
+        SkillUtility::ApplySkillEffectList(m_skillContext, m_effectSource->effectsOnHit, character, m_sprite->GetPosition());
+
+        if (m_effectSource->maximumHits >= 0)
+        {
+            m_isDead = m_hitCount >= m_effectSource->maximumHits;
+        }
     }
-
-    m_characterHits.insert(character);
-    ++m_hitCount;
-
-    SkillUtility::ApplySkillEffectList(m_skillContext, m_effectSource->effectsOnHit, character, m_sprite->GetPosition());
-
-    if (m_effectSource->maximumHits >= 0)
-    {
-        return m_hitCount >= m_effectSource->maximumHits;    // true = Destroy projectile
-    }
-
-    return false;    // true = Destroy projectile
 }
 
 void Projectile::Step(const DeltaTime& dt)
 {
     Actor::Step(dt);
 
-    bool reachedDestination = false;
-    Vector2f moveStep = m_direction * dt.s() * m_speed;
-
-    if (m_hasDestination)
+    if (m_isDead)
     {
-        if (LengthSquare(m_sprite->GetPosition() - m_destination) <= LengthSquare(moveStep) + Math::Epsilon)
+        if (m_deathParticles)
         {
-            reachedDestination = true;
+            m_lifetime -= dt.s();
+            if (m_lifetime < 0.f)
+            {
+                m_pendingDestroy = true;
+            }
+        }
+        else
+        {
+            m_pendingDestroy = true;
+
+            if (m_isFireball)
+            {
+                m_pendingDestroy = false;
+                m_lifetime = 3.f;
+
+                // Fireball explosion
+                ParticleSystemSettings particleSettings;
+                particleSettings.loop = false;
+                particleSettings.maxParticleCount = 16000;
+                particleSettings.minEmitCountPerCycle = 2000;
+                particleSettings.maxEmitCountPerCycle = 2000;
+                particleSettings.minLifetime = 400;
+                particleSettings.maxLifetime = 400;
+                particleSettings.minVelocity = 100.f;
+                particleSettings.maxVelocity = 500.f;
+                particleSettings.minStartSize = Vector2f(3.f, 3.f);
+                particleSettings.maxStartSize = Vector2f(8.f, 8.f);
+                particleSettings.startColor = sf::Color::Yellow;
+                particleSettings.endColor = sf::Color(255, 0, 0, 50);
+
+                ElementParticles* particles = m_level->GetRootNode()->AddChild<ElementParticles>();
+                particles->SetPosition(m_sprite->GetPosition());
+                particles->CreateParticleSystem(particleSettings, true);
+                m_deathParticles = particles;
+
+                //SafeDelete(m_sprite);
+            }
+            else if (m_isBowAttack)
+            {
+                m_pendingDestroy = false;
+                m_lifetime = 3.f;
+
+                // Bomb Arrow explosion
+                ParticleSystemSettings particleSettings;
+                particleSettings.loop = false;
+                particleSettings.maxParticleCount = 500;
+                particleSettings.minEmitCountPerCycle = 100;
+                particleSettings.maxEmitCountPerCycle = 100;
+                particleSettings.minLifetime = 500;
+                particleSettings.maxLifetime = 700;
+                particleSettings.minVelocity = 75.f;
+                particleSettings.maxVelocity = 100.f;
+                particleSettings.minStartSize = Vector2f(3.f, 3.f);
+                particleSettings.maxStartSize = Vector2f(8.f, 8.f);
+                particleSettings.startColor = sf::Color::Yellow;
+                particleSettings.endColor = sf::Color(255, 0, 0, 50);
+
+                ElementParticles* particles = m_level->GetRootNode()->AddChild<ElementParticles>();
+                particles->SetPosition(m_sprite->GetPosition());
+                particles->CreateParticleSystem(particleSettings, true);
+                m_deathParticles = particles;
+
+                SafeDelete(m_sprite);
+            }
         }
     }
-
-    if (m_hasLifetime)
+    else
     {
-        m_lifetime -= dt.s();
-        if (m_lifetime < 0.f)
+        bool reachedDestination = false;
+        Vector2f moveStep = m_direction * dt.s() * m_speed;
+
+        if (m_hasDestination)
         {
-            reachedDestination = true;
+            if (LengthSquare(m_sprite->GetPosition() - m_destination) <= LengthSquare(moveStep) + Math::Epsilon)
+            {
+                reachedDestination = true;
+            }
         }
-    }
 
-    m_sprite->Move(moveStep);
+        if (m_hasLifetime)
+        {
+            m_lifetime -= dt.s();
+            if (m_lifetime < 0.f)
+            {
+                reachedDestination = true;
+            }
+        }
 
-    if (reachedDestination)
-    {
-        SkillUtility::ApplySkillEffectList(m_skillContext, m_effectSource->effectsOnDestination, nullptr, m_sprite->GetPosition());
+        m_sprite->Move(moveStep);
 
-        StdVectorRemove(GetGame()->m_projectiles, this);
-        m_level->DeleteActor(this);
+        if (reachedDestination)
+        {
+            SkillUtility::ApplySkillEffectList(m_skillContext, m_effectSource->effectsOnDestination, nullptr, m_sprite->GetPosition());
+
+            m_isDead = true;
+        }
     }
 }
 

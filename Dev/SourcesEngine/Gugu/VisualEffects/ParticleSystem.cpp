@@ -88,17 +88,17 @@ void ParticleSystem::Start()
 
     m_running = true;
     m_currentDuration = 0;
-
+    
     // TODO: I should refactor this to avoid duplicated code from the Update.
     // TODO: Delay parameter ?
     size_t i = 0;
-    size_t emitCount = GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn);
-    while (i < Min(emitCount, m_maxParticleCount))
+    size_t emitCount = Min(m_maxParticleCount, (size_t)GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn));
+    while (i < emitCount)
     {
         EmitParticle(i);
         ++i;
     }
-
+    
     m_nextEmitIndex = i % m_maxParticleCount;
     m_currentSpawnDelay = 0;
 
@@ -341,22 +341,14 @@ void ParticleSystem::Update(const DeltaTime& dt)
             for (int n = 0; n < nbSpawns; ++n)
             {
                 size_t i = m_nextEmitIndex;
-                size_t findCount = 0;
                 size_t emitCount = 0;
-                size_t emitLimit = GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn);
-                bool findNextAvailableParticle = true;
-                while (findNextAvailableParticle)
+                size_t emitLimit = Min(m_maxParticleCount, (size_t)GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn));
+                while (m_dataLifetime[i] <= 0 && emitCount < emitLimit)
                 {
-                    if (m_dataLifetime[i] <= 0)
-                    {
-                        EmitParticle(i);
-                        ++emitCount;
-                    }
+                    EmitParticle(i);
 
                     i = (i + 1) % m_maxParticleCount;
-
-                    ++findCount;
-                    findNextAvailableParticle = (findCount < m_maxParticleCount) && (emitCount < emitLimit);
+                    ++emitCount;
                 }
 
                 m_nextEmitIndex = i;

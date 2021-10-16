@@ -13,6 +13,7 @@
 #include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Trace.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -38,8 +39,12 @@ void ManagerVisualEffects::Release()
 
 void ManagerVisualEffects::Update(const DeltaTime& dt)
 {
+    GUGU_SCOPE_TRACE_MAIN("Visual Effects");
+
     for (ParticleSystem* particleSystem : m_particleSystems)
     {
+        GUGU_SCOPE_TRACE_MAIN_("Particles", Particles);
+
         particleSystem->Update(dt);
     }
 }

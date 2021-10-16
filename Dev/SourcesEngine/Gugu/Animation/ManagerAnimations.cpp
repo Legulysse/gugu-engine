@@ -12,6 +12,7 @@
 #include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Trace.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -37,6 +38,8 @@ void ManagerAnimations::Release()
 
 void ManagerAnimations::Step(const DeltaTime& dt)
 {
+    GUGU_SCOPE_TRACE_MAIN("Animations");
+
     // TODO: handle step vs update animations.
     for (SpriteAnimation* animation : m_spriteAnimations)
     {
@@ -46,6 +49,8 @@ void ManagerAnimations::Step(const DeltaTime& dt)
 
 void ManagerAnimations::Update(const DeltaTime& dt)
 {
+    GUGU_SCOPE_TRACE_MAIN("Animations");
+
     // TODO: handle step vs update animations.
     //for (SpriteAnimation* animation : m_spriteAnimations)
     //{

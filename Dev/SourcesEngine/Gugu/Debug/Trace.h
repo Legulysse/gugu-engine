@@ -10,10 +10,17 @@
 ////////////////////////////////////////////////////////////////
 // Macros
 
-#define GUGU_SCOPE_TRACE(GROUP_PTR, ID) ScopeTrace LocalScopeTrace(GROUP_PTR, ID)
-#define GUGU_SCOPE_TRACE_MAIN(ID) ScopeTrace LocalScopeTrace(GetTraceGroupMain(), ID)
-#define GUGU_SCOPE_TRACE_(GROUP_PTR, ID, VARIABLE_NAME) ScopeTrace LocalScopeTrace_##VARIABLE_NAME(GROUP_PTR, ID)
-#define GUGU_SCOPE_TRACE_MAIN_(ID, VARIABLE_NAME) ScopeTrace LocalScopeTrace_##VARIABLE_NAME(GetTraceGroupMain(), ID)
+#if defined(GUGU_NO_TRACE)
+#define GUGU_SCOPE_TRACE(GROUP_PTR, ID)
+#define GUGU_SCOPE_TRACE_MAIN(ID)
+#define GUGU_SCOPE_TRACE_(GROUP_PTR, ID, VARIABLE_NAME)
+#define GUGU_SCOPE_TRACE_MAIN_(ID, VARIABLE_NAME)
+#else
+#define GUGU_SCOPE_TRACE(GROUP_PTR, ID) ScopeTrace localScopeTrace(GROUP_PTR, ID)
+#define GUGU_SCOPE_TRACE_MAIN(ID) ScopeTrace localScopeTrace(GetTraceGroupMain(), ID)
+#define GUGU_SCOPE_TRACE_(GROUP_PTR, ID, VARIABLE_NAME) ScopeTrace localScopeTrace_##VARIABLE_NAME(GROUP_PTR, ID)
+#define GUGU_SCOPE_TRACE_MAIN_(ID, VARIABLE_NAME) ScopeTrace localScopeTrace_##VARIABLE_NAME(GetTraceGroupMain(), ID)
+#endif
 
 ////////////////////////////////////////////////////////////////
 // File Declarations

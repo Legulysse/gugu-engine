@@ -167,12 +167,14 @@ void Demo::AppUpdate(const DeltaTime& dt)
             ImGui::PushID(i);
             if (ImGui::TreeNode("node", "%d", i))
             {
-                ImGui::Text("Active Particles : % d / % d", m_particleSystems[i]->GetActiveParticleCount(), m_particleSystems[i]->GetMaxParticleCount());
+                ImGui::Text("Running : %s, Active Particles : %d / %d", (m_particleSystems[i]->IsRunning() ? "true" : "false"), m_particleSystems[i]->GetActiveParticleCount(), m_particleSystems[i]->GetMaxParticleCount());
 
                 ImGui::Checkbox("loop", &m_particleSystemSettings[i].loop);
-                ImGui::InputInt("duration", &m_particleSystemSettings[i].duration);
+                ImGui::InputInt("duration (ms)", &m_particleSystemSettings[i].duration);
                 ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount);
                 ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
+
+                ImGui::Spacing();
 
                 float spawnPerSecond[2] = { m_particleSystemSettings[i].minSpawnPerSecond, m_particleSystemSettings[i].maxSpawnPerSecond };
                 ImGui::InputFloat2("spawn per second", spawnPerSecond);
@@ -184,6 +186,8 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 m_particleSystemSettings[i].minParticlesPerSpawn = particlesPerSpawn[0];
                 m_particleSystemSettings[i].maxParticlesPerSpawn = particlesPerSpawn[1];
 
+                ImGui::Spacing();
+
                 int lifetime[2] = { m_particleSystemSettings[i].minLifetime, m_particleSystemSettings[i].maxLifetime };
                 ImGui::InputInt2("lifetime (ms)", lifetime);
                 m_particleSystemSettings[i].minLifetime = lifetime[0];
@@ -193,6 +197,8 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::InputFloat2("velocity", velocity);
                 m_particleSystemSettings[i].minVelocity = velocity[0];
                 m_particleSystemSettings[i].maxVelocity = velocity[1];
+
+                ImGui::Spacing();
 
                 ImGui::Checkbox("keep size ratio", &m_particleSystemSettings[i].keepSizeRatio);
 

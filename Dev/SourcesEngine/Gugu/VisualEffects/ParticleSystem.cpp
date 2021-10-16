@@ -25,6 +25,8 @@ namespace gugu {
 
 ParticleSystem::ParticleSystem()
     : m_running(false)
+    , m_activeParticleCount(0)
+    , m_currentDuration(0)
     , m_nextEmitIndex(0)
     , m_nextSpawnDelay(0)
     , m_currentSpawnDelay(0)
@@ -41,9 +43,6 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
 
     m_settings = settings;
 
-    // TODO: handle properly the loop and duration parameters
-    // TODO: Stop running once all particles are disabled.
-    m_loop = settings.loop;
     m_maxParticleCount = settings.maxParticleCount;
     m_verticesPerParticle = settings.verticesPerParticle;
 
@@ -88,6 +87,7 @@ void ParticleSystem::Start()
     }
 
     m_running = true;
+    m_currentDuration = 0;
 
     // TODO: I should refactor this to avoid duplicated code from the Update.
     // TODO: Delay parameter ?
@@ -112,6 +112,8 @@ void ParticleSystem::Stop()
         return;
 
     m_running = false;
+    m_activeParticleCount = 0;
+    m_currentDuration = 0;
     m_nextEmitIndex = 0;
 
     for (size_t i = 0; i < m_maxParticleCount; ++i)
@@ -136,6 +138,11 @@ void ParticleSystem::SetEmitterPosition(const Vector2f& position)
     m_emitterPosition = position;
 }
 
+bool ParticleSystem::IsRunning() const
+{
+    return m_running;
+}
+
 size_t ParticleSystem::GetMaxParticleCount() const
 {
     return m_maxParticleCount;
@@ -143,26 +150,17 @@ size_t ParticleSystem::GetMaxParticleCount() const
 
 size_t ParticleSystem::GetActiveParticleCount() const
 {
-    if (!m_running)
-        return 0;
-
-    size_t count = 0;
-    for (size_t i = 0; i < m_maxParticleCount; ++i)
-    {
-        if (m_dataLifetime[i] > 0)
-        {
-            ++count;
-        }
-    }
-
-    return count;
+    return m_activeParticleCount;
 }
 
 void ParticleSystem::EmitParticle(size_t particleIndex)
 {
+    ++m_activeParticleCount;
+
     // Reset lifetime.
-    m_dataLifetime[particleIndex] = GetRandom(m_settings.minLifetime, m_settings.maxLifetime);
-    m_dataRemainingTime[particleIndex] = m_dataLifetime[particleIndex];
+    int lifetime = GetRandom(m_settings.minLifetime, m_settings.maxLifetime);
+    m_dataLifetime[particleIndex] = lifetime;
+    m_dataRemainingTime[particleIndex] = lifetime;
 
     // Reset position.
     if (m_verticesPerParticle == 6)
@@ -172,7 +170,6 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
         if (m_settings.keepSizeRatio)
         {
             float ratio = GetRandomf(1.f);
-            Vector2f testx = Lerp(m_settings.minStartSize, m_settings.maxStartSize, ratio);
             x = Lerp(m_settings.minStartSize.x, m_settings.maxStartSize.x, ratio);
             y = Lerp(m_settings.minStartSize.y, m_settings.maxStartSize.y, ratio);
         }
@@ -227,6 +224,13 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     m_dataVelocity[particleIndex] = velocity;
 }
 
+void ParticleSystem::KillParticle(size_t particleIndex)
+{
+    --m_activeParticleCount;
+
+    ResetParticle(particleIndex);
+}
+
 void ParticleSystem::ResetParticle(size_t particleIndex)
 {
     // Disable particle.
@@ -254,9 +258,10 @@ void ParticleSystem::Update(const DeltaTime& dt)
         SetEmitterPosition(Vector2f());
     }
 
+    // Update live particles.
     for (size_t i = 0; i < m_maxParticleCount; ++i)
     {
-        // Ignore disabled particles
+        // Ignore disabled particles.
         if (m_dataLifetime[i] <= 0)
             continue;
 
@@ -264,7 +269,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
 
         if (m_dataRemainingTime[i] <= 0)
         {
-            ResetParticle(i);
+            KillParticle(i);
         }
         else
         {
@@ -287,7 +292,24 @@ void ParticleSystem::Update(const DeltaTime& dt)
         }
     }
 
-    if (m_loop || m_nextEmitIndex > 0)
+    // Check duration end.
+    bool canEmit = true;
+
+    if (!m_settings.loop)
+    {
+        if (m_currentDuration >= m_settings.duration)
+        {
+            canEmit = false;
+            m_running = m_activeParticleCount > 0;
+        }
+        else
+        {
+            m_currentDuration += dt.ms();
+        }
+    }
+
+    // Emit new particles.
+    if (canEmit)
     {
         int nbSpawns = 0;
 
@@ -316,7 +338,6 @@ void ParticleSystem::Update(const DeltaTime& dt)
 
         if (nbSpawns > 0)
         {
-            // Compensate frames if needed (handle high spawning rates).
             for (int n = 0; n < nbSpawns; ++n)
             {
                 size_t i = m_nextEmitIndex;
@@ -335,7 +356,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
                     i = (i + 1) % m_maxParticleCount;
 
                     ++findCount;
-                    findNextAvailableParticle = (findCount < m_maxParticleCount) && (emitCount < emitLimit) && (m_loop || i != 0);
+                    findNextAvailableParticle = (findCount < m_maxParticleCount) && (emitCount < emitLimit);
                 }
 
                 m_nextEmitIndex = i;

@@ -43,12 +43,14 @@ public:
     void AttachToElement(Element* element);
     void SetEmitterPosition(const Vector2f& position);
 
+    bool IsRunning() const;
     size_t GetMaxParticleCount() const;
     size_t GetActiveParticleCount() const;
 
 private:
 
     void EmitParticle(size_t particleIndex);
+    void KillParticle(size_t particleIndex);
     void ResetParticle(size_t particleIndex);
 
 private:
@@ -56,13 +58,14 @@ private:
     Element* m_element;
 
     ParticleSystemSettings m_settings;
-    bool m_loop;
     size_t m_maxParticleCount;
     size_t m_verticesPerParticle;
     ImageSet* m_imageSet;
     sf::Texture* m_texture;
 
     bool m_running;
+    size_t m_activeParticleCount;
+    int m_currentDuration;
     Vector2f m_emitterPosition;
     size_t m_nextEmitIndex;
     int m_nextSpawnDelay;

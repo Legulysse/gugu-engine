@@ -18,17 +18,20 @@ struct ParticleSystemSettings
 {
     // Setup
     bool loop = true;
+    int duration = 5000;
     int maxParticleCount = 50;
     int verticesPerParticle = 6;
     bool localSpace = false;
 
-    // Behaviour
+    // Emitter
+    float minSpawnPerSecond = 10.f;
+    float maxSpawnPerSecond = 10.f;
+    int minParticlesPerSpawn = 1;
+    int maxParticlesPerSpawn = 1;
+
+    // Particle behaviour
     int minLifetime = 500;
     int maxLifetime = 500;
-    int minEmitCountPerCycle = 1;
-    int maxEmitCountPerCycle = 1;
-    int minCycleDelay = 20;
-    int maxCycleDelay = 20;
     float minVelocity = 50.f;
     float maxVelocity = 100.f;
 

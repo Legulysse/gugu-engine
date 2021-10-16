@@ -26,6 +26,8 @@ namespace gugu {
 ParticleSystem::ParticleSystem()
     : m_running(false)
     , m_nextEmitIndex(0)
+    , m_nextSpawnDelay(0)
+    , m_currentSpawnDelay(0)
 {
 }
 
@@ -39,6 +41,8 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
 
     m_settings = settings;
 
+    // TODO: handle properly the loop and duration parameters
+    // TODO: Stop running once all particles are disabled.
     m_loop = settings.loop;
     m_maxParticleCount = settings.maxParticleCount;
     m_verticesPerParticle = settings.verticesPerParticle;
@@ -85,8 +89,10 @@ void ParticleSystem::Start()
 
     m_running = true;
 
+    // TODO: I should refactor this to avoid duplicated code from the Update.
+    // TODO: Delay parameter ?
     size_t i = 0;
-    size_t emitCount = GetRandom(m_settings.minEmitCountPerCycle, m_settings.maxEmitCountPerCycle);
+    size_t emitCount = GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn);
     while (i < Min(emitCount, m_maxParticleCount))
     {
         EmitParticle(i);
@@ -94,7 +100,10 @@ void ParticleSystem::Start()
     }
 
     m_nextEmitIndex = i % m_maxParticleCount;
-    m_nextCycleDelay = Max(0, GetRandom(m_settings.minCycleDelay, m_settings.maxCycleDelay));
+    m_currentSpawnDelay = 0;
+
+    float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
+    m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon, randValue));
 }
 
 void ParticleSystem::Stop()
@@ -278,34 +287,59 @@ void ParticleSystem::Update(const DeltaTime& dt)
         }
     }
 
-    // TODO: Stop running once all particles are disabled.
     if (m_loop || m_nextEmitIndex > 0)
     {
-        m_nextCycleDelay = Max(0, m_nextCycleDelay - dt.ms());
+        int nbSpawns = 0;
 
-        if (m_nextCycleDelay <= 0)
+        if (dt.ms() >= m_nextSpawnDelay)
         {
-            size_t i = m_nextEmitIndex;
-            size_t findCount = 0;
-            size_t emitCount = 0;
-            size_t emitLimit = GetRandom(m_settings.minEmitCountPerCycle, m_settings.maxEmitCountPerCycle);
-            bool findNextAvailableParticle = true;
-            while (findNextAvailableParticle)
+            // This case triggers if delay <= dt (high spawn rate).
+            nbSpawns = Max(1, (int)(dt.s() * GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond)));
+            m_currentSpawnDelay += dt.ms() - m_nextSpawnDelay;
+
+            float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
+            m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon, randValue));
+        }
+        else
+        {
+            // This case triggers if delay > dt (low spawn rate).
+            m_currentSpawnDelay += dt.ms();
+            if (m_currentSpawnDelay >= m_nextSpawnDelay)
             {
-                if (m_dataLifetime[i] <= 0)
+                nbSpawns = 1;
+                m_currentSpawnDelay -= m_nextSpawnDelay;
+
+                float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
+                m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon, randValue));
+            }
+        }
+
+        if (nbSpawns > 0)
+        {
+            // Compensate frames if needed (handle high spawning rates).
+            for (int n = 0; n < nbSpawns; ++n)
+            {
+                size_t i = m_nextEmitIndex;
+                size_t findCount = 0;
+                size_t emitCount = 0;
+                size_t emitLimit = GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn);
+                bool findNextAvailableParticle = true;
+                while (findNextAvailableParticle)
                 {
-                    EmitParticle(i);
-                    ++emitCount;
+                    if (m_dataLifetime[i] <= 0)
+                    {
+                        EmitParticle(i);
+                        ++emitCount;
+                    }
+
+                    i = (i + 1) % m_maxParticleCount;
+
+                    ++findCount;
+                    findNextAvailableParticle = (findCount < m_maxParticleCount) && (emitCount < emitLimit) && (m_loop || i != 0);
                 }
 
-                i = (i + 1) % m_maxParticleCount;
-
-                ++findCount;
-                findNextAvailableParticle = (findCount < m_maxParticleCount) && (emitCount < emitLimit) && (m_loop || i != 0);
+                m_nextEmitIndex = i;
             }
-
-            m_nextEmitIndex = i;
-            m_nextCycleDelay = Max(0, GetRandom(m_settings.minCycleDelay, m_settings.maxCycleDelay));
         }
     }
 }

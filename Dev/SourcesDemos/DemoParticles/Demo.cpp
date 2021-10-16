@@ -169,18 +169,20 @@ void Demo::AppUpdate(const DeltaTime& dt)
             {
                 ImGui::Text("Active Particles : % d / % d", m_particleSystems[i]->GetActiveParticleCount(), m_particleSystems[i]->GetMaxParticleCount());
 
+                ImGui::Checkbox("loop", &m_particleSystemSettings[i].loop);
+                ImGui::InputInt("duration", &m_particleSystemSettings[i].duration);
                 ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount);
                 ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
 
-                int emitPerCycle[2] = { m_particleSystemSettings[i].minEmitCountPerCycle, m_particleSystemSettings[i].maxEmitCountPerCycle };
-                ImGui::InputInt2("emit per cycle", emitPerCycle);
-                m_particleSystemSettings[i].minEmitCountPerCycle = emitPerCycle[0];
-                m_particleSystemSettings[i].maxEmitCountPerCycle = emitPerCycle[1];
+                float spawnPerSecond[2] = { m_particleSystemSettings[i].minSpawnPerSecond, m_particleSystemSettings[i].maxSpawnPerSecond };
+                ImGui::InputFloat2("spawn per second", spawnPerSecond);
+                m_particleSystemSettings[i].minSpawnPerSecond = spawnPerSecond[0];
+                m_particleSystemSettings[i].maxSpawnPerSecond = spawnPerSecond[1];
 
-                int cycleDelay[2] = { m_particleSystemSettings[i].minCycleDelay, m_particleSystemSettings[i].maxCycleDelay };
-                ImGui::InputInt2("cycle delay (ms)", cycleDelay);
-                m_particleSystemSettings[i].minCycleDelay = cycleDelay[0];
-                m_particleSystemSettings[i].maxCycleDelay = cycleDelay[1];
+                int particlesPerSpawn[2] = { m_particleSystemSettings[i].minParticlesPerSpawn, m_particleSystemSettings[i].maxParticlesPerSpawn };
+                ImGui::InputInt2("particles per spawn", particlesPerSpawn);
+                m_particleSystemSettings[i].minParticlesPerSpawn = particlesPerSpawn[0];
+                m_particleSystemSettings[i].maxParticlesPerSpawn = particlesPerSpawn[1];
 
                 int lifetime[2] = { m_particleSystemSettings[i].minLifetime, m_particleSystemSettings[i].maxLifetime };
                 ImGui::InputInt2("lifetime (ms)", lifetime);

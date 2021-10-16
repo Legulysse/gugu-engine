@@ -108,8 +108,10 @@ void Projectile::InitProjectile(const SkillContext& skillContext, const DS_Effec
         // Fireball trail
         ParticleSystemSettings particleSettings;
         particleSettings.maxParticleCount = 150;
-        particleSettings.minEmitCountPerCycle = 5;
-        particleSettings.maxEmitCountPerCycle = 5;
+        particleSettings.minSpawnPerSecond = 50;
+        particleSettings.maxSpawnPerSecond = 50;
+        particleSettings.minParticlesPerSpawn = 5;
+        particleSettings.maxParticlesPerSpawn = 5;
         particleSettings.minStartSize = Vector2f(8.f, 8.f);
         particleSettings.maxStartSize = Vector2f(16.f, 16.f);
         particleSettings.startColor = sf::Color::Yellow;
@@ -124,8 +126,10 @@ void Projectile::InitProjectile(const SkillContext& skillContext, const DS_Effec
         // Arrow trail
         ParticleSystemSettings particleSettings;
         particleSettings.maxParticleCount = 150;
-        particleSettings.minEmitCountPerCycle = 5;
-        particleSettings.maxEmitCountPerCycle = 5;
+        particleSettings.minSpawnPerSecond = 50;
+        particleSettings.maxSpawnPerSecond = 50;
+        particleSettings.minParticlesPerSpawn = 5;
+        particleSettings.maxParticlesPerSpawn = 5;
         particleSettings.minLifetime = 250;
         particleSettings.maxLifetime = 250;
         particleSettings.minStartSize = Vector2f(1.f, 1.f);
@@ -181,14 +185,17 @@ void Projectile::Step(const DeltaTime& dt)
                 // Fireball explosion
                 ParticleSystemSettings particleSettings;
                 particleSettings.loop = false;
+                particleSettings.duration = 200;
                 particleSettings.maxParticleCount = 16000;
-                particleSettings.minEmitCountPerCycle = 2000;
-                particleSettings.maxEmitCountPerCycle = 2000;
+                particleSettings.minSpawnPerSecond = 100;
+                particleSettings.maxSpawnPerSecond = 100;
+                particleSettings.minParticlesPerSpawn = 2000;
+                particleSettings.maxParticlesPerSpawn = 2000;
                 particleSettings.minLifetime = 400;
                 particleSettings.maxLifetime = 400;
                 particleSettings.minVelocity = 100.f;
                 particleSettings.maxVelocity = 500.f;
-                particleSettings.minStartSize = Vector2f(3.f, 3.f);
+                particleSettings.minStartSize = Vector2f(6.f, 6.f);
                 particleSettings.maxStartSize = Vector2f(8.f, 8.f);
                 particleSettings.startColor = sf::Color::Yellow;
                 particleSettings.endColor = sf::Color(255, 0, 0, 50);
@@ -208,9 +215,12 @@ void Projectile::Step(const DeltaTime& dt)
                 // Bomb Arrow explosion
                 ParticleSystemSettings particleSettings;
                 particleSettings.loop = false;
+                particleSettings.duration = 200;
                 particleSettings.maxParticleCount = 500;
-                particleSettings.minEmitCountPerCycle = 100;
-                particleSettings.maxEmitCountPerCycle = 100;
+                particleSettings.minSpawnPerSecond = 50;
+                particleSettings.maxSpawnPerSecond = 50;
+                particleSettings.minParticlesPerSpawn = 100;
+                particleSettings.maxParticlesPerSpawn = 100;
                 particleSettings.minLifetime = 500;
                 particleSettings.maxLifetime = 700;
                 particleSettings.minVelocity = 75.f;

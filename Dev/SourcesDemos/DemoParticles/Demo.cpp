@@ -66,6 +66,9 @@ void Demo::AppStart()
     for (size_t i = 0; i < 10; ++i)
     {
         ParticleSystemSettings settings;
+        settings.maxParticleCount = 100;
+        settings.minSpawnPerSecond = 20;
+        settings.maxSpawnPerSecond = 100;
 
         ElementParticles* elementParticle = levelRoot->AddChild<ElementParticles>();
         elementParticle->SetPosition(Vector2f(-300.f + (i % 5) * 150.f, -100.f + (i / 5) * 200.f));
@@ -75,7 +78,7 @@ void Demo::AppStart()
         m_particleSystems.push_back(particleSystem);
         m_centerParticleElements.push_back(elementParticle);
     }
-
+    
     // Arm Particle
     sf::VertexArray* armShape = new sf::VertexArray;
     armShape->setPrimitiveType(sf::PrimitiveType::Lines);
@@ -91,9 +94,9 @@ void Demo::AppStart()
     m_moveArm = arm;
 
     ParticleSystemSettings armSettings;
-    armSettings.maxParticleCount = 400;
-    armSettings.minEmitCountPerCycle = 5;
-    armSettings.maxEmitCountPerCycle = 5;
+    armSettings.maxParticleCount = 100;
+    armSettings.minParticlesPerSpawn = 5;
+    armSettings.maxParticlesPerSpawn = 5;
     armSettings.minLifetime = 1500;
     armSettings.maxLifetime = 1500;
     armSettings.startColor = sf::Color::Yellow;
@@ -116,7 +119,7 @@ void Demo::AppStart()
 
     m_particleSystemSettings.push_back(cursorSettings);
     m_particleSystems.push_back(cursorParticleSystem);
-
+    
     // Animation
     m_startTime = GetTimestamp();
     m_rotateArm = true;

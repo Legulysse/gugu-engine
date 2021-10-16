@@ -103,7 +103,7 @@ void ParticleSystem::Start()
     m_currentSpawnDelay = 0;
 
     float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-    m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon, randValue));
+    m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon3, randValue));
 }
 
 void ParticleSystem::Stop()
@@ -320,7 +320,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
             m_currentSpawnDelay += dt.ms() - m_nextSpawnDelay;
 
             float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-            m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon, randValue));
+            m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon3, randValue));
         }
         else
         {
@@ -332,7 +332,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
                 m_currentSpawnDelay -= m_nextSpawnDelay;
 
                 float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-                m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon, randValue));
+                m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon3, randValue));
             }
         }
 

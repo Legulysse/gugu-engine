@@ -109,7 +109,7 @@ void CharacterHero::UseSkill(const DS_Skill* skill, const Vector2f& _kCoords, co
             if (skill->staminaCost > 0.f)
             {
                 int nbUseStamina = (int)(m_currentStamina / skill->staminaCost);
-                if (nbUseStamina * skill->staminaCost < m_currentStamina - Math::Epsilon)
+                if (nbUseStamina * skill->staminaCost < m_currentStamina - Math::Epsilon3)
                 {
                     // Allow action when we have at least 1 stamina point (allow negative values).
                     nbUseStamina += 1;
@@ -189,7 +189,7 @@ bool CharacterHero::CanUseSkill(const DS_Skill* skill) const
             return false;
         }
 
-        if (skill->manaCost > 0.f && m_currentMana < skill->manaCost - Math::Epsilon)
+        if (skill->manaCost > 0.f && m_currentMana < skill->manaCost - Math::Epsilon3)
         {
             return false;
         }

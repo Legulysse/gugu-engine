@@ -27,7 +27,7 @@ namespace Math
     const float DegreesToRadians = 0.0174532925199f;    // Pi / 180
     const float RadiansToDegrees = 57.2957795131f;      // 180 / Pi
 
-    const float Epsilon     = 0.001f;
+    const float Epsilon3 = 0.001f;
 }
 
 //----------------------------------------------

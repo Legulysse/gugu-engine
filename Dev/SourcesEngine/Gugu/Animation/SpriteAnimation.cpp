@@ -246,7 +246,7 @@ void SpriteAnimation::StepAnimation(const DeltaTime& dt)
                 SetCurrentFrame(pCurrentFrame);
 
                 //Safe check
-                if (pCurrentFrame->GetDuration() < Math::Epsilon)
+                if (pCurrentFrame->GetDuration() < Math::Epsilon3)
                     break;
             }
         }

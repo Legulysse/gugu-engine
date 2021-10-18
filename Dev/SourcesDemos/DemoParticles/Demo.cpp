@@ -67,6 +67,7 @@ void Demo::AppStart()
     {
         ParticleSystemSettings settings;
         settings.maxParticleCount = 500;
+        settings.useRandomSpawnPerSecond = true;
         settings.minSpawnPerSecond = 500;
         settings.maxSpawnPerSecond = 500;
         settings.updateColorOverLifetime = true;
@@ -97,9 +98,9 @@ void Demo::AppStart()
     ParticleSystemSettings armSettings;
     armSettings.maxParticleCount = 100;
     armSettings.minParticlesPerSpawn = 5;
-    armSettings.maxParticlesPerSpawn = 5;
     armSettings.minLifetime = 1500;
-    armSettings.maxLifetime = 1500;
+    armSettings.useRandomStartSize = true;
+    armSettings.minStartSize = Vector2f(5.f, 5.f);
     armSettings.maxStartSize = Vector2f(10.f, 10.f);
     armSettings.updateSizeOverLifetime = true;
     armSettings.startColor = sf::Color::Yellow;
@@ -170,6 +171,23 @@ void Demo::AppUpdate(const DeltaTime& dt)
             );
         };
 
+        auto checkRandomSetting = [](int& id, bool& useRandom) -> bool
+        {
+            ImGui::PushID(id);
+            float posX_before = ImGui::GetCursorPosX();
+            bool updated = ImGui::Checkbox("##Random", &useRandom);
+            ImGui::PopID();
+
+            ImGui::SameLine();
+
+            float posX_after = ImGui::GetCursorPosX();
+            ImGui::SetCursorPosX(posX_after - ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::SetNextItemWidth(ImGui::CalcItemWidth() + ImGui::GetStyle().ItemInnerSpacing.x - (posX_after - posX_before));
+
+            ++id;
+            return updated;
+        };
+
         for (size_t i = 0; i < m_particleSystemSettings.size(); ++i)
         {
             ImGui::PushID(i);
@@ -177,68 +195,129 @@ void Demo::AppUpdate(const DeltaTime& dt)
             ImGuiTreeNodeFlags treeNodeFlag = ImGuiTreeNodeFlags_SpanAvailWidth;
             if (ImGui::TreeNodeEx("node", treeNodeFlag, "%d", i))
             {
+                int id = 0;
                 bool updated = false;
 
                 ImGui::Text("Running : %s, Active Particles : %d / %d", (m_particleSystems[i]->IsRunning() ? "true" : "false"), m_particleSystems[i]->GetActiveParticleCount(), m_particleSystems[i]->GetMaxParticleCount());
 
                 // Setup
                 updated |= ImGui::Checkbox("loop", &m_particleSystemSettings[i].loop);
-
                 ImGui::BeginDisabled(m_particleSystemSettings[i].loop);
-                updated |= ImGui::InputInt("duration (ms)", &m_particleSystemSettings[i].duration);
+                updated |= ImGui::InputInt("duration (ms)", &m_particleSystemSettings[i].duration, 0);
                 ImGui::EndDisabled();
 
-                updated |= ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount);
-                updated |= ImGui::InputInt("vertices per particle", &m_particleSystemSettings[i].verticesPerParticle);
+                updated |= ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount, 0);
+                updated |= ImGui::InputInt("vertices (1 or 6)", &m_particleSystemSettings[i].verticesPerParticle, 0);
                 updated |= ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
 
                 ImGui::Spacing();
 
                 // Emitter
-                float spawnPerSecond[2] = { m_particleSystemSettings[i].minSpawnPerSecond, m_particleSystemSettings[i].maxSpawnPerSecond };
-                updated |= ImGui::InputFloat2("spawn per second", spawnPerSecond);
-                m_particleSystemSettings[i].minSpawnPerSecond = spawnPerSecond[0];
-                m_particleSystemSettings[i].maxSpawnPerSecond = spawnPerSecond[1];
+                updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomSpawnPerSecond);
+                if (m_particleSystemSettings[i].useRandomSpawnPerSecond)
+                {
+                    float spawnPerSecond[2] = { m_particleSystemSettings[i].minSpawnPerSecond, m_particleSystemSettings[i].maxSpawnPerSecond };
+                    updated |= ImGui::InputFloat2("spawn per second", spawnPerSecond);
+                    m_particleSystemSettings[i].minSpawnPerSecond = spawnPerSecond[0];
+                    m_particleSystemSettings[i].maxSpawnPerSecond = spawnPerSecond[1];
+                }
+                else
+                {
+                    float spawnPerSecond = m_particleSystemSettings[i].minSpawnPerSecond;
+                    updated |= ImGui::InputFloat("spawn per second", &spawnPerSecond);
+                    m_particleSystemSettings[i].minSpawnPerSecond = spawnPerSecond;
+                }
 
-                int particlesPerSpawn[2] = { m_particleSystemSettings[i].minParticlesPerSpawn, m_particleSystemSettings[i].maxParticlesPerSpawn };
-                updated |= ImGui::InputInt2("particles per spawn", particlesPerSpawn);
-                m_particleSystemSettings[i].minParticlesPerSpawn = particlesPerSpawn[0];
-                m_particleSystemSettings[i].maxParticlesPerSpawn = particlesPerSpawn[1];
+                updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomParticlesPerSpawn);
+                if (m_particleSystemSettings[i].useRandomParticlesPerSpawn)
+                {
+                    int particlesPerSpawn[2] = { m_particleSystemSettings[i].minParticlesPerSpawn, m_particleSystemSettings[i].maxParticlesPerSpawn };
+                    updated |= ImGui::InputInt2("particles per spawn", particlesPerSpawn);
+                    m_particleSystemSettings[i].minParticlesPerSpawn = particlesPerSpawn[0];
+                    m_particleSystemSettings[i].maxParticlesPerSpawn = particlesPerSpawn[1];
+                }
+                else
+                {
+                    int particlesPerSpawn = m_particleSystemSettings[i].minParticlesPerSpawn;
+                    updated |= ImGui::InputInt("particles per spawn", &particlesPerSpawn , 0);
+                    m_particleSystemSettings[i].minParticlesPerSpawn = particlesPerSpawn;
+                }
 
                 ImGui::Spacing();
 
                 // Particle behaviour
-                int lifetime[2] = { m_particleSystemSettings[i].minLifetime, m_particleSystemSettings[i].maxLifetime };
-                updated |= ImGui::InputInt2("lifetime (ms)", lifetime);
-                m_particleSystemSettings[i].minLifetime = lifetime[0];
-                m_particleSystemSettings[i].maxLifetime = lifetime[1];
+                updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomLifetime);
+                if (m_particleSystemSettings[i].useRandomLifetime)
+                {
+                    int lifetime[2] = { m_particleSystemSettings[i].minLifetime, m_particleSystemSettings[i].maxLifetime };
+                    updated |= ImGui::InputInt2("lifetime (ms)", lifetime);
+                    m_particleSystemSettings[i].minLifetime = lifetime[0];
+                    m_particleSystemSettings[i].maxLifetime = lifetime[1];
+                }
+                else
+                {
+                    int lifetime = m_particleSystemSettings[i].minLifetime;
+                    updated |= ImGui::InputInt("lifetime (ms)", &lifetime, 0);
+                    m_particleSystemSettings[i].minLifetime = lifetime;
+                }
 
-                float velocity[2] = { m_particleSystemSettings[i].minVelocity, m_particleSystemSettings[i].maxVelocity };
-                updated |= ImGui::InputFloat2("velocity", velocity);
-                m_particleSystemSettings[i].minVelocity = velocity[0];
-                m_particleSystemSettings[i].maxVelocity = velocity[1];
+                updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomVelocity);
+                if (m_particleSystemSettings[i].useRandomVelocity)
+                {
+                    float velocity[2] = { m_particleSystemSettings[i].minVelocity, m_particleSystemSettings[i].maxVelocity };
+                    updated |= ImGui::InputFloat2("velocity", velocity);
+                    m_particleSystemSettings[i].minVelocity = velocity[0];
+                    m_particleSystemSettings[i].maxVelocity = velocity[1];
+                }
+                else
+                {
+                    float velocity = m_particleSystemSettings[i].minVelocity;
+                    updated |= ImGui::InputFloat("velocity", &velocity);
+                    m_particleSystemSettings[i].minVelocity = velocity;
+                }
 
                 ImGui::Spacing();
 
                 // Render
                 updated |= ImGui::Checkbox("keep size ratio", &m_particleSystemSettings[i].keepSizeRatio);
 
-                ImVec2 minStartSize = m_particleSystemSettings[i].minStartSize;
-                ImVec2 maxStartSize = m_particleSystemSettings[i].maxStartSize;
-                ImVec4 startSize = ImVec4(minStartSize.x, minStartSize.y, maxStartSize.x, maxStartSize.y);
-                updated |= ImGui::InputFloat4("start size", (float*)&startSize);
-                m_particleSystemSettings[i].minStartSize = Vector2f(startSize.x, startSize.y);
-                m_particleSystemSettings[i].maxStartSize = Vector2f(startSize.z, startSize.w);
+                updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomStartSize);
+                if (m_particleSystemSettings[i].useRandomStartSize)
+                {
+                    ImVec2 minStartSize = m_particleSystemSettings[i].minStartSize;
+                    ImVec2 maxStartSize = m_particleSystemSettings[i].maxStartSize;
+                    ImVec4 startSize = ImVec4(minStartSize.x, minStartSize.y, maxStartSize.x, maxStartSize.y);
+                    updated |= ImGui::InputFloat4("start size", (float*)&startSize);
+                    m_particleSystemSettings[i].minStartSize = Vector2f(startSize.x, startSize.y);
+                    m_particleSystemSettings[i].maxStartSize = Vector2f(startSize.z, startSize.w);
+                }
+                else
+                {
+                    ImVec2 startSize = m_particleSystemSettings[i].minStartSize;
+                    updated |= ImGui::InputFloat2("start size", (float*)&startSize);
+                    m_particleSystemSettings[i].minStartSize = startSize;
+                }
 
                 updated |= ImGui::Checkbox("update size over lifetime", &m_particleSystemSettings[i].updateSizeOverLifetime);
-
                 ImGui::BeginDisabled(!m_particleSystemSettings[i].updateSizeOverLifetime);
-                ImVec2 minEndSize = m_particleSystemSettings[i].minEndSize;
-                ImVec2 maxEndSize = m_particleSystemSettings[i].maxEndSize;
-                ImVec4 endSize = ImVec4(minEndSize.x, minEndSize.y, maxEndSize.x, maxEndSize.y);
-                updated |= ImGui::InputFloat4("end size", (float*)&endSize);
-                m_particleSystemSettings[i].minEndSize = Vector2f(endSize.x, endSize.y);
-                m_particleSystemSettings[i].maxEndSize = Vector2f(endSize.z, endSize.w);
+
+                updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomEndSize);
+                if (m_particleSystemSettings[i].useRandomEndSize)
+                {
+                    ImVec2 minEndSize = m_particleSystemSettings[i].minEndSize;
+                    ImVec2 maxEndSize = m_particleSystemSettings[i].maxEndSize;
+                    ImVec4 endSize = ImVec4(minEndSize.x, minEndSize.y, maxEndSize.x, maxEndSize.y);
+                    updated |= ImGui::InputFloat4("end size", (float*)&endSize);
+                    m_particleSystemSettings[i].minEndSize = Vector2f(endSize.x, endSize.y);
+                    m_particleSystemSettings[i].maxEndSize = Vector2f(endSize.z, endSize.w);
+                }
+                else
+                {
+                    ImVec2 endSize = m_particleSystemSettings[i].minEndSize;
+                    updated |= ImGui::InputFloat2("end size", (float*)&endSize);
+                    m_particleSystemSettings[i].minEndSize = endSize;
+                }
+
                 ImGui::EndDisabled();
 
                 ImGui::Spacing();
@@ -248,11 +327,12 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 m_particleSystemSettings[i].startColor = sf::Color(ColorConvertFloat4ToSfml(startColor));
 
                 updated |= ImGui::Checkbox("update color over lifetime", &m_particleSystemSettings[i].updateColorOverLifetime);
-
                 ImGui::BeginDisabled(!m_particleSystemSettings[i].updateColorOverLifetime);
+
                 ImVec4 endColor = ColorConvertSfmlToFloat4(m_particleSystemSettings[i].endColor);
                 updated |= ImGui::ColorEdit4("end color", (float*)&endColor);
                 m_particleSystemSettings[i].endColor = sf::Color(ColorConvertFloat4ToSfml(endColor));
+
                 ImGui::EndDisabled();
 
                 ImGui::Spacing();

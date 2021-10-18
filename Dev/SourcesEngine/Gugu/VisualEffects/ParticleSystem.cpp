@@ -50,15 +50,15 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
 
     if (!limitsOnly)
     {
-        settings.maxSpawnPerSecond = Max(settings.minSpawnPerSecond, settings.maxSpawnPerSecond);
-        settings.maxParticlesPerSpawn = Max(settings.minParticlesPerSpawn, settings.maxParticlesPerSpawn);
-        settings.maxLifetime = Max(settings.minLifetime, settings.maxLifetime);
-        settings.maxVelocity = Max(settings.minVelocity, settings.maxVelocity);
+        settings.maxSpawnPerSecond = settings.useRandomSpawnPerSecond ? Max(settings.minSpawnPerSecond, settings.maxSpawnPerSecond) : settings.minSpawnPerSecond;
+        settings.maxParticlesPerSpawn = settings.useRandomParticlesPerSpawn ? Max(settings.minParticlesPerSpawn, settings.maxParticlesPerSpawn) : settings.minParticlesPerSpawn;
+        settings.maxLifetime = settings.useRandomLifetime ? Max(settings.minLifetime, settings.maxLifetime) : settings.minLifetime;
+        settings.maxVelocity = settings.useRandomVelocity ? Max(settings.minVelocity, settings.maxVelocity) : settings.minVelocity;
 
-        settings.maxStartSize.x = Max(settings.minStartSize.x, settings.maxStartSize.x);
-        settings.maxStartSize.y = Max(settings.minStartSize.y, settings.maxStartSize.y);
-        settings.maxEndSize.x = Max(settings.minEndSize.x, settings.maxEndSize.x);
-        settings.maxEndSize.y = Max(settings.minEndSize.y, settings.maxEndSize.y);
+        settings.maxStartSize.x = settings.useRandomStartSize ? Max(settings.minStartSize.x, settings.maxStartSize.x) : settings.minStartSize.x;
+        settings.maxStartSize.y = settings.useRandomStartSize ? Max(settings.minStartSize.y, settings.maxStartSize.y) : settings.minStartSize.y;
+        settings.maxEndSize.x = settings.useRandomEndSize ? Max(settings.minEndSize.x, settings.maxEndSize.x) : settings.minEndSize.x;
+        settings.maxEndSize.y = settings.useRandomEndSize ? Max(settings.minEndSize.y, settings.maxEndSize.y) : settings.minEndSize.y;
     }
     else
     {

@@ -67,9 +67,7 @@ void Demo::AppStart()
     {
         ParticleSystemSettings settings;
         settings.maxParticleCount = 500;
-        settings.useRandomSpawnPerSecond = true;
         settings.minSpawnPerSecond = 500;
-        settings.maxSpawnPerSecond = 500;
         settings.updateColorOverLifetime = true;
 
         ElementParticles* elementParticle = levelRoot->AddChild<ElementParticles>();

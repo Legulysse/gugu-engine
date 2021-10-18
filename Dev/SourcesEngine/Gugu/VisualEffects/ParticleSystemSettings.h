@@ -19,7 +19,7 @@ struct ParticleSystemSettings
     // Setup
     bool loop = true;
     int duration = 5000;
-    int maxParticleCount = 50;
+    int maxParticleCount = 50;  // Hard-limit implemented at 100k particles, to avoid crashes.
     int verticesPerParticle = 6;    // TODO: use an enum for particle type (point, quad).
     bool localSpace = false;
 

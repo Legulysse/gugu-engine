@@ -40,7 +40,7 @@ ParticleSystem::~ParticleSystem()
 void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool limitsOnly)
 {
     settings.duration = Max(settings.duration, 0);
-    settings.maxParticleCount = Max(settings.maxParticleCount, 1);
+    settings.maxParticleCount = Clamp(settings.maxParticleCount, 1, 100000);
     settings.verticesPerParticle = (settings.verticesPerParticle == 1 || settings.verticesPerParticle == 6) ? settings.verticesPerParticle : 1;
 
     settings.minSpawnPerSecond = Max(settings.minSpawnPerSecond, Math::Epsilon3);

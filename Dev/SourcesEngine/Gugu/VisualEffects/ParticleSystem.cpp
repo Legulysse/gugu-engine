@@ -37,14 +37,48 @@ ParticleSystem::~ParticleSystem()
 {
 }
 
+void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool limitsOnly)
+{
+    settings.duration = Max(settings.duration, 0);
+    settings.maxParticleCount = Max(settings.maxParticleCount, 1);
+    settings.verticesPerParticle = (settings.verticesPerParticle == 1 || settings.verticesPerParticle == 6) ? settings.verticesPerParticle : 1;
+
+    settings.minSpawnPerSecond = Max(settings.minSpawnPerSecond, Math::Epsilon3);
+    settings.minParticlesPerSpawn = Max(settings.minParticlesPerSpawn, 0);
+    settings.minLifetime = Max(settings.minLifetime, 1);
+    settings.minVelocity = Max(settings.minVelocity, 0.f);
+
+    if (!limitsOnly)
+    {
+        settings.maxSpawnPerSecond = Max(settings.minSpawnPerSecond, settings.maxSpawnPerSecond);
+        settings.maxParticlesPerSpawn = Max(settings.minParticlesPerSpawn, settings.maxParticlesPerSpawn);
+        settings.maxLifetime = Max(settings.minLifetime, settings.maxLifetime);
+        settings.maxVelocity = Max(settings.minVelocity, settings.maxVelocity);
+
+        settings.maxStartSize.x = Max(settings.minStartSize.x, settings.maxStartSize.x);
+        settings.maxStartSize.y = Max(settings.minStartSize.y, settings.maxStartSize.y);
+        settings.maxEndSize.x = Max(settings.minEndSize.x, settings.maxEndSize.x);
+        settings.maxEndSize.y = Max(settings.minEndSize.y, settings.maxEndSize.y);
+    }
+    else
+    {
+        settings.maxSpawnPerSecond = Max(settings.maxSpawnPerSecond, 0.f);
+        settings.maxParticlesPerSpawn = Max(settings.maxParticlesPerSpawn, 0);
+        settings.maxLifetime = Max(settings.maxLifetime, 0);
+        settings.maxVelocity = Max(settings.maxVelocity, 0.f);
+    }
+}
+
 void ParticleSystem::Init(const ParticleSystemSettings& settings)
 {
     Release();
 
+    // Copy and sanitize settings.
     m_settings = settings;
+    SanitizeSettings(m_settings, false);
 
-    m_maxParticleCount = settings.maxParticleCount;
-    m_verticesPerParticle = settings.verticesPerParticle;
+    m_maxParticleCount = m_settings.maxParticleCount;
+    m_verticesPerParticle = m_settings.verticesPerParticle;
 
     m_dataVertices.setPrimitiveType(m_verticesPerParticle == 6 ? sf::PrimitiveType::Triangles : sf::PrimitiveType::Points);
     m_dataVertices.resize(m_maxParticleCount * m_verticesPerParticle);

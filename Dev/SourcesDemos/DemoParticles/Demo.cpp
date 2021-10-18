@@ -100,8 +100,10 @@ void Demo::AppStart()
     armSettings.maxParticlesPerSpawn = 5;
     armSettings.minLifetime = 1500;
     armSettings.maxLifetime = 1500;
+    armSettings.maxStartSize = Vector2f(10.f, 10.f);
+    armSettings.updateSizeOverLifetime = true;
     armSettings.startColor = sf::Color::Yellow;
-    armSettings.endColor = sf::Color(255, 0, 0, 100);
+    armSettings.endColor = sf::Color::Red;
     armSettings.updateColorOverLifetime = true;
 
     ElementParticles* armElementParticle = arm->AddChild<ElementParticles>();
@@ -175,60 +177,66 @@ void Demo::AppUpdate(const DeltaTime& dt)
             ImGuiTreeNodeFlags treeNodeFlag = ImGuiTreeNodeFlags_SpanAvailWidth;
             if (ImGui::TreeNodeEx("node", treeNodeFlag, "%d", i))
             {
+                bool updated = false;
+
                 ImGui::Text("Running : %s, Active Particles : %d / %d", (m_particleSystems[i]->IsRunning() ? "true" : "false"), m_particleSystems[i]->GetActiveParticleCount(), m_particleSystems[i]->GetMaxParticleCount());
 
-                ImGui::Checkbox("loop", &m_particleSystemSettings[i].loop);
+                // Setup
+                updated |= ImGui::Checkbox("loop", &m_particleSystemSettings[i].loop);
 
                 ImGui::BeginDisabled(m_particleSystemSettings[i].loop);
-                ImGui::InputInt("duration (ms)", &m_particleSystemSettings[i].duration);
+                updated |= ImGui::InputInt("duration (ms)", &m_particleSystemSettings[i].duration);
                 ImGui::EndDisabled();
 
-                ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount);
-                ImGui::InputInt("vertices per particle", &m_particleSystemSettings[i].verticesPerParticle);
-                ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
+                updated |= ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount);
+                updated |= ImGui::InputInt("vertices per particle", &m_particleSystemSettings[i].verticesPerParticle);
+                updated |= ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
 
                 ImGui::Spacing();
 
+                // Emitter
                 float spawnPerSecond[2] = { m_particleSystemSettings[i].minSpawnPerSecond, m_particleSystemSettings[i].maxSpawnPerSecond };
-                ImGui::InputFloat2("spawn per second", spawnPerSecond);
+                updated |= ImGui::InputFloat2("spawn per second", spawnPerSecond);
                 m_particleSystemSettings[i].minSpawnPerSecond = spawnPerSecond[0];
                 m_particleSystemSettings[i].maxSpawnPerSecond = spawnPerSecond[1];
 
                 int particlesPerSpawn[2] = { m_particleSystemSettings[i].minParticlesPerSpawn, m_particleSystemSettings[i].maxParticlesPerSpawn };
-                ImGui::InputInt2("particles per spawn", particlesPerSpawn);
+                updated |= ImGui::InputInt2("particles per spawn", particlesPerSpawn);
                 m_particleSystemSettings[i].minParticlesPerSpawn = particlesPerSpawn[0];
                 m_particleSystemSettings[i].maxParticlesPerSpawn = particlesPerSpawn[1];
 
                 ImGui::Spacing();
 
+                // Particle behaviour
                 int lifetime[2] = { m_particleSystemSettings[i].minLifetime, m_particleSystemSettings[i].maxLifetime };
-                ImGui::InputInt2("lifetime (ms)", lifetime);
+                updated |= ImGui::InputInt2("lifetime (ms)", lifetime);
                 m_particleSystemSettings[i].minLifetime = lifetime[0];
                 m_particleSystemSettings[i].maxLifetime = lifetime[1];
 
                 float velocity[2] = { m_particleSystemSettings[i].minVelocity, m_particleSystemSettings[i].maxVelocity };
-                ImGui::InputFloat2("velocity", velocity);
+                updated |= ImGui::InputFloat2("velocity", velocity);
                 m_particleSystemSettings[i].minVelocity = velocity[0];
                 m_particleSystemSettings[i].maxVelocity = velocity[1];
 
                 ImGui::Spacing();
 
-                ImGui::Checkbox("keep size ratio", &m_particleSystemSettings[i].keepSizeRatio);
+                // Render
+                updated |= ImGui::Checkbox("keep size ratio", &m_particleSystemSettings[i].keepSizeRatio);
 
                 ImVec2 minStartSize = m_particleSystemSettings[i].minStartSize;
                 ImVec2 maxStartSize = m_particleSystemSettings[i].maxStartSize;
                 ImVec4 startSize = ImVec4(minStartSize.x, minStartSize.y, maxStartSize.x, maxStartSize.y);
-                ImGui::InputFloat4("start size", (float*)&startSize);
+                updated |= ImGui::InputFloat4("start size", (float*)&startSize);
                 m_particleSystemSettings[i].minStartSize = Vector2f(startSize.x, startSize.y);
                 m_particleSystemSettings[i].maxStartSize = Vector2f(startSize.z, startSize.w);
 
-                ImGui::Checkbox("update size over lifetime", &m_particleSystemSettings[i].updateSizeOverLifetime);
+                updated |= ImGui::Checkbox("update size over lifetime", &m_particleSystemSettings[i].updateSizeOverLifetime);
 
                 ImGui::BeginDisabled(!m_particleSystemSettings[i].updateSizeOverLifetime);
                 ImVec2 minEndSize = m_particleSystemSettings[i].minEndSize;
                 ImVec2 maxEndSize = m_particleSystemSettings[i].maxEndSize;
                 ImVec4 endSize = ImVec4(minEndSize.x, minEndSize.y, maxEndSize.x, maxEndSize.y);
-                ImGui::InputFloat4("end size", (float*)&endSize);
+                updated |= ImGui::InputFloat4("end size", (float*)&endSize);
                 m_particleSystemSettings[i].minEndSize = Vector2f(endSize.x, endSize.y);
                 m_particleSystemSettings[i].maxEndSize = Vector2f(endSize.z, endSize.w);
                 ImGui::EndDisabled();
@@ -236,22 +244,27 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::Spacing();
 
                 ImVec4 startColor = ColorConvertSfmlToFloat4(m_particleSystemSettings[i].startColor);
-                ImGui::ColorEdit4("start color", (float*)&startColor);
+                updated |= ImGui::ColorEdit4("start color", (float*)&startColor);
                 m_particleSystemSettings[i].startColor = sf::Color(ColorConvertFloat4ToSfml(startColor));
 
-                ImGui::Checkbox("update color over lifetime", &m_particleSystemSettings[i].updateColorOverLifetime);
+                updated |= ImGui::Checkbox("update color over lifetime", &m_particleSystemSettings[i].updateColorOverLifetime);
 
                 ImGui::BeginDisabled(!m_particleSystemSettings[i].updateColorOverLifetime);
                 ImVec4 endColor = ColorConvertSfmlToFloat4(m_particleSystemSettings[i].endColor);
-                ImGui::ColorEdit4("end color", (float*)&endColor);
+                updated |= ImGui::ColorEdit4("end color", (float*)&endColor);
                 m_particleSystemSettings[i].endColor = sf::Color(ColorConvertFloat4ToSfml(endColor));
                 ImGui::EndDisabled();
 
                 ImGui::Spacing();
 
-                ImGui::InputText("imageSet", &m_particleSystemSettings[i].imageSetID);
+                updated |= ImGui::InputText("imageSet", &m_particleSystemSettings[i].imageSetID);
 
                 ImGui::TreePop();
+
+                if (updated)
+                {
+                    ParticleSystem::SanitizeSettings(m_particleSystemSettings[i], true);
+                }
             }
 
             ImGui::PopID();

@@ -30,6 +30,8 @@ public:
     ParticleSystem();
     ~ParticleSystem();
 
+    static void SanitizeSettings(ParticleSystemSettings& settings, bool limitsOnly);
+
     void Init(const ParticleSystemSettings& settings);
     void Release();
 

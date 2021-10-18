@@ -49,8 +49,12 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     m_dataVertices.setPrimitiveType(m_verticesPerParticle == 6 ? sf::PrimitiveType::Triangles : sf::PrimitiveType::Points);
     m_dataVertices.resize(m_maxParticleCount * m_verticesPerParticle);
 
+    // TODO: keep unused arrays empty depending on settings.
     m_dataLifetime.resize(m_maxParticleCount, 0);
     m_dataRemainingTime.resize(m_maxParticleCount, 0);
+    m_dataPosition.resize(m_maxParticleCount);
+    m_dataStartSize.resize(m_maxParticleCount);
+    m_dataEndSize.resize(m_maxParticleCount);
     m_dataVelocity.resize(m_maxParticleCount);
 
     if (m_settings.imageSetID != "")
@@ -163,37 +167,46 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     m_dataRemainingTime[particleIndex] = lifetime;
 
     // Reset position.
+    Vector2f position = m_emitterPosition + Vector2f(0.f, 0.f);
+    m_dataPosition[particleIndex] = position;
+
+    // Reset vertices position.
     if (m_verticesPerParticle == 6)
     {
-        float x = 0.f;
-        float y = 0.f;
+        Vector2f startSize, endSize;
         if (m_settings.keepSizeRatio)
         {
             float ratio = GetRandomf(1.f);
-            x = Lerp(m_settings.minStartSize.x, m_settings.maxStartSize.x, ratio);
-            y = Lerp(m_settings.minStartSize.y, m_settings.maxStartSize.y, ratio);
+            startSize = Lerp(m_settings.minStartSize, m_settings.maxStartSize, ratio);
+            endSize = Lerp(m_settings.minEndSize, m_settings.maxEndSize, ratio);
         }
         else
         {
-            x = GetRandomf(m_settings.minStartSize.x, m_settings.maxStartSize.x);
-            y = GetRandomf(m_settings.minStartSize.y, m_settings.maxStartSize.y);
+            startSize.x = GetRandomf(m_settings.minStartSize.x, m_settings.maxStartSize.x);
+            startSize.y = GetRandomf(m_settings.minStartSize.y, m_settings.maxStartSize.y);
+            endSize.x = GetRandomf(m_settings.minEndSize.x, m_settings.maxEndSize.x);
+            endSize.y = GetRandomf(m_settings.minEndSize.y, m_settings.maxEndSize.y);
         }
 
-        x *= 0.5f;
-        y *= 0.5f;
+        m_dataStartSize[particleIndex] = startSize;
+        m_dataEndSize[particleIndex] = endSize;
 
-        m_dataVertices[particleIndex * 6 + 0].position = m_emitterPosition + Vector2f(-x, -y);
-        m_dataVertices[particleIndex * 6 + 1].position = m_emitterPosition + Vector2f(x, -y);
-        m_dataVertices[particleIndex * 6 + 2].position = m_emitterPosition + Vector2f(-x, y);
-        m_dataVertices[particleIndex * 6 + 3].position = m_emitterPosition + Vector2f(x, -y);
-        m_dataVertices[particleIndex * 6 + 4].position = m_emitterPosition + Vector2f(-x, y);
-        m_dataVertices[particleIndex * 6 + 5].position = m_emitterPosition + Vector2f(x, y);
+        float x = startSize.x * 0.5f;
+        float y = startSize.y * 0.5f;
+
+        m_dataVertices[particleIndex * 6 + 0].position = position + Vector2f(-x, -y);
+        m_dataVertices[particleIndex * 6 + 1].position = position + Vector2f(x, -y);
+        m_dataVertices[particleIndex * 6 + 2].position = position + Vector2f(-x, y);
+        m_dataVertices[particleIndex * 6 + 3].position = position + Vector2f(x, -y);
+        m_dataVertices[particleIndex * 6 + 4].position = position + Vector2f(-x, y);
+        m_dataVertices[particleIndex * 6 + 5].position = position + Vector2f(x, y);
     }
     else
     {
-        m_dataVertices[particleIndex].position = m_emitterPosition + Vector2f(0.f, 0.f);
+        m_dataVertices[particleIndex].position = position + Vector2f(0.f, 0.f);
     }
 
+    // Reset texture.
     if (m_imageSet)
     {
         SubImage* subImage = m_imageSet->GetSubImage(GetRandom(m_imageSet->GetSubImageCount()));
@@ -261,6 +274,8 @@ void ParticleSystem::Update(const DeltaTime& dt)
     // Update live particles.
     for (size_t i = 0; i < m_maxParticleCount; ++i)
     {
+        // TODO: fetch some data here to avoid retrieving them several times.
+
         // Ignore disabled particles.
         if (m_dataLifetime[i] <= 0)
             continue;
@@ -273,21 +288,58 @@ void ParticleSystem::Update(const DeltaTime& dt)
         }
         else
         {
-            float vx = m_dataVelocity[i].x * dt.s();
-            float vy = m_dataVelocity[i].y * dt.s();
-
+            // Lifetime lerp (1 to 0).
             float lerpValue = (float)m_dataRemainingTime[i] / (float)m_dataLifetime[i];
-            sf::Color color = sf::Color(
-                Lerp<sf::Uint8>(m_settings.endColor.r, m_settings.startColor.r, lerpValue),
-                Lerp<sf::Uint8>(m_settings.endColor.g, m_settings.startColor.g, lerpValue),
-                Lerp<sf::Uint8>(m_settings.endColor.b, m_settings.startColor.b, lerpValue),
-                Lerp<sf::Uint8>(m_settings.endColor.a, m_settings.startColor.a, lerpValue));
 
-            for (size_t ii = 0; ii < m_verticesPerParticle; ++ii)
+            if (m_verticesPerParticle == 6 && m_settings.updateSizeOverLifetime)
             {
-                m_dataVertices[i * m_verticesPerParticle + ii].position.x += vx;
-                m_dataVertices[i * m_verticesPerParticle + ii].position.y += vy;
-                m_dataVertices[i * m_verticesPerParticle + ii].color = color;
+                Vector2f position = m_dataPosition[i] + m_dataVelocity[i] * dt.s();
+                m_dataPosition[i] = position;
+
+                float sx = Lerp(m_dataEndSize[i].x, m_dataStartSize[i].x, lerpValue) * 0.5f;
+                float sy = Lerp(m_dataEndSize[i].y, m_dataStartSize[i].y, lerpValue) * 0.5f;
+
+                m_dataVertices[i * 6 + 0].position = position + Vector2f(-sx, -sy);
+                m_dataVertices[i * 6 + 1].position = position + Vector2f(sx, -sy);
+                m_dataVertices[i * 6 + 2].position = position + Vector2f(-sx, sy);
+                m_dataVertices[i * 6 + 3].position = position + Vector2f(sx, -sy);
+                m_dataVertices[i * 6 + 4].position = position + Vector2f(-sx, sy);
+                m_dataVertices[i * 6 + 5].position = position + Vector2f(sx, sy);
+            }
+            else if (m_verticesPerParticle == 6 && !m_settings.updateSizeOverLifetime)
+            {
+                Vector2f position = m_dataPosition[i] + m_dataVelocity[i] * dt.s();
+                m_dataPosition[i] = position;
+
+                float sx = m_dataStartSize[i].x * 0.5f;
+                float sy = m_dataStartSize[i].y * 0.5f;
+
+                m_dataVertices[i * 6 + 0].position = position + Vector2f(-sx, -sy);
+                m_dataVertices[i * 6 + 1].position = position + Vector2f(sx, -sy);
+                m_dataVertices[i * 6 + 2].position = position + Vector2f(-sx, sy);
+                m_dataVertices[i * 6 + 3].position = position + Vector2f(sx, -sy);
+                m_dataVertices[i * 6 + 4].position = position + Vector2f(-sx, sy);
+                m_dataVertices[i * 6 + 5].position = position + Vector2f(sx, sy);
+            }
+            else
+            {
+                Vector2f position = m_dataPosition[i] + m_dataVelocity[i] * dt.s();
+                m_dataPosition[i] = position;
+                m_dataVertices[i].position = position;
+            }
+
+            if (m_settings.updateColorOverLifetime)
+            {
+                sf::Color color = sf::Color(
+                    Lerp<sf::Uint8>(m_settings.endColor.r, m_settings.startColor.r, lerpValue),
+                    Lerp<sf::Uint8>(m_settings.endColor.g, m_settings.startColor.g, lerpValue),
+                    Lerp<sf::Uint8>(m_settings.endColor.b, m_settings.startColor.b, lerpValue),
+                    Lerp<sf::Uint8>(m_settings.endColor.a, m_settings.startColor.a, lerpValue));
+
+                for (size_t ii = 0; ii < m_verticesPerParticle; ++ii)
+                {
+                    m_dataVertices[i * m_verticesPerParticle + ii].color = color;
+                }
             }
         }
     }

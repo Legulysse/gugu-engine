@@ -116,6 +116,8 @@ void Projectile::InitProjectile(const SkillContext& skillContext, const DS_Effec
         particleSettings.maxStartSize = Vector2f(16.f, 16.f);
         particleSettings.startColor = sf::Color::Yellow;
         particleSettings.endColor = sf::Color(255, 0, 0, 100);
+        particleSettings.updateColorOverLifetime = true;
+
         ElementParticles* particles = m_sprite->AddChild<ElementParticles>();
         particles->CreateParticleSystem(particleSettings, true);
     }
@@ -136,6 +138,8 @@ void Projectile::InitProjectile(const SkillContext& skillContext, const DS_Effec
         particleSettings.maxStartSize = Vector2f(2.f, 2.f);
         particleSettings.startColor = sf::Color::Red;
         particleSettings.endColor = sf::Color(0, 0, 0, 0);
+        particleSettings.updateColorOverLifetime = true;
+
         ElementParticles* particles = m_sprite->AddChild<ElementParticles>();
         particles->CreateParticleSystem(particleSettings, true);
     }
@@ -199,6 +203,7 @@ void Projectile::Step(const DeltaTime& dt)
                 particleSettings.maxStartSize = Vector2f(8.f, 8.f);
                 particleSettings.startColor = sf::Color::Yellow;
                 particleSettings.endColor = sf::Color(255, 0, 0, 50);
+                particleSettings.updateColorOverLifetime = true;
 
                 ElementParticles* particles = m_level->GetRootNode()->AddChild<ElementParticles>();
                 particles->SetPosition(m_sprite->GetPosition());
@@ -229,6 +234,7 @@ void Projectile::Step(const DeltaTime& dt)
                 particleSettings.maxStartSize = Vector2f(8.f, 8.f);
                 particleSettings.startColor = sf::Color::Yellow;
                 particleSettings.endColor = sf::Color(255, 0, 0, 50);
+                particleSettings.updateColorOverLifetime = true;
 
                 ElementParticles* particles = m_level->GetRootNode()->AddChild<ElementParticles>();
                 particles->SetPosition(m_sprite->GetPosition());

@@ -20,7 +20,7 @@ struct ParticleSystemSettings
     bool loop = true;
     int duration = 5000;
     int maxParticleCount = 50;
-    int verticesPerParticle = 6;
+    int verticesPerParticle = 6;    // TODO: use an enum for particle type (point, quad).
     bool localSpace = false;
 
     // Emitter
@@ -38,12 +38,14 @@ struct ParticleSystemSettings
     // Render
     bool keepSizeRatio = true;
     Vector2f minStartSize = Vector2f(5.f, 5.f);
-    Vector2f maxStartSize = Vector2f(10.f, 10.f);
+    Vector2f maxStartSize = Vector2f(5.f, 5.f);
+    bool updateSizeOverLifetime = false;
+    Vector2f minEndSize = Vector2f(0.f, 0.f);
+    Vector2f maxEndSize = Vector2f(0.f, 0.f);
+    sf::Color startColor = sf::Color::White;
+    bool updateColorOverLifetime = false;
+    sf::Color endColor = sf::Color::Black;
     std::string imageSetID = "";
-    //Vector2f minEndSize = Vector2f(5.f, 5.f); // TODO: lerp particle size over lifetime, we need to store a reference position to recompute the vertices.
-    //Vector2f maxEndSize = Vector2f(10.f, 10.f);
-    sf::Color startColor = sf::Color::Red;
-    sf::Color endColor = sf::Color::Blue;
 };
 
 }   //namespace gugu

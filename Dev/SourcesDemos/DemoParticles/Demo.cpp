@@ -66,9 +66,10 @@ void Demo::AppStart()
     for (size_t i = 0; i < 10; ++i)
     {
         ParticleSystemSettings settings;
-        settings.maxParticleCount = 100;
-        settings.minSpawnPerSecond = 20;
-        settings.maxSpawnPerSecond = 100;
+        settings.maxParticleCount = 500;
+        settings.minSpawnPerSecond = 500;
+        settings.maxSpawnPerSecond = 500;
+        settings.updateColorOverLifetime = true;
 
         ElementParticles* elementParticle = levelRoot->AddChild<ElementParticles>();
         elementParticle->SetPosition(Vector2f(-300.f + (i % 5) * 150.f, -100.f + (i / 5) * 200.f));
@@ -101,6 +102,7 @@ void Demo::AppStart()
     armSettings.maxLifetime = 1500;
     armSettings.startColor = sf::Color::Yellow;
     armSettings.endColor = sf::Color(255, 0, 0, 100);
+    armSettings.updateColorOverLifetime = true;
 
     ElementParticles* armElementParticle = arm->AddChild<ElementParticles>();
     armElementParticle->SetPositionX(400.f);
@@ -112,6 +114,7 @@ void Demo::AppStart()
 
     // Cursor Particle
     ParticleSystemSettings cursorSettings;
+    cursorSettings.updateColorOverLifetime = true;
 
     ElementParticles* cursorElementParticle = m_root->AddChild<ElementParticles>();
     ParticleSystem* cursorParticleSystem = cursorElementParticle->CreateParticleSystem(cursorSettings, true);
@@ -168,13 +171,20 @@ void Demo::AppUpdate(const DeltaTime& dt)
         for (size_t i = 0; i < m_particleSystemSettings.size(); ++i)
         {
             ImGui::PushID(i);
-            if (ImGui::TreeNode("node", "%d", i))
+
+            ImGuiTreeNodeFlags treeNodeFlag = ImGuiTreeNodeFlags_SpanAvailWidth;
+            if (ImGui::TreeNodeEx("node", treeNodeFlag, "%d", i))
             {
                 ImGui::Text("Running : %s, Active Particles : %d / %d", (m_particleSystems[i]->IsRunning() ? "true" : "false"), m_particleSystems[i]->GetActiveParticleCount(), m_particleSystems[i]->GetMaxParticleCount());
 
                 ImGui::Checkbox("loop", &m_particleSystemSettings[i].loop);
+
+                ImGui::BeginDisabled(m_particleSystemSettings[i].loop);
                 ImGui::InputInt("duration (ms)", &m_particleSystemSettings[i].duration);
+                ImGui::EndDisabled();
+
                 ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount);
+                ImGui::InputInt("vertices per particle", &m_particleSystemSettings[i].verticesPerParticle);
                 ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
 
                 ImGui::Spacing();
@@ -212,18 +222,38 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 m_particleSystemSettings[i].minStartSize = Vector2f(startSize.x, startSize.y);
                 m_particleSystemSettings[i].maxStartSize = Vector2f(startSize.z, startSize.w);
 
-                ImGui::InputText("imageSet", &m_particleSystemSettings[i].imageSetID);
+                ImGui::Checkbox("update size over lifetime", &m_particleSystemSettings[i].updateSizeOverLifetime);
+
+                ImGui::BeginDisabled(!m_particleSystemSettings[i].updateSizeOverLifetime);
+                ImVec2 minEndSize = m_particleSystemSettings[i].minEndSize;
+                ImVec2 maxEndSize = m_particleSystemSettings[i].maxEndSize;
+                ImVec4 endSize = ImVec4(minEndSize.x, minEndSize.y, maxEndSize.x, maxEndSize.y);
+                ImGui::InputFloat4("end size", (float*)&endSize);
+                m_particleSystemSettings[i].minEndSize = Vector2f(endSize.x, endSize.y);
+                m_particleSystemSettings[i].maxEndSize = Vector2f(endSize.z, endSize.w);
+                ImGui::EndDisabled();
+
+                ImGui::Spacing();
 
                 ImVec4 startColor = ColorConvertSfmlToFloat4(m_particleSystemSettings[i].startColor);
                 ImGui::ColorEdit4("start color", (float*)&startColor);
                 m_particleSystemSettings[i].startColor = sf::Color(ColorConvertFloat4ToSfml(startColor));
 
+                ImGui::Checkbox("update color over lifetime", &m_particleSystemSettings[i].updateColorOverLifetime);
+
+                ImGui::BeginDisabled(!m_particleSystemSettings[i].updateColorOverLifetime);
                 ImVec4 endColor = ColorConvertSfmlToFloat4(m_particleSystemSettings[i].endColor);
                 ImGui::ColorEdit4("end color", (float*)&endColor);
                 m_particleSystemSettings[i].endColor = sf::Color(ColorConvertFloat4ToSfml(endColor));
+                ImGui::EndDisabled();
+
+                ImGui::Spacing();
+
+                ImGui::InputText("imageSet", &m_particleSystemSettings[i].imageSetID);
 
                 ImGui::TreePop();
             }
+
             ImGui::PopID();
         }
 

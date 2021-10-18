@@ -55,25 +55,30 @@ private:
 
 private:
 
-    Element* m_element;
-
+    // Settings
     ParticleSystemSettings m_settings;
     size_t m_maxParticleCount;
     size_t m_verticesPerParticle;
     ImageSet* m_imageSet;
     sf::Texture* m_texture;
-
-    bool m_running;
-    size_t m_activeParticleCount;
-    int m_currentDuration;
+    Element* m_element;
     Vector2f m_emitterPosition;
+
+    // Runtime
+    bool m_running;
+    int m_currentDuration;
+    size_t m_activeParticleCount;
     size_t m_nextEmitIndex;
     int m_nextSpawnDelay;
     int m_currentSpawnDelay;
 
+    // Particles data
     sf::VertexArray m_dataVertices;
     std::vector<int> m_dataLifetime;
     std::vector<int> m_dataRemainingTime;
+    std::vector<Vector2f> m_dataPosition;
+    std::vector<Vector2f> m_dataStartSize;
+    std::vector<Vector2f> m_dataEndSize;
     std::vector<Vector2f> m_dataVelocity;
 };
 

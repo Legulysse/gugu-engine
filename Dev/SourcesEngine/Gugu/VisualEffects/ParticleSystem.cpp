@@ -45,6 +45,8 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
 
     settings.minSpawnPerSecond = Max(settings.minSpawnPerSecond, Math::Epsilon3);
     settings.minParticlesPerSpawn = Max(settings.minParticlesPerSpawn, 0);
+
+    settings.emissionAngle = Clamp(settings.emissionAngle, 0.f, 360.f);
     settings.minLifetime = Max(settings.minLifetime, 1);
     settings.minVelocity = Max(settings.minVelocity, 0.f);
 
@@ -52,6 +54,8 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
     {
         settings.maxSpawnPerSecond = settings.useRandomSpawnPerSecond ? Max(settings.minSpawnPerSecond, settings.maxSpawnPerSecond) : settings.minSpawnPerSecond;
         settings.maxParticlesPerSpawn = settings.useRandomParticlesPerSpawn ? Max(settings.minParticlesPerSpawn, settings.maxParticlesPerSpawn) : settings.minParticlesPerSpawn;
+        
+        settings.emissionDirection = (settings.emissionDirection != sf::Vector2f(0, 0)) ? Normalize(settings.emissionDirection) : Vector2f(0.f, -1.f);
         settings.maxLifetime = settings.useRandomLifetime ? Max(settings.minLifetime, settings.maxLifetime) : settings.minLifetime;
         settings.maxVelocity = settings.useRandomVelocity ? Max(settings.minVelocity, settings.maxVelocity) : settings.minVelocity;
 
@@ -64,6 +68,7 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
     {
         settings.maxSpawnPerSecond = Max(settings.maxSpawnPerSecond, 0.f);
         settings.maxParticlesPerSpawn = Max(settings.maxParticlesPerSpawn, 0);
+
         settings.maxLifetime = Max(settings.maxLifetime, 0);
         settings.maxVelocity = Max(settings.maxVelocity, 0.f);
     }
@@ -80,6 +85,7 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     m_maxParticleCount = m_settings.maxParticleCount;
     m_verticesPerParticle = m_settings.verticesPerParticle;
 
+    // TODO: I can store 4 vertices instead of 6 per particle, as it is Im just duplicating data (check if it affects loop performance though).
     m_dataVertices.setPrimitiveType(m_verticesPerParticle == 6 ? sf::PrimitiveType::Triangles : sf::PrimitiveType::Points);
     m_dataVertices.resize(m_maxParticleCount * m_verticesPerParticle);
 
@@ -201,8 +207,11 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     m_dataRemainingTime[particleIndex] = lifetime;
 
     // Reset position.
-    Vector2f position = m_emitterPosition + Vector2f(0.f, 0.f);
-    m_dataPosition[particleIndex] = position;
+    Vector2f position = m_emitterPosition;
+    if (m_settings.emitterShape == ParticleSystemSettings::EEmitterShape::Point)
+    {
+        m_dataPosition[particleIndex] = position;
+    }
 
     // Reset vertices position.
     if (m_verticesPerParticle == 6)
@@ -266,9 +275,20 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     }
 
     // Reset velocity.
-    Vector2f velocity = Vector2f(GetRandomf(m_settings.minVelocity, m_settings.maxVelocity), 0.f);
-    velocity = Rotate(velocity, GetRandomf(Math::Pi * 2.f));
-    m_dataVelocity[particleIndex] = velocity;
+    if (m_settings.emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::RandomDirection)
+    {
+        Vector2f velocity = Vector2f(GetRandomf(m_settings.minVelocity, m_settings.maxVelocity), 0.f);
+        velocity = Rotate(velocity, GetRandomf(Math::Pi * 2.f));
+        m_dataVelocity[particleIndex] = velocity;
+    }
+    else if (m_settings.emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::AngleDirection)
+    {
+        float velocityValue = GetRandomf(m_settings.minVelocity, m_settings.maxVelocity);
+        Vector2f velocityVector = m_settings.emissionDirection * velocityValue;
+        float emissionAngle = GetRandomf(m_settings.emissionAngle) - (m_settings.emissionAngle * 0.5f);
+        velocityVector = Rotate(velocityVector, ToRadiansf(emissionAngle));
+        m_dataVelocity[particleIndex] = velocityVector;
+    }
 }
 
 void ParticleSystem::KillParticle(size_t particleIndex)

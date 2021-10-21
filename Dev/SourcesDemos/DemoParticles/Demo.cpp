@@ -126,6 +126,7 @@ void Demo::AppStart()
     
     // Animation
     m_startTime = GetTimestamp();
+    m_animateEmitters = true;
     m_rotateArm = true;
 }
 
@@ -136,11 +137,14 @@ void Demo::AppStop()
 
 void Demo::AppUpdate(const DeltaTime& dt)
 {
-    for (size_t i = 0; i < m_centerParticleElements.size(); ++i)
+    if (m_animateEmitters)
     {
-        int64 time = GetTimestamp() - m_startTime;
-        float curve = std::sin((float)time / 1000.f) * 100.f;
-        m_centerParticleElements[i]->SetPositionY(curve + -100.f + (i / 5) * 200.f);
+        for (size_t i = 0; i < m_centerParticleElements.size(); ++i)
+        {
+            int64 time = GetTimestamp() - m_startTime;
+            float curve = std::sin((float)time / 1000.f) * 100.f;
+            m_centerParticleElements[i]->SetPositionY(curve + -100.f + (i / 5) * 200.f);
+        }
     }
 
     if (m_rotateArm)
@@ -211,6 +215,11 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::Spacing();
 
                 // Emitter
+                const char* emitterShapeValues[] = { "Point" };
+                int emitterShapeIndex = (int)m_particleSystemSettings[i].emitterShape;
+                updated |= ImGui::Combo("emitter shape", &emitterShapeIndex, emitterShapeValues, IM_ARRAYSIZE(emitterShapeValues));
+                m_particleSystemSettings[i].emitterShape = (ParticleSystemSettings::EEmitterShape)emitterShapeIndex;
+
                 updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomSpawnPerSecond);
                 if (m_particleSystemSettings[i].useRandomSpawnPerSecond)
                 {
@@ -244,6 +253,20 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::Spacing();
 
                 // Particle behaviour
+                const char* emissionBehaviourValues[] = { "RandomDirection", "AngleDirection" };
+                int emissionBehaviourIndex = (int)m_particleSystemSettings[i].emissionBehaviour;
+                updated |= ImGui::Combo("emission behaviour", &emissionBehaviourIndex, emissionBehaviourValues, IM_ARRAYSIZE(emissionBehaviourValues));
+                m_particleSystemSettings[i].emissionBehaviour = (ParticleSystemSettings::EEmissionBehaviour)emissionBehaviourIndex;
+
+                if (m_particleSystemSettings[i].emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::AngleDirection)
+                {
+                    ImVec2 emissionDirection = m_particleSystemSettings[i].emissionDirection;
+                    updated |= ImGui::InputFloat2("emission direction", (float*)&emissionDirection);
+                    m_particleSystemSettings[i].emissionDirection = emissionDirection;
+
+                    updated |= ImGui::InputFloat("emission angle", &m_particleSystemSettings[i].emissionAngle);
+                }
+
                 updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomLifetime);
                 if (m_particleSystemSettings[i].useRandomLifetime)
                 {
@@ -358,6 +381,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
             }
         }
 
+        ImGui::Checkbox("animate emitters", &m_animateEmitters);
         ImGui::Checkbox("rotate arm", &m_rotateArm);
     }
     ImGui::End();

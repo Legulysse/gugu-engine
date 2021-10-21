@@ -16,14 +16,39 @@ namespace gugu {
 
 struct ParticleSystemSettings
 {
+    enum class EEmitterShape
+    {
+        Point,
+        //PointList,
+        //Circle,
+        //Square,
+        //Segment,
+        //SegmentList,
+    };
+
+    enum class EEmissionBehaviour
+    {
+        RandomDirection,
+        AngleDirection,
+        //AwayFromCenter,
+    };
+
+    //enum class EParticleShape
+    //{
+    //    Point,
+    //    Quad,
+    //};
+
     // Setup
     bool loop = true;
     int duration = 5000;
     int maxParticleCount = 50;  // Hard-limit implemented at 100k particles, to avoid crashes.
-    int verticesPerParticle = 6;    // TODO: use an enum for particle type (point, quad).
+    int verticesPerParticle = 6;    // TODO: deprecate with the new enum for particle type (point, quad) (need update imgui panel).
+    //EParticleShape particleShape = EParticleShape::Quad;
     bool localSpace = false;
 
     // Emitter
+    EEmitterShape emitterShape = EEmitterShape::Point;
     bool useRandomSpawnPerSecond = false;
     float minSpawnPerSecond = 10.f;
     float maxSpawnPerSecond = 10.f;
@@ -32,6 +57,10 @@ struct ParticleSystemSettings
     int maxParticlesPerSpawn = 1;
 
     // Particle behaviour
+    EEmissionBehaviour emissionBehaviour = EEmissionBehaviour::RandomDirection;
+    //bool emissionDirectionInLocalSpace = false;
+    Vector2f emissionDirection = Vector2f(0.f, -1.f);
+    float emissionAngle = 90.f;
     bool useRandomLifetime = false;
     int minLifetime = 500;
     int maxLifetime = 500;

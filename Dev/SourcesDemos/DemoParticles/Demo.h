@@ -44,6 +44,7 @@ protected:
     gugu::Element* m_moveArm;
 
     gugu::int64 m_startTime;
+    bool m_animateEmitters;
     bool m_rotateArm;
 
     std::vector<gugu::ParticleSystemSettings> m_particleSystemSettings;

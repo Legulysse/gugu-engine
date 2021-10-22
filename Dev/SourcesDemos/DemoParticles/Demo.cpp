@@ -209,7 +209,12 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::EndDisabled();
 
                 updated |= ImGui::InputInt("max particles", &m_particleSystemSettings[i].maxParticleCount, 0);
-                updated |= ImGui::InputInt("vertices (1 or 6)", &m_particleSystemSettings[i].verticesPerParticle, 0);
+
+                const char* particleShapeValues[] = { "Point", "Quad" };
+                int particleShapeIndex = (int)m_particleSystemSettings[i].particleShape;
+                updated |= ImGui::Combo("particle shape", &particleShapeIndex, particleShapeValues, IM_ARRAYSIZE(particleShapeValues));
+                m_particleSystemSettings[i].particleShape = (ParticleSystemSettings::EParticleShape)particleShapeIndex;
+
                 updated |= ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
 
                 ImGui::Spacing();

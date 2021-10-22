@@ -33,18 +33,17 @@ struct ParticleSystemSettings
         //AwayFromCenter,
     };
 
-    //enum class EParticleShape
-    //{
-    //    Point,
-    //    Quad,
-    //};
+    enum class EParticleShape
+    {
+        Point,
+        Quad,
+    };
 
     // Setup
     bool loop = true;
     int duration = 5000;
     int maxParticleCount = 50;  // Hard-limit implemented at 100k particles, to avoid crashes.
-    int verticesPerParticle = 6;    // TODO: deprecate with the new enum for particle type (point, quad) (need update imgui panel).
-    //EParticleShape particleShape = EParticleShape::Quad;
+    EParticleShape particleShape = EParticleShape::Quad;
     bool localSpace = false;
 
     // Emitter

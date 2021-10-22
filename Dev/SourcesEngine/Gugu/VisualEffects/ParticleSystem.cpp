@@ -41,7 +41,6 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
 {
     settings.duration = Max(settings.duration, 0);
     settings.maxParticleCount = Clamp(settings.maxParticleCount, 1, 100000);
-    settings.verticesPerParticle = (settings.verticesPerParticle == 1 || settings.verticesPerParticle == 6) ? settings.verticesPerParticle : 1;
 
     settings.minSpawnPerSecond = Max(settings.minSpawnPerSecond, Math::Epsilon3);
     settings.minParticlesPerSpawn = Max(settings.minParticlesPerSpawn, 0);
@@ -83,11 +82,19 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     SanitizeSettings(m_settings, false);
 
     m_maxParticleCount = m_settings.maxParticleCount;
-    m_verticesPerParticle = m_settings.verticesPerParticle;
 
-    // TODO: I can store 4 vertices instead of 6 per particle, as it is Im just duplicating data (check if it affects loop performance though).
-    m_dataVertices.setPrimitiveType(m_verticesPerParticle == 6 ? sf::PrimitiveType::Triangles : sf::PrimitiveType::Points);
-    m_dataVertices.resize(m_maxParticleCount * m_verticesPerParticle);
+    if (m_settings.particleShape == ParticleSystemSettings::EParticleShape::Point)
+    {
+        m_verticesPerParticle = 1;
+        m_dataVertices.setPrimitiveType(sf::PrimitiveType::Points);
+    }
+    else if (m_settings.particleShape == ParticleSystemSettings::EParticleShape::Quad)
+    {
+        m_verticesPerParticle = 6;
+        m_dataVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
+    }
+
+    m_dataVertices.resize(m_maxParticleCount* m_verticesPerParticle);
 
     // TODO: keep unused arrays empty depending on settings.
     m_dataLifetime.resize(m_maxParticleCount, 0);

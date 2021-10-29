@@ -258,7 +258,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::Spacing();
 
                 // Particle behaviour
-                const char* emissionBehaviourValues[] = { "RandomDirection", "AngleDirection" };
+                const char* emissionBehaviourValues[] = { "Random Direction", "Angle Direction" };
                 int emissionBehaviourIndex = (int)m_particleSystemSettings[i].emissionBehaviour;
                 updated |= ImGui::Combo("emission behaviour", &emissionBehaviourIndex, emissionBehaviourValues, IM_ARRAYSIZE(emissionBehaviourValues));
                 m_particleSystemSettings[i].emissionBehaviour = (ParticleSystemSettings::EEmissionBehaviour)emissionBehaviourIndex;

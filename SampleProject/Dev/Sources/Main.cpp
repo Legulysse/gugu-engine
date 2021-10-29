@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     
     GetEngine()->Init(config);
 
-    //--------
+    //----------------------------------------------
     
     ElementSprite* sprite = GetGameWindow()->GetUINode()->AddChild<ElementSprite>();
     sprite->SetTexture("sfml-logo-small.png");
@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
     text->SetFontSize(48);
     text->SetUnifiedOrigin(UDim2::POSITION_CENTER);
     text->SetUnifiedPosition(UDim2(0.5f, 0.25f));
-    
-    //--------
+
+    //----------------------------------------------
 
     GetEngine()->RunMainLoop();
     GetEngine()->Release();

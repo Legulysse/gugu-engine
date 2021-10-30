@@ -258,26 +258,30 @@ bool ElementButton::LoadFromXml(const pugi::xml_node& nodeSelf)
     if (!Element::LoadFromXml(nodeSelf))
         return false;
 
-    for (pugi::xml_node nodeChildElement = nodeSelf.child("Element"); nodeChildElement; nodeChildElement = nodeChildElement.next_sibling("Element"))
+    pugi::xml_node nodeComponents = nodeSelf.child("Components");
+    if (nodeComponents)
     {
-        pugi::xml_attribute nodeElementName = nodeChildElement.attribute("name");
-        if (nodeElementName && std::strcmp(nodeElementName.value(), "Idle") == 0 && !m_spriteIdle)
+        for (pugi::xml_node nodeComponentElement = nodeComponents.child("Element"); nodeComponentElement; nodeComponentElement = nodeComponentElement.next_sibling("Element"))
         {
-            m_spriteIdle = new ElementSpriteGroup;
-            m_spriteIdle->LoadFromXml(nodeChildElement);
-            m_spriteIdle->SetParent(this, true);
-        }
-        else if (nodeElementName && std::strcmp(nodeElementName.value(), "Focused") == 0 && !m_spriteFocused)
-        {
-            m_spriteFocused = new ElementSpriteGroup;
-            m_spriteFocused->LoadFromXml(nodeChildElement);
-            m_spriteFocused->SetParent(this, true);
-        }
-        else if (nodeElementName && std::strcmp(nodeElementName.value(), "Disabled") == 0 && !m_spriteDisabled)
-        {
-            m_spriteDisabled = new ElementSpriteGroup;
-            m_spriteDisabled->LoadFromXml(nodeChildElement);
-            m_spriteDisabled->SetParent(this, true);
+            pugi::xml_attribute nodeElementName = nodeComponentElement.attribute("name");
+            if (nodeElementName && std::strcmp(nodeElementName.value(), "Idle") == 0 && !m_spriteIdle)
+            {
+                m_spriteIdle = new ElementSpriteGroup;
+                m_spriteIdle->LoadFromXml(nodeComponentElement);
+                m_spriteIdle->SetParent(this, true);
+            }
+            else if (nodeElementName && std::strcmp(nodeElementName.value(), "Focused") == 0 && !m_spriteFocused)
+            {
+                m_spriteFocused = new ElementSpriteGroup;
+                m_spriteFocused->LoadFromXml(nodeComponentElement);
+                m_spriteFocused->SetParent(this, true);
+            }
+            else if (nodeElementName && std::strcmp(nodeElementName.value(), "Disabled") == 0 && !m_spriteDisabled)
+            {
+                m_spriteDisabled = new ElementSpriteGroup;
+                m_spriteDisabled->LoadFromXml(nodeComponentElement);
+                m_spriteDisabled->SetParent(this, true);
+            }
         }
     }
 

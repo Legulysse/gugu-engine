@@ -1,0 +1,5 @@
+<ImageSet texture="Button01.png">
+	<SubImage name="Idle" x="0" y="0" w="250" h="50"/>
+	<SubImage name="Focused" x="0" y="50" w="250" h="50"/>
+	<SubImage name="Disabled" x="0" y="100" w="250" h="50"/>
+</ImageSet>

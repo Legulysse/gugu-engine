@@ -122,4 +122,9 @@ Vector2i Texture::GetSize() const
     return m_sfTexture ? Vector2i(m_sfTexture->getSize()) : Vector2i();
 }
 
+sf::IntRect Texture::GetRect() const
+{
+    return m_sfTexture ? sf::IntRect(Vector2i(), Vector2i(m_sfTexture->getSize())) : sf::IntRect();
+}
+
 }   // namespace gugu

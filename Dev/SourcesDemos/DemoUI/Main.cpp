@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     EngineConfig config;
     config.applicationName = "GuguEngine Demo UI";
     config.pathAssets = "Assets";
-    config.defaultFont = "Spaceranger.ttf";
+    config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";
     config.windowWidth = 1024;
     config.windowHeight = 768;

@@ -67,21 +67,28 @@ void StateMenuMain::Init()
     float fGapY = 64.f;
 
     pButton = pBox->AddChild<ElementButton>();
-    pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
-    pButton->SetText("GuiTest");
+    pButton->LoadFromFile("Button01.xml");
+    pButton->SetText("Gui Test");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 6));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = pBox->AddChild<ElementButton>();
-    pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
-    pButton->SetText("DemoLayout");
+    pButton->LoadFromFile("Button01.xml");
+    pButton->SetText("Demo Layout");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 4));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = pBox->AddChild<ElementButton>();
-    pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    pButton->LoadFromFile("Button01.xml");
+    pButton->SetText("Disabled");
+    pButton->SetDisabled(true);
+    pButton->SetPosition(fPosX, fPosY);
+
+    fPosY += fGapY;
+    pButton = pBox->AddChild<ElementButton>();
+    pButton->LoadFromFile("Button01.xml");
     pButton->SetText("Quit");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
     pButton->SetPosition(fPosX, fPosY);

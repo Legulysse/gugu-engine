@@ -6,6 +6,8 @@
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/Math/Vector2.h"
 
+#include <SFML/Graphics/Rect.hpp>
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -36,6 +38,7 @@ public:
     bool IsRepeated() const;
 
     Vector2i GetSize() const;
+    sf::IntRect GetRect() const;
 
     virtual EResourceType::Type GetResourceType() const override;
 

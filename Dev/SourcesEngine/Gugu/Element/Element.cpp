@@ -65,7 +65,7 @@ void Element::AddChild(Element* child)
     m_children.push_back(child);
 }
 
-void Element::SetParent(Element* parent)
+void Element::SetParent(Element* parent, bool recomputeDimensions)
 {
     if (m_parent)
     {
@@ -74,6 +74,11 @@ void Element::SetParent(Element* parent)
     }
 
     m_parent = parent;
+
+    if (recomputeDimensions)
+    {
+        ComputeUnifiedDimensions();
+    }
 }
 
 void Element::RemoveChild(Element* child)
@@ -632,6 +637,15 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
 
 bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
 {
+    pugi::xml_node nodeSize = _oNodeElement.child("Size");
+    if (nodeSize)
+    {
+        Vector2f size;
+        size.x = nodeSize.attribute("x").as_float(0.f);
+        size.y = nodeSize.attribute("y").as_float(0.f);
+        SetSize(size);
+    }
+
     pugi::xml_node oNodeUDimPosition = _oNodeElement.child("UPosition");
     if (!oNodeUDimPosition.empty())
     {

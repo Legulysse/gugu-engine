@@ -253,7 +253,7 @@ bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
     return LoadFromXml(nodeRoot);
 }
 
-bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node & nodeSelf)
+bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
 {
     if (!Element::LoadFromXml(nodeSelf))
         return false;

@@ -50,7 +50,7 @@ void StateMenuMain::Init()
     float fGapY = 64.f;
 
     pButton = pBox->AddChild<ElementButton>();
-    pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    pButton->LoadFromFile("Button01.xml");
     pButton->GetElementText()->SetFont("Spaceranger.ttf");
     pButton->SetText("New Game");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 1));
@@ -58,7 +58,7 @@ void StateMenuMain::Init()
 
     fPosY += fGapY;
     pButton = pBox->AddChild<ElementButton>();
-    pButton->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    pButton->LoadFromFile("Button01.xml");
     pButton->GetElementText()->SetFont("Spaceranger.ttf");
     pButton->SetText("Quit");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));

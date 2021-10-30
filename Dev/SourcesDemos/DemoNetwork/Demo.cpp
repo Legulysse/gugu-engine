@@ -39,37 +39,37 @@ void Demo::AppStart()
     ElementButton* button;
 
     button = m_root->AddChild<ElementButton>();
-    button->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    button->LoadFromFile("Button01.xml");
     button->SetText("Listen A");
     button->Move(10.0, 10.0);
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, 1));
 
     button = m_root->AddChild<ElementButton>();
-    button->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    button->LoadFromFile("Button01.xml");
     button->SetText("Connect A");
     button->Move(10.0, 60.0);
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, 2));
 
     button = m_root->AddChild<ElementButton>();
-    button->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    button->LoadFromFile("Button01.xml");
     button->SetText("Ping All");
     button->Move(10.0, 160.0);
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, 3));
 
     button = m_root->AddChild<ElementButton>();
-    button->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    button->LoadFromFile("Button01.xml");
     button->SetText("Listen B");
     button->Move(300.0, 10.0);
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, 4));
 
     button = m_root->AddChild<ElementButton>();
-    button->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    button->LoadFromFile("Button01.xml");
     button->SetText("Connect B");
     button->Move(300.0, 60.0);
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, 5));
 
     button = m_root->AddChild<ElementButton>();
-    button->SetTexture("ButtonNormal.png", "ButtonFocused.png");
+    button->LoadFromFile("Button01.xml");
     button->SetText("Disconnect");
     button->Move(590.0, 110.0);
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, 7));

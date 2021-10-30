@@ -1,11 +1,11 @@
 <Layout>
     <USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
     <Element type="Sprite" name="Sprite1" >
-        <Texture source="ButtonNormal.png" />
+        <Texture source="sfml-logo-small.png" />
         <UPosition xRel="0.25" yRel="0.25" xAbs="0" yAbs="0" />
         <Children>
             <Element type="Sprite" name="Sprite2" >
-                <Texture source="ButtonNormal.png" />
+                <Texture source="sfml-logo-small.png" />
                 <UPosition xRel="0" yRel="0" xAbs="50" yAbs="100" />
             </Element>
         </Children>

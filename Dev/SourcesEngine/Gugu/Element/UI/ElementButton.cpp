@@ -76,6 +76,7 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
 
     ElementSpriteGroupItem* idleItem = new ElementSpriteGroupItem;
     idleItem->SetSubRect(textureIdle->GetRect());
+    idleItem->SetUnifiedSize(UDim2::SIZE_FULL);
     m_spriteIdle->AddItem(idleItem);
 
     if (textureFocused)
@@ -87,6 +88,7 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
 
         ElementSpriteGroupItem* focusedItem = new ElementSpriteGroupItem;
         focusedItem->SetSubRect(textureFocused->GetRect());
+        focusedItem->SetUnifiedSize(UDim2::SIZE_FULL);
         m_spriteFocused->AddItem(focusedItem);
     }
 
@@ -99,6 +101,7 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
 
         ElementSpriteGroupItem* disabledItem = new ElementSpriteGroupItem;
         disabledItem->SetSubRect(textureDisabled->GetRect());
+        disabledItem->SetUnifiedSize(UDim2::SIZE_FULL);
         m_spriteDisabled->AddItem(disabledItem);
     }
 

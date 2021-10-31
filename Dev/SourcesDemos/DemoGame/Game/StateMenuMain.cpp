@@ -45,9 +45,10 @@ void StateMenuMain::Init()
     pBox->SetUnifiedPosition(UDim2(0.f, 50.f, 0.f, 50.f));
 
     ElementButton* pButton;
-    float fPosX = 20.f;
-    float fPosY = 20.f;
-    float fGapY = 64.f;
+    float padding = 20.f;
+    float fGapY = 10.f;
+    float fPosX = padding;
+    float fPosY = padding;
 
     pButton = pBox->AddChild<ElementButton>();
     pButton->LoadFromFile("Button01.xml");
@@ -56,7 +57,7 @@ void StateMenuMain::Init()
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 1));
     pButton->SetPosition(fPosX, fPosY);
 
-    fPosY += fGapY;
+    fPosY += fGapY + pButton->GetSize().y;
     pButton = pBox->AddChild<ElementButton>();
     pButton->LoadFromFile("Button01.xml");
     pButton->GetElementText()->SetFont("Spaceranger.ttf");
@@ -64,7 +65,7 @@ void StateMenuMain::Init()
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
     pButton->SetPosition(fPosX, fPosY);
 
-    pBox->SetSize(pButton->GetSize().x + 40.f, fPosY + pButton->GetSize().y + 20.f);
+    pBox->SetSize(pButton->GetSize().x + padding * 2.f, fPosY + pButton->GetSize().y + padding);
 }
 
 void StateMenuMain::Release()

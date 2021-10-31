@@ -1,34 +1,52 @@
 <Element type="ElementButton">
-    <Size x="250" y="50" />
+    <Size x="200" y="30" />
     <Components>
         <Element type="ElementSpriteGroup" name="Idle">
             <USize xRel="1" yRel="1" />
             <ImageSet source="Button01.imageset.xml" />
-            <Components>
-                <Component subImage="Idle">
-                    <USize xRel="1" yRel="1" />
-                </Component>
-            </Components>
+            <Template source="Button01_Template.xml">
+                <Alias name="topLeft" value="Idle_TopLeft" />
+                <Alias name="top" value="Idle_Top" />
+                <Alias name="topRight" value="Idle_TopRight" />
+                <Alias name="left" value="Idle_Left" />
+                <Alias name="center" value="Idle_Center" />
+                <Alias name="right" value="Idle_Right" />
+                <Alias name="bottomLeft" value="Idle_BottomLeft" />
+                <Alias name="bottom" value="Idle_Bottom" />
+                <Alias name="bottomRight" value="Idle_BottomRight" />
+            </Template>
         </Element>
         
         <Element type="ElementSpriteGroup" name="Focused">
             <USize xRel="1" yRel="1" />
             <ImageSet source="Button01.imageset.xml" />
-            <Components>
-                <Component subImage="Focused">
-                    <USize xRel="1" yRel="1" />
-                </Component>
-            </Components>
+            <Template source="Button01_Template.xml">
+                <Alias name="topLeft" value="Focused_TopLeft" />
+                <Alias name="top" value="Focused_Top" />
+                <Alias name="topRight" value="Focused_TopRight" />
+                <Alias name="left" value="Focused_Left" />
+                <Alias name="center" value="Focused_Center" />
+                <Alias name="right" value="Focused_Right" />
+                <Alias name="bottomLeft" value="Focused_BottomLeft" />
+                <Alias name="bottom" value="Focused_Bottom" />
+                <Alias name="bottomRight" value="Focused_BottomRight" />
+            </Template>
         </Element>
         
         <Element type="ElementSpriteGroup" name="Disabled">
             <USize xRel="1" yRel="1" />
             <ImageSet source="Button01.imageset.xml" />
-            <Components>
-                <Component subImage="Disabled">
-                    <USize xRel="1" yRel="1" />
-                </Component>
-            </Components>
+            <Template source="Button01_Template.xml">
+                <Alias name="topLeft" value="Disabled_TopLeft" />
+                <Alias name="top" value="Disabled_Top" />
+                <Alias name="topRight" value="Disabled_TopRight" />
+                <Alias name="left" value="Disabled_Left" />
+                <Alias name="center" value="Disabled_Center" />
+                <Alias name="right" value="Disabled_Right" />
+                <Alias name="bottomLeft" value="Disabled_BottomLeft" />
+                <Alias name="bottom" value="Disabled_Bottom" />
+                <Alias name="bottomRight" value="Disabled_BottomRight" />
+            </Template>
         </Element>
     </Components>
 </Element>

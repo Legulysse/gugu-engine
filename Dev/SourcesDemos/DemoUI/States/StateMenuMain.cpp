@@ -62,9 +62,10 @@ void StateMenuMain::Init()
     m_menu->AddInteractionFlag(EInteraction::Drag);
 
     ElementButton* pButton;
-    float fPosX = 20.f;
-    float fPosY = 20.f;
-    float fGapY = 64.f;
+    float padding = 20.f;
+    float fGapY = 10.f;
+    float fPosX = padding;
+    float fPosY = padding;
 
     pButton = pBox->AddChild<ElementButton>();
     pButton->LoadFromFile("Button01.xml");
@@ -72,28 +73,28 @@ void StateMenuMain::Init()
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 6));
     pButton->SetPosition(fPosX, fPosY);
 
-    fPosY += fGapY;
+    fPosY += fGapY + pButton->GetSize().y;
     pButton = pBox->AddChild<ElementButton>();
     pButton->LoadFromFile("Button01.xml");
     pButton->SetText("Demo Layout");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 4));
     pButton->SetPosition(fPosX, fPosY);
 
-    fPosY += fGapY;
+    fPosY += fGapY + pButton->GetSize().y;
     pButton = pBox->AddChild<ElementButton>();
     pButton->LoadFromFile("Button01.xml");
     pButton->SetText("Disabled");
     pButton->SetDisabled(true);
     pButton->SetPosition(fPosX, fPosY);
 
-    fPosY += fGapY;
+    fPosY += fGapY + pButton->GetSize().y;
     pButton = pBox->AddChild<ElementButton>();
     pButton->LoadFromFile("Button01.xml");
     pButton->SetText("Quit");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
     pButton->SetPosition(fPosX, fPosY);
 
-    pBox->SetSize(pButton->GetSize().x + 40.f, fPosY + pButton->GetSize().y + 20.f);
+    pBox->SetSize(pButton->GetSize().x + padding * 2.f, fPosY + pButton->GetSize().y + padding);
 }
 
 void StateMenuMain::Release()

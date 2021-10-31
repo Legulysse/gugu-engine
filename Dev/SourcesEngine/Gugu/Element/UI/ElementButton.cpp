@@ -69,40 +69,31 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
     if (!textureIdle)
         return;
 
-    m_spriteIdle = new ElementSpriteGroup;
-    m_spriteIdle->SetTexture(textureIdle);
-    m_spriteIdle->SetUnifiedSize(UDim2::SIZE_FULL);
-    m_spriteIdle->SetParent(this, true);
+    ElementSprite* spriteIdle = new ElementSprite;
+    spriteIdle->SetTexture(textureIdle);
+    spriteIdle->SetUnifiedSize(UDim2::SIZE_FULL);
+    spriteIdle->SetParent(this);
 
-    ElementSpriteGroupItem* idleItem = new ElementSpriteGroupItem;
-    idleItem->SetSubRect(textureIdle->GetRect());
-    idleItem->SetUnifiedSize(UDim2::SIZE_FULL);
-    m_spriteIdle->AddItem(idleItem);
+    m_spriteIdle = spriteIdle;
 
     if (textureFocused)
     {
-        m_spriteFocused = new ElementSpriteGroup;
-        m_spriteFocused->SetTexture(textureFocused);
-        m_spriteFocused->SetUnifiedSize(UDim2::SIZE_FULL);
-        m_spriteFocused->SetParent(this, true);
+        ElementSprite* spriteFocused = new ElementSprite;
+        spriteFocused->SetTexture(textureFocused);
+        spriteFocused->SetUnifiedSize(UDim2::SIZE_FULL);
+        spriteFocused->SetParent(this);
 
-        ElementSpriteGroupItem* focusedItem = new ElementSpriteGroupItem;
-        focusedItem->SetSubRect(textureFocused->GetRect());
-        focusedItem->SetUnifiedSize(UDim2::SIZE_FULL);
-        m_spriteFocused->AddItem(focusedItem);
+        m_spriteFocused = spriteFocused;
     }
 
     if (textureDisabled)
     {
-        m_spriteDisabled = new ElementSpriteGroup;
-        m_spriteDisabled->SetTexture(textureDisabled);
-        m_spriteDisabled->SetUnifiedSize(UDim2::SIZE_FULL);
-        m_spriteDisabled->SetParent(this, true);
+        ElementSprite* spriteDisabled = new ElementSprite;
+        spriteDisabled->SetTexture(textureDisabled);
+        spriteDisabled->SetUnifiedSize(UDim2::SIZE_FULL);
+        spriteDisabled->SetParent(this);
 
-        ElementSpriteGroupItem* disabledItem = new ElementSpriteGroupItem;
-        disabledItem->SetSubRect(textureDisabled->GetRect());
-        disabledItem->SetUnifiedSize(UDim2::SIZE_FULL);
-        m_spriteDisabled->AddItem(disabledItem);
+        m_spriteDisabled = spriteDisabled;
     }
 
     SetSize(Vector2f(textureIdle->GetSize()));

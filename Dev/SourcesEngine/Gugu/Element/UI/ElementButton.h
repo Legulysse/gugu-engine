@@ -10,7 +10,6 @@
 
 namespace gugu
 {
-    class ElementSpriteGroup;
     class ElementText;
     class Texture;
 }
@@ -72,9 +71,9 @@ protected:
     
 protected:
 
-    ElementSpriteGroup* m_spriteIdle;
-    ElementSpriteGroup* m_spriteFocused;
-    ElementSpriteGroup* m_spriteDisabled;
+    Element* m_spriteIdle;
+    Element* m_spriteFocused;
+    Element* m_spriteDisabled;
     Element* m_currentSprite;
 
     ElementText* m_text;

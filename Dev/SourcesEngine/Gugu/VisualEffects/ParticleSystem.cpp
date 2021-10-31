@@ -140,6 +140,7 @@ void ParticleSystem::Start()
     m_running = true;
     m_currentDuration = 0;
     
+    // TODO: Wait for the update to trigger a pending StartImpl ? to ensure we are not polluting Step.
     // TODO: I should refactor this to avoid duplicated code from the Update.
     // TODO: Delay parameter ?
     size_t i = 0;

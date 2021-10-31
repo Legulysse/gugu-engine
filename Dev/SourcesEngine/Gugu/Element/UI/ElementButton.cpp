@@ -238,10 +238,7 @@ bool ElementButton::LoadFromFile(const std::string& path)
         return false;
 
     pugi::xml_attribute nodeRootType = nodeRoot.attribute("type");
-    if (!nodeRootType)
-        return false;
-
-    if (std::strcmp(nodeRootType.value(), "ElementButton") != 0)
+    if (!nodeRootType || std::strcmp(nodeRootType.value(), "ElementButton") != 0)
         return false;
 
     return LoadFromXml(nodeRoot);

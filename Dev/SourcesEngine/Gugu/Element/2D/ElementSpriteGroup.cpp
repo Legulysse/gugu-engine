@@ -81,6 +81,7 @@ size_t ElementSpriteGroupItem::RecomputeItemVertices(sf::VertexArray& vertices, 
     m_dirtyVertices = false;
 
     ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(&vertices[indexFirstVertex]);
+    ElementSpriteBase::RecomputeVerticesColor(&vertices[indexFirstVertex], m_cachedVertexCount);
 
     // Combine generated vertices with the item transform.
     const sf::Transform& transform = GetTransform();
@@ -95,6 +96,8 @@ size_t ElementSpriteGroupItem::RecomputeItemVertices(sf::VertexArray& vertices, 
 
 ElementSpriteGroup::ElementSpriteGroup()
 : m_texture(nullptr)
+, m_color(sf::Color::White)
+, m_applyColor(false)
 , m_needRecompute(true)
 {
 }
@@ -120,6 +123,19 @@ void ElementSpriteGroup::SetTexture(Texture* _pTexture)
 Texture* ElementSpriteGroup::GetTexture() const
 {
     return m_texture;
+}
+
+void ElementSpriteGroup::SetColor(const sf::Color& color)
+{
+    m_applyColor = true;
+    m_color = color;
+
+    for (size_t i = 0; i < m_items.size(); ++i)
+    {
+        m_items[i]->SetColor(m_color);
+    }
+
+    m_needRecompute = true;
 }
 
 void ElementSpriteGroup::OnSizeChanged(Vector2f _kOldSize)
@@ -216,6 +232,11 @@ int ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
     _pNewItem->SetSpriteGroup(this);
     m_items.push_back(_pNewItem);
 
+    if (m_applyColor)
+    {
+        _pNewItem->SetColor(m_color);
+    }
+
     m_needRecompute = true;
     return m_items.size() - 1;
 }
@@ -258,6 +279,48 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
     if (!Element::LoadFromXml(nodeSelf))
         return false;
 
+    // Internal function for parsing components, either from a template file or from the root file.
+    auto loadComponentsFromXml = [this](const pugi::xml_node& nodeSelf, ImageSet* imageSet, const FormatParameters* templateAliases)
+    {
+        pugi::xml_node nodeComponents = nodeSelf.child("Components");
+        if (nodeComponents)
+        {
+            for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
+            {
+                ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
+
+                // Parse default ElementSpriteBase data.
+                component->LoadFromXml(nodeComponent);
+
+                // Read additional SubImage data (TextureRect is handled in the ElementSpriteBase parser).
+                if (imageSet)
+                {
+                    pugi::xml_attribute attrSubImage = nodeComponent.attribute("subImage");
+                    if (attrSubImage)
+                    {
+                        SubImage* subImage = nullptr;
+                        if (templateAliases)
+                        {
+                            subImage = imageSet->GetSubImage(StringFormat(attrSubImage.as_string(), *templateAliases));
+                        }
+                        else
+                        {
+                            subImage = imageSet->GetSubImage(attrSubImage.as_string());
+                        }
+
+                        if (subImage)
+                        {
+                            component->SetSubRect(subImage->GetRect());
+                        }
+                    }
+                }
+
+                // Finalize.
+                AddItem(component);
+            }
+        }
+    };
+
     // Either use an ImageSet + SubImages, or a Texture + Rects
     ImageSet* imageSet = nullptr;
     Texture* texture = nullptr;
@@ -292,32 +355,34 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
         return false;
     }
 
-    pugi::xml_node nodeComponents = nodeSelf.child("Components");
-    if (nodeComponents)
+    // Parse components from the template.
+    pugi::xml_node nodeTemplate = nodeSelf.child("Template");
+    if (nodeTemplate)
     {
-        for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
+        pugi::xml_attribute nodeTemplateSource = nodeTemplate.attribute("source");
+        if (nodeTemplateSource)
         {
-            ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
-
-            // Parse default ElementSpriteBase data.
-            component->LoadFromXml(nodeComponent);
-
-            // Read additional SubImage data (TextureRect is handled in the ElementSpriteBase parser).
-            if (imageSet)
+            FormatParameters templateAliases;
+            for (pugi::xml_node nodeAlias = nodeTemplate.child("Alias"); nodeAlias; nodeAlias = nodeAlias.next_sibling("Alias"))
             {
-                pugi::xml_attribute attrSubImage = nodeComponent.attribute("subImage");
-                if (attrSubImage)
-                {
-                    SubImage* subImage = imageSet->GetSubImage(attrSubImage.as_string());
-                    if (subImage)
-                        component->SetSubRect(subImage->GetRect());
-                }
+                templateAliases.Add(nodeAlias.attribute("name").as_string(), nodeAlias.attribute("value").as_string());
             }
 
-            // Finalize.
-            AddItem(component);
+            pugi::xml_document document;
+            pugi::xml_parse_result result = document.load_file(GetResources()->GetResourcePathName(nodeTemplateSource.as_string()).c_str());
+            if (result)
+            {
+                pugi::xml_node nodeTemplateRoot = document.child("Template");
+                if (nodeTemplateRoot)
+                {
+                    loadComponentsFromXml(nodeTemplateRoot, imageSet, &templateAliases);
+                }
+            }
         }
     }
+
+    // Parse components from the file.
+    loadComponentsFromXml(nodeSelf, imageSet, nullptr);
 
     m_needRecompute = true;
     return true;

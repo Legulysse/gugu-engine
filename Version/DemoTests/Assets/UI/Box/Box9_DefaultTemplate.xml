@@ -1,0 +1,42 @@
+<Template type="ElementSpriteGroup">
+    <Components>
+        <Component subImage="{name_topleft}">
+            <UPosition xRel="0" xAbs="0" yRel="0" yAbs="0" />
+            <USize xRel="0" xAbs="16" yRel="0" yAbs="16" />
+        </Component>
+        <Component subImage="{name_top}">
+            <UPosition xRel="0" xAbs="16" yRel="0" yAbs="0" />
+            <USize xRel="1" xAbs="-32" yRel="0" yAbs="16" />
+        </Component>
+        <Component subImage="{name_topright}">
+            <UPosition xRel="1" xAbs="-16" yRel="0" yAbs="0" />
+            <USize xRel="0" xAbs="16" yRel="0" yAbs="16" />
+        </Component>
+        
+        <Component subImage="{name_left}">
+            <UPosition xRel="0" xAbs="0" yRel="0" yAbs="16" />
+            <USize xRel="0" xAbs="16" yRel="1" yAbs="-32" />
+        </Component>
+        <Component subImage="{name_center}">
+            <UPosition xRel="0" xAbs="16" yRel="0" yAbs="16" />
+            <USize xRel="1" xAbs="-32" yRel="1" yAbs="-32" />
+        </Component>
+        <Component subImage="{name_right}">
+            <UPosition xRel="1" xAbs="-16" yRel="0" yAbs="16" />
+            <USize xRel="0" xAbs="16" yRel="1" yAbs="-32" />
+        </Component>
+        
+        <Component subImage="{name_bottomleft}">
+            <UPosition xRel="0" xAbs="0" yRel="1" yAbs="-16" />
+            <USize xRel="0" xAbs="16" yRel="0" yAbs="16" />
+        </Component>
+        <Component subImage="{name_bottom}">
+            <UPosition xRel="0" xAbs="16" yRel="1" yAbs="-16" />
+            <USize xRel="1" xAbs="-32" yRel="0" yAbs="16" />
+        </Component>
+        <Component subImage="{name_bottomright}">
+            <UPosition xRel="1" xAbs="-16" yRel="1" yAbs="-16" />
+            <USize xRel="0" xAbs="16" yRel="0" yAbs="16" />
+        </Component>
+    </Components>
+</Template>

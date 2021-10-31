@@ -58,8 +58,9 @@ public:
 
     void SetTexture(const std::string& _strTexturePath);  //TODO: Rename as textureID
     void SetTexture(Texture* _pTexture);
-
     Texture* GetTexture() const;
+
+    void SetColor(const sf::Color& color);
 
     int AddItem(ElementSpriteGroupItem* _pNewItem);
     ElementSpriteGroupItem* GetItem(int _iIndex) const;
@@ -79,6 +80,9 @@ protected:
 protected:
 
     Texture* m_texture;
+    sf::Color m_color;
+    bool m_applyColor;
+
     sf::VertexArray m_vertices;
     bool m_needRecompute;
 

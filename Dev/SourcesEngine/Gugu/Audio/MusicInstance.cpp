@@ -148,6 +148,11 @@ void MusicInstance::SetPlayOffset(DeltaTime _kOffset)
         return m_sfMusic->setPlayingOffset(_kOffset.GetSFTime());
 }
 
+bool MusicInstance::IsPaused() const
+{
+    return m_sfMusic ? m_sfMusic->getStatus() == sf::Sound::Paused : false;
+}
+
 bool MusicInstance::IsFinished() const
 {
     if (m_sfMusic)

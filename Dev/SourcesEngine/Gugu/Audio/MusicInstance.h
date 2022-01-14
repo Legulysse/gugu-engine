@@ -52,6 +52,7 @@ public:
     void SetPlayOffset(DeltaTime _kOffset);
     //TODO: Investigate loop points feature
 
+    bool    IsPaused() const;
     bool    IsFinished() const;
 
 private:

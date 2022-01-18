@@ -55,6 +55,35 @@ int main(int argc, char* argv[])
     int iDistanceD = Distance(5, -5);
     int iDistanceE = Distance(-35, -25);
 
+    // Rounding
+    float roundA = RoundNearest(10.5f);
+    float roundB = RoundNearest(-10.5f);
+    float roundC = RoundNearest(10.2f);
+    float roundD = RoundNearest(-10.2f);
+    float roundE = RoundNearest(10.8f);
+    float roundF = RoundNearest(-10.8f);
+
+    float floorA = RoundFloor(10.2f);
+    float floorB = RoundFloor(-10.2f);
+    float floorC = RoundFloor(10.8f);
+    float floorD = RoundFloor(-10.8f);
+
+    float ceilA = RoundCeil(10.2f);
+    float ceilB = RoundCeil(-10.2f);
+    float ceilC = RoundCeil(10.8f);
+    float ceilD = RoundCeil(-10.8f);
+
+    float roundTowardZeroA = RoundTowardZero(10.2f);
+    float roundTowardZeroB = RoundTowardZero(-10.2f);
+    float roundTowardZeroC = RoundTowardZero(10.8f);
+    float roundTowardZeroD = RoundTowardZero(-10.8f);
+
+    float roundAwayFromZeroA = RoundAwayFromZero(10.2f);
+    float roundAwayFromZeroB = RoundAwayFromZero(-10.2f);
+    float roundAwayFromZeroC = RoundAwayFromZero(10.8f);
+    float roundAwayFromZeroD = RoundAwayFromZero(-10.8f);
+
+    // Interpolations
     int iLerpA = Lerp(20, 30, 0.f);
     int iLerpB = Lerp(20, 30, 0.5f);
     int iLerpC = Lerp(200000000, 300000000, 1.f);

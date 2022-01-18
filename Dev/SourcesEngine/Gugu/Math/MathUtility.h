@@ -60,6 +60,24 @@ T Absolute(T _tValue);    //Visual has a good abs() templated for int, float, et
 template <typename T>
 T Power(const T& n, const int& p);
 
+//--------------------------------
+// Rounding
+
+template <typename T>
+T RoundNearest(const T& n);
+
+template <typename T>
+T RoundFloor(const T& n);
+
+template <typename T>
+T RoundCeil(const T& n);
+
+template <typename T>
+T RoundTowardZero(const T& n);
+
+template <typename T>
+T RoundAwayFromZero(const T& n);
+
 //----------------------------------------------
 // Angles
 

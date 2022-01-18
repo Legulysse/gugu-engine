@@ -73,6 +73,39 @@ T Power(const T& n, const int& p)
 }
 
 //--------------------------------
+// Rounding
+
+template <typename T>
+T RoundNearest(const T& n)
+{
+    return std::round(n);
+}
+
+template <typename T>
+T RoundFloor(const T& n)
+{
+    return std::floor(n);
+}
+
+template <typename T>
+T RoundCeil(const T& n)
+{
+    return std::ceil(n);
+}
+
+template <typename T>
+T RoundTowardZero(const T& n)
+{
+    return std::trunc(n);
+}
+
+template <typename T>
+T RoundAwayFromZero(const T& n)
+{
+    return (n >= (T)0) ? std::ceil(n) : std::floor(n);
+}
+
+//--------------------------------
 // Interpolations
 
 template <typename T>

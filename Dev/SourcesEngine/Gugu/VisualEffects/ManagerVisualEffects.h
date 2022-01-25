@@ -11,6 +11,7 @@
 namespace gugu
 {
     struct EngineConfig;
+    struct EngineStats;
     struct ParticleSystemSettings;
     class DeltaTime;
     class ParticleSystem;
@@ -31,7 +32,7 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-    void Update(const DeltaTime& dt);
+    void Update(const DeltaTime& dt, EngineStats& stats);
 
     void AddParticleSystem(ParticleSystem* particleSystem);
     void RemoveParticleSystem(ParticleSystem* particleSystem);

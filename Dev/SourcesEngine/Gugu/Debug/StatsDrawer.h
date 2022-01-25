@@ -76,6 +76,8 @@ private:
     sf::Text m_statTextStepTime;
     sf::Text m_statTextUpdateTime;
     sf::Text m_statTextRenderTime;
+    sf::Text m_statTextAnimations;
+    sf::Text m_statTextParticleSystems;
     sf::Text m_statTextIsTracing;
 };
 

@@ -13,6 +13,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Trace.h"
+#include "Gugu/Debug/EngineStats.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -47,7 +48,7 @@ void ManagerAnimations::Step(const DeltaTime& dt)
     }
 }
 
-void ManagerAnimations::Update(const DeltaTime& dt)
+void ManagerAnimations::Update(const DeltaTime& dt, EngineStats& stats)
 {
     GUGU_SCOPE_TRACE_MAIN("Animations");
 
@@ -56,6 +57,8 @@ void ManagerAnimations::Update(const DeltaTime& dt)
     //{
     //    animation->StepAnimation(dt);
     //}
+
+    stats.animationCount = m_spriteAnimations.size();
 }
 
 SpriteAnimation* ManagerAnimations::AddAnimation(ElementSprite* sprite)

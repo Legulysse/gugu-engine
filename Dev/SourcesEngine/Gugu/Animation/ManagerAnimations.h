@@ -11,6 +11,7 @@
 namespace gugu
 {
     struct EngineConfig;
+    struct EngineStats;
     class DeltaTime;
     class SpriteAnimation;
     class ElementSprite;
@@ -32,7 +33,7 @@ public:
     void Release();
 
     void Step(const DeltaTime& dt);
-    void Update(const DeltaTime& dt);
+    void Update(const DeltaTime& dt, EngineStats& stats);
 
     SpriteAnimation* AddAnimation(ElementSprite* sprite);
     void RemoveAnimation(SpriteAnimation* animation);

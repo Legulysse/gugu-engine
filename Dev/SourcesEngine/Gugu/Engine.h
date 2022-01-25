@@ -8,6 +8,7 @@
 #include "Gugu/Core/Callback.h"
 #include "Gugu/Misc/Pattern/Singleton.h"
 #include "Gugu/System/Types.h"
+#include "Gugu/Debug/EngineStats.h"
 
 #include <string>
 #include <vector>
@@ -39,16 +40,6 @@ namespace gugu
 
 namespace gugu {
     
-struct EngineStats
-{
-    uint32 maxStatCount = 150;
-    std::list<int> loopTimes;
-    std::list<int> stepTimes;
-    std::list<int> updateTimes;
-    std::list<int> renderTimes;
-    bool isTracing = false;
-};
-
 struct Timer
 {
     uint32 tickDelay;

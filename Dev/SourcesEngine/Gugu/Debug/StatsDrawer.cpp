@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Engine.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Resources/ManagerResources.h"
@@ -16,6 +15,7 @@
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Debug/Trace.h"
+#include "Gugu/Debug/EngineStats.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -98,6 +98,14 @@ StatsDrawer::StatsDrawer()
     m_statTextDrawCalls.setFillColor(colorCurveDrawCalls);
     m_statTextDrawCalls.setCharacterSize(fontSize);
     m_statTextDrawCalls.setFont(*font);
+
+    m_statTextAnimations.setFillColor(colorDefault);
+    m_statTextAnimations.setCharacterSize(fontSize);
+    m_statTextAnimations.setFont(*font);
+
+    m_statTextParticleSystems.setFillColor(colorDefault);
+    m_statTextParticleSystems.setCharacterSize(fontSize);
+    m_statTextParticleSystems.setFont(*font);
 
     m_statTextIsTracing.setFillColor(colorDefault);
     m_statTextIsTracing.setCharacterSize(fontSize);
@@ -279,10 +287,20 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const DeltaTime& frame
         m_statTextFPS.setString(StringFormat("fps: {0}", iFPS));
         renderWindow->draw(m_statTextFPS);
 
+        // Animation Count
+        m_statTextAnimations.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * 5);
+        m_statTextAnimations.setString(StringFormat("animations: {0}", engineStats.animationCount));
+        renderWindow->draw(m_statTextAnimations);
+
+        // Particle System Count
+        m_statTextParticleSystems.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * 6);
+        m_statTextParticleSystems.setString(StringFormat("particle systems: {0}", engineStats.particleSystemCount));
+        renderWindow->draw(m_statTextParticleSystems);
+
         // Is Tracing
         if (engineStats.isTracing)
         {
-            m_statTextIsTracing.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * 5);
+            m_statTextIsTracing.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * 7);
             renderWindow->draw(m_statTextIsTracing);
         }
     }

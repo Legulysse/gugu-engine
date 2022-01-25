@@ -14,6 +14,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Trace.h"
+#include "Gugu/Debug/EngineStats.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -37,7 +38,7 @@ void ManagerVisualEffects::Release()
     DeleteAllParticleSystems();
 }
 
-void ManagerVisualEffects::Update(const DeltaTime& dt)
+void ManagerVisualEffects::Update(const DeltaTime& dt, EngineStats& stats)
 {
     GUGU_SCOPE_TRACE_MAIN("Visual Effects");
 
@@ -47,6 +48,8 @@ void ManagerVisualEffects::Update(const DeltaTime& dt)
 
         particleSystem->Update(dt);
     }
+
+    stats.particleSystemCount = m_particleSystems.size();
 }
 
 void ManagerVisualEffects::AddParticleSystem(ParticleSystem* particleSystem)

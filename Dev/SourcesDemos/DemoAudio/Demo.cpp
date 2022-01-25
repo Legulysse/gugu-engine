@@ -193,7 +193,7 @@ void Demo::OnButtonClick(int _eButton)
         vecPlaylist.push_back(kParametersA);
         vecPlaylist.push_back(kParametersB);
         vecPlaylist.push_back(kParametersC);
-        GetAudio()->PlayMusicList(vecPlaylist);
+        GetAudio()->PlayMusicList(vecPlaylist, true);
     }
     else if (_eButton == EButton::StopAll)
     {

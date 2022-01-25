@@ -155,13 +155,13 @@ bool ManagerAudio::PlayMusic(const MusicParameters& _kParameters)
     return false;
 }
 
-bool ManagerAudio::PlayMusicList(const std::vector<MusicParameters>& _vecPlaylist, int layer)
+bool ManagerAudio::PlayMusicList(const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist, int layer)
 {
     if (layer < 0 || layer >= (int)m_musicLayers.size())
         return false;
 
     MusicLayer* pLayer = &m_musicLayers[layer];
-    pLayer->SetPlayList(_vecPlaylist);
+    pLayer->SetPlayList(_vecPlaylist, loopPlaylist);
     pLayer->FadeToNext();
 
     return true;

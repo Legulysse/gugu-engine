@@ -44,13 +44,15 @@ public:
 
     void SetInstances(MusicInstance* _pInstanceA, MusicInstance* _pInstanceB);
 
-    void    PurgeFade   ();
+    void PurgeFade();
 
-    void    SetNext     (const MusicParameters& _kParameters);
-    void    SetPlayList (const std::vector<MusicParameters>& _vecPlaylist);
-    void    FadeToNext  ();
+    void SetNext(const MusicParameters& _kParameters);
+    void FadeToNext();
 
-    void    Update      (const DeltaTime& dt);
+    void SetPlayList(const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist);
+    void StopPlaylist();
+
+    void Update(const DeltaTime& dt);
 
     MusicInstance* GetCurrentMusicInstance() const;
 
@@ -58,6 +60,7 @@ private:
 
     std::vector<MusicParameters> m_playlist;
     int m_playlistIndex;
+    bool m_loopPlaylist;
 
     MusicInstance* m_currentInstance;
     MusicInstance* m_nextInstance;

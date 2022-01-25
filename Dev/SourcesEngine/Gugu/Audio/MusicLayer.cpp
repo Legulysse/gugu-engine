@@ -30,23 +30,24 @@ MusicParameters::MusicParameters()
 
 MusicLayer::MusicLayer()
 {
-    m_currentInstance   = nullptr;
-    m_nextInstance      = nullptr;
-    m_fadeIn            = 2.f;
-    m_fadeOut           = 2.f;
-    m_currentFadeTime   = 0.f;
-    m_isFading          = false;
-    m_playlistIndex     = -1;
+    m_currentInstance = nullptr;
+    m_nextInstance = nullptr;
+    m_fadeIn = 2.f;
+    m_fadeOut = 2.f;
+    m_currentFadeTime = 0.f;
+    m_isFading = false;
+    m_playlistIndex = -1;
+    m_loopPlaylist = false;
 }
 /*
 MusicLayer::MusicLayer(const MusicLayer&)
 {
-    m_currentInstance   = nullptr;
-    m_nextInstance      = nullptr;
-    m_fadeIn            = 2.f;
-    m_fadeOut           = 2.f;
-    m_currentFadeTime   = 0.f;
-    m_isFading          = false;
+    m_currentInstance = nullptr;
+    m_nextInstance = nullptr;
+    m_fadeIn = 2.f;
+    m_fadeOut = 2.f;
+    m_currentFadeTime = 0.f;
+    m_isFading = false;
 }*/
 
 MusicLayer::~MusicLayer()
@@ -61,10 +62,10 @@ void MusicLayer::SetInstances(MusicInstance* _pInstanceA, MusicInstance* _pInsta
 
 void MusicLayer::PurgeFade()
 {
-    m_fadeIn           = 2.f;
-    m_fadeOut          = 2.f;
-    m_currentFadeTime  = 0.f;
-    m_isFading             = false;
+    m_fadeIn = 2.f;
+    m_fadeOut = 2.f;
+    m_currentFadeTime = 0.f;
+    m_isFading = false;
 
     if (m_nextInstance->IsSet())
     {
@@ -96,44 +97,85 @@ void MusicLayer::SetNext(const MusicParameters& _kParameters)
     m_fadeOut = Max(0.f, _kParameters.fadeOut);
 }
 
-void MusicLayer::SetPlayList(const std::vector<MusicParameters>& _vecPlaylist)
+void MusicLayer::FadeToNext()
+{
+    bool fadeToNext = true;
+
+    if (!m_playlist.empty())
+    {
+        ++m_playlistIndex;
+        if (m_playlistIndex >= (int)m_playlist.size())
+        {
+            if (m_loopPlaylist)
+            {
+                m_playlistIndex = 0;
+            }
+            else
+            {
+                m_playlistIndex = -1;
+            }
+        }
+
+        if (m_playlistIndex >= 0)
+        {
+            const MusicParameters kParameters = m_playlist[m_playlistIndex];
+
+            Music* pMusic = kParameters.music;
+            if (!pMusic && !kParameters.musicID.empty())
+                pMusic = GetResources()->GetMusic(kParameters.musicID);
+
+            m_nextInstance->Reset();
+            m_nextInstance->SetMusic(pMusic, false);
+            m_nextInstance->SetVolume(kParameters.volume);
+
+            m_fadeIn = Max(0.f, kParameters.fadeIn);
+            m_fadeOut = Max(0.f, kParameters.fadeOut);
+        }
+        else
+        {
+            StopPlaylist();
+            fadeToNext = false;
+        }
+    }
+
+    if (m_nextInstance && fadeToNext)
+    {
+        m_currentFadeTime = 0.f;
+        m_isFading = true;
+
+        m_nextInstance->SetFadeCoeff(0.f);
+        m_nextInstance->Play();
+    }
+}
+
+void MusicLayer::SetPlayList(const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist)
 {
     PurgeFade();
 
     m_playlist = _vecPlaylist;
     m_playlistIndex = -1;
+    m_loopPlaylist = loopPlaylist;
 }
 
-void MusicLayer::FadeToNext()
+void MusicLayer::StopPlaylist()
 {
-    m_currentFadeTime = 0.f;
-    m_isFading = true;
-    
-    if (!m_playlist.empty())
+    if (m_currentInstance && m_currentInstance->IsSet())
     {
-        ++m_playlistIndex;
-        if (m_playlistIndex >= (int)m_playlist.size())
-            m_playlistIndex = 0;
+        m_currentInstance->Stop();
+        m_currentInstance->Reset();
+    }
 
-        const MusicParameters kParameters = m_playlist[m_playlistIndex];
-
-        Music* pMusic = kParameters.music;
-        if (!pMusic && !kParameters.musicID.empty())
-            pMusic = GetResources()->GetMusic(kParameters.musicID);
-
+    if (m_nextInstance && m_nextInstance->IsSet())
+    {
+        m_nextInstance->Stop();
         m_nextInstance->Reset();
-        m_nextInstance->SetMusic(pMusic, false);
-        m_nextInstance->SetVolume(kParameters.volume);
-
-        m_fadeIn = Max(0.f, kParameters.fadeIn);
-        m_fadeOut = Max(0.f, kParameters.fadeOut);
     }
 
-    if (m_nextInstance)
-    {
-        m_nextInstance->SetFadeCoeff(0.f);
-        m_nextInstance->Play();
-    }
+    PurgeFade();
+
+    m_playlist.clear();
+    m_playlistIndex = -1;
+    m_loopPlaylist = false;
 }
 
 void MusicLayer::Update(const DeltaTime& dt)

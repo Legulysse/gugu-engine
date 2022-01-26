@@ -149,6 +149,11 @@ int main(int argc, char* argv[])
     // Add C as a child to B, it should be properly removed from A's children.
     elementB->AddChild(elementC);
 
+    // Delete A, it should delete all its hierarchy and invalidate B and C pointers.
+    SafeDelete(elementA);
+    elementB = nullptr;
+    elementC = nullptr;
+
     //----------------------------------------------
     // Here is some tests on various Element class sizes, and attempts to reduce those that could be applied in the future.
 

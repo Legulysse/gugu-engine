@@ -34,7 +34,7 @@ public:
     void SetFile(const std::string& _strFilePath);
     void SetAutoflush(bool _bFlush);
     void SetUseTimestamp(bool _bUseTimestamp);
-    void SetConsoleOutput(bool _bConsole);
+    void SetConsoleOutput(bool _bConsole, bool outputInIDE);
     void SetActive(bool _bActive);
 
     void Print(ELog::Type _eLogLevel, const std::string& _strText);
@@ -49,15 +49,16 @@ protected:
         
 protected:
 
-    std::string         m_filePath;
-    bool                m_autoFlush;
-    bool                m_useTimestamp;
-    bool                m_consoleOutput;
-    bool                m_isActive;
+    std::string m_filePath;
+    bool m_autoFlush;
+    bool m_useTimestamp;
+    bool m_consoleOutput;
+    bool m_consoleOutputIDE;
+    bool m_isActive;
 
-    std::ostringstream  m_buffer;
+    std::ostringstream m_buffer;
 
-    sf::Mutex           m_mutex;
+    sf::Mutex m_mutex;
 };
 
 

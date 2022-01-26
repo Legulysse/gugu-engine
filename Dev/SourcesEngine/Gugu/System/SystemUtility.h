@@ -144,8 +144,9 @@ void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vect
 //----------------------------------------------
 // OS
 
-void WriteInConsole(const std::string& _strLine);
-void WriteInFile(const std::string& _strFileName, const std::string& _strLine);
+void WriteInConsole(const std::string& _strLine, bool printInIDE);
+void WriteInConsoleEndline(const std::string& _strLine, bool printInIDE);
+void WriteInFileEndline(const std::string& _strFileName, const std::string& _strLine);
 
 void OpenWebBrowser(const std::string& _strURL);
 

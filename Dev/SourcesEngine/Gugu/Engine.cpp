@@ -53,6 +53,7 @@ void Engine::Init(const EngineConfig& config)
 
     //-- Init engine log and trace group --//
     m_logEngine = new LoggerEngine();
+    m_logEngine->SetConsoleOutput(true, false);
     m_logEngine->SetFile("Engine.log");
 
     m_traceGroupMain = new TraceGroup;

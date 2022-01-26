@@ -34,12 +34,24 @@ std::string ToString(const char* _strValue)
     return std::string(_strValue);
 }
 
-void WriteInConsole(const std::string& _strLine)
+void WriteInConsole(const std::string& _strLine, bool printInIDE)
 {
-    std::cout << _strLine << std::endl;
+    std::cout << _strLine;
+
+#if defined(GUGU_OS_WIN32) && defined(GUGU_ENV_VISUAL)
+    if (printInIDE)
+    {
+        OutputDebugStringA(_strLine.c_str());
+    }
+#endif
 }
 
-void WriteInFile(const std::string& _strFileName, const std::string& _strLine)
+void WriteInConsoleEndline(const std::string& _strLine, bool printInIDE)
+{
+    WriteInConsole(_strLine + "\n", printInIDE);
+}
+
+void WriteInFileEndline(const std::string& _strFileName, const std::string& _strLine)
 {
     std::ofstream oFile;
     oFile.open(_strFileName.c_str(), std::ios::out | std::ios::app);

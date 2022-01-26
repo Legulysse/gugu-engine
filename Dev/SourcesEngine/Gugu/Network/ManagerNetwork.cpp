@@ -40,6 +40,7 @@ ManagerNetwork::ManagerNetwork()
     m_receptionThread = nullptr;
     
     m_logNetwork = new LoggerEngine();
+    m_logNetwork->SetConsoleOutput(true, false);
     m_logNetwork->SetFile("Network.log");
 }
 

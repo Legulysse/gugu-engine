@@ -23,7 +23,8 @@ Logger::Logger()
     m_filePath = "";
     m_autoFlush = true;
     m_useTimestamp = true;
-    m_consoleOutput = true;
+    m_consoleOutput = false;
+    m_consoleOutputIDE = false;
     m_isActive = true;
 }
 
@@ -60,9 +61,10 @@ void Logger::SetUseTimestamp(bool _bUseTimestamp)
     m_useTimestamp = _bUseTimestamp;
 }
 
-void Logger::SetConsoleOutput(bool _bConsole)
+void Logger::SetConsoleOutput(bool _bConsole, bool outputInIDE)
 {
     m_consoleOutput = _bConsole;
+    m_consoleOutputIDE = outputInIDE;
 }
 
 void Logger::SetActive(bool _bActive)
@@ -123,7 +125,8 @@ void Logger::FlushImpl()
 {
     if (m_consoleOutput)
     {
-        std::cout << m_buffer.str();
+        // TODO: disable in release builds ?
+        WriteInConsole(m_buffer.str(), m_consoleOutputIDE);
     }
 
     if (!m_filePath.empty())

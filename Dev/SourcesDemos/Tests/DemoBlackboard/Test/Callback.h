@@ -1,25 +1,13 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Common.h"
-
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Core/Callback.h"
 
-#if defined(GUGU_ENV_VISUAL )
-
-    #define _CRTDBG_MAP_ALLOC
-    #include <stdlib.h>
-    #include <crtdbg.h>
-
-#endif
-
-using namespace gugu;
-
 ////////////////////////////////////////////////////////////////
-// File Implementation
+// File Declarations
 
-//----------------------------------------------
+namespace test {
 
 using Callable = std::function<void()>;
 using CallableReturn = std::function<bool()>;
@@ -32,7 +20,7 @@ using DelegateType1P = std::function<TReturn(TParam1)>;
 
 void TestFunction1(int value)
 {
-    WriteInConsole(ToString(value));
+    gugu::WriteInConsoleEndline(gugu::ToString(value), true);
 }
 
 int TestFactoryFunction(int a, bool b)
@@ -58,7 +46,7 @@ public:
 
     void ComputeTest(std::string value)
     {
-        WriteInConsole(value);
+        gugu::WriteInConsoleEndline(value, true);
     }
 
     bool ReturnTest(int a, int b)
@@ -74,26 +62,20 @@ public:
 
 //----------------------------------------------
 
-int main(int argc, char* argv[])
+void RunTestCallback()
 {
-#if defined(GUGU_ENV_VISUAL )
+    using namespace gugu;
 
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-#endif
-
-    //----------------------------------------------
-
-    auto functor1 = [](){
-        WriteInConsole(ToString(22));
+    auto functor1 = []() {
+        WriteInConsoleEndline(ToString(22), true);
     };
 
     std::function<void()> functor2 = []() {
-        WriteInConsole(ToString(33));
+        WriteInConsoleEndline(ToString(33), true);
     };
 
     std::function<void(int)> functor3 = [](int value) {
-        WriteInConsole(ToString(value));
+        WriteInConsoleEndline(ToString(value), true);
     };
 
     std::function<int(int)> functor4 = [](int value) {
@@ -113,19 +95,17 @@ int main(int argc, char* argv[])
     functor1();
     functor2();
     functor3(44);
-    WriteInConsole(ToString(functor4(55)));
+    WriteInConsoleEndline(ToString(functor4(55)), true);
     object->m_Action();
-    WriteInConsole(ToString(object->m_Delegate(77, false)));
+    WriteInConsoleEndline(ToString(object->m_Delegate(77, false)), true);
     object->m_ActionType();
-    WriteInConsole(ToString(object->m_DelegateType(99)));
+    WriteInConsoleEndline(ToString(object->m_DelegateType(99)), true);
     object->m_ActionType2();
-    WriteInConsole(ToString(object->m_Factory(42, false)));
-    WriteInConsole(ToString(object->m_Factory2(42, true)));
-    WriteInConsole(object->m_actionType3() ? "true" : "false");
+    WriteInConsoleEndline(ToString(object->m_Factory(42, false)), true);
+    WriteInConsoleEndline(ToString(object->m_Factory2(42, true)), true);
+    WriteInConsoleEndline(object->m_actionType3() ? "true" : "false", true);
 
     SafeDelete(object);
-
-    //----------------------------------------------
-
-    return 0;
 }
+
+}   //namespace test

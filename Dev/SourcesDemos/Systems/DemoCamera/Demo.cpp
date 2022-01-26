@@ -170,23 +170,23 @@ bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
             if (pCameraA && pCameraA->IsMouseOverCamera(kMouseCoords))
             {
                 pCamera = pCameraA;
-                WriteInConsole("Picked Camera A");
+                WriteInConsoleEndline("Picked Camera A", false);
             }
             if (pCameraB && pCameraB->IsMouseOverCamera(kMouseCoords))
             {
                 pCamera = pCameraB;
-                WriteInConsole("Picked Camera B");
+                WriteInConsoleEndline("Picked Camera B", false);
             }
 
             if (pCamera)
             {
                 if (pCamera->IsMouseOverElement(kMouseCoords, m_characterA->m_sprite))
                 {
-                    WriteInConsole("Picked Character A");
+                    WriteInConsoleEndline("Picked Character A", false);
                 }
                 if (pCamera->IsMouseOverElement(kMouseCoords, m_characterB->m_sprite))
                 {
-                    WriteInConsole("Picked Character B");
+                    WriteInConsoleEndline("Picked Character B", false);
                 }
             }
         }

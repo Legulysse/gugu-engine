@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
         sf::Time result = kClock.getElapsedTime();
         sf::Int32 ms = result.asMilliseconds();
 
-        WriteInConsole(StringFormat("{0} : {1} ms", strFormat, ms));
+        WriteInConsoleEndline(StringFormat("{0} : {1} ms", strFormat, ms), true);
     }
 
     {
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
         sf::Time result = kClock.getElapsedTime();
         sf::Int32 ms = result.asMilliseconds();
 
-        WriteInConsole(StringFormat("{0} : {1} ms", strFormat, ms));
+        WriteInConsoleEndline(StringFormat("{0} : {1} ms", strFormat, ms), true);
     }
 
     {
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
         sf::Time result = kClock.getElapsedTime();
         sf::Int32 ms = result.asMilliseconds();
 
-        WriteInConsole(StringFormat("{0} : {1} ms", strFormat, ms));
+        WriteInConsoleEndline(StringFormat("{0} : {1} ms", strFormat, ms), true);
     }
 
     {
@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
         sf::Time result = kClock.getElapsedTime();
         sf::Int32 ms = result.asMilliseconds();
 
-        WriteInConsole(StringFormat("{0} : {1} ms", strFormat, ms));
+        WriteInConsoleEndline(StringFormat("{0} : {1} ms", strFormat, ms), true);
     }
 
     {
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
         sf::Time result = kClock.getElapsedTime();
         sf::Int32 ms = result.asMilliseconds();
 
-        WriteInConsole(StringFormat("{0} : {1} ms", strFormat, ms));
+        WriteInConsoleEndline(StringFormat("{0} : {1} ms", strFormat, ms), true);
     }
 
     //----------------------------------------------

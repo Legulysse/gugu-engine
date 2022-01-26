@@ -158,6 +158,7 @@ int main(int argc, char* argv[])
     // Here is some tests on various Element class sizes, and attempts to reduce those that could be applied in the future.
 
     Logger log;
+    log.SetConsoleOutput(true, true);
     log.SetUseTimestamp(false);
     //log.SetFile("TestSizes.log");
 

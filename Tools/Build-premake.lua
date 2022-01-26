@@ -64,7 +64,7 @@ solution "GuguEngine"
     
     group "Demos/Tests"
     ProjectDefault(BuildCfg, "DemoTestSizes"    , pathDev.."SourcesDemos/Tests/DemoTestSizes"       , pathVersion.."DemoTests", "A9A0A24C-014D-4EA3-AA4F-FCCCCC9B0F26")
-    ProjectDefault(BuildCfg, "DemoCallback"     , pathDev.."SourcesDemos/Tests/DemoCallback"     	, pathVersion.."DemoTests", "A6F5963E-901A-4CE5-9A56-38F8FE448267")
+    ProjectDefault(BuildCfg, "DemoBlackboard"   , pathDev.."SourcesDemos/Tests/DemoBlackboard"     	, pathVersion.."DemoTests", "A6F5963E-901A-4CE5-9A56-38F8FE448267")
     ProjectDefault(BuildCfg, "DemoMathUtility"  , pathDev.."SourcesDemos/Tests/DemoMathUtility"  	, pathVersion.."DemoTests", "65FF27AD-5B47-4B7D-AB52-7AC6FF39DCC3")
     ProjectDefault(BuildCfg, "DemoSystemUtility", pathDev.."SourcesDemos/Tests/DemoSystemUtility"   , pathVersion.."DemoTests", "C651D7AF-5018-438B-8508-E2353C82AC7C")
     

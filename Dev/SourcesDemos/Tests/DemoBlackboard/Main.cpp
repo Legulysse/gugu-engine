@@ -4,6 +4,8 @@
 #include "Gugu/Common.h"
 
 #include "Test/Callback.h"
+#include "Test/Condition/Condition_App.h"
+#include "Test/Task.h"
 
 #if defined(GUGU_ENV_VISUAL )
 
@@ -30,6 +32,8 @@ int main(int argc, char* argv[])
     //----------------------------------------------
 
     RunTestCallback();
+    RunTestCondition();
+    RunTestTask();
 
     //----------------------------------------------
 

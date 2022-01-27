@@ -309,10 +309,6 @@ gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::st
     {
         return new DS_SpriteInfo;
     }
-    if (classType == "character")
-    {
-        return new DS_Character;
-    }
     if (classType == "hero")
     {
         return new DS_Hero;
@@ -324,10 +320,6 @@ gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::st
     if (classType == "skill")
     {
         return new DS_Skill;
-    }
-    if (classType == "effect")
-    {
-        return new DS_Effect;
     }
     if (classType == "effectArea")
     {

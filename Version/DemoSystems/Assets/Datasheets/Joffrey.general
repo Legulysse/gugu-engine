@@ -1,20 +1,21 @@
-<?xml version="1.0" ?>
-<Datasheet parent="Robert.general">
-    <Data name="name" value="Joffrey" />
-    <Data name="speed" value="30" />
-    <Data name="sprite" />
-    <Data name="stats list" />
-    <Data name="factions list">
-        <Child />
-    </Data>
-    <Data name="more sprites">
-        <Child>
-            <Data name="imageset" value="Eddard.imageset.xml" />
-            <Data name="animset" value="Eddard.animset.xml" />
-        </Child>
-    </Data>
-    <Data name="weapon" value="Crossbow" />
-    <Data name="available weapons">
-        <Child value="Crossbow" />
-    </Data>
+<?xml version="1.0"?>
+<Datasheet serializationVersion="1" bindingVersion="1" parent="Robert.general">
+	<Data name="name" value="Joffrey" />
+	<Data name="speed" value="30" />
+	<Data name="sprite" type="spriteInfo" />
+	<Data name="stats list" />
+	<Data name="factions list">
+		<Child value="" />
+	</Data>
+	<Data name="more sprites">
+		<Child type="spriteInfo">
+			<Data name="imageset" value="Eddard.imageset.xml" />
+			<Data name="animset" value="Eddard.animset.xml" />
+		</Child>
+	</Data>
+	<Data name="weapon" value="Crossbow" />
+	<Data name="available weapons">
+		<Child value="Crossbow" />
+	</Data>
+	<Data name="playableCondition" type="" />
 </Datasheet>

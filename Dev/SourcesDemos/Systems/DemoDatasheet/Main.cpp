@@ -53,6 +53,10 @@ int main(int argc, char* argv[])
     const DS_Troop* pTroop = GetResources()->GetDatasheetObject<DS_Troop>("Dragon.troop");
     const DS_Skill* pSkill = GetResources()->GetDatasheetObject<DS_Skill>("Fireball.skill");
 
+    ConditionContext context;
+    context.playerLevel = 10;
+    bool testCondition = pGeneralA->playableCondition && pGeneralA->playableCondition->IsValid(context);
+
     // Enums methods
     size_t iSizeWeaponTypesA = EWeaponType::GetSize();
     size_t iSizeWeaponTypesB = 0;

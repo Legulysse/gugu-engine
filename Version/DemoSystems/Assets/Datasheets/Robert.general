@@ -1,44 +1,47 @@
-<?xml version="1.0" ?>
-<Datasheet>
-    <Data name="name" value="Robert" />
-    <Data name="life" value="100" />
-    <Data name="speed" value="42.25" />
-    <Data name="is monarch" value="1" />
-    <Data name="faction" value="Yumeda.faction" />
-    <Data name="sprite">
-        <Data name="imageset" value="Robert.imageset.xml" />
-        <Data name="animset" value="Robert.animset.xml" />
-    </Data>
-    <Data name="sprite 2">
-        <Data name="imageset" value="Robert.imageset.xml" />
-        <Data name="animset" value="Robert.animset.xml" />
-    </Data>
-    <Data name="names list">
-        <Child value="Bill" />
-        <Child value="Bob" />
-        <Child value="Tim" />
-    </Data>
-    <Data name="stats list">
-        <Child value="10" />
-        <Child value="20" />
-        <Child value="30" />
-    </Data>
-    <Data name="factions list">
-        <Child value="Yumeda.faction" />
-    </Data>
-    <Data name="more sprites">
-        <Child>
-            <Data name="imageset" value="Eddard.imageset.xml" />
-            <Data name="animset" value="Eddard.animset.xml" />
-        </Child>
-        <Child>
-            <Data name="imageset" value="Zombie.imageset.xml" />
-            <Data name="animset" value="Zombie.animset.xml" />
-        </Child>
-    </Data>
-    <Data name="weapon" value="Mace" />
-    <Data name="available weapons">
-        <Child value="Sword" />
-        <Child value="Mace" />
-    </Data>
+<?xml version="1.0"?>
+<Datasheet serializationVersion="1" bindingVersion="1">
+	<Data name="name" value="Robert" />
+	<Data name="life" value="100" />
+	<Data name="speed" value="42.25" />
+	<Data name="is monarch" value="true" />
+	<Data name="faction" value="Yumeda.faction" />
+	<Data name="sprite" type="spriteInfo">
+		<Data name="imageset" value="Robert.imageset.xml" />
+		<Data name="animset" value="Robert.animset.xml" />
+	</Data>
+	<Data name="sprite 2" type="spriteInfo">
+		<Data name="imageset" value="Robert.imageset.xml" />
+		<Data name="animset" value="Robert.animset.xml" />
+	</Data>
+	<Data name="names list">
+		<Child value="Bill" />
+		<Child value="Bob" />
+		<Child value="Tim" />
+	</Data>
+	<Data name="stats list">
+		<Child value="10" />
+		<Child value="20" />
+		<Child value="30" />
+	</Data>
+	<Data name="factions list">
+		<Child value="Yumeda.faction" />
+	</Data>
+	<Data name="more sprites">
+		<Child type="spriteInfo">
+			<Data name="imageset" value="Eddard.imageset.xml" />
+			<Data name="animset" value="Eddard.animset.xml" />
+		</Child>
+		<Child type="spriteInfo">
+			<Data name="imageset" value="Zombie.imageset.xml" />
+			<Data name="animset" value="Zombie.animset.xml" />
+		</Child>
+	</Data>
+	<Data name="weapon" value="Mace" />
+	<Data name="available weapons">
+		<Child value="Sword" />
+		<Child value="Mace" />
+	</Data>
+	<Data name="playableCondition" type="conditionPlayerLevel">
+		<Data name="minLevel" value="5" />
+	</Data>
 </Datasheet>

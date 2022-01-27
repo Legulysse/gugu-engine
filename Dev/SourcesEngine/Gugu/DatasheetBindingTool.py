@@ -3,12 +3,15 @@
 # Public Interfaces
 
 
-# Generates the C++ binding from the xml binding
-# > _pathBindingXml : the path to the source xml definition
-# > _pathBindingCpp : the destination folder for the C++ files (DatasheetBinding.h and DatasheetBinding.cpp)
+# Generates the C++ binding from the xml binding.
+# > _pathBindingXml : the path to the source xml definition.
+# > _pathBindingCpp : the destination folder for the generated C++ files ('.h' and '.cpp' files).
+# > _generatedFileName : the base name for generated C++ files (If empty, defaults to DatasheetBinding).
 
-def GenerateBindingCpp(_pathBindingXml, _pathBindingCpp):
-    GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp)
+def GenerateBindingCpp(_pathBindingXml, _pathBindingCpp, _generatedFileName):
+    if _generatedFileName == '':
+        _generatedFileName = 'DatasheetBinding'
+    GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName)
 
 
     
@@ -134,16 +137,19 @@ class DefinitionClass():
         self.name = ''
         self.code = ''
         self.baseClassName = ''
+        self.isAbstract = False
         self.members = []
+        self.methods = []
 
     def SaveForwardDeclarationCpp(self, _file):
         _file.write('class '+ self.code +';\n')
 
     def SaveInstanciationCpp(self, _file):
-        _file.write('    if (classType == "'+ self.name +'")\n')
-        _file.write('    {\n')
-        _file.write('        return new '+ self.code +';\n')
-        _file.write('    }\n')
+        if not self.isAbstract:
+            _file.write('    if (classType == "'+ self.name +'")\n')
+            _file.write('    {\n')
+            _file.write('        return new '+ self.code +';\n')
+            _file.write('    }\n')
 
     def SaveDeclarationCpp(self, _file, _definitionBinding):
         _file.write('////////////////////////////////////////////////////////////////\n')
@@ -152,6 +158,7 @@ class DefinitionClass():
         if self.baseClassName != '' and self.baseClassName in _definitionBinding.dictClassNames:
             parentClassName = _definitionBinding.dictClassNames[self.baseClassName]
             
+        # Declaration
         _file.write('class '+ self.code +' : public '+ parentClassName +'\n')
         _file.write('{\n')
         _file.write('public:\n')
@@ -161,11 +168,18 @@ class DefinitionClass():
         _file.write('    '+ self.code +'();\n')
         _file.write('    virtual ~'+ self.code +'();\n')
         
-        # Members
-        _file.write('\n')
-        _file.write('public:\n')
+        # Methods
+        if len(self.methods) > 0:
+            _file.write('\n')
+            _file.write('public:\n')
+            _file.write('\n')        
+            for method in self.methods:
+                _file.write('    '+ method +'\n')
         
+        # Members
         if len(self.members) > 0:
+            _file.write('\n')
+            _file.write('public:\n')
             _file.write('\n')        
             for member in self.members:
                 strType = ''
@@ -200,11 +214,13 @@ class DefinitionClass():
                     
                 _file.write('    '+ strType +' '+ member.code +';\n')
         
+        # Parser
         _file.write('\n')
         _file.write('protected:\n')
         _file.write('\n')
         _file.write('    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;\n')
             
+        # Finalize
         _file.write('};\n')
         _file.write('\n')
 
@@ -335,10 +351,10 @@ class DefinitionClass():
 #------------------------------------------------------
 # Generators
 
-def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp):
+def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName):
 
     pathBindingCpp = os.path.normpath(_pathBindingCpp)
-    pathBindingCpp += '/DatasheetBinding'
+    pathBindingCpp += '/'+ _generatedFileName
     
     xmlBinding = minidom.parse(_pathBindingXml).documentElement
     definitionBinding = ParseXmlBinding(xmlBinding)
@@ -405,7 +421,7 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp):
     fileSource.write('////////////////////////////////////////////////////////////////\n')
     fileSource.write('// Header\n')
     fileSource.write('\n')
-    fileSource.write('#include "DatasheetBinding.h"\n')
+    fileSource.write('#include "'+ _generatedFileName +'.h"\n')
     fileSource.write('\n')
     fileSource.write('////////////////////////////////////////////////////////////////\n')
     fileSource.write('// Includes\n')
@@ -531,7 +547,16 @@ def ParseXmlClass(_xmlClass):
         newClass.code = _xmlClass.attributes['code'].value
     if 'base' in _xmlClass.attributes:
         newClass.baseClassName = _xmlClass.attributes['base'].value
+    if 'abstract' in _xmlClass.attributes:
+        newClass.isAbstract = _xmlClass.attributes['abstract'].value
     
+    # Methods
+    xmlNodeListMethods = _xmlClass.getElementsByTagName('Method')
+    for xmlMethod in xmlNodeListMethods :
+        if 'declaration' in xmlMethod.attributes:
+            newClass.methods.append(xmlMethod.attributes['declaration'].value.strip())
+    
+    # Members
     xmlNodeListMembers = _xmlClass.getElementsByTagName('Data')
     for xmlMember in xmlNodeListMembers :
         newMember = DefinitionMember()

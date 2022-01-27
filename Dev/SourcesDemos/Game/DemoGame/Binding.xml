@@ -23,7 +23,7 @@
     
     <!-- Entity -->
     
-    <Class name="character" code="DS_Character">
+    <Class name="character" code="DS_Character" abstract="True">
         <Data type="string"                     name="name"             code="name"       default="CHARACTER_NAME" />
         <Data type="float"                      name="health"           code="health"     default="50" />
         <Data type="float"                      name="speed"            code="speed"      default="50" />
@@ -54,7 +54,7 @@
     
     <!-- Effect -->
     
-    <Class name="effect" code="DS_Effect">
+    <Class name="effect" code="DS_Effect" abstract="True">
         <Data type="effectCenter" name="center" code="center" default="Target" />
     </Class>
     

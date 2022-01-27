@@ -120,8 +120,6 @@ public:
     DS_Enemy();
     virtual ~DS_Enemy();
 
-public:
-
 protected:
 
     virtual void ParseMembers (gugu::DatasheetParserContext& context) override;

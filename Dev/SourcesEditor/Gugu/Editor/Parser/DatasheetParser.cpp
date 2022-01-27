@@ -97,6 +97,7 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
         ClassDefinition* classDefinition = new ClassDefinition;
         classDefinition->m_name = nodeClass.attribute("name").value();
         classDefinition->baseName = nodeClass.attribute("base").value();
+        classDefinition->isAbstract = nodeClass.attribute("abstract").as_bool(false);
         classDefinition->baseDefinition = nullptr;
 
         m_classDefinitions.push_back(classDefinition);
@@ -115,7 +116,11 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
         while (baseDefinition != nullptr)
         {
             StdVectorPushFront(classDefinition->m_combinedInheritedClasses, baseDefinition);
-            baseDefinition->m_derivedClasses.push_back(classDefinition);
+
+            if (!classDefinition->isAbstract)
+            {
+                baseDefinition->m_availableDerivedClasses.push_back(classDefinition);
+            }
 
             baseDefinition = baseDefinition->baseDefinition;
         }

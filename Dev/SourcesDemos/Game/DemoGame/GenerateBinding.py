@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append('../../SourcesEngine/Gugu')
+sys.path.append('../../../SourcesEngine/Gugu')
 from DatasheetBindingTool import *
 
 

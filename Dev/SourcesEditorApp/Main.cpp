@@ -33,8 +33,8 @@ int main(int argc, char* argv[])
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
     config.applicationIcon = "Icon.png";
-#if 1
-    config.pathAssets = "../../Version/DemoTests/Assets";    // TODO: find a way to separate and handle the application assets path and the edited project assets.
+#if 0
+    config.pathAssets = "../../Version/DemoSystems/Assets";    // TODO: find a way to separate and handle the application assets path and the edited project assets.
 #else
     config.pathAssets = "../../Version/DemoGame/Assets";
 #endif
@@ -50,10 +50,10 @@ int main(int argc, char* argv[])
     // Init editor
 
     EditorConfig editorConfig;
-#if 1
-    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/DemoDatasheet/Binding.xml";
+#if 0
+    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/Systems/DemoDatasheet/Binding.xml";
 #else
-    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/DemoGame/Binding.xml";
+    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/Game/DemoGame/Binding.xml";
 #endif
 
     GetEditor()->Init(editorConfig);

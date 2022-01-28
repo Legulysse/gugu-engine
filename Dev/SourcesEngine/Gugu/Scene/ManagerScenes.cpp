@@ -17,8 +17,7 @@
 namespace gugu {
 
 ManagerScenes::ManagerScenes()
-    : m_mainScene(nullptr)
-    , m_persistentScene(nullptr)
+    : m_rootScene(nullptr)
 {
 }
 
@@ -28,57 +27,39 @@ ManagerScenes::~ManagerScenes()
 
 void ManagerScenes::Init(const EngineConfig& config)
 {
-    ResetDefaultScenes();
+    ResetRootScene();
 }
 
 void ManagerScenes::Release()
 {
-    SafeDelete(m_persistentScene);
-    SafeDelete(m_mainScene);
+    SafeDelete(m_rootScene);
 }
 
-void ManagerScenes::ResetDefaultScenes()
+void ManagerScenes::ResetRootScene()
 {
-    SafeDelete(m_persistentScene);
-    SafeDelete(m_mainScene);
+    SafeDelete(m_rootScene);
 
-    m_mainScene = new Scene;
-    m_persistentScene = new Scene;
+    m_rootScene = new Scene;
 }
 
-Scene* ManagerScenes::GetMainScene() const
+Scene* ManagerScenes::GetRootScene() const
 {
-    return m_mainScene;
-}
-
-Scene* ManagerScenes::GetPersistentScene() const
-{
-    return m_persistentScene;
+    return m_rootScene;
 }
 
 void ManagerScenes::Step(const DeltaTime& dt)
 {
-    if (m_mainScene)
+    if (m_rootScene)
     {
-        m_mainScene->Step(dt);
-    }
-
-    if (m_persistentScene)
-    {
-        m_persistentScene->Step(dt);
+        m_rootScene->Step(dt);
     }
 }
 
 void ManagerScenes::Update(const DeltaTime& dt)
 {
-    if (m_mainScene)
+    if (m_rootScene)
     {
-        m_mainScene->Update(dt);
-    }
-
-    if (m_persistentScene)
-    {
-        m_persistentScene->Update(dt);
+        m_rootScene->Update(dt);
     }
 }
 

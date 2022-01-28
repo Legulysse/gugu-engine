@@ -36,18 +36,15 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-    void ResetDefaultScenes();
-
-    Scene* GetMainScene() const;
-    Scene* GetPersistentScene() const;
+    void ResetRootScene();
+    Scene* GetRootScene() const;
 
     void Step(const DeltaTime& dt);
     void Update(const DeltaTime& dt);
 
 protected:
 
-    Scene* m_mainScene;
-    Scene* m_persistentScene;
+    Scene* m_rootScene;
 };
 
 ManagerScenes* GetScenes();

@@ -15,6 +15,7 @@
 #include "Gugu/Network/ManagerNetwork.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/VisualEffects/ManagerVisualEffects.h"
+#include "Gugu/Scene/ManagerScenes.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
@@ -22,7 +23,6 @@
 #include "Gugu/Debug/Trace.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Window/Window.h"
-#include "Gugu/World/World.h"
 
 #include <SFML/System/Sleep.hpp>
 
@@ -74,7 +74,6 @@ void Engine::Init(const EngineConfig& config)
     m_application = nullptr;
     m_renderer = nullptr;
     m_gameWindow = nullptr;
-    m_world = nullptr;
 
     //-- Init Managers --//
     m_managerResources = new ManagerResources;
@@ -94,12 +93,11 @@ void Engine::Init(const EngineConfig& config)
     m_managerVisualEffects = new ManagerVisualEffects;
     m_managerVisualEffects->Init(computedConfig);
 
+    m_managerScenes = new ManagerScenes;
+    m_managerScenes->Init(computedConfig);
+
     //-- Init Default Renderer --//
     m_renderer = new Renderer;
-
-    //-- Init World --//
-    m_world = new World;   //TODO: Should I really create a default World ?
-    m_world->ResetWorld();
 
     //-- Init Window --//
     if (computedConfig.gameWindow == EGameWindow::Sfml)
@@ -135,15 +133,16 @@ void Engine::Release()
     ClearStdVector(m_windows);
     //SafeDelete(m_gameWindow);
 
-    SafeDelete(m_world);
     SafeDelete(m_renderer);
 
+    m_managerScenes->Release();
     m_managerInputs->Release();
     m_managerVisualEffects->Release();
     m_managerAnimations->Release();
     m_managerAudio->Release();
     m_managerResources->Release();
 
+    SafeDelete(m_managerScenes);
     SafeDelete(m_managerInputs);
     SafeDelete(m_managerVisualEffects);
     SafeDelete(m_managerAnimations);
@@ -280,8 +279,8 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
             if (m_application)
                 m_application->AppStep(dtSpeedModulatedStep);
 
-            if (m_world)
-                m_world->Step(dtSpeedModulatedStep);
+            if (m_managerScenes)
+                m_managerScenes->Step(dtSpeedModulatedStep);
 
             m_managerAnimations->Step(dtSpeedModulatedStep);
 
@@ -323,8 +322,8 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
         if (m_application)
             m_application->AppUpdate(dt);
 
-        if (m_world)
-            m_world->Update(dt);
+        if (m_managerScenes)
+            m_managerScenes->Update(dt);
 
         m_managerAnimations->Update(dt, m_stats);
         m_managerVisualEffects->Update(dt, m_stats);
@@ -571,15 +570,17 @@ void Engine::TickTimers(const DeltaTime& dt)
     }
 }
 
-World* Engine::GetWorld() const
+ManagerScenes* Engine::GetManagerScenes() const
 {
-    return m_world;
+    return m_managerScenes;
 }
 
-void Engine::OnLevelReleased(Level* level)
+void Engine::OnSceneReleased(Scene* scene)
 {
     for (size_t i = 0; i < m_windows.size(); ++i)
-        m_windows[i]->OnLevelReleased(level);
+    {
+        m_windows[i]->OnSceneReleased(scene);
+    }
 }
 
 Renderer* Engine::GetDefaultRenderer() const

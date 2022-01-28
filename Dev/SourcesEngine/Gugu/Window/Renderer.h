@@ -12,7 +12,7 @@
 namespace gugu
 {
     class Element;
-    class Level;
+    class Scene;
     class Camera;
     class Window;
 }
@@ -61,7 +61,7 @@ public:
             Renderer    () {}
     virtual ~Renderer   () {}
     
-    virtual void RenderLevel(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Level* _pLevel);
+    virtual void RenderScene(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Scene* scene);
     virtual void RenderWindow(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera);
 
 protected:

@@ -19,7 +19,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
 
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
@@ -80,7 +80,7 @@ Window::~Window()
 
     m_sfWindow->close();
 
-    m_levelBindings.clear();
+    m_sceneBindings.clear();
 
     ClearStdVector(m_cameras);
     SafeDelete(m_mainCamera);
@@ -267,41 +267,41 @@ Camera* Window::GetMainCamera() const
     return m_mainCamera;
 }
 
-void Window::BindLevel(Level* _pLevel)
+void Window::BindScene(Scene* scene)
 {
-    BindLevel(_pLevel, m_mainCamera, m_renderer);
+    BindScene(scene, m_mainCamera, m_renderer);
 }
 
-void Window::BindLevel(Level* _pLevel, Camera* _pCamera)
+void Window::BindScene(Scene* scene, Camera* _pCamera)
 {
-    BindLevel(_pLevel, _pCamera, m_renderer);
+    BindScene(scene, _pCamera, m_renderer);
 }
 
-void Window::BindLevel(Level* _pLevel, Renderer* _pRenderer)
+void Window::BindScene(Scene* scene, Renderer* _pRenderer)
 {
-    BindLevel(_pLevel, m_mainCamera, _pRenderer);
+    BindScene(scene, m_mainCamera, _pRenderer);
 }
 
-void Window::BindLevel(Level* _pLevel, Camera* _pCamera, Renderer* _pRenderer)
+void Window::BindScene(Scene* scene, Camera* _pCamera, Renderer* _pRenderer)
 {
-    if (!_pLevel || !_pCamera || !_pRenderer)
+    if (!scene || !_pCamera || !_pRenderer)
         return;
 
-    _pCamera->SetLevel(_pLevel);
+    _pCamera->SetScene(scene);
 
-    LevelBinding kBinding;
-    kBinding.level = _pLevel;
+    SceneBinding kBinding;
+    kBinding.scene = scene;
     kBinding.camera = _pCamera;
     kBinding.renderer = _pRenderer;
-    m_levelBindings.push_back(kBinding);
+    m_sceneBindings.push_back(kBinding);
 }
 
-void Window::OnLevelReleased(Level* _pLevel)
+void Window::OnSceneReleased(Scene* scene)
 {
-    auto iteBinding = m_levelBindings.begin();
-    while (iteBinding != m_levelBindings.end())
+    auto iteBinding = m_sceneBindings.begin();
+    while (iteBinding != m_sceneBindings.end())
     {
-        if (iteBinding->level == _pLevel)
+        if (iteBinding->scene == scene)
         {
             //TODO: flag auto-delete on Camera ?
             // I cant delete cameras like that, I have to check if they are in used and if its not the MainCamera
@@ -309,7 +309,7 @@ void Window::OnLevelReleased(Level* _pLevel)
             //StdVectorRemove(m_vecCameras, pCamera);
             //SafeDelete(pCamera);
 
-            iteBinding = m_levelBindings.erase(iteBinding);
+            iteBinding = m_sceneBindings.erase(iteBinding);
         }
         else
         {
@@ -336,12 +336,12 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
     sf::Clock kRenderClock;
 
     {
-        GUGU_SCOPE_TRACE_MAIN("Levels");
+        GUGU_SCOPE_TRACE_MAIN("Scenes");
 
-        //Render Levels
-        for (size_t i = 0; i < m_levelBindings.size(); ++i)
+        //Render Scenes
+        for (size_t i = 0; i < m_sceneBindings.size(); ++i)
         {
-            m_levelBindings[i].renderer->RenderLevel(kFrameInfos, this, m_levelBindings[i].camera, m_levelBindings[i].level);
+            m_sceneBindings[i].renderer->RenderScene(kFrameInfos, this, m_sceneBindings[i].camera, m_sceneBindings[i].scene);
         }
     }
 
@@ -541,13 +541,13 @@ bool Window::ProcessEvents()
                 vecRootElements.push_back(kEntry);
             }
 
-            for (size_t i = 0; i < m_levelBindings.size(); ++i)
+            for (size_t i = 0; i < m_sceneBindings.size(); ++i)
             {
-                if (m_levelBindings[i].level && m_levelBindings[i].level->GetRootNode() && m_levelBindings[i].camera)
+                if (m_sceneBindings[i].scene && m_sceneBindings[i].scene->GetRootNode() && m_sceneBindings[i].camera)
                 {
                     HandlerEvents::InteractiveElementEntry kEntry;
-                    kEntry.element = m_levelBindings[i].level->GetRootNode();
-                    kEntry.camera = m_levelBindings[i].camera;
+                    kEntry.element = m_sceneBindings[i].scene->GetRootNode();
+                    kEntry.camera = m_sceneBindings[i].camera;
                     vecRootElements.push_back(kEntry);
                 }
             }

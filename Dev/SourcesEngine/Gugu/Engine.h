@@ -26,11 +26,11 @@ namespace gugu
     class ManagerNetwork;
     class ManagerResources;
     class ManagerVisualEffects;
+    class ManagerScenes;
     class Application;
     class Renderer;
     class Window;
-    class World;
-    class Level;
+    class Scene;
     class LoggerEngine;
     class TraceGroup;
 }
@@ -82,8 +82,7 @@ public:
 
     void            ComputeCommandLine(const std::string& commandLine);
 
-    World*              GetWorld() const;
-    void                OnLevelReleased(Level* level);
+    void                OnSceneReleased(Scene* scene);
 
     Renderer*           GetDefaultRenderer() const;
 
@@ -93,6 +92,7 @@ public:
     ManagerResources*   GetManagerResources() const;
     ManagerAnimations*  GetManagerAnimations() const;
     ManagerVisualEffects* GetManagerVisualEffects() const;
+    ManagerScenes*      GetManagerScenes() const;
 
     LoggerEngine*       GetLogEngine() const;
     TraceGroup*         GetTraceGroupMain() const;
@@ -105,7 +105,6 @@ private:
 
     std::map<std::string, Timer*> m_timers;
 
-    World*              m_world;
 
     ManagerInputs*      m_managerInputs;
     ManagerAudio*       m_managerAudio;
@@ -113,6 +112,7 @@ private:
     ManagerResources*   m_managerResources;
     ManagerAnimations*  m_managerAnimations;
     ManagerVisualEffects* m_managerVisualEffects;
+    ManagerScenes*      m_managerScenes;
 
     LoggerEngine*       m_logEngine;
     TraceGroup*         m_traceGroupMain;

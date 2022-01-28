@@ -12,7 +12,7 @@
 
 namespace gugu
 {
-    class Level;
+    class Scene;
     class Window;
     class Element;
 }
@@ -34,8 +34,8 @@ public:
     void            SetWindow   (Window* _pWindow);
     Window*         GetWindow   () const;
     
-    void            SetLevel    (Level* _pLevel);
-    Level*          GetLevel    () const;
+    void            SetScene    (Scene* scene);
+    Scene*          GetScene    () const;
     
     void            SetSFView   (const sf::View& _kView);
     const sf::View& GetSFView   () const;
@@ -52,7 +52,7 @@ public:
     Vector2f    GetTarget   () const;
     
     //TODO: Use UDim, add shortcuts for Center and UpperLeft
-    void            SetCenterOnTarget   (bool _bCenterOnTarget);  //true = target is the center of the view (useful for Levels), false = target is the top-left corner of the view (default, useful for Window UI)
+    void            SetCenterOnTarget   (bool _bCenterOnTarget);  //true = target is the center of the view (useful for Scenes), false = target is the top-left corner of the view (default, useful for Window UI)
     bool            IsCenterOnTarget    () const;
 
     void            SetViewport (const sf::FloatRect& _kViewport);
@@ -80,7 +80,7 @@ protected:
     bool m_centerOnTarget;
     
     Window* m_window;
-    Level* m_level;
+    Scene* m_scene;
 
     //bool m_extendOnResize;
 };

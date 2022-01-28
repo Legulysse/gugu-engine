@@ -10,7 +10,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -20,16 +20,16 @@
 
 namespace gugu {
 
-void Renderer::RenderLevel(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Level* _pLevel)
+void Renderer::RenderScene(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Scene* scene)
 {
-    if (_pLevel)
+    if (scene)
     {
         RenderPass kRenderPass;
         kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
         kRenderPass.target = _pWindow->GetSFRenderWindow();
         kRenderPass.frameInfos = &_pFrameInfos;
 
-        Render(kRenderPass, _pCamera, _pLevel->GetRootNode());
+        Render(kRenderPass, _pCamera, scene->GetRootNode());
     }
 }
 

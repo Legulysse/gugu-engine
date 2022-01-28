@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Window/Window.h"
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/System/SystemUtility.h"
@@ -29,7 +29,7 @@ Camera::Camera()
     m_centerOnTarget = false;
 
     m_window = nullptr;
-    m_level = nullptr;
+    m_scene = nullptr;
 
     //m_extendOnResize = false;
 }
@@ -48,14 +48,14 @@ Window* Camera::GetWindow() const
     return m_window;
 }
 
-void Camera::SetLevel(Level* _pLevel)
+void Camera::SetScene(Scene* scene)
 {
-    m_level = _pLevel;
+    m_scene = scene;
 }
 
-Level* Camera::GetLevel() const
+Scene* Camera::GetScene() const
 {
-    return m_level;
+    return m_scene;
 }
 
 void Camera::SetSFView(const sf::View& _kView)
@@ -208,15 +208,15 @@ bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElemen
         return false;
 
     const Element* pTopParent = _pElement->GetTopParent();
-    bool bLevelNode = true;
+    bool bSceneNode = true;
     bool bWindowNode = true;
 
-    if (m_level)
-        bLevelNode = (m_level->GetRootNode() == pTopParent);
+    if (m_scene)
+        bSceneNode = (m_scene->GetRootNode() == pTopParent);
     if (m_window)
         bWindowNode = (m_window->GetRootNode() == pTopParent);
 
-    if (!bLevelNode && !bWindowNode)
+    if (!bSceneNode && !bWindowNode)
         return false;
 
     return _pElement->IsPicked(GetPickedPosition(_kMouseCoords));

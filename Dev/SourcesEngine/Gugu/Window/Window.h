@@ -18,14 +18,14 @@ namespace gugu
 {
     struct EngineConfig;
     struct EngineStats;
+    struct FrameInfos;
     class HandlerEvents;
     class Element;
     class ElementSprite;
     class ElementText;
     class Camera;
     class Renderer;
-    struct FrameInfos;
-    class Level;
+    class Scene;
     class StatsDrawer;
 }
 
@@ -65,11 +65,11 @@ public:
     Camera*     GetCamera       (size_t _iIndex) const;
     Camera*     GetMainCamera   () const;
     
-    void        BindLevel       (Level* _pLevel);
-    void        BindLevel       (Level* _pLevel, Camera* _pCamera);
-    void        BindLevel       (Level* _pLevel, Renderer* _pRenderer);
-    void        BindLevel       (Level* _pLevel, Camera* _pCamera, Renderer* _pRenderer);
-    void        OnLevelReleased (Level* _pLevel);
+    void        BindScene       (Scene* scene);
+    void        BindScene       (Scene* scene, Camera* _pCamera);
+    void        BindScene       (Scene* scene, Renderer* _pRenderer);
+    void        BindScene       (Scene* scene, Camera* _pCamera, Renderer* _pRenderer);
+    void        OnSceneReleased (Scene* scene);
 
     void        Render          (const DeltaTime& dt, const EngineStats& engineStats);
     void        Display         ();
@@ -115,10 +115,10 @@ private:
 
 protected:
 
-    //TODO: It should be better to directly use Cameras to store and handle their attachment to Windows and Levels
-    struct LevelBinding
+    //TODO: It should be better to directly use Cameras to store and handle their attachment to Windows and Scenes
+    struct SceneBinding
     {
-        Level* level;
+        Scene* scene;
         Camera* camera;
         Renderer* renderer;
     };
@@ -130,7 +130,7 @@ protected:
 
     Camera*                     m_mainCamera;
     std::vector<Camera*>        m_cameras;
-    std::vector<LevelBinding>   m_levelBindings;
+    std::vector<SceneBinding>   m_sceneBindings;
 
     HandlerEvents*      m_handlerEvents;
 

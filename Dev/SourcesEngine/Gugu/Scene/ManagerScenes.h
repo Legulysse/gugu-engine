@@ -12,7 +12,8 @@
 
 namespace gugu
 {
-    class Level;
+    struct EngineConfig;
+    class Scene;
 }
 
 namespace sf
@@ -25,27 +26,30 @@ namespace sf
 
 namespace gugu {
 
-class World
+class ManagerScenes
 {
 public:
 
-    World();
-    virtual ~World();
+    ManagerScenes();
+    virtual ~ManagerScenes();
 
-    void ResetWorld();
+    void Init(const EngineConfig& config);
+    void Release();
 
-    Level* GetMainLevel() const;
-    Level* GetPersistentLevel() const;
+    void ResetDefaultScenes();
+
+    Scene* GetMainScene() const;
+    Scene* GetPersistentScene() const;
 
     void Step(const DeltaTime& dt);
     void Update(const DeltaTime& dt);
 
 protected:
 
-    Level* m_mainLevel;
-    Level* m_persistentLevel;
+    Scene* m_mainScene;
+    Scene* m_persistentScene;
 };
 
-World* GetWorld();
+ManagerScenes* GetScenes();
 
 }   // namespace gugu

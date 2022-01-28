@@ -14,7 +14,7 @@
 #include "Actors/Characters/CharacterHero.h"
 #include "Actors/Characters/CharacterEnemy.h"
 #include "Actors/Projectiles/Projectile.h"
-#include "Level/Grid.h"
+#include "Scene/Grid.h"
 
 #include "DatasheetBinding.h"
 
@@ -22,8 +22,8 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/World/World.h"
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/ManagerScenes.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Misc/Grid/SquareGrid.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
@@ -99,7 +99,7 @@ void Game::AppUpdate(const DeltaTime& dt)
 
     if (m_charactersNode)
     {
-        m_charactersNode->SortOnZIndex();  //TODO: Should this be automatic even for Level nodes ?
+        m_charactersNode->SortOnZIndex();  //TODO: Should this be automatic even for Scene nodes ?
     }
 }
 
@@ -132,7 +132,7 @@ void Game::StepScenario(const DeltaTime& dt)
     }
     StdVectorRemove<ControllerAI*>(m_controllersAI, nullptr);
 
-    // Reset level
+    // Reset Floor
     if (m_delayReset > 0)
     {
         m_delayReset -= dt.ms();
@@ -166,39 +166,36 @@ bool Game::OnSFEvent(const sf::Event& _oSFEvent)
 
 void Game::CreateScenario()
 {
-    //Init Level and Camera
+    // Init Scene and Camera
     Camera* pCamera = GetGameWindow()->CreateCamera();
     pCamera->SetCenterOnTarget(true);
     
-    m_level = GetWorld()->GetMainLevel()->CreateSubLevel();
-    GetGameWindow()->BindLevel(m_level, pCamera);
+    m_scene = GetScenes()->GetRootScene()->CreateChildScene();
+    GetGameWindow()->BindScene(m_scene, pCamera);
 
-    //Disable interactions on level nodes (optimisation)
-    m_level->GetRootNode()->AddInteractionFlag(EInteraction::Absorb);
+    // Disable interactions on scene nodes (optimisation)
+    m_scene->GetRootNode()->AddInteractionFlag(EInteraction::Absorb);
     
-    //Fill Level
-    //ElementSprite* pGround = pLevel->GetLayer(0)->GetRoot()->AddChild<ElementSprite>();
-    //pGround->SetImage("BraidBackground.jpg");
-
+    // Fill Scene
     m_grid = new Grid();
-    m_grid->InitGrid(m_level, 50, 50, 32.f, 32.f);
+    m_grid->InitGrid(m_scene, 50, 50, 32.f, 32.f);
 
-    m_charactersNode = m_level->GetRootNode()->AddChild<Element>();
+    m_charactersNode = m_scene->GetRootNode()->AddChild<Element>();
 
-    //Init Player
+    // Init Player
     const DS_Hero* sheetHero = GetResources()->GetDatasheetObject<DS_Hero>("Hero.hero");
 
     m_character = new CharacterHero;
-    m_level->AddActor(m_character);
+    m_scene->AddActor(m_character);
 
     m_character->InitHero(sheetHero, 600.f, m_grid, m_charactersNode);
 
     m_controllerPlayer = new ControllerPlayer;
-    m_level->AddActor(m_controllerPlayer);
+    m_scene->AddActor(m_controllerPlayer);
 
     m_controllerPlayer->InitControllerPlayer(m_character);
 
-    // Spawn first level
+    // Spawn first floor
     m_floor = 1;
 
     SpawnFloor();
@@ -220,12 +217,12 @@ void Game::SpawnFloor()
         const DS_Enemy* sheetEnemy = GetResources()->GetDatasheetObject<DS_Enemy>("DefaultEnemy.enemy");
 
         ControllerAI* pControllerAI = new ControllerAI;
-        m_level->AddActor(pControllerAI);
+        m_scene->AddActor(pControllerAI);
 
         m_controllersAI.push_back(pControllerAI);
 
         CharacterEnemy* pEnemy = new CharacterEnemy;
-        m_level->AddActor(pEnemy);
+        m_scene->AddActor(pEnemy);
 
         pEnemy->InitEnemy(sheetEnemy, 100.f, m_grid, m_charactersNode);
         pControllerAI->m_character = pEnemy;
@@ -234,7 +231,7 @@ void Game::SpawnFloor()
 
 void Game::ClearScenario()
 {
-    // Reset references to Level Actors
+    // Reset references to Scene Actors
     m_projectiles.clear();
     m_controllersAI.clear();
     m_character = nullptr;
@@ -244,8 +241,8 @@ void Game::ClearScenario()
 
     SafeDelete(m_grid);
 
-    //Delete the Levels and their Actors
-    GetWorld()->ResetWorld();
+    //Delete the Scenes and their Actors
+    GetScenes()->ResetRootScene();
 
     GetGameWindow()->DeleteAllCameras();
 }

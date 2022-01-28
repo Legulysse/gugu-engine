@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/World/Actor.h"
+#include "Gugu/Scene/SceneActor.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -18,7 +18,7 @@ namespace demoproject
 
 namespace demoproject {
 
-class ControllerPlayer : public gugu::Actor
+class ControllerPlayer : public gugu::SceneActor
 {
 public:
 

@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/World/Actor.h"
+#include "Gugu/Scene/SceneActor.h"
 #include "Gugu/Events/EventListener.h"
 
 ////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ namespace demoproject
 
 namespace demoproject {
 
-class ControllerPlayer : public gugu::Actor, public gugu::EventListener
+class ControllerPlayer : public gugu::SceneActor, public gugu::EventListener
 {
 public:
 

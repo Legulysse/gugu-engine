@@ -55,7 +55,7 @@ void Demo::AppStart()
     m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
     Element* gridsLayer = m_root->AddChild<Element>();
-    gridsLayer->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
+    gridsLayer->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Scene nodes ?
 
     // Square-4 grid.
     m_grid4 = new SquareGrid();

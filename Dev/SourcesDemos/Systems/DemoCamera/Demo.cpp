@@ -13,8 +13,8 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/World/World.h"
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/ManagerScenes.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/System/SystemUtility.h"
@@ -92,7 +92,7 @@ void Demo::CreateScenario()
     pSeparator->SetUnifiedPosition(UDim2::POSITION_CENTER);
     pSeparator->SetUnifiedSize(UDim2(UDim(0.f, 6.f), UDim(1.f, 0.f)));
 
-    //Init Level and Cameras
+    //Init Scene and Cameras
     Camera* pCameraA = new Camera;     //TODO: Simplify (auto AddCamera)
     pCameraA->SetViewport(sf::FloatRect(0.f, 0.f, 0.5f, 1.f));
     pCameraA->SetCenterOnTarget(true);
@@ -103,38 +103,38 @@ void Demo::CreateScenario()
     pCameraB->SetCenterOnTarget(true);
     GetGameWindow()->AddCamera(pCameraB);
 
-    Level* pLevelA = GetWorld()->GetMainLevel()->AddSubLevel(new Level);
-    Level* pLevelB = GetWorld()->GetMainLevel()->AddSubLevel(new Level);
+    Scene* sceneA = GetScenes()->GetRootScene()->AddChildScene(new Scene);
+    Scene* sceneB = GetScenes()->GetRootScene()->AddChildScene(new Scene);
 
-    //GetGameWindow()->BindLevel(pLevelA);
-    GetGameWindow()->BindLevel(pLevelA, pCameraA);
-    GetGameWindow()->BindLevel(pLevelB, pCameraB);
+    //GetGameWindow()->BindScene(sceneA);
+    GetGameWindow()->BindScene(sceneA, pCameraA);
+    GetGameWindow()->BindScene(sceneB, pCameraB);
     
-    //Fill Level
-    ElementSprite* pGroundA = pLevelA->GetRootNode()->AddChild<ElementSprite>();
+    //Fill Scene
+    ElementSprite* pGroundA = sceneA->GetRootNode()->AddChild<ElementSprite>();
     pGroundA->SetTexture("Background.jpg");
     pGroundA->SetRepeatTexture(true);
     pGroundA->SetSize(1024.f, 1024.f);
     
-    ElementSprite* pGroundB = pLevelB->GetRootNode()->AddChild<ElementSprite>();
+    ElementSprite* pGroundB = sceneB->GetRootNode()->AddChild<ElementSprite>();
     pGroundB->SetTexture("BraidBackground.jpg");
 
     //Init Player A
     m_characterA = new Character;
-    pLevelA->AddActor(m_characterA);
+    sceneA->AddActor(m_characterA);
     m_characterA->InitCharacter(0);
 
     m_controllerA = new ControllerPlayer;
-    pLevelA->AddActor(m_controllerA);
+    sceneA->AddActor(m_controllerA);
     m_controllerA->InitController(m_characterA, 0);
     
     //Init Player B
     m_characterB = new Character;
-    pLevelB->AddActor(m_characterB);
+    sceneB->AddActor(m_characterB);
     m_characterB->InitCharacter(1);
 
     m_controllerB = new ControllerPlayer;
-    pLevelB->AddActor(m_controllerB);
+    sceneB->AddActor(m_controllerB);
     m_controllerB->InitController(m_characterB, 1);
 }
 
@@ -142,7 +142,7 @@ void Demo::ClearScenario()
 {
     GetGameWindow()->DeleteAllCameras();
 
-    GetWorld()->ResetWorld();
+    GetScenes()->ResetRootScene();
 }
 
 bool Demo::OnSFEvent(const sf::Event& _oSFEvent)

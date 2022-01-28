@@ -9,9 +9,9 @@
 
 #include "Actors/Projectiles/Projectile.h"
 #include "UI/ElementBar.h"
-#include "Level/Grid.h"
+#include "Scene/Grid.h"
 
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Math/MathUtility.h"
@@ -139,14 +139,14 @@ bool Character::CanUseSkill(const DS_Skill* skill) const
 
 void Character::Step(const DeltaTime& dt)
 {
-    Actor::Step(dt);
+    SceneActor::Step(dt);
 
     m_steppedThisFrame = true;
 }
 
 void Character::Update(const DeltaTime& dt)
 {
-    Actor::Update(dt);
+    SceneActor::Update(dt);
 
     // Animation
     if ((m_steppedThisFrame && !m_isMovingThisFrame && !m_isActingThisFrame) || !m_animation->IsAnimationPlaying())

@@ -11,7 +11,7 @@
 
 #include "DatasheetBinding.h"
 
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementParticles.h"
 #include "Gugu/VisualEffects/ParticleSystemSettings.h"
@@ -97,7 +97,7 @@ void Projectile::InitProjectile(const SkillContext& skillContext, const DS_Effec
         m_isFireball = true;
     }
 
-    m_sprite = m_level->GetRootNode()->AddChild<ElementSprite>();
+    m_sprite = m_scene->GetRootNode()->AddChild<ElementSprite>();
     //m_sprite->SetTexture("Arrow.png");
     m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
     m_sprite->SetRotation(fAngleDegrees + 90.f);
@@ -164,7 +164,7 @@ void Projectile::OnHit(Character* character)
 
 void Projectile::Step(const DeltaTime& dt)
 {
-    Actor::Step(dt);
+    SceneActor::Step(dt);
 
     if (m_isDead)
     {
@@ -203,7 +203,7 @@ void Projectile::Step(const DeltaTime& dt)
                 particleSettings.startColor = sf::Color::Yellow;
                 particleSettings.endColor = sf::Color(255, 0, 0, 50);
 
-                ElementParticles* particles = m_level->GetRootNode()->AddChild<ElementParticles>();
+                ElementParticles* particles = m_scene->GetRootNode()->AddChild<ElementParticles>();
                 particles->SetPosition(m_sprite->GetPosition());
                 particles->CreateParticleSystem(particleSettings, true);
                 m_deathParticles = particles;
@@ -235,7 +235,7 @@ void Projectile::Step(const DeltaTime& dt)
                 particleSettings.startColor = sf::Color::Yellow;
                 particleSettings.endColor = sf::Color(255, 0, 0, 50);
 
-                ElementParticles* particles = m_level->GetRootNode()->AddChild<ElementParticles>();
+                ElementParticles* particles = m_scene->GetRootNode()->AddChild<ElementParticles>();
                 particles->SetPosition(m_sprite->GetPosition());
                 particles->CreateParticleSystem(particleSettings, true);
                 m_deathParticles = particles;

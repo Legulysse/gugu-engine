@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Animation/SpriteAnimation.h"
@@ -31,7 +31,7 @@ Character::~Character()
 
 void Character::InitCharacter(int index)
 {
-    m_sprite = m_level->GetRootNode()->AddChild<ElementSprite>();
+    m_sprite = m_scene->GetRootNode()->AddChild<ElementSprite>();
     m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
 
     m_spriteAnimation = GetAnimations()->AddAnimation(m_sprite);

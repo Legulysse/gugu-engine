@@ -14,7 +14,7 @@
 
 #include "DatasheetBinding.h"
 
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
@@ -64,7 +64,7 @@ namespace SkillUtility
             const DS_EffectProjectile* effectProjectile = (const DS_EffectProjectile*)effect;
 
             Projectile* newProjectile = new Projectile();
-            skillContext.level->AddActor(newProjectile);
+            skillContext.scene->AddActor(newProjectile);
 
             newProjectile->InitProjectile(skillContext, effectProjectile, skillContext.caster->GetPosition(), skillContext.aim);
         }

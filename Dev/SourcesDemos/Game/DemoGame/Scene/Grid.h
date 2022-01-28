@@ -11,7 +11,7 @@
 
 namespace gugu
 {
-    class Level;
+    class Scene;
     class ElementTileMap;
 }
 
@@ -27,7 +27,7 @@ public:
     Grid();
     virtual ~Grid();
     
-    void InitGrid(gugu::Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight);
+    void InitGrid(gugu::Scene* scene, int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight);
     
     void ClampPositionInsideBounds(gugu::Vector2f& position) const;
 

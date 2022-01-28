@@ -38,7 +38,7 @@ void StateScenario::Init()
 {
     RegisterHandlerEvents(GetGameWindow());
 
-    //Init Level
+    //Init Scene
     GetGame()->CreateScenario();
 
     //Root UI

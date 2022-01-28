@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/World/Actor.h"
+#include "Gugu/Scene/SceneActor.h"
 #include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ namespace gugu
 
 namespace demoproject {
 
-class Character : public gugu::Actor
+class Character : public gugu::SceneActor
 {
 public:
 

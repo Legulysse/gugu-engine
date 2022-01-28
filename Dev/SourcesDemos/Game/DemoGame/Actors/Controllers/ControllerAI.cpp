@@ -29,7 +29,7 @@ ControllerAI::~ControllerAI()
 
 void ControllerAI::Step(const DeltaTime& dt)
 {
-    Actor::Step(dt);
+    SceneActor::Step(dt);
 
     m_delay -= dt.ms();
     if (m_delay <= 0)

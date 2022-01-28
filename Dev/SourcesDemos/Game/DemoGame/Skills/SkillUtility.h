@@ -19,7 +19,7 @@ namespace demoproject
 
 namespace gugu
 {
-    class Level;
+    class Scene;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ struct SkillContext
     Character* caster;
     Character* target;
     gugu::Vector2f aim;
-    gugu::Level* level;
+    gugu::Scene* scene;
 };
 
 namespace SkillUtility

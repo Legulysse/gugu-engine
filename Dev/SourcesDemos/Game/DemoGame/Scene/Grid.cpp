@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Level/Grid.h"
+#include "Scene/Grid.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
@@ -10,7 +10,7 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementTileMap.h"
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/Math/MathUtility.h"
 
@@ -29,12 +29,12 @@ Grid::~Grid()
 {
 }
 
-void Grid::InitGrid(Level* _pLevel, int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight)
+void Grid::InitGrid(Scene* scene, int _iWidth, int _iHeight, float _fCellWidth, float _fCellHeight)
 {
     SquareGrid::InitSquareGrid(_iWidth, _iHeight, _fCellWidth, _fCellHeight, true);
     
-    Element* pRoot = _pLevel->GetRootNode()->AddChild<Element>();
-    pRoot->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Level nodes ?
+    Element* pRoot = scene->GetRootNode()->AddChild<Element>();
+    pRoot->SetInteractionFlags(EInteraction::Absorb | EInteraction::Disabled);  //TODO: default on Scene nodes ?
 
     m_pTileMap = pRoot->AddChild<ElementTileMap>();
     m_pTileMap->BuildFromSquareGrid(this);

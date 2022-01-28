@@ -38,7 +38,7 @@ void ControllerPlayer::InitControllerPlayer(CharacterHero* _pCharacter)
 
 void ControllerPlayer::Step(const DeltaTime& dt)
 {
-    Actor::Step(dt);
+    SceneActor::Step(dt);
 
     if (GetGameWindow()->IsConsoleVisible())
         return;

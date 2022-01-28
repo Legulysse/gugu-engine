@@ -13,8 +13,8 @@
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
-#include "Gugu/World/World.h"
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/ManagerScenes.h"
+#include "Gugu/Scene/Scene.h"
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -43,12 +43,12 @@ void Demo::AppStart()
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
     m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
-    // Level
-    Camera* levelCamera = GetGameWindow()->CreateCamera();
-    levelCamera->SetCenterOnTarget(true);
-    GetGameWindow()->BindLevel(GetWorld()->GetMainLevel(), levelCamera);
+    // Scene
+    Camera* sceneCamera = GetGameWindow()->CreateCamera();
+    sceneCamera->SetCenterOnTarget(true);
+    GetGameWindow()->BindScene(GetScenes()->GetRootScene(), sceneCamera);
 
-    Element* levelRoot = GetWorld()->GetMainLevel()->GetRootNode();
+    Element* sceneRoot = GetScenes()->GetRootScene()->GetRootNode();
 
     // Grid
     sf::VertexArray* gridVertices = new sf::VertexArray;
@@ -59,10 +59,10 @@ void Demo::AppStart()
     gridVertices->append(sf::Vertex(Vector2f(-10000.f, 0.f)));
     gridVertices->append(sf::Vertex(Vector2f(10000.f, 0.f)));
 
-    ElementSFDrawable* gridElement = levelRoot->AddChild<ElementSFDrawable>();
+    ElementSFDrawable* gridElement = sceneRoot->AddChild<ElementSFDrawable>();
     gridElement->SetSFDrawable(gridVertices);
 
-    // Level Particles
+    // Scene Particles
     for (size_t i = 0; i < 10; ++i)
     {
         ParticleSystemSettings settings;
@@ -70,7 +70,7 @@ void Demo::AppStart()
         settings.minSpawnPerSecond = 500;
         settings.updateColorOverLifetime = true;
 
-        ElementParticles* elementParticle = levelRoot->AddChild<ElementParticles>();
+        ElementParticles* elementParticle = sceneRoot->AddChild<ElementParticles>();
         elementParticle->SetPosition(Vector2f(-300.f + (i % 5) * 150.f, -100.f + (i / 5) * 200.f));
         ParticleSystem* particleSystem = elementParticle->CreateParticleSystem(settings, true);
 
@@ -87,7 +87,7 @@ void Demo::AppStart()
     armShape->append(sf::Vertex(Vector2f(400.f, 0.f)));
     armShape->append(sf::Vertex(Vector2f(400.f, -50.f)));
 
-    ElementSFDrawable* arm = levelRoot->AddChild<ElementSFDrawable>();
+    ElementSFDrawable* arm = sceneRoot->AddChild<ElementSFDrawable>();
     arm->SetPosition(0.f, 50.f);
     arm->SetOrigin(50.f, 0.f);
     arm->SetSFDrawable(armShape);

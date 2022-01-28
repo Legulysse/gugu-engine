@@ -8,11 +8,11 @@
 // Includes
 
 #include "UI/ElementBar.h"
-#include "Level/Grid.h"
+#include "Scene/Grid.h"
 
 #include "DatasheetBinding.h"
 
-#include "Gugu/World/Level.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Element/2D/ElementSprite.h"

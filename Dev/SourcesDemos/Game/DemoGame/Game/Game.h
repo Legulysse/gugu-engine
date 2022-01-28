@@ -22,7 +22,7 @@ namespace demoproject
 
 namespace gugu
 {
-    class Level;
+    class Scene;
     class Element;
 }
 
@@ -60,7 +60,7 @@ public:
 
 public:
 
-    gugu::Level* m_level;
+    gugu::Scene* m_scene;
     gugu::Element* m_charactersNode;
 
     CharacterHero* m_character;

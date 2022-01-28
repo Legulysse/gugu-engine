@@ -5,7 +5,7 @@
 
 #include "Skills/SkillUtility.h"
 
-#include "Gugu/World/Actor.h"
+#include "Gugu/Scene/SceneActor.h"
 #include "Gugu/Math/Vector2.h"
 
 #include <set>
@@ -31,7 +31,7 @@ namespace gugu
 
 namespace demoproject {
 
-class Projectile : public gugu::Actor
+class Projectile : public gugu::SceneActor
 {
 public:
 

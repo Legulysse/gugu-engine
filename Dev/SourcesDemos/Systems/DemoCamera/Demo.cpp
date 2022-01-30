@@ -103,8 +103,8 @@ void Demo::CreateScenario()
     pCameraB->SetCenterOnTarget(true);
     GetGameWindow()->AddCamera(pCameraB);
 
-    Scene* sceneA = GetScenes()->GetRootScene()->AddChildScene(new Scene);
-    Scene* sceneB = GetScenes()->GetRootScene()->AddChildScene(new Scene);
+    Scene* sceneA = GetScenes()->GetRootScene()->AddChildScene();
+    Scene* sceneB = GetScenes()->GetRootScene()->AddChildScene();
 
     //GetGameWindow()->BindScene(sceneA);
     GetGameWindow()->BindScene(sceneA, pCameraA);

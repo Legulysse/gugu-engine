@@ -170,7 +170,7 @@ void Game::CreateScenario()
     Camera* pCamera = GetGameWindow()->CreateCamera();
     pCamera->SetCenterOnTarget(true);
     
-    m_scene = GetScenes()->GetRootScene()->CreateChildScene();
+    m_scene = GetScenes()->GetRootScene()->AddChildScene();
     GetGameWindow()->BindScene(m_scene, pCamera);
 
     // Disable interactions on scene nodes (optimisation)

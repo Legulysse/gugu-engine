@@ -30,8 +30,7 @@ Scene::~Scene()
 
     if (m_parentScene)
     {
-        m_parentScene->OnChildSceneReleased(this);
-        m_parentScene = nullptr;
+        m_parentScene->RemoveChildScene(this);
     }
 
     DeleteAllActors();
@@ -82,46 +81,40 @@ Element* Scene::GetRootNode() const
     return m_rootNode;
 }
 
-Scene* Scene::CreateChildScene()
+Scene* Scene::AddChildScene()
 {
-    return AddChildScene(new Scene);
+    Scene* scene = new Scene;
+    AddChildScene(scene);
+    return scene;
 }
 
-Scene* Scene::AddChildScene(Scene* scene)
+void Scene::AddChildScene(Scene* scene)
 {
-    if (!scene)
-        return nullptr;
-
-    if (!StdVectorContains(m_childScenes, scene))
+    if (scene->m_parentScene)
     {
-        m_childScenes.push_back(scene);
-        scene->m_parentScene = this;
-        return scene;
+        scene->m_parentScene->RemoveChildScene(scene);
     }
 
-    return nullptr;
+    m_childScenes.push_back(scene);
+    scene->m_parentScene = this;
 }
 
 void Scene::RemoveChildScene(Scene* scene)
 {
-    if (!scene)
-        return;
-
-    auto it = StdVectorFind(m_childScenes, scene);
-    if (it != m_childScenes.end())
+    if (scene->m_parentScene == this)
     {
+        StdVectorRemove(m_childScenes, scene);
         scene->m_parentScene = nullptr;
-        *it = nullptr;
     }
 }
 
 void Scene::DeleteChildScene(Scene* scene)
 {
-    if (!scene)
-        return;
-
-    RemoveChildScene(scene);
-    SafeDelete(scene);
+    if (scene->m_parentScene == this)
+    {
+        RemoveChildScene(scene);
+        SafeDelete(scene);
+    }
 }
 
 void Scene::DeleteAllChildScenes()
@@ -130,75 +123,53 @@ void Scene::DeleteAllChildScenes()
     {
         if (m_childScenes[i])
         {
-            m_childScenes[i]->m_parentScene = nullptr;   //Prevent the call to OnChildSceneReleased
+            m_childScenes[i]->m_parentScene = nullptr;
             SafeDelete(m_childScenes[i]);
         }
     }
+
     m_childScenes.clear();
 }
 
 bool Scene::HasChildScene(Scene* scene) const
 {
-    if (!scene)
-        return false;
-
-    return StdVectorContains(m_childScenes, scene);
+    return scene != nullptr && StdVectorContains(m_childScenes, scene);
 }
 
-Scene* Scene::GetChildScene(int _iIndex) const
+Scene* Scene::GetChildScene(int index) const
 {
-    if (_iIndex < 0 || _iIndex >= (int)m_childScenes.size())
+    if (index < 0 || index >= (int)m_childScenes.size())
         return nullptr;
-    return m_childScenes[_iIndex];
+    return m_childScenes[index];
 }
 
-void Scene::OnChildSceneReleased(Scene* scene)
+void Scene::AddActor(SceneActor* actor)
 {
-    if (!scene)
-        return;
-
-    auto it = StdVectorFind(m_childScenes, scene);
-    if (it != m_childScenes.end())
+    if (actor->m_scene)
     {
-        *it = nullptr;
+        actor->m_scene->RemoveActor(actor);
+    }
+
+    m_actors.push_back(actor);
+    actor->m_scene = this;
+}
+
+void Scene::RemoveActor(SceneActor* actor)
+{
+    if (actor->m_scene == this)
+    {
+        StdVectorRemove(m_actors, actor);
+        actor->m_scene = nullptr;
     }
 }
 
-SceneActor* Scene::AddActor(SceneActor* _pActor)
+void Scene::DeleteActor(SceneActor* actor)
 {
-    if (!_pActor)
-        return nullptr;
-
-    if (!StdVectorContains(m_actors, _pActor))
+    if (actor->m_scene == this)
     {
-        m_actors.push_back(_pActor);
-        _pActor->m_scene = this;
-        return _pActor;
+        RemoveActor(actor);
+        SafeDelete(actor);
     }
-
-    return nullptr;
-}
-
-void Scene::RemoveActor(SceneActor* _pActor)
-{
-    if (!_pActor)
-        return;
-
-    auto iteActor = StdVectorFind(m_actors, _pActor);
-    if (iteActor != m_actors.end())
-    {
-        _pActor->m_scene = nullptr;
-        *iteActor = nullptr;
-    }
-}
-
-void Scene::DeleteActor(SceneActor* _pActor)
-{
-    if (!_pActor)
-        return;
-
-    RemoveActor(_pActor);
-    SafeDelete(_pActor);
 }
 
 void Scene::DeleteAllActors()
@@ -207,43 +178,29 @@ void Scene::DeleteAllActors()
     {
         if (m_actors[i])
         {
-            m_actors[i]->m_scene = nullptr;    //Prevent the call to OnActorReleased
+            m_actors[i]->m_scene = nullptr;
             SafeDelete(m_actors[i]);
         }
     }
+
     m_actors.clear();
 }
 
-bool Scene::HasActor(SceneActor* _pActor) const
+bool Scene::HasActor(SceneActor* actor) const
 {
-    if (!_pActor)
-        return false;
-
-    return StdVectorContains(m_actors, _pActor);
+    return actor != nullptr && StdVectorContains(m_actors, actor);
 }
 
-SceneActor* Scene::GetActor(int _iIndex) const
+SceneActor* Scene::GetActor(int index) const
 {
-    if (_iIndex < 0 || _iIndex >= (int)m_actors.size())
+    if (index < 0 || index >= (int)m_actors.size())
         return nullptr;
-    return m_actors[_iIndex];
+    return m_actors[index];
 }
 
 int Scene::GetActorCount() const
 {
     return (int)m_actors.size();
-}
-
-void Scene::OnActorReleased(SceneActor* _pActor)
-{
-    if (!_pActor)
-        return;
-
-    auto iteActor = StdVectorFind(m_actors, _pActor);
-    if (iteActor != m_actors.end())
-    {
-        *iteActor = nullptr;
-    }
 }
 
 }   // namespace gugu

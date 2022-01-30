@@ -61,7 +61,6 @@ Element::~Element()
 void Element::AddChild(Element* child)
 {
     child->SetParent(this);
-
     m_children.push_back(child);
 }
 

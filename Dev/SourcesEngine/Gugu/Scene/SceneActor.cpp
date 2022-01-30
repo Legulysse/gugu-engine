@@ -22,11 +22,9 @@ SceneActor::SceneActor()
 
 SceneActor::~SceneActor()
 {
-    //Inform the Scene if released from gameplay (If released from Scene, this reference is already null).
     if (m_scene)
     {
-        m_scene->OnActorReleased(this);
-        m_scene = nullptr;
+        m_scene->RemoveActor(this);
     }
 }
 

@@ -23,8 +23,6 @@ namespace gugu {
 
 class Scene
 {
-    friend class SceneActor;
-
 public:
 
     Scene();
@@ -37,29 +35,24 @@ public:
     Element* GetRootNode() const;
     
     //Sub Scenes
-    Scene* CreateChildScene();
-    Scene* AddChildScene(Scene* scene);
+    Scene* AddChildScene();
+    void AddChildScene(Scene* scene);
     void RemoveChildScene(Scene* scene);
     void DeleteChildScene(Scene* scene);
     void DeleteAllChildScenes();
 
     bool HasChildScene(Scene* scene) const;
-    Scene* GetChildScene(int _iIndex = 0) const;
+    Scene* GetChildScene(int index) const;
 
     //Actors
-    SceneActor* AddActor(SceneActor* _pActor);
-    void RemoveActor(SceneActor* _pActor);
-    void DeleteActor(SceneActor* _pActor);
+    void AddActor(SceneActor* actor);
+    void RemoveActor(SceneActor* actor);
+    void DeleteActor(SceneActor* actor);
     void DeleteAllActors();
 
-    bool HasActor(SceneActor* _pActor) const;
-    SceneActor* GetActor(int _iIndex = 0) const;
+    bool HasActor(SceneActor* actor) const;
+    SceneActor* GetActor(int index) const;
     int GetActorCount() const;
-
-protected:
-
-    void OnChildSceneReleased(Scene* scene);    //Called by a ChildScene just released, to ensure the Scene is not referencing it.
-    void OnActorReleased(SceneActor* _pActor);  //Called by an Actor just released, to ensure the Scene is not referencing it.
 
 protected:
 

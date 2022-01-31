@@ -205,9 +205,9 @@ void Demo::AppUpdate(const DeltaTime& dt)
     {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
         {
-            Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-            Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-            Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionA = m_pTileMapA->TransformToLocal(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionB = m_pTileMapB->TransformToLocal(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionC = m_pTileMapC->TransformToLocal(GetGameWindow()->GetMousePosition());
 
             Vector2i pickedCoords;
             if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
@@ -228,9 +228,9 @@ void Demo::AppUpdate(const DeltaTime& dt)
         }
         else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
         {
-            Vector2f localPickedPositionA = m_pTileMapA->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-            Vector2f localPickedPositionB = m_pTileMapB->TransformToLocalFull(GetGameWindow()->GetMousePosition());
-            Vector2f localPickedPositionC = m_pTileMapC->TransformToLocalFull(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionA = m_pTileMapA->TransformToLocal(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionB = m_pTileMapB->TransformToLocal(GetGameWindow()->GetMousePosition());
+            Vector2f localPickedPositionC = m_pTileMapC->TransformToLocal(GetGameWindow()->GetMousePosition());
 
             Vector2i pickedCoords;
             if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))

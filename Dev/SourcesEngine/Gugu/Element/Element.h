@@ -119,8 +119,6 @@ public:
     void SetSize(const Vector2f& _kNewSize);
 
     const Vector2f& GetSize() const;       // Get Element Size
-    Vector2f GetSizeScaled() const;        // Get Element Size, with its scale applied (TODO: Useless ?)
-    Vector2f GetSizeOnScreen() const;      // Get Element Size, with all its upper hierarchy's scales applied (TODO: Useless ?)
 
     //----------------------------------------------
     // Flip
@@ -137,8 +135,8 @@ public:
 
     virtual bool IsPicked(const Vector2f& _kGlobalCoords) const;
 
-    Vector2f TransformToLocalFull(const Vector2f& _oPoint) const;    // TODO: rename as TransformToLocal and TransformToGlobal, maybe add TransformToParent.
-    Vector2f TransformToGlobalFull(const Vector2f& _oPoint) const;
+    Vector2f TransformToLocal(const Vector2f& point) const;
+    Vector2f TransformToGlobal(const Vector2f& point) const;
 
     const sf::Transform& GetTransform() const;
     const sf::Transform& GetInverseTransform() const;

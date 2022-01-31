@@ -130,7 +130,7 @@ void ParticleSystem::Start()
 
     if (m_element && !m_settings.localSpace)
     {
-        SetEmitterPosition(m_element->TransformToGlobalFull(Vector2f()));
+        SetEmitterPosition(m_element->TransformToGlobal(Vector2f()));
     }
     else
     {
@@ -326,7 +326,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
 
     if (m_element && !m_settings.localSpace)
     {
-        SetEmitterPosition(m_element->TransformToGlobalFull(Vector2f()));
+        SetEmitterPosition(m_element->TransformToGlobal(Vector2f()));
     }
     else
     {

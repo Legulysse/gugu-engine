@@ -176,7 +176,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
         {
             Vector2f fLocalCoord = Vector2f(oMouseCoords);
             if (m_elementMouseDragged->GetParent())
-                fLocalCoord = m_elementMouseDragged->GetParent()->TransformToLocalFull(fLocalCoord);
+                fLocalCoord = m_elementMouseDragged->GetParent()->TransformToLocal(fLocalCoord);
 
             m_elementMouseDragged->SetPosition(fLocalCoord - m_lastMouseCoords);
             m_elementMouseDragged->OnMouseDragMove();
@@ -289,7 +289,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
 
                         Vector2f fLocalCoord = Vector2f(oMouseCoords);
                         if (m_elementMouseDragged->GetParent())
-                            fLocalCoord = m_elementMouseDragged->GetParent()->TransformToLocalFull(fLocalCoord);
+                            fLocalCoord = m_elementMouseDragged->GetParent()->TransformToLocal(fLocalCoord);
                         m_lastMouseCoords = fLocalCoord - m_elementMouseDragged->GetPosition();
                         bContinue = false;
                         break;

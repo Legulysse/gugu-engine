@@ -124,24 +124,24 @@ const std::vector<Element*>& Element::GetChildren() const
     return m_children;
 }
 
-Vector2f Element::TransformToLocalFull(const Vector2f& _oPoint) const
+Vector2f Element::TransformToLocal(const Vector2f& point) const
 {
     if (m_parent)
     {
-        return GetInverseTransform().transformPoint( m_parent->TransformToLocalFull(_oPoint) );
+        return GetInverseTransform().transformPoint( m_parent->TransformToLocal(point) );
     }
 
-    return GetInverseTransform().transformPoint(_oPoint);
+    return GetInverseTransform().transformPoint(point);
 }
 
-Vector2f Element::TransformToGlobalFull(const Vector2f& _oPoint) const
+Vector2f Element::TransformToGlobal(const Vector2f& point) const
 {
     if (m_parent)
     {
-        return m_parent->TransformToGlobalFull( GetTransform().transformPoint(_oPoint) );
+        return m_parent->TransformToGlobal( GetTransform().transformPoint(point) );
     }
 
-    return GetTransform().transformPoint(_oPoint);
+    return GetTransform().transformPoint(point);
 }
 
 void Element::SetVisible(bool visible)
@@ -397,30 +397,6 @@ const Vector2f& Element::GetSize() const
     return m_size;
 }
 
-Vector2f Element::GetSizeScaled() const
-{
-    Vector2f fSize = GetSize();
-    fSize.x *= GetScale().x;
-    fSize.y *= GetScale().y;
-    return fSize;
-}
-
-Vector2f Element::GetSizeOnScreen() const
-{
-    Vector2f fSize = GetSizeScaled();
-
-    Element* pParent = m_parent;
-    while (pParent)
-    {
-        fSize.x *= pParent->GetScale().x;
-        fSize.y *= pParent->GetScale().y;
-
-        pParent = pParent->m_parent;
-    }
-
-    return fSize;
-}
-
 void Element::SetFlipV(bool _bFlip)
 {
     SetFlip(_bFlip, m_flipH);
@@ -591,8 +567,8 @@ ElementInteractions* Element::GetInteractions() const
 
 bool Element::IsPicked(const Vector2f& _kGlobalCoords) const
 {
-    Vector2f oPosMouse          = TransformToLocalFull(_kGlobalCoords);
-    Vector2f oPosBottomRight    = GetSize();
+    Vector2f oPosMouse = TransformToLocal(_kGlobalCoords);
+    Vector2f oPosBottomRight = GetSize();
 
     if (    oPosMouse.x >= 0 && oPosMouse.x < oPosBottomRight.x
         &&  oPosMouse.y >= 0 && oPosMouse.y < oPosBottomRight.y )

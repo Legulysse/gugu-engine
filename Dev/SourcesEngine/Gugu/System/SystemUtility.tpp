@@ -57,7 +57,7 @@ T FromString(const std::string& _strValue)
 {
     std::istringstream iss( _strValue );
     T tValue;
-    iss >> tValue;
+    iss >> tValue;  // std::boolalpha could be used
     return tValue;
 }
 
@@ -135,7 +135,7 @@ std::string StringFormat(const std::string& _tValue, const TArgs&... _tArgs)
 }
 
 template<typename T>
-void FormatParameters::Add(const std::string& strName, T tParam)
+void FormatParameters::Add(const std::string& strName, const T& tParam)
 {
     std::string strNameParam = "{}";
     strNameParam.insert(1, strName);
@@ -143,7 +143,7 @@ void FormatParameters::Add(const std::string& strName, T tParam)
 }
 
 template<typename T>
-std::string StringNumberFormat(const T& _tValue, const  std::string& _strDelimiter)
+std::string StringNumberFormat(const T& _tValue, const std::string& _strDelimiter)
 {
     std::string strBaseValue = ToString(_tValue);
 
@@ -227,31 +227,31 @@ void ClearStdMap(std::map<TKey, TValue*>& _oMap)
 }
 
 template<typename T>
-typename std::vector<T>::iterator StdVectorFind(std::vector<T>& _vecContainer, T _tValue)
+typename std::vector<T>::const_iterator StdVectorFind(const std::vector<T>& _vecContainer, const T& _tValue)
 {
-    return std::find(_vecContainer.begin(), _vecContainer.end(), _tValue);
+    return std::find(_vecContainer.cbegin(), _vecContainer.cend(), _tValue);
 }
 
 template<typename T>
-bool StdVectorContains(const std::vector<T>& _vecContainer, T _tValue)
+bool StdVectorContains(const std::vector<T>& _vecContainer, const T& _tValue)
 {
     return std::find(_vecContainer.begin(), _vecContainer.end(), _tValue) != _vecContainer.end();
 }
 
 template<typename T>
-void StdVectorPushFront(std::vector<T>& _vecContainer, T _tValue)
+void StdVectorPushFront(std::vector<T>& _vecContainer, const T& _tValue)
 {
     _vecContainer.insert(_vecContainer.begin(), _tValue);
 }
 
 template<typename T>
-void StdVectorInsertAt(std::vector<T>& _vecContainer, size_t _iIndex, T _tValue)
+void StdVectorInsertAt(std::vector<T>& _vecContainer, size_t _iIndex, const T& _tValue)
 {
     _vecContainer.insert(_vecContainer.begin() + _iIndex, _tValue);
 }
 
 template<typename T>
-void StdVectorRemove(std::vector<T>& _vecContainer, T _tValue)
+void StdVectorRemove(std::vector<T>& _vecContainer, const T& _tValue)
 {
     _vecContainer.erase(std::remove(_vecContainer.begin(), _vecContainer.end(), _tValue), _vecContainer.end());
 }

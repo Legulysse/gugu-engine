@@ -24,7 +24,7 @@
 
 namespace gugu {
 
-std::string ToString(const int& _iValue)
+std::string ToString(int _iValue)
 {
     return std::to_string(_iValue);
 }
@@ -120,7 +120,7 @@ void StdStringReplaceSelf(std::string& _strValue, const std::string& _strFrom, c
     }
 }
 
-void StdStringSplit(const std::string& _strValue, std::string _strDelimiter, std::vector<std::string>& _vecTokens)
+void StdStringSplit(const std::string& _strValue, const std::string& _strDelimiter, std::vector<std::string>& _vecTokens)
 {
     _vecTokens.clear();
 

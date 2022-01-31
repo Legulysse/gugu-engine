@@ -38,7 +38,7 @@ std::string ToString(const T& _tValue);
 template<typename T>
 std::string ToString(const T& _tValue, int precision);
 
-std::string ToString(const int& _iValue);
+std::string ToString(int _iValue);
 std::string ToString(const char* _strValue);
 
 template<typename T>
@@ -51,7 +51,7 @@ std::string StdStringReplace(const std::string& _strValue, const std::string& _s
 void StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, std::string& _strResult, bool _bIgnoreCase = false);
 void StdStringReplaceSelf(std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, bool _bIgnoreCase = false);
 
-void StdStringSplit(const std::string& _strValue, std::string _strDelimiter, std::vector<std::string>& _vecTokens);
+void StdStringSplit(const std::string& _strValue, const std::string& _strDelimiter, std::vector<std::string>& _vecTokens);
 
 std::string StdStringToLower(const std::string& _strValue);
 void StdStringToLower(const std::string& _strValue, std::string& _strResult);
@@ -79,7 +79,7 @@ std::string StringFormat(const std::string& _tValue, const TArgs&... _tArgs);
 struct FormatParameters
 {
     template<typename T>
-    void Add(const std::string& strName, T tParam);
+    void Add(const std::string& strName, const T& tParam);
     const std::map<std::string, std::string>& GetParameters() const;
 
 private:
@@ -112,19 +112,19 @@ template<typename TKey, typename TValue>
 void ClearStdMap(std::map<TKey, TValue*>& _oMap);
 
 template<typename T>
-typename std::vector<T>::iterator StdVectorFind(std::vector<T>& _vecContainer, T _tValue);
+typename std::vector<T>::const_iterator StdVectorFind(const std::vector<T>& _vecContainer, const T& _tValue);
 
 template<typename T>
-bool StdVectorContains(const std::vector<T>& _vecContainer, T _tValue);
+bool StdVectorContains(const std::vector<T>& _vecContainer, const T& _tValue);
 
 template<typename T>
-void StdVectorPushFront(std::vector<T>& _vecContainer, T _tValue);
+void StdVectorPushFront(std::vector<T>& _vecContainer, const T& _tValue);
 
 template<typename T>
-void StdVectorInsertAt(std::vector<T>& _vecContainer, size_t _iIndex, T _tValue);
+void StdVectorInsertAt(std::vector<T>& _vecContainer, size_t _iIndex, const T& _tValue);
 
 template<typename T>
-void StdVectorRemove(std::vector<T>& _vecContainer, T _tValue);
+void StdVectorRemove(std::vector<T>& _vecContainer, const T& _tValue);
 
 template<typename T>
 void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex);

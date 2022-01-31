@@ -22,11 +22,32 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
+    // Common
     int64 iTimestamp = GetTimestamp();
 
+    // String
     std::string strUpperCase = StdStringToUpper("hello world 42");
     std::string strLowerCase = StdStringToLower("HELLO WORLD 42");
 
+    std::string strConvertA = ToString(42);
+    std::string strConvertB = ToString(42.5f);
+    std::string strConvertC = ToString(42.5);
+    std::string strConvertD = ToString(42.5f, 2);
+    std::string strConvertE = ToString(42.5, 2);
+    std::string strConvertF = ToString(true);
+    std::string strConvertG = ToString(false);
+    std::string strConvertH = ToString("42");
+    std::string strConvertI = ToString(std::string("42"));
+
+    int strConvertBackA = FromString<int>(strConvertA);
+    float strConvertBackD = FromString<float>(strConvertD);
+    double strConvertBackE = FromString<double>(strConvertE);
+    bool strConvertBackF = FromString<bool>(strConvertF);
+    bool strConvertBackG = FromString<bool>(strConvertG);
+    bool strConvertBackFF = FromString<bool>("true");   // This wont work.
+    bool strConvertBackGG = FromString<bool>("false");  // This wont work.
+
+    // Format
     std::string strFormatA = StringFormat("My name is {0}. Yes, {0}.", "plop");
     std::string strFormatB = StringFormat("My age is {0}.", 42);
     std::string strFormatC = StringFormat("{3}, {2}, {1}, {0} !", "go", 1, 2, 3);
@@ -47,7 +68,28 @@ int main(int argc, char* argv[])
     paramsAA.Add("gold", 77);
     std::string strFormatAA = StringFormat("hello {name}, do you have {gold} gold ?", paramsAA);
 
+    // Containers
+    std::string strValueA = "AAA";
+    std::string strValueB = "BBB";
+    std::string strValueC = "CCC";
+    std::vector<std::string> vectorA { strValueC  };
+
+    StdVectorPushFront(vectorA, strValueA);
+    StdVectorInsertAt(vectorA, 1, strValueB);
+
+    bool vectorContainsA = StdVectorContains(vectorA, strValueC);
+    auto vectorFindA = StdVectorFind(vectorA, strValueC);
+
+    StdVectorRemove(vectorA, strValueC);
+    StdVectorRemoveAt(vectorA, 0);
+    StdVectorRemoveIf(vectorA, [&](const std::string& item) { return item == strValueB; });
+
+    bool vectorContainsB = StdVectorContains(vectorA, strValueC);
+    auto vectorFindB = StdVectorFind(vectorA, strValueC);
+
     //----------------------------------------------
+
+#if 0
 
     size_t nbLoops = 100000;
 
@@ -132,6 +174,8 @@ int main(int argc, char* argv[])
 
         WriteInConsoleEndline(StringFormat("{0} : {1} ms", strFormat, ms), true);
     }
+
+#endif
 
     //----------------------------------------------
 

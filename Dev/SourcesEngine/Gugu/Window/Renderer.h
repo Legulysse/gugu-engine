@@ -58,16 +58,30 @@ class Renderer
 {
 public:
 
-            Renderer    () {}
-    virtual ~Renderer   () {}
+    Renderer() {}
+    virtual ~Renderer() {}
     
-    virtual void RenderScene(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Scene* scene);
-    virtual void RenderWindow(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera);
+    virtual void RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera) = 0;
+    virtual void RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera) = 0;
 
 protected:
 
+    void DefaultRenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera);
+    void DefaultRenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera);
+
     // If Camera is not null, it will override the RenderTarget view and viewport
-    void Render(RenderPass& _kRenderPass, Camera* _pCamera, Element* _pRoot);
+    void RenderElementHierarchy(RenderPass& renderPass, Element* root, Camera* camera);
+};
+
+class DefaultRenderer : public Renderer
+{
+public:
+
+    DefaultRenderer() {}
+    virtual ~DefaultRenderer() {}
+
+    virtual void RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera) override;
+    virtual void RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera) override;
 };
 
 }   // namespace gugu

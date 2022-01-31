@@ -341,7 +341,7 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
         //Render Scenes
         for (size_t i = 0; i < m_sceneBindings.size(); ++i)
         {
-            m_sceneBindings[i].renderer->RenderScene(kFrameInfos, this, m_sceneBindings[i].camera, m_sceneBindings[i].scene);
+            m_sceneBindings[i].renderer->RenderScene(kFrameInfos, this, m_sceneBindings[i].scene, m_sceneBindings[i].camera);
         }
     }
 

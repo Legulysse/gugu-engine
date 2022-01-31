@@ -20,62 +20,75 @@
 
 namespace gugu {
 
-void Renderer::RenderScene(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera, Scene* scene)
+void Renderer::DefaultRenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera)
 {
-    if (scene)
-    {
-        RenderPass kRenderPass;
-        kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
-        kRenderPass.target = _pWindow->GetSFRenderWindow();
-        kRenderPass.frameInfos = &_pFrameInfos;
+    if (!window || !scene)
+        return;
 
-        Render(kRenderPass, _pCamera, scene->GetRootNode());
-    }
+    RenderPass renderPass;
+    renderPass.pass = GUGU_RENDERPASS_DEFAULT;
+    renderPass.target = window->GetSFRenderWindow();
+    renderPass.frameInfos = &frameInfos;
+
+    RenderElementHierarchy(renderPass, scene->GetRootNode(), camera);
 }
 
-void Renderer::RenderWindow(FrameInfos& _pFrameInfos, Window* _pWindow, Camera* _pCamera)
+void Renderer::DefaultRenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera)
 {
-    RenderPass kRenderPass;
-    kRenderPass.pass = GUGU_RENDERPASS_DEFAULT;
-    kRenderPass.target = _pWindow->GetSFRenderWindow();
-    kRenderPass.frameInfos = &_pFrameInfos;
+    if (!window)
+        return;
 
-    Render(kRenderPass, _pCamera, _pWindow->GetUINode());
-    Render(kRenderPass, _pCamera, _pWindow->GetMouseNode());
+    RenderPass renderPass;
+    renderPass.pass = GUGU_RENDERPASS_DEFAULT;
+    renderPass.target = window->GetSFRenderWindow();
+    renderPass.frameInfos = &frameInfos;
+
+    RenderElementHierarchy(renderPass, window->GetUINode(), camera);
+    RenderElementHierarchy(renderPass, window->GetMouseNode(), camera);
 }
 
-void Renderer::Render(RenderPass& _kRenderPass, Camera* _pCamera, Element* _pRoot)
+void Renderer::RenderElementHierarchy(RenderPass& renderPass, Element* root, Camera* camera)
 {
-    if (!_pRoot)
+    if (!root)
         return;
 
     // Save View
-    sf::View kView = _kRenderPass.target->getView();
+    sf::View kView = renderPass.target->getView();
     
     // Apply Camera View
-    if (_pCamera)
-        _kRenderPass.target->setView(_pCamera->GetSFView());
+    if (camera)
+        renderPass.target->setView(camera->GetSFView());
 
     // Pre-compute viewport's rect (real size, not a [0, 1] range) (will be used by Elements to check if they should be drawn or not)
-    _kRenderPass.rectViewport.left = _kRenderPass.target->getView().getCenter().x - _kRenderPass.target->getView().getSize().x / 2.f;
-    _kRenderPass.rectViewport.top = _kRenderPass.target->getView().getCenter().y - _kRenderPass.target->getView().getSize().y / 2.f;
-    _kRenderPass.rectViewport.width = _kRenderPass.target->getView().getSize().x;
-    _kRenderPass.rectViewport.height = _kRenderPass.target->getView().getSize().y;
+    renderPass.rectViewport.left = renderPass.target->getView().getCenter().x - renderPass.target->getView().getSize().x / 2.f;
+    renderPass.rectViewport.top = renderPass.target->getView().getCenter().y - renderPass.target->getView().getSize().y / 2.f;
+    renderPass.rectViewport.width = renderPass.target->getView().getSize().x;
+    renderPass.rectViewport.height = renderPass.target->getView().getSize().y;
 
     //if (true)
     //{
     //    // Debug off-screen rendering
-    //    _kRenderPass.rectViewport.left += 50.f;
-    //    _kRenderPass.rectViewport.top += 50.f;
-    //    _kRenderPass.rectViewport.width -= 100.f;
-    //    _kRenderPass.rectViewport.height -= 100.f;
+    //    renderPass.rectViewport.left += 50.f;
+    //    renderPass.rectViewport.top += 50.f;
+    //    renderPass.rectViewport.width -= 100.f;
+    //    renderPass.rectViewport.height -= 100.f;
     //}
 
     // Render
-    _pRoot->Render(_kRenderPass, sf::Transform());
+    root->Render(renderPass, sf::Transform());
 
     // Restore View
-    _kRenderPass.target->setView(kView);
+    renderPass.target->setView(kView);
+}
+
+void DefaultRenderer::RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera)
+{
+    DefaultRenderScene(frameInfos, window, scene, camera);
+}
+
+void DefaultRenderer::RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera)
+{
+    DefaultRenderWindow(frameInfos, window, camera);
 }
 
 }   // namespace gugu

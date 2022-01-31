@@ -97,7 +97,7 @@ void Engine::Init(const EngineConfig& config)
     m_managerScenes->Init(computedConfig);
 
     //-- Init Default Renderer --//
-    m_renderer = new Renderer;
+    m_renderer = new DefaultRenderer;
 
     //-- Init Window --//
     if (computedConfig.gameWindow == EGameWindow::Sfml)

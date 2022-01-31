@@ -12,6 +12,7 @@ namespace sf
 {
     class RenderTexture;
     class Shader;
+    class Sprite;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -31,13 +32,15 @@ public:
 
     RendererDemo();
     virtual ~RendererDemo();
-    
-    virtual void RenderWindow(gugu::FrameInfos& _pFrameInfos, gugu::Window* _pWindow, gugu::Camera* _pCamera) override;
+
+    virtual void RenderScene(gugu::FrameInfos& frameInfos, gugu::Window* window, gugu::Scene* scene, gugu::Camera* camera) override;
+    virtual void RenderWindow(gugu::FrameInfos& frameInfos, gugu::Window* window, gugu::Camera* camera) override;
 
 private:
     
     sf::RenderTexture* m_renderTarget_Main;
     sf::RenderTexture* m_renderTarget_Refraction;
+    sf::Sprite* m_fullscreenQuad;
     sf::Shader* m_shader_Final;
 };
 

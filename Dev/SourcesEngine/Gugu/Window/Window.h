@@ -109,8 +109,6 @@ public:
 
 private:
 
-    bool ProcessEvent(const sf::Event& event);
-
     void OnConsoleCommandValidated();
 
 protected:

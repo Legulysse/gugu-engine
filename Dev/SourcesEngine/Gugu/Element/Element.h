@@ -116,7 +116,7 @@ public:
     void SetSizeX(float _fNewSizeX);
     void SetSizeY(float _fNewSizeY);
     void SetSize(float _fNewSizeX, float _fNewSizeY);
-    void SetSize(Vector2f _kNewSize);
+    void SetSize(const Vector2f& _kNewSize);
 
     const Vector2f& GetSize() const;       // Get Element Size
     Vector2f GetSizeScaled() const;        // Get Element Size, with its scale applied (TODO: Useless ?)
@@ -184,15 +184,15 @@ public:
     //----------------------------------------------
     // UI
 
-    void SetUnifiedOrigin(UDim2 _oNewDimOrigin);
-    void SetUnifiedPosition(UDim2 _oNewDimPos);
-    void SetUnifiedSize(UDim2 _oNewDimSize);
+    void SetUnifiedOrigin(const UDim2& _oNewDimOrigin);
+    void SetUnifiedPosition(const UDim2& _oNewDimPos);
+    void SetUnifiedSize(const UDim2& _oNewDimSize);
 
     UDim2 GetUnifiedOrigin() const;
     UDim2 GetUnifiedPosition() const;
     UDim2 GetUnifiedSize() const;
 
-    void OnParentResized(Vector2f _kOldSize, Vector2f _kNewSize);
+    void OnParentResized();
     void ComputeUnifiedOrigin();
     void ComputeUnifiedDimensions();
 
@@ -249,7 +249,7 @@ protected:
 
     virtual void OnTransformChanged() {}
     virtual void OnVisibleChanged() {}
-    virtual void OnSizeChanged(Vector2f _kOldSize) {}   // TODO: remove the oldSize param ?
+    virtual void OnSizeChanged() {}
 
     //----------------------------------------------
     // Z-Index

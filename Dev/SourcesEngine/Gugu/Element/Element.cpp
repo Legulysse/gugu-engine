@@ -171,7 +171,7 @@ void Element::Update(const DeltaTime& dt)
     }
 }
 
-void Element::SetUnifiedOrigin(UDim2 _oNewDimOrigin)
+void Element::SetUnifiedOrigin(const UDim2& _oNewDimOrigin)
 {
     m_useDimOrigin = true;
     m_dimOrigin = _oNewDimOrigin;
@@ -179,7 +179,7 @@ void Element::SetUnifiedOrigin(UDim2 _oNewDimOrigin)
     ComputeUnifiedOrigin();
 }
 
-void Element::SetUnifiedPosition(UDim2 _oNewDimPos)
+void Element::SetUnifiedPosition(const UDim2& _oNewDimPos)
 {
     m_useDimPosition = true;
     m_dimPosition = _oNewDimPos;
@@ -187,7 +187,7 @@ void Element::SetUnifiedPosition(UDim2 _oNewDimPos)
     ComputeUnifiedDimensions();
 }
 
-void Element::SetUnifiedSize(UDim2 _oNewDimSize)
+void Element::SetUnifiedSize(const UDim2& _oNewDimSize)
 {
     m_useDimSize = true;
     m_dimSize = _oNewDimSize;
@@ -374,21 +374,21 @@ void Element::SetSize(float _fNewSizeX, float _fNewSizeY)
     SetSize(Vector2f(_fNewSizeX, _fNewSizeY));
 }
 
-void Element::SetSize(Vector2f _kNewSize)
+void Element::SetSize(const Vector2f& _kNewSize)
 {
-    // Ensure we dont get a negative size.
-    _kNewSize.x = Max(0.f, _kNewSize.x);
-    _kNewSize.y = Max(0.f, _kNewSize.y);
-
-    Vector2f kOldSize = m_size;
     m_size = _kNewSize;
-    OnSizeChanged(kOldSize);
+
+    // Ensure we dont get a negative size.
+    m_size.x = Max(0.f, m_size.x);
+    m_size.y = Max(0.f, m_size.y);
+
+    OnSizeChanged();
 
     ComputeUnifiedOrigin();
     
     for (size_t i = 0; i < m_children.size(); ++i)
     {
-        m_children[i]->OnParentResized(kOldSize, m_size);
+        m_children[i]->OnParentResized();
     }
 }
 
@@ -477,13 +477,13 @@ void Element::ComputeUnifiedDimensions()
     }
 }
 
-void Element::OnParentResized(Vector2f _kOldSize, Vector2f _kNewSize)
+void Element::OnParentResized()
 {
     ComputeUnifiedDimensions();
 
     for (size_t i = 0; i < m_children.size(); ++i)
     {
-        m_children[i]->OnParentResized(_kOldSize, _kNewSize);
+        m_children[i]->OnParentResized();
     }
 }
 

@@ -365,7 +365,7 @@ void ElementList::GetPropagationList(std::vector<Element*>& _vecPropagationList)
     }
 }
 
-void ElementList::OnSizeChanged(Vector2f _kOldSize)
+void ElementList::OnSizeChanged()
 {
     RecomputeScrollBar();
 

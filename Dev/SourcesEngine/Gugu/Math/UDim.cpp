@@ -53,7 +53,7 @@ UDim2::UDim2(const UDim2& _kRight)
     y = _kRight.y;
 }
 
-UDim2::UDim2(UDim _X, UDim _Y)
+UDim2::UDim2(const UDim& _X, const UDim& _Y)
 {
     x = _X;
     y = _Y;
@@ -88,7 +88,7 @@ Vector2f UDim2::GetComputedDimension(float _fReferenceX, float _fReferenceY) con
     return GetComputedDimension(Vector2f(_fReferenceX, _fReferenceY));
 }
 
-Vector2f UDim2::GetComputedDimension(Vector2f _kReferenceSize) const
+Vector2f UDim2::GetComputedDimension(const Vector2f& _kReferenceSize) const
 {
     return Vector2f(x.relative * _kReferenceSize.x + x.absolute, y.relative * _kReferenceSize.y + y.absolute);
 }

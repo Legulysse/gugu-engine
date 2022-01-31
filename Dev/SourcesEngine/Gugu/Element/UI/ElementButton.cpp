@@ -201,7 +201,7 @@ void ElementButton::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
     }
 }
 
-void ElementButton::OnSizeChanged(Vector2f _kOldSize)
+void ElementButton::OnSizeChanged()
 {
     if (m_spriteIdle)
     {

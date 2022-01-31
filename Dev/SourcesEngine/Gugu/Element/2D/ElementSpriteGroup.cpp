@@ -138,11 +138,11 @@ void ElementSpriteGroup::SetColor(const sf::Color& color)
     m_needRecompute = true;
 }
 
-void ElementSpriteGroup::OnSizeChanged(Vector2f _kOldSize)
+void ElementSpriteGroup::OnSizeChanged()
 {
     for (size_t i = 0; i < m_items.size(); ++i)
     {
-        m_items[i]->OnParentResized(_kOldSize, GetSize());
+        m_items[i]->OnParentResized();
     }
 }
 

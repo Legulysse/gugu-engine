@@ -494,7 +494,7 @@ void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTr
     }
 }
 
-void ElementText::OnSizeChanged(Vector2f _kOldSize)
+void ElementText::OnSizeChanged()
 {
     if (!m_skipRecomputeOnResize)
         Recompute();

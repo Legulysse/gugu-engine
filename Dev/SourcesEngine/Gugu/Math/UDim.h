@@ -40,7 +40,7 @@ public:
 
     UDim2();
     UDim2(const UDim2& _kRight);
-    UDim2(UDim _X, UDim _Y);
+    UDim2(const UDim& _X, const UDim& _Y);
     UDim2(float _fRelX, float _fRelY);
     UDim2(float _fRelX, float _fAbsX, float _fRelY, float _fAbsY);
 
@@ -48,7 +48,7 @@ public:
     const UDim2 operator+(const Vector2f& _kAbs) const;
 
     Vector2f GetComputedDimension(float _fReferenceX, float _fReferenceY) const;
-    Vector2f GetComputedDimension(Vector2f _kReferenceSize) const;
+    Vector2f GetComputedDimension(const Vector2f& _kReferenceSize) const;
 
     static const UDim2 POSITION_TOP_LEFT;
     static const UDim2 POSITION_TOP_CENTER;

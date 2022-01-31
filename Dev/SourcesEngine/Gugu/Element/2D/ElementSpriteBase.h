@@ -49,7 +49,7 @@ protected:
 
     virtual void RaiseDirtyVertices();
 
-    virtual void OnSizeChanged(Vector2f _kOldSize) override;
+    virtual void OnSizeChanged() override;
 
 protected:
 

@@ -46,7 +46,7 @@ void ElementSFDrawable::SetCallbackOnSizeChanged(DelegateElementSizeChanged call
     m_callbackOnSizeChanged = callbackOnSizeChanged;
 }
 
-void ElementSFDrawable::OnSizeChanged(Vector2f _kOldSize)
+void ElementSFDrawable::OnSizeChanged()
 {
     if (m_callbackOnSizeChanged)
     {

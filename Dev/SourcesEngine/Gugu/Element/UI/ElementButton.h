@@ -67,7 +67,7 @@ protected:
     void SetTextureImpl(Texture* textureIdle, Texture* textureFocused, Texture* textureDisabled);
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
-    virtual void OnSizeChanged(Vector2f _kOldSize) override;
+    virtual void OnSizeChanged() override;
     
 protected:
 

@@ -1,19 +1,18 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Common.h"
-
 #include "Gugu/Element/2D/ElementSprite.h"
-
-#include "Gugu/Debug/Logger.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/Sprite.hpp>
 
-using namespace gugu;
-
 ////////////////////////////////////////////////////////////////
-// File Implementation
+// File Declarations
+
+namespace test {
+
+//----------------------------------------------
 
 class TestSFTransformable
 {
@@ -24,10 +23,10 @@ public:
 
     ~TestSFTransformable() {}
 
-    Vector2f m_origin;
-    Vector2f m_position;
+    gugu::Vector2f m_origin;
+    gugu::Vector2f m_position;
     float m_rotation;
-    Vector2f m_scale;
+    gugu::Vector2f m_scale;
     mutable sf::Transform m_transform;
     mutable sf::Transform m_inverseTransform;
     mutable bool m_inverseTransformNeedUpdate;
@@ -43,20 +42,20 @@ public:
 
     virtual ~TestElement() {}
 
-    Element*            m_pParent;
-    std::vector<Element*> m_listChildren;
+    gugu::Element* m_pParent;
+    std::vector<gugu::Element*> m_listChildren;
 
     TestSFTransformable m_kTransform;
-    Vector2f        m_kSize;
+    gugu::Vector2f        m_kSize;
 
     int                 m_iRenderPass;
-    int32               m_iZIndex;
+    gugu::int32               m_iZIndex;
 
-    ElementInteractions*    m_pInteractions;
+    gugu::ElementInteractions* m_pInteractions;
 
-    UDim2       m_oDimOrigin;
-    UDim2       m_oDimPos;
-    UDim2       m_oDimSize;
+    gugu::UDim2       m_oDimOrigin;
+    gugu::UDim2       m_oDimPos;
+    gugu::UDim2       m_oDimSize;
 
     bool        m_bIsVisible;
     bool        m_bFlipV;
@@ -74,7 +73,7 @@ public:
 
     virtual ~TestElementSprite() {}
 
-    Texture* m_pTexture;
+    gugu::Texture* m_pTexture;
     sf::IntRect m_kSubRect;
 
     sf::VertexArray m_kVertices;
@@ -121,41 +120,15 @@ class TestMarginBool8
     bool b1; bool b2; bool b3; bool b4; bool b5; bool b6; bool b7; bool b8;
 };
 
-int main(int argc, char* argv[])
+//----------------------------------------------
+
+void RunTestObjectSizes()
 {
-#if defined(GUGU_ENV_VISUAL )
-
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-#endif
+    using namespace gugu;
 
     //----------------------------------------------
-    // Here is some tests for the standard tree functions on the Element class.
 
-    // Create a new Element A.
-    Element* elementA = new Element;
-
-    // Create a new Element B, add it as a child to A.
-    Element* elementB = new Element;
-    elementA->AddChild(elementB);
-
-    // Create a new Element C directly as a child to A.
-    Element* elementC = elementA->AddChild<Element>();
-
-    // Remove then Add B to A, it should now be placed after C in the list of A's children.
-    elementA->RemoveChild(elementB);
-    elementA->AddChild(elementB);
-
-    // Add C as a child to B, it should be properly removed from A's children.
-    elementB->AddChild(elementC);
-
-    // Delete A, it should delete all its hierarchy and invalidate B and C pointers.
-    SafeDelete(elementA);
-    elementB = nullptr;
-    elementC = nullptr;
-
-    //----------------------------------------------
-    // Here is some tests on various Element class sizes, and attempts to reduce those that could be applied in the future.
+#if 0
 
     Logger log;
     log.SetConsoleOutput(true, true);
@@ -197,7 +170,7 @@ int main(int argc, char* argv[])
     log.Print(ELog::Info, StringFormat(" TestElementSprite : {0}", sizeof(TestElementSprite)));
     log.Print(ELog::Info, StringFormat("---------------------------------------"));
 
-    //----------------------------------------------
-
-    return 0;
+#endif
 }
+
+}   //namespace test

@@ -66,6 +66,10 @@ void RunTestCallback()
 {
     using namespace gugu;
 
+    //----------------------------------------------
+
+#if 0
+
     auto functor1 = []() {
         WriteInConsoleEndline(ToString(22), true);
     };
@@ -106,6 +110,8 @@ void RunTestCallback()
     WriteInConsoleEndline(object->m_actionType3() ? "true" : "false", true);
 
     SafeDelete(object);
+
+#endif
 }
 
 }   //namespace test

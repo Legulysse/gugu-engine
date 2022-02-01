@@ -64,8 +64,6 @@ public:
     void StartEdition   ();
     void StopEdition    ();
 
-    virtual void Update(const DeltaTime& dt) override;
-
     virtual bool OnMouseSelected() override;
     virtual bool OnMouseDeselected() override;
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;

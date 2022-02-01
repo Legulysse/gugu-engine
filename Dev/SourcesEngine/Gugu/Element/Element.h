@@ -156,12 +156,6 @@ public:
     bool IsVisible(bool checkParents = false) const;
 
     //----------------------------------------------
-    // Step and Update
-
-    virtual void Step(const DeltaTime& dt); //TODO: Remove ? let Actors handle step related stuff ?
-    virtual void Update(const DeltaTime& dt); //TODO: Call this from Render instead of additional loop ?
-
-    //----------------------------------------------
     // Render
 
     void Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformParent);

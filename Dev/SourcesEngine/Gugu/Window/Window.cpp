@@ -196,16 +196,6 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     ComputeSize(m_sfWindow->getSize().x, m_sfWindow->getSize().y);
 }
 
-void Window::Step(const DeltaTime& dt)
-{
-    m_rootNode->Step(dt);
-}
-
-void Window::Update(const DeltaTime& dt)
-{
-    m_rootNode->Update(dt);
-}
-
 void Window::SetRenderer(Renderer* _pRenderer)
 {
     m_renderer = _pRenderer;

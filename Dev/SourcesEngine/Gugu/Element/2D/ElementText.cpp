@@ -337,20 +337,6 @@ void ElementText::StopEditionImpl()
     Recompute();
 }
 
-void ElementText::Update(const DeltaTime& dt)
-{
-    if (m_isEditing)
-    {
-        m_timeSinceTick += dt.s();
-
-        if(m_timeSinceTick >= 0.75f)
-        {
-            m_timeSinceTick = 0.f;
-            m_isTickDisplayed = !m_isTickDisplayed;
-        }
-    }
-}
-
 bool ElementText::OnMouseSelected()
 {
     StartEditionImpl();
@@ -455,6 +441,18 @@ void ElementText::SetOnValidate(Callback callbackOnValidate)
 
 void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
+    //TODO: register the element to an Update call.
+    //if (m_isEditing)
+    //{
+    //    m_timeSinceTick += dt.s();
+
+    //    if (m_timeSinceTick >= 0.75f)
+    //    {
+    //        m_timeSinceTick = 0.f;
+    //        m_isTickDisplayed = !m_isTickDisplayed;
+    //    }
+    //}
+
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2f(), m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {

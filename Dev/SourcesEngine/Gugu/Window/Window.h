@@ -50,9 +50,6 @@ public:
     sf::RenderWindow*   Create  (const EngineConfig& config, bool hostImGui);
     virtual void        Init    (sf::RenderWindow* _pSFWindow, const EngineConfig& config);
 
-    void        Step            (const DeltaTime& dt);
-    void        Update          (const DeltaTime& dt);
-
     void        SetRenderer    (Renderer* _pRenderer);     //Assign a Renderer (no ownership transmission)
     Renderer*   GetRenderer    () const;
 

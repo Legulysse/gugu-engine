@@ -274,20 +274,15 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
         //TODO: option to ignore constantstep
         if (m_dtSinceLastStep >= dtConstantStep && m_managerNetwork->IsReadyForTurn())
         {
+            m_dtSinceLastStep -= dtConstantStep;
+
             TickTimers(dtSpeedModulatedStep);
 
             if (m_application)
                 m_application->AppStep(dtSpeedModulatedStep);
 
-            if (m_managerScenes)
-                m_managerScenes->Step(dtSpeedModulatedStep);
-
+            m_managerScenes->Step(dtSpeedModulatedStep);
             m_managerAnimations->Step(dtSpeedModulatedStep);
-
-            for (size_t i = 0; i < m_windows.size(); ++i)
-                m_windows[i]->Step(dtSpeedModulatedStep);
-
-            m_dtSinceLastStep -= dtConstantStep;
 
             m_managerNetwork->SetTurnPlayed();
 
@@ -322,15 +317,9 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
         if (m_application)
             m_application->AppUpdate(dt);
 
-        if (m_managerScenes)
-            m_managerScenes->Update(dt);
-
+        m_managerScenes->Update(dt);
         m_managerAnimations->Update(dt, m_stats);
         m_managerVisualEffects->Update(dt, m_stats);
-
-        for (size_t i = 0; i < m_windows.size(); ++i)
-            m_windows[i]->Update(dt);
-
         m_managerAudio->Update(dt);
 
         // Update Stats

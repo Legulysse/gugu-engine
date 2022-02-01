@@ -55,8 +55,6 @@ void Scene::Step(const DeltaTime& dt)
         if (m_actors[i])
             m_actors[i]->Step(dt);
     }
-    
-    m_rootNode->Step(dt);
 }
 
 void Scene::Update(const DeltaTime& dt)
@@ -72,8 +70,6 @@ void Scene::Update(const DeltaTime& dt)
         if (m_actors[i])
             m_actors[i]->Update(dt);
     }
-    
-    m_rootNode->Update(dt);
 }
 
 Element* Scene::GetRootNode() const

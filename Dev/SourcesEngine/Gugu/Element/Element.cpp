@@ -155,22 +155,6 @@ bool Element::IsVisible(bool checkParents) const
     return m_isVisible && (!checkParents || !m_parent || m_parent->IsVisible(true));
 }
 
-void Element::Step(const DeltaTime& dt)
-{
-    for (size_t i = 0; i < m_children.size(); ++i)
-    {
-        m_children[i]->Step(dt);
-    }
-}
-
-void Element::Update(const DeltaTime& dt)
-{
-    for (size_t i = 0; i < m_children.size(); ++i)
-    {
-        m_children[i]->Update(dt);
-    }
-}
-
 void Element::SetUnifiedOrigin(const UDim2& _oNewDimOrigin)
 {
     m_useDimOrigin = true;

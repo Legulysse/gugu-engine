@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Editor/Panel/DocumentPanel.h"
+#include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Math/Vector2.h"

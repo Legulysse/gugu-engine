@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Editor/EditorConfig.h"
+#include "Gugu/Editor/Core/EditorConfig.h"
 
 #include "Gugu/Misc/Pattern/Singleton.h"
 #include "Gugu/Core/DeltaTime.h"

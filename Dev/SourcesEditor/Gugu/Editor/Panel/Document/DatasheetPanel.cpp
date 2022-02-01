@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Editor/Panel/DatasheetPanel.h"
+#include "Gugu/Editor/Panel/Document/DatasheetPanel.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes

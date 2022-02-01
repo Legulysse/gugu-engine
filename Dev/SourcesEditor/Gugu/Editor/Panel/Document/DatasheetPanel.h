@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Editor/Panel/DocumentPanel.h"
+#include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 

@@ -8,8 +8,8 @@
 // Includes
 
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
-#include "Gugu/Editor/Panel/DatasheetPanel.h"
-#include "Gugu/Editor/Panel/ImageSetPanel.h"
+#include "Gugu/Editor/Panel/Document/DatasheetPanel.h"
+#include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 

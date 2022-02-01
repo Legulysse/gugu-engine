@@ -17,6 +17,7 @@ namespace sf
 namespace gugu
 {
     class Element;
+    class WidgetRenderer;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -31,8 +32,8 @@ public:
     RenderViewport(bool fillAvailableArea);
     ~RenderViewport();
 
-    void BeginRender();
-    void FinalizeRender();
+    void ImGuiBegin();
+    void ImGuiEnd();
 
     void SetSize(Vector2u size);
     void SetZoom(float zoomMultiplier);
@@ -43,12 +44,13 @@ public:
 
 private:
 
+    WidgetRenderer* m_renderer;
+    sf::RenderTexture* m_renderTexture;
+    Element* m_root;
+
     Vector2u m_size;
     float m_zoomMultiplier;
     bool m_fillAvailableArea;
-
-    sf::RenderTexture* m_renderTexture;
-    Element* m_root;
 };
 
 }   //namespace gugu

@@ -43,7 +43,7 @@ ImageSetPanel::ImageSetPanel(const std::string& resourceID)
 
     m_title = m_resourceID;
 
-    // Setup render viewport.
+    // Setup RenderViewport and Sprite.
     m_renderViewport = new RenderViewport(true);
 
     ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
@@ -84,12 +84,10 @@ void ImageSetPanel::UpdatePanel(const DeltaTime& dt)
             m_renderViewport->SetZoom(zoomFactor);
         }
 
-        // Render viewport.
-        m_renderViewport->BeginRender();
-
+        // Viewport.
+        m_renderViewport->ImGuiBegin();
         UpdateGizmo();
-
-        m_renderViewport->FinalizeRender();
+        m_renderViewport->ImGuiEnd();
     }
     ImGui::End();
 }

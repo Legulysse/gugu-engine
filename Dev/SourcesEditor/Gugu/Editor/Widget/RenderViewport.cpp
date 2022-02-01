@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Widget/WidgetRenderer.h"
+
 #include "Gugu/Engine.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Element/Element.h"
@@ -23,15 +25,15 @@
 namespace gugu {
 
 RenderViewport::RenderViewport(bool fillAvailableArea)
-    : m_renderTexture(nullptr)
+    : m_renderer(nullptr)
+    , m_renderTexture(nullptr)
     , m_root(nullptr)
     , m_size(100, 100)
     , m_zoomMultiplier(1.f)
     , m_fillAvailableArea(fillAvailableArea)
 {
+    m_renderer = new WidgetRenderer;
     m_renderTexture = new sf::RenderTexture;
-    m_renderTexture->create(m_size.x, m_size.y);
-
     m_root = new Element;
 }
 
@@ -39,9 +41,10 @@ RenderViewport::~RenderViewport()
 {
     SafeDelete(m_root);
     SafeDelete(m_renderTexture);
+    SafeDelete(m_renderer);
 }
 
-void RenderViewport::BeginRender()
+void RenderViewport::ImGuiBegin()
 {
     // Compute canvas size and area size.
     Vector2u canvas_sz((uint32)((float)m_size.x * m_zoomMultiplier), (uint32)((float)m_size.y * m_zoomMultiplier));
@@ -83,33 +86,22 @@ void RenderViewport::BeginRender()
         m_renderTexture->create(canvas_sz.x, canvas_sz.y);
     }
 
-    m_root->SetSize(Vector2f(m_size));
-
     sf::View view;
     view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
     m_renderTexture->setView(view);
+
+    m_root->SetSize(Vector2f(m_size));
 }
 
-void RenderViewport::FinalizeRender()
+void RenderViewport::ImGuiEnd()
 {
     // Prepare render.
     m_renderTexture->clear(sf::Color(128, 128, 128, 255));
 
-    sf::FloatRect viewport;
-    viewport.left = m_renderTexture->getView().getCenter().x - m_renderTexture->getView().getSize().x / 2.f;
-    viewport.top = m_renderTexture->getView().getCenter().y - m_renderTexture->getView().getSize().y / 2.f;
-    viewport.width = m_renderTexture->getView().getSize().x;
-    viewport.height = m_renderTexture->getView().getSize().y;
+    // Render scene.
+    m_renderer->RenderWidget(m_renderTexture, m_root);
 
-    RenderPass renderPass;
-    renderPass.pass = GUGU_RENDERPASS_DEFAULT;
-    renderPass.target = m_renderTexture;
-    renderPass.rectViewport = viewport;
-
-    // Render elements.
-    m_root->Render(renderPass, sf::Transform());
-
-    // Render the scene.
+    // Display.
     m_renderTexture->display();
     ImGui::Image(*m_renderTexture);
 

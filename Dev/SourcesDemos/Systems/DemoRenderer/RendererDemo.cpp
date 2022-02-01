@@ -9,7 +9,6 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/System/SystemUtility.h"

@@ -565,7 +565,7 @@ Element* Window::GetUINode() const
     return m_rootUINode;
 }
 
-ElementSprite* Window::GetMouseNode() const
+Element* Window::GetMouseNode() const
 {
     return m_mouseNode;
 }

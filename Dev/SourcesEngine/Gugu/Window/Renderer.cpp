@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Element/Element.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Scene/Scene.h"

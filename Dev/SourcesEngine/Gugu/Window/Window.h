@@ -82,7 +82,7 @@ public:
     
     Element*            GetRootNode     () const;   //Should not be used directly, prefer using UINode
     Element*            GetUINode       () const;
-    ElementSprite*      GetMouseNode    () const;
+    Element*            GetMouseNode    () const;
 
     sf::RenderWindow*   GetSFRenderWindow() const;
 

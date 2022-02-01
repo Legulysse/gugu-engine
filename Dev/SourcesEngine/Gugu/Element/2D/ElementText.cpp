@@ -165,6 +165,7 @@ void ElementText::Recompute()
         while (iLineNext < strTextSource.size())
         {
             //TODO: Refacto (the cast from sf::string to std::string is probably breaking things)
+            //TODO: maybe check how imgui wraps text ?
 
             //Step 1 : remove whitespaces on beginning (not any more !)
             //iLineBegin = iLineNext; //m_strValue.find_first_not_of(" ", iLineNext);
@@ -258,7 +259,11 @@ void ElementText::Recompute()
             strTextImpl += strNewLine + "\n";
         }
 
-        strTextImpl = strTextImpl.substr(0, strTextImpl.size()-1);  //remove last EndLine
+        // Remove last endline (we always add some during the line cut) unless it already exists in the source text.
+        if (!strTextImpl.empty() && !strTextSource.empty() && strTextSource[strTextSource.size() - 1] != '\n')
+        {
+            strTextImpl = strTextImpl.substr(0, strTextImpl.size() - 1);
+        }
 
         m_sfText->setString(strTextImpl);
         textSize = strTextImpl.size();
@@ -271,6 +276,7 @@ void ElementText::Recompute()
     //if (m_pSFText->getFont())
     //    fLineHeight = m_pSFText->getFont()->getLineSpacing(m_pSFText->getCharacterSize());
 
+    //TODO: if the string is empty, we cant select it for edition since the size is (0,0).
     if (m_resizeRule == ETextResizeRule::FitScale && m_size.x > 0 && m_size.y > 0 && m_sfText->getLocalBounds().width > 0 && m_sfText->getLocalBounds().height > 0)
     {
         m_sfText->setScale(m_size.x / (m_sfText->getLocalBounds().left + m_sfText->getLocalBounds().width), m_size.y / (m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height));
@@ -351,28 +357,48 @@ bool ElementText::OnMouseDeselected()
 
 bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
 {
-    //TODO: rework this method with the sf::Event::TextEntered instead.
-    if(!m_isEditing || _oSFEvent.type != sf::Event::KeyPressed)
+    if (!m_isEditing)
         return true;
 
-    if (_oSFEvent.key.code == sf::Keyboard::Return && !m_isMultiline && m_callbackOnValidate)
+    if (_oSFEvent.type == sf::Event::KeyPressed)
     {
-        m_callbackOnValidate();
-        return false;
-    }
-
-    if(_oSFEvent.key.code == sf::Keyboard::BackSpace)
-    {
-        if(!m_textValue.isEmpty())
+        if (_oSFEvent.key.code == sf::Keyboard::Enter)
         {
-            m_textValue.erase(m_textValue.getSize()-1, 1);
-            SetText(m_textValue /*, false*/);
+            if (!m_isMultiline)
+            {
+                StopEditionImpl();
 
-            return false;
+                if (m_callbackOnValidate)
+                    m_callbackOnValidate();
+
+                return false;
+            }
+            else
+            {
+                m_textValue += '\n';
+                SetText(m_textValue /*, false*/);
+                return false;
+            }
+        }
+        else if (_oSFEvent.key.code == sf::Keyboard::Backspace)
+        {
+            if (!m_textValue.isEmpty())
+            {
+                m_textValue.erase(m_textValue.getSize() - 1, 1);
+                SetText(m_textValue /*, false*/);
+                return false;
+            }
         }
     }
-    else
+    else if (_oSFEvent.type == sf::Event::TextEntered)
     {
+        if (std::isprint(_oSFEvent.text.unicode))
+        {
+            m_textValue += _oSFEvent.text.unicode;
+            SetText(m_textValue /*, false*/);
+            return false;
+        }
+#if 0
         char cNewChar = '\0';
 
         if (_oSFEvent.key.code >= sf::Keyboard::A && _oSFEvent.key.code <= sf::Keyboard::Z)
@@ -429,6 +455,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
 
             return false;
         }
+#endif
     }
 
     return true;

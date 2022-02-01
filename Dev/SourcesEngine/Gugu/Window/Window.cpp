@@ -331,7 +331,7 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
         //Render Scenes
         for (size_t i = 0; i < m_sceneBindings.size(); ++i)
         {
-            m_sceneBindings[i].renderer->RenderScene(kFrameInfos, this, m_sceneBindings[i].scene, m_sceneBindings[i].camera);
+            m_sceneBindings[i].renderer->RenderScene(&kFrameInfos, this, m_sceneBindings[i].scene, m_sceneBindings[i].camera);
         }
     }
 
@@ -372,7 +372,7 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
         GUGU_SCOPE_TRACE_MAIN("UI");
 
         if (m_renderer)
-            m_renderer->RenderWindow(kFrameInfos, this, m_mainCamera);
+            m_renderer->RenderWindow(&kFrameInfos, this, m_mainCamera);
     }
 
     if (m_hostImGui)
@@ -396,16 +396,10 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
         GUGU_SCOPE_TRACE_MAIN("Console");
 
         //Console
-        sf::FloatRect kViewport;
-        kViewport.left = m_sfWindow->getView().getCenter().x - m_sfWindow->getView().getSize().x / 2.f;
-        kViewport.top = m_sfWindow->getView().getCenter().y - m_sfWindow->getView().getSize().y / 2.f;
-        kViewport.width = m_sfWindow->getView().getSize().x;
-        kViewport.height = m_sfWindow->getView().getSize().y;
-
         RenderPass kRenderPassConsole;
         kRenderPassConsole.pass = GUGU_RENDERPASS_DEFAULT;
         kRenderPassConsole.target = m_sfWindow;
-        kRenderPassConsole.rectViewport = kViewport;
+        kRenderPassConsole.rectViewport = Renderer::ComputeViewport(m_sfWindow->getView());
 
         m_consoleNode->Render(kRenderPassConsole, sf::Transform());
     }

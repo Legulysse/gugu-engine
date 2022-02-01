@@ -33,8 +33,8 @@ public:
     RendererDemo();
     virtual ~RendererDemo();
 
-    virtual void RenderScene(gugu::FrameInfos& frameInfos, gugu::Window* window, gugu::Scene* scene, gugu::Camera* camera) override;
-    virtual void RenderWindow(gugu::FrameInfos& frameInfos, gugu::Window* window, gugu::Camera* camera) override;
+    virtual void RenderScene(gugu::FrameInfos* frameInfos, gugu::Window* window, gugu::Scene* scene, gugu::Camera* camera) override;
+    virtual void RenderWindow(gugu::FrameInfos* frameInfos, gugu::Window* window, gugu::Camera* camera) override;
 
 private:
     

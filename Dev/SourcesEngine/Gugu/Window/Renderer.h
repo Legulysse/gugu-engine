@@ -19,6 +19,7 @@ namespace gugu
 
 namespace sf
 {
+    class View;
     class RenderTarget;
 }
 
@@ -61,13 +62,15 @@ public:
     Renderer() {}
     virtual ~Renderer() {}
     
-    virtual void RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera) = 0;
-    virtual void RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera) = 0;
+    virtual void RenderScene(FrameInfos* frameInfos, Window* window, Scene* scene, Camera* camera);
+    virtual void RenderWindow(FrameInfos* frameInfos, Window* window, Camera* camera);
+
+    static sf::FloatRect ComputeViewport(const sf::View& view);
 
 protected:
 
-    void DefaultRenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera);
-    void DefaultRenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera);
+    void DefaultRenderScene(FrameInfos* frameInfos, Window* window, Scene* scene, Camera* camera);
+    void DefaultRenderWindow(FrameInfos* frameInfos, Window* window, Camera* camera);
 
     // If Camera is not null, it will override the RenderTarget view and viewport
     void RenderElementHierarchy(RenderPass& renderPass, Element* root, Camera* camera);
@@ -80,8 +83,8 @@ public:
     DefaultRenderer() {}
     virtual ~DefaultRenderer() {}
 
-    virtual void RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera) override;
-    virtual void RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera) override;
+    virtual void RenderScene(FrameInfos* frameInfos, Window* window, Scene* scene, Camera* camera) override;
+    virtual void RenderWindow(FrameInfos* frameInfos, Window* window, Camera* camera) override;
 };
 
 }   // namespace gugu

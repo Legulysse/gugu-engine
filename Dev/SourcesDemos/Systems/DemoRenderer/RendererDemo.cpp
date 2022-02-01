@@ -49,12 +49,12 @@ RendererDemo::~RendererDemo()
     SafeDelete(m_fullscreenQuad);
 }
 
-void RendererDemo::RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera)
+void RendererDemo::RenderScene(FrameInfos* frameInfos, Window* window, Scene* scene, Camera* camera)
 {
     DefaultRenderScene(frameInfos, window, scene, camera);
 }
 
-void RendererDemo::RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera)
+void RendererDemo::RenderWindow(FrameInfos* frameInfos, Window* window, Camera* camera)
 {
     sf::RenderTarget* target = window->GetSFRenderWindow();
 
@@ -70,7 +70,7 @@ void RendererDemo::RenderWindow(FrameInfos& frameInfos, Window* window, Camera* 
     RenderPass renderPassMain;
     renderPassMain.pass = DEMO_RENDERPASS_MAIN;
     renderPassMain.target = m_renderTarget_Main;
-    renderPassMain.frameInfos = &frameInfos;
+    renderPassMain.frameInfos = frameInfos;
 
     m_renderTarget_Main->clear(sf::Color(0, 0, 0, 0));
     RenderElementHierarchy(renderPassMain, window->GetUINode(), camera);
@@ -80,7 +80,7 @@ void RendererDemo::RenderWindow(FrameInfos& frameInfos, Window* window, Camera* 
     RenderPass renderPassRefractive;
     renderPassRefractive.pass = DEMO_RENDERPASS_REFRACTION;
     renderPassRefractive.target = m_renderTarget_Refraction;
-    renderPassRefractive.frameInfos = &frameInfos;
+    renderPassRefractive.frameInfos = frameInfos;
 
     m_renderTarget_Refraction->clear(sf::Color(0, 0, 0, 255));
     RenderElementHierarchy(renderPassRefractive, window->GetUINode(), camera);
@@ -98,7 +98,7 @@ void RendererDemo::RenderWindow(FrameInfos& frameInfos, Window* window, Camera* 
     RenderPass renderPassUI;
     renderPassUI.pass = DEMO_RENDERPASS_MAIN;
     renderPassUI.target = target;
-    renderPassUI.frameInfos = &frameInfos;
+    renderPassUI.frameInfos = frameInfos;
 
     RenderElementHierarchy(renderPassUI, window->GetMouseNode(), camera);
 }

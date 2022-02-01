@@ -26,9 +26,6 @@ public:
     WidgetRenderer() {}
     virtual ~WidgetRenderer() {}
 
-    virtual void RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera) override;
-    virtual void RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera) override;
-
     void RenderWidget(sf::RenderTexture* renderTexture, Element* root);
 };
 

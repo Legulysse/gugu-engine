@@ -16,16 +16,6 @@
 
 namespace gugu {
 
-void WidgetRenderer::RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera)
-{
-    DefaultRenderScene(frameInfos, window, scene, camera);
-}
-
-void WidgetRenderer::RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera)
-{
-    DefaultRenderWindow(frameInfos, window, camera);
-}
-
 void WidgetRenderer::RenderWidget(sf::RenderTexture* renderTexture, Element* root)
 {
     RenderPass renderPass;

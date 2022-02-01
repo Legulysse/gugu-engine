@@ -20,7 +20,17 @@
 
 namespace gugu {
 
-void Renderer::DefaultRenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera)
+void Renderer::RenderScene(FrameInfos* frameInfos, Window* window, Scene* scene, Camera* camera)
+{
+    DefaultRenderScene(frameInfos, window, scene, camera);
+}
+
+void Renderer::RenderWindow(FrameInfos* frameInfos, Window* window, Camera* camera)
+{
+    DefaultRenderWindow(frameInfos, window, camera);
+}
+
+void Renderer::DefaultRenderScene(FrameInfos* frameInfos, Window* window, Scene* scene, Camera* camera)
 {
     if (!window || !scene)
         return;
@@ -28,12 +38,12 @@ void Renderer::DefaultRenderScene(FrameInfos& frameInfos, Window* window, Scene*
     RenderPass renderPass;
     renderPass.pass = GUGU_RENDERPASS_DEFAULT;
     renderPass.target = window->GetSFRenderWindow();
-    renderPass.frameInfos = &frameInfos;
+    renderPass.frameInfos = frameInfos;
 
     RenderElementHierarchy(renderPass, scene->GetRootNode(), camera);
 }
 
-void Renderer::DefaultRenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera)
+void Renderer::DefaultRenderWindow(FrameInfos* frameInfos, Window* window, Camera* camera)
 {
     if (!window)
         return;
@@ -41,10 +51,23 @@ void Renderer::DefaultRenderWindow(FrameInfos& frameInfos, Window* window, Camer
     RenderPass renderPass;
     renderPass.pass = GUGU_RENDERPASS_DEFAULT;
     renderPass.target = window->GetSFRenderWindow();
-    renderPass.frameInfos = &frameInfos;
+    renderPass.frameInfos = frameInfos;
 
     RenderElementHierarchy(renderPass, window->GetUINode(), camera);
     RenderElementHierarchy(renderPass, window->GetMouseNode(), camera);
+}
+
+sf::FloatRect Renderer::ComputeViewport(const sf::View& view)
+{
+    sf::FloatRect viewport;
+
+    // Pre-compute viewport's rect (real size, not a [0, 1] range) (will be used by Elements to check if they should be drawn or not)
+    viewport.left = view.getCenter().x - view.getSize().x / 2.f;
+    viewport.top = view.getCenter().y - view.getSize().y / 2.f;
+    viewport.width = view.getSize().x;
+    viewport.height = view.getSize().y;
+
+    return viewport;
 }
 
 void Renderer::RenderElementHierarchy(RenderPass& renderPass, Element* root, Camera* camera)
@@ -52,41 +75,42 @@ void Renderer::RenderElementHierarchy(RenderPass& renderPass, Element* root, Cam
     if (!root)
         return;
 
-    // Save View
-    sf::View kView = renderPass.target->getView();
-    
-    // Apply Camera View
+    // Apply Camera View if needed.
+    sf::View backupView;
+
     if (camera)
+    {
+        backupView = renderPass.target->getView();
         renderPass.target->setView(camera->GetSFView());
+    }
 
-    // Pre-compute viewport's rect (real size, not a [0, 1] range) (will be used by Elements to check if they should be drawn or not)
-    renderPass.rectViewport.left = renderPass.target->getView().getCenter().x - renderPass.target->getView().getSize().x / 2.f;
-    renderPass.rectViewport.top = renderPass.target->getView().getCenter().y - renderPass.target->getView().getSize().y / 2.f;
-    renderPass.rectViewport.width = renderPass.target->getView().getSize().x;
-    renderPass.rectViewport.height = renderPass.target->getView().getSize().y;
+    // Compute Viewport.
+    renderPass.rectViewport = ComputeViewport(renderPass.target->getView());
 
-    //if (true)
-    //{
-    //    // Debug off-screen rendering
-    //    renderPass.rectViewport.left += 50.f;
-    //    renderPass.rectViewport.top += 50.f;
-    //    renderPass.rectViewport.width -= 100.f;
-    //    renderPass.rectViewport.height -= 100.f;
-    //}
+#if 0
+    // Debug off-screen rendering.
+    renderPass.rectViewport.left += 50.f;
+    renderPass.rectViewport.top += 50.f;
+    renderPass.rectViewport.width -= 100.f;
+    renderPass.rectViewport.height -= 100.f;
+#endif
 
-    // Render
+    // Render hierarchy.
     root->Render(renderPass, sf::Transform());
 
-    // Restore View
-    renderPass.target->setView(kView);
+    // Restore View if needed.
+    if (camera)
+    {
+        renderPass.target->setView(backupView);
+    }
 }
 
-void DefaultRenderer::RenderScene(FrameInfos& frameInfos, Window* window, Scene* scene, Camera* camera)
+void DefaultRenderer::RenderScene(FrameInfos* frameInfos, Window* window, Scene* scene, Camera* camera)
 {
     DefaultRenderScene(frameInfos, window, scene, camera);
 }
 
-void DefaultRenderer::RenderWindow(FrameInfos& frameInfos, Window* window, Camera* camera)
+void DefaultRenderer::RenderWindow(FrameInfos* frameInfos, Window* window, Camera* camera)
 {
     DefaultRenderWindow(frameInfos, window, camera);
 }

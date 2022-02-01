@@ -336,7 +336,7 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
     }
 
     {
-        GUGU_SCOPE_TRACE_MAIN("UI");
+        GUGU_SCOPE_TRACE_MAIN("Prepare UI");
 
         //Handle Mouse visibility
         bool isSystemMouseWantedVisible = m_systemMouseVisible;
@@ -362,8 +362,14 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
         m_sfWindow->setMouseCursorVisible(isSystemMouseWantedVisible);
         m_mouseNode->SetVisible(isMouseWantedVisible);
 
+        m_mouseNode->SetPosition(GetGameWindow()->GetMousePosition());
+
         //Render Window UI
         m_rootNode->SortOnZIndex();
+    }
+
+    {
+        GUGU_SCOPE_TRACE_MAIN("UI");
 
         if (m_renderer)
             m_renderer->RenderWindow(kFrameInfos, this, m_mainCamera);
@@ -458,11 +464,6 @@ bool Window::ProcessEvents()
         if (event.type == sf::Event::Closed)
         {
             return true;
-        }
-        else if (event.type == sf::Event::MouseMoved)
-        {
-            // TODO: the interaction code uses a method to get the mouse pixel coords not depending on this event, I should do the same for the cursor render.
-            m_mouseNode->SetPosition(GetMousePosition());
         }
         else if (event.type == sf::Event::MouseLeft)
         {
@@ -591,6 +592,7 @@ Vector2i Window::GetMousePixelCoords() const
 
 Vector2f Window::GetMousePosition() const
 {
+    //TODO: Should I cache this every frame ?
     return Vector2f(sf::Mouse::getPosition(*m_sfWindow));
 }
 

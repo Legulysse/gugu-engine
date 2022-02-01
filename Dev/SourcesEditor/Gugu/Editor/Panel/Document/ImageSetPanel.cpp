@@ -64,7 +64,7 @@ void ImageSetPanel::UpdatePanel(const DeltaTime& dt)
 {
     m_focused = false;
 
-    ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_HorizontalScrollbar;
     if (m_dirty)
     {
         flags |= ImGuiWindowFlags_UnsavedDocument;

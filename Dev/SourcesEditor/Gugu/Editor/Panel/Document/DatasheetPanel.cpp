@@ -38,7 +38,7 @@ void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
 {
     m_focused = false;
 
-    ImGuiWindowFlags flags = 0;
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings;
     if (m_dirty)
     {
         flags |= ImGuiWindowFlags_UnsavedDocument;

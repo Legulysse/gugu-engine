@@ -12,7 +12,8 @@ namespace gugu {
 
 struct EditorConfig
 {
-    std::string pathDatasheetBinding = "";
+    std::string projectAssetsPath = "";
+    std::string projectBindingPath = "";
 };
 
 }   // namespace gugu

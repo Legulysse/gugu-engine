@@ -33,11 +33,7 @@ int main(int argc, char* argv[])
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
     config.applicationIcon = "Icon.png";
-#if 0
-    config.pathAssets = "../../Version/DemoSystems/Assets";    // TODO: find a way to separate and handle the application assets path and the edited project assets.
-#else
-    config.pathAssets = "../../Version/DemoGame/Assets";
-#endif
+    config.pathAssets = "Assets";
     config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";
     config.windowWidth = 1440;
@@ -51,9 +47,11 @@ int main(int argc, char* argv[])
 
     EditorConfig editorConfig;
 #if 0
-    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/Systems/DemoDatasheet/Binding.xml";
+    editorConfig.projectAssetsPath = "../../Version/DemoSystems/Assets";
+    editorConfig.projectBindingPath = "../../Dev/SourcesDemos/Systems/DemoDatasheet/Binding.xml";
 #else
-    editorConfig.pathDatasheetBinding = "../../Dev/SourcesDemos/Game/DemoGame/Binding.xml";
+    editorConfig.projectAssetsPath = "../../Version/DemoGame/Assets";
+    editorConfig.projectBindingPath = "../../Dev/SourcesDemos/Game/DemoGame/Binding.xml";
 #endif
 
     GetEditor()->Init(editorConfig);

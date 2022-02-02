@@ -105,14 +105,17 @@ public:
     bool        RemoveResource  (Resource* _pResource);
     bool        DeleteResource  (Resource* _pResource);
 
+    //TODO: Editor hack, waiting for ResourceContext to split editor and project resources.
+    void        RemoveResourcesFromPath (const std::string& _strPath);
+
     void        GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const;
 
     // TODO: Obsolete editor getters ?
-    void        GetLoadedResourceInfos  (std::vector<const ResourceInfo*>& _vecInfos, EResourceType::Type _eType = EResourceType::Unknown) const;
-    void        GetLoadedImageSetInfos  (std::vector<const ResourceInfo*>& _vecInfos) const;
-    void        GetLoadedAnimSetInfos   (std::vector<const ResourceInfo*>& _vecInfos) const;
-    void        GetLoadedTextureInfos   (std::vector<const ResourceInfo*>& _vecInfos) const;
-    void        GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType = EResourceType::Unknown) const;
+    //void        GetLoadedResourceInfos  (std::vector<const ResourceInfo*>& _vecInfos, EResourceType::Type _eType = EResourceType::Unknown) const;
+    //void        GetLoadedImageSetInfos  (std::vector<const ResourceInfo*>& _vecInfos) const;
+    //void        GetLoadedAnimSetInfos   (std::vector<const ResourceInfo*>& _vecInfos) const;
+    //void        GetLoadedTextureInfos   (std::vector<const ResourceInfo*>& _vecInfos) const;
+    //void        GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType = EResourceType::Unknown) const;
 
     //TODO: Refactor with ResourceContext
     Texture*        GetCustomTexture(const std::string& _strName);

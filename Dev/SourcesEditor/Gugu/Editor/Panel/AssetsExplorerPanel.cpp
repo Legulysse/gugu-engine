@@ -24,6 +24,25 @@ AssetsExplorerPanel::AssetsExplorerPanel()
     : m_rootNode(nullptr)
 {
     m_title = "Assets Explorer";
+}
+
+AssetsExplorerPanel::~AssetsExplorerPanel()
+{
+    ClearContent();
+}
+
+void AssetsExplorerPanel::ClearContent()
+{
+    if (m_rootNode)
+    {
+        RecursiveDeleteTreeNodes(m_rootNode);
+        SafeDelete(m_rootNode);
+    }
+}
+
+void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
+{
+    ClearContent();
 
     // Refresh assets tree structure.
     std::vector<const gugu::ResourceInfo*> vecInfos;
@@ -33,7 +52,7 @@ AssetsExplorerPanel::AssetsExplorerPanel()
     m_rootNode->isFolder = true;
     m_rootNode->name = "ROOT";
 
-    std::string assetsPath = gugu::GetResources()->GetPathAssets();
+    std::string editorAssetsPath = gugu::GetResources()->GetPathAssets();
 
     std::vector<std::string> tokens;
     for (const gugu::ResourceInfo* resourceInfo : vecInfos)
@@ -41,14 +60,15 @@ AssetsExplorerPanel::AssetsExplorerPanel()
         TreeNode* currentDirectory = m_rootNode;
 
         std::string resourcePath = resourceInfo->fileInfo.GetPath();
-        if (resourcePath == assetsPath)
+
+        // Ignore Editor assets.
+        if (StdStringStartsWith(resourcePath, editorAssetsPath))
         {
-            resourcePath = "";
+            continue;
         }
-        else
-        {
-            resourcePath.erase(0, assetsPath.size());
-        }
+
+        // Hide the project path from the hierarchy.
+        resourcePath.erase(0, projectAssetsPath.size());
 
         StdStringSplit(resourcePath, "/", tokens);
         for (std::string directoryName : tokens)
@@ -84,82 +104,79 @@ AssetsExplorerPanel::AssetsExplorerPanel()
     RecursiveSortTreeNodes(m_rootNode);
 }
 
-AssetsExplorerPanel::~AssetsExplorerPanel()
-{
-    RecursiveDeleteTreeNodes(m_rootNode);
-    SafeDelete(m_rootNode);
-}
-
 void AssetsExplorerPanel::UpdatePanel(const gugu::DeltaTime& dt)
 {
     if (ImGui::Begin(m_title.c_str(), false))
     {
-        // Using those as a base value to create width/height that are factor of the size of our font
-        const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
-        const float TEXT_BASE_HEIGHT = ImGui::GetTextLineHeightWithSpacing();
-        static ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_RowBg | ImGuiTableFlags_NoBordersInBody;
-
-        static ImGuiTreeNodeFlags directoryFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
-        static ImGuiTreeNodeFlags fileFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
-        static bool test_drag_and_drop = true;
-        static bool testTable = false;
-
-        bool expandAll = false;
-        bool collapseAll = false;
-
-        static bool test_config = false;
-        ImGui::Checkbox("Test Config", &test_config);
-        if (test_config)
+        if (m_rootNode)
         {
-            ImGui::Spacing();
-            ImGui::PushID("directoryFlags");
-            ImGui::TextUnformatted("Directories :");
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnArrow", &directoryFlags, ImGuiTreeNodeFlags_OpenOnArrow);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnDoubleClick", &directoryFlags, ImGuiTreeNodeFlags_OpenOnDoubleClick);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed", &directoryFlags, ImGuiTreeNodeFlags_Framed);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &directoryFlags, ImGuiTreeNodeFlags_SpanAvailWidth);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &directoryFlags, ImGuiTreeNodeFlags_SpanFullWidth);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_DefaultOpen", &directoryFlags, ImGuiTreeNodeFlags_DefaultOpen);
-            ImGui::PopID();
+            // Using those as a base value to create width/height that are factor of the size of our font
+            const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
+            const float TEXT_BASE_HEIGHT = ImGui::GetTextLineHeightWithSpacing();
+            static ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_RowBg | ImGuiTableFlags_NoBordersInBody;
 
-            ImGui::Spacing();
-            ImGui::PushID("fileFlags");
-            ImGui::TextUnformatted("Files :");
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_NoTreePushOnOpen", &fileFlags, ImGuiTreeNodeFlags_NoTreePushOnOpen);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Bullet", &fileFlags, ImGuiTreeNodeFlags_Bullet);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed", &fileFlags, ImGuiTreeNodeFlags_Framed);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &fileFlags, ImGuiTreeNodeFlags_SpanAvailWidth);
-            ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &fileFlags, ImGuiTreeNodeFlags_SpanFullWidth);
-            ImGui::PopID();
+            static ImGuiTreeNodeFlags directoryFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
+            static ImGuiTreeNodeFlags fileFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
+            static bool test_drag_and_drop = true;
+            static bool testTable = false;
 
-            ImGui::Checkbox("Test tree node as drag source", &test_drag_and_drop);
-        }
+            bool expandAll = false;
+            bool collapseAll = false;
 
-        ImGui::Spacing();
-        ImGui::Checkbox("Show as Table", &testTable);
-        expandAll = ImGui::Button("Expand All");
-        collapseAll = ImGui::Button("Collapse All");
-        ImGui::Spacing();
-
-        if (!testTable)
-        {
-            ImGui::PushID("AssetsTable");
-            DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0, expandAll, collapseAll);
-            ImGui::PopID();
-        }
-        else
-        {
-            if (ImGui::BeginTable("AssetsTable", 3, tableFlags))
+            static bool test_config = false;
+            ImGui::Checkbox("Test Config", &test_config);
+            if (test_config)
             {
-                // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
-                ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoHide);
-                ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, TEXT_BASE_WIDTH * 12.0f);
-                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, TEXT_BASE_WIDTH * 18.0f);
-                ImGui::TableHeadersRow();
+                ImGui::Spacing();
+                ImGui::PushID("directoryFlags");
+                ImGui::TextUnformatted("Directories :");
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnArrow", &directoryFlags, ImGuiTreeNodeFlags_OpenOnArrow);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnDoubleClick", &directoryFlags, ImGuiTreeNodeFlags_OpenOnDoubleClick);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed", &directoryFlags, ImGuiTreeNodeFlags_Framed);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &directoryFlags, ImGuiTreeNodeFlags_SpanAvailWidth);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &directoryFlags, ImGuiTreeNodeFlags_SpanFullWidth);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_DefaultOpen", &directoryFlags, ImGuiTreeNodeFlags_DefaultOpen);
+                ImGui::PopID();
 
+                ImGui::Spacing();
+                ImGui::PushID("fileFlags");
+                ImGui::TextUnformatted("Files :");
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_NoTreePushOnOpen", &fileFlags, ImGuiTreeNodeFlags_NoTreePushOnOpen);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Bullet", &fileFlags, ImGuiTreeNodeFlags_Bullet);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_Framed", &fileFlags, ImGuiTreeNodeFlags_Framed);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &fileFlags, ImGuiTreeNodeFlags_SpanAvailWidth);
+                ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &fileFlags, ImGuiTreeNodeFlags_SpanFullWidth);
+                ImGui::PopID();
+
+                ImGui::Checkbox("Test tree node as drag source", &test_drag_and_drop);
+            }
+
+            ImGui::Spacing();
+            ImGui::Checkbox("Show as Table", &testTable);
+            expandAll = ImGui::Button("Expand All");
+            collapseAll = ImGui::Button("Collapse All");
+            ImGui::Spacing();
+
+            if (!testTable)
+            {
+                ImGui::PushID("AssetsTable");
                 DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0, expandAll, collapseAll);
+                ImGui::PopID();
+            }
+            else
+            {
+                if (ImGui::BeginTable("AssetsTable", 3, tableFlags))
+                {
+                    // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
+                    ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoHide);
+                    ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, TEXT_BASE_WIDTH * 12.0f);
+                    ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, TEXT_BASE_WIDTH * 18.0f);
+                    ImGui::TableHeadersRow();
 
-                ImGui::EndTable();
+                    DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0, expandAll, collapseAll);
+
+                    ImGui::EndTable();
+                }
             }
         }
     }

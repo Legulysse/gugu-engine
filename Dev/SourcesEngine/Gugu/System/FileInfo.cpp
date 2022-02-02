@@ -104,11 +104,6 @@ std::string FileInfo::GetExtension() const
     return "";
 }
 
-bool FileInfo::IsPathEnd(const std::string& _strPath) const
-{
-    return StdStringEndsWith(m_path, _strPath);
-}
-
 bool FileInfo::operator < (const FileInfo& _oRight) const
 {
     return m_name < _oRight.m_name;

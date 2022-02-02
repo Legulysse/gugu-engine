@@ -57,6 +57,15 @@ void ManagerResources::Init(const EngineConfig& config)
     ParseDirectory(m_pathAssets);
 }
 
+void ManagerResources::Release()
+{
+    m_datasheetObjectFactories.clear();
+
+    ClearStdMap(m_datasheetEnums);
+    ClearStdMap(m_customTextures);
+    ClearStdMap(m_resources);
+}
+
 void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
 {
     //Parse Assets
@@ -79,15 +88,6 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
     }
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Finished Parsing Resources (Found {0})", iCount));
-}
-
-void ManagerResources::Release()
-{
-    m_datasheetObjectFactories.clear();
-
-    ClearStdMap(m_datasheetEnums);
-    ClearStdMap(m_customTextures);
-    ClearStdMap(m_resources);
 }
 
 std::string ManagerResources::GetPathAssets() const
@@ -559,6 +559,24 @@ bool ManagerResources::DeleteResource(Resource* _pResource)
     return false;
 }
 
+void ManagerResources::RemoveResourcesFromPath(const std::string& _strPath)
+{
+    auto it = m_resources.begin();
+    while (it != m_resources.end())
+    {
+        auto iteResource = it;
+        ++it;
+
+        if (StdStringStartsWith(iteResource->second->fileInfo.GetPath(), _strPath))
+        {
+            ResourceInfo* pInfo = iteResource->second;
+            m_resources.erase(iteResource);
+
+            SafeDelete(pInfo);
+        }
+    }
+}
+
 Texture* ManagerResources::GetCustomTexture(const std::string& _strName)
 {
     auto iteElement = m_customTextures.find(_strName);
@@ -591,33 +609,33 @@ Font* ManagerResources::GetDebugFont()
     return GetFont(m_debugFont);
 }
 
-void ManagerResources::GetLoadedTextureInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-{
-    GetLoadedResourceInfos(_vecInfos, EResourceType::Texture);
-}
-
-void ManagerResources::GetLoadedImageSetInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-{
-    GetLoadedResourceInfos(_vecInfos, EResourceType::ImageSet);
-}
-
-void ManagerResources::GetLoadedAnimSetInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-{
-    GetLoadedResourceInfos(_vecInfos, EResourceType::AnimSet);
-}
-
-void ManagerResources::GetLoadedResourceInfos(std::vector<const ResourceInfo*>& _vecInfos, EResourceType::Type _eType) const
-{
-    auto iteCurrent = m_resources.begin();
-    while (iteCurrent != m_resources.end())
-    {
-        if (iteCurrent->second->resource && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
-            _vecInfos.push_back(iteCurrent->second);
-        ++iteCurrent;
-    }
-
-    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
-}
+//void ManagerResources::GetLoadedTextureInfos(std::vector<const ResourceInfo*>& _vecInfos) const
+//{
+//    GetLoadedResourceInfos(_vecInfos, EResourceType::Texture);
+//}
+//
+//void ManagerResources::GetLoadedImageSetInfos(std::vector<const ResourceInfo*>& _vecInfos) const
+//{
+//    GetLoadedResourceInfos(_vecInfos, EResourceType::ImageSet);
+//}
+//
+//void ManagerResources::GetLoadedAnimSetInfos(std::vector<const ResourceInfo*>& _vecInfos) const
+//{
+//    GetLoadedResourceInfos(_vecInfos, EResourceType::AnimSet);
+//}
+//
+//void ManagerResources::GetLoadedResourceInfos(std::vector<const ResourceInfo*>& _vecInfos, EResourceType::Type _eType) const
+//{
+//    auto iteCurrent = m_resources.begin();
+//    while (iteCurrent != m_resources.end())
+//    {
+//        if (iteCurrent->second->resource && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
+//            _vecInfos.push_back(iteCurrent->second);
+//        ++iteCurrent;
+//    }
+//
+//    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
+//}
 
 void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const
 {
@@ -632,20 +650,20 @@ void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _ve
     }
 }
 
-void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType) const
-{
-    std::string strPathNormalized = NormalizePath(_strPath, true);
-
-    auto iteCurrent = m_resources.begin();
-    while (iteCurrent != m_resources.end())
-    {
-        if (iteCurrent->second->resource && iteCurrent->second->fileInfo.IsPathEnd(strPathNormalized) && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
-            _vecInfos.push_back(iteCurrent->second);
-        ++iteCurrent;
-    }
-
-    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
-}
+//void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType) const
+//{
+//    std::string strPathNormalized = NormalizePath(_strPath, true);
+//
+//    auto iteCurrent = m_resources.begin();
+//    while (iteCurrent != m_resources.end())
+//    {
+//        if (iteCurrent->second->resource && iteCurrent->second->fileInfo.IsPathEnd(strPathNormalized) && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
+//            _vecInfos.push_back(iteCurrent->second);
+//        ++iteCurrent;
+//    }
+//
+//    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
+//}
 
 void ManagerResources::RegisterDatasheetObjectFactory(DelegateDatasheetObjectFactory delegateDatasheetObjectFactory)
 {

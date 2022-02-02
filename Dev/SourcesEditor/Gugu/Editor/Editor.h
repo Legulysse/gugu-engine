@@ -45,6 +45,9 @@ public:
     void Update(const gugu::DeltaTime& dt);
     bool OnSFEvent(const sf::Event& event);
 
+    void OpenProject(const std::string& assetsPath, const std::string& bindingPath);
+    void CloseProject();
+
     void OpenDocument(const std::string& resourceID);
     void ResetPanels();
     void CloseEditor();
@@ -59,6 +62,9 @@ private:
 private:
 
     EditorConfig m_editorConfig;
+    bool m_isProjectOpen;
+    std::string m_projectAssetsPath;
+    std::string m_projectBindingPath;
 
     bool m_resetPanels;
     bool m_showSearchResults;

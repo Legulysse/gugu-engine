@@ -30,9 +30,6 @@ public:
     std::string GetPrettyName   () const;
     std::string GetExtension    () const;
 
-    // TODO: Obsolte editor code ?
-    bool        IsPathEnd       (const std::string& _strPath) const;
-
     bool        operator <      (const FileInfo& _oRight) const;    //Used by std sorts
     bool        operator ==     (const FileInfo& _oRight) const;
 

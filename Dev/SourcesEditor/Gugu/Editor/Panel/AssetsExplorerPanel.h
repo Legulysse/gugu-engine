@@ -24,6 +24,9 @@ public:
 
     virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
 
+    void RefreshContent(const std::string& projectAssetsPath);
+    void ClearContent();
+
 private:
 
     class TreeNode

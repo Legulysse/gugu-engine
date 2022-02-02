@@ -21,6 +21,7 @@
 
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <imgui_stdlib.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -28,7 +29,8 @@
 namespace gugu {
     
 Editor::Editor()
-    : m_resetPanels(false)
+    : m_isProjectOpen(false)
+    , m_resetPanels(false)
     , m_showSearchResults(true)
     , m_showImGuiDemo(false)
     , m_assetsExplorerPanel(nullptr)
@@ -64,20 +66,57 @@ void Editor::Init(const EditorConfig& editorConfig)
     // Create the AssetsExplorer Panel.
     m_assetsExplorerPanel = new AssetsExplorerPanel;
 
-    // Create the DatasheetParser.
-    m_datasheetParser = new DatasheetParser;
-    m_datasheetParser->ParseBinding(m_editorConfig.pathDatasheetBinding);
+    // Open last project if available.
+    if (editorConfig.projectAssetsPath != "" && editorConfig.projectBindingPath != "")
+    {
+        OpenProject(editorConfig.projectAssetsPath, editorConfig.projectBindingPath);
+    }
 }
 
 void Editor::Release()
 {
-    m_lastActiveDocument = nullptr;
-    ClearStdVector(m_documentPanels);
+    CloseProject();
 
     SafeDelete(m_assetsExplorerPanel);
-    SafeDelete(m_datasheetParser);
 
     Editor::DeleteInstance();
+}
+
+void Editor::OpenProject(const std::string& assetsPath, const std::string& bindingPath)
+{
+    CloseProject();
+
+    m_isProjectOpen = true;
+    m_projectAssetsPath = assetsPath;
+    m_projectBindingPath = bindingPath;
+
+    // Parse assets.
+    GetResources()->ParseDirectory(m_projectAssetsPath);
+
+    // Create the DatasheetParser.
+    m_datasheetParser = new DatasheetParser;
+    m_datasheetParser->ParseBinding(bindingPath);
+
+    m_assetsExplorerPanel->RefreshContent(m_projectAssetsPath);
+}
+
+void Editor::CloseProject()
+{
+    if (m_isProjectOpen)
+    {
+        m_assetsExplorerPanel->ClearContent();
+
+        m_lastActiveDocument = nullptr;
+        ClearStdVector(m_documentPanels);
+
+        SafeDelete(m_datasheetParser);
+
+        GetResources()->RemoveResourcesFromPath(m_projectAssetsPath);
+
+        m_isProjectOpen = false;
+        m_projectAssetsPath = "";
+        m_projectBindingPath = "";
+    }
 }
 
 bool Editor::OnSFEvent(const sf::Event& event)
@@ -105,11 +144,24 @@ bool Editor::OnSFEvent(const sf::Event& event)
 
 void Editor::Update(const DeltaTime& dt)
 {
+    bool openProjectSettings = false;
+
     // Main menu bar.
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("Editor"))
         {
+            if (ImGui::MenuItem("Open Project"))
+            {
+                openProjectSettings = true;
+            }
+
+            if (ImGui::MenuItem("Close Project"))
+            {
+                CloseProject();
+            }
+
+            ImGui::Separator();
             if (ImGui::MenuItem("Quit", "Alt+F4"))
             {
                 CloseEditor();
@@ -139,6 +191,41 @@ void Editor::Update(const DeltaTime& dt)
         }
 
         ImGui::EndMainMenuBar();
+    }
+
+    if (openProjectSettings)
+    {
+        ImGui::OpenPopup("Open Project");
+    }
+
+    bool unused_open = true;
+    if (ImGui::BeginPopupModal("Open Project", &unused_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+    {
+        static std::string assetsPath = "../../Version/DemoGame/Assets";
+        if (ImGui::InputText("Project Assets", &assetsPath, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+        }
+
+        static std::string bindingPath = "../../Dev/SourcesDemos/Game/DemoGame/Binding.xml";
+        if (ImGui::InputText("Bindings Definition", &bindingPath, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+        }
+
+        ImGui::Spacing();
+        if (ImGui::Button("Cancel"))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Validate"))
+        {
+            OpenProject(assetsPath, bindingPath);
+
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
     }
 
     // Docking panels ids.
@@ -266,7 +353,7 @@ void Editor::OpenDocument(const std::string& resourceID)
     else if (resourceType == EResourceType::Unknown)
     {
         // Check datasheets.
-        if (m_datasheetParser->IsDatasheet(resourceFileInfo))
+        if (m_datasheetParser && m_datasheetParser->IsDatasheet(resourceFileInfo))
         {
             VirtualDatasheet* datasheet = nullptr;
 

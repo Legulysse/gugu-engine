@@ -86,9 +86,10 @@ public:
 
     sf::RenderWindow*   GetSFRenderWindow() const;
 
-    HandlerEvents*      GetEvents() const;
+    HandlerEvents*      GetHandlerEvents() const;
 
     bool ProcessEvents();
+    bool IsInputAllowed() const;
 
     bool IsConsoleVisible() const;
 
@@ -138,6 +139,7 @@ protected:
     bool                m_systemMouseVisible;
     bool                m_mouseVisible;
     bool                m_windowFocused;
+    bool                m_windowHovered;
 
     sf::Color           m_backgroundColor;
 

@@ -123,17 +123,17 @@ bool Editor::OnSFEvent(const sf::Event& event)
 {
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputReleased("ResetPanels", event))
+    if (inputs->IsInputEventReleased("ResetPanels", event))
     {
         ResetPanels();
         return false;
     }
-    else if (inputs->IsInputReleased("SaveAllDocuments", event))
+    else if (inputs->IsInputEventReleased("SaveAllDocuments", event))
     {
         SaveAllDocuments();
         return false;
     }
-    else if (inputs->IsInputReleased("SaveDocument", event))
+    else if (inputs->IsInputEventReleased("SaveDocument", event))
     {
         SaveActiveDocument();
         return false;

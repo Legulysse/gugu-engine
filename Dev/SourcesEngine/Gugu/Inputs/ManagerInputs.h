@@ -64,21 +64,24 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-    void RegisterInput  (const std::string& _strInputName, const sf::Event& _oSFEvent);                         //Will add a new key to the specified input.
-    bool ModifyInput    (const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex = 0);    //Will modify the existing key associated to the given input. Return false if input, with given index, doesn't exists.
+    void RegisterInput(const std::string& _strInputName, const sf::Event& _oSFEvent);                         //Will add a new key to the specified input.
+    bool ModifyInput(const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex = 0);    //Will modify the existing key associated to the given input. Return false if input, with given index, doesn't exists.
 
-    void LoadInputFile  (const std::string& _strPath);
+    void LoadInputFile(const std::string& _strPath);
 
-    bool IsInput            (const std::string& _strInputName, const sf::Event& _oSFEvent) const;
-    bool IsInputPressed     (const std::string& _strInputName, const sf::Event& _oSFEvent) const;
-    bool IsInputReleased    (const std::string& _strInputName, const sf::Event& _oSFEvent) const;
-    bool IsInputDown        (const std::string& _strInputName) const;
-    bool IsControlDown      () const;
-    bool IsShiftDown        () const;
-    bool IsAltDown          () const;
+    bool IsInputEvent(const std::string& _strInputName, const sf::Event& _oSFEvent) const;
+    bool IsInputEventPressed(const std::string& _strInputName, const sf::Event& _oSFEvent) const;
+    bool IsInputEventReleased(const std::string& _strInputName, const sf::Event& _oSFEvent) const;
+    bool IsInputDown(const std::string& _strInputName) const;
 
-    bool IsKeyDown          (sf::Keyboard::Key _eKey) const;
+    bool IsControlDown() const;
+    bool IsShiftDown() const;
+    bool IsAltDown() const;
 
+    bool IsKeyDown(sf::Keyboard::Key _eKey) const;
+    bool IsButtonDown(sf::Mouse::Button button) const;
+
+    //TODO: RegisterInput handling for mouse buttons
     static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key);
     static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt);
     static sf::Event BuildJoystickEvent(EPadButton button, int joystickId = 0);
@@ -88,6 +91,7 @@ private:
 
     void FillListKeyCodes();
     bool ReadKeyCode(const std::string& _strValue, sf::Keyboard::Key& _eKey) const;
+    bool IsInputAllowed() const;
 
 private:
 

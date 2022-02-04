@@ -9,6 +9,7 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "gugu/Window/Window.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
 ////////////////////////////////////////////////////////////////
@@ -85,8 +86,13 @@ void ManagerInputs::LoadInputFile(const std::string& _strPath)
     }
 }
 
-bool ManagerInputs::IsInput(const std::string& _strInputName, const sf::Event& _oSFEvent) const
+bool ManagerInputs::IsInputEvent(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
+    if (!IsInputAllowed())
+    {
+        return false;
+    }
+
     auto kvp = m_inputBindings.find(_strInputName);
     if (kvp != m_inputBindings.end())
     {
@@ -124,6 +130,11 @@ bool ManagerInputs::IsInput(const std::string& _strInputName, const sf::Event& _
 
 bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
 {
+    if (!IsInputAllowed())
+    {
+        return false;
+    }
+
     auto kvp = m_inputBindings.find(_strInputName);
     if (kvp != m_inputBindings.end())
     {
@@ -153,34 +164,39 @@ bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
     return false;
 }
 
-bool ManagerInputs::IsInputPressed(const std::string& _strInputName, const sf::Event& _oSFEvent) const
+bool ManagerInputs::IsInputEventPressed(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
-    return ((_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::JoystickButtonPressed) && IsInput(_strInputName, _oSFEvent));
+    return IsInputAllowed() && ((_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::JoystickButtonPressed) && IsInputEvent(_strInputName, _oSFEvent));
 }
 
-bool ManagerInputs::IsInputReleased(const std::string& _strInputName, const sf::Event& _oSFEvent) const
+bool ManagerInputs::IsInputEventReleased(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
-    return ((_oSFEvent.type == sf::Event::KeyReleased || _oSFEvent.type == sf::Event::JoystickButtonReleased) && IsInput(_strInputName, _oSFEvent));
+    return IsInputAllowed() && ((_oSFEvent.type == sf::Event::KeyReleased || _oSFEvent.type == sf::Event::JoystickButtonReleased) && IsInputEvent(_strInputName, _oSFEvent));
 }
 
 bool ManagerInputs::IsControlDown() const
 {
-    return (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl));
+    return IsInputAllowed() && (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl));
 }
 
 bool ManagerInputs::IsShiftDown() const
 {
-    return (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift));
+    return IsInputAllowed() && (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift));
 }
 
 bool ManagerInputs::IsAltDown() const
 {
-    return (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt));
+    return IsInputAllowed() && (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt));
 }
 
 bool ManagerInputs::IsKeyDown(sf::Keyboard::Key _eKey) const
 {
-    return sf::Keyboard::isKeyPressed(_eKey);
+    return IsInputAllowed() && sf::Keyboard::isKeyPressed(_eKey);
+}
+
+bool ManagerInputs::IsButtonDown(sf::Mouse::Button button) const
+{
+    return IsInputAllowed() && sf::Mouse::isButtonPressed(button);
 }
 
 sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key)
@@ -335,6 +351,11 @@ bool ManagerInputs::ReadKeyCode(const std::string& _strValue, sf::Keyboard::Key&
     }
 
     return false;
+}
+
+bool ManagerInputs::IsInputAllowed() const
+{
+    return GetGameWindow()->IsInputAllowed();
 }
 
 ManagerInputs* GetInputs()

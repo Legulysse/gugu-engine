@@ -63,7 +63,8 @@ Window::Window()
 
     m_systemMouseVisible = true;
     m_mouseVisible = false;
-    m_windowFocused = false;
+    m_windowHovered = true;
+    m_windowFocused = true;
 
     m_showStats        = false;
     m_showFPS           = false;
@@ -342,7 +343,7 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
         bool isSystemMouseWantedVisible = m_systemMouseVisible;
         bool isMouseWantedVisible = m_mouseVisible;
 
-        if (!m_windowFocused)
+        if (!m_windowHovered)
         {
             isSystemMouseWantedVisible = true;
             isMouseWantedVisible = false;
@@ -461,9 +462,17 @@ bool Window::ProcessEvents()
         }
         else if (event.type == sf::Event::MouseLeft)
         {
-            m_windowFocused = false;
+            m_windowHovered = false;
         }
         else if (event.type == sf::Event::MouseEntered)
+        {
+            m_windowHovered = true;
+        }
+        else if (event.type == sf::Event::LostFocus)
+        {
+            m_windowFocused = false;
+        }
+        else if (event.type == sf::Event::GainedFocus)
         {
             m_windowFocused = true;
         }
@@ -503,14 +512,14 @@ bool Window::ProcessEvents()
         }
 
         if (m_hostImGui && ImGui::GetIO().WantCaptureMouse
-            && (event.type == sf::Event::MouseButtonPressed
-                || event.type == sf::Event::MouseButtonReleased
-                || event.type == sf::Event::MouseWheelMoved
-                || event.type == sf::Event::MouseWheelScrolled
-                || event.type == sf::Event::MouseMoved))
-        {
-            propagateEvent = false;
-        }
+                && (event.type == sf::Event::MouseButtonPressed
+                    || event.type == sf::Event::MouseButtonReleased
+                    || event.type == sf::Event::MouseWheelMoved
+                    || event.type == sf::Event::MouseWheelScrolled
+                    || event.type == sf::Event::MouseMoved))
+            {
+                propagateEvent = false;
+            }
 
         if (propagateEvent)
         {
@@ -542,6 +551,11 @@ bool Window::ProcessEvents()
     }
 
     return false;
+}
+
+bool Window::IsInputAllowed() const
+{
+    return m_windowFocused && !IsConsoleVisible();
 }
 
 bool Window::IsConsoleVisible() const
@@ -595,7 +609,7 @@ sf::RenderWindow* Window::GetSFRenderWindow() const
     return m_sfWindow;
 }
 
-HandlerEvents* Window::GetEvents() const
+HandlerEvents* Window::GetHandlerEvents() const
 {
     return m_handlerEvents;
 }

@@ -29,9 +29,9 @@ EventListener::~EventListener()
 
 void EventListener::RegisterHandlerEvents(Window* _pWindow)
 {
-    if (_pWindow && _pWindow->GetEvents())
+    if (_pWindow && _pWindow->GetHandlerEvents())
     {
-        RegisterHandlerEvents(_pWindow->GetEvents());
+        RegisterHandlerEvents(_pWindow->GetHandlerEvents());
     }
 }
 
@@ -58,7 +58,7 @@ bool EventListener::IsRegistered() const
 
 bool EventListener::IsRegistered(Window* _pWindow) const
 {
-    return (m_handler != nullptr && _pWindow != nullptr && m_handler == _pWindow->GetEvents());
+    return (m_handler != nullptr && _pWindow != nullptr && m_handler == _pWindow->GetHandlerEvents());
 }
 
 bool EventListener::IsRegistered(HandlerEvents* _pHandler) const

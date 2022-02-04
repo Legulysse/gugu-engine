@@ -79,6 +79,7 @@ private:
     sf::Text m_statTextAnimations;
     sf::Text m_statTextParticleSystems;
     sf::Text m_statTextIsTracing;
+    //sf::Text m_statTextIsInputAllowed;
 };
 
 }   // namespace gugu

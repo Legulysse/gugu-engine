@@ -111,6 +111,11 @@ StatsDrawer::StatsDrawer()
     m_statTextIsTracing.setCharacterSize(fontSize);
     m_statTextIsTracing.setString("(Tracing)");
     m_statTextIsTracing.setFont(*font);
+
+    //m_statTextIsInputAllowed.setFillColor(colorDefault);
+    //m_statTextIsInputAllowed.setCharacterSize(fontSize);
+    //m_statTextIsInputAllowed.setString("Input Allowed");
+    //m_statTextIsInputAllowed.setFont(*font);
 }
 
 StatsDrawer::~StatsDrawer()
@@ -262,46 +267,64 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const DeltaTime& frame
     {
         GUGU_SCOPE_TRACE_MAIN("Text Infos");
 
+        int lineCount = 0;
+
         // Step Times
-        m_statTextStepTime.setPosition(positionTextLines.x, positionTextLines.y);
+        m_statTextStepTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
         m_statTextStepTime.setString(StringFormat("step: {0} ms,  max: {1} ms", statsSummarySteps.last, statsSummarySteps.max));
         renderWindow->draw(m_statTextStepTime);
+        ++lineCount;
 
         // Update Times
-        m_statTextUpdateTime.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset));
+        m_statTextUpdateTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
         m_statTextUpdateTime.setString(StringFormat("update: {0} ms,  max: {1} ms", statsSummaryUpdates.last, statsSummaryUpdates.max));
         renderWindow->draw(m_statTextUpdateTime);
+        ++lineCount;
 
         // Render Times
-        m_statTextRenderTime.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * 2);
+        m_statTextRenderTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
         m_statTextRenderTime.setString(StringFormat("render: {0} ms,  max: {1} ms", statsSummaryRenders.last, statsSummaryRenders.max));
         renderWindow->draw(m_statTextRenderTime);
+        ++lineCount;
 
         // Draw Calls
-        m_statTextDrawCalls.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * 3);
+        m_statTextDrawCalls.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
         m_statTextDrawCalls.setString(StringFormat("draw calls: {0}  tris: {1}", frameInfos.statDrawCalls, frameInfos.statTriangles));
         renderWindow->draw(m_statTextDrawCalls);
+        ++lineCount;
 
         // Fps
-        m_statTextFPS.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * 4);
+        m_statTextFPS.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * lineCount);
         m_statTextFPS.setString(StringFormat("fps: {0}", iFPS));
         renderWindow->draw(m_statTextFPS);
+        ++lineCount;
 
         // Animation Count
-        m_statTextAnimations.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * 5);
+        m_statTextAnimations.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
         m_statTextAnimations.setString(StringFormat("animations: {0}", engineStats.animationCount));
         renderWindow->draw(m_statTextAnimations);
+        ++lineCount;
 
         // Particle System Count
-        m_statTextParticleSystems.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * 6);
+        m_statTextParticleSystems.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
         m_statTextParticleSystems.setString(StringFormat("particle systems: {0}", engineStats.particleSystemCount));
         renderWindow->draw(m_statTextParticleSystems);
+        ++lineCount;
+
+        //// IsInputAllowed
+        //if (window->IsInputAllowed())
+        //{
+        //    m_statTextIsInputAllowed.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+        //    renderWindow->draw(m_statTextIsInputAllowed);
+        //    ++lineCount;
+        //}
 
         // Is Tracing
         if (engineStats.isTracing)
         {
-            m_statTextIsTracing.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * 7);
+            m_statTextIsTracing.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
             renderWindow->draw(m_statTextIsTracing);
+            ++lineCount;
         }
     }
 }

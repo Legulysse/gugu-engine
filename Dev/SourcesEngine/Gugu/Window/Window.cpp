@@ -309,7 +309,7 @@ void Window::OnSceneReleased(Scene* scene)
     }
 }
 
-void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
+void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
 {
     FrameInfos kFrameInfos;
     kFrameInfos.showBounds = m_showBounds;
@@ -401,9 +401,9 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
 
         //Stats
         if (m_showStats)
-            m_statsDrawer->DrawStats(kFrameInfos, DeltaTime(kRenderClock.getElapsedTime()), dt, engineStats, this);
+            m_statsDrawer->DrawStats(kFrameInfos, kRenderClock.getElapsedTime(), loopTime, engineStats, this);
         else if (m_showFPS)
-            m_statsDrawer->DrawFPS(dt, this);
+            m_statsDrawer->DrawFPS(loopTime, this);
     }
 
     {

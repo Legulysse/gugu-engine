@@ -4,11 +4,12 @@
 // Includes
 
 #include "Gugu/Core/EngineConfig.h"
-#include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Core/Callback.h"
 #include "Gugu/Misc/Pattern/Singleton.h"
 #include "Gugu/System/Types.h"
 #include "Gugu/Debug/EngineStats.h"
+
+#include <SFML/System/Time.hpp>
 
 #include <string>
 #include <vector>
@@ -33,6 +34,7 @@ namespace gugu
     class Scene;
     class LoggerEngine;
     class TraceGroup;
+    class DeltaTime;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -64,7 +66,7 @@ public:
     void RunApplication(Application* application);
 
     void RunMainLoop();
-    void RunSingleLoop(const DeltaTime& dt);
+    void RunSingleLoop(const sf::Time& loopTime);
     void StopMainLoop();
 
     void            SetApplication(Application* application);
@@ -121,8 +123,11 @@ private:
     Application*        m_application;
 
     bool                m_stopLoop;
-    DeltaTime           m_dtSinceLastStep;
-    int                 m_stepSpeed;        // Default step speed multiplier is 10, minimum is 1.
+    sf::Time            m_timeSinceLastStep;
+    bool                m_useSpeedMultiplier;
+    float               m_speedMultiplier;
+    bool                m_pauseLoop;
+    sf::Time            m_injectTime;
 
     // Stats
     EngineStats         m_stats;

@@ -69,7 +69,10 @@ void Engine::Init(const EngineConfig& config)
 
     //-- Init Engine core --//
     m_stopLoop = false;
-    m_stepSpeed = 10;
+    m_useSpeedMultiplier = false;
+    m_speedMultiplier = 1.f;
+    m_pauseLoop = false;
+    m_injectTime = sf::Time::Zero;
 
     m_application = nullptr;
     m_renderer = nullptr;
@@ -176,8 +179,8 @@ void Engine::RunMainLoop()
     sf::Clock oClock;
 
     // Init loop variables.
-    sf::Time dtLoop = sf::Time::Zero;   //Time (ms) since last Loop.
-    m_dtSinceLastStep = DeltaTime(0);   //Time (ms) since last Step.
+    sf::Time loopTime = sf::Time::Zero;   //Time since last Loop.
+    m_timeSinceLastStep = sf::Time::Zero;   //Time since last Step.
 
     // Loop !
     while (!m_stopLoop)
@@ -201,15 +204,16 @@ void Engine::RunMainLoop()
             }
         }
 
-        GUGU_SCOPE_TRACE_MAIN("Engine Loop");
+        {
+            GUGU_SCOPE_TRACE_MAIN("Engine Loop");
 
-        // TODO: use microseconds as a base instead of milliseconds.
-        dtLoop = oClock.restart();
-        RunSingleLoop(DeltaTime(dtLoop.asMilliseconds()));
+            loopTime = oClock.restart();
+            RunSingleLoop(loopTime);
 
-        // Safeguard if there is no render in the loop, to avoid using cpu and risking dt times of zero.
-        if (m_windows.empty())
-            sf::sleep(sf::milliseconds(16));
+            // Safeguard if there is no render in the loop, to avoid using cpu and risking dt times of zero.
+            if (m_windows.empty())
+                sf::sleep(sf::milliseconds(16));
+        }
     }
 
     // Loop stop.
@@ -219,11 +223,38 @@ void Engine::RunMainLoop()
         m_application->AppStop();
 }
 
-void Engine::RunSingleLoop(const DeltaTime& dt)
+void Engine::RunSingleLoop(const sf::Time& loopTime)
 {
-    // TODO: rework the speed option, to handle values below 1ms/frame (I can use intervals with a dt=0).
-    DeltaTime dtConstantStep((20));
-    DeltaTime dtSpeedModulatedStep(2 * m_stepSpeed);    // Default step speed multiplier is 10, minimum is 1.
+    //DeltaTime dt(loopTime);
+
+    //// TODO: rework the speed option, to handle values below 1ms/frame (I can use intervals with a dt=0).
+    //DeltaTime dtConstantStep((20));
+    //DeltaTime dtSpeedModulatedStep(2 * m_stepSpeed);    // Default step speed multiplier is 10, minimum is 1.
+
+    // Compute frame times.
+    sf::Time constantStepTime = sf::milliseconds(20);
+    //sf::Time constantStepTimeScaled = constantStepTime * m_speedMultiplier;
+    sf::Time loopTimeScaled = loopTime;
+    //sf::Time loopTimeUnscaled = loopTime;
+
+    // handle speed multiplier if active.
+    if (m_useSpeedMultiplier)
+    {
+        loopTimeScaled *= m_speedMultiplier;
+    }
+
+    // Handle time injection when using the pause mode.
+    if (m_pauseLoop)
+    {
+        loopTimeScaled = m_injectTime;
+        m_injectTime = sf::Time::Zero;
+    }
+
+    // Compute delta times.
+    DeltaTime dt_constant(constantStepTime);
+    //DeltaTime dt_constantScaled(constantStepTimeScaled);
+    DeltaTime dt_scaled(loopTimeScaled);
+    //DeltaTime dt_unscaled(loopTime);
 
     sf::Clock clockStatLoop;
     sf::Clock clockStatSection;
@@ -268,24 +299,40 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
         clockStatSection.restart();
 
         //Step
-        m_dtSinceLastStep += dt;
+        m_timeSinceLastStep += loopTimeScaled;
+        bool stepHappened = false;
+        bool multipleStepsHappened = false;
 
         //TODO: option to use a while to compensate lagging frames (warning : breakpoints fuck timers, so I need to gracefully recover) (warning : it breaks everything if fps is too low) 
         //TODO: option to ignore constantstep
-        if (m_dtSinceLastStep >= dtConstantStep && m_managerNetwork->IsReadyForTurn())
+        bool allowMultipleSteps = m_useSpeedMultiplier && m_speedMultiplier > 1.f;
+        bool allowNextStep = true;
+        while (allowNextStep && m_timeSinceLastStep >= constantStepTime && m_managerNetwork->IsReadyForTurn())
         {
-            m_dtSinceLastStep -= dtConstantStep;
+            m_timeSinceLastStep -= constantStepTime;
+            multipleStepsHappened = stepHappened;
+            stepHappened = true;
+            allowNextStep = allowMultipleSteps;
 
-            TickTimers(dtSpeedModulatedStep);
+            TickTimers(dt_constant);
 
             if (m_application)
-                m_application->AppStep(dtSpeedModulatedStep);
+                m_application->AppStep(dt_constant);
 
-            m_managerScenes->Step(dtSpeedModulatedStep);
-            m_managerAnimations->Step(dtSpeedModulatedStep);
+            m_managerScenes->Step(dt_constant);
+            m_managerAnimations->Step(dt_constant);
 
             m_managerNetwork->SetTurnPlayed();
 
+            if (multipleStepsHappened && clockStatSection.getElapsedTime().asMilliseconds() >= 500)
+            {
+                //m_timeSinceLastStep = sf::Time::Zero;
+                break;
+            }
+        }
+
+        if (stepHappened)
+        {
             // Step Stats
             m_stats.stepTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
             if (m_stats.stepTimes.size() > m_stats.maxStatCount)
@@ -311,16 +358,16 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
 
         if (m_gameWindow)
         {
-            ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), sf::Time(dt.GetSFTime()));
+            ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), loopTime);
         }
 
         if (m_application)
-            m_application->AppUpdate(dt);
+            m_application->AppUpdate(dt_scaled);
 
-        m_managerScenes->Update(dt);
-        m_managerAnimations->Update(dt, m_stats);
-        m_managerVisualEffects->Update(dt, m_stats);
-        m_managerAudio->Update(dt);
+        m_managerScenes->Update(dt_scaled);
+        m_managerAnimations->Update(dt_scaled, m_stats);
+        m_managerVisualEffects->Update(dt_scaled, m_stats);
+        m_managerAudio->Update(dt_scaled);
 
         // Update Stats
         m_stats.updateTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
@@ -340,7 +387,7 @@ void Engine::RunSingleLoop(const DeltaTime& dt)
 
         // Render
         for (size_t i = 0; i < m_windows.size(); ++i)
-            m_windows[i]->Render(dt, m_stats);
+            m_windows[i]->Render(loopTime, m_stats);
 
         // Render Stats
         m_stats.renderTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
@@ -457,12 +504,32 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
         }
         else if (strCommand == "speed")
         {
-            // Default step speed multiplier is 10, minimum is 1.
+            m_useSpeedMultiplier = false;
+
+            if (!vecTokens.empty() && vecTokens[0] != "1")
+            {
+                float speed = 1;
+                if (FromString(vecTokens[0], speed))
+                {
+                    m_useSpeedMultiplier = true;
+                    m_speedMultiplier = Max(0.f, speed);
+                }
+            }
+        }
+        else if (strCommand == "pause")
+        {
+            m_pauseLoop = !m_pauseLoop;
+            m_injectTime = sf::Time::Zero;
+        }
+        else if (strCommand == "time")
+        {
             if (!vecTokens.empty())
             {
-                int speed = 10;
-                if (FromString(vecTokens[0], speed))
-                    m_stepSpeed = Max(1, speed);
+                int time = 0;
+                if (FromString(vecTokens[0], time))
+                {
+                    m_injectTime = sf::milliseconds(Max(0, time));
+                }
             }
         }
 

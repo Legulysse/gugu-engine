@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Math/Vector2.h"
 
 #include <SFML/Graphics/Sprite.hpp>   //TODO: use pointers + forward declaration
@@ -25,6 +24,7 @@ namespace gugu
 namespace sf
 {
     class RenderWindow;
+    class Time;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -39,8 +39,8 @@ public:
     StatsDrawer();
     ~StatsDrawer();
 
-    void DrawFPS(const DeltaTime& timeSinceLastFrame, Window* window);
-    void DrawStats(const FrameInfos& frameInfos, const DeltaTime& frameTime, const DeltaTime& timeSinceLastFrame, const EngineStats& engineStats, Window* window);
+    void DrawFPS(const sf::Time& loopTime, Window* window);
+    void DrawStats(const FrameInfos& frameInfos, const sf::Time& renderTime, const sf::Time& loopTime, const EngineStats& engineStats, Window* window);
 
 private:
 

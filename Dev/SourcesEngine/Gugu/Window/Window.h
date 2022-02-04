@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Math/Vector2.h"
 
 #include <SFML/Graphics/Sprite.hpp>   //TODO: use pointers + forward declaration
@@ -33,6 +32,7 @@ namespace sf
 {
     class RenderWindow;
     class Event;
+    class Time;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ public:
     void        BindScene       (Scene* scene, Camera* _pCamera, Renderer* _pRenderer);
     void        OnSceneReleased (Scene* scene);
 
-    void        Render          (const DeltaTime& dt, const EngineStats& engineStats);
+    void        Render          (const sf::Time& loopTime, const EngineStats& engineStats);
     void        Display         ();
 
     Vector2u    GetSize     () const;

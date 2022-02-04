@@ -173,27 +173,27 @@ void StatsDrawer::DrawHistogram(const std::list<int>& statValues, const StatsSum
     renderWindow->draw(curve);
 }
 
-void StatsDrawer::DrawFPS(const DeltaTime& timeSinceLastFrame, Window* window)
+void StatsDrawer::DrawFPS(const sf::Time& loopTime, Window* window)
 {
     if (!GetResources()->GetDebugFont())
         return;
 
-    int fps = 1000 / ((timeSinceLastFrame.ms() > 0) ? timeSinceLastFrame.ms() : 1);
+    int fps = 1000 / ((loopTime.asMilliseconds() > 0) ? loopTime.asMilliseconds() : 1);
 
     m_statTextStandaloneFPS.setPosition(2.f, 2.f);
     m_statTextStandaloneFPS.setString("fps: " + ToString(fps));
     window->GetSFRenderWindow()->draw(m_statTextStandaloneFPS);
 }
 
-void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const DeltaTime& frameTime, const DeltaTime& timeSinceLastFrame, const EngineStats& engineStats, Window* window)
+void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& renderTime, const sf::Time& loopTime, const EngineStats& engineStats, Window* window)
 {
     if (!GetResources()->GetDebugFont())
         return;
 
-    int iFPS = 1000 / ((timeSinceLastFrame.ms() > 0) ? timeSinceLastFrame.ms() : 1);
+    int iFPS = 1000 / ((loopTime.asMilliseconds() > 0) ? loopTime.asMilliseconds() : 1);
 
     // TODO: move this somwhere else.
-    m_statFrameTimes.push_front(frameTime.ms());
+    m_statFrameTimes.push_front(renderTime.asMilliseconds());
     if (m_statFrameTimes.size() > engineStats.maxStatCount)
     {
         m_statFrameTimes.pop_back();

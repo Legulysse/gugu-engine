@@ -511,7 +511,9 @@ bool Window::ProcessEvents()
             }
         }
 
-        if (m_hostImGui && ImGui::GetIO().WantCaptureMouse
+        if (m_hostImGui)
+        {
+            if (ImGui::GetIO().WantCaptureMouse
                 && (event.type == sf::Event::MouseButtonPressed
                     || event.type == sf::Event::MouseButtonReleased
                     || event.type == sf::Event::MouseWheelMoved
@@ -520,6 +522,14 @@ bool Window::ProcessEvents()
             {
                 propagateEvent = false;
             }
+            else if (ImGui::GetIO().WantCaptureKeyboard
+                && (event.type == sf::Event::TextEntered
+                    || event.type == sf::Event::KeyPressed
+                    || event.type == sf::Event::KeyReleased))
+            {
+                propagateEvent = false;
+            }
+        }
 
         if (propagateEvent)
         {

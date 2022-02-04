@@ -5,6 +5,7 @@
 
 #include "Gugu/Scene/SceneActor.h"
 #include "Gugu/Events/EventListener.h"
+#include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -29,12 +30,14 @@ public:
     void InitControllerPlayer   (CharacterHero* _pCharacter);
 
     virtual void Step(const gugu::DeltaTime& dt) override;
+    virtual void Update(const gugu::DeltaTime& dt) override;
 
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 
 public:
 
     CharacterHero* m_character;
+    gugu::Vector2f m_moveDirection;
 };
 
 }   //namespace demoproject

@@ -40,8 +40,12 @@ void ControllerPlayer::Step(const DeltaTime& dt)
 {
     SceneActor::Step(dt);
 
-    if (GetGameWindow()->IsConsoleVisible())
-        return;
+    m_character->Move(m_moveDirection, dt);
+}
+
+void ControllerPlayer::Update(const DeltaTime& dt)
+{
+    SceneActor::Update(dt);
 
     ManagerInputs* inputs = GetInputs();
 
@@ -82,7 +86,7 @@ void ControllerPlayer::Step(const DeltaTime& dt)
         kDirection.x += 1.f;
     }
 
-    m_character->Move(kDirection, dt);
+    m_moveDirection = kDirection;
 
     //Camera
     Camera* pCamera = GetGameWindow()->GetCamera(0);
@@ -107,7 +111,7 @@ bool ControllerPlayer::OnSFEvent(const sf::Event& _oSFEvent)
     {
         if (_oSFEvent.mouseButton.button == sf::Mouse::Left)
         {
-            Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
+            //Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
             //Camera* pCamera = GetGameWindow()->GetCamera(0);
             //Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
             //m_pCharacter->Attack(kPickedPosition);      //TODO: test with varrying world transform

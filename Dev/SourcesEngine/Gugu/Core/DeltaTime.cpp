@@ -9,85 +9,37 @@
 namespace gugu {
     
 DeltaTime::DeltaTime()
+    : m_time(sf::Time::Zero)
+    , m_seconds(0.f)
 {
-    m_delta = 0;
 }
 
-DeltaTime::DeltaTime(int _iDelta)
+DeltaTime::DeltaTime(sf::Time time)
 {
-    m_delta = _iDelta;
-}
+    m_time = time;
 
-DeltaTime::DeltaTime(sf::Time _kTime)
-{
-    m_delta = _kTime.asMilliseconds();
-}
-
-float DeltaTime::GetSeconds() const
-{
-    return s();
-}
-
-int DeltaTime::GetMilliseconds() const
-{
-    return ms();
-}
-
-float DeltaTime::s() const
-{
-    return static_cast<float>(m_delta) * 0.001f;
-}
-
-int DeltaTime::ms() const
-{
-    return m_delta;
+    // Cache the conversion (it will be used a lot).
+    m_seconds = m_time.asSeconds();
 }
 
 sf::Time DeltaTime::GetSFTime() const
 {
-    return sf::milliseconds(ms());
+    return m_time;
 }
 
-DeltaTime& DeltaTime::operator += (const DeltaTime& _kOther)
+float DeltaTime::s() const
 {
-    m_delta += _kOther.m_delta;
-    return *this;
+    return m_seconds;
 }
 
-DeltaTime& DeltaTime::operator -= (const DeltaTime& _kOther)
+int DeltaTime::ms() const
 {
-    m_delta -= _kOther.m_delta;
-    return *this;
+    return m_time.asMilliseconds();
 }
 
-bool DeltaTime::operator <  (const DeltaTime& _kOther) const
+int64 DeltaTime::micro() const
 {
-    return m_delta < _kOther.m_delta;
-}
-
-bool DeltaTime::operator >  (const DeltaTime& _kOther) const
-{
-    return m_delta > _kOther.m_delta;
-}
-
-bool DeltaTime::operator <= (const DeltaTime& _kOther) const
-{
-    return m_delta <= _kOther.m_delta;
-}
-
-bool DeltaTime::operator >= (const DeltaTime& _kOther) const
-{
-    return m_delta >= _kOther.m_delta;
-}
-
-bool DeltaTime::operator == (const DeltaTime& _kOther) const
-{
-    return m_delta == _kOther.m_delta;
-}
-
-bool DeltaTime::operator != (const DeltaTime& _kOther) const
-{
-    return m_delta != _kOther.m_delta;
+    return m_time.asMicroseconds();
 }
 
 }   // namespace gugu

@@ -132,14 +132,14 @@ DeltaTime MusicInstance::GetDuration() const
 {
     if (m_sfMusic)
         return m_sfMusic->getDuration();
-    return DeltaTime(0);
+    return DeltaTime();
 }
 
 DeltaTime MusicInstance::GetPlayOffset() const
 {
     if (m_sfMusic)
         return m_sfMusic->getPlayingOffset();
-    return DeltaTime(0);
+    return DeltaTime();
 }
 
 void MusicInstance::SetPlayOffset(DeltaTime _kOffset)

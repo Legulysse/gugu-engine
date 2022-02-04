@@ -53,7 +53,7 @@ DeltaTime Music::GetDuration() const
     sf::Music music;
     if (music.openFromFile(GetFileInfoRef().GetPathName()))
         return music.getDuration();
-    return DeltaTime(0);
+    return DeltaTime();
 }
 
 }   // namespace gugu

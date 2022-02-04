@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/Types.h"
+
 #include <SFML/System/Time.hpp>
 
 ////////////////////////////////////////////////////////////////
@@ -15,29 +17,18 @@ class DeltaTime
 public:
     
     DeltaTime();
-    DeltaTime(int _iDelta);
-    DeltaTime(sf::Time _kTime);
+    DeltaTime(sf::Time time);
 
-    float   GetSeconds() const;
-    int     GetMilliseconds() const;
     sf::Time GetSFTime() const;
-    
-    float   s() const;
-    int     ms() const;
 
-    DeltaTime& operator += (const DeltaTime& _kOther);
-    DeltaTime& operator -= (const DeltaTime& _kOther);
-
-    bool operator <  (const DeltaTime& _kOther) const;
-    bool operator >  (const DeltaTime& _kOther) const;
-    bool operator <= (const DeltaTime& _kOther) const;
-    bool operator >= (const DeltaTime& _kOther) const;
-    bool operator == (const DeltaTime& _kOther) const;
-    bool operator != (const DeltaTime& _kOther) const;
+    float s() const;
+    int32 ms() const;
+    int64 micro() const;
 
 private:
 
-    int m_delta;
+    sf::Time m_time;
+    float m_seconds;
 };
 
 }   // namespace gugu

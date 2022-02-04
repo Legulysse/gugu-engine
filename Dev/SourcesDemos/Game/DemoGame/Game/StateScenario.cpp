@@ -317,12 +317,12 @@ bool StateScenario::OnSFEvent(const sf::Event& _oSFEvent)
 
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputReleased("Exit", _oSFEvent))
+    if (inputs->IsInputEventReleased("Exit", _oSFEvent))
     {
         GetOwner()->ChangeState(new StateMenuMain);
         return false;
     }
-    else if (inputs->IsInputReleased("ToggleCharacterSheet", _oSFEvent))
+    else if (inputs->IsInputEventReleased("ToggleCharacterSheet", _oSFEvent))
     {
         m_characterSheet->SetVisible(!m_characterSheet->IsVisible(false));
     }

@@ -109,7 +109,7 @@ bool StateMenuMain::OnSFEvent(const sf::Event& _oSFEvent)
 
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputReleased("CloseGame", _oSFEvent))
+    if (inputs->IsInputEventReleased("CloseGame", _oSFEvent))
     {
         GetEngine()->StopMainLoop();
         return false;

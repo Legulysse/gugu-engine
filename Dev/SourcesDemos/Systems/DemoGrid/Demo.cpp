@@ -203,7 +203,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
     // TODO: maybe provide an accessor on the Engine side ?
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
+        if (GetInputs()->IsButtonDown(sf::Mouse::Right))
         {
             Vector2f localPickedPositionA = m_pTileMapA->TransformToLocal(GetGameWindow()->GetMousePosition());
             Vector2f localPickedPositionB = m_pTileMapB->TransformToLocal(GetGameWindow()->GetMousePosition());
@@ -226,7 +226,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 refresh = true;
             }
         }
-        else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
+        else if (GetInputs()->IsButtonDown(sf::Mouse::Left))
         {
             Vector2f localPickedPositionA = m_pTileMapA->TransformToLocal(GetGameWindow()->GetMousePosition());
             Vector2f localPickedPositionB = m_pTileMapB->TransformToLocal(GetGameWindow()->GetMousePosition());
@@ -301,7 +301,7 @@ bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
 
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputReleased("CloseGame", _oSFEvent))
+    if (inputs->IsInputEventReleased("CloseGame", _oSFEvent))
     {
         GetEngine()->StopMainLoop();
         return false;

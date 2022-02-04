@@ -156,7 +156,7 @@ bool Game::OnSFEvent(const sf::Event& _oSFEvent)
 
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputPressed("Screenshot", _oSFEvent))
+    if (inputs->IsInputEventPressed("Screenshot", _oSFEvent))
     {
         GetGameWindow()->Screenshot();
     }

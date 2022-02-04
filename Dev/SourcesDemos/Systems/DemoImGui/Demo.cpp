@@ -121,24 +121,24 @@ bool Demo::OnSFEvent(const sf::Event& event)
 
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputPressed("ToggleImGui", event))
+    if (inputs->IsInputEventPressed("ToggleImGui", event))
     {
         m_showImGuiDemo = !m_showImGuiDemo;
         return false;
     }
-    else if (inputs->IsInputPressed("UseMouse", event))
+    else if (inputs->IsInputEventPressed("UseMouse", event))
     {
         GetGameWindow()->SetMouseVisible(true);
         GetGameWindow()->SetSystemMouseVisible(false);
         return false;
     }
-    else if (inputs->IsInputPressed("UseSystemMouse", event))
+    else if (inputs->IsInputEventPressed("UseSystemMouse", event))
     {
         GetGameWindow()->SetMouseVisible(false);
         GetGameWindow()->SetSystemMouseVisible(true);
         return false;
     }
-    else if (inputs->IsInputReleased("CloseGame", event))
+    else if (inputs->IsInputEventReleased("CloseGame", event))
     {
         GetEngine()->StopMainLoop();
         return false;

@@ -46,7 +46,7 @@ void ControllerPlayer::Step(const DeltaTime& dt)
     ManagerInputs* inputs = GetInputs();
 
     //Attack
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))    //TODO: RegisterInput handling for mouse buttons (need little upgrade on the ConfigManager)
+    if (inputs->IsButtonDown(sf::Mouse::Left))
     {
         Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
         Camera* pCamera = GetGameWindow()->GetCamera(0);

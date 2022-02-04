@@ -53,7 +53,7 @@ bool StateDemoLayout::OnSFEvent(const sf::Event& _oSFEvent)
 
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputReleased("CloseGame", _oSFEvent))
+    if (inputs->IsInputEventReleased("CloseGame", _oSFEvent))
     {
         GetOwner()->ChangeState(new StateMenuMain);
         return false;

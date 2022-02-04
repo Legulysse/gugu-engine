@@ -47,7 +47,7 @@ Character::~Character()
 
 void Character::Move(Vector2f _kDirection, const DeltaTime& dt)
 {
-    if (_kDirection == Vector2f())  //TODO: Constant for Zero vector
+    if (_kDirection == Vector2::Zero_f)
     {
         //if(!m_sprite->IsAnimationPlaying("IdleDown") && m_attackCooldown <= 0.f)  //TODO: param on StartAnimation to check current anim
         //    m_sprite->StartAnimation("IdleDown");

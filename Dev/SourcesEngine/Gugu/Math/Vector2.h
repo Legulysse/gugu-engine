@@ -16,6 +16,13 @@ using Vector2i = sf::Vector2i;
 using Vector2u = sf::Vector2u;
 using Vector2f = sf::Vector2f;
 
+namespace Vector2
+{
+    const Vector2i Zero_i = Vector2i();
+    const Vector2u Zero_u = Vector2u();
+    const Vector2f Zero_f = Vector2f();
+}
+
 template <typename T>
 float LengthSquare(const sf::Vector2<T>& _kVector);
 

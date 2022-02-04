@@ -416,11 +416,11 @@ void ImageSetPanel::UpdateGizmo()
 
                     if (gizmoElement == m_gizmoCenter)
                     {
-                        m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobal(Vector2f());
+                        m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobal(Vector2::Zero_f);
                     }
                     else
                     {
-                        m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobal(Vector2f() + gizmoElement->GetOrigin());
+                        m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobal(Vector2::Zero_f + gizmoElement->GetOrigin());
                     }
                 }
             }

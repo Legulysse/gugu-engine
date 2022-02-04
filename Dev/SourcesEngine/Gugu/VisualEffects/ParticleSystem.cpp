@@ -130,11 +130,11 @@ void ParticleSystem::Start()
 
     if (m_element && !m_settings.localSpace)
     {
-        SetEmitterPosition(m_element->TransformToGlobal(Vector2f()));
+        SetEmitterPosition(m_element->TransformToGlobal(Vector2::Zero_f));
     }
     else
     {
-        SetEmitterPosition(Vector2f());
+        SetEmitterPosition(Vector2::Zero_f);
     }
 
     m_running = true;
@@ -314,7 +314,7 @@ void ParticleSystem::ResetParticle(size_t particleIndex)
     // Reset position and hide vertices.
     for (size_t ii = 0; ii < m_verticesPerParticle; ++ii)
     {
-        m_dataVertices[particleIndex * m_verticesPerParticle + ii].position = m_emitterPosition + Vector2f(0.f, 0.f);
+        m_dataVertices[particleIndex * m_verticesPerParticle + ii].position = m_emitterPosition;
         m_dataVertices[particleIndex * m_verticesPerParticle + ii].color = sf::Color::Transparent;
     }
 }
@@ -326,11 +326,11 @@ void ParticleSystem::Update(const DeltaTime& dt)
 
     if (m_element && !m_settings.localSpace)
     {
-        SetEmitterPosition(m_element->TransformToGlobal(Vector2f()));
+        SetEmitterPosition(m_element->TransformToGlobal(Vector2::Zero_f));
     }
     else
     {
-        SetEmitterPosition(Vector2f());
+        SetEmitterPosition(Vector2::Zero_f);
     }
 
     // Update live particles.

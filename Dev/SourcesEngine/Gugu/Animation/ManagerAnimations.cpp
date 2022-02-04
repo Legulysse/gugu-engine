@@ -39,13 +39,13 @@ void ManagerAnimations::Release()
 
 void ManagerAnimations::Step(const DeltaTime& dt)
 {
-    GUGU_SCOPE_TRACE_MAIN("Animations");
+    //GUGU_SCOPE_TRACE_MAIN("Animations");
 
-    // TODO: handle step vs update animations.
-    for (SpriteAnimation* animation : m_spriteAnimations)
-    {
-        animation->StepAnimation(dt);
-    }
+    //// TODO: handle step vs update animations.
+    //for (SpriteAnimation* animation : m_spriteAnimations)
+    //{
+    //    animation->StepAnimation(dt);
+    //}
 }
 
 void ManagerAnimations::Update(const DeltaTime& dt, EngineStats& stats)
@@ -53,10 +53,10 @@ void ManagerAnimations::Update(const DeltaTime& dt, EngineStats& stats)
     GUGU_SCOPE_TRACE_MAIN("Animations");
 
     // TODO: handle step vs update animations.
-    //for (SpriteAnimation* animation : m_spriteAnimations)
-    //{
-    //    animation->StepAnimation(dt);
-    //}
+    for (SpriteAnimation* animation : m_spriteAnimations)
+    {
+        animation->StepAnimation(dt);
+    }
 
     stats.animationCount = m_spriteAnimations.size();
 }

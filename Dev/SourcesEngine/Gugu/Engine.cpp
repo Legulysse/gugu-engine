@@ -444,6 +444,11 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
             if (m_gameWindow)
                 m_gameWindow->ToggleShowBounds();
         }
+        else if (strCommand == "ruler")
+        {
+            if (m_gameWindow)
+                m_gameWindow->ToggleShowRuler();
+        }
         else if (strCommand == "trace")
         {
             m_traceLifetime = 10;

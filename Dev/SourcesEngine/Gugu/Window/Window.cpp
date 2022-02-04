@@ -47,31 +47,31 @@ namespace gugu {
 
 Window::Window()
 {
-    m_sfWindow     = nullptr;
-    m_renderer     = nullptr;
+    m_sfWindow = nullptr;
+    m_renderer = nullptr;
 
     m_hostImGui = false;
 
-    m_mainCamera   = nullptr;
+    m_mainCamera = nullptr;
     m_handlerEvents = nullptr;
 
-    m_rootNode     = nullptr;
-    m_rootUINode        = nullptr;
-    m_consoleNode  = nullptr;
+    m_rootNode = nullptr;
+    m_rootUINode = nullptr;
+    m_consoleNode = nullptr;
     m_consoleTextEntry = nullptr;
-    m_mouseNode    = nullptr;
+    m_mouseNode = nullptr;
 
     m_systemMouseVisible = true;
     m_mouseVisible = false;
     m_windowHovered = true;
     m_windowFocused = true;
 
-    m_showStats        = false;
-    m_showFPS           = false;
-
     m_backgroundColor = sf::Color(128,128,128,255);
 
+    m_showStats = false;
+    m_showFPS = false;
     m_showBounds = false;
+    m_showRuler = false;
 }
 
 Window::~Window()
@@ -384,7 +384,20 @@ void Window::Render(const DeltaTime& dt, const EngineStats& engineStats)
     }
 
     {
-        GUGU_SCOPE_TRACE_MAIN("Stats");
+        GUGU_SCOPE_TRACE_MAIN("Debug");
+
+        //Ruler
+        if (m_showRuler)
+        {
+            Vector2f position = sf::Vector2f(GetMousePixelCoords());
+            Vector2f size = sf::Vector2f(GetSize());
+            sf::VertexArray rulerVertices(sf::PrimitiveType::Lines, 4);
+            rulerVertices[0] = sf::Vertex(Vector2f(position.x, 0.f), sf::Color::Magenta);
+            rulerVertices[1] = sf::Vertex(Vector2f(position.x, size.y), sf::Color::Magenta);
+            rulerVertices[2] = sf::Vertex(Vector2f(0.f, position.y), sf::Color::Magenta);
+            rulerVertices[3] = sf::Vertex(Vector2f(size.x, position.y), sf::Color::Magenta);
+            m_sfWindow->draw(rulerVertices);
+        }
 
         //Stats
         if (m_showStats)
@@ -657,6 +670,16 @@ void Window::SetShowFPS(bool _bShowFPS)
     m_showFPS = _bShowFPS;
 }
 
+void Window::SetShowBounds(bool showBounds)
+{
+    m_showBounds = showBounds;
+}
+
+void Window::SetShowRuler(bool showRuler)
+{
+    m_showRuler = showRuler;
+}
+
 void Window::ToggleShowStats()
 {
     m_showStats = !m_showStats;
@@ -669,14 +692,14 @@ void Window::ToggleShowFPS()
     m_showFPS = !m_showFPS;
 }
 
-void Window::SetShowBounds(bool showBounds)
-{
-    m_showBounds = showBounds;
-}
-
 void Window::ToggleShowBounds()
 {
     m_showBounds = !m_showBounds;
+}
+
+void Window::ToggleShowRuler()
+{
+    m_showRuler = !m_showRuler;
 }
 
 Window* GetGameWindow()

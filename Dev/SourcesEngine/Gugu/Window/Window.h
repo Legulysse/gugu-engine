@@ -95,13 +95,14 @@ public:
 
     bool Screenshot() const;
 
-    void SetShowStats   (bool _bShowStats);
-    void SetShowFPS     (bool _bShowFPS);
-    void ToggleShowStats    ();
-    void ToggleShowFPS      ();
-
+    void SetShowStats(bool showStats);
+    void SetShowFPS(bool showFPS);
     void SetShowBounds(bool showBounds);
+    void SetShowRuler(bool showRuler);
+    void ToggleShowStats();
+    void ToggleShowFPS();
     void ToggleShowBounds();
+    void ToggleShowRuler();
 
     virtual void ComputeSize    (int _iWidth, int _iHeight);
 
@@ -143,13 +144,12 @@ protected:
 
     sf::Color           m_backgroundColor;
 
-    // Stats
-    bool                m_showStats;
-    bool                m_showFPS;
-
     // Debug
     StatsDrawer* m_statsDrawer;
+    bool m_showStats;
+    bool m_showFPS;
     bool m_showBounds;
+    bool m_showRuler;
 };
 
 Window* GetGameWindow();

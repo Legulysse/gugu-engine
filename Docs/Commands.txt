@@ -8,6 +8,9 @@ Display rendering stats on the screen.
 - bounds
 Display all Elements bounds.
 
+- ruler
+Display vertical and horizontal lines centered on cursor.
+
 - trace <frames>
 Trace performances for the next <frames> frames (default : trace 10).
 Generates a json file readable in chrome://tracing/ (chrome) or about://tracing/ (opera).

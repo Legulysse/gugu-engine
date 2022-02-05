@@ -180,11 +180,10 @@ void SpriteAnimation::SetCurrentFrame(size_t _uiIndex)
     {
         m_animIndexCurrent = _uiIndex;
 
-        InitCurrentAnimationFrame();
-
-        AnimationFrame* pCurrentFrame = GetAnimationFrame();
-        if (pCurrentFrame)
+        AnimationFrame* pCurrentFrame = InitCurrentAnimationFrame();
+        if (pCurrentFrame && !m_events.empty())
         {
+            //TODO: Refactor the events system for something that doesnt copy or create strings.
             // Events frame start.
             std::istringstream ss(pCurrentFrame->GetEvents());
             while (!ss.eof())
@@ -274,7 +273,7 @@ void SpriteAnimation::OnAnimsetChanged()
 {
 }
 
-void SpriteAnimation::InitCurrentAnimationFrame()
+AnimationFrame* SpriteAnimation::InitCurrentAnimationFrame()
 {
     AnimationFrame* pCurrentFrame = GetAnimationFrame();
 
@@ -304,6 +303,8 @@ void SpriteAnimation::InitCurrentAnimationFrame()
             m_sprite->Move(kMove);
         }
     }
+
+    return pCurrentFrame;
 }
 
 }   // namespace gugu

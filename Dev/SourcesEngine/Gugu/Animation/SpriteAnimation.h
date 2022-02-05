@@ -73,8 +73,8 @@ public:
 
 protected:
 
-    virtual void    OnAnimsetChanged();
-    virtual void    InitCurrentAnimationFrame();
+    virtual void OnAnimsetChanged();
+    virtual AnimationFrame* InitCurrentAnimationFrame();
 
 protected:
 

@@ -51,6 +51,7 @@ public:
     float       GetDuration() const;
 
     void        SetEvents(const std::string& _strEvents);
+    bool        HasEvents() const;
     std::string GetEvents() const;
 
     void            SetOrigin(const Vector2f _kOrigin);
@@ -83,7 +84,8 @@ public:
 
     AnimSet*        GetAnimSet() const;
 
-    void            SetName (const std::string& _strName);
+    void            SetName (const std::string& name);
+    bool            IsName(const std::string& name) const;
     std::string     GetName () const;
 
     AnimationFrame* AddFrame        ();

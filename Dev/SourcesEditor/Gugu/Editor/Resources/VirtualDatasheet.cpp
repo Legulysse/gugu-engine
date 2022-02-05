@@ -423,7 +423,7 @@ bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* 
     return true;
 }
 
-void VirtualDatasheet::SetParentDatasheet(std::string parentReferenceID, VirtualDatasheet* parentDatasheet)
+void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, VirtualDatasheet* parentDatasheet)
 {
     m_parentDatasheetID = parentReferenceID;
     m_parentDatasheet = parentDatasheet;

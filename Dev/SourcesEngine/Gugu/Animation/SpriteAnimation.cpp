@@ -119,7 +119,7 @@ bool SpriteAnimation::IsAnimationPlaying(const std::string& _strNameAnim) const
 {
     if (m_animSet && m_animation)
     {
-        return (m_animation->GetName() == _strNameAnim);
+        return m_animation->IsName(_strNameAnim);
     }
     return false;
 }

@@ -34,7 +34,8 @@ public:
 
     ImageSet*       GetImageSet() const;
 
-    void            SetName(const std::string& _strName);
+    void            SetName(const std::string& name);
+    bool            IsName(const std::string& name) const;
     std::string     GetName() const;
 
     void            SetRect(const sf::IntRect& _oRect);

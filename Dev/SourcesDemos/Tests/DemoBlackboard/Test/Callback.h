@@ -44,7 +44,7 @@ public:
 
 public:
 
-    void ComputeTest(std::string value)
+    void ComputeTest(const std::string& value)
     {
         gugu::WriteInConsoleEndline(value, true);
     }

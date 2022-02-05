@@ -71,6 +71,11 @@ void AnimationFrame::SetEvents(const std::string& _strEvents)
     m_events = _strEvents;
 }
 
+bool AnimationFrame::HasEvents() const
+{
+    return m_events.size() > 0;
+}
+
 std::string AnimationFrame::GetEvents() const
 {
     return m_events;
@@ -113,9 +118,14 @@ AnimSet* Animation::GetAnimSet() const
     return m_animSet;
 }
 
-void Animation::SetName(const std::string& _strName)
+void Animation::SetName(const std::string& name)
 {
-    m_name = _strName;
+    m_name = name;
+}
+
+bool Animation::IsName(const std::string& name) const
+{
+    return m_name == name;
 }
 
 std::string Animation::GetName() const
@@ -201,7 +211,7 @@ Animation* AnimSet::GetAnimation(const std::string& _strName) const
     for (size_t i = 0; i < m_animations.size(); ++i)
     {
         Animation* pAnimation = m_animations[i];
-        if (pAnimation->GetName() == _strName)
+        if (pAnimation->IsName(_strName))
             return pAnimation;
     }
     return nullptr;

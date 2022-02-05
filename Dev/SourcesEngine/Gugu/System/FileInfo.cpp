@@ -104,6 +104,11 @@ std::string FileInfo::GetExtension() const
     return "";
 }
 
+bool FileInfo::IsExtension(const std::string& extension) const
+{
+    return StdStringEndsWith(m_name, extension);
+}
+
 bool FileInfo::operator < (const FileInfo& _oRight) const
 {
     return m_name < _oRight.m_name;

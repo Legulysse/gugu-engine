@@ -87,7 +87,7 @@ public:
     virtual bool SaveToFile() override;
 
     bool IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const;    // TODO: I could use an enum for error returns, and reuse them in other cases of references error feedbacks.
-    void SetParentDatasheet(std::string parentDatasheetID, VirtualDatasheet* parentDatasheet);
+    void SetParentDatasheet(const std::string& parentDatasheetID, VirtualDatasheet* parentDatasheet);
 
 public:
 

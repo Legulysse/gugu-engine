@@ -43,9 +43,14 @@ std::string SubImage::GetName() const
     return m_name;
 }
 
-void SubImage::SetName(const std::string& _strName)
+void SubImage::SetName(const std::string& name)
 {
-    m_name = _strName;
+    m_name = name;
+}
+
+bool SubImage::IsName(const std::string& name) const
+{
+    return m_name == name;
 }
 
 sf::Rect<int> SubImage::GetRect() const
@@ -83,7 +88,7 @@ SubImage* ImageSet::AddSubImage(const std::string& _strName)
 {
     for (size_t i = 0; i < m_subImages.size(); ++i)
     {
-        if (m_subImages[i]->GetName() == _strName)
+        if (m_subImages[i]->IsName(_strName))
             return nullptr;
     }
 
@@ -125,7 +130,7 @@ SubImage* ImageSet::GetSubImage(const std::string& _strName) const
 {
     for (size_t i = 0; i < m_subImages.size(); ++i)
     {
-        if (m_subImages[i]->GetName() == _strName)
+        if (m_subImages[i]->IsName(_strName))
             return m_subImages[i];
     }
 

@@ -62,10 +62,10 @@ void Engine::Init(const EngineConfig& config)
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, "Gugu::Engine Start");
 
     //-- Pre-compute config parameters --//
-    EngineConfig computedConfig = config;
+    m_engineConfig = config;
 
-    NormalizePathSelf(computedConfig.pathAssets, true);
-    NormalizePathSelf(computedConfig.pathScreenshots, true);
+    NormalizePathSelf(m_engineConfig.pathAssets, true);
+    NormalizePathSelf(m_engineConfig.pathScreenshots, true);
 
     //-- Init Engine core --//
     m_stopLoop = false;
@@ -80,37 +80,37 @@ void Engine::Init(const EngineConfig& config)
 
     //-- Init Managers --//
     m_managerResources = new ManagerResources;
-    m_managerResources->Init(computedConfig);
+    m_managerResources->Init(m_engineConfig);
 
     m_managerInputs = new ManagerInputs;
-    m_managerInputs->Init(computedConfig);
+    m_managerInputs->Init(m_engineConfig);
 
     m_managerAudio = new ManagerAudio;
-    m_managerAudio->Init(computedConfig);
+    m_managerAudio->Init(m_engineConfig);
 
     m_managerNetwork = new ManagerNetwork;
 
     m_managerAnimations = new ManagerAnimations;
-    m_managerAnimations->Init(computedConfig);
+    m_managerAnimations->Init(m_engineConfig);
 
     m_managerVisualEffects = new ManagerVisualEffects;
-    m_managerVisualEffects->Init(computedConfig);
+    m_managerVisualEffects->Init(m_engineConfig);
 
     m_managerScenes = new ManagerScenes;
-    m_managerScenes->Init(computedConfig);
+    m_managerScenes->Init(m_engineConfig);
 
     //-- Init Default Renderer --//
     m_renderer = new DefaultRenderer;
 
     //-- Init Window --//
-    if (computedConfig.gameWindow == EGameWindow::Sfml)
+    if (m_engineConfig.gameWindow == EGameWindow::Sfml)
     {
         m_gameWindow = new Window;
     }
 
     if (m_gameWindow)
     {
-        m_gameWindow->Create(computedConfig, true);
+        m_gameWindow->Create(m_engineConfig, true);
         m_gameWindow->SetRenderer(m_renderer);
 
         AddWindow(m_gameWindow);
@@ -225,19 +225,8 @@ void Engine::RunMainLoop()
 
 void Engine::RunSingleLoop(const sf::Time& loopTime)
 {
-    //DeltaTime dt(loopTime);
-
-    //// TODO: rework the speed option, to handle values below 1ms/frame (I can use intervals with a dt=0).
-    //DeltaTime dtConstantStep((20));
-    //DeltaTime dtSpeedModulatedStep(2 * m_stepSpeed);    // Default step speed multiplier is 10, minimum is 1.
-
-    // Compute frame times.
-    sf::Time constantStepTime = sf::milliseconds(20);
-    //sf::Time constantStepTimeScaled = constantStepTime * m_speedMultiplier;
-    sf::Time loopTimeScaled = loopTime;
-    //sf::Time loopTimeUnscaled = loopTime;
-
     // handle speed multiplier if active.
+    sf::Time loopTimeScaled = loopTime;
     if (m_useSpeedMultiplier)
     {
         loopTimeScaled *= m_speedMultiplier;
@@ -250,12 +239,18 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         m_injectTime = sf::Time::Zero;
     }
 
-    // Compute delta times.
-    DeltaTime dt_constant(constantStepTime);
-    //DeltaTime dt_constantScaled(constantStepTimeScaled);
-    DeltaTime dt_scaled(loopTimeScaled);
-    //DeltaTime dt_unscaled(loopTime);
+    // Compute step time.
+    sf::Time stepTime = loopTimeScaled;
+    if (m_engineConfig.useConstantStep)
+    {
+        stepTime = sf::milliseconds(m_engineConfig.constantStepTime);
+    }
 
+    // Compute delta times.
+    DeltaTime dt_step(stepTime);
+    DeltaTime dt_update(loopTimeScaled);
+
+    // Prepare clocks for stats.
     sf::Clock clockStatLoop;
     sf::Clock clockStatSection;
 
@@ -295,39 +290,68 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
 
     //-- Step --//
     {
-        GUGU_SCOPE_TRACE_MAIN("Step");
+        GUGU_SCOPE_TRACE_MAIN("Steps");
         clockStatSection.restart();
 
         //Step
-        m_timeSinceLastStep += loopTimeScaled;
+        bool allowNextStep = true;
+        bool allowMultipleSteps = false;
+        if (m_engineConfig.useConstantStep)
+        {
+            m_timeSinceLastStep += loopTimeScaled;
+            allowNextStep = m_timeSinceLastStep >= stepTime;
+
+            // If app is running with modulated speed, we may need to compute several steps per loop.
+            // This will also happen is step time is lower than loop time.
+            allowMultipleSteps = true;
+        }
+
         bool stepHappened = false;
         bool multipleStepsHappened = false;
 
-        //TODO: option to use a while to compensate lagging frames (warning : breakpoints fuck timers, so I need to gracefully recover) (warning : it breaks everything if fps is too low) 
-        //TODO: option to ignore constantstep
-        bool allowMultipleSteps = m_useSpeedMultiplier && m_speedMultiplier > 1.f;
-        bool allowNextStep = true;
-        while (allowNextStep && m_timeSinceLastStep >= constantStepTime && m_managerNetwork->IsReadyForTurn())
+        //TODO: check m_managerNetwork->IsReadyForTurn() if running steps based on synchronized network clients.
+        while (allowNextStep)
         {
-            m_timeSinceLastStep -= constantStepTime;
-            multipleStepsHappened = stepHappened;
-            stepHappened = true;
-            allowNextStep = allowMultipleSteps;
+            GUGU_SCOPE_TRACE_MAIN_("Step", Step);
 
-            TickTimers(dt_constant);
+            TickTimers(dt_step);
 
             if (m_application)
-                m_application->AppStep(dt_constant);
+                m_application->AppStep(dt_step);
 
-            m_managerScenes->Step(dt_constant);
-            m_managerAnimations->Step(dt_constant);
+            m_managerScenes->Step(dt_step);
+            m_managerAnimations->Step(dt_step);
 
             m_managerNetwork->SetTurnPlayed();
 
-            if (multipleStepsHappened && clockStatSection.getElapsedTime().asMilliseconds() >= 500)
+            // Compute spent time.
+            multipleStepsHappened = stepHappened;
+            stepHappened = true;
+
+            allowNextStep = false;
+            if (m_engineConfig.useConstantStep)
             {
-                //m_timeSinceLastStep = sf::Time::Zero;
-                break;
+                m_timeSinceLastStep -= stepTime;
+
+                if (allowMultipleSteps)
+                {
+                    allowNextStep = m_timeSinceLastStep >= stepTime;
+                }
+                else
+                {
+                    // Since we dont compensate, no need to keep exceeding step lag.
+                    m_timeSinceLastStep = Min(m_timeSinceLastStep, stepTime);
+                }
+            }
+
+            // Safety in case the loop takes too much time.
+            // Either because we took longer than the simulated stepTime, or because we took way too much time.
+            if (allowNextStep
+                && (clockStatSection.getElapsedTime() >= stepTime
+                || clockStatSection.getElapsedTime() >= sf::milliseconds(500)))
+            {
+                m_timeSinceLastStep = sf::Time::Zero;
+                allowNextStep = false;
             }
         }
 
@@ -362,12 +386,12 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         }
 
         if (m_application)
-            m_application->AppUpdate(dt_scaled);
+            m_application->AppUpdate(dt_update);
 
-        m_managerScenes->Update(dt_scaled);
-        m_managerAnimations->Update(dt_scaled, m_stats);
-        m_managerVisualEffects->Update(dt_scaled, m_stats);
-        m_managerAudio->Update(dt_scaled);
+        m_managerScenes->Update(dt_update);
+        m_managerAnimations->Update(dt_update, m_stats);
+        m_managerVisualEffects->Update(dt_update, m_stats);
+        m_managerAudio->Update(dt_update);
 
         // Update Stats
         m_stats.updateTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());

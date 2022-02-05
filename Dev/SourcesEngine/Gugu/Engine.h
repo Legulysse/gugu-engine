@@ -101,12 +101,13 @@ public:
 
 private:
     
+    EngineConfig m_engineConfig;
+
     Renderer*               m_renderer;
     Window*                 m_gameWindow;
     std::vector<Window*>    m_windows;
 
     std::map<std::string, Timer*> m_timers;
-
 
     ManagerInputs*      m_managerInputs;
     ManagerAudio*       m_managerAudio;

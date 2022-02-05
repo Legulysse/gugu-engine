@@ -27,6 +27,10 @@ struct EngineConfig
     std::string applicationName;
     std::string applicationIcon;
 
+    // Step
+    bool useConstantStep;
+    int constantStepTime;
+
     // Resources
     bool useAssetsFullPaths;
     std::string pathAssets;
@@ -57,6 +61,9 @@ struct EngineConfig
     {
         applicationName = "Game Project";
         applicationIcon = "";
+
+        useConstantStep = true;
+        constantStepTime = 20;
 
         useAssetsFullPaths = false;
         pathAssets = "";

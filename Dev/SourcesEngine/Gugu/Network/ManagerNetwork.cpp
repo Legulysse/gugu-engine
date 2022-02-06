@@ -38,16 +38,16 @@ ManagerNetwork::ManagerNetwork()
     m_nbTurnsOffset = 2;
 
     m_receptionThread = nullptr;
-    
-    m_logNetwork = new LoggerEngine();
-    m_logNetwork->SetConsoleOutput(true, false);
-    m_logNetwork->SetFile("Network.log");
+    m_logNetwork = nullptr;
 }
 
 ManagerNetwork::~ManagerNetwork()
 {
-    StopListening();
-    DisconnectAll();
+    if (m_isListening)
+    {
+        StopListening();
+        DisconnectAll();
+    }
 
     SafeDelete(m_clientInfoSelf);
     SafeDelete(m_selector);
@@ -58,6 +58,13 @@ ManagerNetwork::~ManagerNetwork()
 
 void ManagerNetwork::StartListening(sf::Uint16 _uiPort)
 {
+    if (!m_logNetwork)
+    {
+        m_logNetwork = new LoggerEngine();
+        m_logNetwork->SetConsoleOutput(true, false);
+        m_logNetwork->SetFile("Network.log");
+    }
+
     if(!m_isListening)
     {
         SafeDelete(m_clientInfoSelf);

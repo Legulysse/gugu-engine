@@ -266,7 +266,14 @@ void Projectile::Step(const DeltaTime& dt)
             }
         }
 
-        m_sprite->Move(moveStep);
+        if (reachedDestination && m_hasDestination)
+        {
+            m_sprite->SetPosition(m_destination);
+        }
+        else
+        {
+            m_sprite->Move(moveStep);
+        }
 
         if (reachedDestination)
         {

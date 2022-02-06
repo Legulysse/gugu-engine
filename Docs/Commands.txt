@@ -11,9 +11,15 @@ Display all Elements bounds.
 - ruler
 Display vertical and horizontal lines centered on cursor.
 
-- trace <frames>
+- trace <int:frames>
 Trace performances for the next <frames> frames (default : trace 10).
 Generates a json file readable in chrome://tracing/ (chrome) or about://tracing/ (opera).
 
-- speed <value>
-Set the game step speed at <value> (default speed is 10, minimum is 1).
+- speed <float:value>
+Set the engine loop speed multiplier at <value> (default speed is 1, minimum is 0).
+
+- pause
+Pauses the engine loop (can be stacked on top of a modified speed).
+
+- time <int:value>
+Injects <value> milliseconds into the engine loop (can only be used when the engine loop is paused).

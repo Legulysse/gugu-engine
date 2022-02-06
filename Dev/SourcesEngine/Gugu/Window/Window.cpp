@@ -68,6 +68,7 @@ Window::Window()
 
     m_backgroundColor = sf::Color(128,128,128,255);
 
+    m_statsDrawer = nullptr;
     m_showStats = false;
     m_showFPS = false;
     m_showBounds = false;
@@ -313,8 +314,8 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
 {
     FrameInfos kFrameInfos;
     kFrameInfos.showBounds = m_showBounds;
-    kFrameInfos.defaultBoundsShape.setOutlineThickness(1.f);
-    kFrameInfos.defaultBoundsShape.setOutlineColor(sf::Color::Magenta);
+    kFrameInfos.defaultBoundsShape.setOutlineThickness(-1.f);
+    kFrameInfos.defaultBoundsShape.setOutlineColor(sf::Color(255, 0, 255, 200));
     kFrameInfos.defaultBoundsShape.setFillColor(sf::Color::Transparent);
 
     {
@@ -337,7 +338,7 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
     }
 
     {
-        GUGU_SCOPE_TRACE_MAIN("Prepare UI");
+        GUGU_SCOPE_TRACE_MAIN("UI");
 
         //Handle Mouse visibility
         bool isSystemMouseWantedVisible = m_systemMouseVisible;
@@ -365,12 +366,7 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
 
         m_mouseNode->SetPosition(GetGameWindow()->GetMousePosition());
 
-        //Render Window UI
         m_rootNode->SortOnZIndex();
-    }
-
-    {
-        GUGU_SCOPE_TRACE_MAIN("UI");
 
         if (m_renderer)
             m_renderer->RenderWindow(&kFrameInfos, this, m_mainCamera);
@@ -387,16 +383,43 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
         GUGU_SCOPE_TRACE_MAIN("Debug");
 
         //Ruler
-        if (m_showRuler)
+        if (m_showRuler && m_windowFocused)
         {
+            //TODO: merge into StatsDrawer, rename as DebugDrawer.
+            if (m_ruler.getVertexCount() == 0)
+            {
+                int graduations = 10;
+                float graduationSize = 100.f;
+
+                Vector2f position = sf::Vector2f(0.5f, 0.5f);
+                Vector2f size = sf::Vector2f(GetSize()) * 2.f;
+                sf::Color rulerColor = sf::Color(255, 0, 255, 200);
+                m_ruler = sf::VertexArray(sf::PrimitiveType::Lines, 4 + graduations * 8);
+
+                size_t v = 0;
+                m_ruler[v++] = sf::Vertex(Vector2f(position.x, -size.y), rulerColor);
+                m_ruler[v++] = sf::Vertex(Vector2f(position.x, size.y + 1.f), rulerColor);
+                m_ruler[v++] = sf::Vertex(Vector2f(-size.x, position.y), rulerColor);
+                m_ruler[v++] = sf::Vertex(Vector2f(size.x + 1.f, position.y), rulerColor);
+
+                for (int i = 0; i < graduations; ++i)
+                {
+                    float offset = graduationSize * i;
+                    m_ruler[v++] = sf::Vertex(Vector2f(position.x + offset, position.y - 10.f), rulerColor);
+                    m_ruler[v++] = sf::Vertex(Vector2f(position.x + offset, position.y + 11.f), rulerColor);
+                    m_ruler[v++] = sf::Vertex(Vector2f(position.x - offset, position.y - 10.f), rulerColor);
+                    m_ruler[v++] = sf::Vertex(Vector2f(position.x - offset, position.y + 11.f), rulerColor);
+                    m_ruler[v++] = sf::Vertex(Vector2f(position.x - 10.f, position.y + offset), rulerColor);
+                    m_ruler[v++] = sf::Vertex(Vector2f(position.x + 11.f, position.y + offset), rulerColor);
+                    m_ruler[v++] = sf::Vertex(Vector2f(position.x - 10.f, position.y - offset), rulerColor);
+                    m_ruler[v++] = sf::Vertex(Vector2f(position.x + 11.f, position.y - offset), rulerColor);
+                }
+            }
+
             Vector2f position = sf::Vector2f(GetMousePixelCoords());
-            Vector2f size = sf::Vector2f(GetSize());
-            sf::VertexArray rulerVertices(sf::PrimitiveType::Lines, 4);
-            rulerVertices[0] = sf::Vertex(Vector2f(position.x, 0.f), sf::Color::Magenta);
-            rulerVertices[1] = sf::Vertex(Vector2f(position.x, size.y), sf::Color::Magenta);
-            rulerVertices[2] = sf::Vertex(Vector2f(0.f, position.y), sf::Color::Magenta);
-            rulerVertices[3] = sf::Vertex(Vector2f(size.x, position.y), sf::Color::Magenta);
-            m_sfWindow->draw(rulerVertices);
+            sf::Transform rulerTransform;
+            rulerTransform.translate(position);
+            m_sfWindow->draw(m_ruler, sf::RenderStates(rulerTransform));
         }
 
         //Stats

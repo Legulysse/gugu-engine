@@ -5,10 +5,11 @@
 
 #include "Gugu/Math/Vector2.h"
 
-#include <SFML/Graphics/Sprite.hpp>   //TODO: use pointers + forward declaration
-#include <SFML/Graphics/Text.hpp>   //TODO: use pointers + forward declaration
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
-#include <list>
+#include <string>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -146,6 +147,7 @@ protected:
 
     // Debug
     StatsDrawer* m_statsDrawer;
+    sf::VertexArray m_ruler;
     bool m_showStats;
     bool m_showFPS;
     bool m_showBounds;

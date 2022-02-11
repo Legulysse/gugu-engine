@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/DeltaTime.h"
+#include <SFML/System/Time.hpp>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -46,10 +46,9 @@ public:
     void    Pause           ();
     void    Stop            ();
 
-    // TODO: I shouldnt use DeltaTime for this.
-    DeltaTime GetDuration() const;
-    DeltaTime GetPlayOffset() const;
-    void SetPlayOffset(DeltaTime _kOffset);
+    sf::Time GetDuration() const;
+    sf::Time GetPlayOffset() const;
+    void SetPlayOffset(const sf::Time& offset);
     //TODO: Investigate loop points feature
 
     bool    IsPaused() const;

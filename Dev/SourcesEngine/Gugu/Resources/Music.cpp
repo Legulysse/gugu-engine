@@ -47,13 +47,13 @@ bool Music::LoadFromFile()
     return true;
 }
 
-DeltaTime Music::GetDuration() const
+sf::Time Music::GetDuration() const
 {
     //TODO: Check if I need to make something a bit cleaner
     sf::Music music;
     if (music.openFromFile(GetFileInfoRef().GetPathName()))
         return music.getDuration();
-    return DeltaTime();
+    return sf::Time::Zero;
 }
 
 }   // namespace gugu

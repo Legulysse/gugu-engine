@@ -4,7 +4,6 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
-#include "Gugu/Core/DeltaTime.h"
 
 #include <SFML/Audio/Music.hpp>
 
@@ -22,8 +21,7 @@ public:
 
     bool    LoadSFMusic (sf::Music* _pMusic);
 
-    // TODO: I shouldnt use DeltaTime for this.
-    DeltaTime GetDuration() const;
+    sf::Time GetDuration() const;
     
     virtual EResourceType::Type GetResourceType() const override;
 

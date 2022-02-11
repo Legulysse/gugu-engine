@@ -128,24 +128,24 @@ void MusicInstance::Stop()
     }
 }
 
-DeltaTime MusicInstance::GetDuration() const
+sf::Time MusicInstance::GetDuration() const
 {
     if (m_sfMusic)
         return m_sfMusic->getDuration();
-    return DeltaTime();
+    return sf::Time::Zero;
 }
 
-DeltaTime MusicInstance::GetPlayOffset() const
+sf::Time MusicInstance::GetPlayOffset() const
 {
     if (m_sfMusic)
         return m_sfMusic->getPlayingOffset();
-    return DeltaTime();
+    return sf::Time::Zero;
 }
 
-void MusicInstance::SetPlayOffset(DeltaTime _kOffset)
+void MusicInstance::SetPlayOffset(const sf::Time& offset)
 {
     if (m_sfMusic)
-        return m_sfMusic->setPlayingOffset(_kOffset.GetSFTime());
+        return m_sfMusic->setPlayingOffset(offset);
 }
 
 bool MusicInstance::IsPaused() const

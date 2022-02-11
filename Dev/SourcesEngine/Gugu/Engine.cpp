@@ -226,29 +226,38 @@ void Engine::RunMainLoop()
 void Engine::RunSingleLoop(const sf::Time& loopTime)
 {
     // handle speed multiplier if active.
-    sf::Time loopTimeScaled = loopTime;
+    sf::Time updateTimeScaled = loopTime;
+    sf::Time updateTimeUnscaled = loopTime;
+    float updateDeltaScale = 1.f;
+
     if (m_useSpeedMultiplier)
     {
-        loopTimeScaled *= m_speedMultiplier;
+        updateTimeScaled *= m_speedMultiplier;
+        updateDeltaScale = m_speedMultiplier;
     }
 
     // Handle time injection when using the pause mode.
     if (m_pauseLoop)
     {
-        loopTimeScaled = m_injectTime;
+        updateTimeScaled = m_injectTime;
         m_injectTime = sf::Time::Zero;
     }
 
     // Compute step time.
-    sf::Time stepTime = loopTimeScaled;
+    sf::Time stepTimeScaled = updateTimeScaled;
+    sf::Time stepTimeUnscaled = updateTimeUnscaled;
+    float stepDeltaScale = updateDeltaScale;
+
     if (m_engineConfig.useConstantStep)
     {
-        stepTime = sf::milliseconds(m_engineConfig.constantStepTime);
+        stepTimeScaled = sf::milliseconds(m_engineConfig.constantStepTime);
+        stepTimeUnscaled = stepTimeScaled;
+        stepDeltaScale = 1.f;
     }
 
     // Compute delta times.
-    DeltaTime dt_step(stepTime);
-    DeltaTime dt_update(loopTimeScaled);
+    DeltaTime dt_step(stepTimeScaled, stepTimeUnscaled, stepDeltaScale);
+    DeltaTime dt_update(updateTimeScaled, updateTimeUnscaled, updateDeltaScale);
 
     // Prepare clocks for stats.
     sf::Clock clockStatLoop;
@@ -298,8 +307,8 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         bool allowMultipleSteps = false;
         if (m_engineConfig.useConstantStep)
         {
-            m_timeSinceLastStep += loopTimeScaled;
-            allowNextStep = m_timeSinceLastStep >= stepTime;
+            m_timeSinceLastStep += updateTimeScaled;
+            allowNextStep = m_timeSinceLastStep >= stepTimeScaled;
 
             // If app is running with modulated speed, we may need to compute several steps per loop.
             // This will also happen is step time is lower than loop time.
@@ -331,23 +340,23 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
             allowNextStep = false;
             if (m_engineConfig.useConstantStep)
             {
-                m_timeSinceLastStep -= stepTime;
+                m_timeSinceLastStep -= stepTimeScaled;
 
                 if (allowMultipleSteps)
                 {
-                    allowNextStep = m_timeSinceLastStep >= stepTime;
+                    allowNextStep = m_timeSinceLastStep >= stepTimeScaled;
                 }
                 else
                 {
                     // Since we dont compensate, no need to keep exceeding step lag.
-                    m_timeSinceLastStep = Min(m_timeSinceLastStep, stepTime);
+                    m_timeSinceLastStep = Min(m_timeSinceLastStep, stepTimeScaled);
                 }
             }
 
             // Safety in case the loop takes too much time.
-            // Either because we took longer than the simulated stepTime, or because we took way too much time.
+            // Either because we took longer than the simulated stepTimeScaled, or because we took way too much time.
             if (allowNextStep
-                && (clockStatSection.getElapsedTime() >= stepTime
+                && (clockStatSection.getElapsedTime() >= stepTimeScaled
                 || clockStatSection.getElapsedTime() >= sf::milliseconds(500)))
             {
                 m_timeSinceLastStep = sf::Time::Zero;

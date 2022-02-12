@@ -220,6 +220,16 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     {
         m_dataPosition[particleIndex] = position;
     }
+    else if (m_settings.emitterShape == ParticleSystemSettings::EEmitterShape::Circle)
+    {
+        position = GetRandomPointInCircle(position, m_settings.emitterRadius);
+        m_dataPosition[particleIndex] = position;
+    }
+    else if (m_settings.emitterShape == ParticleSystemSettings::EEmitterShape::Annulus)
+    {
+        position = GetRandomPointInAnnulus(position, m_settings.emitterInnerRadius, m_settings.emitterRadius);
+        m_dataPosition[particleIndex] = position;
+    }
 
     // Reset vertices position.
     if (m_verticesPerParticle == 6)
@@ -285,9 +295,9 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     // Reset velocity.
     if (m_settings.emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::RandomDirection)
     {
-        Vector2f velocity = Vector2f(GetRandomf(m_settings.minVelocity, m_settings.maxVelocity), 0.f);
-        velocity = Rotate(velocity, GetRandomf(Math::Pi * 2.f));
-        m_dataVelocity[particleIndex] = velocity;
+        Vector2f velocityVector = Vector2f(GetRandomf(m_settings.minVelocity, m_settings.maxVelocity), 0.f);
+        velocityVector = Rotate(velocityVector, GetRandomf(Math::Pi * 2.f));
+        m_dataVelocity[particleIndex] = velocityVector;
     }
     else if (m_settings.emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::AngleDirection)
     {
@@ -295,6 +305,13 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
         Vector2f velocityVector = m_settings.emissionDirection * velocityValue;
         float emissionAngle = GetRandomf(m_settings.emissionAngle) - (m_settings.emissionAngle * 0.5f);
         velocityVector = Rotate(velocityVector, ToRadiansf(emissionAngle));
+        m_dataVelocity[particleIndex] = velocityVector;
+    }
+    else if (m_settings.emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::AwayFromCenter)
+    {
+        float velocityValue = GetRandomf(m_settings.minVelocity, m_settings.maxVelocity);
+        Vector2f velocityVector = position - m_emitterPosition;
+        velocityVector = Normalize(velocityVector) * velocityValue;
         m_dataVelocity[particleIndex] = velocityVector;
     }
 }

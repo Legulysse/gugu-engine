@@ -20,7 +20,8 @@ struct ParticleSystemSettings
     {
         Point,
         //PointList,
-        //Circle,
+        Circle,
+        Annulus,
         //Square,
         //Segment,
         //SegmentList,
@@ -30,7 +31,7 @@ struct ParticleSystemSettings
     {
         RandomDirection,
         AngleDirection,
-        //AwayFromCenter,
+        AwayFromCenter,
     };
 
     enum class EParticleShape
@@ -46,8 +47,14 @@ struct ParticleSystemSettings
     EParticleShape particleShape = EParticleShape::Quad;
     bool localSpace = false;
 
-    // Emitter
+    // Emitter Shape
     EEmitterShape emitterShape = EEmitterShape::Point;
+    float emitterRadius = 100.f;                    // Circle, Annulus
+    float emitterInnerRadius = 50.f;                // Annulus.
+    //Vector2f emitterSize = Vector2f(100.f, 100.f);  // Square.
+    //std::vector<Vector2f> emissionPoints;           // PointList, Segment, SegmentList.
+
+    // Particle Spawn
     bool useRandomSpawnPerSecond = false;
     float minSpawnPerSecond = 10.f;
     float maxSpawnPerSecond = 10.f;

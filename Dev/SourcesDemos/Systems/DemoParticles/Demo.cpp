@@ -62,7 +62,7 @@ void Demo::AppStart()
     ElementSFDrawable* gridElement = sceneRoot->AddChild<ElementSFDrawable>();
     gridElement->SetSFDrawable(gridVertices);
 
-    // Scene Particles
+    // Prepare Scene Particles
     for (size_t i = 0; i < 10; ++i)
     {
         ParticleSystemSettings settings;
@@ -70,22 +70,46 @@ void Demo::AppStart()
         settings.minSpawnPerSecond = 500;
         settings.updateColorOverLifetime = true;
 
+        m_particleSystemSettings.push_back(settings);
+    }
+
+    // Test ring effect
+    m_particleSystemSettings[0].maxParticleCount = 2000;
+    m_particleSystemSettings[0].emitterShape = ParticleSystemSettings::EEmitterShape::Annulus;
+    m_particleSystemSettings[0].emitterRadius = 200.f;
+    m_particleSystemSettings[0].emitterInnerRadius = 180.f;
+    m_particleSystemSettings[0].minSpawnPerSecond = 1200.f;
+
+    // Test swarm effect
+    m_particleSystemSettings[9].maxParticleCount = 1000;
+    m_particleSystemSettings[9].emitterShape = ParticleSystemSettings::EEmitterShape::Circle;
+    m_particleSystemSettings[9].emitterRadius = 100.f;
+    m_particleSystemSettings[9].minSpawnPerSecond = 1000.f;
+    m_particleSystemSettings[9].minVelocity = 200.f;
+    m_particleSystemSettings[9].endColor = sf::Color(255, 255, 255, 0);
+
+    // Spawn Scene Particles
+    for (size_t i = 0; i < 10; ++i)
+    {
         ElementParticles* elementParticle = sceneRoot->AddChild<ElementParticles>();
         elementParticle->SetPosition(Vector2f(-300.f + (i % 5) * 150.f, -100.f + (i / 5) * 200.f));
-        ParticleSystem* particleSystem = elementParticle->CreateParticleSystem(settings, true);
+        ParticleSystem* particleSystem = elementParticle->CreateParticleSystem(m_particleSystemSettings[i], true);
 
-        m_particleSystemSettings.push_back(settings);
         m_particleSystems.push_back(particleSystem);
         m_centerParticleElements.push_back(elementParticle);
     }
-    
-    // Arm Particle
+
+    // Arm
     sf::VertexArray* armShape = new sf::VertexArray;
     armShape->setPrimitiveType(sf::PrimitiveType::Lines);
     armShape->append(sf::Vertex(Vector2f(0.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(400.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(400.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(400.f, -50.f)));
+    armShape->append(sf::Vertex(Vector2f(300.f, 0.f)));
+    armShape->append(sf::Vertex(Vector2f(300.f, 0.f)));
+    armShape->append(sf::Vertex(Vector2f(300.f, -50.f)));
+    armShape->append(sf::Vertex(Vector2f(0.f, 0.f)));
+    armShape->append(sf::Vertex(Vector2f(-400.f, 0.f)));
+    armShape->append(sf::Vertex(Vector2f(-400.f, 0.f)));
+    armShape->append(sf::Vertex(Vector2f(-400.f, 50.f)));
 
     ElementSFDrawable* arm = sceneRoot->AddChild<ElementSFDrawable>();
     arm->SetPosition(0.f, 50.f);
@@ -93,6 +117,7 @@ void Demo::AppStart()
     arm->SetSFDrawable(armShape);
     m_moveArm = arm;
 
+    // Arm Particle
     ParticleSystemSettings armSettings;
     armSettings.maxParticleCount = 100;
     armSettings.minParticlesPerSpawn = 5;
@@ -106,12 +131,37 @@ void Demo::AppStart()
     armSettings.updateColorOverLifetime = true;
 
     ElementParticles* armElementParticle = arm->AddChild<ElementParticles>();
-    armElementParticle->SetPositionX(400.f);
+    armElementParticle->SetPositionX(300.f);
     armElementParticle->SetOrigin(0.f, 50.f);
     ParticleSystem* armParticleSystem = armElementParticle->CreateParticleSystem(armSettings, true);
 
     m_particleSystemSettings.push_back(armSettings);
     m_particleSystems.push_back(armParticleSystem);
+
+    // Arm Particle 2
+    ParticleSystemSettings armSettings2;
+    armSettings2.maxParticleCount = 5000;
+    armSettings2.emitterShape = ParticleSystemSettings::EEmitterShape::Annulus;
+    armSettings2.emitterRadius = 80.f;
+    armSettings2.emitterInnerRadius = 70.f;
+    armSettings2.minSpawnPerSecond = 500.f;
+    armSettings2.minParticlesPerSpawn = 5;
+    armSettings2.minLifetime = 1500;
+    armSettings2.useRandomStartSize = true;
+    armSettings2.minStartSize = Vector2f(5.f, 5.f);
+    armSettings2.maxStartSize = Vector2f(10.f, 10.f);
+    armSettings2.updateSizeOverLifetime = true;
+    armSettings2.startColor = sf::Color::Yellow;
+    armSettings2.endColor = sf::Color::Red;
+    armSettings2.updateColorOverLifetime = true;
+
+    ElementParticles* armElementParticle2 = arm->AddChild<ElementParticles>();
+    armElementParticle2->SetPositionX(-400.f);
+    armElementParticle2->SetOrigin(0.f, -50.f);
+    ParticleSystem* armParticleSystem2 = armElementParticle2->CreateParticleSystem(armSettings2, true);
+
+    m_particleSystemSettings.push_back(armSettings2);
+    m_particleSystems.push_back(armParticleSystem2);
 
     // Cursor Particle
     ParticleSystemSettings cursorSettings;
@@ -219,12 +269,26 @@ void Demo::AppUpdate(const DeltaTime& dt)
 
                 ImGui::Spacing();
 
-                // Emitter
-                const char* emitterShapeValues[] = { "Point" };
+                // Emitter Shape
+                const char* emitterShapeValues[] = { "Point", "Circle", "Annulus" };
                 int emitterShapeIndex = (int)m_particleSystemSettings[i].emitterShape;
                 updated |= ImGui::Combo("emitter shape", &emitterShapeIndex, emitterShapeValues, IM_ARRAYSIZE(emitterShapeValues));
                 m_particleSystemSettings[i].emitterShape = (ParticleSystemSettings::EEmitterShape)emitterShapeIndex;
 
+                if (m_particleSystemSettings[i].emitterShape == ParticleSystemSettings::EEmitterShape::Circle
+                    || m_particleSystemSettings[i].emitterShape == ParticleSystemSettings::EEmitterShape::Annulus)
+                {
+                    updated |= ImGui::InputFloat("emitter radius", &m_particleSystemSettings[i].emitterRadius);
+
+                    if (m_particleSystemSettings[i].emitterShape == ParticleSystemSettings::EEmitterShape::Annulus)
+                    {
+                        updated |= ImGui::InputFloat("emitter inner radius", &m_particleSystemSettings[i].emitterInnerRadius);
+                    }
+                }
+
+                ImGui::Spacing();
+
+                // Particle Spawn
                 updated |= checkRandomSetting(id, m_particleSystemSettings[i].useRandomSpawnPerSecond);
                 if (m_particleSystemSettings[i].useRandomSpawnPerSecond)
                 {
@@ -258,7 +322,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 ImGui::Spacing();
 
                 // Particle behaviour
-                const char* emissionBehaviourValues[] = { "Random Direction", "Angle Direction" };
+                const char* emissionBehaviourValues[] = { "Random Direction", "Angle Direction", "Away From Center" };
                 int emissionBehaviourIndex = (int)m_particleSystemSettings[i].emissionBehaviour;
                 updated |= ImGui::Combo("emission behaviour", &emissionBehaviourIndex, emissionBehaviourValues, IM_ARRAYSIZE(emissionBehaviourValues));
                 m_particleSystemSettings[i].emissionBehaviour = (ParticleSystemSettings::EEmissionBehaviour)emissionBehaviourIndex;

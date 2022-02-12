@@ -48,6 +48,12 @@ T ClampUnordered(T _tValue, T _tLimitA, T _tLimitB)
 }
 
 template <typename T>
+T Clamp01(T _tValue)
+{
+    return std::min((T)1, std::max((T)0, _tValue));
+}
+
+template <typename T>
 T Distance(T _tValue1, T _tValue2)
 {
     return std::max(_tValue1, _tValue2) - std::min(_tValue1, _tValue2);

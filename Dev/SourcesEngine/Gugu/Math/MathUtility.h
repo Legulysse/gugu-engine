@@ -52,6 +52,9 @@ template <typename T>
 T ClampUnordered(T _tValue, T _tLimitA, T _tLimitB);
 
 template <typename T>
+T Clamp01(T _tValue);
+
+template <typename T>
 T Distance(T _tValue1, T _tValue2);
 
 template <typename T>

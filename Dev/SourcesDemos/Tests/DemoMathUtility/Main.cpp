@@ -3,9 +3,12 @@
 
 #include "Gugu/Common.h"
 
+#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/Math/UDim.h"
+
+#include <SFML/System/Clock.hpp>
 
 #include <map>
 #include <set>
@@ -41,6 +44,12 @@ int main(int argc, char* argv[])
     int iClampD = ClampUnordered(15, 20, 10);
     int iClampE = ClampUnordered(5, 20, 10);
     int iClampF = ClampUnordered(25, 20, 10);
+
+    float clamp01A = Clamp01(0.5f);
+    float clamp01B = Clamp01(-0.5f);
+    float clamp01C = Clamp01(1.5f);
+    double clamp01D = Clamp01(0.5);
+    int clamp01E = Clamp01(2);
 
     bool bIsInRangeA = IsInRange(15, 10, 20);
     bool bIsInRangeB = IsInRange(5, 10, 20);
@@ -114,6 +123,7 @@ int main(int argc, char* argv[])
     std::set<float> kResultsB;
     std::map<int, int> kResultsC;
     std::set<float> kResultsD;
+    std::map<int, int> kResultsE;
 
     for (int i = 0; i < 10000; ++i)
     {
@@ -131,6 +141,10 @@ int main(int argc, char* argv[])
     {
         kResultsD.insert(GetRandomf(-5.f, 5.f));
     }
+    for (int i = 0; i < 10000; ++i)
+    {
+        kResultsE[GetRandom(-10)] += 1;
+    }
 
     int minA = kResultsA.begin()->first;
     int maxA = kResultsA.rbegin()->first;
@@ -140,6 +154,8 @@ int main(int argc, char* argv[])
     int maxC = kResultsC.rbegin()->first;
     float minD = *kResultsD.begin();
     float maxD = *kResultsD.rbegin();
+    int minE = kResultsE.begin()->first;
+    int maxE = kResultsE.rbegin()->first;
 
     // UDim
     UDim dimA(UDim::HALF);
@@ -151,6 +167,44 @@ int main(int argc, char* argv[])
     UDim2 dim2B = dim2A + Vector2f(5.f, 10.f);
 
     UDim2 dim2C = UDim2::POSITION_BOTTOM_RIGHT + Vector2f(-10.f, -10.f);
+
+    //----------------------------------------------
+
+#if 1
+    {
+        size_t nbLoops = 1000000;
+
+        sf::Clock kClock;
+        std::string strFormat = "GetRandomPointInCircle";
+
+        for (size_t i = 0; i < nbLoops; ++i)
+        {
+            sf::Vector2f position = GetRandomPointInCircle(Vector2::Zero_f, 200.f);
+        }
+
+        sf::Time result = kClock.getElapsedTime();
+        sf::Int32 ms = result.asMilliseconds();
+
+        WriteInConsoleEndline(StringFormat("{0} : {1} ms", strFormat, ms), true);
+    }
+
+    {
+        size_t nbLoops = 1000000;
+
+        sf::Clock kClock;
+        std::string strFormat = "GetRandomPointInAnnulus";
+
+        for (size_t i = 0; i < nbLoops; ++i)
+        {
+            sf::Vector2f position = GetRandomPointInAnnulus(Vector2::Zero_f, 100.f, 200.f);
+        }
+
+        sf::Time result = kClock.getElapsedTime();
+        sf::Int32 ms = result.asMilliseconds();
+
+        WriteInConsoleEndline(StringFormat("{0} : {1} ms", strFormat, ms), true);
+    }
+#endif
 
     //----------------------------------------------
 

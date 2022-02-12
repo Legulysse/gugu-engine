@@ -33,7 +33,7 @@ CharacterEnemy::~CharacterEnemy()
 {
 }
 
-void CharacterEnemy::InitEnemy(const DS_Enemy* sheetEnemy, float _fSpeed, Grid* grid, Element* parentNode)
+void CharacterEnemy::InitEnemy(const DS_Enemy* sheetEnemy, const Vector2f& position, float _fSpeed, Grid* grid, Element* parentNode)
 {
     m_grid = grid;
 
@@ -45,6 +45,7 @@ void CharacterEnemy::InitEnemy(const DS_Enemy* sheetEnemy, float _fSpeed, Grid* 
 
     m_sprite = parentNode->AddChild<ElementSprite>();
     m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+    m_sprite->SetPosition(position);
 
     //if (GetRandom(0, 1) == 0)
     //    m_sprite->ChangeAnimSet("Orc.animset.xml");

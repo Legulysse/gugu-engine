@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
     //Init engine
     EngineConfig config;
     config.applicationName = "GuguEngine Demo Game";
+    config.applicationIcon = "Icon.png";
     config.pathAssets = "Assets";
     config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";

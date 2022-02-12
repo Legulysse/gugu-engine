@@ -29,6 +29,7 @@
 #include "Gugu/Window/Camera.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/Random.h"
 
 using namespace gugu;
 
@@ -211,11 +212,11 @@ void Game::SpawnNextFloor()
 void Game::SpawnFloor()
 {
     //Init Enemies
+    const DS_Enemy* sheetEnemy = GetResources()->GetDatasheetObject<DS_Enemy>("DefaultEnemy.enemy");
+
     size_t enemiesCount = m_floor * 50;
     for (size_t i = 0; i < enemiesCount; ++i)
     {
-        const DS_Enemy* sheetEnemy = GetResources()->GetDatasheetObject<DS_Enemy>("DefaultEnemy.enemy");
-
         ControllerAI* pControllerAI = new ControllerAI;
         m_scene->AddActor(pControllerAI);
 
@@ -224,7 +225,9 @@ void Game::SpawnFloor()
         CharacterEnemy* pEnemy = new CharacterEnemy;
         m_scene->AddActor(pEnemy);
 
-        pEnemy->InitEnemy(sheetEnemy, 100.f, m_grid, m_charactersNode);
+        sf::Vector2f position = GetRandomPointInCircle(Vector2::Zero_f, 150.f);
+
+        pEnemy->InitEnemy(sheetEnemy, position, 100.f, m_grid, m_charactersNode);
         pControllerAI->m_character = pEnemy;
     }
 }

@@ -30,6 +30,9 @@
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
+#include "Gugu/Debug/Trace.h"
+
+#include <thread>
 
 using namespace gugu;
 
@@ -106,32 +109,104 @@ void Game::AppUpdate(const DeltaTime& dt)
 
 void Game::StepScenario(const DeltaTime& dt)
 {
-    // Handle basic collisions for projectiles
-    for (size_t iProjectile = 0; iProjectile < m_projectiles.size(); ++iProjectile)
+#if 1
     {
+        GUGU_SCOPE_TRACE_MAIN("Collisions");
+
+        size_t nbProjectiles = m_projectiles.size();
+        size_t nbThreads = std::thread::hardware_concurrency();
+
+        if (nbThreads >= 2 && nbProjectiles > nbThreads * 2)
+        {
+            std::vector<std::thread> threads(nbThreads);
+
+            auto func = [&](const size_t from, const size_t to)
+            {
+                for (size_t i = from; i < to; ++i)
+                {
+                    for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
+                    {
+                        m_controllersAI[iController]->m_character->TestCollision(m_projectiles[i]);
+                    }
+                }
+            };
+
+            size_t nbLoops = nbProjectiles;
+            for (size_t t = 0; t < nbThreads; ++t)
+            {
+                size_t from = t * nbLoops / nbThreads;
+                size_t to = (t + 1) == nbThreads ? nbLoops : (t + 1) * nbLoops / nbThreads;
+                threads[t] = std::thread(std::bind(func, from, to));
+            }
+            std::for_each(threads.begin(), threads.end(), [](std::thread& x) {x.join(); });
+
+            for (size_t iProjectile = 0; iProjectile < m_projectiles.size(); ++iProjectile)
+            {
+                // Purge dead Projectiles
+                if (m_projectiles[iProjectile]->m_pendingDestroy)
+                {
+                    SafeDelete(m_projectiles[iProjectile]);  //TODO: Use a DeleteActor method ?
+                }
+            }
+        }
+        else
+        {
+            // Handle basic collisions for projectiles
+            for (size_t iProjectile = 0; iProjectile < m_projectiles.size(); ++iProjectile)
+            {
+                for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
+                {
+                    m_controllersAI[iController]->m_character->TestCollision(m_projectiles[iProjectile]);
+                }
+
+                // Purge dead Projectiles
+                if (m_projectiles[iProjectile]->m_pendingDestroy)
+                {
+                    SafeDelete(m_projectiles[iProjectile]);  //TODO: Use a DeleteActor method ?
+                }
+            }
+        }
+    }
+#else
+    {
+        GUGU_SCOPE_TRACE_MAIN("Collisions");
+
+        // Handle basic collisions for projectiles
+        for (size_t iProjectile = 0; iProjectile < m_projectiles.size(); ++iProjectile)
+        {
+            for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
+            {
+                m_controllersAI[iController]->m_character->TestCollision(m_projectiles[iProjectile]);
+            }
+
+            // Purge dead Projectiles
+            if (m_projectiles[iProjectile]->m_pendingDestroy)
+            {
+                SafeDelete(m_projectiles[iProjectile]);  //TODO: Use a DeleteActor method ?
+            }
+        }
+    }
+#endif
+    {
+        GUGU_SCOPE_TRACE_MAIN("Dead Actors");
+
+        // Purge dead Actors
         for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
         {
-            m_controllersAI[iController]->m_character->TestCollision(m_projectiles[iProjectile]);
-        }
-
-        // Purge dead Projectiles
-        if (m_projectiles[iProjectile]->m_pendingDestroy)
-        {
-            SafeDelete(m_projectiles[iProjectile]);  //TODO: Use a DeleteActor method ?
+            if (m_controllersAI[iController]->m_character->m_isDead)
+            {
+                SafeDelete(m_controllersAI[iController]->m_character);   //TODO: Use a DeleteActor method ?
+                SafeDelete(m_controllersAI[iController]);     //TODO: Use a DeleteActor method ?
+            }
         }
     }
-    StdVectorRemove<Projectile*>(m_projectiles, nullptr);
 
-    // Purge dead Actors
-    for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
     {
-        if (m_controllersAI[iController]->m_character->m_isDead)
-        {
-            SafeDelete(m_controllersAI[iController]->m_character);   //TODO: Use a DeleteActor method ?
-            SafeDelete(m_controllersAI[iController]);     //TODO: Use a DeleteActor method ?
-        }
+        GUGU_SCOPE_TRACE_MAIN("Clear");
+
+        StdVectorRemove<Projectile*>(m_projectiles, nullptr);
+        StdVectorRemove<ControllerAI*>(m_controllersAI, nullptr);
     }
-    StdVectorRemove<ControllerAI*>(m_controllersAI, nullptr);
 
     // Reset Floor
     if (m_delayReset > 0)

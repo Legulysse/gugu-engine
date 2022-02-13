@@ -321,7 +321,7 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
     {
         GUGU_SCOPE_TRACE_MAIN("Clear");
 
-        m_sfWindow->setActive();
+        m_sfWindow->setActive(true);
         m_sfWindow->clear(m_backgroundColor);
     }
 
@@ -446,8 +446,8 @@ void Window::Display()
 {
     GUGU_SCOPE_TRACE_MAIN("Display");
 
-    m_sfWindow->setActive();
     m_sfWindow->display();
+    m_sfWindow->setActive(false);
 }
 
 void Window::OnConsoleCommandValidated()

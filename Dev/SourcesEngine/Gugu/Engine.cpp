@@ -311,14 +311,16 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
             allowNextStep = m_timeSinceLastStep >= stepTimeScaled;
 
             // If app is running with modulated speed, we may need to compute several steps per loop.
-            // This will also happen is step time is lower than loop time.
-            allowMultipleSteps = true;
+            // This will also happen if step time is lower than loop time, but for now I prefer to enforce a single step per loop.
+            // I could add some settings to allow multiple steps per loop (maybe with a limit setting).
+            allowMultipleSteps = m_useSpeedMultiplier;
         }
 
         bool stepHappened = false;
         bool multipleStepsHappened = false;
 
         //TODO: check m_managerNetwork->IsReadyForTurn() if running steps based on synchronized network clients.
+        int stepCount = 0;
         while (allowNextStep)
         {
             GUGU_SCOPE_TRACE_MAIN_("Step", Step);
@@ -336,6 +338,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
             // Compute spent time.
             multipleStepsHappened = stepHappened;
             stepHappened = true;
+            ++stepCount;
 
             allowNextStep = false;
             if (m_engineConfig.useConstantStep)
@@ -372,6 +375,16 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
             {
                 m_stats.stepTimes.pop_back();
             }
+
+            m_stats.stepCount.push_front(stepCount);
+            if (m_stats.stepCount.size() > m_stats.maxStatCount)
+            {
+                m_stats.stepCount.pop_back();
+            }
+            else
+            {
+                m_stats.stepCount.resize(m_stats.maxStatCount);
+            }
         }
         else
         {
@@ -380,6 +393,16 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
             if (m_stats.stepTimes.size() > m_stats.maxStatCount)
             {
                 m_stats.stepTimes.pop_back();
+            }
+
+            m_stats.stepCount.push_front(-1);
+            if (m_stats.stepCount.size() > m_stats.maxStatCount)
+            {
+                m_stats.stepCount.pop_back();
+            }
+            else
+            {
+                m_stats.stepCount.resize(m_stats.maxStatCount);
             }
         }
     }

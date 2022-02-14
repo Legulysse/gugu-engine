@@ -40,10 +40,11 @@ StatsDrawer::StatsDrawer()
     int fontSize = 15;
 
     sf::Color colorDefault = sf::Color(255, 255, 255, 255);
-    sf::Color colorCurveDrawCalls = sf::Color(255, 255, 70, 255);
     sf::Color colorCurveStepTimes = sf::Color(70, 200, 255, 255);
     sf::Color colorCurveUpdateTimes = sf::Color(255, 140, 50, 255);
     sf::Color colorCurveRenderTimes = sf::Color(50, 220, 50, 255);
+    sf::Color colorCurveDrawCalls = sf::Color(255, 255, 70, 255);
+    sf::Color colorCurveStepCount = sf::Color(255, 50, 255, 255);
 
     m_borders.setPrimitiveType(sf::PrimitiveType::Lines);
 
@@ -73,6 +74,13 @@ StatsDrawer::StatsDrawer()
     for (size_t i = 0; i < m_curveDrawCalls.getVertexCount(); ++i)
     {
         m_curveDrawCalls[i].color = colorCurveDrawCalls;
+    }
+
+    m_curveStepCount.setPrimitiveType(sf::PrimitiveType::LineStrip);
+    m_curveStepCount.resize(curvePoints);
+    for (size_t i = 0; i < m_curveStepCount.getVertexCount(); ++i)
+    {
+        m_curveStepCount[i].color = colorCurveStepCount;
     }
 
     m_statTextStandaloneFPS.setFillColor(colorDefault);
@@ -212,6 +220,7 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
     StatsSummary statsSummaryUpdates;
     StatsSummary statsSummaryRenders;
     StatsSummary statsSummaryDrawCalls;
+    //StatsSummary statsSummaryStepCount;
 
     {
         GUGU_SCOPE_TRACE_MAIN("Compute Values");
@@ -220,6 +229,7 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
         ComputeStatsSummary(engineStats.updateTimes, statsSummaryUpdates);
         ComputeStatsSummary(engineStats.renderTimes, statsSummaryRenders);
         ComputeStatsSummary(m_statDrawCalls, statsSummaryDrawCalls);
+        //ComputeStatsSummary(engineStats.stepCount, statsSummaryStepCount);
     }
 
     float textLineOffset = 22.f;
@@ -241,6 +251,7 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
 
         // Curves
         DrawHistogram(engineStats.stepTimes, statsSummarySteps, m_curveSteps, positionCurves, renderWindow);
+        //DrawCurve(engineStats.stepCount, statsSummaryStepCount, m_curveStepCount, positionCurves, renderWindow);
         DrawHistogram(engineStats.updateTimes, statsSummaryUpdates, m_curveUpdates, positionCurves + Vector2f(0.f, curveHeight + 10.f), renderWindow);
         DrawHistogram(engineStats.renderTimes, statsSummaryRenders, m_curveRenders, positionCurves + Vector2f(0.f, (curveHeight + 10.f) * 2), renderWindow);
         DrawCurve(m_statDrawCalls, statsSummaryDrawCalls, m_curveDrawCalls, positionCurves + Vector2f(0, (curveHeight + 10.f) * 2), renderWindow);

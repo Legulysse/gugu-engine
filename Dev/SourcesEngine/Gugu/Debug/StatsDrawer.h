@@ -64,6 +64,7 @@ private:
 
     sf::VertexArray m_borders;
     sf::VertexArray m_curveSteps;
+    sf::VertexArray m_curveStepCount;
     sf::VertexArray m_curveUpdates;
     sf::VertexArray m_curveRenders;
     sf::VertexArray m_curveDrawCalls;

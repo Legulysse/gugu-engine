@@ -19,6 +19,7 @@ struct EngineStats
     std::list<int> stepTimes;
     std::list<int> updateTimes;
     std::list<int> renderTimes;
+    std::list<int> stepCount;
     uint32 animationCount = 0;
     uint32 particleSystemCount = 0;
     bool isTracing = false;

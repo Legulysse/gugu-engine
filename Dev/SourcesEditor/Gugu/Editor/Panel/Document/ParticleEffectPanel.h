@@ -15,6 +15,7 @@ namespace gugu
     class DeltaTime;
     class RenderViewport;
     class ParticleEffect;
+    class ParticleSystem;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -38,6 +39,7 @@ private:
     RenderViewport* m_renderViewport;
 
     ParticleEffect* m_particleEffect;
+    ParticleSystem* m_particleSystem;
 };
 
 }   //namespace gugu

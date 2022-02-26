@@ -339,6 +339,10 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     {
         pResource = new AnimSet;
     }
+    else if (_eExplicitType == EResourceType::ParticleEffect)
+    {
+        pResource = new ParticleEffect;
+    }
     else if (_eExplicitType == EResourceType::Datasheet)
     {
         pResource = new Datasheet;

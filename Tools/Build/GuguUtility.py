@@ -23,7 +23,7 @@ def DefaultMenu(pathEngineBuildScripts, nameBuildScript):
     
     # Menu : Compilers selection
     selectedCompilers = []
-    if any(x in ['premake'] for x in selectedActions):
+    if 'premake' in selectedActions:
         compilerChoices = collections.OrderedDict()
         compilerChoices['vs2019'] = 'Visual 2019'
         compilerChoices['vs2017'] = 'Visual 2017'
@@ -34,11 +34,12 @@ def DefaultMenu(pathEngineBuildScripts, nameBuildScript):
         selectedCompilers = PromptMenu('Select Compilers', compilerChoices, True)
 
     # Apply SubDirectories action
-    GitUpdateSubRepositories()
+    if 'subdirectories' in selectedActions:
+        GitUpdateSubRepositories()
     
     # Apply Premake action
-    for compiler in selectedCompilers:
-        if 'premake' in selectedActions:
+    if 'premake' in selectedActions:
+        for compiler in selectedCompilers:
             Premake(pathEngineBuildScripts, nameBuildScript, compiler)
 
 

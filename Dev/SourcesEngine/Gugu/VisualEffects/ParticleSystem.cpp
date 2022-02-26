@@ -523,16 +523,20 @@ void ParticleSystem::Render(RenderPass& _kRenderPass, const sf::Transform& _kTra
 
     _kRenderPass.target->draw(m_dataVertices, states);
 
-    if (m_verticesPerParticle == 6)
+    // Stats
+    if (_kRenderPass.frameInfos)
     {
-        _kRenderPass.frameInfos->statDrawCalls += 1;
-        _kRenderPass.frameInfos->statTriangles += m_dataVertices.getVertexCount() / 3;
-    }
-    else
-    {
-        // TODO: vertex count instead of triangle count ?
-        _kRenderPass.frameInfos->statDrawCalls += 1;
-        _kRenderPass.frameInfos->statTriangles += m_dataVertices.getVertexCount();
+        if (m_verticesPerParticle == 6)
+        {
+            _kRenderPass.frameInfos->statDrawCalls += 1;
+            _kRenderPass.frameInfos->statTriangles += m_dataVertices.getVertexCount() / 3;
+        }
+        else
+        {
+            // TODO: vertex count instead of triangle count ?
+            _kRenderPass.frameInfos->statDrawCalls += 1;
+            _kRenderPass.frameInfos->statTriangles += m_dataVertices.getVertexCount();
+        }
     }
 }
 

@@ -19,6 +19,7 @@
 #include "Gugu/Resources/SoundCue.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/AnimSet.h"
+#include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/Datasheet.h"
 
 #include "Gugu/System/SystemUtility.h"
@@ -206,6 +207,10 @@ EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) 
     {
         return EResourceType::AnimSet;
     }
+    else if (fileInfo.IsExtension("particle.xml") || fileInfo.IsExtension("particle"))
+    {
+        return EResourceType::ParticleEffect;
+    }
     //else if ()
     //{
     //    //TODO: check if the extension is a datasheet
@@ -249,6 +254,11 @@ ImageSet* ManagerResources::GetImageSet(const std::string& _strName)
 AnimSet* ManagerResources::GetAnimSet(const std::string& _strName)
 {
     return dynamic_cast<AnimSet*>(GetResource(_strName, EResourceType::AnimSet));
+}
+
+ParticleEffect* ManagerResources::GetParticleEffect(const std::string& _strName)
+{
+    return dynamic_cast<ParticleEffect*>(GetResource(_strName, EResourceType::ParticleEffect));
 }
 
 Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)

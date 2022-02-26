@@ -30,9 +30,9 @@
 namespace gugu {
 
 ImageSetPanel::ImageSetPanel(const std::string& resourceID)
-    : m_imageSet(nullptr)
+    : m_renderViewport(nullptr)
+    , m_imageSet(nullptr)
     , m_selectedIndex(-1)
-    , m_renderViewport(nullptr)
     , m_gizmoCenter(nullptr)
     , m_isDraggingGizmo(false)
     , m_draggedGizmo(nullptr)

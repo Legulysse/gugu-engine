@@ -26,6 +26,7 @@ namespace gugu
     class SoundCue;
     class ImageSet;
     class AnimSet;
+    class ParticleEffect;
     class Datasheet;
     class DatasheetObject;
     struct DatasheetEnum;
@@ -83,6 +84,7 @@ public:
     SoundCue*   GetSoundCue     (const std::string& _strName);
     ImageSet*   GetImageSet     (const std::string& _strName);
     AnimSet*    GetAnimSet      (const std::string& _strName);
+    ParticleEffect* GetParticleEffect(const std::string& _strName);
     Datasheet*  GetDatasheet    (const std::string& _strName);
 
     template<typename T>

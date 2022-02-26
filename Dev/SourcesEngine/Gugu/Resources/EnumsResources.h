@@ -18,6 +18,7 @@ namespace EResourceType
         SoundCue,
         ImageSet,
         AnimSet,
+        ParticleEffect,
         Datasheet,
 
         Custom,

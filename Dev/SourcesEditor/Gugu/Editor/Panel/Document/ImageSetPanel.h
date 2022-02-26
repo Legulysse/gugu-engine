@@ -13,8 +13,8 @@
 namespace gugu
 {
     class DeltaTime;
-    class ImageSet;
     class RenderViewport;
+    class ImageSet;
     class Element;
     class ElementSFDrawable;
 }
@@ -44,10 +44,10 @@ private:
 
 private:
 
+    RenderViewport* m_renderViewport;
+
     ImageSet* m_imageSet;
     int m_selectedIndex;
-
-    RenderViewport* m_renderViewport;
 
     ElementSFDrawable* m_gizmoCenter;
     ElementSFDrawable* m_gizmoEdgeTopLeft;

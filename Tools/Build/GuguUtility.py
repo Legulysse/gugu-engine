@@ -1,11 +1,45 @@
 import glob, os, shutil
 import stat
 import sys
+import collections
 from subprocess import Popen, PIPE, STDOUT
 
 #import configparser
 #from sys import platform
 
+
+#---------------------------------------------------------------------------------------------------
+# High Level Utility
+
+def DefaultMenu(pathEngineBuildScripts):
+    
+    # Menu : Available actions
+    #selectedActions = { 'premake', 'subdirectories' }
+    
+    actionChoices = collections.OrderedDict()
+    actionChoices['premake'] = 'premake'
+    actionChoices['subdirectories'] = 'update submodules'
+    selectedActions = PromptMenu('Select Actions', actionChoices, True)
+    
+    # Menu : Compilers selection
+    selectedCompilers = []
+    if any(x in ['premake'] for x in selectedActions):
+        compilerChoices = collections.OrderedDict()
+        compilerChoices['vs2019'] = 'Visual 2019'
+        compilerChoices['vs2017'] = 'Visual 2017'
+        compilerChoices['vs2015'] = 'Visual 2015'
+        compilerChoices['gmake'] = 'GNU Makefiles'
+        compilerChoices['xcode4'] = 'XCode'
+        compilerChoices['codelite'] = 'CodeLite'
+        selectedCompilers = PromptMenu('Select Compilers', compilerChoices, True)
+
+    # Apply SubDirectories action
+    GitUpdateSubRepositories()
+    
+    # Apply Premake action
+    for compiler in selectedCompilers:
+        if 'premake' in selectedActions:
+            Premake(pathEngineBuildScripts, 'Build-premake.lua', compiler)
 
 
 #---------------------------------------------------------------------------------------------------
@@ -321,6 +355,14 @@ def Premake(dirEngineBuildScripts, file, compiler):
     print('')
     
     
+#---------------------------------------------------------------------------------------------------
+# Git
+
+def GitUpdateSubRepositories():
+    ShellExecute('git submodule update --init --recursive')
+    print('')
+    
+
 #---------------------------------------------------------------------------------------------------
 # Zip
 

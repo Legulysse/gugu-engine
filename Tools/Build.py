@@ -15,7 +15,7 @@ def Main():
     os.chdir(dirProjectBuildScripts)
 
     # Default Actions Menu
-    GuguUtility.DefaultMenu(dirEngineBuildScripts)
+    GuguUtility.DefaultMenu(dirEngineBuildScripts, 'Build-premake.lua')
 
     # Finalize
     os.chdir(dirCurrent)

@@ -11,7 +11,7 @@ from subprocess import Popen, PIPE, STDOUT
 #---------------------------------------------------------------------------------------------------
 # High Level Utility
 
-def DefaultMenu(pathEngineBuildScripts):
+def DefaultMenu(pathEngineBuildScripts, nameBuildScript):
     
     # Menu : Available actions
     #selectedActions = { 'premake', 'subdirectories' }
@@ -39,7 +39,7 @@ def DefaultMenu(pathEngineBuildScripts):
     # Apply Premake action
     for compiler in selectedCompilers:
         if 'premake' in selectedActions:
-            Premake(pathEngineBuildScripts, 'Build-premake.lua', compiler)
+            Premake(pathEngineBuildScripts, nameBuildScript, compiler)
 
 
 #---------------------------------------------------------------------------------------------------

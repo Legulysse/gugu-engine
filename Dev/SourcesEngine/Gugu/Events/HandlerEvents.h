@@ -16,7 +16,6 @@ namespace gugu
     class EventListener;
     class Element;
     class Camera;
-    class DeltaTime;
 }
 
 namespace sf

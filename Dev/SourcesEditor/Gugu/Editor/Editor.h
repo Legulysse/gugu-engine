@@ -6,7 +6,6 @@
 #include "Gugu/Editor/Core/EditorConfig.h"
 
 #include "Gugu/Misc/Pattern/Singleton.h"
-#include "Gugu/Core/DeltaTime.h"
 
 #include <vector>
 #include <string>
@@ -16,6 +15,7 @@
 
 namespace gugu
 {
+    class DeltaTime;
     class DocumentPanel;
     class AssetsExplorerPanel;
     class ImageSetPanel;

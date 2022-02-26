@@ -3,8 +3,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/DeltaTime.h"
-
 #include <vector>
 
 ////////////////////////////////////////////////////////////////
@@ -13,6 +11,7 @@
 namespace gugu
 {
     struct EngineConfig;
+    class DeltaTime;
     class Scene;
 }
 

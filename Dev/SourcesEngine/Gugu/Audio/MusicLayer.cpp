@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Audio/MusicInstance.h"
 #include "Gugu/System/SystemUtility.h"

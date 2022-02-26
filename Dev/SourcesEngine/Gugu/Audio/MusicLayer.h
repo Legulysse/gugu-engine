@@ -3,8 +3,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/DeltaTime.h"
-
 #include <vector>
 #include <string>
 
@@ -13,6 +11,7 @@
 
 namespace gugu
 {
+    class DeltaTime;
     class Music;
     class MusicInstance;
 }

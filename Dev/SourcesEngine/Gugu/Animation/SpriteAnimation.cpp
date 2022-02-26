@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"

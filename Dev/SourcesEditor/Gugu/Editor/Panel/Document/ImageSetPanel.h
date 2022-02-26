@@ -5,7 +5,6 @@
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
-#include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
@@ -13,6 +12,7 @@
 
 namespace gugu
 {
+    class DeltaTime;
     class ImageSet;
     class RenderViewport;
     class Element;

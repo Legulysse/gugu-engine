@@ -5,10 +5,16 @@
 
 #include "Gugu/Editor/Panel/BasePanel.h"
 
-#include "Gugu/Core/DeltaTime.h"
-
 #include <string>
 #include <vector>
+
+////////////////////////////////////////////////////////////////
+// Forward Declarations
+
+namespace gugu
+{
+    class DeltaTime;
+}
 
 ////////////////////////////////////////////////////////////////
 // File Declarations

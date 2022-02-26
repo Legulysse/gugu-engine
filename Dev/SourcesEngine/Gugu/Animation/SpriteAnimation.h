@@ -4,7 +4,6 @@
 // Includes
 
 #include "Gugu/Core/Callback.h"
-#include "Gugu/Core/DeltaTime.h"
 
 #include <string>
 #include <map>
@@ -14,6 +13,7 @@
 
 namespace gugu
 {
+    class DeltaTime;
     class AnimSet;
     class Animation;
     class AnimationFrame;

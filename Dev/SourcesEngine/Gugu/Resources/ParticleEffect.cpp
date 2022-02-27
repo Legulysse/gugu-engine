@@ -44,37 +44,37 @@ bool ParticleEffect::LoadFromFile()
         return false;
 
     static const std::map<ParticleSystemSettings::EParticleShape, std::string> particleShapeEnumToString = {
-            { ParticleSystemSettings::EParticleShape::Point, "Point" },
-            { ParticleSystemSettings::EParticleShape::Quad, "Quad" },
+        { ParticleSystemSettings::EParticleShape::Point, "Point" },
+        { ParticleSystemSettings::EParticleShape::Quad, "Quad" },
     };
 
     static const std::map<ParticleSystemSettings::EEmitterShape, std::string> emitterShapeEnumToString = {
-            { ParticleSystemSettings::EEmitterShape::Point, "Point" },
-            { ParticleSystemSettings::EEmitterShape::Circle, "Circle" },
-            { ParticleSystemSettings::EEmitterShape::Annulus, "Annulus" },
+        { ParticleSystemSettings::EEmitterShape::Point, "Point" },
+        { ParticleSystemSettings::EEmitterShape::Circle, "Circle" },
+        { ParticleSystemSettings::EEmitterShape::Annulus, "Annulus" },
     };
 
     static const std::map<ParticleSystemSettings::EEmissionBehaviour, std::string> emissionBehaviourEnumToString = {
-            { ParticleSystemSettings::EEmissionBehaviour::RandomDirection, "RandomDirection" },
-            { ParticleSystemSettings::EEmissionBehaviour::AngleDirection, "AngleDirection" },
-            { ParticleSystemSettings::EEmissionBehaviour::AwayFromCenter, "AwayFromCenter" },
+        { ParticleSystemSettings::EEmissionBehaviour::RandomDirection, "RandomDirection" },
+        { ParticleSystemSettings::EEmissionBehaviour::AngleDirection, "AngleDirection" },
+        { ParticleSystemSettings::EEmissionBehaviour::AwayFromCenter, "AwayFromCenter" },
     };
 
     static const std::map<std::string, ParticleSystemSettings::EParticleShape> particleShapeStringToEnum = {
-            { "Point", ParticleSystemSettings::EParticleShape::Point },
-            { "Quad",  ParticleSystemSettings::EParticleShape::Quad },
+        { "Point", ParticleSystemSettings::EParticleShape::Point },
+        { "Quad",  ParticleSystemSettings::EParticleShape::Quad },
     };
 
     static const std::map<std::string, ParticleSystemSettings::EEmitterShape> emitterShapeStringToEnum = {
-            { "Point", ParticleSystemSettings::EEmitterShape::Point },
-            { "Circle",  ParticleSystemSettings::EEmitterShape::Circle },
-            { "Annulus",  ParticleSystemSettings::EEmitterShape::Annulus },
+        { "Point", ParticleSystemSettings::EEmitterShape::Point },
+        { "Circle",  ParticleSystemSettings::EEmitterShape::Circle },
+        { "Annulus",  ParticleSystemSettings::EEmitterShape::Annulus },
     };
 
     static const std::map<std::string, ParticleSystemSettings::EEmissionBehaviour> emissionBehaviourStringToEnum = {
-            { "RandomDirection", ParticleSystemSettings::EEmissionBehaviour::RandomDirection },
-            { "AngleDirection",  ParticleSystemSettings::EEmissionBehaviour::AngleDirection },
-            { "AwayFromCenter",  ParticleSystemSettings::EEmissionBehaviour::AwayFromCenter },
+        { "RandomDirection", ParticleSystemSettings::EEmissionBehaviour::RandomDirection },
+        { "AngleDirection",  ParticleSystemSettings::EEmissionBehaviour::AngleDirection },
+        { "AwayFromCenter",  ParticleSystemSettings::EEmissionBehaviour::AwayFromCenter },
     };
 
     std::string particleShapeValue = particleShapeEnumToString.at(m_particleSettings.particleShape);
@@ -173,20 +173,20 @@ bool ParticleEffect::SaveToFile()
     pugi::xml_node nodeParticleEffect = document.append_child("ParticleEffect");
 
     static const std::map<ParticleSystemSettings::EParticleShape, std::string> particleShapeEnumToString = {
-            { ParticleSystemSettings::EParticleShape::Point, "Point" },
-            { ParticleSystemSettings::EParticleShape::Quad, "Quad" },
-        };
+        { ParticleSystemSettings::EParticleShape::Point, "Point" },
+        { ParticleSystemSettings::EParticleShape::Quad, "Quad" },
+    };
 
     static const std::map<ParticleSystemSettings::EEmitterShape, std::string> emitterShapeEnumToString = {
-            { ParticleSystemSettings::EEmitterShape::Point, "Point" },
-            { ParticleSystemSettings::EEmitterShape::Circle, "Circle" },
-            { ParticleSystemSettings::EEmitterShape::Annulus, "Annulus" },
+        { ParticleSystemSettings::EEmitterShape::Point, "Point" },
+        { ParticleSystemSettings::EEmitterShape::Circle, "Circle" },
+        { ParticleSystemSettings::EEmitterShape::Annulus, "Annulus" },
     };
 
     static const std::map<ParticleSystemSettings::EEmissionBehaviour, std::string> emissionBehaviourEnumToString = {
-            { ParticleSystemSettings::EEmissionBehaviour::RandomDirection, "RandomDirection" },
-            { ParticleSystemSettings::EEmissionBehaviour::AngleDirection, "AngleDirection" },
-            { ParticleSystemSettings::EEmissionBehaviour::AwayFromCenter, "AwayFromCenter" },
+        { ParticleSystemSettings::EEmissionBehaviour::RandomDirection, "RandomDirection" },
+        { ParticleSystemSettings::EEmissionBehaviour::AngleDirection, "AngleDirection" },
+        { ParticleSystemSettings::EEmissionBehaviour::AwayFromCenter, "AwayFromCenter" },
     };
     
     std::string particleShapeValue = particleShapeEnumToString.at(m_particleSettings.particleShape);

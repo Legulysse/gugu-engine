@@ -1,26 +1,26 @@
 <?xml version="1.0"?>
 <ParticleEffect>
 	<Loop value="false" />
-	<Duration value="200" />
-	<MaxParticleCount value="16000" />
+	<Duration value="50" />
+	<MaxParticleCount value="20000" />
 	<ParticleShape value="Quad" />
-	<LocalSpace value="false" />
-	<EmitterShape value="Point" />
+	<LocalSpace value="true" />
+	<EmitterShape value="Circle" />
 	<EmitterRadius value="100" />
 	<EmitterInnerRadius value="50" />
 	<SpawnPerSecond random="false" min="100" max="10" />
 	<ParticlesPerSpawn random="false" min="2000" max="1" />
-	<EmissionBehaviour value="RandomDirection" />
+	<EmissionBehaviour value="AwayFromCenter" />
 	<EmissionDirection x="0" y="-1" />
 	<EmissionAngle value="90" />
-	<Lifetime random="false" min="400" max="500" />
-	<Velocity random="true" min="100" max="500" />
+	<Lifetime random="true" min="200" max="500" />
+	<Velocity random="true" min="0" max="400" />
 	<KeepSizeRatio value="true" />
-	<StartSize random="true" min_x="6" min_y="6" max_x="8" max_y="8" />
-	<UpdateSizeOverLifetime value="false" />
-	<EndSize random="false" min_x="0" min_y="0" max_x="0" max_y="0" />
+	<StartSize random="true" min_x="6" min_y="6" max_x="12" max_y="12" />
+	<UpdateSizeOverLifetime value="true" />
+	<EndSize random="false" min_x="6" min_y="6" max_x="0" max_y="0" />
 	<UpdateColorOverLifetime value="true" />
 	<StartColor r="255" g="255" b="0" a="255" />
-	<EndColor r="255" g="0" b="0" a="50" />
+	<EndColor r="255" g="50" b="0" a="50" />
 	<ImageSetID value="" />
 </ParticleEffect>

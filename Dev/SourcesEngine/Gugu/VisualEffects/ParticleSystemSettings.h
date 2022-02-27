@@ -16,6 +16,12 @@ namespace gugu {
 
 struct ParticleSystemSettings
 {
+    enum class EParticleShape
+    {
+        Point,
+        Quad,
+    };
+
     enum class EEmitterShape
     {
         Point,
@@ -32,12 +38,6 @@ struct ParticleSystemSettings
         RandomDirection,
         AngleDirection,
         AwayFromCenter,
-    };
-
-    enum class EParticleShape
-    {
-        Point,
-        Quad,
     };
 
     // Setup

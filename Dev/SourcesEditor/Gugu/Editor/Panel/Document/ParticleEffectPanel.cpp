@@ -41,7 +41,7 @@ ParticleEffectPanel::ParticleEffectPanel(const std::string& resourceID)
 
     // Test Particle
     ElementParticles* elementParticle = m_renderViewport->GetRoot()->AddChild<ElementParticles>();
-    elementParticle->SetPosition(Vector2f(100.f, 100.f));
+    elementParticle->SetUnifiedPosition(UDim2::POSITION_CENTER);
     m_particleSystem = elementParticle->CreateParticleSystem(*m_particleEffect->GetParticleSettings(), true);
 }
 
@@ -67,6 +67,8 @@ void ParticleEffectPanel::UpdatePanel(const DeltaTime& dt)
         {
             m_focused = true;
         }
+
+        //TODO: If this panel is not focused, I should be able to pause the particle system.
 
         // Toolbar.
         static float zoomFactor = 1.f;

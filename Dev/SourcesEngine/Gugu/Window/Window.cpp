@@ -404,7 +404,7 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
 
                 for (int i = 0; i < graduations; ++i)
                 {
-                    float offset = graduationSize * i;
+                    float offset = graduationSize * (i + 1);
                     m_ruler[v++] = sf::Vertex(Vector2f(position.x + offset, position.y - 10.f), rulerColor);
                     m_ruler[v++] = sf::Vertex(Vector2f(position.x + offset, position.y + 11.f), rulerColor);
                     m_ruler[v++] = sf::Vertex(Vector2f(position.x - offset, position.y - 10.f), rulerColor);

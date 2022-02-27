@@ -367,15 +367,14 @@ void ImageSetPanel::CreateGizmo()
 
 void ImageSetPanel::UpdateGizmo()
 {
-    // Handle picking.
+    // Handle picking (should be used inside a viewport begin/end block).
     ImGuiIO& io = ImGui::GetIO();
     const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
+    const Vector2f mouse_pos_in_canvas(io.MousePos.x - canvas_p0.x, io.MousePos.y - canvas_p0.y);
+    Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
+
     const bool is_hovered = ImGui::IsItemHovered();
     const bool is_active = ImGui::IsItemActive();
-
-    const Vector2f origin(canvas_p0.x, canvas_p0.y);
-    const Vector2f mouse_pos_in_canvas(io.MousePos.x - origin.x, io.MousePos.y - origin.y);
-    Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
 
     if (m_selectedIndex == -1)
     {

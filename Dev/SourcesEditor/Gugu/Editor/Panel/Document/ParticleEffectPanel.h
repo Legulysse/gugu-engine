@@ -16,6 +16,7 @@ namespace gugu
     class RenderViewport;
     class ParticleEffect;
     class ParticleSystem;
+    class ElementParticles;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -40,6 +41,10 @@ private:
 
     ParticleEffect* m_particleEffect;
     ParticleSystem* m_particleSystem;
+    ElementParticles* m_elementParticle;
+
+    bool m_followCursor;
+    bool m_rotate;
 };
 
 }   //namespace gugu

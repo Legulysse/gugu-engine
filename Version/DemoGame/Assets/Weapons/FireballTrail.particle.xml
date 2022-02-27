@@ -13,14 +13,14 @@
 	<EmissionBehaviour value="RandomDirection" />
 	<EmissionDirection x="0" y="-1" />
 	<EmissionAngle value="90" />
-	<Lifetime random="false" min="250" max="500" />
+	<Lifetime random="false" min="500" max="500" />
 	<Velocity random="false" min="50" max="50" />
 	<KeepSizeRatio value="true" />
-	<StartSize random="true" min_x="1" min_y="1" max_x="2" max_y="2" />
-	<UpdateSizeOverLifetime value="false" />
-	<EndSize random="false" min_x="0" min_y="0" max_x="0" max_y="0" />
+	<StartSize random="true" min_x="8" min_y="8" max_x="16" max_y="16" />
+	<UpdateSizeOverLifetime value="true" />
+	<EndSize random="false" min_x="6" min_y="6" max_x="0" max_y="0" />
 	<UpdateColorOverLifetime value="true" />
-	<StartColor r="255" g="0" b="0" a="255" />
-	<EndColor r="0" g="0" b="0" a="0" />
+	<StartColor r="255" g="255" b="0" a="255" />
+	<EndColor r="255" g="0" b="0" a="100" />
 	<ImageSetID value="" />
 </ParticleEffect>

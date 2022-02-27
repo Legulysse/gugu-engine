@@ -181,6 +181,10 @@ public:
     UDim2 GetUnifiedPosition() const;
     UDim2 GetUnifiedSize() const;
 
+    void ResetUnifiedOrigin();
+    void ResetUnifiedPosition();
+    void ResetUnifiedSize();
+
     void OnParentResized();
     void ComputeUnifiedOrigin();
     void ComputeUnifiedDimensions();

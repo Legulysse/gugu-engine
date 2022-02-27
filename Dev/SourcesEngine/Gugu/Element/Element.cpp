@@ -194,6 +194,24 @@ UDim2 Element::GetUnifiedSize() const
     return m_dimSize;
 }
 
+void Element::ResetUnifiedOrigin()
+{
+    m_useDimOrigin = false;
+    m_dimOrigin = UDim2::RESET;
+}
+
+void Element::ResetUnifiedPosition()
+{
+    m_useDimPosition = false;
+    m_dimPosition = UDim2::RESET;
+}
+
+void Element::ResetUnifiedSize()
+{
+    m_useDimSize = false;
+    m_dimSize = UDim2::RESET;
+}
+
 void Element::SetPositionX(float _fPosX)
 {
     m_transform.setPosition(_fPosX, m_transform.getPosition().y);

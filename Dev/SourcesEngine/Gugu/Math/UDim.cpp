@@ -113,4 +113,6 @@ const UDim2 UDim2::SIZE_HORIZONTAL_HALF = UDim2(1.f, 0.f, 0.5f, 0.f);
 const UDim2 UDim2::SIZE_VERTICAL_HALF = UDim2(0.5f, 0.f, 1.f, 0.f);
 const UDim2 UDim2::SIZE_FULL = UDim2(1.f, 0.f, 1.f, 0.f);
 
+const UDim2 UDim2::RESET = UDim2(0.f, 0.f, 0.f, 0.f);
+
 }   // namespace gugu

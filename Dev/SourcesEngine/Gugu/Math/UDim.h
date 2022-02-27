@@ -65,6 +65,8 @@ public:
     static const UDim2 SIZE_HORIZONTAL_HALF;
     static const UDim2 SIZE_VERTICAL_HALF;
     static const UDim2 SIZE_FULL;
+
+    static const UDim2 RESET;
 };
 
 }   // namespace gugu

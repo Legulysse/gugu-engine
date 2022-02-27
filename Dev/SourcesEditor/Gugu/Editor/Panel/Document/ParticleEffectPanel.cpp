@@ -10,11 +10,13 @@
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
 #include "Gugu/Engine.h"
+#include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/VisualEffects/ParticleSystem.h"
 #include "Gugu/VisualEffects/ManagerVisualEffects.h"
 #include "Gugu/Element/2D/ElementParticles.h"
+#include "Gugu/Window/Window.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include <imgui.h>
@@ -29,6 +31,9 @@ ParticleEffectPanel::ParticleEffectPanel(const std::string& resourceID)
     : m_renderViewport(nullptr)
     , m_particleEffect(nullptr)
     , m_particleSystem(nullptr)
+    , m_elementParticle(nullptr)
+    , m_followCursor(false)
+    , m_rotate(false)
 {
     m_resourceID = resourceID;
     m_particleEffect = GetResources()->GetParticleEffect(resourceID);
@@ -40,9 +45,9 @@ ParticleEffectPanel::ParticleEffectPanel(const std::string& resourceID)
     m_renderViewport->SetSize(Vector2u(500, 500));
 
     // Test Particle
-    ElementParticles* elementParticle = m_renderViewport->GetRoot()->AddChild<ElementParticles>();
-    elementParticle->SetUnifiedPosition(UDim2::POSITION_CENTER);
-    m_particleSystem = elementParticle->CreateParticleSystem(*m_particleEffect->GetParticleSettings(), true);
+    m_elementParticle = m_renderViewport->GetRoot()->AddChild<ElementParticles>();
+    m_elementParticle->SetUnifiedPosition(UDim2::POSITION_CENTER);
+    m_particleSystem = m_elementParticle->CreateParticleSystem(*m_particleEffect->GetParticleSettings(), true);
 }
 
 ParticleEffectPanel::~ParticleEffectPanel()
@@ -77,8 +82,51 @@ void ParticleEffectPanel::UpdatePanel(const DeltaTime& dt)
             m_renderViewport->SetZoom(zoomFactor);
         }
 
+        if (ImGui::Checkbox("Follow Cursor", &m_followCursor))
+        {
+            if (m_followCursor)
+            {
+                m_elementParticle->ResetUnifiedPosition();
+            }
+            else
+            {
+                m_elementParticle->SetUnifiedPosition(UDim2::POSITION_CENTER);
+            }
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Checkbox("Rotate", &m_rotate))
+        {
+            if (m_rotate)
+            {
+                m_elementParticle->SetOriginY(150.f);
+            }
+            else
+            {
+                m_elementParticle->SetOriginY(0.f);
+                m_elementParticle->SetRotation(0.f);
+            }
+        }
+
         // Viewport.
         m_renderViewport->ImGuiBegin();
+
+        if (m_followCursor)
+        {
+            // Handle picking (should be used inside a viewport begin/end block).
+            ImGuiIO& io = ImGui::GetIO();
+            const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
+            const Vector2f mouse_pos_in_canvas(io.MousePos.x - canvas_p0.x, io.MousePos.y - canvas_p0.y);
+            Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
+
+            m_elementParticle->SetPosition(pickedGlobalPosition);
+        }
+
+        if (m_rotate)
+        {
+            m_elementParticle->Rotate(dt.s() * 90.f);
+        }
+
         m_renderViewport->ImGuiEnd();
     }
     ImGui::End();

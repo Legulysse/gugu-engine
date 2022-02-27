@@ -12,6 +12,7 @@ namespace gugu
 {
     struct ParticleSystemSettings;
     class ParticleSystem;
+    class ParticleEffect;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -26,6 +27,7 @@ public:
     ElementParticles();
     virtual ~ElementParticles();
 
+    ParticleSystem* CreateParticleSystem(ParticleEffect* particleEffect, bool startNow);
     ParticleSystem* CreateParticleSystem(const ParticleSystemSettings& settings, bool startNow);
 
 protected:

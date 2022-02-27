@@ -15,6 +15,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementParticles.h"
 #include "Gugu/VisualEffects/ParticleSystemSettings.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
@@ -106,41 +107,16 @@ void Projectile::InitProjectile(const SkillContext& skillContext, const DS_Effec
     if (m_isFireball)
     {
         // Fireball trail
-        ParticleSystemSettings particleSettings;
-        particleSettings.maxParticleCount = 150;
-        particleSettings.minSpawnPerSecond = 50;
-        particleSettings.minParticlesPerSpawn = 5;
-        particleSettings.useRandomStartSize = true;
-        particleSettings.minStartSize = Vector2f(8.f, 8.f);
-        particleSettings.maxStartSize = Vector2f(16.f, 16.f);
-        particleSettings.updateSizeOverLifetime = true;
-        particleSettings.minEndSize = Vector2f(6.f, 6.f);
-        particleSettings.updateColorOverLifetime = true;
-        particleSettings.startColor = sf::Color::Yellow;
-        particleSettings.endColor = sf::Color(255, 0, 0, 100);
-
         ElementParticles* particles = m_sprite->AddChild<ElementParticles>();
-        particles->CreateParticleSystem(particleSettings, true);
+        particles->CreateParticleSystem(GetResources()->GetParticleEffect("FireballTrail.particle.xml"), true);
     }
     else if (m_isBowAttack)
     {
         m_sprite->SetTexture("Arrow.png");
 
         // Arrow trail
-        ParticleSystemSettings particleSettings;
-        particleSettings.maxParticleCount = 150;
-        particleSettings.minSpawnPerSecond = 50;
-        particleSettings.minParticlesPerSpawn = 5;
-        particleSettings.minLifetime = 250;
-        particleSettings.useRandomStartSize = true;
-        particleSettings.minStartSize = Vector2f(1.f, 1.f);
-        particleSettings.maxStartSize = Vector2f(2.f, 2.f);
-        particleSettings.updateColorOverLifetime = true;
-        particleSettings.startColor = sf::Color::Red;
-        particleSettings.endColor = sf::Color(0, 0, 0, 0);
-
         ElementParticles* particles = m_sprite->AddChild<ElementParticles>();
-        particles->CreateParticleSystem(particleSettings, true);
+        particles->CreateParticleSystem(GetResources()->GetParticleEffect("ArrowTrail.particle.xml"), true);
     }
 
     GetGame()->m_projectiles.push_back(this);
@@ -186,26 +162,9 @@ void Projectile::Step(const DeltaTime& dt)
                 m_lifetime = 3.f;
 
                 // Fireball explosion
-                ParticleSystemSettings particleSettings;
-                particleSettings.loop = false;
-                particleSettings.duration = 200;
-                particleSettings.maxParticleCount = 16000;
-                particleSettings.minSpawnPerSecond = 100;
-                particleSettings.minParticlesPerSpawn = 2000;
-                particleSettings.minLifetime = 400;
-                particleSettings.useRandomVelocity = true;
-                particleSettings.minVelocity = 100.f;
-                particleSettings.maxVelocity = 500.f;
-                particleSettings.useRandomStartSize = true;
-                particleSettings.minStartSize = Vector2f(6.f, 6.f);
-                particleSettings.maxStartSize = Vector2f(8.f, 8.f);
-                particleSettings.updateColorOverLifetime = true;
-                particleSettings.startColor = sf::Color::Yellow;
-                particleSettings.endColor = sf::Color(255, 0, 0, 50);
-
                 ElementParticles* particles = m_scene->GetRootNode()->AddChild<ElementParticles>();
                 particles->SetPosition(m_sprite->GetPosition());
-                particles->CreateParticleSystem(particleSettings, true);
+                particles->CreateParticleSystem(GetResources()->GetParticleEffect("FireballImpact.particle.xml"), true);
                 m_deathParticles = particles;
 
                 //SafeDelete(m_sprite);
@@ -216,28 +175,9 @@ void Projectile::Step(const DeltaTime& dt)
                 m_lifetime = 3.f;
 
                 // Bomb Arrow explosion
-                ParticleSystemSettings particleSettings;
-                particleSettings.loop = false;
-                particleSettings.duration = 200;
-                particleSettings.maxParticleCount = 500;
-                particleSettings.minSpawnPerSecond = 50;
-                particleSettings.minParticlesPerSpawn = 100;
-                particleSettings.useRandomLifetime = true;
-                particleSettings.minLifetime = 500;
-                particleSettings.maxLifetime = 700;
-                particleSettings.useRandomVelocity = true;
-                particleSettings.minVelocity = 75.f;
-                particleSettings.maxVelocity = 100.f;
-                particleSettings.useRandomStartSize = true;
-                particleSettings.minStartSize = Vector2f(3.f, 3.f);
-                particleSettings.maxStartSize = Vector2f(8.f, 8.f);
-                particleSettings.updateColorOverLifetime = true;
-                particleSettings.startColor = sf::Color::Yellow;
-                particleSettings.endColor = sf::Color(255, 0, 0, 50);
-
                 ElementParticles* particles = m_scene->GetRootNode()->AddChild<ElementParticles>();
                 particles->SetPosition(m_sprite->GetPosition());
-                particles->CreateParticleSystem(particleSettings, true);
+                particles->CreateParticleSystem(GetResources()->GetParticleEffect("ArrowImpact.particle.xml"), true);
                 m_deathParticles = particles;
 
                 SafeDelete(m_sprite);

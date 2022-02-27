@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/VisualEffects/ManagerVisualEffects.h"
 #include "Gugu/VisualEffects/ParticleSystem.h"
 #include "Gugu/System/SystemUtility.h"
@@ -25,6 +26,11 @@ ElementParticles::~ElementParticles()
 {
     GetVisualEffects()->RemoveParticleSystem(m_particleSystem);
     SafeDelete(m_particleSystem);
+}
+
+ParticleSystem* ElementParticles::CreateParticleSystem(ParticleEffect* particleEffect, bool startNow)
+{
+    return CreateParticleSystem(*particleEffect->GetParticleSettings(), startNow);
 }
 
 ParticleSystem* ElementParticles::CreateParticleSystem(const ParticleSystemSettings& settings, bool startNow)

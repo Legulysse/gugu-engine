@@ -45,6 +45,10 @@ private:
 
     bool m_followCursor;
     bool m_rotate;
+    float m_restartDelay;
+
+    bool m_pendingRestart;
+    float m_currentDelay;
 };
 
 }   //namespace gugu

@@ -18,6 +18,7 @@
 #include "Gugu/Element/2D/ElementParticles.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -34,6 +35,9 @@ ParticleEffectPanel::ParticleEffectPanel(const std::string& resourceID)
     , m_elementParticle(nullptr)
     , m_followCursor(false)
     , m_rotate(false)
+    , m_restartDelay(1.f)
+    , m_pendingRestart(false)
+    , m_currentDelay(0.f)
 {
     m_resourceID = resourceID;
     m_particleEffect = GetResources()->GetParticleEffect(resourceID);
@@ -75,6 +79,26 @@ void ParticleEffectPanel::UpdatePanel(const DeltaTime& dt)
 
         //TODO: If this panel is not focused, I should be able to pause the particle system.
 
+        if (!m_particleSystem->IsRunning())
+        {
+            if (!m_pendingRestart)
+            {
+                m_pendingRestart = true;
+                m_currentDelay = m_restartDelay;
+            }
+            else
+            {
+                m_currentDelay -= dt.s();
+                if (m_currentDelay <= 0.f)
+                {
+                    m_pendingRestart = false;
+                    m_currentDelay = 0.f;
+
+                    m_particleSystem->Restart();
+                }
+            }
+        }
+
         // Toolbar.
         static float zoomFactor = 1.f;
         if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
@@ -107,6 +131,11 @@ void ParticleEffectPanel::UpdatePanel(const DeltaTime& dt)
                 m_elementParticle->SetRotation(0.f);
             }
         }
+
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(100.f);
+        ImGui::InputFloat("Restart Delay", &m_restartDelay);
+        m_restartDelay = Clamp(m_restartDelay, 0.f, 10.f);
 
         // Viewport.
         m_renderViewport->ImGuiBegin();

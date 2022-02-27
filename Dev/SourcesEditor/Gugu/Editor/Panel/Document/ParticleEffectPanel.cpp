@@ -38,6 +38,7 @@ ParticleEffectPanel::ParticleEffectPanel(const std::string& resourceID)
     , m_restartDelay(1.f)
     , m_pendingRestart(false)
     , m_currentDelay(0.f)
+    , m_maxParticleCount(0)
 {
     m_resourceID = resourceID;
     m_particleEffect = GetResources()->GetParticleEffect(resourceID);
@@ -95,8 +96,13 @@ void ParticleEffectPanel::UpdatePanel(const DeltaTime& dt)
                     m_currentDelay = 0.f;
 
                     m_particleSystem->Restart();
+                    m_maxParticleCount = 0;
                 }
             }
+        }
+        else
+        {
+            m_maxParticleCount = Max(m_maxParticleCount, m_particleSystem->GetActiveParticleCount());
         }
 
         // Toolbar.
@@ -203,7 +209,7 @@ void ParticleEffectPanel::UpdateProperties(const gugu::DeltaTime& dt)
     };
 
     // Infos
-    ImGui::Text("Active Particles : %d / %d", m_particleSystem->GetActiveParticleCount(), m_particleSystem->GetMaxParticleCount());
+    ImGui::Text("Active Particles : %d / %d, Max Reached : %d", m_particleSystem->GetActiveParticleCount(), m_particleSystem->GetMaxParticleCount(), m_maxParticleCount);
 
     // Setup
     updated |= ImGui::Checkbox("loop", &particleSettings->loop);
@@ -389,6 +395,7 @@ void ParticleEffectPanel::UpdateProperties(const gugu::DeltaTime& dt)
 
         m_particleSystem->Init(*particleSettings);
         m_particleSystem->Restart();
+        m_maxParticleCount = 0;
 
         m_dirty = true;
     }

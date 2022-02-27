@@ -49,6 +49,7 @@ private:
 
     bool m_pendingRestart;
     float m_currentDelay;
+    size_t m_maxParticleCount;
 };
 
 }   //namespace gugu

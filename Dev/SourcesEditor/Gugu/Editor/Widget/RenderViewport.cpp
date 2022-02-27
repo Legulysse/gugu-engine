@@ -81,6 +81,7 @@ void RenderViewport::ImGuiBegin()
     ImGui::SetCursorScreenPos(canvas_p0);
 
     // Reset render target.
+    m_renderTexture->setActive(true);
     if (m_renderTexture->getSize() != canvas_sz)
     {
         m_renderTexture->create(canvas_sz.x, canvas_sz.y);
@@ -104,6 +105,7 @@ void RenderViewport::ImGuiEnd()
     // Display.
     m_renderTexture->display();
     ImGui::Image(*m_renderTexture);
+    //m_renderTexture->setActive(false);
 
     // Finalize imgui area.
     ImGui::EndChild();

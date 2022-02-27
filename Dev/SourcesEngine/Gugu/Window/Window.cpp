@@ -447,7 +447,7 @@ void Window::Display()
     GUGU_SCOPE_TRACE_MAIN("Display");
 
     m_sfWindow->display();
-    m_sfWindow->setActive(false);
+    //m_sfWindow->setActive(false);
 }
 
 void Window::OnConsoleCommandValidated()

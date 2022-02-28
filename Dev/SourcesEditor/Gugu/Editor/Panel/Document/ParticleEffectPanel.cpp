@@ -224,6 +224,7 @@ void ParticleEffectPanel::UpdateProperties(const gugu::DeltaTime& dt)
     updated |= ImGui::Combo("particle shape", &particleShapeIndex, particleShapeValues, IM_ARRAYSIZE(particleShapeValues));
     particleSettings->particleShape = (ParticleSystemSettings::EParticleShape)particleShapeIndex;
 
+    updated |= ImGui::Checkbox("sort buffer", &particleSettings->useSortBuffer);
     updated |= ImGui::Checkbox("local space", &particleSettings->localSpace);
 
     ImGui::Spacing();

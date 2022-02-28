@@ -61,6 +61,7 @@ private:
     ParticleSystemSettings m_settings;
     size_t m_maxParticleCount;
     size_t m_verticesPerParticle;
+    sf::PrimitiveType m_primitiveType;
     ImageSet* m_imageSet;
     sf::Texture* m_texture;
     Element* m_element;
@@ -75,7 +76,8 @@ private:
     int m_currentSpawnDelay;
 
     // Particles data
-    sf::VertexArray m_dataVertices;
+    std::vector<sf::Vertex> m_dataVertices;
+    std::vector<sf::Vertex> m_sortBuffer;
     std::vector<int> m_dataLifetime;
     std::vector<int> m_dataRemainingTime;
     std::vector<Vector2f> m_dataPosition;

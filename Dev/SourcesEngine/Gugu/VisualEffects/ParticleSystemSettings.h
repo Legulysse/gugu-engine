@@ -45,6 +45,7 @@ struct ParticleSystemSettings
     int duration = 5000;
     int maxParticleCount = 50;  // Hard-limit implemented at 100k particles, to avoid crashes.
     EParticleShape particleShape = EParticleShape::Quad;
+    bool useSortBuffer = false;
     bool localSpace = false;
 
     // Emitter Shape

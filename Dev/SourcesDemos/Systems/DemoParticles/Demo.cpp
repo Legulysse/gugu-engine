@@ -265,6 +265,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
                 updated |= ImGui::Combo("particle shape", &particleShapeIndex, particleShapeValues, IM_ARRAYSIZE(particleShapeValues));
                 m_particleSystemSettings[i].particleShape = (ParticleSystemSettings::EParticleShape)particleShapeIndex;
 
+                updated |= ImGui::Checkbox("sort buffer", &m_particleSystemSettings[i].useSortBuffer);
                 updated |= ImGui::Checkbox("local space", &m_particleSystemSettings[i].localSpace);
 
                 ImGui::Spacing();

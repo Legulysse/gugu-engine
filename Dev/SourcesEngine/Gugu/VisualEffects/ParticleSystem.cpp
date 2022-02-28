@@ -31,6 +31,10 @@ ParticleSystem::ParticleSystem()
     , m_nextEmitIndex(0)
     , m_nextSpawnDelay(0)
     , m_currentSpawnDelay(0)
+    , m_primitiveType(sf::PrimitiveType::Points)
+    , m_imageSet(nullptr)
+    , m_texture(nullptr)
+    , m_element(nullptr)
 {
 }
 
@@ -87,15 +91,16 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     if (m_settings.particleShape == ParticleSystemSettings::EParticleShape::Point)
     {
         m_verticesPerParticle = 1;
-        m_dataVertices.setPrimitiveType(sf::PrimitiveType::Points);
+        m_primitiveType = sf::PrimitiveType::Points;
     }
     else if (m_settings.particleShape == ParticleSystemSettings::EParticleShape::Quad)
     {
         m_verticesPerParticle = 6;
-        m_dataVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
+        m_primitiveType = sf::PrimitiveType::Triangles;
     }
 
     m_dataVertices.resize(m_maxParticleCount* m_verticesPerParticle);
+    m_sortBuffer.resize(m_maxParticleCount * m_verticesPerParticle);
 
     // TODO: keep unused arrays empty depending on settings.
     m_dataLifetime.resize(m_maxParticleCount, 0);
@@ -126,7 +131,7 @@ void ParticleSystem::Release()
 
 void ParticleSystem::Start()
 {
-    if (m_running || m_dataVertices.getVertexCount() == 0)
+    if (m_running || m_dataVertices.empty())
         return;
 
     if (m_element && !m_settings.localSpace)
@@ -510,7 +515,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
 
 void ParticleSystem::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    if (!m_running)
+    if (!m_running || m_dataVertices.empty())
         return;
 
     sf::RenderStates states;
@@ -521,7 +526,28 @@ void ParticleSystem::Render(RenderPass& _kRenderPass, const sf::Transform& _kTra
         states.transform = _kTransformSelf;
     }
 
-    _kRenderPass.target->draw(m_dataVertices, states);
+    if (m_settings.useSortBuffer)
+    {
+        if (m_nextEmitIndex == 0)
+        {
+            memcpy(&m_sortBuffer[0], &m_dataVertices[0], m_dataVertices.size() * sizeof(sf::Vertex));
+        }
+        else
+        {
+            size_t indexSplit = m_nextEmitIndex * m_verticesPerParticle;
+            size_t firstSliceSize = m_dataVertices.size() - indexSplit;
+            size_t secondSliceSize = indexSplit;
+
+            memcpy(&m_sortBuffer[0], &m_dataVertices[indexSplit], firstSliceSize * sizeof(sf::Vertex));
+            memcpy(&m_sortBuffer[firstSliceSize], &m_dataVertices[0], secondSliceSize * sizeof(sf::Vertex));
+        }
+
+        _kRenderPass.target->draw(&m_sortBuffer[0], m_sortBuffer.size(), m_primitiveType, states);
+    }
+    else
+    {
+        _kRenderPass.target->draw(&m_dataVertices[0], m_dataVertices.size(), m_primitiveType, states);
+    }
 
     // Stats
     if (_kRenderPass.frameInfos)
@@ -529,13 +555,13 @@ void ParticleSystem::Render(RenderPass& _kRenderPass, const sf::Transform& _kTra
         if (m_verticesPerParticle == 6)
         {
             _kRenderPass.frameInfos->statDrawCalls += 1;
-            _kRenderPass.frameInfos->statTriangles += m_dataVertices.getVertexCount() / 3;
+            _kRenderPass.frameInfos->statTriangles += m_dataVertices.size() / 3;
         }
         else
         {
             // TODO: vertex count instead of triangle count ?
             _kRenderPass.frameInfos->statDrawCalls += 1;
-            _kRenderPass.frameInfos->statTriangles += m_dataVertices.getVertexCount();
+            _kRenderPass.frameInfos->statTriangles += m_dataVertices.size();
         }
     }
 }

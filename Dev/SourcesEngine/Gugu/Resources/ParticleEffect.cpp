@@ -86,6 +86,7 @@ bool ParticleEffect::LoadFromFile()
     m_particleSettings.duration = nodeParticleEffect.child("Duration").attribute("value").as_int(m_particleSettings.duration);
     m_particleSettings.maxParticleCount = nodeParticleEffect.child("MaxParticleCount").attribute("value").as_int(m_particleSettings.maxParticleCount);
     particleShapeValue = nodeParticleEffect.child("ParticleShape").attribute("value").as_string(particleShapeValue.c_str());
+    m_particleSettings.useSortBuffer = nodeParticleEffect.child("SortBuffer").attribute("value").as_bool(m_particleSettings.useSortBuffer);
     m_particleSettings.localSpace = nodeParticleEffect.child("LocalSpace").attribute("value").as_bool(m_particleSettings.localSpace);
 
     // Emitter Shape
@@ -198,6 +199,7 @@ bool ParticleEffect::SaveToFile()
     nodeParticleEffect.append_child("Duration").append_attribute("value").set_value(m_particleSettings.duration);
     nodeParticleEffect.append_child("MaxParticleCount").append_attribute("value").set_value(m_particleSettings.maxParticleCount);
     nodeParticleEffect.append_child("ParticleShape").append_attribute("value").set_value(particleShapeValue.c_str());
+    nodeParticleEffect.append_child("SortBuffer").append_attribute("value").set_value(m_particleSettings.useSortBuffer);
     nodeParticleEffect.append_child("LocalSpace").append_attribute("value").set_value(m_particleSettings.localSpace);
 
     // Emitter Shape

@@ -100,9 +100,7 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     }
 
     m_dataVertices.resize(m_maxParticleCount* m_verticesPerParticle);
-    m_sortBuffer.resize(m_maxParticleCount * m_verticesPerParticle);
-
-    // TODO: keep unused arrays empty depending on settings.
+    m_sortBuffer.resize(m_settings.useSortBuffer ? m_maxParticleCount * m_verticesPerParticle : 0);
     m_dataLifetime.resize(m_maxParticleCount, 0);
     m_dataRemainingTime.resize(m_maxParticleCount, 0);
     m_dataPosition.resize(m_maxParticleCount);
@@ -209,6 +207,20 @@ size_t ParticleSystem::GetMaxParticleCount() const
 size_t ParticleSystem::GetActiveParticleCount() const
 {
     return m_activeParticleCount;
+}
+
+size_t ParticleSystem::GetParticleDataSize() const
+{
+    size_t total = 0;
+    total += m_dataVertices.size() * sizeof(sf::Vertex);
+    total += m_sortBuffer.size() * sizeof(sf::Vertex);
+    total += m_dataLifetime.size() * sizeof(int);
+    total += m_dataRemainingTime.size() * sizeof(int);
+    total += m_dataPosition.size() * sizeof(Vector2f);
+    total += m_dataStartSize.size() * sizeof(Vector2f);
+    total += m_dataEndSize.size() * sizeof(Vector2f);
+    total += m_dataVelocity.size() * sizeof(Vector2f);
+    return total;
 }
 
 void ParticleSystem::EmitParticle(size_t particleIndex)

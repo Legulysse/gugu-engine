@@ -209,7 +209,14 @@ void ParticleEffectPanel::UpdateProperties(const gugu::DeltaTime& dt)
     };
 
     // Infos
-    ImGui::Text("Active Particles : %d / %d, Max Reached : %d", m_particleSystem->GetActiveParticleCount(), m_particleSystem->GetMaxParticleCount(), m_maxParticleCount);
+    ImGui::Text("Active Particles : %d / %d, Max Reached : %d",
+        m_particleSystem->GetActiveParticleCount(),
+        m_particleSystem->GetMaxParticleCount(),
+        m_maxParticleCount);
+
+    ImGui::Text("Data Size : %d bytes", m_particleSystem->GetParticleDataSize());
+
+    ImGui::Spacing();
 
     // Setup
     updated |= ImGui::Checkbox("loop", &particleSettings->loop);

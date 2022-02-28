@@ -48,6 +48,7 @@ public:
     bool IsRunning() const;
     size_t GetMaxParticleCount() const;
     size_t GetActiveParticleCount() const;
+    size_t GetParticleDataSize() const;
 
 private:
 

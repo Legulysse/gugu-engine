@@ -542,16 +542,15 @@ void ParticleSystem::Render(RenderPass& _kRenderPass, const sf::Transform& _kTra
     {
         if (m_nextEmitIndex == 0)
         {
-            memcpy(&m_sortBuffer[0], &m_dataVertices[0], m_dataVertices.size() * sizeof(sf::Vertex));
+            std::copy(m_dataVertices.begin(), m_dataVertices.end(), m_sortBuffer.begin());
         }
         else
         {
-            size_t indexSplit = m_nextEmitIndex * m_verticesPerParticle;
-            size_t firstSliceSize = m_dataVertices.size() - indexSplit;
-            size_t secondSliceSize = indexSplit;
+            size_t sliceIndex = m_nextEmitIndex * m_verticesPerParticle;
+            size_t sliceSize = m_dataVertices.size() - sliceIndex;
 
-            memcpy(&m_sortBuffer[0], &m_dataVertices[indexSplit], firstSliceSize * sizeof(sf::Vertex));
-            memcpy(&m_sortBuffer[firstSliceSize], &m_dataVertices[0], secondSliceSize * sizeof(sf::Vertex));
+            std::copy(m_dataVertices.begin() + sliceIndex, m_dataVertices.end(), m_sortBuffer.begin());
+            std::copy(m_dataVertices.begin(), m_dataVertices.begin() + sliceIndex, m_sortBuffer.begin() + sliceSize);
         }
 
         _kRenderPass.target->draw(&m_sortBuffer[0], m_sortBuffer.size(), m_primitiveType, states);

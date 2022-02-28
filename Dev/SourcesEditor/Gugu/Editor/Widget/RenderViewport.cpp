@@ -35,6 +35,8 @@ RenderViewport::RenderViewport(bool fillAvailableArea)
     m_renderer = new WidgetRenderer;
     m_renderTexture = new sf::RenderTexture;
     m_root = new Element;
+
+    m_root->SetSize(Vector2f(m_size));
 }
 
 RenderViewport::~RenderViewport()
@@ -90,8 +92,6 @@ void RenderViewport::ImGuiBegin()
     sf::View view;
     view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
     m_renderTexture->setView(view);
-
-    m_root->SetSize(Vector2f(m_size));
 }
 
 void RenderViewport::ImGuiEnd()
@@ -114,6 +114,8 @@ void RenderViewport::ImGuiEnd()
 void RenderViewport::SetSize(Vector2u size)
 {
     m_size = size;
+
+    m_root->SetSize(Vector2f(m_size));
 }
 
 void RenderViewport::SetZoom(float zoomMultiplier)

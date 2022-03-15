@@ -27,13 +27,9 @@ public:
 
     virtual void UpdatePanel(const gugu::DeltaTime& dt) = 0;
 
-    bool IsFocused() const;
-    void ForceFocus();
-
 protected:
 
     std::string m_title;
-    bool m_focused;
 };
 
 }   //namespace gugu

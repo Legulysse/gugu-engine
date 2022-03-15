@@ -34,26 +34,9 @@ DatasheetPanel::~DatasheetPanel()
 {
 }
 
-void DatasheetPanel::UpdatePanel(const DeltaTime& dt)
+void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
-    m_focused = false;
-
-    ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings;
-    if (m_dirty)
-    {
-        flags |= ImGuiWindowFlags_UnsavedDocument;
-    }
-
-    if (ImGui::Begin(m_title.c_str(), false, flags))
-    {
-        if (ImGui::IsWindowFocused())
-        {
-            m_focused = true;
-        }
-
-        DisplayDatasheet();
-    }
-    ImGui::End();
+    DisplayDatasheet();
 }
 
 void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)

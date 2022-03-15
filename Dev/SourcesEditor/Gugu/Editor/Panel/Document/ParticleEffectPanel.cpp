@@ -61,110 +61,93 @@ ParticleEffectPanel::~ParticleEffectPanel()
     SafeDelete(m_renderViewport);
 }
 
-void ParticleEffectPanel::UpdatePanel(const DeltaTime& dt)
+void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
-    m_focused = false;
+    //TODO: If this panel is not focused, I should be able to pause the particle system.
 
-    ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_HorizontalScrollbar;
-    if (m_dirty)
+    if (!m_particleSystem->IsRunning())
     {
-        flags |= ImGuiWindowFlags_UnsavedDocument;
-    }
-
-    if (ImGui::Begin(m_title.c_str(), false, flags))
-    {
-        if (ImGui::IsWindowFocused())
+        if (!m_pendingRestart)
         {
-            m_focused = true;
-        }
-
-        //TODO: If this panel is not focused, I should be able to pause the particle system.
-
-        if (!m_particleSystem->IsRunning())
-        {
-            if (!m_pendingRestart)
-            {
-                m_pendingRestart = true;
-                m_currentDelay = m_restartDelay;
-            }
-            else
-            {
-                m_currentDelay -= dt.s();
-                if (m_currentDelay <= 0.f)
-                {
-                    m_pendingRestart = false;
-                    m_currentDelay = 0.f;
-
-                    m_particleSystem->Restart();
-                    m_maxParticleCount = 0;
-                }
-            }
+            m_pendingRestart = true;
+            m_currentDelay = m_restartDelay;
         }
         else
         {
-            m_maxParticleCount = Max(m_maxParticleCount, m_particleSystem->GetActiveParticleCount());
-        }
-
-        // Toolbar.
-        static float zoomFactor = 1.f;
-        if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
-        {
-            m_renderViewport->SetZoom(zoomFactor);
-        }
-
-        if (ImGui::Checkbox("Follow Cursor", &m_followCursor))
-        {
-            if (m_followCursor)
+            m_currentDelay -= dt.s();
+            if (m_currentDelay <= 0.f)
             {
-                m_elementParticle->ResetUnifiedPosition();
-            }
-            else
-            {
-                m_elementParticle->SetUnifiedPosition(UDim2::POSITION_CENTER);
+                m_pendingRestart = false;
+                m_currentDelay = 0.f;
+
+                m_particleSystem->Restart();
+                m_maxParticleCount = 0;
             }
         }
+    }
+    else
+    {
+        m_maxParticleCount = Max(m_maxParticleCount, m_particleSystem->GetActiveParticleCount());
+    }
 
-        ImGui::SameLine();
-        if (ImGui::Checkbox("Rotate", &m_rotate))
-        {
-            if (m_rotate)
-            {
-                m_elementParticle->SetOriginY(150.f);
-            }
-            else
-            {
-                m_elementParticle->SetOriginY(0.f);
-                m_elementParticle->SetRotation(0.f);
-            }
-        }
+    // Toolbar.
+    static float zoomFactor = 1.f;
+    if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
+    {
+        m_renderViewport->SetZoom(zoomFactor);
+    }
 
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(100.f);
-        ImGui::InputFloat("Restart Delay", &m_restartDelay);
-        m_restartDelay = Clamp(m_restartDelay, 0.f, 10.f);
-
-        // Viewport.
-        m_renderViewport->ImGuiBegin();
-
+    if (ImGui::Checkbox("Follow Cursor", &m_followCursor))
+    {
         if (m_followCursor)
         {
-            // Handle picking (should be used inside a viewport begin/end block).
-            ImGuiIO& io = ImGui::GetIO();
-            const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
-            const Vector2f mouse_pos_in_canvas(io.MousePos.x - canvas_p0.x, io.MousePos.y - canvas_p0.y);
-            Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
-
-            m_elementParticle->SetPosition(pickedGlobalPosition);
+            m_elementParticle->ResetUnifiedPosition();
         }
+        else
+        {
+            m_elementParticle->SetUnifiedPosition(UDim2::POSITION_CENTER);
+        }
+    }
 
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Rotate", &m_rotate))
+    {
         if (m_rotate)
         {
-            m_elementParticle->Rotate(dt.s() * 90.f);
+            m_elementParticle->SetOriginY(150.f);
         }
-
-        m_renderViewport->ImGuiEnd();
+        else
+        {
+            m_elementParticle->SetOriginY(0.f);
+            m_elementParticle->SetRotation(0.f);
+        }
     }
-    ImGui::End();
+
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(100.f);
+    ImGui::InputFloat("Restart Delay", &m_restartDelay);
+    m_restartDelay = Clamp(m_restartDelay, 0.f, 10.f);
+
+    // Viewport.
+    m_renderViewport->ImGuiBegin();
+
+    if (m_followCursor)
+    {
+        // Handle picking (should be used inside a viewport begin/end block).
+        ImGuiIO& io = ImGui::GetIO();
+        const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
+        const Vector2f mouse_pos_in_canvas(io.MousePos.x - canvas_p0.x, io.MousePos.y - canvas_p0.y);
+        Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
+
+        m_elementParticle->SetPosition(pickedGlobalPosition);
+    }
+
+    if (m_rotate)
+    {
+        m_elementParticle->Rotate(dt.s() * 90.f);
+    }
+
+    m_renderViewport->ImGuiEnd();
 }
 
 void ParticleEffectPanel::UpdateProperties(const gugu::DeltaTime& dt)

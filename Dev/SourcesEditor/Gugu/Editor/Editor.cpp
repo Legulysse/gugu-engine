@@ -267,8 +267,6 @@ void Editor::Update(const DeltaTime& dt)
         ImGuiID dock_id_down = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
 
         ImGui::DockBuilderDockWindow("Assets Explorer", dock_id_left);
-        //ImGui::DockBuilderDockWindow("ImageSet Editor", dock_main_id);
-        //ImGui::DockBuilderDockWindow("AnimSet Editor", dock_main_id);
         ImGui::DockBuilderDockWindow("Output Log", dock_id_down);
         ImGui::DockBuilderDockWindow("Search Results", dock_id_down);
         ImGui::DockBuilderDockWindow("Properties", dock_id_right);
@@ -281,15 +279,34 @@ void Editor::Update(const DeltaTime& dt)
     // Update AssetsExplorer panel.
     m_assetsExplorerPanel->UpdatePanel(dt);
 
-    //if (ImGui::Begin("AnimSet Editor", false))
-    //{
-    //    ImGui::Text("Here lies the future AnimSet Editor.");
-    //}
-    //ImGui::End();
-
-    // Update Documents panels.
-    for (DocumentPanel* document : m_documentPanels)
+    // Handle Document panels closed during last frame (I use a frame delay to avoid flickers).
+    bool closedDocuments = false;
+    for (size_t i = 0; i < m_documentPanels.size(); ++i)
     {
+        DocumentPanel* document = m_documentPanels[i];
+
+        if (document->IsClosed())
+        {
+            if (m_lastActiveDocument == document)
+            {
+                m_lastActiveDocument = nullptr;
+            }
+
+            closedDocuments = true;
+            SafeDelete(m_documentPanels[i]);
+        }
+    }
+
+    if (closedDocuments)
+    {
+        StdVectorRemove<DocumentPanel*>(m_documentPanels, nullptr);
+    }
+
+    // Update Document panels.
+    for (size_t i = 0; i < m_documentPanels.size(); ++i)
+    {
+        DocumentPanel* document = m_documentPanels[i];
+
         ImGui::SetNextWindowDockID(dockspace_id, resetDocuments ? ImGuiCond_Always  : ImGuiCond_FirstUseEver);
         document->UpdatePanel(dt);
 
@@ -298,6 +315,8 @@ void Editor::Update(const DeltaTime& dt)
             m_lastActiveDocument = document;
         }
     }
+
+    StdVectorRemove<DocumentPanel*>(m_documentPanels, nullptr);
 
     // Update Properties panel.
     if (ImGui::Begin("Properties", false))

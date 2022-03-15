@@ -60,36 +60,19 @@ ImageSetPanel::~ImageSetPanel()
     SafeDelete(m_renderViewport);
 }
 
-void ImageSetPanel::UpdatePanel(const DeltaTime& dt)
+void ImageSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
-    m_focused = false;
-
-    ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_HorizontalScrollbar;
-    if (m_dirty)
+    // Toolbar.
+    static float zoomFactor = 1.f;
+    if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
     {
-        flags |= ImGuiWindowFlags_UnsavedDocument;
+        m_renderViewport->SetZoom(zoomFactor);
     }
 
-    if (ImGui::Begin(m_title.c_str(), false, flags))
-    {
-        if (ImGui::IsWindowFocused())
-        {
-            m_focused = true;
-        }
-
-        // Toolbar.
-        static float zoomFactor = 1.f;
-        if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
-        {
-            m_renderViewport->SetZoom(zoomFactor);
-        }
-
-        // Viewport.
-        m_renderViewport->ImGuiBegin();
-        UpdateGizmo();
-        m_renderViewport->ImGuiEnd();
-    }
-    ImGui::End();
+    // Viewport.
+    m_renderViewport->ImGuiBegin();
+    UpdateGizmo();
+    m_renderViewport->ImGuiEnd();
 }
 
 void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)

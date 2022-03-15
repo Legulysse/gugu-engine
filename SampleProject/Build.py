@@ -2,7 +2,7 @@
 dirEngineBuildScripts = '../Tools/Build'
 dirProjectBuildScripts = '.'
 
-import sys, os, collections
+import sys, os
 
 sys.path.append(dirEngineBuildScripts)
 import GuguUtility
@@ -14,24 +14,8 @@ def Main():
     dirCurrent = os.getcwd()
     os.chdir(dirProjectBuildScripts)
 
-    aActions = { 'premake' }
-    
-    # Menu : Compilers
-    aCompilers = []
-    if any(x in ['premake'] for x in aActions):
-        dictChoices = collections.OrderedDict()
-        dictChoices['vs2019'] = 'Visual 2019'
-        dictChoices['vs2017'] = 'Visual 2017'
-        dictChoices['vs2015'] = 'Visual 2015'
-        dictChoices['gmake'] = 'GNU Makefiles'
-        dictChoices['xcode4'] = 'XCode'
-        dictChoices['codelite'] = 'CodeLite'
-        aCompilers = GuguUtility.PromptMenu('Select Compilers', dictChoices, True)
-
-    # Premake
-    for compiler in aCompilers:
-        if 'premake' in aActions:
-            GuguUtility.Premake(dirEngineBuildScripts, 'Build-premake.lua', compiler)
+    # Default Actions Menu
+    GuguUtility.DefaultMenu(dirEngineBuildScripts, 'Build-premake.lua')
 
     # Finalize
     os.chdir(dirCurrent)

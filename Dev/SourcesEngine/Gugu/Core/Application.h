@@ -41,6 +41,9 @@ public:
     virtual void AppStep        (const DeltaTime& dt);
     virtual void AppUpdate      (const DeltaTime& dt);
 
+    // Return true to allow the engine to automatically close the main window, or false to manually handle the event.
+    virtual bool OnMainWindowCloseEvent();
+
     virtual void ComputeCommandLine (const std::string& _strCommand, const std::vector<std::string>& _vecArgs);
 
     virtual NetPacketGame*  ReadGamePacket      (sf::Packet* _pSFPacket);

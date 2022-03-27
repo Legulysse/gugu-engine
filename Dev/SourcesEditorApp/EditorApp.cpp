@@ -43,6 +43,13 @@ void EditorApp::AppUpdate(const DeltaTime& dt)
     GetEditor()->Update(dt);
 }
 
+bool EditorApp::OnMainWindowCloseEvent()
+{
+    // The Editor may decide to not close if some documents are dirty.
+    GetEditor()->CloseEditor();
+    return false;
+}
+
 bool EditorApp::OnSFEvent(const sf::Event& event)
 {
     if (!EventListener::OnSFEvent(event))

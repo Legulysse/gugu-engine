@@ -38,6 +38,11 @@ void Application::AppUpdate(const DeltaTime& dt)
 {
 }
 
+bool Application::OnMainWindowCloseEvent()
+{
+    return true;
+}
+
 void Application::ComputeCommandLine(const std::string& _strCommand, const std::vector<std::string>& _vecArgs)
 {
 }

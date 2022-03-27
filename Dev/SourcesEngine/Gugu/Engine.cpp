@@ -289,8 +289,9 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
                 //SafeDelete(pWindow);
 
                 bool isMainWindow = (pWindow == m_gameWindow);
-                if (isMainWindow)
+                if (isMainWindow && (!m_application || m_application->OnMainWindowCloseEvent()))
                 {
+                    // The main window will be automatically closed by the engine release.
                     GetEngine()->StopMainLoop();
                     return;
                 }

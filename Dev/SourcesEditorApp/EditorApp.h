@@ -23,6 +23,8 @@ public:
 
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
 
+    virtual bool OnMainWindowCloseEvent() override;
+
     virtual bool OnSFEvent(const sf::Event& event) override;
 };
 

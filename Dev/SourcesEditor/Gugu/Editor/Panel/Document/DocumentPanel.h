@@ -30,13 +30,19 @@ public:
     bool IsFocused() const;
     void ForceFocus();
 
+    bool IsDirty() const;
+
+    bool IsClosing() const;
     bool IsClosed() const;
+    void CancelClosing();
+    void ValidateClosing();
 
 protected:
 
     std::string m_resourceID;
     bool m_dirty;
     bool m_focused;
+    bool m_closing;
     bool m_closed;
 };
 

@@ -31,6 +31,10 @@ namespace gugu {
     
 Editor::Editor()
     : m_isProjectOpen(false)
+    , m_checkDirtyDocuments(false)
+    , m_pendingCloseEditor(false)
+    , m_pendingCloseProject(false)
+    , m_pendingCloseDocument(false)
     , m_resetPanels(false)
     , m_showSearchResults(true)
     , m_showImGuiDemo(false)
@@ -76,7 +80,7 @@ void Editor::Init(const EditorConfig& editorConfig)
 
 void Editor::Release()
 {
-    CloseProject();
+    CloseProjectImpl();
 
     SafeDelete(m_assetsExplorerPanel);
 
@@ -85,23 +89,43 @@ void Editor::Release()
 
 void Editor::OpenProject(const std::string& assetsPath, const std::string& bindingPath)
 {
-    CloseProject();
+    if (CloseProject())
+    {
+        m_isProjectOpen = true;
+        m_projectAssetsPath = assetsPath;
+        m_projectBindingPath = bindingPath;
 
-    m_isProjectOpen = true;
-    m_projectAssetsPath = assetsPath;
-    m_projectBindingPath = bindingPath;
+        // Parse assets.
+        GetResources()->ParseDirectory(m_projectAssetsPath);
 
-    // Parse assets.
-    GetResources()->ParseDirectory(m_projectAssetsPath);
+        // Create the DatasheetParser.
+        m_datasheetParser = new DatasheetParser;
+        m_datasheetParser->ParseBinding(bindingPath);
 
-    // Create the DatasheetParser.
-    m_datasheetParser = new DatasheetParser;
-    m_datasheetParser->ParseBinding(bindingPath);
-
-    m_assetsExplorerPanel->RefreshContent(m_projectAssetsPath);
+        m_assetsExplorerPanel->RefreshContent(m_projectAssetsPath);
+    }
 }
 
-void Editor::CloseProject()
+bool Editor::CloseProject()
+{
+    if (m_isProjectOpen)
+    {
+        if (!RaiseCheckDirtyDocuments())
+        {
+            CloseProjectImpl();
+            return true;
+        }
+        else
+        {
+            m_pendingCloseProject = true;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void Editor::CloseProjectImpl()
 {
     if (m_isProjectOpen)
     {
@@ -131,7 +155,7 @@ bool Editor::OnSFEvent(const sf::Event& event)
     }
     else if (inputs->IsInputEventReleased("SaveAllDocuments", event))
     {
-        SaveAllDocuments();
+        SaveAllDirtyDocuments();
         return false;
     }
     else if (inputs->IsInputEventReleased("SaveDocument", event))
@@ -180,7 +204,7 @@ void Editor::Update(const DeltaTime& dt)
 
             if (ImGui::MenuItem("Save All", "Ctrl+Shift+S"))
             {
-                SaveAllDocuments();
+                SaveAllDirtyDocuments();
             }
 
             ImGui::EndMenu();
@@ -199,15 +223,14 @@ void Editor::Update(const DeltaTime& dt)
         ImGui::OpenPopup("Open Project");
     }
 
-    bool unused_open = true;
-    if (ImGui::BeginPopupModal("Open Project", &unused_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+    if (ImGui::BeginPopupModal("Open Project", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
     {
-        static std::string assetsPath = "../../Version/DemoGame/Assets";
+        static std::string assetsPath = m_editorConfig.projectAssetsPath;
         if (ImGui::InputText("Project Assets", &assetsPath, ImGuiInputTextFlags_EnterReturnsTrue))
         {
         }
 
-        static std::string bindingPath = "../../Dev/SourcesDemos/Game/DemoGame/Binding.xml";
+        static std::string bindingPath = m_editorConfig.projectBindingPath;
         if (ImGui::InputText("Bindings Definition", &bindingPath, ImGuiInputTextFlags_EnterReturnsTrue))
         {
         }
@@ -222,6 +245,77 @@ void Editor::Update(const DeltaTime& dt)
         if (ImGui::Button("Validate"))
         {
             OpenProject(assetsPath, bindingPath);
+
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+
+    if (m_checkDirtyDocuments && !ImGui::IsPopupOpen("Save Documents"))
+    {
+        ImGui::OpenPopup("Save Documents");
+    }
+
+    if (ImGui::BeginPopupModal("Save Documents", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+    {
+        ImGui::Text("You are trying to close documents with unsaved modifications.");
+
+        ImGui::Spacing();
+        if (ImGui::Button("Cancel"))
+        {
+            if (m_pendingCloseDocument)
+            {
+                CancelClosingDirtyDocuments();
+            }
+
+            m_pendingCloseEditor = false;
+            m_pendingCloseProject = false;
+            m_pendingCloseDocument = false;
+
+            m_checkDirtyDocuments = false;
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Close"))
+        {
+            if (m_pendingCloseDocument)
+            {
+                ValidateClosingDirtyDocuments();
+            }
+
+            m_checkDirtyDocuments = false;
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Save And Close"))
+        {
+            if (m_pendingCloseEditor || m_pendingCloseProject)
+            {
+                SaveAllDirtyDocuments();
+            }
+            else if (m_pendingCloseDocument)
+            {
+                SaveAllClosingDirtyDocuments();
+            }
+
+            m_checkDirtyDocuments = false;
+        }
+
+        if (!m_checkDirtyDocuments)
+        {
+            if (m_pendingCloseEditor)
+            {
+                CloseEditorImpl();
+            }
+            else if (m_pendingCloseProject)
+            {
+                CloseProjectImpl();
+            }
+
+            m_pendingCloseEditor = false;
+            m_pendingCloseProject = false;
+            m_pendingCloseDocument = false;
 
             ImGui::CloseCurrentPopup();
         }
@@ -284,6 +378,19 @@ void Editor::Update(const DeltaTime& dt)
     for (size_t i = 0; i < m_documentPanels.size(); ++i)
     {
         DocumentPanel* document = m_documentPanels[i];
+
+        if (document->IsClosing())
+        {
+            if (document->IsDirty())
+            {
+                m_pendingCloseDocument = true;
+                m_checkDirtyDocuments = true;
+            }
+            else
+            {
+                document->ValidateClosing();
+            }
+        }
 
         if (document->IsClosed())
         {
@@ -404,6 +511,40 @@ void Editor::OpenDocument(const std::string& resourceID)
     }
 }
 
+bool Editor::RaiseCheckDirtyDocuments()
+{
+    bool hasDirtyDocuments = false;
+    for (DocumentPanel* document : m_documentPanels)
+    {
+        hasDirtyDocuments |= document->IsDirty();
+    }
+
+    m_checkDirtyDocuments |= hasDirtyDocuments;
+    return m_checkDirtyDocuments;
+}
+
+void Editor::CancelClosingDirtyDocuments()
+{
+    for (DocumentPanel* document : m_documentPanels)
+    {
+        if (document->IsClosing() && document->IsDirty())
+        {
+            document->CancelClosing();
+        }
+    }
+}
+
+void Editor::ValidateClosingDirtyDocuments()
+{
+    for (DocumentPanel* document : m_documentPanels)
+    {
+        if (document->IsClosing() && document->IsDirty())
+        {
+            document->ValidateClosing();
+        }
+    }
+}
+
 bool Editor::SaveActiveDocument()
 {
     if (!m_lastActiveDocument)
@@ -412,12 +553,29 @@ bool Editor::SaveActiveDocument()
     return m_lastActiveDocument->Save();
 }
 
-bool Editor::SaveAllDocuments()
+bool Editor::SaveAllDirtyDocuments()
 {
     bool result = true;
     for (DocumentPanel* document : m_documentPanels)
     {
-        result &= document->Save();
+        if (document->IsDirty())
+        {
+            result &= document->Save();
+        }
+    }
+
+    return result;
+}
+
+bool Editor::SaveAllClosingDirtyDocuments()
+{
+    bool result = true;
+    for (DocumentPanel* document : m_documentPanels)
+    {
+        if (document->IsClosing() && document->IsDirty())
+        {
+            result &= document->Save();
+        }
     }
 
     return result;
@@ -429,7 +587,21 @@ void Editor::ResetPanels()
     m_showSearchResults = true;
 }
 
-void Editor::CloseEditor()
+bool Editor::CloseEditor()
+{
+    if (!RaiseCheckDirtyDocuments())
+    {
+        CloseEditorImpl();
+        return true;
+    }
+    else
+    {
+        m_pendingCloseEditor = true;
+        return false;
+    }
+}
+
+void Editor::CloseEditorImpl()
 {
     // TODO: Only close the application in standalone mode, prefer hiding the editor when used as an overlay.
     GetEngine()->StopMainLoop();

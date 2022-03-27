@@ -18,6 +18,7 @@ namespace gugu {
 DocumentPanel::DocumentPanel()
     : m_dirty(false)
     , m_focused(false)
+    , m_closing(false)
     , m_closed(false)
 {
 }
@@ -49,8 +50,7 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
     }
     ImGui::End();
 
-    // TODO: handle save popup if file is dirty
-    m_closed = !isOpen;
+    m_closing |= !isOpen;
 }
 
 bool DocumentPanel::IsSameResource(const std::string& resourceID) const
@@ -68,9 +68,30 @@ void DocumentPanel::ForceFocus()
     ImGui::SetWindowFocus(m_title.c_str());
 }
 
+bool DocumentPanel::IsDirty() const
+{
+    return m_dirty;
+}
+
+bool DocumentPanel::IsClosing() const
+{
+    return m_closing;
+}
+
 bool DocumentPanel::IsClosed() const
 {
     return m_closed;
+}
+
+void DocumentPanel::CancelClosing()
+{
+    m_closing = false;
+}
+
+void DocumentPanel::ValidateClosing()
+{
+    m_closed = m_closing;
+    m_closing = false;
 }
 
 }   //namespace gugu

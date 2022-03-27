@@ -46,18 +46,27 @@ public:
     bool OnSFEvent(const sf::Event& event);
 
     void OpenProject(const std::string& assetsPath, const std::string& bindingPath);
-    void CloseProject();
+    bool CloseProject();
 
     void OpenDocument(const std::string& resourceID);
     void ResetPanels();
-    void CloseEditor();
+
+    bool CloseEditor();
 
     DatasheetParser* GetDatasheetParser() const;
 
 private:
 
+    bool RaiseCheckDirtyDocuments();
+    void CancelClosingDirtyDocuments();
+    void ValidateClosingDirtyDocuments();
+
     bool SaveActiveDocument();
-    bool SaveAllDocuments();
+    bool SaveAllDirtyDocuments();
+    bool SaveAllClosingDirtyDocuments();
+
+    void CloseProjectImpl();
+    void CloseEditorImpl();
 
 private:
 
@@ -65,6 +74,11 @@ private:
     bool m_isProjectOpen;
     std::string m_projectAssetsPath;
     std::string m_projectBindingPath;
+
+    bool m_checkDirtyDocuments;
+    bool m_pendingCloseEditor;
+    bool m_pendingCloseProject;
+    bool m_pendingCloseDocument;
 
     bool m_resetPanels;
     bool m_showSearchResults;

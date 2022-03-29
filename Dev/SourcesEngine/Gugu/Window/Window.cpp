@@ -343,22 +343,27 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
         //Handle Mouse visibility
         bool isSystemMouseWantedVisible = m_systemMouseVisible;
         bool isMouseWantedVisible = m_mouseVisible;
+        bool allowImGuiMouse = true;
 
-        if (!m_windowHovered)
+        if (!m_windowHovered || !m_windowFocused)
         {
             isSystemMouseWantedVisible = true;
             isMouseWantedVisible = false;
+            allowImGuiMouse = false;
         }
 
-        if (m_hostImGui && ImGui::GetIO().WantCaptureMouse)
+        if (m_hostImGui)
         {
-            isSystemMouseWantedVisible = false;
-            isMouseWantedVisible = false;
-            ImGui::GetIO().MouseDrawCursor = true;
-        }
-        else
-        {
-            ImGui::GetIO().MouseDrawCursor = false;
+            if (ImGui::GetIO().WantCaptureMouse && allowImGuiMouse)
+            {
+                isSystemMouseWantedVisible = false;
+                isMouseWantedVisible = false;
+                ImGui::GetIO().MouseDrawCursor = true;
+            }
+            else
+            {
+                ImGui::GetIO().MouseDrawCursor = false;
+            }
         }
 
         m_sfWindow->setMouseCursorVisible(isSystemMouseWantedVisible);

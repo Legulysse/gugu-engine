@@ -148,6 +148,7 @@ void WriteInConsole(const std::string& _strLine, bool printInIDE);
 void WriteInConsoleEndline(const std::string& _strLine, bool printInIDE);
 void WriteInFileEndline(const std::string& _strFileName, const std::string& _strLine);
 
+void OpenFileExplorer(const std::string& path);
 void OpenWebBrowser(const std::string& _strURL);
 
 bool EnsureDirectoryExists(const std::string& _strPath);

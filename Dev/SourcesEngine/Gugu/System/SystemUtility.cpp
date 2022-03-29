@@ -267,12 +267,20 @@ void NormalizePathSelf(std::string& _strPath, bool _bIsFolder)
     }
 }
 
+void OpenFileExplorer(const std::string& path)
+{
+#if defined(GUGU_OS_WIN32)
+    std::string normalizedPath = path;
+    StdStringReplaceSelf(normalizedPath, "/", "\\");
+
+    ShellExecuteA(nullptr, "open", normalizedPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
+#endif
+}
+
 void OpenWebBrowser(const std::string& _strURL)
 {
 #if defined(GUGU_OS_WIN32)
-
     ShellExecuteA(nullptr, "open", _strURL.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
-
 #endif
 }
 

@@ -13,6 +13,7 @@
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
@@ -50,6 +51,9 @@ void RenderViewport::ImGuiBegin()
 {
     // Compute canvas size and area size.
     Vector2u canvas_sz((uint32)((float)m_size.x * m_zoomMultiplier), (uint32)((float)m_size.y * m_zoomMultiplier));
+    canvas_sz.x = Max<uint32>(1, canvas_sz.x);
+    canvas_sz.y = Max<uint32>(1, canvas_sz.y);
+
     Vector2u areaSize = m_fillAvailableArea ? Vector2u(0, 0) : canvas_sz;
 
     // Begin imgui area.

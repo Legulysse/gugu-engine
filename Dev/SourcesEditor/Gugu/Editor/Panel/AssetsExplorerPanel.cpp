@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Editor/Editor.h"
+#include "Gugu/Editor/Modal/NewResourceDialog.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
@@ -71,9 +72,13 @@ void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
         resourcePath.erase(0, projectAssetsPath.size());
 
         StdStringSplit(resourcePath, "/", tokens);
+
+        std::string cumulatedPath = projectAssetsPath;
         for (std::string directoryName : tokens)
         {
+            cumulatedPath = cumulatedPath + "/" + directoryName;
             bool foundDirectory = false;
+
             for (size_t i = 0; i < currentDirectory->children.size(); ++i)
             {
                 if (currentDirectory->children[i]->isFolder && currentDirectory->children[i]->name == directoryName)
@@ -89,6 +94,7 @@ void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
                 TreeNode* newDirectory = new TreeNode;
                 newDirectory->isFolder = true;
                 newDirectory->name = directoryName;
+                newDirectory->path = cumulatedPath;
                 currentDirectory->children.push_back(newDirectory);
 
                 currentDirectory = newDirectory;
@@ -229,6 +235,10 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
 
         bool isOpen = ImGui::TreeNodeEx(node->name.c_str(), nodeFlags);
 
+        // Context menu.
+        HandleDirectoryContextMenu(node);
+
+        // Drag and drop.
         if (test_drag_and_drop && ImGui::BeginDragDropSource())
         {
             ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
@@ -236,6 +246,7 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
             ImGui::EndDragDropSource();
         }
 
+        // Table view details.
         if (isTable)
         {
             ImGui::TableNextColumn();
@@ -267,6 +278,7 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
 
         ImGui::TreeNodeEx(node->name.c_str(), nodeFlags);
 
+        // Open Document.
         if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))     // ImGui::IsMouseDoubleClicked(0) 
         {
             GetEditor()->OpenDocument(node->name);
@@ -274,6 +286,7 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
             // TODO: handle selection.
         }
 
+        // Drag and drop.
         if (test_drag_and_drop && ImGui::BeginDragDropSource())
         {
             ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
@@ -281,6 +294,7 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
             ImGui::EndDragDropSource();
         }
 
+        // Table view details.
         if (isTable)
         {
             ImGui::TableNextColumn();
@@ -288,6 +302,50 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
             ImGui::TableNextColumn();
             ImGui::TextUnformatted("resource");
         }
+    }
+}
+
+void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
+{
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::BeginMenu("New..."))
+        {
+            if (ImGui::MenuItem("Folder"))
+            {
+            }
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("Datasheet"))
+            {
+            }
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("ImageSet"))
+            {
+                GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::ImageSet));
+            }
+
+            if (ImGui::MenuItem("AnimSet"))
+            {
+                GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::AnimSet));
+            }
+
+            if (ImGui::MenuItem("Particles"))
+            {
+                GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::ParticleEffect));
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::Separator();
+        if (ImGui::MenuItem("Open in Explorer"))
+        {
+            OpenFileExplorer(node->path);
+        }
+
+        ImGui::EndPopup();
     }
 }
 

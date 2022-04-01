@@ -40,6 +40,7 @@ private:
     public:
 
         std::string name;
+        std::string path;
         bool isFolder;
         std::vector<TreeNode*> children;
     };
@@ -47,6 +48,8 @@ private:
     void RecursiveSortTreeNodes(TreeNode* node);
     void RecursiveDeleteTreeNodes(TreeNode* node);
     void DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool table, int depth, bool expandAll, bool collapseAll);
+
+    void HandleDirectoryContextMenu(TreeNode* node);
 
     static bool CompareTreeNodes(const TreeNode* left, const TreeNode* right);
 

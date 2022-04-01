@@ -16,6 +16,7 @@
 namespace gugu
 {
     class DeltaTime;
+    class BaseModalDialog;
     class DocumentPanel;
     class AssetsExplorerPanel;
     class ImageSetPanel;
@@ -48,7 +49,10 @@ public:
     void OpenProject(const std::string& assetsPath, const std::string& bindingPath);
     bool CloseProject();
 
+    bool OpenModalDialog(BaseModalDialog* modalDialog);
     void OpenDocument(const std::string& resourceID);
+
+    void RefreshAssets();
     void ResetPanels();
 
     bool CloseEditor();
@@ -83,6 +87,8 @@ private:
     bool m_resetPanels;
     bool m_showSearchResults;
     bool m_showImGuiDemo;
+
+    std::vector<BaseModalDialog*> m_modalDialogs;
 
     AssetsExplorerPanel* m_assetsExplorerPanel;
     std::vector<DocumentPanel*> m_documentPanels;

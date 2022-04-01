@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/Document/DatasheetPanel.h"
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
@@ -82,6 +83,7 @@ void Editor::Release()
 {
     CloseProjectImpl();
 
+    ClearStdVector(m_modalDialogs);
     SafeDelete(m_assetsExplorerPanel);
 
     Editor::DeleteInstance();
@@ -133,6 +135,7 @@ void Editor::CloseProjectImpl()
 
         m_lastActiveDocument = nullptr;
         ClearStdVector(m_documentPanels);
+        ClearStdVector(m_modalDialogs);
 
         SafeDelete(m_datasheetParser);
 
@@ -252,8 +255,11 @@ void Editor::Update(const DeltaTime& dt)
         ImGui::EndPopup();
     }
 
+    // This popup has a higher priority than any other popup and thus can force reopening itself every frame, discarding any other popup.
     if (m_checkDirtyDocuments && !ImGui::IsPopupOpen("Save Documents"))
     {
+
+        //TODO: for clarity, I could explicitly force close other popups here, instead of letting imgui handling it.
         ImGui::OpenPopup("Save Documents");
     }
 
@@ -321,6 +327,24 @@ void Editor::Update(const DeltaTime& dt)
         }
 
         ImGui::EndPopup();
+    }
+
+    // Update Modals.
+    bool closedModals = false;
+    for (size_t i = 0; i < m_modalDialogs.size(); ++i)
+    {
+        m_modalDialogs[i]->UpdateModal(dt);
+
+        if (m_modalDialogs[i]->IsClosed())
+        {
+            closedModals = true;
+            SafeDelete(m_modalDialogs[i]);
+        }
+    }
+
+    if (closedModals)
+    {
+        StdVectorRemove<BaseModalDialog*>(m_modalDialogs, nullptr);
     }
 
     // Docking panels ids.
@@ -454,6 +478,15 @@ void Editor::Update(const DeltaTime& dt)
     ImGui::End();
 }
 
+bool Editor::OpenModalDialog(BaseModalDialog* modalDialog)
+{
+    if (!modalDialog)
+        return false;
+
+    m_modalDialogs.push_back(modalDialog);
+    return true;
+}
+
 void Editor::OpenDocument(const std::string& resourceID)
 {
     FileInfo resourceFileInfo;
@@ -579,6 +612,12 @@ bool Editor::SaveAllClosingDirtyDocuments()
     }
 
     return result;
+}
+
+void Editor::RefreshAssets()
+{
+    //TODO: This is probably unsafe, we could be in the middle of drawing the assets tree view.
+    m_assetsExplorerPanel->RefreshContent(m_projectAssetsPath);
 }
 
 void Editor::ResetPanels()

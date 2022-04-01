@@ -31,9 +31,12 @@ public:
     ImageSetPanel(const std::string& resourceID);
     virtual ~ImageSetPanel();
 
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
     virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
     virtual bool Save() override;
+
+protected:
+
+    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
 
 private:
 

@@ -20,8 +20,6 @@ public:
     virtual ~DocumentPanel();
 
     virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
-
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) = 0;
     virtual void UpdateProperties(const gugu::DeltaTime& dt) = 0;
     virtual bool Save() = 0;
 
@@ -36,6 +34,10 @@ public:
     bool IsClosed() const;
     void CancelClosing();
     void ValidateClosing();
+
+protected:
+
+    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) = 0;
 
 protected:
 

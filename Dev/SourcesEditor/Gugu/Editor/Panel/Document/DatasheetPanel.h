@@ -30,11 +30,12 @@ public:
     DatasheetPanel(VirtualDatasheet* datasheet);
     virtual ~DatasheetPanel();
 
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
     virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
     virtual bool Save() override;
 
 protected:
+
+    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
 
     void DisplayDatasheet();
     void DisplayParentReference();

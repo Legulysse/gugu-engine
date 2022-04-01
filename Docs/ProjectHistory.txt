@@ -1,13 +1,19 @@
 
-??/??/???? - Version 0.7
+??/??/???? - Version 0.7 (WIP 01/04/2021)
+    > Itération Editor (particles editor, project settings, save on close popup, context menus pour la manipulation d'assets).
     > Rangement des demos dans differents dossiers (separation des tests, des demos de systemes, de la demo HelloWorld, et de la demo Game).
-    > Ajout d'un ManagerVisualEffects et d'un ParticleSystem.
-    > Refacto ElementButton (utilisation d'un ElementSpriteGroup)
+    > Ajout d'un ManagerVisualEffects et d'un ParticleSystem (nouvelle ressource ParticleEffect).
+    > Refacto DeltaTime (ajout unscaled time).
+    > Refacto des calculs de la loop centrale.
+    > Refacto ElementButton (utilisation d'un ElementSpriteGroup).
     > Ajout d'un système de template xml sur les ElementSpriteGroup.
     > Itération datasheets (flag "abstract", declaration de fonctions dans le binding).
     > Refacto de World/Level en ManagerScenes/Scene.
     > Separation entre Renderer (virtual) et DefaultRenderer.
-    > Ajout des fonctions de rounding.
+    > Refacto de la commande speed (multiplicateur).
+    > Update des scripts de build (wrapper pour un menu par defaut, option pour les subrepos).
+    > Ajout des commande ruler, pause, time.
+    > Ajout des fonctions de rounding, et de random dans un cercle/anneau.
     > Clean Element (suppression de Step/Update, suppression des parametres de size sur les callbacks de resize, renommage des fonctions de Transform).
     > Utilisation de l'event TextEntered sur ElementText.
     > Iteration sur les fonctions de log pour exploiter l'output de visual studio.

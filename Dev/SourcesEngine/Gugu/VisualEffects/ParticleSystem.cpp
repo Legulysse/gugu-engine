@@ -26,6 +26,7 @@ namespace gugu {
 
 ParticleSystem::ParticleSystem()
     : m_running(false)
+    , m_stopEmitting(false)
     , m_activeParticleCount(0)
     , m_currentDuration(0)
     , m_nextEmitIndex(0)
@@ -197,6 +198,11 @@ void ParticleSystem::SetEmitterPosition(const Vector2f& position)
 bool ParticleSystem::IsRunning() const
 {
     return m_running;
+}
+
+void ParticleSystem::StopEmitting()
+{
+    m_stopEmitting = true;
 }
 
 size_t ParticleSystem::GetMaxParticleCount() const
@@ -463,7 +469,12 @@ void ParticleSystem::Update(const DeltaTime& dt)
     // Check duration end.
     bool canEmit = true;
 
-    if (!m_settings.loop)
+    if (m_stopEmitting)
+    {
+        canEmit = false;
+        m_running = m_activeParticleCount > 0;
+    }
+    else if (!m_settings.loop)
     {
         if (m_currentDuration >= m_settings.duration)
         {

@@ -46,6 +46,8 @@ public:
     void SetEmitterPosition(const Vector2f& position);
 
     bool IsRunning() const;
+    void StopEmitting();
+
     size_t GetMaxParticleCount() const;
     size_t GetActiveParticleCount() const;
     size_t GetParticleDataSize() const;
@@ -70,6 +72,7 @@ private:
 
     // Runtime
     bool m_running;
+    bool m_stopEmitting;
     int m_currentDuration;
     size_t m_activeParticleCount;
     size_t m_nextEmitIndex;

@@ -54,6 +54,11 @@ ParticleSystem* ElementParticles::CreateParticleSystem(const ParticleSystemSetti
     return m_particleSystem;
 }
 
+ParticleSystem* ElementParticles::GetParticleSystem() const
+{
+    return m_particleSystem;
+}
+
 void ElementParticles::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     m_particleSystem->Render(_kRenderPass, _kTransformSelf);

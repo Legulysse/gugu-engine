@@ -116,9 +116,12 @@ void ElementText::SetEditable(bool _bIsEditable)
 
 void ElementText::SetText(const sf::String& value /*, bool _bResize */)
 {
-    m_textValue = value;
-    
-    Recompute();
+    if (m_textValue != value)
+    {
+        m_textValue = value;
+
+        Recompute();
+    }
 
     //if (/*_bResize && */ !m_bIsMultiline)
     /*if (m_eResizeRule == TextResizeRule::FitSize)
@@ -376,7 +379,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
             else
             {
                 m_textValue += '\n';
-                SetText(m_textValue /*, false*/);
+                Recompute();
                 return false;
             }
         }
@@ -385,7 +388,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
             if (!m_textValue.isEmpty())
             {
                 m_textValue.erase(m_textValue.getSize() - 1, 1);
-                SetText(m_textValue /*, false*/);
+                Recompute();
                 return false;
             }
         }
@@ -395,7 +398,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
         if (std::isprint(_oSFEvent.text.unicode))
         {
             m_textValue += _oSFEvent.text.unicode;
-            SetText(m_textValue /*, false*/);
+            Recompute();
             return false;
         }
 #if 0

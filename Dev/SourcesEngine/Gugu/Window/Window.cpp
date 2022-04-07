@@ -219,7 +219,7 @@ Camera* Window::AddCamera(Camera* _pCamera)
         return nullptr;
 
     _pCamera->SetWindow(this);
-    _pCamera->ComputeViewSize();
+    _pCamera->RecomputeSizeFromWindow();
     m_cameras.push_back(_pCamera);
 
     return _pCamera;
@@ -481,10 +481,10 @@ void Window::ComputeSize(int _iWidth, int _iHeight)
     //m_pMouseNode->SetSize((float)_iWidth, (float)_iHeight);
     //m_pConsoleNode->SetSize((float)_iWidth, (float)_iHeight);
 
-    m_mainCamera->ComputeViewSize();
+    m_mainCamera->RecomputeSizeFromWindow();
     for (size_t i = 0; i < m_cameras.size(); ++i)
     {
-        m_cameras[i]->ComputeViewSize();
+        m_cameras[i]->RecomputeSizeFromWindow();
     }
 }
 

@@ -48,7 +48,7 @@ struct RenderPass
     FrameInfos* frameInfos = nullptr;
     sf::RenderTarget* target = nullptr;
     int pass = GUGU_RENDERPASS_DEFAULT;
-    sf::FloatRect rectViewport;  // Pre-computed viewport
+    sf::FloatRect rectViewport;  // Pre-computed viewport   //TODO: rename to express the culling usage.
 
     int statRenderedSprites = 0;
     int statRenderedTexts = 0;

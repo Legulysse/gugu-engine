@@ -5,6 +5,11 @@
 #include "Gugu/Math/UDim.h"
 
 ////////////////////////////////////////////////////////////////
+// Includes
+
+#include "Gugu/Math/MathUtility.h"
+
+////////////////////////////////////////////////////////////////
 // File Implementation
 
 namespace gugu {
@@ -91,6 +96,16 @@ Vector2f UDim2::GetComputedDimension(float _fReferenceX, float _fReferenceY) con
 Vector2f UDim2::GetComputedDimension(const Vector2f& _kReferenceSize) const
 {
     return Vector2f(x.relative * _kReferenceSize.x + x.absolute, y.relative * _kReferenceSize.y + y.absolute);
+}
+
+Vector2f UDim2::GetPixelAlignedComputedDimension(float _fReferenceX, float _fReferenceY) const
+{
+    return GetPixelAlignedComputedDimension(Vector2f(_fReferenceX, _fReferenceY));
+}
+
+Vector2f UDim2::GetPixelAlignedComputedDimension(const Vector2f& _kReferenceSize) const
+{
+    return Vector2f(RoundFloor(x.relative * _kReferenceSize.x + x.absolute), RoundFloor(y.relative * _kReferenceSize.y + y.absolute));
 }
 
 const UDim UDim::ZERO = UDim(0.f, 0.f);

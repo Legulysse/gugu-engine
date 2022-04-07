@@ -23,15 +23,13 @@ namespace gugu {
     
 Camera::Camera()
 {
-    m_zoomMultiplier = 1.f;
-
     m_targetPosition = Vector2f(0.f, 0.f);
+    m_size = Vector2f(0.f, 0.f);
+    m_zoomMultiplier = 1.f;
     m_centerOnTarget = false;
 
     m_window = nullptr;
     m_scene = nullptr;
-
-    //m_extendOnResize = false;
 }
 
 Camera::~Camera()
@@ -68,39 +66,6 @@ const sf::View& Camera::GetSFView() const
     return m_sfView;
 }
 
-/*void Camera::SetExtendViewOnResize(bool _bExtendOnResize)
-{
-    m_extendOnResize = _bExtendOnResize;
-}*/
-
-/*void Camera::OnSizeChanged(Vector2f _kOldSize)
-{
-    if (m_extendOnResize)
-    {
-        Vector2f kComputedSize;
-
-        if (_kOldSize.x != 0.f)
-        {
-            kComputedSize.x = m_oSFView.getSize().x * GetSize().x / _kOldSize.x;
-        }
-        else
-        {
-            kComputedSize.x = GetSize().x;
-        }
-
-        if (_kOldSize.y != 0.f)
-        {
-            kComputedSize.y = m_oSFView.getSize().y * GetSize().y / _kOldSize.y;
-        }
-        else
-        {
-            kComputedSize.y = GetSize().y;
-        }
-
-        SetSize(kComputedSize);
-    }
-}*/
-
 void Camera::SetSize(float _fSizeX, float _fSizeY)
 {
     SetSize(Vector2f(_fSizeX, _fSizeY));
@@ -108,8 +73,8 @@ void Camera::SetSize(float _fSizeX, float _fSizeY)
 
 void Camera::SetSize(Vector2f _kSize)
 {
-    m_sfView.setSize(_kSize);
-    ComputeViewCenter();
+    m_size = _kSize;
+    ComputeViewSize();
 }
 
 Vector2f Camera::GetSize() const
@@ -158,25 +123,53 @@ bool Camera::IsCenterOnTarget() const
 void Camera::SetViewport(const sf::FloatRect& _kViewport)
 {
     m_sfView.setViewport(_kViewport);
+    ComputeViewSize();
+}
+
+void Camera::RecomputeSizeFromWindow()
+{
+    if (m_window)
+    {
+        SetSize(Vector2f(m_window->GetSize()));
+    }
 }
 
 void Camera::ComputeViewSize()
 {
-    Vector2f kWindowSize = Vector2f(m_window->GetSize());
     const sf::FloatRect& kViewport = m_sfView.getViewport();
-    
-    SetSize((kWindowSize.x * kViewport.width) * m_zoomMultiplier, (kWindowSize.y * kViewport.height) * m_zoomMultiplier); //Will call ComputeViewCenter
+
+    Vector2f adjustedSize(RoundFloor(m_size.x * kViewport.width * m_zoomMultiplier), RoundFloor(m_size.y * kViewport.height * m_zoomMultiplier));
+    m_sfView.setSize(adjustedSize);
+
+    ComputeViewCenter();
 }
 
 void Camera::ComputeViewCenter()
 {
     if (m_centerOnTarget)
     {
-        m_sfView.setCenter(m_targetPosition);
+        Vector2f viewSize = m_sfView.getSize();
+        Vector2f adjustedTargetPosition(RoundFloor(m_targetPosition.x), RoundFloor(m_targetPosition.y));
+
+        Vector2f offset(
+            (int)viewSize.x % 2 == 1 ? 0.5f : 0.f,
+            (int)viewSize.y % 2 == 1 ? 0.5f : 0.f
+        );
+
+        m_sfView.setCenter(adjustedTargetPosition + offset);
     }
     else
     {
-        m_sfView.setCenter(m_targetPosition + (m_sfView.getSize() / 2.f));
+        Vector2f viewSize = m_sfView.getSize();
+        Vector2f adjustedTargetPosition(RoundFloor(m_targetPosition.x), RoundFloor(m_targetPosition.y));
+        Vector2f adjustedHalfSize(RoundFloor(viewSize.x / 2.f), RoundFloor(viewSize.y / 2.f));
+
+        Vector2f offset(
+            (int)viewSize.x % 2 == 1 ? 0.5f : 0.f,
+            (int)viewSize.y % 2 == 1 ? 0.5f : 0.f
+        );
+
+        m_sfView.setCenter(adjustedTargetPosition + offset + adjustedHalfSize);
     }
 }
 

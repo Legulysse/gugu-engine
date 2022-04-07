@@ -49,6 +49,8 @@ public:
 
     Vector2f GetComputedDimension(float _fReferenceX, float _fReferenceY) const;
     Vector2f GetComputedDimension(const Vector2f& _kReferenceSize) const;
+    Vector2f GetPixelAlignedComputedDimension(float _fReferenceX, float _fReferenceY) const;
+    Vector2f GetPixelAlignedComputedDimension(const Vector2f& _kReferenceSize) const;
 
     static const UDim2 POSITION_TOP_LEFT;
     static const UDim2 POSITION_TOP_CENTER;

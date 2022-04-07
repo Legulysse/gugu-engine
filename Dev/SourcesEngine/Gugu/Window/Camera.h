@@ -29,8 +29,6 @@ public:
     Camera();
     virtual ~Camera();
 
-    //void SetExtendViewOnResize(bool _bExtendOnResize);
-    
     void            SetWindow   (Window* _pWindow);
     Window*         GetWindow   () const;
     
@@ -40,16 +38,18 @@ public:
     void            SetSFView   (const sf::View& _kView);
     const sf::View& GetSFView   () const;
 
+    void            RecomputeSizeFromWindow();
     void            SetSize     (float _fSizeX, float _fSizeY);
     void            SetSize     (Vector2f _kSize);
-    Vector2f    GetSize     () const;
+    Vector2f        GetSize     () const;
 
+    //TOOD: handle zoom elsewhere, like in renderer ? applied on a rendertarget ?
     void            SetZoom(float zoom);
     float           GetZoom() const;
 
     void            SetTarget   (float _fTargetX, float _fTargetY);
     void            SetTarget   (Vector2f _kTarget);
-    Vector2f    GetTarget   () const;
+    Vector2f        GetTarget   () const;
     
     //TODO: Use UDim, add shortcuts for Center and UpperLeft
     void            SetCenterOnTarget   (bool _bCenterOnTarget);  //true = target is the center of the view (useful for Scenes), false = target is the top-left corner of the view (default, useful for Window UI)
@@ -57,32 +57,27 @@ public:
 
     void            SetViewport (const sf::FloatRect& _kViewport);
 
-    void            ComputeViewSize     ();     //Recompute View size, from Viewport and Window size
-    void            ComputeViewCenter   ();     //Recompute View center, from Target and View size
-    
-    Vector2f    GetPickedPosition   (const Vector2i& _kMouseCoords) const;
+    Vector2f        GetPickedPosition   (const Vector2i& _kMouseCoords) const;
     bool            IsMouseOverCamera   (const Vector2i& _kMouseCoords) const;
     bool            IsMouseOverElement  (const Vector2i& _kMouseCoords, Element* _pElement) const;
 
-private:
+protected:
 
-    //void OnPreDraw            (RenderPass& _kRenderPass);
-    //void OnPostDraw           (RenderPass& _kRenderPass);
+    void            ComputeViewSize();
+    void            ComputeViewCenter();
 
-    //void OnSizeChanged        (Vector2f _kOldSize);
-    
 protected:
 
     sf::View m_sfView;
-	float m_zoomMultiplier;
 
+    //TODO: store only integer size/position ?
     Vector2f m_targetPosition;
+    Vector2f m_size;
+	float m_zoomMultiplier;
     bool m_centerOnTarget;
     
     Window* m_window;
     Scene* m_scene;
-
-    //bool m_extendOnResize;
 };
 
 }   // namespace gugu

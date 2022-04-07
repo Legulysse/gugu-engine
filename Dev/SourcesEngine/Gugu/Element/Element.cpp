@@ -433,7 +433,7 @@ void Element::ComputeUnifiedOrigin()
 {
     if (m_useDimOrigin)
     {
-        SetOrigin(m_dimOrigin.GetComputedDimension(m_size));
+        SetOrigin(m_dimOrigin.GetPixelAlignedComputedDimension(m_size));
     }
 }
 
@@ -445,12 +445,12 @@ void Element::ComputeUnifiedDimensions()
 
         if (m_useDimPosition)
         {
-            SetPosition(m_dimPosition.GetComputedDimension(oParentSize));
+            SetPosition(m_dimPosition.GetPixelAlignedComputedDimension(oParentSize));
         }
 
         if (m_useDimSize)
         {
-            SetSize(m_dimSize.GetComputedDimension(oParentSize));
+            SetSize(m_dimSize.GetPixelAlignedComputedDimension(oParentSize));
         }
     }
 }

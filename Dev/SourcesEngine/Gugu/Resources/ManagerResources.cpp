@@ -268,6 +268,9 @@ Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)
 
 Resource* ManagerResources::GetResource(const std::string& _strName, EResourceType::Type _eExplicitType)
 {
+    if (_strName.empty())
+        return nullptr;
+
     //Check Resource already loaded
     auto iteResource = m_resources.find(_strName);
     if (iteResource != m_resources.end())
@@ -285,6 +288,9 @@ Resource* ManagerResources::GetResource(const std::string& _strName, EResourceTy
 
 bool ManagerResources::LoadResource(const std::string& _strName, EResourceType::Type _eExplicitType)
 {
+    if (_strName.empty())
+        return nullptr;
+
     auto iteElement = m_resources.find(_strName);
     if (iteElement == m_resources.end())
     {
@@ -297,6 +303,9 @@ bool ManagerResources::LoadResource(const std::string& _strName, EResourceType::
 
 Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType)
 {
+    if (!_pResourceInfo)
+        return nullptr;
+
     if (_pResourceInfo->resource)
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource ignored, resource already loaded : {0}", _pResourceInfo->fileInfo.GetName()));
@@ -366,6 +375,9 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
 
 bool ManagerResources::InjectResource(const std::string& _strResourceID, Resource* _pResource)
 {
+    if (_strResourceID.empty())
+        return nullptr;
+
     ResourceMapKey mapKey(_strResourceID);
 
     auto iteAsset = m_resources.find(mapKey);
@@ -423,6 +435,9 @@ std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
 
 bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos)
 {
+    if (_strResourceID.empty())
+        return nullptr;
+
     ResourceMapKey mapKey(_strResourceID);
 
     auto iteAsset = m_resources.find(mapKey);
@@ -575,6 +590,9 @@ bool ManagerResources::DeleteResource(Resource* _pResource)
 
 void ManagerResources::RemoveResourcesFromPath(const std::string& _strPath)
 {
+    if (_strPath.empty())
+        return;
+
     auto it = m_resources.begin();
     while (it != m_resources.end())
     {
@@ -593,6 +611,9 @@ void ManagerResources::RemoveResourcesFromPath(const std::string& _strPath)
 
 Texture* ManagerResources::GetCustomTexture(const std::string& _strName)
 {
+    if (_strName.empty())
+        return nullptr;
+
     auto iteElement = m_customTextures.find(_strName);
     if (iteElement != m_customTextures.end())
     {

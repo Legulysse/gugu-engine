@@ -450,20 +450,17 @@ bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, c
 
         m_resources.insert(iteAsset, std::make_pair(mapKey, pInfo));
         
-        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Registered Resource : Key/Hash = {0}, ID = {1}, Path = {2}"
-            , mapKey
+        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Registered Resource : ID = {0}, Path = {1}"
             , _strResourceID
-            , _kFileInfos.GetPath()));
+            , _kFileInfos.GetPathName()));
         
         return true;
     }
     
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("A Resource hashed ID is already registered : Key/Hash = {0}, New ID = {1}, New Path = {2}, Registered ID = {3}, Registered Path = {4}"
-        , mapKey
+    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("A Resource ID is already registered : ID = {0}, New Path = {1}, Registered Path = {2}"
         , _strResourceID
-        , _kFileInfos.GetPath()
-        , iteAsset->second->resourceID
-        , iteAsset->second->fileInfo.GetPath()));
+        , _kFileInfos.GetPathName()
+        , iteAsset->second->fileInfo.GetPathName()));
         
     return false;
 }

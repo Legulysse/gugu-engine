@@ -25,6 +25,7 @@ def DefaultMenu(pathEngineBuildScripts, nameBuildScript):
     selectedCompilers = []
     if 'premake' in selectedActions:
         compilerChoices = collections.OrderedDict()
+        compilerChoices['vs2022'] = 'Visual 2022'
         compilerChoices['vs2019'] = 'Visual 2019'
         compilerChoices['vs2017'] = 'Visual 2017'
         compilerChoices['vs2015'] = 'Visual 2015'

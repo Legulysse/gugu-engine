@@ -94,10 +94,20 @@ std::string StringNumberFormat(const T& _tValue, const std::string& _strDelimite
 //----------------------------------------------
 // Paths
 
-// Convert all '\\' to '/', strip all "/xxx/.." parts, strip leading '/' if needed, add trailing '/' if folder.
-std::string NormalizePath(const std::string& _strPath, bool _bIsFolder);
-void NormalizePath(const std::string& _strPath, bool _bIsFolder, std::string& _strNormalized);
-void NormalizePathSelf(std::string& _strPath, bool _bIsFolder);
+// Convert all '\\' to '/', strip all "/xxx/.." parts, strip leading '/' if needed, add trailing '/' if needed.
+std::string NormalizePath(const std::string& _strPath, bool trailingSlash);
+void NormalizePath(const std::string& _strPath, bool trailingSlash, std::string& _strNormalized);
+void NormalizePathSelf(std::string& _strPath, bool trailingSlash);
+
+std::string PathFromPathFile(const std::string& pathFile, bool trailingSlash);
+void PathFromPathFile(const std::string& pathFile, bool trailingSlash, std::string& path);
+void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash);
+
+std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash);
+void CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash, std::string& resultPath);
+
+std::string CombinePathFile(const std::string& pathLeft, const std::string& pathFileRight);
+void CombinePathFile(const std::string& pathLeft, const std::string& pathFileRight, std::string& resultPathFile);
 
 //----------------------------------------------
 // Containers

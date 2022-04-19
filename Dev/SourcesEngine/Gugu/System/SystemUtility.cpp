@@ -223,48 +223,211 @@ std::string StringFormat(const std::string& _tValue, const FormatParameters& Par
     return strResult;
 }
 
-//TODO: rename all folder into directory
-std::string NormalizePath(const std::string& _strPath, bool _bIsFolder)
+std::string NormalizePath(const std::string& _strPath, bool trailingSlash)
 {
     std::string strResult = _strPath;
-    NormalizePathSelf(strResult, _bIsFolder);
+    NormalizePathSelf(strResult, trailingSlash);
     return strResult;
 }
 
-void NormalizePath(const std::string& _strPath, bool _bIsFolder, std::string& _strNormalized)
+void NormalizePath(const std::string& _strPath, bool trailingSlash, std::string& _strNormalized)
 {
     _strNormalized = _strPath;
-    NormalizePathSelf(_strNormalized, _bIsFolder);
+    NormalizePathSelf(_strNormalized, trailingSlash);
 }
 
-void NormalizePathSelf(std::string& _strPath, bool _bIsFolder)
+void NormalizePathSelf(std::string& _strPath, bool trailingSlash)
 {
+    // TODO: remove parts with excessive '...' and reduce them to '..' ?
+
+    // Normalize slashes.
     StdStringReplaceSelf(_strPath, "\\", "/");
 
-    //TODO: I must look for all "../" not preceded by "./" but preceded by "x/" !! The current version will cause bugs.
-    //Strip all "/xxx/.." parts
-    /*size_t iIndexUpperFolder = _strNormalized.find("/..");
-
-    while (iIndexUpperFolder != std::string::npos && iIndexUpperFolder > 0)
+#if 0
+    // Strip leading './'.
+    if (_strPath.size() >= 2 && _strPath[0] == '.' && _strPath[1] == '/')
     {
-        size_t iIndexCut = _strNormalized.find_last_of("/", iIndexUpperFolder-1);
-        iIndexCut = (iIndexCut == std::string::npos)? 0 : iIndexCut;
+        _strPath = _strPath.erase(0, 2);
+    }
 
-        _strNormalized = _strNormalized.substr(0, iIndexCut) + _strNormalized.substr(iIndexUpperFolder+3);
-
-        iIndexUpperFolder = _strNormalized.find("/..");
-    }*/
-
-    //Strip leading '/'
-    if (_strPath.size() > 0 && _strPath[0] == '/')
-        _strPath = _strPath.substr(1);
-
-    //Add trailing '/' if folder
-    if (_bIsFolder && !_strPath.empty())
+    // Strip all leading '/'.
+    if (!_strPath.empty())
     {
-        char strLastChar = *_strPath.rbegin();
-        if (strLastChar != '/')
-            _strPath += '/';
+        size_t firstNotSlash = _strPath.find_first_not_of('/', 0);
+        if (firstNotSlash == std::string::npos)
+        {
+            _strPath = "";
+        }
+        else if (firstNotSlash > 0)
+        {
+            _strPath = _strPath.erase(0, firstNotSlash);
+        }
+    }
+#endif
+
+    if (!_strPath.empty())
+    {
+#if 1
+        size_t currentSlashOrZero = 0;
+#else
+        size_t currentSlashOrZero = _strPath.find('/', 0);
+#endif
+        while (currentSlashOrZero != std::string::npos && !_strPath.empty())
+        {
+#if 1
+            bool isLeadingSlash = currentSlashOrZero == 0 && _strPath[currentSlashOrZero] == '/';
+
+            size_t currentSegment = _strPath[currentSlashOrZero] == '/' ? currentSlashOrZero + 1 : currentSlashOrZero;
+
+            bool isSegmentUpperDirectory = _strPath.size() > currentSegment + 1
+                && _strPath[currentSegment] == '.'
+                && _strPath[currentSegment + 1] == '.'
+                && (_strPath.size() <= currentSegment + 2 || _strPath[currentSegment + 2] == '/');
+
+            bool isSegmentCurrentDirectory = _strPath.size() > currentSegment
+                && _strPath[currentSegment] == '.'
+                && (_strPath.size() <= currentSegment + 1 || _strPath[currentSegment + 1] == '/');
+
+            bool isSegmentDoubleSlash = _strPath.size() > currentSegment
+                && _strPath[currentSegment] == '/';
+#else
+            bool isSegmentUpperDirectory = _strPath.size() > currentSlashOrZero + 2
+                && _strPath[currentSlashOrZero + 1] == '.'
+                && _strPath[currentSlashOrZero + 2] == '.'
+                && (_strPath.size() <= currentSlashOrZero + 3 || _strPath[currentSlashOrZero + 3] == '/');
+
+            bool isSegmentCurrentDirectory = _strPath.size() > currentSlashOrZero + 1
+                && _strPath[currentSlashOrZero + 1] == '.'
+                && (_strPath.size() <= currentSlashOrZero + 2 || _strPath[currentSlashOrZero + 2] == '/');
+
+            bool isSegmentDoubleSlash = _strPath.size() > currentSlashOrZero + 1
+                && _strPath[currentSlashOrZero + 1] == '/';
+#endif
+            // Strip leading '/'.
+            if (isLeadingSlash)
+            {
+                _strPath = _strPath.erase(currentSlashOrZero, 1);
+            }
+            // Strip "/xxx/../" parts.
+            else if (isSegmentUpperDirectory)
+            {
+                size_t previousSlash = currentSlashOrZero > 0 ? _strPath.rfind('/', currentSlashOrZero - 1) : std::string::npos;
+                size_t previousSlashOrZero = previousSlash != std::string::npos ? previousSlash : 0;
+                size_t previousSegment = previousSlash != std::string::npos ? previousSlash + 1 : 0;
+
+                bool isPreviousSegmentUpperDirectory = previousSlashOrZero != currentSlashOrZero
+                    && _strPath.size() > previousSegment + 1
+                    && _strPath[previousSegment] == '.'
+                    && _strPath[previousSegment + 1] == '.'
+                    && (_strPath.size() <= previousSegment + 2 || _strPath[previousSegment + 2] == '/');
+
+                if (previousSlashOrZero != currentSlashOrZero && !isPreviousSegmentUpperDirectory)
+                {
+                    _strPath = _strPath.erase(previousSegment, (currentSegment - previousSegment) + 3);
+                    currentSlashOrZero = previousSlashOrZero;
+                }
+                else
+                {
+                    currentSlashOrZero = _strPath.find('/', currentSlashOrZero + 1);
+                }
+            }
+            // Strip '/./'.
+            else if (isSegmentCurrentDirectory)
+            {
+                _strPath = _strPath.erase(currentSegment, 2);
+            }
+            // Strip '//'.
+            else if (isSegmentDoubleSlash)
+            {
+                _strPath = _strPath.erase(currentSegment, 1);
+            }
+            else
+            {
+                currentSlashOrZero = _strPath.find('/', currentSlashOrZero + 1);
+            }
+        }
+    }
+
+    // Handle trailing slash.
+    if (trailingSlash && !_strPath.empty() && _strPath.back() != '/')
+    {
+        _strPath += '/';
+    }
+    else if (!trailingSlash && !_strPath.empty() && _strPath.back() == '/')
+    {
+        _strPath.pop_back();
+    }
+}
+
+std::string PathFromPathFile(const std::string& pathFile, bool trailingSlash)
+{
+    std::string resultPath = pathFile;
+    PathFromPathFileSelf(resultPath, trailingSlash);
+    return resultPath;
+}
+
+void PathFromPathFile(const std::string& pathFile, bool trailingSlash, std::string& path)
+{
+    path = pathFile;
+    PathFromPathFileSelf(path, trailingSlash);
+}
+
+void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash)
+{
+    size_t indexDot = pathFile.rfind('.');
+    size_t indexSlash = pathFile.rfind('/');
+    size_t indexSlashOrZero = indexSlash != std::string::npos ? indexSlash : 0;
+
+    // Check that the last '.' is not the last character, and that it is after the last '/'.
+    if (indexDot != std::string::npos
+        && indexDot != pathFile.size() - 1
+        && indexDot > indexSlashOrZero)
+    {
+        pathFile = pathFile.erase(indexSlashOrZero);
+    }
+
+    NormalizePathSelf(pathFile, trailingSlash);
+}
+
+std::string CombinePathFile(const std::string& pathLeft, const std::string& pathFileRight)
+{
+    std::string resultPath;
+    CombinePaths(pathLeft, pathFileRight, false, resultPath);
+    return resultPath;
+}
+
+void CombinePathFile(const std::string& pathLeft, const std::string& pathFileRight, std::string& resultPathFile)
+{
+    CombinePaths(pathLeft, pathFileRight, false, resultPathFile);
+}
+
+std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash)
+{
+    std::string resultPath;
+    CombinePaths(pathLeft, pathRight, trailingSlash, resultPath);
+    return resultPath;
+}
+
+void CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash, std::string& resultPath)
+{
+    if (pathLeft.empty() && pathRight.empty())
+    {
+        resultPath = "";
+    }
+    else if (pathLeft.empty())
+    {
+        resultPath = pathRight;
+        NormalizePathSelf(resultPath, trailingSlash);
+    }
+    else if (pathRight.empty())
+    {
+        resultPath = pathLeft;
+        NormalizePathSelf(resultPath, trailingSlash);
+    }
+    else
+    {
+        resultPath = pathLeft + '/' + pathRight;
+        NormalizePathSelf(resultPath, trailingSlash);
     }
 }
 

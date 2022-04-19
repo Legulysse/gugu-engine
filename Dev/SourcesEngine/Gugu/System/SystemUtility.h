@@ -47,9 +47,13 @@ bool FromString(const std::string& _strValue, T& _tValue);
 template<typename T>
 T FromString(const std::string& _strValue);
 
-std::string StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, bool _bIgnoreCase = false);
-void StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, std::string& _strResult, bool _bIgnoreCase = false);
-void StdStringReplaceSelf(std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, bool _bIgnoreCase = false);
+std::string StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo);
+void StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, std::string& _strResult);
+void StdStringReplaceSelf(std::string& _strValue, const std::string& _strFrom, const std::string& _strTo);
+
+std::string StdStringReplace(const std::string& value, const char& from, const char& to);
+void StdStringReplace(const std::string& value, const char& from, const char& to, std::string& result);
+void StdStringReplaceSelf(std::string& value, const char& from, const char& to);
 
 void StdStringSplit(const std::string& _strValue, const std::string& _strDelimiter, std::vector<std::string>& _vecTokens);
 

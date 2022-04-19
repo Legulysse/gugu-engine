@@ -64,61 +64,48 @@ void WriteInFileEndline(const std::string& _strFileName, const std::string& _str
     }
 }
 
-std::string StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, bool _bIgnoreCase /*=false*/)
+std::string StdStringReplace(const std::string& value, const std::string& from, const std::string& to)
 {
-    std::string strResult = _strValue;
-    StdStringReplaceSelf(strResult, _strFrom, _strTo, _bIgnoreCase);
-    return strResult;
+    std::string result = value;
+    StdStringReplaceSelf(result, from, to);
+    return result;
 }
 
-void StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, std::string& _strResult, bool _bIgnoreCase /*=false*/)
+void StdStringReplace(const std::string& value, const std::string& from, const std::string& to, std::string& result)
 {
-    _strResult = _strValue;
-    StdStringReplaceSelf(_strResult, _strFrom, _strTo, _bIgnoreCase);
+    result = value;
+    StdStringReplaceSelf(result, from, to);
 }
 
-void StdStringReplaceSelf(std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, bool _bIgnoreCase /*=false*/)
+void StdStringReplaceSelf(std::string& value, const std::string& from, const std::string& to)
  {
-    size_t iStrLengthFrom  = _strFrom.length();
-    size_t iStrLengthTo    = _strTo.length();
+    size_t lengthFrom = from.length();
+    size_t lengthTo = to.length();
 
-    if (!_bIgnoreCase)
+    size_t pos = 0;
+    while ((pos = value.find(from, pos)) != std::string::npos)
     {
-        size_t iPos = 0;
-        while ((iPos = _strValue.find(_strFrom, iPos)) != std::string::npos)
-        {
-            _strValue.replace(iPos, iStrLengthFrom, _strTo);
-            iPos += iStrLengthTo;
-        }
+        value.replace(pos, lengthFrom, to);
+        pos += lengthTo;
     }
-    else
-    {
-        size_t iStrLengthResult = _strValue.length();
+}
 
-        size_t iPos = 0;
-        while ((iPos + iStrLengthFrom) <= iStrLengthResult)
-        {
-            bool bFound = true;
-            for (size_t j = 0; j < iStrLengthFrom; ++j)
-            {
-                if (tolower(_strFrom[j]) != tolower(_strValue[iPos + j]))
-                {
-                    bFound = false;
-                    break;
-                }
-            }
+std::string StdStringReplace(const std::string& value, const char& from, const char& to)
+{
+    std::string result = value;
+    StdStringReplaceSelf(result, from, to);
+    return result;
+}
 
-            if (bFound)
-            {
-                _strValue.replace(iPos, iStrLengthFrom, _strTo);
-                iStrLengthResult = _strValue.length();
+void StdStringReplace(const std::string& value, const char& from, const char& to, std::string& result)
+{
+    result = value;
+    StdStringReplaceSelf(result, from, to);
+}
 
-                iPos += iStrLengthTo;
-            }
-            else
-                ++iPos;
-        }
-    }
+void StdStringReplaceSelf(std::string& _strValue, const char& from, const char& to)
+{
+    std::replace(_strValue.begin(), _strValue.end(), from, to);
 }
 
 void StdStringSplit(const std::string& _strValue, const std::string& _strDelimiter, std::vector<std::string>& _vecTokens)
@@ -218,7 +205,7 @@ std::string StringFormat(const std::string& _tValue, const FormatParameters& Par
     std::string strResult = _tValue;
     for (auto kvp : Params.GetParameters())
     {
-        StdStringReplaceSelf(strResult, kvp.first, kvp.second, false);
+        StdStringReplaceSelf(strResult, kvp.first, kvp.second);
     }
     return strResult;
 }
@@ -238,110 +225,60 @@ void NormalizePath(const std::string& _strPath, bool trailingSlash, std::string&
 
 void NormalizePathSelf(std::string& _strPath, bool trailingSlash)
 {
-    // TODO: remove parts with excessive '...' and reduce them to '..' ?
-
     // Normalize slashes.
-    StdStringReplaceSelf(_strPath, "\\", "/");
-
-#if 0
-    // Strip leading './'.
-    if (_strPath.size() >= 2 && _strPath[0] == '.' && _strPath[1] == '/')
-    {
-        _strPath = _strPath.erase(0, 2);
-    }
-
-    // Strip all leading '/'.
-    if (!_strPath.empty())
-    {
-        size_t firstNotSlash = _strPath.find_first_not_of('/', 0);
-        if (firstNotSlash == std::string::npos)
-        {
-            _strPath = "";
-        }
-        else if (firstNotSlash > 0)
-        {
-            _strPath = _strPath.erase(0, firstNotSlash);
-        }
-    }
-#endif
+    StdStringReplaceSelf(_strPath, '\\', '/');
 
     if (!_strPath.empty())
     {
-#if 1
         size_t currentSlashOrZero = 0;
-#else
-        size_t currentSlashOrZero = _strPath.find('/', 0);
-#endif
         while (currentSlashOrZero != std::string::npos && !_strPath.empty())
         {
-#if 1
-            bool isLeadingSlash = currentSlashOrZero == 0 && _strPath[currentSlashOrZero] == '/';
-
             size_t currentSegment = _strPath[currentSlashOrZero] == '/' ? currentSlashOrZero + 1 : currentSlashOrZero;
+            bool parseNextSlash = true;
 
-            bool isSegmentUpperDirectory = _strPath.size() > currentSegment + 1
-                && _strPath[currentSegment] == '.'
-                && _strPath[currentSegment + 1] == '.'
-                && (_strPath.size() <= currentSegment + 2 || _strPath[currentSegment + 2] == '/');
-
-            bool isSegmentCurrentDirectory = _strPath.size() > currentSegment
-                && _strPath[currentSegment] == '.'
-                && (_strPath.size() <= currentSegment + 1 || _strPath[currentSegment + 1] == '/');
-
-            bool isSegmentDoubleSlash = _strPath.size() > currentSegment
-                && _strPath[currentSegment] == '/';
-#else
-            bool isSegmentUpperDirectory = _strPath.size() > currentSlashOrZero + 2
-                && _strPath[currentSlashOrZero + 1] == '.'
-                && _strPath[currentSlashOrZero + 2] == '.'
-                && (_strPath.size() <= currentSlashOrZero + 3 || _strPath[currentSlashOrZero + 3] == '/');
-
-            bool isSegmentCurrentDirectory = _strPath.size() > currentSlashOrZero + 1
-                && _strPath[currentSlashOrZero + 1] == '.'
-                && (_strPath.size() <= currentSlashOrZero + 2 || _strPath[currentSlashOrZero + 2] == '/');
-
-            bool isSegmentDoubleSlash = _strPath.size() > currentSlashOrZero + 1
-                && _strPath[currentSlashOrZero + 1] == '/';
-#endif
             // Strip leading '/'.
-            if (isLeadingSlash)
+            if (currentSlashOrZero == 0 && _strPath[currentSlashOrZero] == '/')
             {
-                _strPath = _strPath.erase(currentSlashOrZero, 1);
+                _strPath.erase(currentSlashOrZero, 1);
+                parseNextSlash = false;
             }
             // Strip "/xxx/../" parts.
-            else if (isSegmentUpperDirectory)
+            else if (_strPath.size() > currentSegment + 1 && _strPath[currentSegment] == '.' && _strPath[currentSegment + 1] == '.'
+                && (_strPath.size() <= currentSegment + 2 || _strPath[currentSegment + 2] == '/'))
             {
                 size_t previousSlash = currentSlashOrZero > 0 ? _strPath.rfind('/', currentSlashOrZero - 1) : std::string::npos;
                 size_t previousSlashOrZero = previousSlash != std::string::npos ? previousSlash : 0;
                 size_t previousSegment = previousSlash != std::string::npos ? previousSlash + 1 : 0;
 
-                bool isPreviousSegmentUpperDirectory = previousSlashOrZero != currentSlashOrZero
-                    && _strPath.size() > previousSegment + 1
-                    && _strPath[previousSegment] == '.'
-                    && _strPath[previousSegment + 1] == '.'
-                    && (_strPath.size() <= previousSegment + 2 || _strPath[previousSegment + 2] == '/');
-
-                if (previousSlashOrZero != currentSlashOrZero && !isPreviousSegmentUpperDirectory)
+                if (previousSlashOrZero != currentSlashOrZero)
                 {
-                    _strPath = _strPath.erase(previousSegment, (currentSegment - previousSegment) + 3);
-                    currentSlashOrZero = previousSlashOrZero;
-                }
-                else
-                {
-                    currentSlashOrZero = _strPath.find('/', currentSlashOrZero + 1);
+                    bool isPreviousSegmentUpperDirectory = _strPath.size() > previousSegment + 1
+                        && _strPath[previousSegment] == '.' && _strPath[previousSegment + 1] == '.'
+                        && (_strPath.size() <= previousSegment + 2 || _strPath[previousSegment + 2] == '/');
+                    
+                    if (!isPreviousSegmentUpperDirectory)
+                    {
+                        _strPath.erase(previousSegment, (currentSegment - previousSegment) + 3);
+                        currentSlashOrZero = previousSlashOrZero;
+                        parseNextSlash = false;
+                    }
                 }
             }
             // Strip '/./'.
-            else if (isSegmentCurrentDirectory)
+            else if (_strPath.size() > currentSegment && _strPath[currentSegment] == '.'
+                && (_strPath.size() <= currentSegment + 1 || _strPath[currentSegment + 1] == '/'))
             {
-                _strPath = _strPath.erase(currentSegment, 2);
+                _strPath.erase(currentSegment, 2);
+                parseNextSlash = false;
             }
             // Strip '//'.
-            else if (isSegmentDoubleSlash)
+            else if (_strPath.size() > currentSegment && _strPath[currentSegment] == '/')
             {
-                _strPath = _strPath.erase(currentSegment, 1);
+                _strPath.erase(currentSegment, 1);
+                parseNextSlash = false;
             }
-            else
+
+            if (parseNextSlash)
             {
                 currentSlashOrZero = _strPath.find('/', currentSlashOrZero + 1);
             }
@@ -435,7 +372,7 @@ void OpenFileExplorer(const std::string& path)
 {
 #if defined(GUGU_OS_WIN32)
     std::string normalizedPath = path;
-    StdStringReplaceSelf(normalizedPath, "/", "\\");
+    StdStringReplaceSelf(normalizedPath, '/', '\\');
 
     ShellExecuteA(nullptr, "open", normalizedPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 #endif
@@ -489,7 +426,7 @@ void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles,
 
     //Win32 path conversion and filter
     std::string strRoot = strPathNormalized;
-    StdStringReplaceSelf(strRoot, "/", "\\");
+    StdStringReplaceSelf(strRoot, '/', '\\');
     strRoot += "*";
 
     WIN32_FIND_DATAA FindFileData;

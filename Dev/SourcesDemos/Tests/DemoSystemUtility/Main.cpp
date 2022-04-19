@@ -29,6 +29,11 @@ int main(int argc, char* argv[])
     std::string strUpperCase = StdStringToUpper("hello world 42");
     std::string strLowerCase = StdStringToLower("HELLO WORLD 42");
 
+    bool testA = StdStringStartsWith("hello world 42", "hello");
+    bool testB = StdStringStartsWith("hello world 42", "42");
+    bool testC = StdStringEndsWith("hello world 42", "hello");
+    bool testD = StdStringEndsWith("hello world 42", "42");
+
     std::string strConvertA = ToString(42);
     std::string strConvertB = ToString(42.5f);
     std::string strConvertC = ToString(42.5);

@@ -193,13 +193,14 @@ void StdStringToUpperSelf(std::string& _strValue)
 
 bool StdStringStartsWith(const std::string& _strValue, const std::string& _strSub)
 {
-    return _strValue.find(_strSub) == 0;
+    return _strValue.size() >= _strSub.size()
+        && _strValue.compare(0, _strSub.size(), _strSub) == 0;
 }
 
 bool StdStringEndsWith(const std::string& _strValue, const std::string& _strSub)
 {
-    size_t i = _strValue.rfind(_strSub);
-    return (i != std::string::npos) && (i == (_strValue.length() - _strSub.length()));
+    return _strValue.size() >= _strSub.size()
+        && _strValue.compare(_strValue.size() - _strSub.size(), _strSub.size(), _strSub) == 0;
 }
 
 std::string StringFormat(const std::string& _tValue)

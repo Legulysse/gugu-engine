@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Core/ProjectSettings.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/Document/DatasheetPanel.h"
@@ -31,7 +32,7 @@
 namespace gugu {
     
 Editor::Editor()
-    : m_isProjectOpen(false)
+    : m_project(nullptr)
     , m_checkDirtyDocuments(false)
     , m_pendingCloseEditor(false)
     , m_pendingCloseProject(false)
@@ -73,9 +74,9 @@ void Editor::Init(const EditorConfig& editorConfig)
     m_assetsExplorerPanel = new AssetsExplorerPanel;
 
     // Open last project if available.
-    if (editorConfig.projectAssetsPath != "" && editorConfig.projectBindingPath != "")
+    if (editorConfig.projectPathFile != "")
     {
-        OpenProject(editorConfig.projectAssetsPath, editorConfig.projectBindingPath);
+        OpenProject(editorConfig.projectPathFile);
     }
 }
 
@@ -89,28 +90,33 @@ void Editor::Release()
     Editor::DeleteInstance();
 }
 
-void Editor::OpenProject(const std::string& assetsPath, const std::string& bindingPath)
+void Editor::OpenProject(const std::string& projectPathFile)
 {
     if (CloseProject())
     {
-        m_isProjectOpen = true;
-        m_projectAssetsPath = assetsPath;
-        m_projectBindingPath = bindingPath;
+        m_project = new ProjectSettings;
 
-        // Parse assets.
-        GetResources()->ParseDirectory(m_projectAssetsPath);
+        if (m_project->LoadFromXml(projectPathFile))
+        {
+            // Parse assets.
+            GetResources()->ParseDirectory(m_project->m_projectAssetsPath);
 
-        // Create the DatasheetParser.
-        m_datasheetParser = new DatasheetParser;
-        m_datasheetParser->ParseBinding(bindingPath);
+            // Create the DatasheetParser.
+            m_datasheetParser = new DatasheetParser;
+            m_datasheetParser->ParseBinding(m_project->m_projectBindingPathFile);
 
-        m_assetsExplorerPanel->RefreshContent(m_projectAssetsPath);
+            m_assetsExplorerPanel->RefreshContent(m_project->m_projectAssetsPath);
+        }
+        else
+        {
+            SafeDelete(m_project);
+        }
     }
 }
 
 bool Editor::CloseProject()
 {
-    if (m_isProjectOpen)
+    if (IsProjectOpen())
     {
         if (!RaiseCheckDirtyDocuments())
         {
@@ -127,9 +133,14 @@ bool Editor::CloseProject()
     return true;
 }
 
+bool Editor::IsProjectOpen() const
+{
+    return m_project != nullptr;
+}
+
 void Editor::CloseProjectImpl()
 {
-    if (m_isProjectOpen)
+    if (IsProjectOpen())
     {
         m_assetsExplorerPanel->ClearContent();
 
@@ -139,11 +150,9 @@ void Editor::CloseProjectImpl()
 
         SafeDelete(m_datasheetParser);
 
-        GetResources()->RemoveResourcesFromPath(m_projectAssetsPath);
+        GetResources()->RemoveResourcesFromPath(m_project->m_projectAssetsPath);
 
-        m_isProjectOpen = false;
-        m_projectAssetsPath = "";
-        m_projectBindingPath = "";
+        SafeDelete(m_project);
     }
 }
 
@@ -228,13 +237,8 @@ void Editor::Update(const DeltaTime& dt)
 
     if (ImGui::BeginPopupModal("Open Project", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
     {
-        static std::string assetsPath = m_editorConfig.projectAssetsPath;
-        if (ImGui::InputText("Project Assets", &assetsPath, ImGuiInputTextFlags_EnterReturnsTrue))
-        {
-        }
-
-        static std::string bindingPath = m_editorConfig.projectBindingPath;
-        if (ImGui::InputText("Bindings Definition", &bindingPath, ImGuiInputTextFlags_EnterReturnsTrue))
+        static std::string projectPath = m_editorConfig.projectPathFile;
+        if (ImGui::InputText("Project Path File", &projectPath, ImGuiInputTextFlags_EnterReturnsTrue))
         {
         }
 
@@ -247,7 +251,7 @@ void Editor::Update(const DeltaTime& dt)
         ImGui::SameLine();
         if (ImGui::Button("Validate"))
         {
-            OpenProject(assetsPath, bindingPath);
+            OpenProject(projectPath);
 
             ImGui::CloseCurrentPopup();
         }
@@ -617,7 +621,7 @@ bool Editor::SaveAllClosingDirtyDocuments()
 void Editor::RefreshAssets()
 {
     //TODO: This is probably unsafe, we could be in the middle of drawing the assets tree view.
-    m_assetsExplorerPanel->RefreshContent(m_projectAssetsPath);
+    m_assetsExplorerPanel->RefreshContent(m_project->m_projectAssetsPath);
 }
 
 void Editor::ResetPanels()

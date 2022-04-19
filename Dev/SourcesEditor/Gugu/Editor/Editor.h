@@ -21,6 +21,7 @@ namespace gugu
     class AssetsExplorerPanel;
     class ImageSetPanel;
     class DatasheetParser;
+    class ProjectSettings;
 }
 
 namespace sf
@@ -46,8 +47,9 @@ public:
     void Update(const gugu::DeltaTime& dt);
     bool OnSFEvent(const sf::Event& event);
 
-    void OpenProject(const std::string& assetsPath, const std::string& bindingPath);
+    void OpenProject(const std::string& projectPathFile);
     bool CloseProject();
+    bool IsProjectOpen() const;
 
     bool OpenModalDialog(BaseModalDialog* modalDialog);
     void OpenDocument(const std::string& resourceID);
@@ -75,9 +77,8 @@ private:
 private:
 
     EditorConfig m_editorConfig;
-    bool m_isProjectOpen;
-    std::string m_projectAssetsPath;
-    std::string m_projectBindingPath;
+
+    ProjectSettings* m_project;
 
     bool m_checkDirtyDocuments;
     bool m_pendingCloseEditor;

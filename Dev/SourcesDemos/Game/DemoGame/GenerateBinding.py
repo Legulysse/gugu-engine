@@ -8,7 +8,7 @@ from DatasheetBindingTool import *
 # > _pathBindingXml : the path to the source xml definition.
 # > _pathBindingCpp : the destination folder for the generated C++ files ('.h' and '.cpp' files).
 # > _generatedFileName : the base name for generated C++ files (If empty, defaults to DatasheetBinding).
-GenerateBindingCpp('Binding.xml', '', '')
+GenerateBindingCpp('../../../../Version/DemoGame/Editor/DatasheetBinding.xml', '', '')
 
 
 input('Press Enter to close.')

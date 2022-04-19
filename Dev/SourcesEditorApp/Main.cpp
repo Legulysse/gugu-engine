@@ -50,8 +50,7 @@ int main(int argc, char* argv[])
     editorConfig.projectAssetsPath = "../../Version/DemoSystems/Assets";
     editorConfig.projectBindingPath = "../../Dev/SourcesDemos/Systems/DemoDatasheet/Binding.xml";
 #else
-    editorConfig.projectAssetsPath = "../../Version/DemoGame/Assets";
-    editorConfig.projectBindingPath = "../../Dev/SourcesDemos/Game/DemoGame/Binding.xml";
+    editorConfig.projectPathFile = "../../Version/DemoGame/Editor/ProjectSettings.xml";
 #endif
 
     GetEditor()->Init(editorConfig);

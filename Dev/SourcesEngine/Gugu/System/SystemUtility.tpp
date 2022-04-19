@@ -65,7 +65,7 @@ template<typename T1>
 std::string StringFormat(const std::string& _tValue, const T1& _tArg1)
 {
     std::string strResult = _tValue;
-    StdStringReplaceSelf(strResult, "{0}", ToString(_tArg1), false);
+    StdStringReplaceSelf(strResult, "{0}", ToString(_tArg1));
     return strResult;
 }
 
@@ -73,8 +73,8 @@ template<typename T1, typename T2>
 std::string StringFormat(const std::string& _tValue, const T1& _tArg1, const T2& _tArg2)
 {
     std::string strResult = _tValue;
-    StdStringReplaceSelf(strResult, "{0}", ToString(_tArg1), false);
-    StdStringReplaceSelf(strResult, "{1}", ToString(_tArg2), false);
+    StdStringReplaceSelf(strResult, "{0}", ToString(_tArg1));
+    StdStringReplaceSelf(strResult, "{1}", ToString(_tArg2));
     return strResult;
 }
 
@@ -82,9 +82,9 @@ template<typename T1, typename T2, typename T3>
 std::string StringFormat(const std::string& _tValue, const T1& _tArg1, const T2& _tArg2, const T3& _tArg3)
 {
     std::string strResult = _tValue;
-    StdStringReplaceSelf(strResult, "{0}", ToString(_tArg1), false);
-    StdStringReplaceSelf(strResult, "{1}", ToString(_tArg2), false);
-    StdStringReplaceSelf(strResult, "{2}", ToString(_tArg3), false);
+    StdStringReplaceSelf(strResult, "{0}", ToString(_tArg1));
+    StdStringReplaceSelf(strResult, "{1}", ToString(_tArg2));
+    StdStringReplaceSelf(strResult, "{2}", ToString(_tArg3));
     return strResult;
 }
 
@@ -92,10 +92,10 @@ template<typename T1, typename T2, typename T3, typename T4>
 std::string StringFormat(const std::string& _tValue, const T1& _tArg1, const T2& _tArg2, const T3& _tArg3, const T4& _tArg4)
 {
     std::string strResult = _tValue;
-    StdStringReplaceSelf(strResult, "{0}", ToString(_tArg1), false);
-    StdStringReplaceSelf(strResult, "{1}", ToString(_tArg2), false);
-    StdStringReplaceSelf(strResult, "{2}", ToString(_tArg3), false);
-    StdStringReplaceSelf(strResult, "{3}", ToString(_tArg4), false);
+    StdStringReplaceSelf(strResult, "{0}", ToString(_tArg1));
+    StdStringReplaceSelf(strResult, "{1}", ToString(_tArg2));
+    StdStringReplaceSelf(strResult, "{2}", ToString(_tArg3));
+    StdStringReplaceSelf(strResult, "{3}", ToString(_tArg4));
     return strResult;
 }
 
@@ -129,7 +129,7 @@ std::string StringFormat(const std::string& _tValue, const TArgs&... _tArgs)
     {
         char strIndex[5];  // limit on 0-99 range : 2 chars + delimiters + ending = buffer size of 5 chars
         sprintf(strIndex, "{%u}", i);
-        StdStringReplaceSelf(strResult, strIndex, vecArgs[i], false);
+        StdStringReplaceSelf(strResult, strIndex, vecArgs[i]);
     }
     return strResult;
 }

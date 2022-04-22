@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<ProjectSettings>
+    <Name value="Demo Systems" />
+    <AssetsPath value="../Assets" />
+    <BindingPathFile value="DatasheetBinding.xml" />
+</ProjectSettings>

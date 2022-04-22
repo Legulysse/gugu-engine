@@ -10,20 +10,16 @@
 
 namespace gugu {
 
-class ProjectSettings
+struct ProjectSettings
 {
 public:
 
-    ProjectSettings();
+    std::string projectPathFile;
+    std::string projectPath;
+    std::string projectAssetsPath;
+    std::string projectBindingPathFile;
 
     bool LoadFromXml(const std::string& pathFile);
-
-public:
-
-    std::string m_projectPathFile;
-    std::string m_projectPath;
-    std::string m_projectAssetsPath;
-    std::string m_projectBindingPathFile;
 };
 
 }   //namespace gugu

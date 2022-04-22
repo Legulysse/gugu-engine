@@ -320,7 +320,7 @@ void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash)
         && indexDot != pathFile.size() - 1
         && indexDot > indexSlashOrZero)
     {
-        pathFile = pathFile.erase(indexSlashOrZero);
+        pathFile.erase(indexSlashOrZero);
     }
 
     NormalizePathSelf(pathFile, trailingSlash);

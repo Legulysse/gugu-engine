@@ -15,13 +15,13 @@
 
 namespace gugu
 {
+    struct ProjectSettings;
     class DeltaTime;
     class BaseModalDialog;
     class DocumentPanel;
     class AssetsExplorerPanel;
     class ImageSetPanel;
     class DatasheetParser;
-    class ProjectSettings;
 }
 
 namespace sf

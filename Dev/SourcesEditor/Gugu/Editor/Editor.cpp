@@ -100,13 +100,13 @@ void Editor::OpenProject(const std::string& projectPathFile)
         if (m_project->LoadFromXml(projectPathFile))
         {
             // Parse assets.
-            GetResources()->ParseDirectory(m_project->m_projectAssetsPath);
+            GetResources()->ParseDirectory(m_project->projectAssetsPath);
 
             // Create the DatasheetParser.
             m_datasheetParser = new DatasheetParser;
-            m_datasheetParser->ParseBinding(m_project->m_projectBindingPathFile);
+            m_datasheetParser->ParseBinding(m_project->projectBindingPathFile);
 
-            m_assetsExplorerPanel->RefreshContent(m_project->m_projectAssetsPath);
+            m_assetsExplorerPanel->RefreshContent(m_project->projectAssetsPath);
         }
         else
         {
@@ -151,7 +151,7 @@ void Editor::CloseProjectImpl()
 
         SafeDelete(m_datasheetParser);
 
-        GetResources()->RemoveResourcesFromPath(m_project->m_projectAssetsPath);
+        GetResources()->RemoveResourcesFromPath(m_project->projectAssetsPath);
 
         SafeDelete(m_project);
     }
@@ -640,7 +640,7 @@ bool Editor::SaveAllClosingDirtyDocuments()
 void Editor::RefreshAssets()
 {
     //TODO: This is probably unsafe, we could be in the middle of drawing the assets tree view.
-    m_assetsExplorerPanel->RefreshContent(m_project->m_projectAssetsPath);
+    m_assetsExplorerPanel->RefreshContent(m_project->projectAssetsPath);
 }
 
 void Editor::ResetPanels()

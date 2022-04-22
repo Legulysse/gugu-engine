@@ -16,10 +16,6 @@
 
 namespace gugu {
 
-ProjectSettings::ProjectSettings()
-{
-}
-
 bool ProjectSettings::LoadFromXml(const std::string& pathFile)
 {
     pugi::xml_document document;
@@ -31,16 +27,13 @@ bool ProjectSettings::LoadFromXml(const std::string& pathFile)
     if (!nodeProject)
         return false;
 
-    std::string projectPath = pathFile;
-    PathFromPathFileSelf(projectPath, false);
+    projectPathFile = pathFile;
 
-    std::string projectAssetsPath = CombinePaths(projectPath, nodeProject.child("AssetsPath").attribute("value").value(), false);
-    std::string projectBindingPathFile = CombinePathFile(projectPath, nodeProject.child("BindingPathFile").attribute("value").value());
+    projectPath = pathFile;
+    PathFromPathFile(pathFile, false, projectPath);
 
-    m_projectPathFile = pathFile;
-    m_projectPath = projectPath;
-    m_projectAssetsPath = projectAssetsPath;
-    m_projectBindingPathFile = projectBindingPathFile;
+    projectAssetsPath = CombinePaths(projectPath, nodeProject.child("AssetsPath").attribute("value").value(), false);
+    projectBindingPathFile = CombinePathFile(projectPath, nodeProject.child("BindingPathFile").attribute("value").value());
 
     return true;
 }

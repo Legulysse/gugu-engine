@@ -245,19 +245,20 @@ EResourceType::Type AnimSet::GetResourceType() const
     return EResourceType::AnimSet;
 }
 
-bool AnimSet::LoadFromFile()
+void AnimSet::Unload()
 {
-    pugi::xml_document oDoc;
-    pugi::xml_parse_result result = oDoc.load_file(GetFileInfoRef().GetPathName().c_str());
-    if (!result)
-        return false;
+    ClearStdVector(m_animations);
+    m_imageSet = nullptr;
+}
 
-    pugi::xml_node oNodeAnimSet = oDoc.child("AnimSet");
+bool AnimSet::LoadFromXml(const pugi::xml_document& document)
+{
+    pugi::xml_node oNodeAnimSet = document.child("AnimSet");
     if (!oNodeAnimSet)
         return false;
-    
-    m_imageSet = nullptr;
 
+    Unload();
+    
     pugi::xml_attribute oAttributeMainImageSet = oNodeAnimSet.attribute("imageSet");
     if (oAttributeMainImageSet)
         m_imageSet = GetResources()->GetImageSet(oAttributeMainImageSet.as_string());
@@ -318,11 +319,9 @@ bool AnimSet::LoadFromFile()
     return true;
 }
 
-bool AnimSet::SaveToFile()
+bool AnimSet::SaveToXml(pugi::xml_document& document) const
 {
-    pugi::xml_document docSave;
-
-    pugi::xml_node nodeAnimSet = docSave.append_child("AnimSet");
+    pugi::xml_node nodeAnimSet = document.append_child("AnimSet");
     nodeAnimSet.append_attribute("imageSet") = (!m_imageSet) ? "" : m_imageSet->GetID().c_str();
 
     for (size_t i = 0; i < m_animations.size(); ++i)
@@ -354,7 +353,7 @@ bool AnimSet::SaveToFile()
         }
     }
 
-    return docSave.save_file(GetFileInfoRef().GetPathName().c_str());
+    return true;
 }
 
 }   // namespace gugu

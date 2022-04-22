@@ -32,16 +32,17 @@ ParticleSystemSettings* ParticleEffect::GetParticleSettings()
     return &m_particleSettings;
 }
 
-bool ParticleEffect::LoadFromFile()
+void ParticleEffect::Unload()
 {
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(GetFileInfoRef().GetPathName().c_str());
-    if (!result)
-        return false;
+}
 
+bool ParticleEffect::LoadFromXml(const pugi::xml_document& document)
+{
     pugi::xml_node nodeParticleEffect = document.child("ParticleEffect");
     if (!nodeParticleEffect)
         return false;
+
+    Unload();
 
     static const std::map<ParticleSystemSettings::EParticleShape, std::string> particleShapeEnumToString = {
         { ParticleSystemSettings::EParticleShape::Point, "Point" },
@@ -167,10 +168,8 @@ bool ParticleEffect::LoadFromFile()
     return true;
 }
 
-bool ParticleEffect::SaveToFile()
+bool ParticleEffect::SaveToXml(pugi::xml_document& document) const
 {
-    pugi::xml_document document;
-
     pugi::xml_node nodeParticleEffect = document.append_child("ParticleEffect");
 
     static const std::map<ParticleSystemSettings::EParticleShape, std::string> particleShapeEnumToString = {
@@ -272,7 +271,7 @@ bool ParticleEffect::SaveToFile()
 
     nodeParticleEffect.append_child("ImageSetID").append_attribute("value").set_value(m_particleSettings.imageSetID.c_str());
 
-    return document.save_file(GetFileInfoRef().GetPathName().c_str());
+    return true;
 }
 
 }   // namespace gugu

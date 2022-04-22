@@ -152,22 +152,25 @@ EResourceType::Type ImageSet::GetResourceType() const
     return EResourceType::ImageSet;
 }
 
-bool ImageSet::LoadFromFile()
+void ImageSet::Unload()
 {
-    pugi::xml_document oDoc;
-    pugi::xml_parse_result result = oDoc.load_file(GetFileInfoRef().GetPathName().c_str());
-    if (!result)
+    DeleteAllSubImages();
+    m_texture = nullptr;
+}
+
+bool ImageSet::LoadFromXml(const pugi::xml_document& document)
+{
+    pugi::xml_node nodeRoot = document.child("ImageSet");
+    if (!nodeRoot)
         return false;
 
-    pugi::xml_node oNodeImageSet = oDoc.child("ImageSet");
-    if (!oNodeImageSet)
-        return false;
-    
-    pugi::xml_attribute oAttributeTexture = oNodeImageSet.attribute("texture");
+    Unload();
+
+    pugi::xml_attribute oAttributeTexture = nodeRoot.attribute("texture");
     if (oAttributeTexture)
         m_texture = GetResources()->GetTexture(oAttributeTexture.as_string());
 
-    for (pugi::xml_node oNodeSubImage = oNodeImageSet.child("SubImage"); oNodeSubImage; oNodeSubImage = oNodeSubImage.next_sibling("SubImage"))
+    for (pugi::xml_node oNodeSubImage = nodeRoot.child("SubImage"); oNodeSubImage; oNodeSubImage = oNodeSubImage.next_sibling("SubImage"))
     {
         pugi::xml_attribute oAttributeName = oNodeSubImage.attribute("name");
         pugi::xml_attribute oAttributeX = oNodeSubImage.attribute("x");
@@ -176,11 +179,11 @@ bool ImageSet::LoadFromFile()
         pugi::xml_attribute oAttributeH = oNodeSubImage.attribute("h");
 
         //Try to read SubImage
-        if ( oAttributeName
+        if (oAttributeName
             && oAttributeX
             && oAttributeY
             && oAttributeW
-            && oAttributeH )
+            && oAttributeH)
         {
             std::string strNameSubImage = oAttributeName.as_string();
             int x = oAttributeX.as_int();
@@ -195,18 +198,17 @@ bool ImageSet::LoadFromFile()
     return true;
 }
 
-bool ImageSet::SaveToFile()
+bool ImageSet::SaveToXml(pugi::xml_document& document) const
 {
-    pugi::xml_document docSave;
+    pugi::xml_node nodeRoot = document.append_child("ImageSet");
 
-    pugi::xml_node nodeImageSet = docSave.append_child("ImageSet");
-    nodeImageSet.append_attribute("texture") = (!m_texture)? "" : m_texture->GetID().c_str();
+    nodeRoot.append_attribute("texture") = (!m_texture) ? "" : m_texture->GetID().c_str();
 
     for (size_t i = 0; i < m_subImages.size(); ++i)
     {
         SubImage* pSubImage = m_subImages[i];
 
-        pugi::xml_node nodeSubImage = nodeImageSet.append_child("SubImage");
+        pugi::xml_node nodeSubImage = nodeRoot.append_child("SubImage");
 
         sf::IntRect oRect = pSubImage->GetRect();
         nodeSubImage.append_attribute("name") = pSubImage->GetName().c_str();
@@ -216,7 +218,7 @@ bool ImageSet::SaveToFile()
         nodeSubImage.append_attribute("h") = oRect.height;
     }
 
-    return docSave.save_file(GetFileInfoRef().GetPathName().c_str());
+    return true;
 }
 
 }   // namespace gugu

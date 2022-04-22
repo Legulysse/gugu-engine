@@ -21,6 +21,19 @@ namespace gugu
 
 namespace gugu {
 
+// Helper for string serialization.
+struct xml_string_writer : pugi::xml_writer
+{
+public:
+
+    xml_string_writer(std::string& target);
+    virtual void write(const void* data, size_t size);
+
+private:
+
+    std::string* m_target = nullptr;
+};
+
 //Open a XML File in the Assets folder
 bool XmlLoadFile        (pugi::xml_document& _kDoc, const std::string& _strFile);
 

@@ -22,8 +22,11 @@ public:
 
     virtual EResourceType::Type GetResourceType() const override;
 
-    virtual bool LoadFromFile() override;
-    virtual bool SaveToFile() override;
+protected:
+
+    virtual void Unload() override;
+    virtual bool LoadFromXml(const pugi::xml_document& document) override;
+    virtual bool SaveToXml(pugi::xml_document& document) const override;
 
 protected:
 

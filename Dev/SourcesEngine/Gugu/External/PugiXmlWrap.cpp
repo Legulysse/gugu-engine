@@ -15,6 +15,16 @@
 
 namespace gugu {
     
+xml_string_writer::xml_string_writer(std::string& target)
+{
+    m_target = &target;
+}
+
+void xml_string_writer::write(const void* data, size_t size)
+{
+    m_target->append(static_cast<const char*>(data), size);
+}
+
 bool XmlLoadFile(pugi::xml_document& _kDoc, const std::string& _strFile)
 {
     pugi::xml_parse_result result = _kDoc.load_file(GetResources()->GetResourcePathName(_strFile).c_str());

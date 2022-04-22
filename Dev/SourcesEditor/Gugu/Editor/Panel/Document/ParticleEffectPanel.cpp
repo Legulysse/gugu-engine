@@ -28,9 +28,10 @@
 
 namespace gugu {
 
-ParticleEffectPanel::ParticleEffectPanel(const std::string& resourceID)
-    : m_renderViewport(nullptr)
-    , m_particleEffect(nullptr)
+ParticleEffectPanel::ParticleEffectPanel(ParticleEffect* resource)
+    : DocumentPanel(resource)
+    , m_particleEffect(resource)
+    , m_renderViewport(nullptr)
     , m_particleSystem(nullptr)
     , m_elementParticle(nullptr)
     , m_followCursor(false)
@@ -40,11 +41,6 @@ ParticleEffectPanel::ParticleEffectPanel(const std::string& resourceID)
     , m_currentDelay(0.f)
     , m_maxParticleCount(0)
 {
-    m_resourceID = resourceID;
-    m_particleEffect = GetResources()->GetParticleEffect(resourceID);
-
-    m_title = m_resourceID;
-
     // Setup RenderViewport.
     m_renderViewport = new RenderViewport(true);
     m_renderViewport->SetSize(Vector2u(500, 500));
@@ -390,16 +386,6 @@ void ParticleEffectPanel::UpdateProperties(const gugu::DeltaTime& dt)
 
         m_dirty = true;
     }
-}
-
-bool ParticleEffectPanel::Save()
-{
-    if (m_particleEffect->SaveToFile())
-    {
-        m_dirty = false;
-    }
-
-    return !m_dirty;
 }
 
 }   //namespace gugu

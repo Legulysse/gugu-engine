@@ -29,20 +29,16 @@
 
 namespace gugu {
 
-ImageSetPanel::ImageSetPanel(const std::string& resourceID)
-    : m_renderViewport(nullptr)
-    , m_imageSet(nullptr)
+ImageSetPanel::ImageSetPanel(ImageSet* resource)
+    : DocumentPanel(resource)
+    , m_imageSet(resource)
+    , m_renderViewport(nullptr)
     , m_selectedIndex(-1)
     , m_gizmoCenter(nullptr)
     , m_isDraggingGizmo(false)
     , m_draggedGizmo(nullptr)
     , m_gizmoOffsetGlobalPosition(0, 0)
 {
-    m_resourceID = resourceID;
-    m_imageSet = GetResources()->GetImageSet(resourceID);
-
-    m_title = m_resourceID;
-
     // Setup RenderViewport and Sprite.
     m_renderViewport = new RenderViewport(true);
 
@@ -496,16 +492,6 @@ void ImageSetPanel::OnDragGizmoEdge(Element* edge, Vector2f edgePosition)
 
     m_gizmoCenter->SetPosition(kPositionTopLeft);
     m_gizmoCenter->SetSize(kSize);
-}
-
-bool ImageSetPanel::Save()
-{
-    if (m_imageSet->SaveToFile())
-    {
-        m_dirty = false;
-    }
-
-    return !m_dirty;
 }
 
 }   //namespace gugu

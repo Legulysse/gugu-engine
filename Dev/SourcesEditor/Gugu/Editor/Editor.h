@@ -71,6 +71,8 @@ private:
     bool SaveAllDirtyDocuments();
     bool SaveAllClosingDirtyDocuments();
 
+    bool UndoActiveDocument();
+
     void CloseProjectImpl();
     void CloseEditorImpl();
 

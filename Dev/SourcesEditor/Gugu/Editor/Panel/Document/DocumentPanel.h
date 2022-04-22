@@ -8,6 +8,14 @@
 #include <string>
 
 ////////////////////////////////////////////////////////////////
+// Forward Declarations
+
+namespace gugu
+{
+    class Resource;
+}
+
+////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
@@ -16,12 +24,14 @@ class DocumentPanel : public BasePanel
 {
 public:
 
-    DocumentPanel();
+    DocumentPanel(Resource* resource);
     virtual ~DocumentPanel();
 
     virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
     virtual void UpdateProperties(const gugu::DeltaTime& dt) = 0;
-    virtual bool Save() = 0;
+
+    bool Save();
+    bool Undo();
 
     bool IsSameResource(const std::string& resourceID) const;
 
@@ -37,11 +47,15 @@ public:
 
 protected:
 
+    virtual bool SaveImpl();
+    virtual bool UndoImpl();
     virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) = 0;
 
 protected:
 
     std::string m_resourceID;
+    Resource* m_resource;
+
     bool m_dirty;
     bool m_focused;
     bool m_closing;

@@ -28,11 +28,10 @@ class ParticleEffectPanel : public DocumentPanel
 {
 public:
 
-    ParticleEffectPanel(const std::string& resourceID);
+    ParticleEffectPanel(ParticleEffect* resource);
     virtual ~ParticleEffectPanel();
 
     virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
-    virtual bool Save() override;
 
 protected:
 

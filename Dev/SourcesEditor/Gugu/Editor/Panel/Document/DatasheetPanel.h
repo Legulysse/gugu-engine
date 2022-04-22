@@ -27,11 +27,10 @@ class DatasheetPanel : public DocumentPanel
 {
 public:
 
-    DatasheetPanel(VirtualDatasheet* datasheet);
+    DatasheetPanel(VirtualDatasheet* resource);
     virtual ~DatasheetPanel();
 
     virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
-    virtual bool Save() override;
 
 protected:
 

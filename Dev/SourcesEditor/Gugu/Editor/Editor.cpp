@@ -63,6 +63,7 @@ void Editor::Init(const EditorConfig& editorConfig)
     inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
     inputs->RegisterInput("SaveDocument", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, false, false));
     inputs->RegisterInput("SaveAllDocuments", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, true, false));
+    inputs->RegisterInput("Undo", inputs->BuildKeyboardEvent(sf::Keyboard::Z, true, false, false));
 
     // Additional ImGui Setup.
     ImGuiIO& io = ImGui::GetIO();
@@ -175,6 +176,11 @@ bool Editor::OnSFEvent(const sf::Event& event)
         SaveActiveDocument();
         return false;
     }
+    else if (inputs->IsInputEventReleased("Undo", event))
+    {
+        UndoActiveDocument();
+        return false;
+    }
 
     return true;
 }
@@ -209,6 +215,11 @@ void Editor::Update(const DeltaTime& dt)
 
         if (ImGui::BeginMenu("Document"))
         {
+            if (ImGui::MenuItem("Undo", "Ctrl+Z"))
+            {
+                UndoActiveDocument();
+            }
+
             if (ImGui::MenuItem("Save", "Ctrl+S"))
             {
                 SaveActiveDocument();
@@ -512,11 +523,11 @@ void Editor::OpenDocument(const std::string& resourceID)
     EResourceType::Type resourceType = GetResources()->GetResourceType(resourceFileInfo);
     if (resourceType == EResourceType::ImageSet)
     {
-        newDocument = new ImageSetPanel(resourceID);
+        newDocument = new ImageSetPanel(GetResources()->GetImageSet(resourceID));
     }
     else if (resourceType == EResourceType::ParticleEffect)
     {
-        newDocument = new ParticleEffectPanel(resourceID);
+        newDocument = new ParticleEffectPanel(GetResources()->GetParticleEffect(resourceID));
     }
     else if (resourceType == EResourceType::Unknown)
     {
@@ -588,6 +599,14 @@ bool Editor::SaveActiveDocument()
         return false;
 
     return m_lastActiveDocument->Save();
+}
+
+bool Editor::UndoActiveDocument()
+{
+    if (!m_lastActiveDocument)
+        return false;
+
+    return m_lastActiveDocument->Undo();
 }
 
 bool Editor::SaveAllDirtyDocuments()

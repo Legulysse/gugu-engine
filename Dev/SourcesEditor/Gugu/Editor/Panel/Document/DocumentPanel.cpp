@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Resources/Resource.h"
+
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
@@ -15,12 +17,15 @@
 
 namespace gugu {
 
-DocumentPanel::DocumentPanel()
-    : m_dirty(false)
+DocumentPanel::DocumentPanel(Resource* resource)
+    : m_resource(resource)
+    , m_dirty(false)
     , m_focused(false)
     , m_closing(false)
     , m_closed(false)
 {
+    m_resourceID = resource->GetID();
+    m_title = m_resourceID;
 }
 
 DocumentPanel::~DocumentPanel()
@@ -51,6 +56,36 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
     ImGui::End();
 
     m_closing |= !isOpen;
+}
+
+bool DocumentPanel::Save()
+{
+    if (SaveImpl())
+    {
+        if (m_resource && m_resource->SaveToFile())
+        {
+            m_dirty = false;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool DocumentPanel::Undo()
+{
+    UndoImpl();
+    return true;
+}
+
+bool DocumentPanel::SaveImpl()
+{
+    return true;
+}
+
+bool DocumentPanel::UndoImpl()
+{
+    return true;
 }
 
 bool DocumentPanel::IsSameResource(const std::string& resourceID) const

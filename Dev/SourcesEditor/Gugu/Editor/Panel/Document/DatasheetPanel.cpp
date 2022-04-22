@@ -22,12 +22,10 @@
 
 namespace gugu {
 
-DatasheetPanel::DatasheetPanel(VirtualDatasheet* datasheet)
+DatasheetPanel::DatasheetPanel(VirtualDatasheet* resource)
+    : DocumentPanel(resource)
+    , m_datasheet(resource)
 {
-    m_resourceID = datasheet->GetID();
-    m_datasheet = datasheet;
-
-    m_title = m_resourceID;
 }
 
 DatasheetPanel::~DatasheetPanel()
@@ -616,16 +614,6 @@ void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMembe
         ImGui::EndDisabled();
         ImGui::PopID();
     }
-}
-
-bool DatasheetPanel::Save()
-{
-    if (m_datasheet->SaveToFile())
-    {
-        m_dirty = false;
-    }
-
-    return !m_dirty;
 }
 
 }   //namespace gugu

@@ -104,7 +104,7 @@ void DatasheetPanel::DisplayParentReference()
         }
 
         m_datasheet->SetParentDatasheet(dummyParentRefID, parentReference);
-        m_dirty = true;
+        RaiseDirty();
     }
     else
     {
@@ -207,7 +207,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     isParentData = false;
                     dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
 
-                    m_dirty = true;
+                    RaiseDirty();
                 }
             }
         }
@@ -243,7 +243,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
             VirtualDatasheetObject::DataValue* newChildDataValue = new VirtualDatasheetObject::DataValue;
             dataValue->value_children.push_back(newChildDataValue);
-            m_dirty = true;
+            RaiseDirty();
         }
 
         if (dataValue && !dataValue->value_children.empty())
@@ -273,7 +273,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     isParentData = false;
                     dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
 
-                    m_dirty = true;
+                    RaiseDirty();
                 }
             }
         }
@@ -347,7 +347,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                         // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
                         SafeDelete(dataValue->value_children[childIndex]);
                         StdVectorRemoveAt(dataValue->value_children, childIndex);
-                        m_dirty = true;
+                        RaiseDirty();
                     }
                     else
                     {
@@ -380,7 +380,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
             }
 
             dataValue->value_bool = dummy;
-            m_dirty = true;
+            RaiseDirty();
         }
     }
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Int)
@@ -394,7 +394,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
             }
 
             dataValue->value_int = dummy;
-            m_dirty = true;
+            RaiseDirty();
         }
     }
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Float)
@@ -408,7 +408,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
             }
 
             dataValue->value_float = dummy;
-            m_dirty = true;
+            RaiseDirty();
         }
     }
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::String)
@@ -422,7 +422,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
             }
 
             dataValue->value_string = dummy;
-            m_dirty = true;
+            RaiseDirty();
         }
     }
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Enum)
@@ -444,7 +444,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                     }
 
                     dataValue->value_string = comboValues[i];
-                    m_dirty = true;
+                    RaiseDirty();
                 }
 
                 if (selected)
@@ -491,7 +491,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
 
                 dataValue->value_string = dummyRefID;
                 dataValue->value_objectReference = objectReference;
-                m_dirty = true;
+                RaiseDirty();
             }
             else
             {
@@ -578,7 +578,7 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
                     dataValue->value_objectInstance = newInstanceObject;
                 }
 
-                m_dirty = true;
+                RaiseDirty();
             }
 
             if (selected)

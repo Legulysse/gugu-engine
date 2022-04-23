@@ -85,19 +85,19 @@ void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
         if (ImGui::InputText("Name", &name, ImGuiInputTextFlags_EnterReturnsTrue))
         {
             m_imageSet->GetSubImage(m_selectedIndex)->SetName(name);
-            m_dirty = true;
+            RaiseDirty();
         }
 
         if (ImGui::InputInt2("Position", position))
         {
             m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(position[0], position[1], size[0], size[1]));
-            m_dirty = true;
+            RaiseDirty();
         }
 
         if (ImGui::InputInt2("Size", size))
         {
             m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(position[0], position[1], size[0], size[1]));
-            m_dirty = true;
+            RaiseDirty();
         }
     }
     else
@@ -434,7 +434,7 @@ void ImageSetPanel::UpdateGizmo()
             if (rectBefore != rectAfter)
             {
                 subImage->SetRect(rectAfter);
-                m_dirty = true;
+                RaiseDirty();
             }
         }
     }

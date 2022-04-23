@@ -57,6 +57,18 @@ ParticleEffectPanel::~ParticleEffectPanel()
     SafeDelete(m_renderViewport);
 }
 
+void ParticleEffectPanel::ResetParticleSystem()
+{
+    m_particleSystem->Init(m_particleEffect);
+    m_particleSystem->Restart();
+    m_maxParticleCount = 0;
+}
+
+void ParticleEffectPanel::OnUndoRedo()
+{
+    ResetParticleSystem();
+}
+
 void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     //TODO: If this panel is not focused, I should be able to pause the particle system.
@@ -384,7 +396,7 @@ void ParticleEffectPanel::UpdateProperties(const gugu::DeltaTime& dt)
         m_particleSystem->Restart();
         m_maxParticleCount = 0;
 
-        m_dirty = true;
+        RaiseDirty();
     }
 }
 

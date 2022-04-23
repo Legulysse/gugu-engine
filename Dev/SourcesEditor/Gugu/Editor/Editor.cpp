@@ -64,6 +64,7 @@ void Editor::Init(const EditorConfig& editorConfig)
     inputs->RegisterInput("SaveDocument", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, false, false));
     inputs->RegisterInput("SaveAllDocuments", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, true, false));
     inputs->RegisterInput("Undo", inputs->BuildKeyboardEvent(sf::Keyboard::Z, true, false, false));
+    inputs->RegisterInput("Redo", inputs->BuildKeyboardEvent(sf::Keyboard::Y, true, false, false));
 
     // Additional ImGui Setup.
     ImGuiIO& io = ImGui::GetIO();
@@ -97,7 +98,7 @@ void Editor::OpenProject(const std::string& projectPathFile)
     {
         m_project = new ProjectSettings;
 
-        if (m_project->LoadFromXml(projectPathFile))
+        if (m_project->LoadFromFile(projectPathFile))
         {
             // Parse assets.
             GetResources()->ParseDirectory(m_project->projectAssetsPath);
@@ -181,6 +182,11 @@ bool Editor::OnSFEvent(const sf::Event& event)
         UndoActiveDocument();
         return false;
     }
+    else if (inputs->IsInputEventReleased("Redo", event))
+    {
+        RedoActiveDocument();
+        return false;
+    }
 
     return true;
 }
@@ -220,6 +226,12 @@ void Editor::Update(const DeltaTime& dt)
                 UndoActiveDocument();
             }
 
+            if (ImGui::MenuItem("Redo", "Ctrl+Y"))
+            {
+                RedoActiveDocument();
+            }
+
+            ImGui::Separator();
             if (ImGui::MenuItem("Save", "Ctrl+S"))
             {
                 SaveActiveDocument();
@@ -607,6 +619,14 @@ bool Editor::UndoActiveDocument()
         return false;
 
     return m_lastActiveDocument->Undo();
+}
+
+bool Editor::RedoActiveDocument()
+{
+    if (!m_lastActiveDocument)
+        return false;
+
+    return m_lastActiveDocument->Redo();
 }
 
 bool Editor::SaveAllDirtyDocuments()

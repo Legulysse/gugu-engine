@@ -18,6 +18,7 @@ public:
     ParticleEffect();
     virtual ~ParticleEffect();
 
+    //TODO: maybe I should use a const ref instead, and provide a Set ?
     ParticleSystemSettings* GetParticleSettings();
 
     virtual EResourceType::Type GetResourceType() const override;

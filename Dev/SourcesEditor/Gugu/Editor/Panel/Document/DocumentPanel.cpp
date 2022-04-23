@@ -8,6 +8,8 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -23,9 +25,12 @@ DocumentPanel::DocumentPanel(Resource* resource)
     , m_focused(false)
     , m_closing(false)
     , m_closed(false)
+    , m_currentUndoStateIndex(0)
 {
     m_resourceID = resource->GetID();
     m_title = m_resourceID;
+
+    SaveState();
 }
 
 DocumentPanel::~DocumentPanel()
@@ -60,13 +65,12 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
 
 bool DocumentPanel::Save()
 {
-    if (SaveImpl())
+    if (m_resource && m_resource->SaveToFile())
     {
-        if (m_resource && m_resource->SaveToFile())
-        {
-            m_dirty = false;
-            return true;
-        }
+        m_dirty = false;
+
+        OnSaved();
+        return true;
     }
 
     return false;
@@ -74,18 +78,72 @@ bool DocumentPanel::Save()
 
 bool DocumentPanel::Undo()
 {
-    UndoImpl();
-    return true;
+    if (UndoState())
+    {
+        OnUndoRedo();
+        return true;
+    }
+
+    return false;
 }
 
-bool DocumentPanel::SaveImpl()
+bool DocumentPanel::Redo()
 {
-    return true;
+    if (RedoState())
+    {
+        OnUndoRedo();
+        return true;
+    }
+
+    return false;
 }
 
-bool DocumentPanel::UndoImpl()
+void DocumentPanel::SaveState()
 {
-    return true;
+    std::string state;
+    if (m_resource->SaveToString(state))
+    {
+        // Erase history past the current index.
+        if (m_currentUndoStateIndex + 1 < m_undoStates.size())
+        {
+            m_undoStates.resize(m_currentUndoStateIndex + 1);
+        }
+
+        m_undoStates.push_back(state);
+        m_currentUndoStateIndex = m_undoStates.size() - 1;
+    }
+}
+
+bool DocumentPanel::UndoState()
+{
+    if (!m_undoStates.empty() && m_currentUndoStateIndex > 0)
+    {
+        size_t newIndex = m_currentUndoStateIndex - 1;
+        if (m_resource->LoadFromString(m_undoStates[newIndex]))
+        {
+            m_currentUndoStateIndex = newIndex;
+            m_dirty = true;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool DocumentPanel::RedoState()
+{
+    if (!m_undoStates.empty() && m_currentUndoStateIndex + 1 < m_undoStates.size())
+    {
+        size_t newIndex = m_currentUndoStateIndex + 1;
+        if (m_resource->LoadFromString(m_undoStates[newIndex]))
+        {
+            m_currentUndoStateIndex = newIndex;
+            m_dirty = true;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool DocumentPanel::IsSameResource(const std::string& resourceID) const
@@ -101,6 +159,12 @@ bool DocumentPanel::IsFocused() const
 void DocumentPanel::ForceFocus()
 {
     ImGui::SetWindowFocus(m_title.c_str());
+}
+
+void DocumentPanel::RaiseDirty()
+{
+    SaveState();
+    m_dirty = true;
 }
 
 bool DocumentPanel::IsDirty() const

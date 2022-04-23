@@ -35,6 +35,9 @@ public:
 
 protected:
 
+    void ResetParticleSystem();
+
+    virtual void OnUndoRedo() override;
     virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
 
 private:

@@ -19,7 +19,7 @@ public:
     std::string projectAssetsPath;
     std::string projectBindingPathFile;
 
-    bool LoadFromXml(const std::string& pathFile);
+    bool LoadFromFile(const std::string& pathFile);
 };
 
 }   //namespace gugu

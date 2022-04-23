@@ -16,7 +16,7 @@
 
 namespace gugu {
 
-bool ProjectSettings::LoadFromXml(const std::string& pathFile)
+bool ProjectSettings::LoadFromFile(const std::string& pathFile)
 {
     pugi::xml_document document;
     pugi::xml_parse_result result = document.load_file(pathFile.c_str());

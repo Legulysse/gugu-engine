@@ -9,6 +9,7 @@
 
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/Element.h"
@@ -77,6 +78,14 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
         settings.maxLifetime = Max(settings.maxLifetime, 0);
         settings.maxVelocity = Max(settings.maxVelocity, 0.f);
     }
+}
+
+void ParticleSystem::Init(ParticleEffect* particleEffect)
+{
+    if (!particleEffect)
+        return;
+
+    Init(*particleEffect->GetParticleSettings());
 }
 
 void ParticleSystem::Init(const ParticleSystemSettings& settings)

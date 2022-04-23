@@ -14,6 +14,7 @@ namespace gugu
 {
     class DeltaTime;
     class Element;
+    class ParticleEffect;
     class ImageSet;
     struct RenderPass;
 }
@@ -32,6 +33,7 @@ public:
 
     static void SanitizeSettings(ParticleSystemSettings& settings, bool limitsOnly);
 
+    void Init(ParticleEffect* particleEffect);
     void Init(const ParticleSystemSettings& settings);
     void Release();
 

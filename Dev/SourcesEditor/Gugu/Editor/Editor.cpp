@@ -9,6 +9,7 @@
 
 #include "Gugu/Editor/Core/ProjectSettings.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
+#include "Gugu/Editor/Modal/OpenProjectDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/Document/DatasheetPanel.h"
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
@@ -99,6 +100,11 @@ const EditorConfig& Editor::GetEditorConfig() const
 
 void Editor::OpenProject(const std::string& projectPathFile)
 {
+    m_pendingOpenProjectPathFile = projectPathFile;
+}
+
+void Editor::OpenProjectImpl(const std::string& projectPathFile)
+{
     if (CloseProject())
     {
         m_project = new ProjectSettings;
@@ -140,11 +146,6 @@ bool Editor::CloseProject()
     return true;
 }
 
-bool Editor::IsProjectOpen() const
-{
-    return m_project != nullptr;
-}
-
 void Editor::CloseProjectImpl()
 {
     if (IsProjectOpen())
@@ -161,6 +162,11 @@ void Editor::CloseProjectImpl()
 
         SafeDelete(m_project);
     }
+}
+
+bool Editor::IsProjectOpen() const
+{
+    return m_project != nullptr;
 }
 
 bool Editor::OnSFEvent(const sf::Event& event)
@@ -198,7 +204,12 @@ bool Editor::OnSFEvent(const sf::Event& event)
 
 void Editor::Update(const DeltaTime& dt)
 {
-    bool openProjectSettings = false;
+    // Handle pending open project.
+    if (!m_pendingOpenProjectPathFile.empty())
+    {
+        OpenProjectImpl(m_pendingOpenProjectPathFile);
+        m_pendingOpenProjectPathFile = "";
+    }
 
     // Main menu bar.
     if (ImGui::BeginMainMenuBar())
@@ -207,7 +218,7 @@ void Editor::Update(const DeltaTime& dt)
         {
             if (ImGui::MenuItem("Open Project"))
             {
-                openProjectSettings = true;
+                GetEditor()->OpenModalDialog(new OpenProjectDialog(m_editorConfig.projectPathFile));
             }
 
             if (ImGui::MenuItem("Close Project"))
@@ -226,6 +237,8 @@ void Editor::Update(const DeltaTime& dt)
 
         if (ImGui::BeginMenu("Document"))
         {
+            ImGui::BeginDisabled(m_lastActiveDocument == nullptr);
+
             if (ImGui::MenuItem("Undo", "Ctrl+Z"))
             {
                 UndoActiveDocument();
@@ -247,6 +260,8 @@ void Editor::Update(const DeltaTime& dt)
                 SaveAllDirtyDocuments();
             }
 
+            ImGui::EndDisabled();
+
             ImGui::EndMenu();
         }
 
@@ -258,39 +273,9 @@ void Editor::Update(const DeltaTime& dt)
         ImGui::EndMainMenuBar();
     }
 
-    if (openProjectSettings)
-    {
-        ImGui::OpenPopup("Open Project");
-    }
-
-    if (ImGui::BeginPopupModal("Open Project", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
-    {
-        static std::string projectPath = m_editorConfig.projectPathFile;
-        if (ImGui::InputText("Project Path File", &projectPath, ImGuiInputTextFlags_EnterReturnsTrue))
-        {
-        }
-
-        ImGui::Spacing();
-        if (ImGui::Button("Cancel"))
-        {
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Validate"))
-        {
-            OpenProject(projectPath);
-
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::EndPopup();
-    }
-
     // This popup has a higher priority than any other popup and thus can force reopening itself every frame, discarding any other popup.
     if (m_checkDirtyDocuments && !ImGui::IsPopupOpen("Save Documents"))
     {
-
         //TODO: for clarity, I could explicitly force close other popups here, instead of letting imgui handling it.
         ImGui::OpenPopup("Save Documents");
     }

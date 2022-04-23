@@ -76,6 +76,7 @@ private:
     bool UndoActiveDocument();
     bool RedoActiveDocument();
 
+    void OpenProjectImpl(const std::string& projectPathFile);
     void CloseProjectImpl();
     void CloseEditorImpl();
 
@@ -84,6 +85,7 @@ private:
     EditorConfig m_editorConfig;
 
     ProjectSettings* m_project;
+    std::string m_pendingOpenProjectPathFile;
 
     bool m_checkDirtyDocuments;
     bool m_pendingCloseEditor;
@@ -98,7 +100,6 @@ private:
 
     AssetsExplorerPanel* m_assetsExplorerPanel;
     std::vector<DocumentPanel*> m_documentPanels;
-
     DocumentPanel* m_lastActiveDocument;
 
     DatasheetParser* m_datasheetParser;

@@ -20,6 +20,7 @@ ParticleEffect::ParticleEffect()
 
 ParticleEffect::~ParticleEffect()
 {
+    Unload();
 }
 
 EResourceType::Type ParticleEffect::GetResourceType() const

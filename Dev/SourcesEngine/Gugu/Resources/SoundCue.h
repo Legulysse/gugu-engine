@@ -34,7 +34,10 @@ public:
 
     virtual EResourceType::Type GetResourceType() const override;
 
-    virtual bool    LoadFromFile() override;
+protected:
+
+    virtual void Unload() override;
+    virtual bool LoadFromXml(const pugi::xml_document& document) override;
 
 protected:
 

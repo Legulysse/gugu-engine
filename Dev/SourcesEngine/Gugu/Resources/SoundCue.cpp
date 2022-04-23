@@ -24,6 +24,7 @@ SoundCue::SoundCue()
 
 SoundCue::~SoundCue()
 {
+    Unload();
 }
 
 int SoundCue::GetSoundCount() const
@@ -55,18 +56,19 @@ EResourceType::Type SoundCue::GetResourceType() const
     return EResourceType::SoundCue;
 }
 
-bool SoundCue::LoadFromFile()
+void SoundCue::Unload()
 {
-    pugi::xml_document oDoc;
-    pugi::xml_parse_result result = oDoc.load_file(GetFileInfoRef().GetPathName().c_str());
-    if (!result)
+}
+
+bool SoundCue::LoadFromXml(const pugi::xml_document& document)
+{
+    pugi::xml_node nodeRoot = document.child("SoundCue");
+    if (!nodeRoot)
         return false;
 
-    pugi::xml_node oNodeAudioCue = oDoc.child("SoundCue");
-    if (!oNodeAudioCue)
-        return false;
+    Unload();
 
-    pugi::xml_node oNodeFiles = oNodeAudioCue.child("Files");
+    pugi::xml_node oNodeFiles = nodeRoot.child("Files");
     if (!oNodeFiles)
         return false;
 

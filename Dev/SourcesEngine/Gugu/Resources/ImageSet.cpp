@@ -71,7 +71,7 @@ ImageSet::ImageSet()
 
 ImageSet::~ImageSet()
 {
-    ClearStdVector(m_subImages);
+    Unload();
 }
 
 void ImageSet::SetTexture(Texture* _pTexture)

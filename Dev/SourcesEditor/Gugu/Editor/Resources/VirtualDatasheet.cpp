@@ -333,60 +333,12 @@ VirtualDatasheet::VirtualDatasheet()
 
 VirtualDatasheet::~VirtualDatasheet()
 {
-    SafeDelete(m_rootObject);
-    m_classDefinition = nullptr;
-    m_parentDatasheet = nullptr;
+    Unload();
 }
 
 EResourceType::Type VirtualDatasheet::GetResourceType() const
 {
     return EResourceType::Datasheet;    // TODO: Should I use Custom ? Or a dedicated VirtualDatasheet enum value ?
-}
-
-bool VirtualDatasheet::LoadFromFile()
-{
-    pugi::xml_document xmlDocument;
-    pugi::xml_parse_result result = xmlDocument.load_file(GetFileInfoRef().GetPathName().c_str());
-    if (!result)
-        return false;
-
-    pugi::xml_node nodeDatasheetObject = xmlDocument.child("Datasheet");
-    if (!nodeDatasheetObject)
-        return false;
-
-    m_rootObject = new VirtualDatasheetObject;
-
-    if (!m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
-    {
-        return false;
-    }
-
-    std::string parentResourceID = "";
-    VirtualDatasheet* parentDatasheet = nullptr;
-
-    pugi::xml_attribute attributeParent = nodeDatasheetObject.attribute("parent");
-    if (attributeParent)
-    {
-        // TODO: I should encapsulate this in some kind of GetOrLoad method.
-        parentResourceID = attributeParent.value();
-        if (GetResources()->IsResourceLoaded(parentResourceID))
-        {
-            parentDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(parentResourceID));
-        }
-        else
-        {
-            parentDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(parentResourceID);
-        }
-    }
-
-    if (!IsValidAsParent(parentDatasheet, nullptr))
-    {
-        parentDatasheet = nullptr;
-    }
-
-    SetParentDatasheet(parentResourceID, parentDatasheet);
-
-    return true;
 }
 
 bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
@@ -431,9 +383,58 @@ void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, 
     m_rootObject->RefreshParentObject(m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
 }
 
-bool VirtualDatasheet::SaveToFile()
+void VirtualDatasheet::Unload()
 {
-    pugi::xml_document xmlDocument;
+    SafeDelete(m_rootObject);
+    m_classDefinition = nullptr;
+    m_parentDatasheet = nullptr;
+}
+
+bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
+{
+    pugi::xml_node nodeDatasheetObject = xmlDocument.child("Datasheet");
+    if (!nodeDatasheetObject)
+        return false;
+
+    Unload();
+
+    m_rootObject = new VirtualDatasheetObject;
+
+    if (!m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
+    {
+        return false;
+    }
+
+    std::string parentResourceID = "";
+    VirtualDatasheet* parentDatasheet = nullptr;
+
+    pugi::xml_attribute attributeParent = nodeDatasheetObject.attribute("parent");
+    if (attributeParent)
+    {
+        // TODO: I should encapsulate this in some kind of GetOrLoad method.
+        parentResourceID = attributeParent.value();
+        if (GetResources()->IsResourceLoaded(parentResourceID))
+        {
+            parentDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(parentResourceID));
+        }
+        else
+        {
+            parentDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(parentResourceID);
+        }
+    }
+
+    if (!IsValidAsParent(parentDatasheet, nullptr))
+    {
+        parentDatasheet = nullptr;
+    }
+
+    SetParentDatasheet(parentResourceID, parentDatasheet);
+
+    return true;
+}
+
+bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
+{
     pugi::xml_node nodeDatasheet = xmlDocument.append_child("Datasheet");
 
     // Serialization version, could be used if the file format changes.
@@ -450,7 +451,7 @@ bool VirtualDatasheet::SaveToFile()
     if (!m_rootObject->SaveToXml(nodeDatasheet))
         return false;
 
-    return xmlDocument.save_file(GetFileInfoRef().GetPathName().c_str());
+    return true;
 }
 
 }   // namespace gugu

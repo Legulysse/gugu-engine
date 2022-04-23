@@ -187,7 +187,7 @@ AnimSet::AnimSet()
 
 AnimSet::~AnimSet()
 {
-    ClearStdVector(m_animations);
+    Unload();
 }
 
 Animation* AnimSet::AddAnimation(const std::string& _strName)

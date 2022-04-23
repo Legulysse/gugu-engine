@@ -334,6 +334,9 @@ VirtualDatasheet::VirtualDatasheet()
 VirtualDatasheet::~VirtualDatasheet()
 {
     Unload();
+
+    m_classDefinition = nullptr;
+    m_parentDatasheet = nullptr;
 }
 
 EResourceType::Type VirtualDatasheet::GetResourceType() const
@@ -386,24 +389,25 @@ void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, 
 void VirtualDatasheet::Unload()
 {
     SafeDelete(m_rootObject);
-    m_classDefinition = nullptr;
-    m_parentDatasheet = nullptr;
 }
 
 bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 {
-    pugi::xml_node nodeDatasheetObject = xmlDocument.child("Datasheet");
+    pugi::xml_node nodeDatasheetObject = document.child("Datasheet");
     if (!nodeDatasheetObject)
         return false;
 
-    Unload();
+    VirtualDatasheetObject* newRootObject = new VirtualDatasheetObject;
 
-    m_rootObject = new VirtualDatasheetObject;
-
-    if (!m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
+    if (!newRootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
     {
+        SafeDelete(newRootObject);
         return false;
     }
+
+    Unload();
+
+    m_rootObject = newRootObject;
 
     std::string parentResourceID = "";
     VirtualDatasheet* parentDatasheet = nullptr;
@@ -435,7 +439,7 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 
 bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
 {
-    pugi::xml_node nodeDatasheet = xmlDocument.append_child("Datasheet");
+    pugi::xml_node nodeDatasheet = document.append_child("Datasheet");
 
     // Serialization version, could be used if the file format changes.
     nodeDatasheet.append_attribute("serializationVersion") = 1;

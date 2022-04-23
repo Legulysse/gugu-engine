@@ -99,7 +99,8 @@ bool Resource::SaveToXmlFile() const
     if (!SaveToXml(doc))
         return false;
 
-    return doc.save_file(GetFileInfoRef().GetPathName().c_str());
+    // I could use spaces instead of tabs, but it's probably a waste in the context of stored data ? It could be an engine option.
+    return doc.save_file(GetFileInfoRef().GetPathName().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
 }
 
 bool Resource::SaveToXmlString(std::string& result) const
@@ -110,7 +111,7 @@ bool Resource::SaveToXmlString(std::string& result) const
         return false;
 
     xml_string_writer buffer(result);
-    doc.save(buffer);
+    doc.save(buffer, "", pugi::format_no_declaration | pugi::format_raw, pugi::encoding_utf8);
     return true;
 }
 

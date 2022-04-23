@@ -143,6 +143,9 @@ void StdVectorRemove(std::vector<T>& _vecContainer, const T& _tValue);
 template<typename T>
 void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex);
 
+template<typename T>
+void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex, size_t count);
+
 template<typename T, typename P>
 void StdVectorRemoveIf(std::vector<T>& _vecContainer, P _tPredicate);
 

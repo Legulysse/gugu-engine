@@ -92,6 +92,11 @@ void Editor::Release()
     Editor::DeleteInstance();
 }
 
+const EditorConfig& Editor::GetEditorConfig() const
+{
+    return m_editorConfig;
+}
+
 void Editor::OpenProject(const std::string& projectPathFile)
 {
     if (CloseProject())

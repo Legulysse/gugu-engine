@@ -44,6 +44,8 @@ public:
     void Init(const EditorConfig& editorConfig);
     void Release();
 
+    const EditorConfig& GetEditorConfig() const;
+
     void Update(const gugu::DeltaTime& dt);
     bool OnSFEvent(const sf::Event& event);
 

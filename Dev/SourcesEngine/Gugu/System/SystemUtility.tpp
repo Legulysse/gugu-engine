@@ -262,6 +262,12 @@ void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex)
     _vecContainer.erase(_vecContainer.begin() + _iIndex);
 }
 
+template<typename T>
+void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex, size_t count)
+{
+    _vecContainer.erase(_vecContainer.begin() + _iIndex, _vecContainer.begin() + _iIndex + count);
+}
+
 template<typename T, typename P>
 void StdVectorRemoveIf(std::vector<T>& _vecContainer, P _tPredicate)
 {

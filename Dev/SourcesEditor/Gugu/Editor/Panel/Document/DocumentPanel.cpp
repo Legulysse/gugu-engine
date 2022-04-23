@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Editor.h"
+
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
@@ -110,6 +112,17 @@ void DocumentPanel::SaveState()
         }
 
         m_undoStates.push_back(state);
+
+        // Erase older states if reaching the limit (minimum of 2 states : initial state + last state).
+        size_t maxUndoStateCount = 1 + GetEditor()->GetEditorConfig().maxUndoStateCount;
+        maxUndoStateCount = Max<size_t>(2, maxUndoStateCount);
+
+        if (m_undoStates.size() > maxUndoStateCount)
+        {
+            size_t eraseCount = m_undoStates.size() - maxUndoStateCount;
+            StdVectorRemoveAt(m_undoStates, 1, eraseCount);
+        }
+
         m_currentUndoStateIndex = m_undoStates.size() - 1;
     }
 }

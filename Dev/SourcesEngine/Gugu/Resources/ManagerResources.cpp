@@ -697,7 +697,7 @@ void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _ve
 //    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
 //}
 
-void ManagerResources::RegisterDatasheetObjectFactory(DelegateDatasheetObjectFactory delegateDatasheetObjectFactory)
+void ManagerResources::RegisterDatasheetObjectFactory(const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory)
 {
     m_datasheetObjectFactories.push_back(delegateDatasheetObjectFactory);
 }

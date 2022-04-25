@@ -60,7 +60,7 @@ public:
     void    SetOriginFromAnimation  (bool _bOriginFromAnimation);
     void    SetMoveFromAnimation    (bool _bMoveFromAnimation);
 
-    void    AddEventCallback(const std::string& _strEvent, Callback callbackEvent);
+    void    AddEventCallback(const std::string& _strEvent, const Callback& callbackEvent);
 
     void    StepAnimation           (const DeltaTime& dt);
 

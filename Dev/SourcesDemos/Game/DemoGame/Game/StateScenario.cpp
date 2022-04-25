@@ -187,7 +187,7 @@ void StateScenario::Init()
     RefreshCharacterSheet();
 }
 
-void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, Callback onClick)
+void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, const Callback& onClick)
 {
     float positionColumnOffsetXLeftButton = -40.f;
     float positionColumnOffsetXRightButton = 40.f;

@@ -170,7 +170,7 @@ void SpriteAnimation::SetMoveFromAnimation(bool _bMoveFromAnimation)
     m_moveFromAnimation = _bMoveFromAnimation;
 }
 
-void SpriteAnimation::AddEventCallback(const std::string& _strEvent, Callback callbackEvent)
+void SpriteAnimation::AddEventCallback(const std::string& _strEvent, const Callback& callbackEvent)
 {
     m_events[_strEvent] = callbackEvent;
 }

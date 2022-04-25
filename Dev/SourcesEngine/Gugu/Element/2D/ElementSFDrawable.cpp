@@ -41,7 +41,7 @@ sf::Drawable* ElementSFDrawable::GetSFDrawable() const
     return m_sfDrawable;
 }
 
-void ElementSFDrawable::SetCallbackOnSizeChanged(DelegateElementSizeChanged callbackOnSizeChanged)
+void ElementSFDrawable::SetCallbackOnSizeChanged(const DelegateElementSizeChanged& callbackOnSizeChanged)
 {
     m_callbackOnSizeChanged = callbackOnSizeChanged;
 }

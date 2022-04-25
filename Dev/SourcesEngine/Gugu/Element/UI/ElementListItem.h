@@ -32,10 +32,10 @@ public:
     void        SetSelected (bool _bIsSelected);
     bool        IsSelected  () const;
 
-    void        OnListResized   (Vector2f _oListSize);
+    void        OnListResized   (const Vector2f& _oListSize);
     
-    void        SetOnSelected   (Callback callback);
-    void        SetOnDeselected (Callback callback);
+    void        SetOnSelected   (const Callback& callback);
+    void        SetOnDeselected (const Callback& callback);
 
     virtual void OnMouseEnter() override;
     virtual void OnMouseLeave() override;

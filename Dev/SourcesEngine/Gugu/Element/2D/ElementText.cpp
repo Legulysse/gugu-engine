@@ -464,7 +464,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
     return true;
 }
 
-void ElementText::SetOnValidate(Callback callbackOnValidate)
+void ElementText::SetOnValidate(const Callback& callbackOnValidate)
 {
     m_callbackOnValidate = callbackOnValidate;
 }

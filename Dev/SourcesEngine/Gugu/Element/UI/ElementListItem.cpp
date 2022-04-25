@@ -72,7 +72,7 @@ bool ElementListItem::IsSelected() const
     return m_isSelected;
 }
 
-void ElementListItem::OnListResized(Vector2f _oListSize)
+void ElementListItem::OnListResized(const Vector2f& _oListSize)
 {
     //Resize ElementImpl first
     m_elementImpl->SetSizeX(_oListSize.x);
@@ -81,12 +81,12 @@ void ElementListItem::OnListResized(Vector2f _oListSize)
     SetSize(_oListSize.x, m_elementImpl->GetSize().y);
 }
 
-void ElementListItem::SetOnSelected(Callback callback)
+void ElementListItem::SetOnSelected(const Callback& callback)
 {
     m_callbackOnSelected = callback;
 }
 
-void ElementListItem::SetOnDeselected(Callback callback)
+void ElementListItem::SetOnDeselected(const Callback& callback)
 {
     m_callbackOnDeselected = callback;
 }

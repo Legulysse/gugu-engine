@@ -49,7 +49,7 @@ bool ElementInteractions::HasInteractionFlag(EInteraction::Type _eFlag) const
     return ((m_interactionFlags & _eFlag) != EInteraction::None);
 }
 
-void ElementInteractions::AddCallback(EInteraction::Type _eFlag, Callback callback)
+void ElementInteractions::AddCallback(EInteraction::Type _eFlag, const Callback& callback)
 {
     if (!callback || _eFlag == EInteraction::None)
         return;

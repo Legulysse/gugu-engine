@@ -68,7 +68,7 @@ public:
     virtual bool OnMouseDeselected() override;
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 
-    void SetOnValidate(Callback callbackOnValidate);
+    void SetOnValidate(const Callback& callbackOnValidate);
 
 private:
 

@@ -139,12 +139,12 @@ void ElementButton::SetDisabled(bool _bDisabled)
     }
 }
 
-void ElementButton::SetOnMousePressed(Callback _pActionOnPressed)
+void ElementButton::SetOnMousePressed(const Callback& _pActionOnPressed)
 {
     m_actionOnPressed = _pActionOnPressed;
 }
 
-void ElementButton::SetOnMouseReleased(Callback _pActionOnReleased)
+void ElementButton::SetOnMouseReleased(const Callback& _pActionOnReleased)
 {
     m_actionOnReleased = _pActionOnReleased;
 }

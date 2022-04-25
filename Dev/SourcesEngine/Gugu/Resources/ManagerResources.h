@@ -127,7 +127,7 @@ public:
     Font*           GetDefaultFont();
     Font*           GetDebugFont();
     
-    void                RegisterDatasheetObjectFactory    (DelegateDatasheetObjectFactory delegateDatasheetObjectFactory);
+    void                RegisterDatasheetObjectFactory    (const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory);
     DatasheetObject*    InstanciateDatasheetObject        (const std::string& _strType);
 
     void RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum);

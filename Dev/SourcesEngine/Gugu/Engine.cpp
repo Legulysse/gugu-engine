@@ -596,7 +596,7 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
     }
 }
 
-bool Engine::SetTimer(const std::string& name, uint32 delay, uint32 ticks, bool tickNow, Callback callback)
+bool Engine::SetTimer(const std::string& name, uint32 delay, uint32 ticks, bool tickNow, const Callback& callback)
 {
     if (!callback)
         return false;

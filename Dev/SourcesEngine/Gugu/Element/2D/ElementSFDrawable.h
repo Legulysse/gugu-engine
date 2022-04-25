@@ -32,7 +32,7 @@ public:
     void            SetSFDrawable   (sf::Drawable* _pSFDrawable);
     sf::Drawable*   GetSFDrawable   () const;
 
-    void SetCallbackOnSizeChanged(DelegateElementSizeChanged callbackOnSizeChanged);
+    void SetCallbackOnSizeChanged(const DelegateElementSizeChanged& callbackOnSizeChanged);
 
 private:
 

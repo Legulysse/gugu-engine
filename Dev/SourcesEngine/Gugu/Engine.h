@@ -77,7 +77,7 @@ public:
     void            SetGameWindow   (Window* window);
     Window*         GetGameWindow   () const;
     
-    bool            SetTimer    (const std::string& name, uint32 delay, uint32 ticks, bool tickNow, Callback callback);
+    bool            SetTimer    (const std::string& name, uint32 delay, uint32 ticks, bool tickNow, const Callback& callback);
     void            ClearTimer  (const std::string& name);
     const Timer*    GetTimer    (const std::string& name) const;
     void            TickTimers  (const DeltaTime& dt);

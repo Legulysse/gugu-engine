@@ -50,7 +50,7 @@ public:
     bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
     bool HasInteractionFlag(EInteraction::Type _eFlag) const;
 
-    void AddCallback(EInteraction::Type _eFlag, Callback callback);
+    void AddCallback(EInteraction::Type _eFlag, const Callback& callback);
     void RemoveCallbacks(EInteraction::Type _eFlag);
     void RemoveCallbacks();
 

@@ -49,8 +49,8 @@ public:
 
     void SetDisabled(bool _bDisabled);
 
-    void SetOnMousePressed(Callback _pActionOnPressed);
-    void SetOnMouseReleased(Callback _pActionOnReleased);
+    void SetOnMousePressed(const Callback& _pActionOnPressed);
+    void SetOnMouseReleased(const Callback& _pActionOnReleased);
 
     virtual bool OnMousePressed() override;
     virtual bool OnMouseReleased() override;

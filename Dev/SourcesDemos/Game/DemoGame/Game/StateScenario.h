@@ -44,7 +44,7 @@ public:
 
 private:
 
-    void AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, gugu::Callback onClick);
+    void AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, const gugu::Callback& onClick);
     void RefreshCharacterSheet();
 
     enum class EButtonUpdateStat

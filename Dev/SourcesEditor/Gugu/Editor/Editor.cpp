@@ -11,6 +11,7 @@
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
+#include "Gugu/Editor/Panel/OutputLogPanel.h"
 #include "Gugu/Editor/Panel/Document/DatasheetPanel.h"
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ParticleEffectPanel.h"
@@ -42,6 +43,7 @@ Editor::Editor()
     , m_showSearchResults(true)
     , m_showImGuiDemo(false)
     , m_assetsExplorerPanel(nullptr)
+    , m_outputLogPanel(nullptr)
     , m_lastActiveDocument(nullptr)
     , m_datasheetParser(nullptr)
 {
@@ -73,7 +75,8 @@ void Editor::Init(const EditorConfig& editorConfig)
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // TODO: Does not seem supported by the SFML backend.
     io.ConfigWindowsResizeFromEdges = true;
 
-    // Create the AssetsExplorer Panel.
+    // Create Panels.
+    m_outputLogPanel = new OutputLogPanel;
     m_assetsExplorerPanel = new AssetsExplorerPanel;
 
     // Open last project if available.
@@ -89,6 +92,7 @@ void Editor::Release()
 
     ClearStdVector(m_modalDialogs);
     SafeDelete(m_assetsExplorerPanel);
+    SafeDelete(m_outputLogPanel);
 
     Editor::DeleteInstance();
 }
@@ -414,6 +418,16 @@ void Editor::Update(const DeltaTime& dt)
     // Update AssetsExplorer panel.
     m_assetsExplorerPanel->UpdatePanel(dt);
 
+    // Update OutpuLog panel.
+    m_outputLogPanel->UpdatePanel(dt);
+
+    //TODO: search
+    //if (m_showSearchResults)
+    //{
+    //    ImGui::Begin("Search Results", &m_showSearchResults);
+    //    ImGui::End();
+    //}
+
     // Handle Document panels closed during last frame (I use a frame delay to avoid flickers).
     bool closedDocuments = false;
     for (size_t i = 0; i < m_documentPanels.size(); ++i)
@@ -475,16 +489,6 @@ void Editor::Update(const DeltaTime& dt)
         }
     }
     ImGui::End();
-
-    // Update OutputLog panel.
-    ImGui::Begin("Output Log", false);
-    ImGui::End();
-
-    if (m_showSearchResults)
-    {
-        ImGui::Begin("Search Results", &m_showSearchResults);
-        ImGui::End();
-    }
 
     if (m_showImGuiDemo)
     {

@@ -72,6 +72,20 @@ void Logger::SetActive(bool _bActive)
     m_isActive = _bActive;
 }
 
+void Logger::RegisterDelegate(void* handle, const DelegateLog& delegateLog)
+{
+    DelegateInfos infos;
+    infos.delegateLog = delegateLog;
+    infos.handle = handle;
+
+    m_delegates.push_back(infos);
+}
+
+void Logger::UnregisterDelegate(void* handle)
+{
+    StdVectorRemoveIf(m_delegates, [&](const auto& item) { return item.handle == handle; });
+}
+
 void Logger::Flush()
 {
     sf::Lock oLocker(m_mutex);
@@ -91,21 +105,24 @@ void Logger::Print(ELog::Type _eLogLevel, const std::string& _strText)
 
 void Logger::PrintImpl(ELog::Type _eLogLevel, const std::string& _strCategory, const std::string& _strText)
 {
+    static const std::map<ELog::Type, std::string> logLevelAsStr
+    {
+        { ELog::Debug, "[Debug] " },
+        { ELog::Info, "[Info] " },
+        { ELog::Warning, "[Warning] " },
+        { ELog::Error, "[Error] " },
+    };
+
+    std::string timestamp = GetTimestampAsString();
+
     if (m_useTimestamp)
     {
         m_buffer << '[';
-        m_buffer << GetTimestampAsString();
+        m_buffer << timestamp;
         m_buffer << "] ";
     }
 
-    if (_eLogLevel == ELog::Info)
-        m_buffer << "[Info] ";
-    else if (_eLogLevel == ELog::Debug)
-        m_buffer << "[Debug] ";
-    else if (_eLogLevel == ELog::Warning)
-        m_buffer << "[Warning] ";
-    else if (_eLogLevel == ELog::Error)
-        m_buffer << "[Error] ";
+    m_buffer << logLevelAsStr.at(_eLogLevel);
 
     if (!_strCategory.empty())
     {
@@ -118,7 +135,14 @@ void Logger::PrintImpl(ELog::Type _eLogLevel, const std::string& _strCategory, c
     m_buffer << std::endl;
 
     if (m_autoFlush)
+    {
         FlushImpl();
+    }
+
+    for (const auto& delegateInfos : m_delegates)
+    {
+        delegateInfos.delegateLog(timestamp, _eLogLevel, _strCategory,_strText);
+    }
 }
 
 void Logger::FlushImpl()
@@ -151,17 +175,16 @@ void LoggerEngine::Print(ELog::Type _eLogLevel, ELogEngine::Type _eLogEngineCate
     if (!m_isActive)
         return;
 
+    static const std::map<ELogEngine::Type, std::string> logCategoryAsStr
+    {
+        { ELogEngine::Engine, "Engine" },
+        { ELogEngine::Resources, "Resources" },
+        { ELogEngine::Audio, "Audio" },
+    };
+
     sf::Lock oLocker(m_mutex);
 
-    std::string strCategory;
-    if (_eLogEngineCategory == ELogEngine::Engine)
-        strCategory = "Engine";
-    else if (_eLogEngineCategory == ELogEngine::Resources)
-        strCategory = "Resources";
-    else if (_eLogEngineCategory == ELogEngine::Audio)
-        strCategory = "Audio";
-
-    PrintImpl(_eLogLevel, strCategory, _strText);
+    PrintImpl(_eLogLevel, logCategoryAsStr.at(_eLogEngineCategory), _strText);
 }
 
 LoggerEngine* GetLogEngine()

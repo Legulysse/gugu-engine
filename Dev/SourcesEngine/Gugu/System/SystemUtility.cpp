@@ -510,7 +510,7 @@ std::string GetTimestampAsString()
     char buffer[32] = { 0 };
     std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));  // "%Y-%m-%d %H:%M:%S"
 
-    return buffer;
+    return std::string(buffer);
 }
 
 }   // namespace gugu

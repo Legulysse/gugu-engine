@@ -20,6 +20,7 @@ namespace gugu
     class BaseModalDialog;
     class DocumentPanel;
     class AssetsExplorerPanel;
+    class OutputLogPanel;
     class ImageSetPanel;
     class DatasheetParser;
 }
@@ -96,9 +97,11 @@ private:
     bool m_showSearchResults;
     bool m_showImGuiDemo;
 
+    AssetsExplorerPanel* m_assetsExplorerPanel;
+    OutputLogPanel* m_outputLogPanel;
+
     std::vector<BaseModalDialog*> m_modalDialogs;
 
-    AssetsExplorerPanel* m_assetsExplorerPanel;
     std::vector<DocumentPanel*> m_documentPanels;
     DocumentPanel* m_lastActiveDocument;
 

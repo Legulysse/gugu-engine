@@ -9,6 +9,59 @@
 
 namespace gugu {
 
+//--------------------------------
+// General
+
+bool ApproxEqual(float left, float right, float epsilon)
+{
+    return std::abs(left - right) <= epsilon;
+}
+
+bool ApproxInferior(float left, float right, float epsilon)
+{
+    return left < right - epsilon;
+}
+
+bool ApproxSuperior(float left, float right, float epsilon)
+{
+    return left > right + epsilon;
+}
+
+bool ApproxInferiorOrEqual(float left, float right, float epsilon)
+{
+    return left <= right + epsilon;
+}
+
+bool ApproxSuperiorOrEqual(float left, float right, float epsilon)
+{
+    return left >= right - epsilon;
+}
+
+bool ApproxEqualToZero(float left, float epsilon)
+{
+    return std::abs(left) <= epsilon;
+}
+
+bool ApproxInferiorToZero(float left, float epsilon)
+{
+    return left < -epsilon;
+}
+
+bool ApproxSuperiorToZero(float left, float epsilon)
+{
+    return left > epsilon;
+}
+
+bool ApproxInferiorOrEqualToZero(float left, float epsilon)
+{
+    return left <= epsilon;
+}
+
+bool ApproxSuperiorOrEqualToZero(float left, float epsilon)
+{
+    return left >= -epsilon;
+}
+
 //----------------------------------------------
 // Angles
 

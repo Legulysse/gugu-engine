@@ -34,8 +34,17 @@ namespace Math
 //----------------------------------------------
 // General
 
-template <typename T>
-bool NearlyEquals(T left, T right, T epsilon);
+bool ApproxEqual(float left, float right, float epsilon);
+bool ApproxInferior(float left, float right, float epsilon);
+bool ApproxSuperior(float left, float right, float epsilon);
+bool ApproxInferiorOrEqual(float left, float right, float epsilon);
+bool ApproxSuperiorOrEqual(float left, float right, float epsilon);
+
+bool ApproxEqualToZero(float left, float epsilon);
+bool ApproxInferiorToZero(float left, float epsilon);
+bool ApproxSuperiorToZero(float left, float epsilon);
+bool ApproxInferiorOrEqualToZero(float left, float epsilon);
+bool ApproxSuperiorOrEqualToZero(float left, float epsilon);
 
 template <typename T>
 bool IsInRange(T _tValue, T _tMin, T _tMax);

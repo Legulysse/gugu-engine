@@ -191,7 +191,7 @@ void Projectile::Step(const DeltaTime& dt)
 
         if (m_hasDestination)
         {
-            if (LengthSquare(m_sprite->GetPosition() - m_destination) <= LengthSquare(moveStep) + Math::Epsilon3)
+            if (ApproxInferiorOrEqual(LengthSquare(m_sprite->GetPosition() - m_destination), LengthSquare(moveStep), Math::Epsilon3))
             {
                 reachedDestination = true;
             }

@@ -101,8 +101,8 @@ void ElementBar::SetValue(float _fCurrent, float _fMax)
         fSizeX = Max(0.f, fSizeX);
         pSpriteMid->SetUnifiedSize(UDim2(0.f, fSizeX, 1.f, 0.f));
 
-        bool leftVisible = fValue - gugu::Math::Epsilon3 >= 0.f;
-        bool rightVisible = fValue + gugu::Math::Epsilon3 >= 1.f;
+        bool leftVisible = ApproxSuperiorToZero(fValue, gugu::Math::Epsilon6);
+        bool rightVisible = ApproxEqual(fValue, 1.f, gugu::Math::Epsilon6);
 
         // If we want to hide/show some items, we need a full recompute.
         if (leftVisible != pSpriteLeft->IsVisible() || rightVisible != pSpriteRight->IsVisible())

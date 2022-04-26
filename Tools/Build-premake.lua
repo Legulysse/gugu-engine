@@ -67,6 +67,7 @@ solution "GuguEngine"
     ProjectDefault(BuildCfg, "DemoMathUtility"  , pathDev.."SourcesDemos/Tests/DemoMathUtility"  	, pathVersion.."DemoTests", "65FF27AD-5B47-4B7D-AB52-7AC6FF39DCC3")
     ProjectDefault(BuildCfg, "DemoSystemUtility", pathDev.."SourcesDemos/Tests/DemoSystemUtility"   , pathVersion.."DemoTests", "C651D7AF-5018-438B-8508-E2353C82AC7C")
     ProjectDefault(BuildCfg, "DemoSFML"         , pathDev.."SourcesDemos/Tests/DemoSFML"            , pathVersion.."DemoTests", "7F2F4292-8762-4C16-AB8B-6CA75D56169D")
+    ProjectDefault(BuildCfg, "UnitTests"        , pathDev.."SourcesDemos/Tests/UnitTests"           , pathVersion.."DemoTests", "86CC4BC0-7B66-4AA8-9038-0F791FC0A195")
     
     group "Editor App"
     ProjectAppGuguEditor(BuildCfg)

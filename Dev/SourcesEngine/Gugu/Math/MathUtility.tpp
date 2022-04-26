@@ -9,6 +9,12 @@ namespace gugu {
 // General
 
 template <typename T>
+bool NearlyEquals(T left, T right, T epsilon)
+{
+    return std::abs(left - right) <= epsilon;
+}
+
+template <typename T>
 bool IsInRange(T _tValue, T _tMin, T _tMax)
 {
     return (_tValue >= _tMin && _tValue <= _tMax);

@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
-#if 1
+#if 0
     {
         size_t nbLoops = 1000000;
 

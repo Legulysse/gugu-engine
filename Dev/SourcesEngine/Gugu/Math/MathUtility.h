@@ -28,10 +28,14 @@ namespace Math
     const float RadiansToDegrees = 57.2957795131f;      // 180 / Pi
 
     const float Epsilon3 = 0.001f;
+    const float Epsilon6 = 0.000001f;
 }
 
 //----------------------------------------------
 // General
+
+template <typename T>
+bool NearlyEquals(T left, T right, T epsilon);
 
 template <typename T>
 bool IsInRange(T _tValue, T _tMin, T _tMax);

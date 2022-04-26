@@ -67,4 +67,38 @@ Vector2f GetRandomPointInAnnulus(const Vector2f& center, float minRadius, float 
                     center.y + r * std::sin(theta));
 }
 
+int GetWeightedRandomIndex(const std::vector<int>& weights)
+{
+	if (weights.size() == 0)
+		return -1;
+
+	int totalWeight = 0;
+	for (size_t i = 0; i < weights.size(); ++i)
+	{
+		if (weights[i] > 0)
+		{
+			totalWeight += weights[i];
+		}
+	}
+
+	if (totalWeight == 0)
+		return -1;
+
+	int rollWeight = GetRandom(1, totalWeight);
+	for (size_t i = 0; i < weights.size(); ++i)
+	{
+		if (weights[i] > 0)
+		{
+			if (rollWeight <= weights[i])
+			{
+				return (int)i;
+			}
+
+			rollWeight -= weights[i];
+		}
+	}
+
+	return -1;
+}
+
 }   // namespace gugu

@@ -119,6 +119,8 @@ int main(int argc, char* argv[])
     float fSqrLengthB = LengthSquare(kVectorRotated);
 
     // Random
+    ResetRandSeed();
+
     std::map<int, int> kResultsA;
     std::set<float> kResultsB;
     std::map<int, int> kResultsC;
@@ -156,6 +158,31 @@ int main(int argc, char* argv[])
     float maxD = *kResultsD.rbegin();
     int minE = kResultsE.begin()->first;
     int maxE = kResultsE.rbegin()->first;
+
+    // Weighted Random
+    {
+        std::vector<int> weightsA { 1, 0, 9 };
+
+        std::map<int, int> resultsA;
+        for (int i = 0; i < 10000; ++i)
+        {
+            resultsA[GetWeightedRandomIndex(weightsA)] += 1;
+        }
+
+        struct ItemType
+        {
+            int weight;
+        };
+        std::vector<ItemType> itemsA { {1}, {0}, {-1}, {8} };
+
+        auto predicateA = [](const ItemType& item) -> int { return item.weight; };
+
+        std::map<int, int> resultsB;
+        for (int i = 0; i < 10000; ++i)
+        {
+            resultsB[GetWeightedRandomIndex(itemsA, predicateA)] += 1;
+        }
+    }
 
     // UDim
     UDim dimA(UDim::HALF);

@@ -149,12 +149,12 @@ void Demo::RefreshGrids()
 
     m_pTileMapA->UpdateTileTextureCoords(m_referenceCoords4.x, m_referenceCoords4.y, m_grid4->GetWidth(), sf::IntRect(32, 32, 32, 32));
 
-    std::vector<Vector2i> neighboursRangeA;
+    std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeA;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid4, *m_gridData4, m_referenceCoords4, m_neighboursRange, neighboursRangeA);
 
-    for (Vector2i coords : neighboursRangeA)
+    for (const auto& neighbour : neighboursRangeA)
     {
-        m_pTileMapA->UpdateTileTextureCoords(coords.x, coords.y, m_grid4->GetWidth(), sf::IntRect(32, 0, 32, 32));
+        m_pTileMapA->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid4->GetWidth(), sf::IntRect(32, 0, 32, 32));
     }
 
     // Square-8 grid.
@@ -168,12 +168,12 @@ void Demo::RefreshGrids()
 
     m_pTileMapB->UpdateTileTextureCoords(m_referenceCoords8.x, m_referenceCoords8.y, m_grid8->GetWidth(), sf::IntRect(32, 32, 32, 32));
 
-    std::vector<Vector2i> neighboursRangeB;
+    std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeB;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid8, *m_gridData8, m_referenceCoords8, m_neighboursRange, neighboursRangeB);
 
-    for (Vector2i coords : neighboursRangeB)
+    for (const auto& neighbour : neighboursRangeB)
     {
-        m_pTileMapB->UpdateTileTextureCoords(coords.x, coords.y, m_grid8->GetWidth(), sf::IntRect(32, 0, 32, 32));
+        m_pTileMapB->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid8->GetWidth(), sf::IntRect(32, 0, 32, 32));
     }
 
     // Hex grid.
@@ -187,12 +187,12 @@ void Demo::RefreshGrids()
 
     m_pTileMapC->UpdateTileTextureCoords(m_referenceCoords6.x, m_referenceCoords6.y, m_grid6->GetWidth(), sf::IntRect(32, 37, 32, 37));
 
-    std::vector<Vector2i> neighboursRangeC;
+    std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeC;
     BreadthFirstSearchNeighboursByWalkableRange(*m_grid6, *m_gridData6, m_referenceCoords6, m_neighboursRange, neighboursRangeC);
 
-    for (Vector2i coords : neighboursRangeC)
+    for (const auto& neighbour : neighboursRangeC)
     {
-        m_pTileMapC->UpdateTileTextureCoords(coords.x, coords.y, m_grid6->GetWidth(), sf::IntRect(32, 0, 32, 37));
+        m_pTileMapC->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid6->GetWidth(), sf::IntRect(32, 0, 32, 37));
     }
 }
 

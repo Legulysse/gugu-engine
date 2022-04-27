@@ -12,7 +12,7 @@
 namespace gugu {
 
 template<typename TGrid, typename TCoords>
-void BreadthFirstSearchNeighboursByRange(const TGrid& grid, const TCoords& coordsFrom, int range, std::vector<TCoords>& neighbours)
+void BreadthFirstSearchNeighboursByRange(const TGrid& grid, const TCoords& coordsFrom, int range, std::vector<BFSNeighbourInfos<TCoords>>& neighbours)
 {
     std::queue<TCoords> currentQueue;
     std::queue<TCoords> pendingQueue;
@@ -22,7 +22,7 @@ void BreadthFirstSearchNeighboursByRange(const TGrid& grid, const TCoords& coord
     explored.insert(coordsFrom);
 
     int distance = 0;
-    while (distance < range && !pendingQueue.empty())
+    while ((range == -1 || distance < range) && !pendingQueue.empty())
     {
         ++distance;
 
@@ -43,9 +43,12 @@ void BreadthFirstSearchNeighboursByRange(const TGrid& grid, const TCoords& coord
                 if (explored.find(neighbour) == explored.end())
                 {
                     explored.insert(neighbour);
-
                     pendingQueue.push(neighbour);
-                    neighbours.push_back(neighbour);
+
+                    BFSNeighbourInfos<TCoords> neighbourInfos;
+                    neighbourInfos.coords = neighbour;
+                    neighbourInfos.distance = distance;
+                    neighbours.push_back(neighbourInfos);
                 }
             }
         }
@@ -53,7 +56,7 @@ void BreadthFirstSearchNeighboursByRange(const TGrid& grid, const TCoords& coord
 }
 
 template<typename TGrid, typename TGridData, typename TCoords>
-void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridData& gridData, const TCoords& coordsFrom, int range, std::vector<TCoords>& neighbours)
+void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridData& gridData, const TCoords& coordsFrom, int range, std::vector<BFSNeighbourInfos<TCoords>>& neighbours)
 {
     std::queue<TCoords> currentQueue;
     std::queue<TCoords> pendingQueue;
@@ -63,7 +66,7 @@ void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridD
     explored.insert(coordsFrom);
 
     int distance = 0;
-    while (distance < range && !pendingQueue.empty())
+    while ((range == -1 || distance < range) && !pendingQueue.empty())
     {
         ++distance;
 
@@ -86,9 +89,12 @@ void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridD
                     if (gridData.IsWalkable(currentCoords, neighbour))
                     {
                         explored.insert(neighbour);
-
                         pendingQueue.push(neighbour);
-                        neighbours.push_back(neighbour);
+
+                        BFSNeighbourInfos<TCoords> neighbourInfos;
+                        neighbourInfos.coords = neighbour;
+                        neighbourInfos.distance = distance;
+                        neighbours.push_back(neighbourInfos);
                     }
                 }
             }

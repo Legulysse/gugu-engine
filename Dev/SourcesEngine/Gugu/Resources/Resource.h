@@ -33,10 +33,8 @@ public:
 
     void Init(ResourceInfo* _pResourceInfos);
 
-    std::string GetID() const;
-
-    FileInfo GetFileInfo() const;
-    const FileInfo& GetFileInfoRef() const;
+    const std::string& GetID() const;
+    const FileInfo& GetFileInfo() const;
 
     virtual EResourceType::Type GetResourceType() const;
 

@@ -54,16 +54,16 @@ bool DatasheetObject::LoadFromXml(const std::string& _strPathName, std::vector<D
                 std::string ancestorsLog;
                 for (Datasheet* ancestor : ancestors)
                 {
-                    ancestorsLog += ancestor->GetFileInfoRef().GetName() + ", ";
+                    ancestorsLog += ancestor->GetFileInfo().GetName() + ", ";
                 }
 
-                ancestorsLog += parentSheet->GetFileInfoRef().GetName();
+                ancestorsLog += parentSheet->GetFileInfo().GetName();
                 GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet ancestors create an infinite loop : {0}", ancestorsLog));
             }
             else
             {
                 ancestors.push_back(parentSheet);
-                LoadFromXml(parentSheet->GetFileInfoRef().GetPathName(), ancestors);
+                LoadFromXml(parentSheet->GetFileInfo().GetPathName(), ancestors);
             }
         }
     }
@@ -424,7 +424,7 @@ bool Datasheet::LoadFromFile()
 
     std::vector<Datasheet*> ancestors;
     ancestors.push_back(this);
-    return m_rootObject->LoadFromXml(GetFileInfoRef().GetPathName(), ancestors);
+    return m_rootObject->LoadFromXml(GetFileInfo().GetPathName(), ancestors);
 }
 
 const DatasheetObject* Datasheet::GetRootObject() const

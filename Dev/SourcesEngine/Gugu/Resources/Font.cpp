@@ -43,9 +43,9 @@ EResourceType::Type Font::GetResourceType() const
 bool Font::LoadFromFile()
 {
     m_sfFont = new sf::Font;
-    if (!m_sfFont->loadFromFile(GetFileInfoRef().GetPathName()))
+    if (!m_sfFont->loadFromFile(GetFileInfo().GetPathName()))
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Font not found : {0}", GetFileInfoRef().GetPathName()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Font not found : {0}", GetFileInfo().GetPathName()));
         return false;
     }
     return true;

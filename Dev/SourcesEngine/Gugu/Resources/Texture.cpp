@@ -82,7 +82,7 @@ EResourceType::Type Texture::GetResourceType() const
 bool Texture::LoadFromFile()
 {
     m_sfTexture = new sf::Texture;
-    if (!m_sfTexture->loadFromFile(GetFileInfoRef().GetPathName()))
+    if (!m_sfTexture->loadFromFile(GetFileInfo().GetPathName()))
     {
         //Use a purple square
         sf::Image oSFImage;
@@ -94,7 +94,7 @@ bool Texture::LoadFromFile()
         m_sfTexture->setRepeated(false);
 
         //TODO: Return true ? Curently it will discard the Resource I think
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Texture not found : {0}", GetFileInfoRef().GetPathName()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Texture not found : {0}", GetFileInfo().GetPathName()));
         return false;
     }
 
@@ -109,7 +109,7 @@ bool Texture::ReloadFromFile()
     if (!m_sfTexture)
         return false;
 
-    if (m_sfTexture->loadFromFile(GetFileInfoRef().GetPathName()))
+    if (m_sfTexture->loadFromFile(GetFileInfo().GetPathName()))
     {
         return true;
     }

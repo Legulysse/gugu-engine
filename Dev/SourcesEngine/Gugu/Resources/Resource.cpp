@@ -32,17 +32,12 @@ void Resource::Init(ResourceInfo* _pResourceInfos)
     m_resourceInfos = _pResourceInfos;
 }
 
-std::string Resource::GetID() const
+const std::string& Resource::GetID() const
 {
     return m_resourceInfos->resourceID;
 }
 
-FileInfo Resource::GetFileInfo() const
-{
-    return m_resourceInfos->fileInfo;
-}
-
-const FileInfo& Resource::GetFileInfoRef() const
+const FileInfo& Resource::GetFileInfo() const
 {
     return m_resourceInfos->fileInfo;
 }
@@ -75,7 +70,7 @@ bool Resource::SaveToString(std::string& result) const
 bool Resource::LoadFromXmlFile()
 {
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(GetFileInfoRef().GetPathName().c_str());
+    pugi::xml_parse_result result = doc.load_file(GetFileInfo().GetPathName().c_str());
     if (!result)
         return false;
 
@@ -100,7 +95,7 @@ bool Resource::SaveToXmlFile() const
         return false;
 
     // I could use spaces instead of tabs, but it's probably a waste in the context of stored data ? It could be an engine option.
-    return doc.save_file(GetFileInfoRef().GetPathName().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+    return doc.save_file(GetFileInfo().GetPathName().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
 }
 
 bool Resource::SaveToXmlString(std::string& result) const

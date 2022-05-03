@@ -40,9 +40,9 @@ EResourceType::Type Sound::GetResourceType() const
 bool Sound::LoadFromFile()
 {
     m_sfSoundBuffer = new sf::SoundBuffer;
-    if (!m_sfSoundBuffer->loadFromFile(GetFileInfoRef().GetPathName()))
+    if (!m_sfSoundBuffer->loadFromFile(GetFileInfo().GetPathName()))
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Sound not found : {0}", GetFileInfoRef().GetPathName()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Sound not found : {0}", GetFileInfo().GetPathName()));
         return false;
     }
     return true;

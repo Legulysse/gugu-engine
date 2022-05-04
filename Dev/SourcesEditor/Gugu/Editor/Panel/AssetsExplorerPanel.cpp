@@ -60,7 +60,7 @@ void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
     {
         TreeNode* currentDirectory = m_rootNode;
 
-        std::string resourcePath = resourceInfo->fileInfo.GetPath();
+        std::string resourcePath = resourceInfo->fileInfo.GetPath(true);
 
         // Ignore Editor assets.
         if (StdStringStartsWith(resourcePath, editorAssetsPath))

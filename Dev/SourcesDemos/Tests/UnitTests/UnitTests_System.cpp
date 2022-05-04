@@ -113,5 +113,58 @@ void RunUnitTests_System()
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("FileInfo");
+    {
+        GUGU_UTEST_SUBSECTION("Construction");
+        {
+            FileInfo infoA("hello", "world.txt");
+
+            GUGU_UTEST_CHECK(infoA.GetPath(false) == "hello");
+            GUGU_UTEST_CHECK(infoA.GetPath(true) == "hello/");
+            GUGU_UTEST_CHECK(infoA.GetName() == "world.txt");
+            GUGU_UTEST_CHECK(infoA.GetPathName() == "hello/world.txt");
+            GUGU_UTEST_CHECK(infoA.GetPrettyName() == "world");
+            GUGU_UTEST_CHECK(infoA.GetExtension() == "txt");
+            GUGU_UTEST_CHECK(infoA.IsExtension("txt"));
+
+            FileInfo infoB("", "world.txt");
+
+            GUGU_UTEST_CHECK(infoB.GetPath(false) == "");
+            GUGU_UTEST_CHECK(infoB.GetPath(true) == "");
+            GUGU_UTEST_CHECK(infoB.GetName() == "world.txt");
+            GUGU_UTEST_CHECK(infoB.GetPathName() == "world.txt");
+            GUGU_UTEST_CHECK(infoB.GetPrettyName() == "world");
+            GUGU_UTEST_CHECK(infoB.GetExtension() == "txt");
+            GUGU_UTEST_CHECK(infoB.IsExtension("txt"));
+
+            GUGU_UTEST_CHECK(FileInfo("hello/world.txt") == FileInfo("hello", "world.txt"));
+            GUGU_UTEST_CHECK(FileInfo("world.txt") == FileInfo("", "world.txt"));
+        }
+
+        GUGU_UTEST_SUBSECTION("Comparison");
+        {
+            GUGU_UTEST_CHECK(FileInfo("aaa", "111") == FileInfo("aaa", "111"));
+            GUGU_UTEST_CHECK(FileInfo("aaa", "111") != FileInfo("aaa", "222"));
+            GUGU_UTEST_CHECK(FileInfo("bbb", "111") != FileInfo("aaa", "111"));
+
+            std::vector<FileInfo> fileInfoArray
+            {
+                FileInfo("aaa", "111"),
+                FileInfo("bbb", "222"),
+                FileInfo("bbb", "111"),
+                FileInfo("aaa", "333"),
+            };
+
+            std::sort(fileInfoArray.begin(), fileInfoArray.end());
+
+            GUGU_UTEST_CHECK(fileInfoArray[0] == FileInfo("aaa", "111"));
+            GUGU_UTEST_CHECK(fileInfoArray[1] == FileInfo("aaa", "333"));
+            GUGU_UTEST_CHECK(fileInfoArray[2] == FileInfo("bbb", "111"));
+            GUGU_UTEST_CHECK(fileInfoArray[3] == FileInfo("bbb", "222"));
+        }
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_FINALIZE();
 }

@@ -73,9 +73,7 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
     ImGui::SameLine();
     if (ImGui::Button("Validate"))
     {
-        gugu::FileInfo fileInfo;
-        fileInfo.SetPath(m_resourcePath);
-        fileInfo.SetName(m_resourceName + "." + m_resourceExtension);
+        gugu::FileInfo fileInfo(m_resourcePath, m_resourceName + "." + m_resourceExtension);
 
         //TODO: centralize resource type instanciation somewhere.
         gugu::Resource* newResource = nullptr;

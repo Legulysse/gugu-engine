@@ -15,80 +15,54 @@
 namespace gugu {
 
 FileInfo::FileInfo()
-: m_path("")
-, m_name("")
+    : m_indexSeparator(std::string::npos)
 {
 }
 
-FileInfo::FileInfo(const std::string& _strPath, const std::string& _strName)
-: m_path("")
-, m_name(_strName)
+FileInfo::FileInfo(const std::string& path, const std::string& name)
 {
-    SetPath(_strPath);
+    NormalizePath(path, true, m_pathName);
+
+    m_indexSeparator = m_pathName.empty() ? std::string::npos : m_pathName.size() - 1;
+
+    // TODO: I could check that name does not contain any slash.
+    m_pathName += name;
+    m_name = name;
 }
 
-FileInfo::FileInfo(const std::string& _strPathName)
-: m_path("")
-, m_name("")
+FileInfo::FileInfo(const std::string& pathName)
 {
-    SetPathName(_strPathName);
-}
+    NormalizePath(pathName, false, m_pathName);
 
-void FileInfo::SetPathName(const std::string& _strPathName)
-{
-    std::string strPathNameNormalized;
-    NormalizePath(_strPathName, false, strPathNameNormalized);
-
-    size_t iPos = strPathNameNormalized.find_last_of("/");
-    if (iPos != std::string::npos)
+    m_indexSeparator = m_pathName.find_last_of("/");
+    if (m_indexSeparator != std::string::npos)
     {
-        m_path = strPathNameNormalized.substr(0, iPos + 1);
-        m_name = strPathNameNormalized.substr(iPos + 1);
-    }
-    else
-    {
-        m_path = "";
-        m_name = strPathNameNormalized;
+        m_name = m_pathName.substr(m_indexSeparator + 1);
     }
 }
 
-void FileInfo::SetPathName(const std::string& _strPath, const std::string& _strName)
+std::string FileInfo::GetPath(bool trailingSlash) const
 {
-    SetPath(_strPath);
-    SetName(_strName);
+    //TODO: optimize this (wait for string_view ?).
+    return m_indexSeparator == std::string::npos ? std::string() : m_pathName.substr(0, trailingSlash ? m_indexSeparator + 1 : m_indexSeparator);
 }
 
-void FileInfo::SetPath(const std::string& _strPath)
-{
-    NormalizePath(_strPath, true, m_path);
-}
-
-void FileInfo::SetName(const std::string& _strName)
-{
-    m_name = _strName;
-}
-
-std::string FileInfo::GetPath() const
-{
-    return m_path;
-}
-
-std::string FileInfo::GetName() const
+const std::string& FileInfo::GetName() const
 {
     return m_name;
 }
 
-std::string FileInfo::GetPathName() const
+const std::string& FileInfo::GetPathName() const
 {
-    return m_path + m_name;
+    return m_pathName;
 }
 
 std::string FileInfo::GetPrettyName() const
 {
-    size_t iPos = m_name.find_first_of(".");
-    if (iPos != std::string::npos)
+    size_t pos = m_name.find_first_of(".");
+    if (pos != std::string::npos)
     {
-        return m_name.substr(0, iPos);
+        return m_name.substr(0, pos);
     }
 
     return m_name;
@@ -96,10 +70,10 @@ std::string FileInfo::GetPrettyName() const
 
 std::string FileInfo::GetExtension() const
 {
-    size_t iPos = m_name.find_first_of(".");
-    if (iPos != std::string::npos)
+    size_t pos = m_name.find_first_of(".");
+    if (pos != std::string::npos)
     {
-        return m_name.substr(iPos+1);
+        return m_name.substr(pos + 1);
     }
 
     return "";
@@ -107,17 +81,26 @@ std::string FileInfo::GetExtension() const
 
 bool FileInfo::IsExtension(const std::string& extension) const
 {
+    //TODO: Do something safer (consider the "." position).
     return StdStringEndsWith(m_name, extension);
 }
 
-bool FileInfo::operator < (const FileInfo& _oRight) const
+bool FileInfo::operator < (const FileInfo& other) const
 {
-    return m_name < _oRight.m_name;
+    //TODO: optimize this (wait for string_view ?).
+    std::string path = GetPath(false);
+    std::string otherPath = other.GetPath(false);
+    return path < otherPath || (path == otherPath && m_name < other.m_name);
 }
 
-bool FileInfo::operator == (const FileInfo& _oRight) const
+bool FileInfo::operator == (const FileInfo& other) const
 {
-    return m_name == _oRight.m_name && m_path == _oRight.m_path;
+    return m_pathName == other.m_pathName;
+}
+
+bool FileInfo::operator != (const FileInfo& other) const
+{
+    return m_pathName != other.m_pathName;
 }
 
 }   // namespace gugu

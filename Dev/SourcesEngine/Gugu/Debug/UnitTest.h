@@ -25,12 +25,12 @@ public:
         m_logger.SetConsoleOutput(true, true);
         m_logger.SetAutoflush(true);
 
-        m_logger.Print(ELog::Info, "**** Unit Tests : " + name + " ****");
+        m_logger.Print(ELog::Info, "******** Unit Tests : " + name + " ********");
     }
 
     void PrintResults()
     {
-        m_logger.Print(ELog::Info, "**** Results ****");
+        m_logger.Print(ELog::Info, "******** Results ********");
         m_logger.Print(ELog::Info, "Nb Tests : " + ToString(m_nbTests));
         m_logger.Print(ELog::Info, "Nb Succeeded : " + ToString(m_nbSuccess));
 
@@ -47,7 +47,7 @@ public:
 
     void BeginSubSection(const std::string& name)
     {
-        m_logger.Print(ELog::Info, "**** Sub Section : " + name + " ****");
+        m_logger.Print(ELog::Info, "Sub Section : " + name + "");
     }
 
     void LogTestResult(bool result, const std::string& expression, const std::string& file, size_t line)

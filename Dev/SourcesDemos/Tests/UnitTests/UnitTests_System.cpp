@@ -166,5 +166,58 @@ void RunUnitTests_System()
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("String");
+    {
+        GUGU_UTEST_SUBSECTION("Split");
+        {
+            {
+                std::vector<std::string> tokens;
+                StdStringSplit("hello world", " ", tokens);
+
+                if (GUGU_UTEST_CHECK(tokens.size() == 2))
+                {
+                    GUGU_UTEST_CHECK(tokens[0] == "hello");
+                    GUGU_UTEST_CHECK(tokens[1] == "world");
+                }
+            }
+
+            {
+                std::vector<std::string> tokens;
+                StdStringSplit("  hello   world  ", " ", tokens);
+
+                if (GUGU_UTEST_CHECK(tokens.size() == 2))
+                {
+                    GUGU_UTEST_CHECK(tokens[0] == "hello");
+                    GUGU_UTEST_CHECK(tokens[1] == "world");
+                }
+            }
+
+            {
+                std::vector<std::string> tokens;
+                StdStringSplit("hello world", "ll", tokens);
+
+                if (GUGU_UTEST_CHECK(tokens.size() == 2))
+                {
+                    GUGU_UTEST_CHECK(tokens[0] == "he");
+                    GUGU_UTEST_CHECK(tokens[1] == "o world");
+                }
+            }
+
+            {
+                std::vector<std::string> tokens;
+                StdStringSplit("hello world", "o", tokens);
+
+                if (GUGU_UTEST_CHECK(tokens.size() == 3))
+                {
+                    GUGU_UTEST_CHECK(tokens[0] == "hell");
+                    GUGU_UTEST_CHECK(tokens[1] == " w");
+                    GUGU_UTEST_CHECK(tokens[2] == "rld");
+                }
+            }
+        }
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_FINALIZE();
 }

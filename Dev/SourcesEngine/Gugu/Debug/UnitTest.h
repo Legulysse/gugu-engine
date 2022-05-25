@@ -50,7 +50,7 @@ public:
         m_logger.Print(ELog::Info, "Sub Section : " + name + "");
     }
 
-    void LogTestResult(bool result, const std::string& expression, const std::string& file, size_t line)
+    bool LogTestResult(bool result, const std::string& expression, const std::string& file, size_t line)
     {
         ++m_nbTests;
 
@@ -64,6 +64,8 @@ public:
         {
             m_logger.Print(ELog::Error, StringFormat("{1} {2} : {0}", expression, file, line));
         }
+
+        return result;
     }
 
 private:
@@ -75,24 +77,21 @@ private:
 
 #define GUGU_UTEST_INIT(NAME, LOG_FILE)     \
     UnitTestHandler unitTestHandler;        \
-    unitTestHandler.Init(NAME, LOG_FILE);
+    unitTestHandler.Init(NAME, LOG_FILE)
 
 #define GUGU_UTEST_FINALIZE()               \
-    unitTestHandler.PrintResults();
+    unitTestHandler.PrintResults()
 
 #define GUGU_UTEST_SECTION(NAME)            \
-    unitTestHandler.BeginSection(NAME);
+    unitTestHandler.BeginSection(NAME)
 
 #define GUGU_UTEST_SUBSECTION(NAME)         \
-    unitTestHandler.BeginSubSection(NAME);
+    unitTestHandler.BeginSubSection(NAME)
 
 #define GUGU_UTEST_CHECK(EXPRESSION)            \
-{                                               \
-    bool testResult = EXPRESSION;               \
-    unitTestHandler.LogTestResult(testResult,   \
+    unitTestHandler.LogTestResult((bool)(EXPRESSION),   \
         GUGU_STRINGIZE(EXPRESSION),             \
         __FILE__,                               \
-        __LINE__);                              \
-}
+        __LINE__)                              
 
 }   // namespace gugu

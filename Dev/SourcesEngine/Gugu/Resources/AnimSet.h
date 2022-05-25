@@ -7,7 +7,6 @@
 #include "Gugu/Math/Vector2.h"
 
 #include <vector>
-#include <map>
 #include <string>
 
 ////////////////////////////////////////////////////////////////
@@ -50,8 +49,8 @@ public:
     void        SetDuration(float _fDuration);
     float       GetDuration() const;
 
-    void        RegisterEvents(const std::string& events);
-    bool        HasEvents() const;
+    void RegisterEvents(const std::string& events);
+    bool HasEvents() const;
     const std::vector<std::string>& GetEvents() const;
     bool FillEventString(std::string& events) const;
 
@@ -95,8 +94,8 @@ public:
     AnimationFrame* GetFrame        (size_t _uiIndex) const;
     size_t          GetFrameIndex   (AnimationFrame* _pFrame) const;
 
-    void            GetFrames       (std::vector<AnimationFrame*>& _vecFrames) const;
-    size_t          GetFrameCount  () const;
+    const std::vector<AnimationFrame*>& GetFrames() const;
+    size_t GetFrameCount() const;
 
 protected:
 
@@ -120,9 +119,10 @@ public:
     Animation*  AddAnimation        (const std::string& _strName);
     void        DeleteAnimation     (Animation* _pAnimation);
 
-    Animation*  GetAnimation        (const std::string& _strName) const;
-    void        GetAnimations       (std::vector<Animation*>& _vecAnimations) const;
-    void        GetAnimationNames   (std::vector<std::string>& _vecAnimationNames) const;
+    Animation* GetAnimation(const std::string& _strName) const;
+
+    const std::vector<Animation*>& GetAnimations() const;
+    void GetAnimationNames(std::vector<std::string>& _vecAnimationNames) const;
 
     void        SetImageSet (ImageSet* _pImageSet);
     ImageSet*   GetImageSet () const;

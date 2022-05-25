@@ -66,8 +66,9 @@ public:
 
     SubImage*   GetSubImage         (size_t _uiIndex) const;
     SubImage*   GetSubImage         (const std::string& _strName) const;
-    void        GetSubImages        (std::vector<SubImage*>& _vecSubImages) const;
-    size_t      GetSubImageCount   () const;
+
+    const std::vector<SubImage*>& GetSubImages() const;
+    size_t GetSubImageCount() const;
 
     virtual EResourceType::Type GetResourceType() const override;
 

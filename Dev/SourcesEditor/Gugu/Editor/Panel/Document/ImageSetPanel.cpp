@@ -128,8 +128,7 @@ void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 
-        std::vector<SubImage*> subImages;
-        m_imageSet->GetSubImages(subImages);
+        const std::vector<SubImage*>& subImages = m_imageSet->GetSubImages();
 
         // TODO: handle sort (ImGuiTableSortSpecs).
         // TODO: handle big list (ImGuiListClipper).
@@ -442,8 +441,7 @@ void ImageSetPanel::UpdateGizmo()
     // Handle picking of other SubImages (gizmo will be sync next frame).
     if (!m_isDraggingGizmo && is_hovered && is_active && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
     {
-        std::vector<SubImage*> subImages;
-        m_imageSet->GetSubImages(subImages);
+        const std::vector<SubImage*>& subImages = m_imageSet->GetSubImages();
 
         for (size_t rowIndex = 0; rowIndex < subImages.size(); ++rowIndex)
         {

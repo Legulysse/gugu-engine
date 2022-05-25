@@ -187,9 +187,9 @@ size_t Animation::GetFrameIndex(AnimationFrame* _pFrame) const
     return 0;
 }
 
-void Animation::GetFrames(std::vector<AnimationFrame*>& _vecFrames) const
+const std::vector<AnimationFrame*>& Animation::GetFrames() const
 {
-    _vecFrames = m_frames;
+    return m_frames;
 }
 
 size_t Animation::GetFrameCount() const
@@ -234,9 +234,9 @@ Animation* AnimSet::GetAnimation(const std::string& _strName) const
     return nullptr;
 }
 
-void AnimSet::GetAnimations(std::vector<Animation*>& _vecAnimations) const
+const std::vector<Animation*>& AnimSet::GetAnimations() const
 {
-    _vecAnimations = m_animations;
+    return m_animations;
 }
 
 void AnimSet::GetAnimationNames(std::vector<std::string>& _vecAnimationNames) const
@@ -341,35 +341,30 @@ bool AnimSet::SaveToXml(pugi::xml_document& document) const
     pugi::xml_node nodeAnimSet = document.append_child("AnimSet");
     nodeAnimSet.append_attribute("imageSet") = (!m_imageSet) ? "" : m_imageSet->GetID().c_str();
 
-    for (size_t i = 0; i < m_animations.size(); ++i)
+    for (Animation* animation : m_animations)
     {
-        Animation* pAnimation = m_animations[i];
-
         pugi::xml_node nodeAnimation = nodeAnimSet.append_child("Animation");
-        nodeAnimation.append_attribute("name") = pAnimation->GetName().c_str();
+        nodeAnimation.append_attribute("name") = animation->GetName().c_str();
 
-        std::vector<AnimationFrame*> vecFrames;
-        pAnimation->GetFrames(vecFrames);
-        for (size_t j = 0; j < vecFrames.size(); ++j)
+        const std::vector<AnimationFrame*>& frames = animation->GetFrames();
+        for (const AnimationFrame* frame : frames)
         {
-            AnimationFrame* pFrame = vecFrames[j];
-
             pugi::xml_node nodeFrame = nodeAnimation.append_child("Frame");
-            if (pFrame->GetTexture())
+            if (frame->GetTexture())
             {
-                nodeFrame.append_attribute("texture") = pFrame->GetTexture()->GetID().c_str();
+                nodeFrame.append_attribute("texture") = frame->GetTexture()->GetID().c_str();
             }
-            else if (pFrame->GetSubImage())
+            else if (frame->GetSubImage())
             {
-                if (m_imageSet != pFrame->GetSubImage()->GetImageSet())
-                    nodeFrame.append_attribute("nameSet") = pFrame->GetSubImage()->GetImageSet()->GetID().c_str();
-                nodeFrame.append_attribute("subImage") = pFrame->GetSubImage()->GetName().c_str();
+                if (m_imageSet != frame->GetSubImage()->GetImageSet())
+                    nodeFrame.append_attribute("nameSet") = frame->GetSubImage()->GetImageSet()->GetID().c_str();
+                nodeFrame.append_attribute("subImage") = frame->GetSubImage()->GetName().c_str();
             }
 
-            nodeFrame.append_attribute("duration") = pFrame->GetDuration();
+            nodeFrame.append_attribute("duration") = frame->GetDuration();
 
             std::string events;
-            if (pFrame->FillEventString(events))
+            if (frame->FillEventString(events))
             {
                 nodeFrame.append_attribute("events") = events.c_str();
             }

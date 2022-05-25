@@ -137,9 +137,9 @@ SubImage* ImageSet::GetSubImage(const std::string& _strName) const
     return nullptr;
 }
 
-void ImageSet::GetSubImages(std::vector<SubImage*>& _vecSubImages) const
+const std::vector<SubImage*>& ImageSet::GetSubImages() const
 {
-    _vecSubImages = m_subImages;
+    return m_subImages;
 }
 
 size_t ImageSet::GetSubImageCount() const
@@ -204,14 +204,12 @@ bool ImageSet::SaveToXml(pugi::xml_document& document) const
 
     nodeRoot.append_attribute("texture") = (!m_texture) ? "" : m_texture->GetID().c_str();
 
-    for (size_t i = 0; i < m_subImages.size(); ++i)
+    for (const SubImage* subImage : m_subImages)
     {
-        SubImage* pSubImage = m_subImages[i];
-
         pugi::xml_node nodeSubImage = nodeRoot.append_child("SubImage");
 
-        sf::IntRect oRect = pSubImage->GetRect();
-        nodeSubImage.append_attribute("name") = pSubImage->GetName().c_str();
+        sf::IntRect oRect = subImage->GetRect();
+        nodeSubImage.append_attribute("name") = subImage->GetName().c_str();
         nodeSubImage.append_attribute("x") = oRect.left;
         nodeSubImage.append_attribute("y") = oRect.top;
         nodeSubImage.append_attribute("w") = oRect.width;

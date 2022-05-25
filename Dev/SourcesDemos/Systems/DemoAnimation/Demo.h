@@ -13,6 +13,7 @@ namespace gugu
 {
     class Element;
     class ElementSprite;
+    class ElementText;
     class SpriteAnimation;
 }
 
@@ -33,13 +34,19 @@ public:
 
     virtual void AppStep(const gugu::DeltaTime& dt) override;
 
-protected:
+private:
+
+    void OnWalkStep();
+
+private:
 
     gugu::Element* m_root;
     gugu::ElementSprite* m_movingSprite1;
     gugu::ElementSprite* m_movingSprite2;
     gugu::SpriteAnimation* m_movingAnimation1;
     gugu::SpriteAnimation* m_movingAnimation2;
+    gugu::ElementText* m_walkStepText;
+    bool m_walkStepToggle;
 };
 
 }   //namespace demoproject

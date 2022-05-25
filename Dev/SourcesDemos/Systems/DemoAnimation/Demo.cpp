@@ -12,6 +12,7 @@
 #include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
+#include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
@@ -22,7 +23,8 @@ using namespace gugu;
 namespace demoproject {
     
 Demo::Demo()
-: m_root(nullptr)
+    : m_root(nullptr)
+    , m_walkStepToggle(false)
 {
 }
 
@@ -134,6 +136,22 @@ void Demo::AppStart()
     animationWalk3->ChangeAnimSet("Dinosaur.animset.xml");
     animationWalk3->StartAnimation("Walk");
 
+    // Test Animation Events (no origin set : top left).
+    ElementSprite* spriteWalk4 = m_root->AddChild<ElementSprite>();
+    spriteWalk4->SetPosition(lineD, lineB);
+    spriteWalk4->SetScale(0.5f);
+
+    SpriteAnimation* animationWalk4 = GetAnimations()->AddAnimation(spriteWalk4);
+    animationWalk4->ChangeAnimSet("Dinosaur.animset.xml");
+    animationWalk4->StartAnimation("Walk");
+    animationWalk4->AddEventCallback("step", std::bind(&Demo::OnWalkStep, this));
+
+    Element* walkStepTextPivot = m_root->AddChild<Element>();
+    walkStepTextPivot->SetPosition(lineD + 30.f, lineB + 90.f);
+
+    m_walkStepText = walkStepTextPivot->AddChild<ElementText>();
+    m_walkStepText->SetText("step");
+
     // Test Animation Walk (origin and move set in animation).
     m_movingSprite1 = m_root->AddChild<ElementSprite>();
     m_movingSprite1->SetPosition(lineD, lineC);
@@ -184,6 +202,12 @@ void Demo::AppStep(const DeltaTime& dt)
         m_movingSprite1->SetFlipH(false);
         m_movingSprite2->SetFlipH(false);
     }
+}
+
+void Demo::OnWalkStep()
+{
+    m_walkStepText->SetPositionX(m_walkStepToggle ? 25.f : -25.f);
+    m_walkStepToggle = !m_walkStepToggle;
 }
 
 }   //namespace demoproject

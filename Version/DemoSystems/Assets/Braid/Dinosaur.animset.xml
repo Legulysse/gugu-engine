@@ -13,7 +13,7 @@
             <Origin x="100" y="200" />
             <Move x="-2" y="0" />
         </Frame>
-		<Frame texture="DinosaurWalk_0003.png" duration="0.06" events="" >
+		<Frame texture="DinosaurWalk_0003.png" duration="0.06" events="step" >
             <Origin x="100" y="200" />
             <Move x="-2" y="0" />
         </Frame>
@@ -37,7 +37,7 @@
             <Origin x="100" y="200" />
             <Move x="-2" y="0" />
         </Frame>
-		<Frame texture="DinosaurWalk_0009.png" duration="0.06" events="" >
+		<Frame texture="DinosaurWalk_0009.png" duration="0.06" events="step" >
             <Origin x="100" y="200" />
             <Move x="-2" y="0" />
         </Frame>

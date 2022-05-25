@@ -23,7 +23,6 @@ AnimationFrame::AnimationFrame(Animation* _pAnimation)
 , m_texture(nullptr)
 , m_subImage(nullptr)
 , m_duration(0.f)
-, m_events("")
 {
 }
 
@@ -66,9 +65,9 @@ float AnimationFrame::GetDuration() const
     return m_duration;
 }
 
-void AnimationFrame::SetEvents(const std::string& _strEvents)
+void AnimationFrame::RegisterEvents(const std::string& events)
 {
-    m_events = _strEvents;
+    StdStringSplit(events, "|", m_events);
 }
 
 bool AnimationFrame::HasEvents() const
@@ -76,9 +75,27 @@ bool AnimationFrame::HasEvents() const
     return m_events.size() > 0;
 }
 
-std::string AnimationFrame::GetEvents() const
+const std::vector<std::string>& AnimationFrame::GetEvents() const
 {
     return m_events;
+}
+
+bool AnimationFrame::FillEventString(std::string& events) const
+{
+    if (m_events.empty())
+        return false;
+
+    for (const std::string& event : m_events)
+    {
+        if (!events.empty())
+        {
+            events += '|';
+        }
+
+        events += event;
+    }
+
+    return true;
 }
 
 void AnimationFrame::SetOrigin(const Vector2f _kOrigin)
@@ -86,7 +103,7 @@ void AnimationFrame::SetOrigin(const Vector2f _kOrigin)
     m_origin = _kOrigin;
 }
 
-Vector2f AnimationFrame::GetOrigin() const
+const Vector2f& AnimationFrame::GetOrigin() const
 {
     return m_origin;
 }
@@ -96,7 +113,7 @@ void AnimationFrame::SetMoveOffset(const Vector2f _kMoveOffset)
     m_moveOffset = _kMoveOffset;
 }
 
-Vector2f AnimationFrame::GetMoveOffset() const
+const Vector2f& AnimationFrame::GetMoveOffset() const
 {
     return m_moveOffset;
 }
@@ -128,7 +145,7 @@ bool Animation::IsName(const std::string& name) const
     return m_name == name;
 }
 
-std::string Animation::GetName() const
+const std::string& Animation::GetName() const
 {
     return m_name;
 }
@@ -300,10 +317,10 @@ bool AnimSet::LoadFromXml(const pugi::xml_document& document)
                 if (oAttributeDuration)
                     pNewFrame->SetDuration(oAttributeDuration.as_float());
 
-                //TODO: Make this a child node instead of an attribute
+                //TODO: Make this a child node instead of an attribute ?
                 pugi::xml_attribute oAttributeEvents = oNodeFrame.attribute("events");
                 if (oAttributeEvents)
-                    pNewFrame->SetEvents(oAttributeEvents.as_string());
+                    pNewFrame->RegisterEvents(oAttributeEvents.as_string());
 
                 Vector2f kOrigin;
                 if (XmlReadVector2(oNodeFrame.child("Origin"), kOrigin))
@@ -348,8 +365,14 @@ bool AnimSet::SaveToXml(pugi::xml_document& document) const
                     nodeFrame.append_attribute("nameSet") = pFrame->GetSubImage()->GetImageSet()->GetID().c_str();
                 nodeFrame.append_attribute("subImage") = pFrame->GetSubImage()->GetName().c_str();
             }
+
             nodeFrame.append_attribute("duration") = pFrame->GetDuration();
-            nodeFrame.append_attribute("events") = pFrame->GetEvents().c_str();
+
+            std::string events;
+            if (pFrame->FillEventString(events))
+            {
+                nodeFrame.append_attribute("events") = events.c_str();
+            }
         }
     }
 

@@ -38,7 +38,7 @@ ImageSet* SubImage::GetImageSet() const
     return m_imageSet;
 }
 
-std::string SubImage::GetName() const
+const std::string& SubImage::GetName() const
 {
     return m_name;
 }
@@ -53,7 +53,7 @@ bool SubImage::IsName(const std::string& name) const
     return m_name == name;
 }
 
-sf::Rect<int> SubImage::GetRect() const
+const sf::Rect<int>& SubImage::GetRect() const
 {
     return m_rect;
 }

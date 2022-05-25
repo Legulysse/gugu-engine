@@ -182,19 +182,13 @@ void SpriteAnimation::SetCurrentFrame(size_t _uiIndex)
         m_animIndexCurrent = _uiIndex;
 
         AnimationFrame* pCurrentFrame = InitCurrentAnimationFrame();
-        if (pCurrentFrame && !m_events.empty())
+        if (pCurrentFrame && !m_events.empty() && pCurrentFrame->HasEvents())
         {
-            //TODO: Refactor the events system for something that doesnt copy or create strings.
             // Events frame start.
-            std::istringstream ss(pCurrentFrame->GetEvents());
-            while (!ss.eof())
+            const std::vector<std::string>& frameEvents = pCurrentFrame->GetEvents();
+            for (const std::string& frameEvent : frameEvents)
             {
-                std::string field;
-                std::getline(ss, field, '|');
-                if (field.empty())
-                    continue;
-
-                auto kvp = m_events.find(field);
+                auto kvp = m_events.find(frameEvent);
                 if (kvp != m_events.end())
                 {
                     // Fire callback.

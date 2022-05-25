@@ -50,15 +50,16 @@ public:
     void        SetDuration(float _fDuration);
     float       GetDuration() const;
 
-    void        SetEvents(const std::string& _strEvents);
+    void        RegisterEvents(const std::string& events);
     bool        HasEvents() const;
-    std::string GetEvents() const;
+    const std::vector<std::string>& GetEvents() const;
+    bool FillEventString(std::string& events) const;
 
     void            SetOrigin(const Vector2f _kOrigin);
-    Vector2f    GetOrigin() const;
+    const Vector2f& GetOrigin() const;
     
     void            SetMoveOffset(const Vector2f _kMoveOffset);
-    Vector2f    GetMoveOffset() const;
+    const Vector2f& GetMoveOffset() const;
 
 protected:
 
@@ -67,7 +68,7 @@ protected:
     Texture*        m_texture;
     SubImage*       m_subImage;
     float           m_duration;
-    std::string     m_events;
+    std::vector<std::string> m_events;
     Vector2f    m_origin;
     Vector2f    m_moveOffset;
 };
@@ -86,7 +87,7 @@ public:
 
     void            SetName (const std::string& name);
     bool            IsName(const std::string& name) const;
-    std::string     GetName () const;
+    const std::string& GetName () const;
 
     AnimationFrame* AddFrame        ();
     void            DeleteFrame     (AnimationFrame* _pFrame);

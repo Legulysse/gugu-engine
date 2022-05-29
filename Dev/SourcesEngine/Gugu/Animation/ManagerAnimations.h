@@ -38,7 +38,7 @@ public:
     SpriteAnimation* AddAnimation(ElementSprite* sprite);
     void RemoveAnimation(SpriteAnimation* animation);
     void DeleteAnimation(SpriteAnimation* animation);
-    void DeleteAnimation(ElementSprite* sprite);
+    void DeleteAnimationFromSprite(ElementSprite* sprite);
     void DeleteAllAnimations();
 
 protected:

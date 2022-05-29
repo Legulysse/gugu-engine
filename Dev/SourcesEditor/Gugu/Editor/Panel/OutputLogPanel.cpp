@@ -22,12 +22,13 @@ OutputLogPanel::OutputLogPanel()
 {
     m_title = "Output Log";
 
-    GetLogEngine()->RegisterDelegate(this,
-        [this](const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)
-        {
-            PrintLog(timestamp, level, category, text);
-        }
-    );
+    GetLogEngine()->RegisterDelegate(this, std::bind(
+        &OutputLogPanel::PrintLog,
+        this,
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3,
+        std::placeholders::_4));
 }
 
 OutputLogPanel::~OutputLogPanel()

@@ -70,7 +70,10 @@ SpriteAnimation* ManagerAnimations::AddAnimation(ElementSprite* sprite)
     animation->SetSprite(sprite);
 
     sprite->InitInteractions();
-    sprite->GetInteractions()->AddCallback(EInteraction::Destroyed, [sprite]() { GetAnimations()->DeleteAnimation(sprite); });
+    sprite->GetInteractions()->AddCallback(EInteraction::Destroyed, std::bind(
+        &ManagerAnimations::DeleteAnimationFromSprite,
+        this,
+        sprite));
 
     m_spriteAnimations.push_back(animation);
     return animation;
@@ -78,16 +81,17 @@ SpriteAnimation* ManagerAnimations::AddAnimation(ElementSprite* sprite)
 
 void ManagerAnimations::RemoveAnimation(SpriteAnimation* animation)
 {
+    // RemoveAnimation will be called in the animation destructor.
     StdVectorRemove(m_spriteAnimations, animation);
 }
 
 void ManagerAnimations::DeleteAnimation(SpriteAnimation* animation)
 {
-    // Remove will be called in the animation destructor.
+    // RemoveAnimation will be called in the animation destructor.
     SafeDelete(animation);
 }
 
-void ManagerAnimations::DeleteAnimation(ElementSprite* sprite)
+void ManagerAnimations::DeleteAnimationFromSprite(ElementSprite* sprite)
 {
     if (sprite == nullptr)
         return;
@@ -99,7 +103,8 @@ void ManagerAnimations::DeleteAnimation(ElementSprite* sprite)
         {
             SpriteAnimation* animation = m_spriteAnimations[i];
             StdVectorRemoveAt(m_spriteAnimations, i);
-            SafeDelete(animation);
+
+            DeleteAnimation(animation);
         }
         else
         {

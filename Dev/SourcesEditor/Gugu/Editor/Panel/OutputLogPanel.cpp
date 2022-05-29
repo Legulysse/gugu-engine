@@ -23,7 +23,7 @@ OutputLogPanel::OutputLogPanel()
     m_title = "Output Log";
 
     GetLogEngine()->RegisterDelegate(this,
-        [this](const std::string& timestamp, ELog::Type level, const std::string& category, const std::string& text)
+        [this](const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)
         {
             PrintLog(timestamp, level, category, text);
         }
@@ -35,11 +35,11 @@ OutputLogPanel::~OutputLogPanel()
     GetLogEngine()->UnregisterDelegate(this);
 }
 
-void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, const std::string& category, const std::string& text)
+void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)
 {
     LogEntry entry;
-    entry.level = level;
     entry.timestamp = timestamp;
+    entry.level = level;
     entry.category = category;
     entry.text = text;
 
@@ -63,6 +63,14 @@ void OutputLogPanel::UpdatePanel(const gugu::DeltaTime& dt)
             { ELog::Info, "Info" },
             { ELog::Warning, "Warning" },
             { ELog::Error, "Error" },
+        };
+
+        static const std::map<ELogEngine::Type, std::string> logCategoryAsStr
+        {
+            { ELogEngine::Engine, "Engine" },
+            { ELogEngine::Resources, "Resources" },
+            { ELogEngine::Audio, "Audio" },
+            { ELogEngine::Network, "Network" },
         };
 
         static const std::map<ELog::Type, ImVec4> logColorPerLevel
@@ -114,7 +122,7 @@ void OutputLogPanel::UpdatePanel(const gugu::DeltaTime& dt)
                 ImGui::TextColored(color_greyDetails, m_logs[rowIndex].timestamp.c_str());
 
                 ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::TextColored(color_greyDetails, m_logs[rowIndex].category.c_str());
+                ImGui::TextColored(color_greyDetails, logCategoryAsStr.at(m_logs[rowIndex].category).c_str());
 
                 ImGui::TableSetColumnIndex(columnIndex++);
                 ImGui::TextColored(color, logLevelAsStr.at(logLevel).c_str());

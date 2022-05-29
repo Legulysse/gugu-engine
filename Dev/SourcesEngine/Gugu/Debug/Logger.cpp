@@ -17,12 +17,14 @@
 // File Implementation
 
 namespace gugu {
-    
+
+//----------------------------------------------
+// Logger
+
 Logger::Logger()
 {
     m_filePath = "";
     m_autoFlush = true;
-    m_useTimestamp = true;
     m_consoleOutput = false;
     m_consoleOutputIDE = false;
     m_isActive = true;
@@ -33,115 +35,66 @@ Logger::~Logger()
     Flush();
 }
 
-void Logger::SetFile(const std::string& _strFilePath)
+void Logger::SetFilePath(const std::string& filePath)
 {
-    sf::Lock oLocker(m_mutex);
+    sf::Lock lock(m_mutex);
 
-    m_filePath = _strFilePath;
+    m_filePath = filePath;
 
     if (!m_filePath.empty())
     {
-        std::ofstream oFile;
-        oFile.open(m_filePath.c_str(), std::ios::out | std::ios::trunc);
+        std::ofstream file;
+        file.open(m_filePath.c_str(), std::ios::out | std::ios::trunc);
 
-        if (oFile)
+        if (file)
         {
-            oFile.close();
+            file.close();
         }
     }
 }
 
-void Logger::SetAutoflush(bool _bFlush)
+void Logger::SetAutoflush(bool autoFlush)
 {
-    m_autoFlush = _bFlush;
+    m_autoFlush = autoFlush;
 }
 
-void Logger::SetUseTimestamp(bool _bUseTimestamp)
+void Logger::SetConsoleOutput(bool output, bool outputInIDE)
 {
-    m_useTimestamp = _bUseTimestamp;
-}
-
-void Logger::SetConsoleOutput(bool _bConsole, bool outputInIDE)
-{
-    m_consoleOutput = _bConsole;
+    m_consoleOutput = output;
     m_consoleOutputIDE = outputInIDE;
 }
 
-void Logger::SetActive(bool _bActive)
+void Logger::SetActive(bool active)
 {
-    m_isActive = _bActive;
-}
-
-void Logger::RegisterDelegate(void* handle, const DelegateLog& delegateLog)
-{
-    DelegateInfos infos;
-    infos.delegateLog = delegateLog;
-    infos.handle = handle;
-
-    m_delegates.push_back(infos);
-}
-
-void Logger::UnregisterDelegate(void* handle)
-{
-    StdVectorRemoveIf(m_delegates, [&](const auto& item) { return item.handle == handle; });
+    m_isActive = active;
 }
 
 void Logger::Flush()
 {
-    sf::Lock oLocker(m_mutex);
+    sf::Lock lock(m_mutex);
 
     FlushImpl();
 }
 
-void Logger::Print(ELog::Type _eLogLevel, const std::string& _strText)
+void Logger::Print(const std::string& text)
 {
     if (!m_isActive)
         return;
 
-    sf::Lock oLocker(m_mutex);
+    sf::Lock lock(m_mutex);
 
-    PrintImpl(_eLogLevel, "", _strText);
+    m_buffer << text;
+
+    PrintImpl_End();
 }
 
-void Logger::PrintImpl(ELog::Type _eLogLevel, const std::string& _strCategory, const std::string& _strText)
+void Logger::PrintImpl_End()
 {
-    static const std::map<ELog::Type, std::string> logLevelAsStr
-    {
-        { ELog::Debug, "[Debug] " },
-        { ELog::Info, "[Info] " },
-        { ELog::Warning, "[Warning] " },
-        { ELog::Error, "[Error] " },
-    };
-
-    std::string timestamp = GetTimestampAsString();
-
-    if (m_useTimestamp)
-    {
-        m_buffer << '[';
-        m_buffer << timestamp;
-        m_buffer << "] ";
-    }
-
-    m_buffer << logLevelAsStr.at(_eLogLevel);
-
-    if (!_strCategory.empty())
-    {
-        m_buffer << '[';
-        m_buffer << _strCategory;
-        m_buffer << "] ";
-    }
-
-    m_buffer << _strText;
     m_buffer << std::endl;
 
     if (m_autoFlush)
     {
         FlushImpl();
-    }
-
-    for (const auto& delegateInfos : m_delegates)
-    {
-        delegateInfos.delegateLog(timestamp, _eLogLevel, _strCategory,_strText);
     }
 }
 
@@ -155,13 +108,13 @@ void Logger::FlushImpl()
 
     if (!m_filePath.empty())
     {
-        std::ofstream oFile;
-        oFile.open(m_filePath.c_str(), std::ios::out | std::ios::app);
+        std::ofstream file;
+        file.open(m_filePath.c_str(), std::ios::out | std::ios::app);
 
-        if (oFile)
+        if (file)
         {
-            oFile << m_buffer.str();
-            oFile.close();
+            file << m_buffer.str();
+            file.close();
         }
     }
 
@@ -169,23 +122,99 @@ void Logger::FlushImpl()
     m_buffer.clear();
 }
 
+//----------------------------------------------
+// LoggerEngine
 
-void LoggerEngine::Print(ELog::Type _eLogLevel, ELogEngine::Type _eLogEngineCategory, const std::string& _strText)
+LoggerEngine::LoggerEngine()
+    : m_useTimestamp(true)
+    , m_frameNumber(0)
+{
+}
+
+LoggerEngine::~LoggerEngine()
+{
+}
+
+void LoggerEngine::Print(ELog::Type level, ELogEngine::Type category, const std::string& text)
 {
     if (!m_isActive)
         return;
 
-    static const std::map<ELogEngine::Type, std::string> logCategoryAsStr
+    sf::Lock lock(m_mutex);
+
+    // Timestamp
+    std::string timestamp = GetTimestampAsString();
+
+    if (m_useTimestamp)
     {
-        { ELogEngine::Engine, "Engine" },
-        { ELogEngine::Resources, "Resources" },
-        { ELogEngine::Audio, "Audio" },
+        m_buffer << '[';
+        m_buffer << timestamp;
+        m_buffer << "] ";
+    }
+
+    // Frame
+    m_buffer << '[';
+    m_buffer << StringNumberFormat(m_frameNumber, 3);
+    m_buffer << "] ";
+
+    // Level
+    static const std::map<ELog::Type, std::string> logLevelAsStr
+    {
+        { ELog::Debug, "[Debug] " },
+        { ELog::Info, "[Info] " },
+        { ELog::Warning, "[Warning] " },
+        { ELog::Error, "[Error] " },
     };
 
-    sf::Lock oLocker(m_mutex);
+    m_buffer << logLevelAsStr.at(level);
 
-    PrintImpl(_eLogLevel, logCategoryAsStr.at(_eLogEngineCategory), _strText);
+    // Category
+    static const std::map<ELogEngine::Type, std::string> logCategoryAsStr
+    {
+        { ELogEngine::Engine, "[Engine] " },
+        { ELogEngine::Resources, "[Resources] " },
+        { ELogEngine::Audio, "[Audio] " },
+        { ELogEngine::Network, "[Network] " },
+    };
+
+    m_buffer << logCategoryAsStr.at(category);
+
+    // Finalize
+    m_buffer << text;
+
+    PrintImpl_End();
+
+    // Callbacks
+    for (const auto& delegateInfos : m_delegates)
+    {
+        delegateInfos.delegateLog(timestamp, level, category, text);
+    }
 }
+
+void LoggerEngine::SetUseTimestamp(bool useTimestamp)
+{
+    m_useTimestamp = useTimestamp;
+}
+
+void LoggerEngine::IncrementFrameNumber()
+{
+    m_frameNumber = m_frameNumber == 999 ? 1 : m_frameNumber + 1;
+}
+
+void LoggerEngine::RegisterDelegate(void* handle, const DelegateLog& delegateLog)
+{
+    DelegateInfos infos;
+    infos.delegateLog = delegateLog;
+    infos.handle = handle;
+
+    m_delegates.push_back(infos);
+}
+
+void LoggerEngine::UnregisterDelegate(void* handle)
+{
+    StdVectorRemoveIf(m_delegates, [&](const auto& item) { return item.handle == handle; });
+}
+
 
 LoggerEngine* GetLogEngine()
 {

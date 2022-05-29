@@ -55,7 +55,7 @@ void Engine::Init(const EngineConfig& config)
     //-- Init engine log and trace group --//
     m_logEngine = new LoggerEngine();
     m_logEngine->SetConsoleOutput(true, false);
-    m_logEngine->SetFile("Engine.log");
+    m_logEngine->SetFilePath("Engine.log");
 
     m_traceGroupMain = new TraceGroup;
     m_traceLifetime = 0;
@@ -263,6 +263,9 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
     // Prepare clocks for stats.
     sf::Clock clockStatLoop;
     sf::Clock clockStatSection;
+
+    // Log Frame Number
+    m_logEngine->IncrementFrameNumber();
 
     //-- Network Reception --//
     if (m_managerNetwork->IsListening())

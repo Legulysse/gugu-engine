@@ -34,15 +34,15 @@ public:
 
 private:
 
-    void PrintLog(const std::string& timestamp, ELog::Type level, const std::string& category, const std::string& text);
+    void PrintLog(const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text);
 
 private:
 
     struct LogEntry
     {
-        ELog::Type level;
         std::string timestamp;
-        std::string category;
+        ELog::Type level;
+        ELogEngine::Type category;
         std::string text;
     };
     std::vector<LogEntry> m_logs;

@@ -62,7 +62,7 @@ void ManagerNetwork::StartListening(sf::Uint16 _uiPort)
     {
         m_logNetwork = new LoggerEngine();
         m_logNetwork->SetConsoleOutput(true, false);
-        m_logNetwork->SetFile("Network.log");
+        m_logNetwork->SetFilePath("Network.log");
     }
 
     if(!m_isListening)
@@ -78,16 +78,16 @@ void ManagerNetwork::StartListening(sf::Uint16 _uiPort)
 
             m_isListening = true;
 
-            GetLogNetwork()->Print(ELog::Info, "Listening...");
+            GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Listening...");
         }
         else
         {
-            GetLogNetwork()->Print(ELog::Info, "Can't listen port");
+            GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Can't listen port");
         }
     }
     else
     {
-        GetLogNetwork()->Print(ELog::Info, "Already listening a port");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Already listening a port");
     }
 }
 
@@ -107,7 +107,7 @@ void ManagerNetwork::StopListening()
         m_selector->clear();
         m_listener->close();
 
-        GetLogNetwork()->Print(ELog::Info, "Stop listening");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Stop listening");
     }
 }
 
@@ -199,7 +199,7 @@ void ManagerNetwork::StepReception()
         m_listener->accept(*pSocketNewClient);
 
         sf::IpAddress Address = pSocketNewClient->getRemoteAddress();
-        GetLogNetwork()->Print(ELog::Info, StringFormat("New client : {0}", Address.toString()));
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("New client : {0}", Address.toString()));
 
         //Add him to clients list & selector
         ClientInfo* pClient = new ClientInfo(Address, 0);
@@ -275,7 +275,7 @@ void ManagerNetwork::StepReception()
             }
             else
             {
-                GetLogNetwork()->Print(ELog::Info, "Error : Unknown Packet received.");
+                GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Error : Unknown Packet received.");
             }
         }
         else
@@ -289,38 +289,38 @@ void ManagerNetwork::ConnectToClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPo
 {
     if((sf::IpAddress::LocalHost == _oIPAddress || sf::IpAddress::getLocalAddress() == _oIPAddress) && m_listeningPort == _uiPort)
     {
-        GetLogNetwork()->Print(ELog::Info, "Don't connect to yourself !!");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Don't connect to yourself !!");
         return;
     }
 
     if(FindClient(_oIPAddress, _uiPort))
     {
-        GetLogNetwork()->Print(ELog::Info, "Already connected");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Already connected");
         return;
     }
 
     ClientInfo* pClient = new ClientInfo(_oIPAddress, _uiPort);
     pClient->m_socket = new sf::TcpSocket;
 
-    GetLogNetwork()->Print(ELog::Info, StringFormat("Try connection to {0}:{1}", pClient->m_ipAddress.toString(), pClient->m_port));
+    GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("Try connection to {0}:{1}", pClient->m_ipAddress.toString(), pClient->m_port));
 
     if (pClient->m_socket->connect(pClient->m_ipAddress, pClient->m_port, sf::milliseconds(100)) == sf::Socket::Done)
     {
         m_clients.push_back(pClient);
         m_selector->add(*pClient->m_socket);
 
-        GetLogNetwork()->Print(ELog::Info, StringFormat("Connected to {0}:{1}", pClient->m_ipAddress.toString(), pClient->m_port));
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("Connected to {0}:{1}", pClient->m_ipAddress.toString(), pClient->m_port));
 
         NetPacketClientConnection oPacket(sf::IpAddress::getLocalAddress(), m_listeningPort);
         SendNetPacket(pClient, oPacket);
 
-        GetLogNetwork()->Print(ELog::Info, "Sent Connection Infos");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Sent Connection Infos");
     }
     else
     {
         SafeDelete(pClient);
 
-        GetLogNetwork()->Print(ELog::Info, "Connection failed");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Connection failed");
     }
 }
 
@@ -337,7 +337,7 @@ void ManagerNetwork::DisconnectAll()
     }
     m_clients.clear();
 
-    GetLogNetwork()->Print(ELog::Info, "Disconnected from all clients");
+    GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Disconnected from all clients");
 }
 
 /*void ManagerNetwork::Disconnect(sf::TcpSocket* _pSocket)
@@ -360,7 +360,7 @@ void ManagerNetwork::Disconnect(ClientInfo* _pClient)
     m_clients.remove(_pClient);
     SafeDelete(_pClient);
 
-    GetLogNetwork()->Print(ELog::Info, "Disconnected from client");
+    GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Disconnected from client");
 }
 
 /*ClientInfo* ManagerNetwork::FindClient(sf::TcpSocket* _pSocket) const
@@ -445,7 +445,7 @@ bool ManagerNetwork::SendNetPacket(ClientInfo* _pClient, NetPacket& _oPacket)
 
     if(_pClient && _pClient->m_socket && _pClient->m_socket->send(oSFPacket) != sf::Socket::Done)
     {
-        GetLogNetwork()->Print(ELog::Info, "Could not send a packet !");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Could not send a packet !");
         return false;
     }
 
@@ -459,18 +459,18 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
 
     if(eType == ENetPacket::Ping)
     {
-        GetLogNetwork()->Print(ELog::Info, ">  pinged !");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, ">  pinged !");
 
         NetPacket oPacket(ENetPacket::Pong);
         SendNetPacket(_pSender, oPacket);
     }
     else if(eType == ENetPacket::Pong)
     {
-        GetLogNetwork()->Print(ELog::Info, "<  ponged !");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "<  ponged !");
     }
     else if(eType == ENetPacket::ClientDisconnection)
     {
-        GetLogNetwork()->Print(ELog::Info, "> got : disconnected !!");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> got : disconnected !!");
 
         Disconnect(_pSender);
     }
@@ -480,13 +480,13 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
 
         if(pPacket)
         {
-            GetLogNetwork()->Print(ELog::Info, "> got : client connection infos !! (" + pPacket->m_ipAddress.toString() + ":" + ToString(pPacket->m_port) + ")");
+            GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> got : client connection infos !! (" + pPacket->m_ipAddress.toString() + ":" + ToString(pPacket->m_port) + ")");
             _pSender->m_port = pPacket->m_port;
         }
     }
     else if (eType == ENetPacket::JoinGame)
     {
-        GetLogNetwork()->Print(ELog::Info, "> A client wants to become a player.");
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> A client wants to become a player.");
 
         if (_pSender != m_clientInfoSelf && _pSender->m_playerID == -1 && IsHost())
         {
@@ -541,7 +541,7 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
         {
             m_clientInfoSelf->m_playerID = pPacket->m_playerID;
 
-            GetLogNetwork()->Print(ELog::Info, StringFormat("> I am now the player {0}", m_clientInfoSelf->m_playerID));
+            GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("> I am now the player {0}", m_clientInfoSelf->m_playerID));
         }
         else
         {
@@ -557,7 +557,7 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
                     if (pClient->m_playerID == 0)
                         pClient->m_isHost = true;
 
-                    GetLogNetwork()->Print(ELog::Info, "> Client " + pClient->m_ipAddress.toString() + ":" + ToString(pClient->m_port) + " is now player " + ToString(pClient->m_playerID));
+                    GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> Client " + pClient->m_ipAddress.toString() + ":" + ToString(pClient->m_port) + " is now player " + ToString(pClient->m_playerID));
 
                     if (GetApplication())
                         GetApplication()->PlayerAddedToGame(pClient);
@@ -571,7 +571,7 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
 
         if(pPacket)
         {
-            GetLogNetwork()->Print(ELog::Info, "> got : client turn ready !! (" + ToString(pPacket->m_turn) + ")");
+            GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> got : client turn ready !! (" + ToString(pPacket->m_turn) + ")");
             _pSender->m_lastTurnReceived = pPacket->m_turn;
         }
     }

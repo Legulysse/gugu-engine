@@ -21,33 +21,33 @@ public:
         m_nbTests = 0;
         m_nbSuccess = 0;
 
-        m_logger.SetFile(logPathFile);
+        m_logger.SetFilePath(logPathFile);
         m_logger.SetConsoleOutput(true, true);
         m_logger.SetAutoflush(true);
 
-        m_logger.Print(ELog::Info, "******** Unit Tests : " + name + " ********");
+        m_logger.Print("******** Unit Tests : " + name + " ********");
     }
 
     void PrintResults()
     {
-        m_logger.Print(ELog::Info, "******** Results ********");
-        m_logger.Print(ELog::Info, "Nb Tests : " + ToString(m_nbTests));
-        m_logger.Print(ELog::Info, "Nb Succeeded : " + ToString(m_nbSuccess));
+        m_logger.Print("******** Results ********");
+        m_logger.Print("Nb Tests : " + ToString(m_nbTests));
+        m_logger.Print("Nb Succeeded : " + ToString(m_nbSuccess));
 
         if (m_nbTests - m_nbSuccess > 0)
         {
-            m_logger.Print(ELog::Info, "Nb Failed : " + ToString(m_nbTests - m_nbSuccess));
+            m_logger.Print("Nb Failed : " + ToString(m_nbTests - m_nbSuccess));
         }
     }
 
     void BeginSection(const std::string& name)
     {
-        m_logger.Print(ELog::Info, "**** Main Section : " + name + " ****");
+        m_logger.Print("**** Main Section : " + name + " ****");
     }
 
     void BeginSubSection(const std::string& name)
     {
-        m_logger.Print(ELog::Info, "Sub Section : " + name + "");
+        m_logger.Print("Sub Section : " + name + "");
     }
 
     bool LogTestResult(bool result, const std::string& expression, const std::string& file, size_t line)
@@ -62,7 +62,7 @@ public:
         }
         else
         {
-            m_logger.Print(ELog::Error, StringFormat("{1} {2} : {0}", expression, file, line));
+            m_logger.Print(StringFormat("{1} {2} : {0}", expression, file, line));
         }
 
         return result;

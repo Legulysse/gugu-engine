@@ -210,6 +210,54 @@ std::string StringFormat(const std::string& _tValue, const FormatParameters& Par
     return strResult;
 }
 
+std::string StringNumberFormat(const std::string& value, size_t leadingZeros, const std::string& delimiter)
+{
+    std::string formattedValue = value;
+    StringNumberFormatSelf(formattedValue, leadingZeros, delimiter);
+    return formattedValue;
+}
+
+void StringNumberFormatSelf(std::string& value, size_t leadingZeros, const std::string& delimiter)
+{
+    if (value.empty())
+    {
+        return;
+    }
+
+    bool hasSign = value[0] == '-';
+    size_t decimalSeparatorIndex = value.find('.');
+    decimalSeparatorIndex = (decimalSeparatorIndex == std::string::npos ? value.find(',') : decimalSeparatorIndex);
+    size_t fractionalPartOffset = (decimalSeparatorIndex == std::string::npos ? 0 : value.length() - decimalSeparatorIndex);
+
+    // Add leading zeros
+    size_t baseLength = value.length() + (hasSign ? -1 : 0) - fractionalPartOffset;
+    size_t insertOffset = fractionalPartOffset;
+
+    if (leadingZeros > baseLength)
+    {
+        size_t missingZeros = leadingZeros - baseLength;
+
+        for (size_t i = 0; i < missingZeros; ++i)
+        {
+            value.insert(value.length() - insertOffset - baseLength - i, "0");
+        }
+    }
+
+    // Add delimiter
+    baseLength = value.length() + (hasSign ? -1 : 0) - fractionalPartOffset;
+    insertOffset = fractionalPartOffset;
+
+    size_t charIndex = 3;
+    size_t addedLength = 0;
+    while (charIndex < baseLength)
+    {
+        value.insert(value.length() - insertOffset - charIndex - addedLength, delimiter);
+
+        addedLength += delimiter.length();
+        charIndex += 3;
+    }
+}
+
 std::string NormalizePath(const std::string& _strPath, bool trailingSlash)
 {
     std::string strResult = _strPath;

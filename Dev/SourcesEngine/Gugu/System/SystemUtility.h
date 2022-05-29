@@ -93,7 +93,9 @@ private:
 std::string StringFormat(const std::string& _tValue, const FormatParameters& Params);
 
 template<typename T>
-std::string StringNumberFormat(const T& _tValue, const std::string& _strDelimiter = " ");
+std::string StringNumberFormat(const T& value, size_t leadingZeros = 0, const std::string& delimiter = " ");
+std::string StringNumberFormat(const std::string& value, size_t leadingZeros = 0, const std::string& delimiter = " ");
+void StringNumberFormatSelf(std::string& value, size_t leadingZeros = 0, const std::string& delimiter = " ");
 
 //----------------------------------------------
 // Paths

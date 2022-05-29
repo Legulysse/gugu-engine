@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     std::string strFormatK = StringFormat("My age is {0}.", ToString(42.555f, 1));
 
     std::string strNumberFormatA = StringNumberFormat(12345678);
-    std::string strNumberFormatB = StringNumberFormat(12345678, ",");
+    std::string strNumberFormatB = StringNumberFormat(12345678, 9, ",");
 
     FormatParameters paramsAA;
     paramsAA.Add("name", "Jean-Paul");

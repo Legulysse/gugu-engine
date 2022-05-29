@@ -168,6 +168,29 @@ void RunUnitTests_System()
 
     GUGU_UTEST_SECTION("String");
     {
+        GUGU_UTEST_SUBSECTION("StringNumberFormat");
+        {
+            GUGU_UTEST_CHECK(StringNumberFormat(1) == "1");
+            GUGU_UTEST_CHECK(StringNumberFormat(123, 3) == "123");
+            GUGU_UTEST_CHECK(StringNumberFormat(1, 3) == "001");
+            GUGU_UTEST_CHECK(StringNumberFormat(1, 6) == "000 001");
+
+            GUGU_UTEST_CHECK(StringNumberFormat(-1) == "-1");
+            GUGU_UTEST_CHECK(StringNumberFormat(-123, 3) == "-123");
+            GUGU_UTEST_CHECK(StringNumberFormat(-1, 3) == "-001");
+            GUGU_UTEST_CHECK(StringNumberFormat(-1, 6) == "-000 001");
+
+            GUGU_UTEST_CHECK(StringNumberFormat(1.05f) == "1.05");
+            GUGU_UTEST_CHECK(StringNumberFormat(123.05f, 3) == "123.05");
+            GUGU_UTEST_CHECK(StringNumberFormat(1.05f, 3) == "001.05");
+            GUGU_UTEST_CHECK(StringNumberFormat(1.05f, 6) == "000 001.05");
+
+            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 0, ".") == "1,05");
+            GUGU_UTEST_CHECK(StringNumberFormat("123,05", 3, ".") == "123,05");
+            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 3, ".") == "001,05");
+            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 6, ".") == "000.001,05");
+        }
+
         GUGU_UTEST_SUBSECTION("Split");
         {
             {

@@ -143,33 +143,11 @@ void FormatParameters::Add(const std::string& strName, const T& tParam)
 }
 
 template<typename T>
-std::string StringNumberFormat(const T& _tValue, const std::string& _strDelimiter)
+std::string StringNumberFormat(const T& value, size_t leadingZeros, const std::string& delimiter)
 {
-    std::string strBaseValue = ToString(_tValue);
-
-    if(strBaseValue.empty())
-    {
-        return "";
-    }
-
-    std::string strSmartValue = strBaseValue;
-
-    size_t iBaseLength = strBaseValue.length();
-    if(strBaseValue.substr(0, 1) == "-")
-    {
-        --iBaseLength;
-    }
-
-    size_t iCharIndex = 3, iAddedLength = 0;
-    while(iCharIndex < iBaseLength)
-    {
-        strSmartValue.insert( (strSmartValue.length() - iCharIndex - iAddedLength), _strDelimiter);
-
-        iAddedLength += _strDelimiter.length();
-        iCharIndex += 3;
-    }
-
-    return strSmartValue;
+    std::string formattedValue = ToString(value);
+    StringNumberFormatSelf(formattedValue, leadingZeros, delimiter);
+    return formattedValue;
 }
 
 template<typename T>

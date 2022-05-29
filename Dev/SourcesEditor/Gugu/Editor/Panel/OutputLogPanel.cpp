@@ -37,10 +37,27 @@ OutputLogPanel::~OutputLogPanel()
 
 void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)
 {
+    static const std::map<ELog::Type, std::string> logLevelAsStr
+    {
+        { ELog::Debug, "Debug" },
+        { ELog::Info, "Info" },
+        { ELog::Warning, "Warning" },
+        { ELog::Error, "Error" },
+    };
+
+    static const std::map<ELogEngine::Type, std::string> logCategoryAsStr
+    {
+        { ELogEngine::Engine, "Engine" },
+        { ELogEngine::Resources, "Resources" },
+        { ELogEngine::Audio, "Audio" },
+        { ELogEngine::Network, "Network" },
+    };
+
     LogEntry entry;
-    entry.timestamp = timestamp;
     entry.level = level;
-    entry.category = category;
+    entry.timestamp = timestamp;
+    entry.levelStr = logLevelAsStr.at(level);
+    entry.categoryStr = logCategoryAsStr.at(category);
     entry.text = text;
 
     m_logs.push_back(entry);
@@ -56,22 +73,6 @@ void OutputLogPanel::UpdatePanel(const gugu::DeltaTime& dt)
         static const ImVec4 color_white(1.f, 1.f, 1.f, 1.f);
         static const ImVec4 color_grey(1.f, 1.f, 1.f, 0.6f);
         static const ImVec4 color_greyDetails(1.f, 1.f, 1.f, 0.4f);
-
-        static const std::map<ELog::Type, std::string> logLevelAsStr
-        {
-            { ELog::Debug, "Debug" },
-            { ELog::Info, "Info" },
-            { ELog::Warning, "Warning" },
-            { ELog::Error, "Error" },
-        };
-
-        static const std::map<ELogEngine::Type, std::string> logCategoryAsStr
-        {
-            { ELogEngine::Engine, "Engine" },
-            { ELogEngine::Resources, "Resources" },
-            { ELogEngine::Audio, "Audio" },
-            { ELogEngine::Network, "Network" },
-        };
 
         static const std::map<ELog::Type, ImVec4> logColorPerLevel
         {
@@ -122,10 +123,10 @@ void OutputLogPanel::UpdatePanel(const gugu::DeltaTime& dt)
                 ImGui::TextColored(color_greyDetails, m_logs[rowIndex].timestamp.c_str());
 
                 ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::TextColored(color_greyDetails, logCategoryAsStr.at(m_logs[rowIndex].category).c_str());
+                ImGui::TextColored(color_greyDetails, m_logs[rowIndex].categoryStr.c_str());
 
                 ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::TextColored(color, logLevelAsStr.at(logLevel).c_str());
+                ImGui::TextColored(color, m_logs[rowIndex].levelStr.c_str());
 
                 ImGui::TableSetColumnIndex(columnIndex++);
                 ImGui::TextColored(color, m_logs[rowIndex].text.c_str());

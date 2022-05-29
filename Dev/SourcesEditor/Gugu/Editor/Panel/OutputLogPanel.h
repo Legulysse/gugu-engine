@@ -40,9 +40,10 @@ private:
 
     struct LogEntry
     {
-        std::string timestamp;
         ELog::Type level;
-        ELogEngine::Type category;
+        std::string timestamp;
+        std::string levelStr;
+        std::string categoryStr;
         std::string text;
     };
     std::vector<LogEntry> m_logs;

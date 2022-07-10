@@ -70,7 +70,7 @@ std::string FileInfo::GetPrettyName() const
 
 std::string FileInfo::GetExtension() const
 {
-    size_t pos = m_name.find_first_of(".");
+    size_t pos = m_name.find_last_of(".");
     if (pos != std::string::npos)
     {
         return m_name.substr(pos + 1);
@@ -81,8 +81,9 @@ std::string FileInfo::GetExtension() const
 
 bool FileInfo::IsExtension(const std::string& extension) const
 {
-    //TODO: Do something safer (consider the "." position).
-    return StdStringEndsWith(m_name, extension);
+    return m_name.size() >= extension.size() + 1
+        && m_name[m_name.size() - extension.size() - 1] == '.'
+        && StdStringEndsWith(m_name, extension);
 }
 
 bool FileInfo::operator < (const FileInfo& other) const

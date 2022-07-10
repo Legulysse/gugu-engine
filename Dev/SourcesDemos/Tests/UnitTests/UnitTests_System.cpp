@@ -117,6 +117,9 @@ void RunUnitTests_System()
     {
         GUGU_UTEST_SUBSECTION("Construction");
         {
+            GUGU_UTEST_CHECK(FileInfo("hello/world.txt") == FileInfo("hello", "world.txt"));
+            GUGU_UTEST_CHECK(FileInfo("world.txt") == FileInfo("", "world.txt"));
+
             FileInfo infoA("hello", "world.txt");
 
             GUGU_UTEST_CHECK(infoA.GetPath(false) == "hello");
@@ -137,8 +140,26 @@ void RunUnitTests_System()
             GUGU_UTEST_CHECK(infoB.GetExtension() == "txt");
             GUGU_UTEST_CHECK(infoB.IsExtension("txt"));
 
-            GUGU_UTEST_CHECK(FileInfo("hello/world.txt") == FileInfo("hello", "world.txt"));
-            GUGU_UTEST_CHECK(FileInfo("world.txt") == FileInfo("", "world.txt"));
+            FileInfo infoC("", ".txt");
+
+            GUGU_UTEST_CHECK(infoC.GetPath(false) == "");
+            GUGU_UTEST_CHECK(infoC.GetPath(true) == "");
+            GUGU_UTEST_CHECK(infoC.GetName() == ".txt");
+            GUGU_UTEST_CHECK(infoC.GetPathName() == ".txt");
+            GUGU_UTEST_CHECK(infoC.GetPrettyName() == "");
+            GUGU_UTEST_CHECK(infoC.GetExtension() == "txt");
+            GUGU_UTEST_CHECK(infoC.IsExtension("txt"));
+
+            FileInfo infoD("", "world.file.txt");
+
+            GUGU_UTEST_CHECK(infoD.GetPath(false) == "");
+            GUGU_UTEST_CHECK(infoD.GetPath(true) == "");
+            GUGU_UTEST_CHECK(infoD.GetName() == "world.file.txt");
+            GUGU_UTEST_CHECK(infoD.GetPathName() == "world.file.txt");
+            GUGU_UTEST_CHECK(infoD.GetPrettyName() == "world");
+            GUGU_UTEST_CHECK(infoD.GetExtension() == "txt");
+            GUGU_UTEST_CHECK(infoD.IsExtension("txt"));
+            GUGU_UTEST_CHECK(infoD.IsExtension("file.txt"));
         }
 
         GUGU_UTEST_SUBSECTION("Comparison");

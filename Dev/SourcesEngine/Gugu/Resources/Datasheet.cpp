@@ -416,6 +416,7 @@ EResourceType::Type Datasheet::GetResourceType() const
 
 bool Datasheet::LoadFromFile()
 {
+    // TODO: handle extensions with several dots (like name.type.xml instead of name.type).
     m_rootObject = GetResources()->InstanciateDatasheetObject(m_resourceInfos->fileInfo.GetExtension());
     if (!m_rootObject)
     {

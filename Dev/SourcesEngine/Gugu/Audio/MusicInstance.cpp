@@ -20,21 +20,11 @@ namespace gugu {
     
 MusicInstance::MusicInstance()
 {
-    m_sfMusic      = nullptr;
-    m_volume       = 1.f;
-    m_fadeCoeff    = 1.f;
-
-    //Reset();
+    m_music = nullptr;
+    m_sfMusic = nullptr;
+    m_volume = 1.f;
+    m_fadeCoeff = 1.f;
 }
-/*
-MusicInstance::MusicInstance(const MusicInstance&)
-{
-    m_sfMusic      = nullptr;
-    m_volume       = 1.f;
-    m_fadeCoeff    = 1.f;
-
-    //Reset();
-}*/
 
 MusicInstance::~MusicInstance()
 {
@@ -45,9 +35,9 @@ void MusicInstance::Reset()
 {
     SafeDelete(m_sfMusic);
 
-    m_music        = nullptr;
-    m_volume       = 1.f;
-    m_fadeCoeff    = 1.f;
+    m_music = nullptr;
+    m_volume = 1.f;
+    m_fadeCoeff = 1.f;
 }
 
 void MusicInstance::SetMusic(Music* _pMusic, bool _bLoop)

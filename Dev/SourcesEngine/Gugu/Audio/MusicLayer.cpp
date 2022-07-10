@@ -146,6 +146,11 @@ void MusicLayer::FadeToNext()
 
         m_nextInstance->SetFadeCoeff(0.f);
         m_nextInstance->Play();
+
+        if (m_fadeIn == 0.f && m_fadeOut == 0.f)
+        {
+            PurgeFade();
+        }
     }
 }
 

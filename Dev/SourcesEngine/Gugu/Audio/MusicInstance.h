@@ -28,7 +28,6 @@ class MusicInstance
 public:
 
     MusicInstance   ();
-    //MusicInstance   (const MusicInstance&);
     ~MusicInstance  ();
 
     void    Reset           ();

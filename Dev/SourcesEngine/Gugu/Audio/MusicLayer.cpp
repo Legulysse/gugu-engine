@@ -134,7 +134,7 @@ void MusicLayer::FadeToNext()
         }
         else
         {
-            StopPlaylist();
+            Reset();
             fadeToNext = false;
         }
     }
@@ -163,7 +163,7 @@ void MusicLayer::SetPlayList(const std::vector<MusicParameters>& _vecPlaylist, b
     m_loopPlaylist = loopPlaylist;
 }
 
-void MusicLayer::StopPlaylist()
+void MusicLayer::Reset()
 {
     if (m_currentInstance && m_currentInstance->IsSet())
     {

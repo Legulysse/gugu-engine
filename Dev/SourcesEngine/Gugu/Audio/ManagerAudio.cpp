@@ -172,15 +172,22 @@ bool ManagerAudio::StopMusic(float _fFade, int layer)
     if (layer < 0 || layer >= (int)m_musicLayers.size())
         return false;
 
-    MusicParameters kParameters;
-    kParameters.music = nullptr;
-    kParameters.volume = 0.f;
-    kParameters.fadeOut = _fFade;
-    kParameters.fadeIn = _fFade;
-
     MusicLayer* pLayer = &m_musicLayers[layer];
-    pLayer->SetNext(kParameters);
-    pLayer->FadeToNext();
+    if (_fFade > 0.f)
+    {
+        MusicParameters kParameters;
+        kParameters.music = nullptr;
+        kParameters.volume = 0.f;
+        kParameters.fadeOut = _fFade;
+        kParameters.fadeIn = _fFade;
+
+        pLayer->SetNext(kParameters);
+        pLayer->FadeToNext();
+    }
+    else
+    {
+        pLayer->Reset();
+    }
 
     return true;
 }

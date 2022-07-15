@@ -25,7 +25,7 @@ FileInfo::FileInfo(const std::string& path, const std::string& name)
 
     m_indexSeparator = m_pathName.empty() ? std::string::npos : m_pathName.size() - 1;
 
-    // TODO: I could check that name does not contain any slash.
+    // TODO: I could check that name does not contain any slash (maybe just directly apply CombinePaths ?).
     m_pathName += name;
     m_name = name;
 }

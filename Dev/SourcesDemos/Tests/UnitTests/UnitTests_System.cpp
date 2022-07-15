@@ -36,6 +36,7 @@ void RunUnitTests_System()
             GUGU_UTEST_CHECK(NormalizePath(".///////", false) == "");
             GUGU_UTEST_CHECK(NormalizePath(".//.///.//", false) == "");
             GUGU_UTEST_CHECK(NormalizePath(".folder/hello../..../..world/....", false) == ".folder/hello../..../..world/....");
+            GUGU_UTEST_CHECK(NormalizePath("./hello/my/../world.xml", false) == "hello/world.xml");
 
             GUGU_UTEST_CHECK(NormalizePath("", true) == "");
             GUGU_UTEST_CHECK(NormalizePath("/", true) == "");
@@ -54,6 +55,7 @@ void RunUnitTests_System()
             GUGU_UTEST_CHECK(NormalizePath(".///////", true) == "");
             GUGU_UTEST_CHECK(NormalizePath(".//.///.//", true) == "");
             GUGU_UTEST_CHECK(NormalizePath(".folder/hello../..../..world/....", true) == ".folder/hello../..../..world/..../");
+            GUGU_UTEST_CHECK(NormalizePath("./hello/my/../world.xml", true) == "hello/world.xml/");
         }
 
         GUGU_UTEST_SUBSECTION("PathFromPathFile");
@@ -73,6 +75,17 @@ void RunUnitTests_System()
             GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../my.world/", true) == "hello/my.world/");
             GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../my.world/file.xml", true) == "hello/my.world/");
             GUGU_UTEST_CHECK(PathFromPathFile("file.xml", true) == "");
+        }
+
+        GUGU_UTEST_SUBSECTION("FileFromPathFile");
+        {
+            GUGU_UTEST_CHECK(FileFromPathFile("") == "");
+            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../world/") == "");
+            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../world.xml") == "world.xml");
+            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../world") == "world");
+            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../my.world/") == "");
+            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../my.world/file.xml") == "file.xml");
+            GUGU_UTEST_CHECK(FileFromPathFile("file.xml") == "file.xml");
         }
 
         GUGU_UTEST_SUBSECTION("CombinePaths");

@@ -374,6 +374,29 @@ void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash)
     NormalizePathSelf(pathFile, trailingSlash);
 }
 
+std::string FileFromPathFile(const std::string& pathFile)
+{
+    std::string resultFile = pathFile;
+    FileFromPathFileSelf(resultFile);
+    return resultFile;
+}
+
+void FileFromPathFile(const std::string& pathFile, std::string& file)
+{
+    file = pathFile;
+    FileFromPathFileSelf(file);
+}
+
+void FileFromPathFileSelf(std::string& pathFile)
+{
+    size_t indexSlash = pathFile.rfind('/');
+
+    if (indexSlash != std::string::npos)
+    {
+        pathFile.erase(0, indexSlash + 1);
+    }
+}
+
 std::string CombinePathFile(const std::string& pathLeft, const std::string& pathFileRight)
 {
     std::string resultPath;

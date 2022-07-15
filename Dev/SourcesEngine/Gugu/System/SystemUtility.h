@@ -109,6 +109,10 @@ std::string PathFromPathFile(const std::string& pathFile, bool trailingSlash);
 void PathFromPathFile(const std::string& pathFile, bool trailingSlash, std::string& path);
 void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash);
 
+std::string FileFromPathFile(const std::string& pathFile);
+void FileFromPathFile(const std::string& pathFile, std::string& file);
+void FileFromPathFileSelf(std::string& pathFile);
+
 std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash);
 void CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash, std::string& resultPath);
 

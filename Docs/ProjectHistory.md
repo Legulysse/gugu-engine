@@ -1,11 +1,13 @@
 # Project History
 
-## ??/??/???? - Version 0.7 (WIP 01/04/2021)
-- Itération Editor (particles editor, project settings, save on close popup, context menus pour la manipulation d'assets).
+## ??/??/???? - Version 0.7 (WIP 20/07/2021)
+- Itération Editor (undo/redo, particles editor, project settings, save on close popup, context menus pour la manipulation d'assets, OutputLog panel).
 - Rangement des demos dans differents dossiers (separation des tests, des demos de systemes, de la demo HelloWorld, et de la demo Game).
 - Ajout d'un ManagerVisualEffects et d'un ParticleSystem (nouvelle ressource ParticleEffect).
+- Ajout de UnitTests (MathUtility, et SystemUtility).
 - Refacto DeltaTime (ajout unscaled time).
 - Refacto des calculs de la loop centrale.
+- Iteration sur l'alignement au pixel des Elements (arrondi sur les UDim et la camera).
 - Refacto ElementButton (utilisation d'un ElementSpriteGroup).
 - Ajout d'un système de template xml sur les ElementSpriteGroup.
 - Itération datasheets (flag "abstract", declaration de fonctions dans le binding).
@@ -14,10 +16,12 @@
 - Refacto de la commande speed (multiplicateur).
 - Update des scripts de build (wrapper pour un menu par defaut, option pour les subrepos).
 - Ajout des commande ruler, pause, time.
-- Ajout des fonctions de rounding, et de random dans un cercle/anneau.
+- Ajout des fonctions de rounding, de random dans un cercle/anneau, et de random pondéré.
+- Itération SystemUtility (manipulation de paths).
 - Clean Element (suppression de Step/Update, suppression des parametres de size sur les callbacks de resize, renommage des fonctions de Transform).
 - Utilisation de l'event TextEntered sur ElementText.
-- Iteration sur les fonctions de log pour exploiter l'output de visual studio.
+- Clean Logger (meilleure separation entre Logger et EngineLogger, frame count, output dans visual studio).
+- Mise à jour premake 5.0.0-beta1 (visual 2022).
 
 ## 01/10/2021 - Version 0.6
 - Ajout du nouvel Editor, basé sur ImGui (datasheet editor).

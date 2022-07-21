@@ -558,7 +558,7 @@ void Element::InitInteractions()
 {
     if (!m_interactions)
     {
-        m_interactions = new ElementEvents;
+        m_interactions = new ElementEvents(this);
     }
 }
 

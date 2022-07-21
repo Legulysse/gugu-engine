@@ -43,7 +43,7 @@ HandlerEvents::~HandlerEvents()
 
 void HandlerEvents::AddEventListener(EventListener* _pEventListener)
 {
-    if (!_pEventListener)
+    if (!_pEventListener || _pEventListener->m_handler == this)
         return;
 
     // Dont allow a listener to be registered on two handlers (this will also ensure it is not registered here already)
@@ -68,6 +68,27 @@ bool HandlerEvents::IsEventListenerRegistered(EventListener* _pEventListener) co
         return false;
 
     return StdVectorContains(m_eventListeners, _pEventListener);
+}
+
+void HandlerEvents::AddElementEventHandler(ElementEvents* elementEventHandler)
+{
+    if (!elementEventHandler || elementEventHandler->m_handler == this)
+        return;
+
+    // Dont allow a listener to be registered on two handlers (this will also ensure it is not registered here already)
+    elementEventHandler->UnregisterHandlerEvents();
+
+    elementEventHandler->m_handler = this;
+    m_elementEventHandlers.push_back(elementEventHandler);
+}
+
+void HandlerEvents::RemoveElementEventHandler(ElementEvents* elementEventHandler)
+{
+    if (!elementEventHandler || elementEventHandler->m_handler != this)
+        return;
+
+    elementEventHandler->m_handler = nullptr;
+    StdVectorRemove(m_elementEventHandlers, elementEventHandler);
 }
 
 void HandlerEvents::ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<InteractiveElementEntry>& _vecRootElements)
@@ -113,46 +134,34 @@ void HandlerEvents::FinishEvent()
     m_interactiveElements.clear();
 }
 
-void HandlerEvents::ParseElements(Element* _pElement, Camera* _pCamera)
+void HandlerEvents::ParseElements(Element* root, Camera* camera)
 {
-    if (!_pElement->IsVisible())
+    if (!root->IsVisible())
         return;
 
-    if (!_pElement->HasInteractionFlag(EElementEvent::Absorb))
+    for (ElementEvents* elementEventHandler : m_elementEventHandlers)
     {
-        const std::vector<Element*>& listChildren = _pElement->GetChildren();
-
-        auto iteChild = listChildren.rbegin();
-        auto iteEnd = listChildren.rend();
-        while (iteChild != iteEnd)
+        if (elementEventHandler->IsInteractionEnabled())
         {
-            Element* pChild = *iteChild;
-            ParseElements(pChild, _pCamera);
+            Element* element = elementEventHandler->GetElement();
 
-            ++iteChild;
-        }
-    }
+            std::vector<ElementEvents*> vecPropagationList;
+            element->GetPropagationList(vecPropagationList);
 
-    if (!_pElement->HasInteractionFlag(EElementEvent::Disabled))
-    {
-        std::vector<Element*> vecPropagationList;
-        _pElement->GetPropagationList(vecPropagationList);
-        for (size_t i = 0; i < vecPropagationList.size(); ++i)
-        {
-            if (vecPropagationList[i]->IsVisible() && !vecPropagationList[i]->HasInteractionFlag(EElementEvent::Disabled) && vecPropagationList[i]->HasInteractionFlags())
+            for (size_t i = 0; i < vecPropagationList.size(); ++i)
             {
-                InteractiveElementEntry kEntry;
-                kEntry.element = vecPropagationList[i];
-                kEntry.camera = _pCamera;
-                m_interactiveElements.push_back(kEntry);
+                if (vecPropagationList[i]->IsInteractionEnabled())
+                {
+                    InteractiveElementEntry kEntry;
+                    kEntry.element = vecPropagationList[i]->GetElement();
+                    kEntry.camera = camera;
+                    m_interactiveElements.push_back(kEntry);
+                }
             }
-        }
 
-        if (_pElement->HasInteractionFlags())
-        {
             InteractiveElementEntry kEntry;
-            kEntry.element = _pElement;
-            kEntry.camera = _pCamera;
+            kEntry.element = element;
+            kEntry.camera = camera;
             m_interactiveElements.push_back(kEntry);
         }
     }

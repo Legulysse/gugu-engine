@@ -5,18 +5,72 @@
 #include "Gugu/Element/ElementEvents.h"
 
 ////////////////////////////////////////////////////////////////
+// Includes
+
+#include "Gugu/Element/Element.h"
+#include "Gugu/Window/Window.h"
+#include "Gugu/Events/HandlerEvents.h"
+#include "Gugu/Debug/Logger.h"
+
+////////////////////////////////////////////////////////////////
 // File Implementation
 
 namespace gugu {
         
-ElementEvents::ElementEvents()
+ElementEvents::ElementEvents(Element* element)
+    : m_element(element)
+    , m_handler(nullptr)
+    , m_dependsOnPropagationList(false)
+    , m_disabled(false)
+    , m_interactionFlags(EElementEvent::None)
 {
-    m_interactionFlags = EElementEvent::None;
 }
 
 ElementEvents::~ElementEvents()
 {
     RemoveCallbacks();
+    UnregisterHandlerEvents();
+}
+
+Element* ElementEvents::GetElement() const
+{
+    return m_element;
+}
+
+void ElementEvents::SetDependsOnPropagationList()
+{
+    if (m_handler)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "An element should not be registered to a window event handler if it is used through an element propagation list");
+    }
+
+    m_dependsOnPropagationList = true;
+}
+
+void ElementEvents::RegisterHandlerEvents(HandlerEvents* _pHandler)
+{
+    if (m_dependsOnPropagationList)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "An element should not be registered to a window event handler if it is used through an element propagation list");
+    }
+
+    if (_pHandler)
+    {
+        _pHandler->AddElementEventHandler(this);
+    }
+}
+
+void ElementEvents::UnregisterHandlerEvents()
+{
+    if (m_handler)
+    {
+        m_handler->RemoveElementEventHandler(this);
+    }
+}
+
+bool ElementEvents::IsInteractionEnabled() const
+{
+    return m_element->IsVisible() && !m_disabled;
 }
 
 void ElementEvents::SetInteractionFlags(int _iFlags)
@@ -49,22 +103,24 @@ bool ElementEvents::HasInteractionFlag(EElementEvent::Type _eFlag) const
     return ((m_interactionFlags & _eFlag) != EElementEvent::None);
 }
 
-void ElementEvents::AddCallback(EElementEvent::Type _eFlag, const Callback& callback)
+void ElementEvents::AddCallback(EElementEvent::Type event, const Callback& callback)
 {
-    if (!callback || _eFlag == EElementEvent::None)
+    if (!callback || event == EElementEvent::None)
         return;
 
+    GetGameWindow()->GetHandlerEvents()->AddElementEventHandler(this);
+
     CallbackInfos kInfos;
-    kInfos.interactionFlag = _eFlag;
+    kInfos.event = event;
     kInfos.callback = callback;
     m_callbacks.push_back(kInfos);
 }
 
-void ElementEvents::RemoveCallbacks(EElementEvent::Type _eFlag)
+void ElementEvents::RemoveCallbacks(EElementEvent::Type event)
 {
     for (auto iteCallback = m_callbacks.begin(); iteCallback != m_callbacks.end();)
     {
-        if (iteCallback->interactionFlag == _eFlag)
+        if (iteCallback->event == event)
         {
             iteCallback = m_callbacks.erase(iteCallback);
         }
@@ -80,11 +136,11 @@ void ElementEvents::RemoveCallbacks()
     m_callbacks.clear();
 }
 
-void ElementEvents::FireCallbacks(EElementEvent::Type _eFlag)
+void ElementEvents::FireCallbacks(EElementEvent::Type event)
 {
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {
-        if (m_callbacks[i].interactionFlag == _eFlag)
+        if (m_callbacks[i].event == event)
         {
             m_callbacks[i].callback();
         }

@@ -49,7 +49,7 @@ public:
     void                GetSelectedItems    (std::vector<ElementListItem*>& _vecItems) const;
     void                GetSelectedElements (std::vector<Element*>& _vecElements) const;
 
-    virtual void        GetPropagationList(std::vector<Element*>& _vecPropagationList) override;
+    virtual void        GetPropagationList(std::vector<ElementEvents*>& _vecPropagationList) override;
 
     virtual void OnMouseScrolled(int _iDelta) override;
     void OnScrollDrag();

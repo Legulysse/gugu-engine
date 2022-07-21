@@ -67,8 +67,6 @@ public:
 
     void RaiseNeedRecompute();
 
-    virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) override;
-
     bool LoadFromFile(const std::string& _strPath);
     virtual bool LoadFromXml(const pugi::xml_node& nodeSelf) override;
 

@@ -45,14 +45,15 @@ ElementList::ElementList()
     m_scrollButtonBottom->SetParent(this);
 
     GetInteractions()->AddInteractionFlag(EElementEvent::Scroll);
+
+    m_scrollButtonTop->GetInteractions()->SetDependsOnPropagationList();
+    m_scrollButtonBottom->GetInteractions()->SetDependsOnPropagationList();
+    m_scrollSlider->GetInteractions()->SetDependsOnPropagationList();
+    
     m_scrollButtonTop->GetInteractions()->AddInteractionFlag(EElementEvent::Click);
     m_scrollButtonBottom->GetInteractions()->AddInteractionFlag(EElementEvent::Click);
     m_scrollSlider->GetInteractions()->AddInteractionFlag(EElementEvent::Drag);
 
-    m_scrollButtonTop->InitInteractions();
-    m_scrollButtonBottom->InitInteractions();
-    m_scrollSlider->InitInteractions();
-    
     m_scrollButtonTop->GetInteractions()->AddCallback(EElementEvent::Click, std::bind(&ElementList::OnMouseScrolled, this, 1));
     m_scrollButtonBottom->GetInteractions()->AddCallback(EElementEvent::Click, std::bind(&ElementList::OnMouseScrolled, this, -1));
     m_scrollSlider->GetInteractions()->AddCallback(EElementEvent::Drag, std::bind(&ElementList::OnScrollDrag, this));
@@ -353,15 +354,15 @@ void ElementList::RecomputeItems()
     }
 }
 
-void ElementList::GetPropagationList(std::vector<Element*>& _vecPropagationList)
+void ElementList::GetPropagationList(std::vector<ElementEvents*>& _vecPropagationList)
 {
-    _vecPropagationList.push_back(m_scrollButtonTop);
-    _vecPropagationList.push_back(m_scrollSlider);
-    _vecPropagationList.push_back(m_scrollButtonBottom);
+    _vecPropagationList.push_back(m_scrollButtonTop->GetInteractions());
+    _vecPropagationList.push_back(m_scrollSlider->GetInteractions());
+    _vecPropagationList.push_back(m_scrollButtonBottom->GetInteractions());
 
     for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
     {
-        _vecPropagationList.push_back(m_items[i]);
+        _vecPropagationList.push_back(m_items[i]->GetInteractions());
     }
 }
 

@@ -36,6 +36,8 @@ public:
     bool IsRegistered(Window* _pWindow) const;
     bool IsRegistered(HandlerEvents* _pHandler) const;
 
+    //TODO: rename as OnWindowEvent ?
+    //TODO: add a OnInputEvent ?
     virtual bool OnSFEvent(const sf::Event& _oSFEvent);     //Return true : allow event to be propagated.
 
 private:

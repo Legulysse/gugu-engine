@@ -14,6 +14,7 @@
 namespace gugu
 {
     class EventListener;
+    class ElementEvents;
     class Element;
     class Camera;
 }
@@ -45,6 +46,9 @@ public:
     void RemoveEventListener(EventListener* _pEventListener);
     bool IsEventListenerRegistered(EventListener* _pEventListener) const;
 
+    void AddElementEventHandler(ElementEvents* elementEventHandler);
+    void RemoveElementEventHandler(ElementEvents* elementEventHandler);
+
     void ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<InteractiveElementEntry>& _vecRootElements);
     
 private:
@@ -59,6 +63,8 @@ private:
 private:
 
     std::vector<EventListener*> m_eventListeners;
+    std::vector<ElementEvents*> m_elementEventHandlers;
+
     std::vector<InteractiveElementEntry> m_interactiveElements;
 
     Element* m_elementMouseFocused;     //Mouse is over this element

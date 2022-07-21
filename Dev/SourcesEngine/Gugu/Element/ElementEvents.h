@@ -8,6 +8,14 @@
 #include <vector>
 
 ////////////////////////////////////////////////////////////////
+// Forward Declarations
+
+namespace gugu
+{
+    class Element;
+}
+
+////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
@@ -29,6 +37,20 @@ namespace EElementEvent
         Click       = 0x0040,
         Scroll      = 0x0080,
         Drag        = 0x0100,
+
+        // Interactions (The element will register to window events automatically)
+        OnInteractionEnabled,
+        OnInteractionDisabled,
+        OnMouseEnter,
+        OnMouseLeave,
+        OnMousePressed,
+        OnMouseReleased,
+        OnMouseSelected,
+        OnMouseDeselected,
+        OnMouseScrolled,
+        OnMouseDragStart,
+        OnMouseDragStop,
+        OnMouseDragMove,
     };
 }
 
@@ -36,34 +58,50 @@ namespace EElementEvent
 // TODO: split logic between interaction flags (selection, focus etc) and callback events (selected, focused, destroyed etc).
 class ElementEvents
 {
+    friend class HandlerEvents;
+
 public:
 
-    ElementEvents();
+    ElementEvents(Element* element);
     virtual ~ElementEvents();
 
+    Element* GetElement() const;
+
+    void SetDependsOnPropagationList();
+    void RegisterHandlerEvents(HandlerEvents* _pHandler);
+    void UnregisterHandlerEvents();
+
+    bool IsInteractionEnabled() const;
+
+    // TODO: DEPRECATE ?
     void SetInteractionFlags(int _iFlags);
     void AddInteractionFlag(EElementEvent::Type _eFlag);
     void RemoveInteractionFlag(EElementEvent::Type _eFlag);
 
+    // TODO: DEPRECATE ?
     int GetInteractionFlags() const;
     bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
     bool HasInteractionFlag(EElementEvent::Type _eFlag) const;
 
-    void AddCallback(EElementEvent::Type _eFlag, const Callback& callback);
-    void RemoveCallbacks(EElementEvent::Type _eFlag);
+    void AddCallback(EElementEvent::Type event, const Callback& callback);
+    void RemoveCallbacks(EElementEvent::Type event);
     void RemoveCallbacks();
 
-    void FireCallbacks(EElementEvent::Type _eFlag);
+    void FireCallbacks(EElementEvent::Type event);
 
 private:
 
+    Element* m_element;
+    HandlerEvents* m_handler;
+    bool m_dependsOnPropagationList;
+    bool m_disabled;
+    int m_interactionFlags;
+
     struct CallbackInfos
     {
-        EElementEvent::Type interactionFlag;
+        EElementEvent::Type event;
         Callback callback;
     };
-
-    int m_interactionFlags;
     std::vector<CallbackInfos> m_callbacks;
 };
 

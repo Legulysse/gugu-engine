@@ -75,6 +75,7 @@ namespace ELogEngine {
         Resources,
         Audio,
         Network,
+        Element,
     };
 }
 

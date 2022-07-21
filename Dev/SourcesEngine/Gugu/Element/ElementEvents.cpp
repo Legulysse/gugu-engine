@@ -2,54 +2,54 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Element/ElementInteractions.h"
+#include "Gugu/Element/ElementEvents.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
 namespace gugu {
         
-ElementInteractions::ElementInteractions()
+ElementEvents::ElementEvents()
 {
     m_interactionFlags = EInteraction::None;
 }
 
-ElementInteractions::~ElementInteractions()
+ElementEvents::~ElementEvents()
 {
     RemoveCallbacks();
 }
 
-void ElementInteractions::SetInteractionFlags(int _iFlags)
+void ElementEvents::SetInteractionFlags(int _iFlags)
 {
     m_interactionFlags = _iFlags;
 }
 
-void ElementInteractions::AddInteractionFlag(EInteraction::Type _eFlag)
+void ElementEvents::AddInteractionFlag(EInteraction::Type _eFlag)
 {
     m_interactionFlags = m_interactionFlags | _eFlag;
 }
 
-void ElementInteractions::RemoveInteractionFlag(EInteraction::Type _eFlag)
+void ElementEvents::RemoveInteractionFlag(EInteraction::Type _eFlag)
 {
     m_interactionFlags = m_interactionFlags & ~_eFlag;
 }
 
-int ElementInteractions::GetInteractionFlags() const
+int ElementEvents::GetInteractionFlags() const
 {
     return m_interactionFlags;
 }
 
-bool ElementInteractions::HasInteractionFlags() const
+bool ElementEvents::HasInteractionFlags() const
 {
     return ((m_interactionFlags & ~EInteraction::Absorb) & ~EInteraction::Disabled) != EInteraction::None;
 }
 
-bool ElementInteractions::HasInteractionFlag(EInteraction::Type _eFlag) const
+bool ElementEvents::HasInteractionFlag(EInteraction::Type _eFlag) const
 {
     return ((m_interactionFlags & _eFlag) != EInteraction::None);
 }
 
-void ElementInteractions::AddCallback(EInteraction::Type _eFlag, const Callback& callback)
+void ElementEvents::AddCallback(EInteraction::Type _eFlag, const Callback& callback)
 {
     if (!callback || _eFlag == EInteraction::None)
         return;
@@ -60,7 +60,7 @@ void ElementInteractions::AddCallback(EInteraction::Type _eFlag, const Callback&
     m_callbacks.push_back(kInfos);
 }
 
-void ElementInteractions::RemoveCallbacks(EInteraction::Type _eFlag)
+void ElementEvents::RemoveCallbacks(EInteraction::Type _eFlag)
 {
     for (auto iteCallback = m_callbacks.begin(); iteCallback != m_callbacks.end();)
     {
@@ -75,12 +75,12 @@ void ElementInteractions::RemoveCallbacks(EInteraction::Type _eFlag)
     }
 }
 
-void ElementInteractions::RemoveCallbacks()
+void ElementEvents::RemoveCallbacks()
 {
     m_callbacks.clear();
 }
 
-void ElementInteractions::FireCallbacks(EInteraction::Type _eFlag)
+void ElementEvents::FireCallbacks(EInteraction::Type _eFlag)
 {
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {

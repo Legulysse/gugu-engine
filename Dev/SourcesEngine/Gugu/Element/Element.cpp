@@ -558,11 +558,11 @@ void Element::InitInteractions()
 {
     if (!m_interactions)
     {
-        m_interactions = new ElementInteractions;
+        m_interactions = new ElementEvents;
     }
 }
 
-ElementInteractions* Element::GetInteractions() const
+ElementEvents* Element::GetInteractions() const
 {
     return m_interactions;
 }

@@ -6,7 +6,7 @@
 #include "Gugu/System/Types.h"
 #include "Gugu/Math/UDim.h"
 #include "Gugu/Math/Vector2.h"
-#include "Gugu/Element/ElementInteractions.h"
+#include "Gugu/Element/ElementEvents.h"
 
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
@@ -190,7 +190,7 @@ public:
     void ComputeUnifiedDimensions();
 
     //----------------------------------------------
-    // Interactions
+    // Events
 
     void SetInteractionFlags(int _iFlags);
     void AddInteractionFlag(EInteraction::Type _eFlag);
@@ -203,10 +203,7 @@ public:
     virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) {} //Return Elements that are not Children but should have Interactions (like Items)
 
     void InitInteractions();
-    ElementInteractions* GetInteractions() const;
-
-    //----------------------------------------------
-    // Events
+    ElementEvents* GetInteractions() const;
 
     //TODO: deprecate all those callbacks
     virtual void OnMouseEnter() {}
@@ -225,7 +222,7 @@ public:
     virtual void OnMouseScrolled(int _iDelta) {}
 
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) { return true; }     //Return true : allow event to be propagated.
-
+    
     //----------------------------------------------
     // Loading
 
@@ -285,9 +282,9 @@ protected:
     UDim2 m_dimSize;
 
     //----------------------------------------------
-    // Interactions
+    // Events
 
-    ElementInteractions* m_interactions;
+    ElementEvents* m_interactions;
 };
 
 }   // namespace gugu

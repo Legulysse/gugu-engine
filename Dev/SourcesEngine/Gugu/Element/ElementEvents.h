@@ -32,15 +32,14 @@ namespace EInteraction
     };
 }
 
-// TODO: Should be called ElementEvents.
 // TODO: disabled/absorb should be individual flags to not mess with interaction flags.
 // TODO: split logic between interaction flags (selection, focus etc) and callback events (selected, focused, destroyed etc).
-class ElementInteractions
+class ElementEvents
 {
 public:
 
-    ElementInteractions();
-    virtual ~ElementInteractions();
+    ElementEvents();
+    virtual ~ElementEvents();
 
     void SetInteractionFlags(int _iFlags);
     void AddInteractionFlag(EInteraction::Type _eFlag);

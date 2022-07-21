@@ -12,7 +12,7 @@
 
 namespace gugu {
     
-namespace EInteraction
+namespace EElementEvent
 {
     enum Type
     {
@@ -42,24 +42,24 @@ public:
     virtual ~ElementEvents();
 
     void SetInteractionFlags(int _iFlags);
-    void AddInteractionFlag(EInteraction::Type _eFlag);
-    void RemoveInteractionFlag(EInteraction::Type _eFlag);
+    void AddInteractionFlag(EElementEvent::Type _eFlag);
+    void RemoveInteractionFlag(EElementEvent::Type _eFlag);
 
     int GetInteractionFlags() const;
     bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
-    bool HasInteractionFlag(EInteraction::Type _eFlag) const;
+    bool HasInteractionFlag(EElementEvent::Type _eFlag) const;
 
-    void AddCallback(EInteraction::Type _eFlag, const Callback& callback);
-    void RemoveCallbacks(EInteraction::Type _eFlag);
+    void AddCallback(EElementEvent::Type _eFlag, const Callback& callback);
+    void RemoveCallbacks(EElementEvent::Type _eFlag);
     void RemoveCallbacks();
 
-    void FireCallbacks(EInteraction::Type _eFlag);
+    void FireCallbacks(EElementEvent::Type _eFlag);
 
 private:
 
     struct CallbackInfos
     {
-        EInteraction::Type interactionFlag;
+        EElementEvent::Type interactionFlag;
         Callback callback;
     };
 

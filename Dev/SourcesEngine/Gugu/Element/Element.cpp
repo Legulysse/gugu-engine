@@ -44,7 +44,7 @@ Element::~Element()
 {
     if (m_interactions)
     {
-        m_interactions->FireCallbacks(EInteraction::Destroyed);
+        m_interactions->FireCallbacks(EElementEvent::Destroyed);
         SafeDelete(m_interactions);
     }
 
@@ -521,13 +521,13 @@ void Element::SetInteractionFlags(int _iFlags)
     m_interactions->SetInteractionFlags(_iFlags);
 }
 
-void Element::AddInteractionFlag(EInteraction::Type _eFlag)
+void Element::AddInteractionFlag(EElementEvent::Type _eFlag)
 {
     InitInteractions();
     m_interactions->AddInteractionFlag(_eFlag);
 }
 
-void Element::RemoveInteractionFlag(EInteraction::Type _eFlag)
+void Element::RemoveInteractionFlag(EElementEvent::Type _eFlag)
 {
     if (m_interactions)
         m_interactions->RemoveInteractionFlag(_eFlag);
@@ -537,7 +537,7 @@ int Element::GetInteractionFlags() const
 {
     if (m_interactions)
         return m_interactions->GetInteractionFlags();
-    return EInteraction::None;
+    return EElementEvent::None;
 }
 
 bool Element::HasInteractionFlags() const
@@ -547,7 +547,7 @@ bool Element::HasInteractionFlags() const
     return false;
 }
 
-bool Element::HasInteractionFlag(EInteraction::Type _eFlag) const
+bool Element::HasInteractionFlag(EElementEvent::Type _eFlag) const
 {
     if (m_interactions)
         return m_interactions->HasInteractionFlag(_eFlag);

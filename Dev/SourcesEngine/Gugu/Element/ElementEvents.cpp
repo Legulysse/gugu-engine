@@ -11,7 +11,7 @@ namespace gugu {
         
 ElementEvents::ElementEvents()
 {
-    m_interactionFlags = EInteraction::None;
+    m_interactionFlags = EElementEvent::None;
 }
 
 ElementEvents::~ElementEvents()
@@ -24,12 +24,12 @@ void ElementEvents::SetInteractionFlags(int _iFlags)
     m_interactionFlags = _iFlags;
 }
 
-void ElementEvents::AddInteractionFlag(EInteraction::Type _eFlag)
+void ElementEvents::AddInteractionFlag(EElementEvent::Type _eFlag)
 {
     m_interactionFlags = m_interactionFlags | _eFlag;
 }
 
-void ElementEvents::RemoveInteractionFlag(EInteraction::Type _eFlag)
+void ElementEvents::RemoveInteractionFlag(EElementEvent::Type _eFlag)
 {
     m_interactionFlags = m_interactionFlags & ~_eFlag;
 }
@@ -41,17 +41,17 @@ int ElementEvents::GetInteractionFlags() const
 
 bool ElementEvents::HasInteractionFlags() const
 {
-    return ((m_interactionFlags & ~EInteraction::Absorb) & ~EInteraction::Disabled) != EInteraction::None;
+    return ((m_interactionFlags & ~EElementEvent::Absorb) & ~EElementEvent::Disabled) != EElementEvent::None;
 }
 
-bool ElementEvents::HasInteractionFlag(EInteraction::Type _eFlag) const
+bool ElementEvents::HasInteractionFlag(EElementEvent::Type _eFlag) const
 {
-    return ((m_interactionFlags & _eFlag) != EInteraction::None);
+    return ((m_interactionFlags & _eFlag) != EElementEvent::None);
 }
 
-void ElementEvents::AddCallback(EInteraction::Type _eFlag, const Callback& callback)
+void ElementEvents::AddCallback(EElementEvent::Type _eFlag, const Callback& callback)
 {
-    if (!callback || _eFlag == EInteraction::None)
+    if (!callback || _eFlag == EElementEvent::None)
         return;
 
     CallbackInfos kInfos;
@@ -60,7 +60,7 @@ void ElementEvents::AddCallback(EInteraction::Type _eFlag, const Callback& callb
     m_callbacks.push_back(kInfos);
 }
 
-void ElementEvents::RemoveCallbacks(EInteraction::Type _eFlag)
+void ElementEvents::RemoveCallbacks(EElementEvent::Type _eFlag)
 {
     for (auto iteCallback = m_callbacks.begin(); iteCallback != m_callbacks.end();)
     {
@@ -80,7 +80,7 @@ void ElementEvents::RemoveCallbacks()
     m_callbacks.clear();
 }
 
-void ElementEvents::FireCallbacks(EInteraction::Type _eFlag)
+void ElementEvents::FireCallbacks(EElementEvent::Type _eFlag)
 {
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {

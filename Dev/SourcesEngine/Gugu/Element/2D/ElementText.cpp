@@ -103,11 +103,11 @@ void ElementText::SetEditable(bool _bIsEditable)
 
         if (m_isEditable)
         {
-            AddInteractionFlag(EInteraction::Selection);
+            AddInteractionFlag(EElementEvent::Selection);
         }
         else
         {
-            RemoveInteractionFlag(EInteraction::Selection);
+            RemoveInteractionFlag(EElementEvent::Selection);
 
             StopEditionImpl();
         }
@@ -330,7 +330,7 @@ void ElementText::StartEditionImpl()
         m_sfTextCursor->setString("|");
     }
             
-    AddInteractionFlag(EInteraction::RawSFEvent);
+    AddInteractionFlag(EElementEvent::RawSFEvent);
     
     Recompute();
 }
@@ -341,7 +341,7 @@ void ElementText::StopEditionImpl()
     m_isTickDisplayed   = false;
     m_isEditing     = false;
 
-    RemoveInteractionFlag(EInteraction::RawSFEvent);
+    RemoveInteractionFlag(EElementEvent::RawSFEvent);
     
     Recompute();
 }

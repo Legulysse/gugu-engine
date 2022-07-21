@@ -193,12 +193,12 @@ public:
     // Events
 
     void SetInteractionFlags(int _iFlags);
-    void AddInteractionFlag(EInteraction::Type _eFlag);
-    void RemoveInteractionFlag(EInteraction::Type _eFlag);
+    void AddInteractionFlag(EElementEvent::Type _eFlag);
+    void RemoveInteractionFlag(EElementEvent::Type _eFlag);
 
     int GetInteractionFlags() const;
     bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
-    bool HasInteractionFlag(EInteraction::Type _eFlag) const;
+    bool HasInteractionFlag(EElementEvent::Type _eFlag) const;
 
     virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) {} //Return Elements that are not Children but should have Interactions (like Items)
 

@@ -41,8 +41,8 @@ void ElementListItem::SetList(ElementList* _pList)
 
     m_list = _pList;
     
-    AddInteractionFlag(EInteraction::Focus);
-    AddInteractionFlag(EInteraction::Click);
+    AddInteractionFlag(EElementEvent::Focus);
+    AddInteractionFlag(EElementEvent::Click);
 }
 
 void ElementListItem::SetElement(Element* _pElement)

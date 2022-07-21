@@ -118,7 +118,7 @@ void HandlerEvents::ParseElements(Element* _pElement, Camera* _pCamera)
     if (!_pElement->IsVisible())
         return;
 
-    if (!_pElement->HasInteractionFlag(EInteraction::Absorb))
+    if (!_pElement->HasInteractionFlag(EElementEvent::Absorb))
     {
         const std::vector<Element*>& listChildren = _pElement->GetChildren();
 
@@ -133,13 +133,13 @@ void HandlerEvents::ParseElements(Element* _pElement, Camera* _pCamera)
         }
     }
 
-    if (!_pElement->HasInteractionFlag(EInteraction::Disabled))
+    if (!_pElement->HasInteractionFlag(EElementEvent::Disabled))
     {
         std::vector<Element*> vecPropagationList;
         _pElement->GetPropagationList(vecPropagationList);
         for (size_t i = 0; i < vecPropagationList.size(); ++i)
         {
-            if (vecPropagationList[i]->IsVisible() && !vecPropagationList[i]->HasInteractionFlag(EInteraction::Disabled) && vecPropagationList[i]->HasInteractionFlags())
+            if (vecPropagationList[i]->IsVisible() && !vecPropagationList[i]->HasInteractionFlag(EElementEvent::Disabled) && vecPropagationList[i]->HasInteractionFlags())
             {
                 InteractiveElementEntry kEntry;
                 kEntry.element = vecPropagationList[i];
@@ -182,7 +182,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
             m_elementMouseDragged->OnMouseDragMove();
 
             if (m_elementMouseDragged->GetInteractions())
-                m_elementMouseDragged->GetInteractions()->FireCallbacks(EInteraction::Drag);
+                m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementEvent::Drag);
 
             //m_oLastMouseCoords = oMouseCoords;
 
@@ -193,7 +193,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
             for (size_t i = 0; i < m_interactiveElements.size(); ++i)
             {
                 Element* pElement = m_interactiveElements[i].element;
-                if (pElement->HasInteractionFlag(EInteraction::Focus) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
+                if (pElement->HasInteractionFlag(EElementEvent::Focus) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
                 {
                     if (m_elementMouseFocused != pElement)
                     {
@@ -207,7 +207,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
                         m_elementMouseFocused->OnMouseEnter();
 
                         if (m_elementMouseFocused->GetInteractions())
-                            m_elementMouseFocused->GetInteractions()->FireCallbacks(EInteraction::Focus);
+                            m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementEvent::Focus);
                     }
 
                     bContinue = false;
@@ -230,7 +230,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
             for (size_t i = 0; i < m_interactiveElements.size(); ++i)
             {
                 Element* pElement = m_interactiveElements[i].element;
-                if (pElement->HasInteractionFlag(EInteraction::Selection) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
+                if (pElement->HasInteractionFlag(EElementEvent::Selection) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
                 {
                     if (m_elementMouseSelected != pElement)
                     {
@@ -245,7 +245,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
                         if (m_elementMouseSelected->OnMouseSelected())
                         {
                             if (m_elementMouseSelected->GetInteractions())
-                                m_elementMouseSelected->GetInteractions()->FireCallbacks(EInteraction::Selection);
+                                m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementEvent::Selection);
                         }
                     }
 
@@ -267,7 +267,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
                 for (size_t i = 0; i < m_interactiveElements.size(); ++i)
                 {
                     Element* pElement = m_interactiveElements[i].element;
-                    if (pElement->HasInteractionFlag(EInteraction::Click) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
+                    if (pElement->HasInteractionFlag(EElementEvent::Click) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
                     {
                         pElement->OnMousePressed();
                         bContinue = false;
@@ -282,7 +282,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
                 for (size_t i = 0; i < m_interactiveElements.size(); ++i)
                 {
                     Element* pElement = m_interactiveElements[i].element;
-                    if (pElement->HasInteractionFlag(EInteraction::Drag) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
+                    if (pElement->HasInteractionFlag(EElementEvent::Drag) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
                     {
                         m_elementMouseDragged = pElement;
                         m_elementMouseDragged->OnMouseDragStart();
@@ -316,12 +316,12 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
                 for (size_t i = 0; i < m_interactiveElements.size(); ++i)
                 {
                     Element* pElement = m_interactiveElements[i].element;
-                    if (pElement->HasInteractionFlag(EInteraction::Click) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
+                    if (pElement->HasInteractionFlag(EElementEvent::Click) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
                     {
                         if (pElement->OnMouseReleased())
                         {
                             if (pElement->GetInteractions())
-                                pElement->GetInteractions()->FireCallbacks(EInteraction::Click);
+                                pElement->GetInteractions()->FireCallbacks(EElementEvent::Click);
                         }
 
                         bContinue = false;
@@ -336,12 +336,12 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
         for (size_t i = 0; i < m_interactiveElements.size(); ++i)
         {
             Element* pElement = m_interactiveElements[i].element;
-            if (pElement->HasInteractionFlag(EInteraction::Scroll) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
+            if (pElement->HasInteractionFlag(EElementEvent::Scroll) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
             {
                 pElement->OnMouseScrolled(_oSFEvent.mouseWheel.delta);
 
                 if (pElement->GetInteractions())
-                    pElement->GetInteractions()->FireCallbacks(EInteraction::Scroll);
+                    pElement->GetInteractions()->FireCallbacks(EElementEvent::Scroll);
 
                 bContinue = false;
                 break;
@@ -354,7 +354,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
         for (size_t i = 0; i < m_interactiveElements.size(); ++i)
         {
             Element* pElement = m_interactiveElements[i].element;
-            if (pElement->HasInteractionFlag(EInteraction::RawSFEvent))
+            if (pElement->HasInteractionFlag(EElementEvent::RawSFEvent))
             {
                 if (!pElement->OnSFEvent(_oSFEvent))
                 {

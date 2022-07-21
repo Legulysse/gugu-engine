@@ -73,6 +73,11 @@ bool ElementEvents::IsInteractionEnabled() const
     return m_element->IsVisible() && !m_disabled;
 }
 
+bool ElementEvents::HasInteraction(EElementInteraction::Type flag) const
+{
+    return ((m_interactionFlags & flag) != EElementInteraction::None);
+}
+
 void ElementEvents::SetInteractionFlags(int _iFlags)
 {
     m_interactionFlags = _iFlags;
@@ -88,20 +93,20 @@ void ElementEvents::RemoveInteractionFlag(EElementEvent::Type _eFlag)
     m_interactionFlags = m_interactionFlags & ~_eFlag;
 }
 
-int ElementEvents::GetInteractionFlags() const
-{
-    return m_interactionFlags;
-}
+//int ElementEvents::GetInteractionFlags() const
+//{
+//    return m_interactionFlags;
+//}
 
-bool ElementEvents::HasInteractionFlags() const
-{
-    return ((m_interactionFlags & ~EElementEvent::Absorb) & ~EElementEvent::Disabled) != EElementEvent::None;
-}
-
-bool ElementEvents::HasInteractionFlag(EElementEvent::Type _eFlag) const
-{
-    return ((m_interactionFlags & _eFlag) != EElementEvent::None);
-}
+//bool ElementEvents::HasInteractionFlags() const
+//{
+//    return ((m_interactionFlags & ~EElementEvent::Absorb) & ~EElementEvent::Disabled) != EElementEvent::None;
+//}
+//
+//bool ElementEvents::HasInteractionFlag(EElementEvent::Type _eFlag) const
+//{
+//    return ((m_interactionFlags & _eFlag) != EElementEvent::None);
+//}
 
 void ElementEvents::AddCallback(EElementEvent::Type event, const Callback& callback)
 {
@@ -114,6 +119,8 @@ void ElementEvents::AddCallback(EElementEvent::Type event, const Callback& callb
     kInfos.event = event;
     kInfos.callback = callback;
     m_callbacks.push_back(kInfos);
+
+    RefreshInteractionFlags();
 }
 
 void ElementEvents::RemoveCallbacks(EElementEvent::Type event)
@@ -129,11 +136,15 @@ void ElementEvents::RemoveCallbacks(EElementEvent::Type event)
              ++iteCallback;
         }
     }
+
+    RefreshInteractionFlags();
 }
 
 void ElementEvents::RemoveCallbacks()
 {
     m_callbacks.clear();
+
+    RefreshInteractionFlags();
 }
 
 void ElementEvents::FireCallbacks(EElementEvent::Type event)
@@ -144,6 +155,21 @@ void ElementEvents::FireCallbacks(EElementEvent::Type event)
         {
             m_callbacks[i].callback();
         }
+    }
+}
+
+void ElementEvents::RefreshInteractionFlags()
+{
+    m_interactionFlags = EElementInteraction::None;
+
+    for (size_t i = 0; i < m_callbacks.size(); ++i)
+    {
+        if (m_callbacks[i].event == EElementEvent::OnMouseSelected || m_callbacks[i].event == EElementEvent::OnMouseDeselected)
+        {
+            m_interactionFlags |= EElementInteraction::Selection;
+        }
+
+        //TODO: other interactions
     }
 }
 

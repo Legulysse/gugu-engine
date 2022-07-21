@@ -64,16 +64,17 @@ public:
     void StartEdition   ();
     void StopEdition    ();
 
-    virtual bool OnMouseSelected() override;
-    virtual bool OnMouseDeselected() override;
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 
     void SetOnValidate(const Callback& callbackOnValidate);
 
 private:
 
-    void StartEditionImpl   ();
-    void StopEditionImpl    ();
+    void OnMouseSelected();
+    void OnMouseDeselected();
+
+    void StartEditionImpl();
+    void StopEditionImpl();
 
     void Recompute();
 

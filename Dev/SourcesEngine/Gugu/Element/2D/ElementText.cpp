@@ -103,11 +103,13 @@ void ElementText::SetEditable(bool _bIsEditable)
 
         if (m_isEditable)
         {
-            GetInteractions()->AddInteractionFlag(EElementEvent::Selection);
+            GetInteractions()->AddCallback(EElementEvent::OnMouseSelected, std::bind(&ElementText::OnMouseSelected, this));
+            GetInteractions()->AddCallback(EElementEvent::OnMouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
         }
         else
         {
-            GetInteractions()->RemoveInteractionFlag(EElementEvent::Selection);
+            GetInteractions()->RemoveCallbacks(EElementEvent::OnMouseSelected);
+            GetInteractions()->RemoveCallbacks(EElementEvent::OnMouseDeselected);
 
             StopEditionImpl();
         }
@@ -329,8 +331,9 @@ void ElementText::StartEditionImpl()
         m_sfTextCursor = new sf::Text;
         m_sfTextCursor->setString("|");
     }
-            
-    GetInteractions()->AddInteractionFlag(EElementEvent::RawSFEvent);
+
+    //TODO: plug to EventListener
+    //GetInteractions()->AddInteractionFlag(EElementEvent::RawSFEvent);
     
     Recompute();
 }
@@ -341,21 +344,20 @@ void ElementText::StopEditionImpl()
     m_isTickDisplayed   = false;
     m_isEditing     = false;
 
-    GetInteractions()->RemoveInteractionFlag(EElementEvent::RawSFEvent);
+    //TODO: plug to EventListener
+    //GetInteractions()->RemoveInteractionFlag(EElementEvent::RawSFEvent);
     
     Recompute();
 }
 
-bool ElementText::OnMouseSelected()
+void ElementText::OnMouseSelected()
 {
     StartEditionImpl();
-    return true;
 }
 
-bool ElementText::OnMouseDeselected()
+void ElementText::OnMouseDeselected()
 {
     StopEditionImpl();
-    return true;
 }
 
 bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)

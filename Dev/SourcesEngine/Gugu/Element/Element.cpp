@@ -533,24 +533,24 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
 //        m_interactions->RemoveInteractionFlag(_eFlag);
 //}
 
-int Element::GetInteractionFlags() const
-{
-    if (m_interactions)
-        return m_interactions->GetInteractionFlags();
-    return EElementEvent::None;
-}
+//int Element::GetInteractionFlags() const
+//{
+//    if (m_interactions)
+//        return m_interactions->GetInteractionFlags();
+//    return EElementEvent::None;
+//}
 
-bool Element::HasInteractionFlags() const
-{
-    if (m_interactions)
-        return m_interactions->HasInteractionFlags();
-    return false;
-}
+//bool Element::HasInteractionFlags() const
+//{
+//    if (m_interactions)
+//        return m_interactions->HasInteractionFlags();
+//    return false;
+//}
 
 bool Element::HasInteractionFlag(EElementEvent::Type _eFlag) const
 {
-    if (m_interactions)
-        return m_interactions->HasInteractionFlag(_eFlag);
+    //if (m_interactions)
+    //    return m_interactions->HasInteractionFlag(_eFlag);
     return false;
 }
 

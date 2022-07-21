@@ -239,23 +239,28 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
             for (size_t i = 0; i < m_interactiveElements.size(); ++i)
             {
                 Element* pElement = m_interactiveElements[i].element;
-                if (pElement->HasInteractionFlag(EElementEvent::Selection) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
+                if (pElement->GetInteractions()->HasInteraction(EElementInteraction::Selection)
+                    && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
                 {
                     if (m_elementMouseSelected != pElement)
                     {
                         if (m_elementMouseSelected)
                         {
-                            m_elementMouseSelected->OnMouseDeselected();
-                            m_elementMouseSelected = nullptr;
+                            m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementEvent::OnMouseDeselected);
+
+                            //m_elementMouseSelected->OnMouseDeselected();
+                            //m_elementMouseSelected = nullptr;
                         }
 
                         m_elementMouseSelected = pElement;
 
-                        if (m_elementMouseSelected->OnMouseSelected())
-                        {
-                            if (m_elementMouseSelected->GetInteractions())
-                                m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementEvent::Selection);
-                        }
+                        //if (m_elementMouseSelected->OnMouseSelected())
+                        //{
+                        //    if (m_elementMouseSelected->GetInteractions())
+                        //        m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementEvent::OnMouseSelected);
+                        //}
+
+                        m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementEvent::OnMouseSelected);
                     }
 
                     bContinue = false;
@@ -266,7 +271,10 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent)
             //Nothing got the selection, release the current one if needed
             if (bContinue && m_elementMouseSelected)
             {
-                m_elementMouseSelected->OnMouseDeselected();
+                //m_elementMouseSelected->OnMouseDeselected();
+                //m_elementMouseSelected = nullptr;
+
+                m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementEvent::OnMouseDeselected);
                 m_elementMouseSelected = nullptr;
             }
 

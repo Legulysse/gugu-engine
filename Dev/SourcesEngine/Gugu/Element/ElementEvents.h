@@ -32,25 +32,41 @@ namespace EElementEvent
         Destroyed   = 0x0003,   // Temporary hack to access callbacks
 
         RawSFEvent  = 0x0004,
-        Selection   = 0x0010,
+        //Selection   = 0x0010,
         Focus       = 0x0020,
         Click       = 0x0040,
         Scroll      = 0x0080,
         Drag        = 0x0100,
 
         // Interactions (The element will register to window events automatically)
+        OnMouseSelected,
+        OnMouseDeselected,
+
+        //TODO
         OnInteractionEnabled,
         OnInteractionDisabled,
         OnMouseEnter,
         OnMouseLeave,
         OnMousePressed,
         OnMouseReleased,
-        OnMouseSelected,
-        OnMouseDeselected,
         OnMouseScrolled,
         OnMouseDragStart,
         OnMouseDragStop,
         OnMouseDragMove,
+    };
+}
+
+namespace EElementInteraction
+{
+    enum Type
+    {
+        None        = 0x0000,
+
+        Selection   = 0x0001,
+        Focus       = 0x0002,
+        Click       = 0x0004,
+        Scroll      = 0x0008,
+        Drag        = 0x0010,
     };
 }
 
@@ -72,6 +88,7 @@ public:
     void UnregisterHandlerEvents();
 
     bool IsInteractionEnabled() const;
+    bool HasInteraction(EElementInteraction::Type flag) const;
 
     // TODO: DEPRECATE ?
     void SetInteractionFlags(int _iFlags);
@@ -79,15 +96,19 @@ public:
     void RemoveInteractionFlag(EElementEvent::Type _eFlag);
 
     // TODO: DEPRECATE ?
-    int GetInteractionFlags() const;
-    bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
-    bool HasInteractionFlag(EElementEvent::Type _eFlag) const;
+  //  int GetInteractionFlags() const;
+  //  bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
+  //  bool HasInteractionFlag(EElementEvent::Type _eFlag) const;
 
     void AddCallback(EElementEvent::Type event, const Callback& callback);
     void RemoveCallbacks(EElementEvent::Type event);
     void RemoveCallbacks();
 
     void FireCallbacks(EElementEvent::Type event);
+
+private:
+
+    void RefreshInteractionFlags();
 
 private:
 

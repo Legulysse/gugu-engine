@@ -192,9 +192,9 @@ public:
     //----------------------------------------------
     // Events
 
-    void SetInteractionFlags(int _iFlags);
-    void AddInteractionFlag(EElementEvent::Type _eFlag);
-    void RemoveInteractionFlag(EElementEvent::Type _eFlag);
+    //void SetInteractionFlags(int _iFlags);
+    //void AddInteractionFlag(EElementEvent::Type _eFlag);
+    //void RemoveInteractionFlag(EElementEvent::Type _eFlag);
 
     int GetInteractionFlags() const;
     bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
@@ -203,7 +203,7 @@ public:
     virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) {} //Return Elements that are not Children but should have Interactions (like Items)
 
     void InitInteractions();
-    ElementEvents* GetInteractions() const;
+    ElementEvents* GetInteractions();
 
     //TODO: deprecate all those callbacks
     virtual void OnMouseEnter() {}

@@ -44,10 +44,10 @@ ElementList::ElementList()
     m_scrollButtonBottom = new ElementSprite;
     m_scrollButtonBottom->SetParent(this);
 
-    AddInteractionFlag(EElementEvent::Scroll);
-    m_scrollButtonTop->AddInteractionFlag(EElementEvent::Click);
-    m_scrollButtonBottom->AddInteractionFlag(EElementEvent::Click);
-    m_scrollSlider->AddInteractionFlag(EElementEvent::Drag);
+    GetInteractions()->AddInteractionFlag(EElementEvent::Scroll);
+    m_scrollButtonTop->GetInteractions()->AddInteractionFlag(EElementEvent::Click);
+    m_scrollButtonBottom->GetInteractions()->AddInteractionFlag(EElementEvent::Click);
+    m_scrollSlider->GetInteractions()->AddInteractionFlag(EElementEvent::Drag);
 
     m_scrollButtonTop->InitInteractions();
     m_scrollButtonBottom->InitInteractions();

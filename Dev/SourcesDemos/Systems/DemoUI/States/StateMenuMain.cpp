@@ -59,7 +59,7 @@ void StateMenuMain::Init()
     pBox->SetUnifiedPosition(UDim2(0.f, 50.f, 0.f, 50.f));
 
     m_menu = pBox;
-    m_menu->AddInteractionFlag(EElementEvent::Drag);
+    m_menu->GetInteractions()->AddInteractionFlag(EElementEvent::Drag);
 
     ElementButton* pButton;
     float padding = 20.f;

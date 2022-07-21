@@ -515,23 +515,23 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
     m_pShader = _pShader;
 }*/
 
-void Element::SetInteractionFlags(int _iFlags)
-{
-    InitInteractions();
-    m_interactions->SetInteractionFlags(_iFlags);
-}
-
-void Element::AddInteractionFlag(EElementEvent::Type _eFlag)
-{
-    InitInteractions();
-    m_interactions->AddInteractionFlag(_eFlag);
-}
-
-void Element::RemoveInteractionFlag(EElementEvent::Type _eFlag)
-{
-    if (m_interactions)
-        m_interactions->RemoveInteractionFlag(_eFlag);
-}
+//void Element::SetInteractionFlags(int _iFlags)
+//{
+//    InitInteractions();
+//    m_interactions->SetInteractionFlags(_iFlags);
+//}
+//
+//void Element::AddInteractionFlag(EElementEvent::Type _eFlag)
+//{
+//    InitInteractions();
+//    m_interactions->AddInteractionFlag(_eFlag);
+//}
+//
+//void Element::RemoveInteractionFlag(EElementEvent::Type _eFlag)
+//{
+//    if (m_interactions)
+//        m_interactions->RemoveInteractionFlag(_eFlag);
+//}
 
 int Element::GetInteractionFlags() const
 {
@@ -562,8 +562,9 @@ void Element::InitInteractions()
     }
 }
 
-ElementEvents* Element::GetInteractions() const
+ElementEvents* Element::GetInteractions()
 {
+    InitInteractions();
     return m_interactions;
 }
 

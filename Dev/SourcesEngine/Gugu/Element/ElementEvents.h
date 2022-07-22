@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Core/Callback.h"
+#include "Gugu/Math/Vector2.h"
 
 #include <vector>
 
@@ -13,6 +14,7 @@
 namespace gugu
 {
     class Element;
+    class Camera;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -39,20 +41,20 @@ namespace EElementEvent
         Drag        = 0x0100,
 
         // Interactions (The element will register to window events automatically)
-        OnMouseSelected,
-        OnMouseDeselected,
+        MouseSelected,
+        MouseDeselected,
+        MouseScrolled,
 
         //TODO
-        OnInteractionEnabled,
-        OnInteractionDisabled,
-        OnMouseEnter,
-        OnMouseLeave,
-        OnMousePressed,
-        OnMouseReleased,
-        OnMouseScrolled,
-        OnMouseDragStart,
-        OnMouseDragStop,
-        OnMouseDragMove,
+        InteractionEnabled,
+        InteractionDisabled,
+        MouseEnter,
+        MouseLeave,
+        MousePressed,
+        MouseReleased,
+        MouseDragStart,
+        MouseDragStop,
+        MouseDragMove,
     };
 }
 
@@ -70,10 +72,22 @@ namespace EElementInteraction
     };
 }
 
+struct ElementInteractionInfos
+{
+    Vector2f localPickingPosition;
+    Camera* camera;
+
+    int scrollDelta;
+};
+
 // TODO: disabled/absorb should be individual flags to not mess with interaction flags.
 // TODO: split logic between interaction flags (selection, focus etc) and callback events (selected, focused, destroyed etc).
-class ElementEvents
+class ElementEvents //TODO: rename as ElementEventHandler
 {
+    using CallbackInteractionEvent = std::function<void(const ElementInteractionInfos&)>;
+    //using CallbackMouseScrollEvent = std::function<void(int)>;
+    //using CallbackElementEvent = std::function<void()>;
+
     friend class HandlerEvents;
 
 public:
@@ -84,11 +98,11 @@ public:
     Element* GetElement() const;
 
     void SetDependsOnPropagationList();
-    void RegisterHandlerEvents(HandlerEvents* _pHandler);
+    //void RegisterHandlerEvents(HandlerEvents* _pHandler);
     void UnregisterHandlerEvents();
 
     bool IsInteractionEnabled() const;
-    bool HasInteraction(EElementInteraction::Type flag) const;
+    //bool HasInteraction(EElementInteraction::Type flag) const;
 
     // TODO: DEPRECATE ?
     void SetInteractionFlags(int _iFlags);
@@ -100,14 +114,22 @@ public:
   //  bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
   //  bool HasInteractionFlag(EElementEvent::Type _eFlag) const;
 
-    void AddCallback(EElementEvent::Type event, const Callback& callback);
+    void AddCallback(EElementEvent::Type event, const CallbackInteractionEvent& callback);
     void RemoveCallbacks(EElementEvent::Type event);
     void RemoveCallbacks();
 
-    void FireCallbacks(EElementEvent::Type event);
+    void FireCallbacks(EElementEvent::Type event, const ElementInteractionInfos& interactionInfos);
+
+    //void AddMouseSelectionCallback(const CallbackInteractionEvent& callback);
+    //void OnMouseSelectedEvent(const ElementInteractionInfos& interactionInfos);
+    //void OnMouseDeselectedEvent(const ElementInteractionInfos& interactionInfos);
+
+    //void AddMouseScrollCallback(const CallbackInteractionEvent& callback);
+    //void OnMouseScrolledEvent(const ElementInteractionInfos& interactionInfos);
 
 private:
 
+    void CheckRegistration(EElementEvent::Type event);
     void RefreshInteractionFlags();
 
 private:
@@ -121,9 +143,13 @@ private:
     struct CallbackInfos
     {
         EElementEvent::Type event;
-        Callback callback;
+        CallbackInteractionEvent callback;
     };
     std::vector<CallbackInfos> m_callbacks;
+
+    //std::vector<CallbackInteractionEvent> m_mouseSelectionCallbacks;
+    //std::vector<CallbackInteractionEvent> m_mouseScrollCallbacks;
+    //std::vector<CallbackElementEvent> m_elementEventCallbacks;
 };
 
 }   // namespace gugu

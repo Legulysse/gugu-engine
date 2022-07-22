@@ -51,7 +51,7 @@ public:
 
     virtual void        GetPropagationList(std::vector<ElementEvents*>& _vecPropagationList) override;
 
-    virtual void OnMouseScrolled(int _iDelta) override;
+    void OnMouseScrolled(const ElementInteractionInfos& interactionInfos);
     void OnScrollDrag();
 
 private:

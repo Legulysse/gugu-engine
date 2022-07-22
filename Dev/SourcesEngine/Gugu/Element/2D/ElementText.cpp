@@ -103,13 +103,13 @@ void ElementText::SetEditable(bool _bIsEditable)
 
         if (m_isEditable)
         {
-            GetInteractions()->AddCallback(EElementEvent::OnMouseSelected, std::bind(&ElementText::OnMouseSelected, this));
-            GetInteractions()->AddCallback(EElementEvent::OnMouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
+            GetInteractions()->AddCallback(EElementEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
+            GetInteractions()->AddCallback(EElementEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
         }
         else
         {
-            GetInteractions()->RemoveCallbacks(EElementEvent::OnMouseSelected);
-            GetInteractions()->RemoveCallbacks(EElementEvent::OnMouseDeselected);
+            GetInteractions()->RemoveCallbacks(EElementEvent::MouseSelected);
+            GetInteractions()->RemoveCallbacks(EElementEvent::MouseDeselected);
 
             StopEditionImpl();
         }

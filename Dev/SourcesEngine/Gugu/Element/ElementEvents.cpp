@@ -47,24 +47,24 @@ void ElementEvents::SetDependsOnPropagationList()
     m_dependsOnPropagationList = true;
 }
 
-void ElementEvents::RegisterHandlerEvents(HandlerEvents* _pHandler)
-{
-    if (m_dependsOnPropagationList)
-    {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "An element should not be registered to a window event handler if it is used through an element propagation list");
-    }
-
-    if (_pHandler)
-    {
-        _pHandler->AddElementEventHandler(this);
-    }
-}
+//void ElementEvents::RegisterHandlerEvents(HandlerEvents* _pHandler)
+//{
+//    if (m_dependsOnPropagationList)
+//    {
+//        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "An element should not be registered to a window event handler if it is used through an element propagation list");
+//    }
+//
+//    if (_pHandler)
+//    {
+//        _pHandler->AddElementEventHandler(this);
+//    }
+//}
 
 void ElementEvents::UnregisterHandlerEvents()
 {
     if (m_handler)
     {
-        m_handler->RemoveElementEventHandler(this);
+        m_handler->UnregisterElementEventHandler(this);
     }
 }
 
@@ -73,10 +73,10 @@ bool ElementEvents::IsInteractionEnabled() const
     return m_element->IsVisible() && !m_disabled;
 }
 
-bool ElementEvents::HasInteraction(EElementInteraction::Type flag) const
-{
-    return ((m_interactionFlags & flag) != EElementInteraction::None);
-}
+//bool ElementEvents::HasInteraction(EElementInteraction::Type flag) const
+//{
+//    return ((m_interactionFlags & flag) != EElementInteraction::None);
+//}
 
 void ElementEvents::SetInteractionFlags(int _iFlags)
 {
@@ -108,18 +108,19 @@ void ElementEvents::RemoveInteractionFlag(EElementEvent::Type _eFlag)
 //    return ((m_interactionFlags & _eFlag) != EElementEvent::None);
 //}
 
-void ElementEvents::AddCallback(EElementEvent::Type event, const Callback& callback)
+void ElementEvents::AddCallback(EElementEvent::Type event, const CallbackInteractionEvent& callback)
 {
     if (!callback || event == EElementEvent::None)
         return;
 
-    GetGameWindow()->GetHandlerEvents()->AddElementEventHandler(this);
+   // GetGameWindow()->GetHandlerEvents()->AddElementEventHandler(this);
 
     CallbackInfos kInfos;
     kInfos.event = event;
     kInfos.callback = callback;
     m_callbacks.push_back(kInfos);
 
+    CheckRegistration(event);
     RefreshInteractionFlags();
 }
 
@@ -143,18 +144,71 @@ void ElementEvents::RemoveCallbacks(EElementEvent::Type event)
 void ElementEvents::RemoveCallbacks()
 {
     m_callbacks.clear();
+    //m_mouseScrollCallbacks.clear();
+    //m_elementEventCallbacks.clear();
 
     RefreshInteractionFlags();
 }
 
-void ElementEvents::FireCallbacks(EElementEvent::Type event)
+void ElementEvents::FireCallbacks(EElementEvent::Type event, const ElementInteractionInfos& interactionInfos)
 {
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {
         if (m_callbacks[i].event == event)
         {
-            m_callbacks[i].callback();
+            m_callbacks[i].callback(interactionInfos);
         }
+    }
+}
+
+//void ElementEvents::AddMouseSelectionCallback(const CallbackInteractionEvent& callback)
+//{
+//    if (!callback)
+//        return;
+//
+//    GetGameWindow()->GetHandlerEvents()->AddMouseSelectionElementEventHandler(this);
+//    m_mouseSelectionCallbacks.push_back(callback);
+//}
+//
+//void ElementEvents::OnMouseSelectionEvent(const ElementInteractionInfos& interactionInfos)
+//{
+//    for (size_t i = 0; i < m_mouseSelectionCallbacks.size(); ++i)
+//    {
+//        m_mouseSelectionCallbacks[i](interactionInfos);
+//    }
+//}
+//
+//void ElementEvents::AddMouseScrollCallback(const CallbackInteractionEvent& callback)
+//{
+//    if (!callback)
+//        return;
+//
+//    GetGameWindow()->GetHandlerEvents()->AddMouseScrollElementEventHandler(this);
+//    m_mouseScrollCallbacks.push_back(callback);
+//}
+//
+//void ElementEvents::OnMouseScrollEvent(const ElementInteractionInfos& interactionInfos)
+//{
+//    for (size_t i = 0; i < m_mouseScrollCallbacks.size(); ++i)
+//    {
+//        m_mouseScrollCallbacks[i](interactionInfos);
+//    }
+//}
+
+void ElementEvents::CheckRegistration(EElementEvent::Type event)
+{
+    for (size_t i = 0; i < m_callbacks.size(); ++i)
+    {
+        if (event == EElementEvent::MouseSelected || event == EElementEvent::MouseDeselected)
+        {
+            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Selection);
+        }
+        else if (event == EElementEvent::MouseScrolled)
+        {
+            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Scroll);
+        }
+
+        //TODO: other interactions
     }
 }
 
@@ -164,7 +218,7 @@ void ElementEvents::RefreshInteractionFlags()
 
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {
-        if (m_callbacks[i].event == EElementEvent::OnMouseSelected || m_callbacks[i].event == EElementEvent::OnMouseDeselected)
+        if (m_callbacks[i].event == EElementEvent::MouseSelected || m_callbacks[i].event == EElementEvent::MouseDeselected)
         {
             m_interactionFlags |= EElementInteraction::Selection;
         }

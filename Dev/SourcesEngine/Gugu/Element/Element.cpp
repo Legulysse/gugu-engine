@@ -568,13 +568,24 @@ ElementEvents* Element::GetInteractions()
     return m_interactions;
 }
 
-bool Element::IsPicked(const Vector2f& _kGlobalCoords) const
+bool Element::IsPicked(const Vector2f& globalCoords) const
 {
-    Vector2f oPosMouse = TransformToLocal(_kGlobalCoords);
-    Vector2f oPosBottomRight = GetSize();
+    Vector2f localPickedCoords = TransformToLocal(globalCoords);
+    return IsPickedLocal(localPickedCoords);
+}
 
-    if (    oPosMouse.x >= 0 && oPosMouse.x < oPosBottomRight.x
-        &&  oPosMouse.y >= 0 && oPosMouse.y < oPosBottomRight.y )
+bool Element::IsPicked(const Vector2f& globalCoords, Vector2f& localPickedCoords) const
+{
+    localPickedCoords = TransformToLocal(globalCoords);
+    return IsPickedLocal(localPickedCoords);
+}
+
+bool Element::IsPickedLocal(Vector2f& localCoords) const
+{
+    Vector2f bottomRight = GetSize();
+
+    if (localCoords.x >= 0 && localCoords.x < bottomRight.x
+        && localCoords.y >= 0 && localCoords.y < bottomRight.y)
     {
         return true;
     }

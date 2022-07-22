@@ -28,7 +28,7 @@ ElementEvents::ElementEvents(Element* element)
 
 ElementEvents::~ElementEvents()
 {
-    RemoveCallbacks();
+    RemoveAllCallbacks();
     UnregisterHandlerEvents();
 }
 
@@ -108,17 +108,17 @@ void ElementEvents::RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag)
 //    return ((m_interactionFlags & _eFlag) != EElementInteractionEvent::None);
 //}
 
-void ElementEvents::AddCallback(EElementInteractionEvent::Type event, const CallbackInteractionEvent& callback)
+void ElementEvents::AddCallback(EElementInteractionEvent::Type event, const DelegateInteractionEvent& callback)
 {
     if (!callback || event == EElementInteractionEvent::None)
         return;
 
    // GetGameWindow()->GetHandlerEvents()->AddElementEventHandler(this);
 
-    CallbackInfos kInfos;
+    InteractionCallbackInfos kInfos;
     kInfos.event = event;
     kInfos.callback = callback;
-    m_callbacks.push_back(kInfos);
+    m_interactionCallbacks.push_back(kInfos);
 
     CheckRegistration(event);
     RefreshInteractionFlags();
@@ -126,11 +126,11 @@ void ElementEvents::AddCallback(EElementInteractionEvent::Type event, const Call
 
 void ElementEvents::RemoveCallbacks(EElementInteractionEvent::Type event)
 {
-    for (auto iteCallback = m_callbacks.begin(); iteCallback != m_callbacks.end();)
+    for (auto iteCallback = m_interactionCallbacks.begin(); iteCallback != m_interactionCallbacks.end();)
     {
         if (iteCallback->event == event)
         {
-            iteCallback = m_callbacks.erase(iteCallback);
+            iteCallback = m_interactionCallbacks.erase(iteCallback);
         }
         else
         {
@@ -141,24 +141,60 @@ void ElementEvents::RemoveCallbacks(EElementInteractionEvent::Type event)
     RefreshInteractionFlags();
 }
 
-void ElementEvents::RemoveCallbacks()
-{
-    m_callbacks.clear();
-    //m_mouseScrollCallbacks.clear();
-    //m_elementEventCallbacks.clear();
-
-    RefreshInteractionFlags();
-}
-
 void ElementEvents::FireCallbacks(EElementInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos)
 {
-    for (size_t i = 0; i < m_callbacks.size(); ++i)
+    for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
     {
-        if (m_callbacks[i].event == event)
+        if (m_interactionCallbacks[i].event == event)
         {
-            m_callbacks[i].callback(interactionInfos);
+            m_interactionCallbacks[i].callback(interactionInfos);
         }
     }
+}
+
+void ElementEvents::AddCallback(EElementEvent::Type event, const Callback& callback)
+{
+    if (!callback || event == EElementEvent::None)
+        return;
+
+    ElementCallbackInfos kInfos;
+    kInfos.event = event;
+    kInfos.callback = callback;
+    m_elementCallbacks.push_back(kInfos);
+}
+
+void ElementEvents::RemoveCallbacks(EElementEvent::Type event)
+{
+    for (auto iteCallback = m_elementCallbacks.begin(); iteCallback != m_elementCallbacks.end();)
+    {
+        if (iteCallback->event == event)
+        {
+            iteCallback = m_elementCallbacks.erase(iteCallback);
+        }
+        else
+        {
+            ++iteCallback;
+        }
+    }
+}
+
+void ElementEvents::FireCallbacks(EElementEvent::Type event)
+{
+    for (size_t i = 0; i < m_elementCallbacks.size(); ++i)
+    {
+        if (m_elementCallbacks[i].event == event)
+        {
+            m_elementCallbacks[i].callback();
+        }
+    }
+}
+
+void ElementEvents::RemoveAllCallbacks()
+{
+    m_elementCallbacks.clear();
+    m_interactionCallbacks.clear();
+
+    RefreshInteractionFlags();
 }
 
 //void ElementEvents::AddMouseSelectionCallback(const CallbackInteractionEvent& callback)
@@ -197,7 +233,7 @@ void ElementEvents::FireCallbacks(EElementInteractionEvent::Type event, const El
 
 void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
 {
-    for (size_t i = 0; i < m_callbacks.size(); ++i)
+    for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
     {
         if (event == EElementInteractionEvent::MouseSelected || event == EElementInteractionEvent::MouseDeselected)
         {
@@ -216,9 +252,9 @@ void ElementEvents::RefreshInteractionFlags()
 {
     m_interactionFlags = EElementInteraction::None;
 
-    for (size_t i = 0; i < m_callbacks.size(); ++i)
+    for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
     {
-        if (m_callbacks[i].event == EElementInteractionEvent::MouseSelected || m_callbacks[i].event == EElementInteractionEvent::MouseDeselected)
+        if (m_interactionCallbacks[i].event == EElementInteractionEvent::MouseSelected || m_interactionCallbacks[i].event == EElementInteractionEvent::MouseDeselected)
         {
             m_interactionFlags |= EElementInteraction::Selection;
         }

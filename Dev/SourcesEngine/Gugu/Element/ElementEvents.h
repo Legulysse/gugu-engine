@@ -93,11 +93,11 @@ struct ElementInteractionInfos
 // TODO: split logic between interaction flags (selection, focus etc) and callback events (selected, focused, destroyed etc).
 class ElementEvents //TODO: rename as ElementEventHandler
 {
-    using CallbackInteractionEvent = std::function<void(const ElementInteractionInfos&)>;
-    //using CallbackMouseScrollEvent = std::function<void(int)>;
-    //using CallbackElementEvent = std::function<void()>;
-
     friend class HandlerEvents;
+
+public:
+
+    using DelegateInteractionEvent = std::function<void(const ElementInteractionInfos&)>;
 
 public:
 
@@ -123,11 +123,15 @@ public:
   //  bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
   //  bool HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const;
 
-    void AddCallback(EElementInteractionEvent::Type event, const CallbackInteractionEvent& callback);
+    void AddCallback(EElementInteractionEvent::Type event, const DelegateInteractionEvent& callback);
     void RemoveCallbacks(EElementInteractionEvent::Type event);
-    void RemoveCallbacks();
-
     void FireCallbacks(EElementInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos);
+
+    void AddCallback(EElementEvent::Type event, const Callback& callback);
+    void RemoveCallbacks(EElementEvent::Type event);
+    void FireCallbacks(EElementEvent::Type event);
+
+    void RemoveAllCallbacks();
 
     //void AddMouseSelectionCallback(const CallbackInteractionEvent& callback);
     //void OnMouseSelectedEvent(const ElementInteractionInfos& interactionInfos);
@@ -149,12 +153,19 @@ private:
     bool m_disabled;
     int m_interactionFlags;
 
-    struct CallbackInfos
+    struct InteractionCallbackInfos
     {
         EElementInteractionEvent::Type event;
-        CallbackInteractionEvent callback;
+        DelegateInteractionEvent callback;
     };
-    std::vector<CallbackInfos> m_callbacks;
+    std::vector<InteractionCallbackInfos> m_interactionCallbacks;
+
+    struct ElementCallbackInfos
+    {
+        EElementEvent::Type event;
+        Callback callback;
+    };
+    std::vector<ElementCallbackInfos> m_elementCallbacks;
 
     //std::vector<CallbackInteractionEvent> m_mouseSelectionCallbacks;
     //std::vector<CallbackInteractionEvent> m_mouseScrollCallbacks;

@@ -208,8 +208,8 @@ public:
     ElementEvents* GetInteractions();
 
     //TODO: deprecate all those callbacks
-    virtual void OnMouseEnter() {}
-    virtual void OnMouseLeave() {}
+    //virtual void OnMouseEnter() {}
+    //virtual void OnMouseLeave() {}
 
     virtual bool OnMousePressed() { return true; }
     virtual bool OnMouseReleased() { return true; }

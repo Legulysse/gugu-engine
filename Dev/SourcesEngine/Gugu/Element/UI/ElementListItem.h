@@ -37,8 +37,6 @@ public:
     void        SetOnSelected   (const Callback& callback);
     void        SetOnDeselected (const Callback& callback);
 
-    virtual void OnMouseEnter() override;
-    virtual void OnMouseLeave() override;
     virtual bool OnMousePressed() override;
     
 private:

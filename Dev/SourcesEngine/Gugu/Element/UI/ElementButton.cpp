@@ -36,7 +36,8 @@ ElementButton::ElementButton()
     m_actionOnPressed = nullptr;
     m_actionOnReleased = nullptr;
     
-    GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Focus);
+    GetInteractions()->AddCallback(EElementInteractionEvent::MouseEnter, std::bind(&ElementButton::OnMouseEnter, this, std::placeholders::_1));
+    GetInteractions()->AddCallback(EElementInteractionEvent::MouseLeave, std::bind(&ElementButton::OnMouseLeave, this, std::placeholders::_1));
     GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Click);
 
     m_isDisabled = false;
@@ -171,7 +172,7 @@ bool ElementButton::OnMouseReleased()
     return true;
 }
 
-void ElementButton::OnMouseEnter()
+void ElementButton::OnMouseEnter(const ElementInteractionInfos& interactionInfos)
 {
     if (m_currentSprite)
     {
@@ -179,7 +180,7 @@ void ElementButton::OnMouseEnter()
     }
 }
 
-void ElementButton::OnMouseLeave()
+void ElementButton::OnMouseLeave(const ElementInteractionInfos& interactionInfos)
 {
     if (m_currentSprite)
     {

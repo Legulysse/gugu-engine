@@ -42,7 +42,6 @@ void ElementListItem::SetList(ElementList* _pList)
     m_list = _pList;
     
     GetInteractions()->SetDependsOnPropagationList();
-    GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Focus);
     GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Click);
 }
 
@@ -90,14 +89,6 @@ void ElementListItem::SetOnSelected(const Callback& callback)
 void ElementListItem::SetOnDeselected(const Callback& callback)
 {
     m_callbackOnDeselected = callback;
-}
-
-void ElementListItem::OnMouseEnter()
-{
-}
-
-void ElementListItem::OnMouseLeave()
-{
 }
 
 bool ElementListItem::OnMousePressed()

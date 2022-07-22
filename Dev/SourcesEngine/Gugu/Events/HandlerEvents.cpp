@@ -47,6 +47,7 @@ HandlerEvents::~HandlerEvents()
     }
     m_elementEventHandlers.clear();
 
+    m_mouseFocusElementEventHandlers.clear();
     m_mouseSelectionElementEventHandlers.clear();
     m_mouseScrollElementEventHandlers.clear();
 }
@@ -128,7 +129,11 @@ void HandlerEvents::RegisterElementEventHandler(ElementEvents* elementEventHandl
     if (!CheckElementEventHandlerRegistration(elementEventHandler))
         return;
 
-    if (interactionType == EElementInteraction::Selection)
+    if (interactionType == EElementInteraction::Focus)
+    {
+        m_mouseFocusElementEventHandlers.push_back(elementEventHandler);
+    }
+    else if (interactionType == EElementInteraction::Selection)
     {
         m_mouseSelectionElementEventHandlers.push_back(elementEventHandler);
     }
@@ -146,6 +151,7 @@ void HandlerEvents::UnregisterElementEventHandler(ElementEvents* elementEventHan
     elementEventHandler->m_handler = nullptr;
     StdVectorRemove(m_elementEventHandlers, elementEventHandler);
 
+    StdVectorRemove(m_mouseFocusElementEventHandlers, elementEventHandler);
     StdVectorRemove(m_mouseSelectionElementEventHandlers, elementEventHandler);
     StdVectorRemove(m_mouseScrollElementEventHandlers, elementEventHandler);
 }
@@ -202,7 +208,16 @@ void HandlerEvents::BeginEvent(const std::vector<InteractiveElementEntry>& _vecR
     //}
 
     //TODO: check all arrays for deprecated pointers
-    for (ElementEvents* elementEventHandler : m_elementEventHandlers)
+    for (ElementEvents* elementEventHandler : m_mouseFocusElementEventHandlers)
+    {
+        if (elementEventHandler->GetElement() == m_elementMouseFocused)
+        {
+            bFoundFocused = true;
+            break;
+        }
+    }
+
+    for (ElementEvents* elementEventHandler : m_mouseSelectionElementEventHandlers)
     {
         if (elementEventHandler->GetElement() == m_elementMouseSelected)
         {
@@ -211,9 +226,12 @@ void HandlerEvents::BeginEvent(const std::vector<InteractiveElementEntry>& _vecR
         }
     }
 
+    if (!bFoundFocused)
+        m_elementMouseFocused = nullptr;
+
     if (!bFoundSelected)
         m_elementMouseSelected = nullptr;
-     
+
     //for (size_t i = 0; i < m_interactiveElements.size(); ++i)
     //{
     //    if (m_interactiveElements[i].element == m_elementMouseFocused)
@@ -302,36 +320,58 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
         }
         else
         {
-           /* for (size_t i = 0; i < m_interactiveElements.size(); ++i)
+            for (size_t i = 0; i < m_mouseFocusElementEventHandlers.size(); ++i)
             {
-                Element* pElement = m_interactiveElements[i].element;
-                if (pElement->HasInteractionFlag(EElementInteractionEvent::Focus) && m_interactiveElements[i].camera->IsMouseOverElement(oMouseCoords, pElement))
+                ElementEvents* elementEventHandler = m_mouseFocusElementEventHandlers[i];
+                Element* pElement = elementEventHandler->GetElement();
+
+                Vector2f localPickedCoords;
+                //Element* pElement = m_interactiveElements[i].element;
+                if (//pElement->HasInteractionFlag(EElementInteractionEvent::Focus) && 
+                    elementEventHandler->IsInteractionEnabled()
+                    && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                 {
                     if (m_elementMouseFocused != pElement)
                     {
                         if (m_elementMouseFocused)
                         {
-                            m_elementMouseFocused->OnMouseLeave();
-                            m_elementMouseFocused = nullptr;
+                            ElementInteractionInfos interactionInfos;
+                            m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeave, interactionInfos);
                         }
 
-                        m_elementMouseFocused = pElement;
-                        m_elementMouseFocused->OnMouseEnter();
+                        //if (m_elementMouseFocused)
+                        //{
+                        //    m_elementMouseFocused->OnMouseLeave();
+                        //    m_elementMouseFocused = nullptr;
+                        //}
 
-                        if (m_elementMouseFocused->GetInteractions())
-                            m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::Focus);
+                        m_elementMouseFocused = pElement;
+                        //m_elementMouseFocused->OnMouseEnter();
+
+                        //if (m_elementMouseFocused->GetInteractions())
+                        //    m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::Focus);
+
+                        ElementInteractionInfos interactionInfos;
+                        interactionInfos.localPickingPosition = localPickedCoords;
+                        interactionInfos.camera = camera;
+                        elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseEnter, interactionInfos);
                     }
 
                     bContinue = false;
                     break;
                 }
-            }*/
+            }
 
             //Nothing got the Focus, release the current one if needed
             if (bContinue && m_elementMouseFocused)
             {
-                m_elementMouseFocused->OnMouseLeave();
+                ElementInteractionInfos interactionInfos;
+                m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeave, interactionInfos);
+
                 m_elementMouseFocused = nullptr;
+
+                //m_elementMouseFocused->OnMouseLeave();
+                //m_elementMouseFocused = nullptr;
             }
         }
     }

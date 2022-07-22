@@ -235,7 +235,11 @@ void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
 {
     for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
     {
-        if (event == EElementInteractionEvent::MouseSelected || event == EElementInteractionEvent::MouseDeselected)
+        if (event == EElementInteractionEvent::MouseEnter || event == EElementInteractionEvent::MouseLeave)
+        {
+            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Focus);
+        }
+        else if (event == EElementInteractionEvent::MouseSelected || event == EElementInteractionEvent::MouseDeselected)
         {
             GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Selection);
         }

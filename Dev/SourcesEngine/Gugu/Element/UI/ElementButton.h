@@ -54,8 +54,8 @@ public:
 
     virtual bool OnMousePressed() override;
     virtual bool OnMouseReleased() override;
-    virtual void OnMouseEnter() override;
-    virtual void OnMouseLeave() override;
+    void OnMouseEnter(const ElementInteractionInfos& interactionInfos);
+    void OnMouseLeave(const ElementInteractionInfos& interactionInfos);
 
     ElementText* GetElementText() const;
 

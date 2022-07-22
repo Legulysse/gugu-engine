@@ -36,13 +36,15 @@ namespace EElementInteractionEvent
         RawSFEvent  = 0x0004,
         //Selection   = 0x0010,
         //Focus       = 0x0020,
-        Click       = 0x0040,
+        //Click       = 0x0040,
         //Scroll      = 0x0080,
         Drag        = 0x0100,
 
         // Interactions (The element will register to window events automatically)
         MouseEnter,
         MouseLeave,
+        MousePressed,
+        MouseReleased,
         MouseSelected,
         MouseDeselected,
         MouseScrolled,
@@ -50,8 +52,6 @@ namespace EElementInteractionEvent
         //TODO
         InteractionEnabled,
         InteractionDisabled,
-        MousePressed,
-        MouseReleased,
         MouseDragStart,
         MouseDragStop,
         MouseDragMove,

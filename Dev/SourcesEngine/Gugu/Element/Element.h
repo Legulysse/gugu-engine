@@ -211,8 +211,8 @@ public:
     //virtual void OnMouseEnter() {}
     //virtual void OnMouseLeave() {}
 
-    virtual bool OnMousePressed() { return true; }
-    virtual bool OnMouseReleased() { return true; }
+    //virtual bool OnMousePressed() { return true; }
+    //virtual bool OnMouseReleased() { return true; }
 
     //virtual bool OnMouseSelected() { return true; }
     //virtual bool OnMouseDeselected() { return true; }

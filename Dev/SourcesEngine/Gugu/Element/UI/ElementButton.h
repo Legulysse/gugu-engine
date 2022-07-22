@@ -52,17 +52,17 @@ public:
     void SetOnMousePressed(const Callback& _pActionOnPressed);
     void SetOnMouseReleased(const Callback& _pActionOnReleased);
 
-    virtual bool OnMousePressed() override;
-    virtual bool OnMouseReleased() override;
-    void OnMouseEnter(const ElementInteractionInfos& interactionInfos);
-    void OnMouseLeave(const ElementInteractionInfos& interactionInfos);
-
     ElementText* GetElementText() const;
 
     bool LoadFromFile(const std::string& path);
     virtual bool LoadFromXml(const pugi::xml_node& nodeSelf) override;
 
 protected:
+
+    void OnMousePressed(const ElementInteractionInfos& interactionInfos);
+    void OnMouseReleased(const ElementInteractionInfos& interactionInfos);
+    void OnMouseEnter(const ElementInteractionInfos& interactionInfos);
+    void OnMouseLeave(const ElementInteractionInfos& interactionInfos);
 
     void SetTextureImpl(Texture* textureIdle, Texture* textureFocused, Texture* textureDisabled);
 

@@ -42,7 +42,6 @@ void ElementListItem::SetList(ElementList* _pList)
     m_list = _pList;
     
     GetInteractions()->SetDependsOnPropagationList();
-    GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Click);
 }
 
 void ElementListItem::SetElement(Element* _pElement)
@@ -89,12 +88,6 @@ void ElementListItem::SetOnSelected(const Callback& callback)
 void ElementListItem::SetOnDeselected(const Callback& callback)
 {
     m_callbackOnDeselected = callback;
-}
-
-bool ElementListItem::OnMousePressed()
-{
-    m_list->SetSelectedItem(this);
-    return false;
 }
 
 void ElementListItem::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)

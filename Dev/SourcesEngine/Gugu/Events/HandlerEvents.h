@@ -77,6 +77,7 @@ private:
 
     std::vector<ElementEvents*> m_elementEventHandlers;
     std::vector<ElementEvents*> m_mouseFocusElementEventHandlers;
+    std::vector<ElementEvents*> m_mouseClickElementEventHandlers;
     std::vector<ElementEvents*> m_mouseSelectionElementEventHandlers;
     std::vector<ElementEvents*> m_mouseScrollElementEventHandlers;
 

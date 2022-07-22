@@ -51,10 +51,10 @@ public:
 
     virtual void        GetPropagationList(std::vector<ElementEvents*>& _vecPropagationList) override;
 
+protected:
+
     void OnMouseScrolled(const ElementInteractionInfos& interactionInfos);
     void OnScrollDrag();
-
-private:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;

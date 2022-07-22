@@ -37,8 +37,6 @@ public:
     void        SetOnSelected   (const Callback& callback);
     void        SetOnDeselected (const Callback& callback);
 
-    virtual bool OnMousePressed() override;
-    
 private:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;

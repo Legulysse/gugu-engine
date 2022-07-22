@@ -212,8 +212,8 @@ void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::E
         buttonValueRight->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(positionColumnX + positionColumnOffsetXRightButton, positionY));
         buttonValueRight->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
         buttonValueRight->SetSubImage("uipack_rpg.imageset.xml", "arrowBrown_right");
-        buttonValueRight->GetInteractions()->AddInteractionFlag(EElementEvent::Click);
-        buttonValueRight->GetInteractions()->AddCallback(EElementEvent::Click, onClick);
+        buttonValueRight->GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Click);
+        buttonValueRight->GetInteractions()->AddCallback(EElementInteractionEvent::Click, onClick);
     }
 }
 

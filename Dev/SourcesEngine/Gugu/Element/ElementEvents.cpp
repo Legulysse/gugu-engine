@@ -22,7 +22,7 @@ ElementEvents::ElementEvents(Element* element)
     , m_handler(nullptr)
     , m_dependsOnPropagationList(false)
     , m_disabled(false)
-    , m_interactionFlags(EElementEvent::None)
+    , m_interactionFlags(EElementInteractionEvent::None)
 {
 }
 
@@ -83,12 +83,12 @@ void ElementEvents::SetInteractionFlags(int _iFlags)
     m_interactionFlags = _iFlags;
 }
 
-void ElementEvents::AddInteractionFlag(EElementEvent::Type _eFlag)
+void ElementEvents::AddInteractionFlag(EElementInteractionEvent::Type _eFlag)
 {
     m_interactionFlags = m_interactionFlags | _eFlag;
 }
 
-void ElementEvents::RemoveInteractionFlag(EElementEvent::Type _eFlag)
+void ElementEvents::RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag)
 {
     m_interactionFlags = m_interactionFlags & ~_eFlag;
 }
@@ -100,17 +100,17 @@ void ElementEvents::RemoveInteractionFlag(EElementEvent::Type _eFlag)
 
 //bool ElementEvents::HasInteractionFlags() const
 //{
-//    return ((m_interactionFlags & ~EElementEvent::Absorb) & ~EElementEvent::Disabled) != EElementEvent::None;
+//    return ((m_interactionFlags & ~EElementInteractionEvent::Absorb) & ~EElementInteractionEvent::Disabled) != EElementInteractionEvent::None;
 //}
 //
-//bool ElementEvents::HasInteractionFlag(EElementEvent::Type _eFlag) const
+//bool ElementEvents::HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const
 //{
-//    return ((m_interactionFlags & _eFlag) != EElementEvent::None);
+//    return ((m_interactionFlags & _eFlag) != EElementInteractionEvent::None);
 //}
 
-void ElementEvents::AddCallback(EElementEvent::Type event, const CallbackInteractionEvent& callback)
+void ElementEvents::AddCallback(EElementInteractionEvent::Type event, const CallbackInteractionEvent& callback)
 {
-    if (!callback || event == EElementEvent::None)
+    if (!callback || event == EElementInteractionEvent::None)
         return;
 
    // GetGameWindow()->GetHandlerEvents()->AddElementEventHandler(this);
@@ -124,7 +124,7 @@ void ElementEvents::AddCallback(EElementEvent::Type event, const CallbackInterac
     RefreshInteractionFlags();
 }
 
-void ElementEvents::RemoveCallbacks(EElementEvent::Type event)
+void ElementEvents::RemoveCallbacks(EElementInteractionEvent::Type event)
 {
     for (auto iteCallback = m_callbacks.begin(); iteCallback != m_callbacks.end();)
     {
@@ -150,7 +150,7 @@ void ElementEvents::RemoveCallbacks()
     RefreshInteractionFlags();
 }
 
-void ElementEvents::FireCallbacks(EElementEvent::Type event, const ElementInteractionInfos& interactionInfos)
+void ElementEvents::FireCallbacks(EElementInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos)
 {
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {
@@ -195,15 +195,15 @@ void ElementEvents::FireCallbacks(EElementEvent::Type event, const ElementIntera
 //    }
 //}
 
-void ElementEvents::CheckRegistration(EElementEvent::Type event)
+void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
 {
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {
-        if (event == EElementEvent::MouseSelected || event == EElementEvent::MouseDeselected)
+        if (event == EElementInteractionEvent::MouseSelected || event == EElementInteractionEvent::MouseDeselected)
         {
             GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Selection);
         }
-        else if (event == EElementEvent::MouseScrolled)
+        else if (event == EElementInteractionEvent::MouseScrolled)
         {
             GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Scroll);
         }
@@ -218,7 +218,7 @@ void ElementEvents::RefreshInteractionFlags()
 
     for (size_t i = 0; i < m_callbacks.size(); ++i)
     {
-        if (m_callbacks[i].event == EElementEvent::MouseSelected || m_callbacks[i].event == EElementEvent::MouseDeselected)
+        if (m_callbacks[i].event == EElementInteractionEvent::MouseSelected || m_callbacks[i].event == EElementInteractionEvent::MouseDeselected)
         {
             m_interactionFlags |= EElementInteraction::Selection;
         }

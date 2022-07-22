@@ -521,13 +521,13 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
 //    m_interactions->SetInteractionFlags(_iFlags);
 //}
 //
-//void Element::AddInteractionFlag(EElementEvent::Type _eFlag)
+//void Element::AddInteractionFlag(EElementInteractionEvent::Type _eFlag)
 //{
 //    InitInteractions();
 //    m_interactions->AddInteractionFlag(_eFlag);
 //}
 //
-//void Element::RemoveInteractionFlag(EElementEvent::Type _eFlag)
+//void Element::RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag)
 //{
 //    if (m_interactions)
 //        m_interactions->RemoveInteractionFlag(_eFlag);
@@ -537,7 +537,7 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
 //{
 //    if (m_interactions)
 //        return m_interactions->GetInteractionFlags();
-//    return EElementEvent::None;
+//    return EElementInteractionEvent::None;
 //}
 
 //bool Element::HasInteractionFlags() const
@@ -547,7 +547,7 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
 //    return false;
 //}
 
-bool Element::HasInteractionFlag(EElementEvent::Type _eFlag) const
+bool Element::HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const
 {
     //if (m_interactions)
     //    return m_interactions->HasInteractionFlag(_eFlag);

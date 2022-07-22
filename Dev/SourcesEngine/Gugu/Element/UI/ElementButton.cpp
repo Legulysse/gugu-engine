@@ -36,8 +36,8 @@ ElementButton::ElementButton()
     m_actionOnPressed = nullptr;
     m_actionOnReleased = nullptr;
     
-    GetInteractions()->AddInteractionFlag(EElementEvent::Focus);
-    GetInteractions()->AddInteractionFlag(EElementEvent::Click);
+    GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Focus);
+    GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Click);
 
     m_isDisabled = false;
 }
@@ -121,7 +121,7 @@ void ElementButton::SetDisabled(bool _bDisabled)
 
     if (m_isDisabled)
     {
-        GetInteractions()->AddInteractionFlag(EElementEvent::Disabled);
+        GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Disabled);
 
         if (m_currentSprite)
         {
@@ -130,7 +130,7 @@ void ElementButton::SetDisabled(bool _bDisabled)
     }
     else
     {
-        GetInteractions()->RemoveInteractionFlag(EElementEvent::Disabled);
+        GetInteractions()->RemoveInteractionFlag(EElementInteractionEvent::Disabled);
 
         if (m_currentSprite)
         {

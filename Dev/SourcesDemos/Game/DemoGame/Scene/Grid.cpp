@@ -34,7 +34,7 @@ void Grid::InitGrid(Scene* scene, int _iWidth, int _iHeight, float _fCellWidth, 
     SquareGrid::InitSquareGrid(_iWidth, _iHeight, _fCellWidth, _fCellHeight, true);
     
     Element* pRoot = scene->GetRootNode()->AddChild<Element>();
-    pRoot->GetInteractions()->SetInteractionFlags(EElementEvent::Absorb | EElementEvent::Disabled);  //TODO: default on Scene nodes ?
+    pRoot->GetInteractions()->SetInteractionFlags(EElementInteractionEvent::Absorb | EElementInteractionEvent::Disabled);  //TODO: default on Scene nodes ?
 
     m_pTileMap = pRoot->AddChild<ElementTileMap>();
     m_pTileMap->BuildFromSquareGrid(this);

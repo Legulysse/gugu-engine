@@ -103,13 +103,13 @@ void ElementText::SetEditable(bool _bIsEditable)
 
         if (m_isEditable)
         {
-            GetInteractions()->AddCallback(EElementEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
-            GetInteractions()->AddCallback(EElementEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
+            GetInteractions()->AddCallback(EElementInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
+            GetInteractions()->AddCallback(EElementInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
         }
         else
         {
-            GetInteractions()->RemoveCallbacks(EElementEvent::MouseSelected);
-            GetInteractions()->RemoveCallbacks(EElementEvent::MouseDeselected);
+            GetInteractions()->RemoveCallbacks(EElementInteractionEvent::MouseSelected);
+            GetInteractions()->RemoveCallbacks(EElementInteractionEvent::MouseDeselected);
 
             StopEditionImpl();
         }
@@ -333,7 +333,7 @@ void ElementText::StartEditionImpl()
     }
 
     //TODO: plug to EventListener
-    //GetInteractions()->AddInteractionFlag(EElementEvent::RawSFEvent);
+    //GetInteractions()->AddInteractionFlag(EElementInteractionEvent::RawSFEvent);
     
     Recompute();
 }
@@ -345,7 +345,7 @@ void ElementText::StopEditionImpl()
     m_isEditing     = false;
 
     //TODO: plug to EventListener
-    //GetInteractions()->RemoveInteractionFlag(EElementEvent::RawSFEvent);
+    //GetInteractions()->RemoveInteractionFlag(EElementInteractionEvent::RawSFEvent);
     
     Recompute();
 }

@@ -22,7 +22,7 @@ namespace gugu
 
 namespace gugu {
     
-namespace EElementEvent
+namespace EElementInteractionEvent
 {
     enum Type
     {
@@ -31,13 +31,13 @@ namespace EElementEvent
         Disabled    = 0x0001,   // Disable Events on self
         Absorb      = 0x0002,   // Disable Events on children
         
-        Destroyed   = 0x0003,   // Temporary hack to access callbacks
+        //Destroyed   = 0x0003,   // Temporary hack to access callbacks
 
         RawSFEvent  = 0x0004,
         //Selection   = 0x0010,
         Focus       = 0x0020,
         Click       = 0x0040,
-        Scroll      = 0x0080,
+        //Scroll      = 0x0080,
         Drag        = 0x0100,
 
         // Interactions (The element will register to window events automatically)
@@ -55,6 +55,15 @@ namespace EElementEvent
         MouseDragStart,
         MouseDragStop,
         MouseDragMove,
+    };
+}
+
+namespace EElementEvent
+{
+    enum Type
+    {
+        None,
+        Destroyed,
     };
 }
 
@@ -106,19 +115,19 @@ public:
 
     // TODO: DEPRECATE ?
     void SetInteractionFlags(int _iFlags);
-    void AddInteractionFlag(EElementEvent::Type _eFlag);
-    void RemoveInteractionFlag(EElementEvent::Type _eFlag);
+    void AddInteractionFlag(EElementInteractionEvent::Type _eFlag);
+    void RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag);
 
     // TODO: DEPRECATE ?
   //  int GetInteractionFlags() const;
   //  bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
-  //  bool HasInteractionFlag(EElementEvent::Type _eFlag) const;
+  //  bool HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const;
 
-    void AddCallback(EElementEvent::Type event, const CallbackInteractionEvent& callback);
-    void RemoveCallbacks(EElementEvent::Type event);
+    void AddCallback(EElementInteractionEvent::Type event, const CallbackInteractionEvent& callback);
+    void RemoveCallbacks(EElementInteractionEvent::Type event);
     void RemoveCallbacks();
 
-    void FireCallbacks(EElementEvent::Type event, const ElementInteractionInfos& interactionInfos);
+    void FireCallbacks(EElementInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos);
 
     //void AddMouseSelectionCallback(const CallbackInteractionEvent& callback);
     //void OnMouseSelectedEvent(const ElementInteractionInfos& interactionInfos);
@@ -129,7 +138,7 @@ public:
 
 private:
 
-    void CheckRegistration(EElementEvent::Type event);
+    void CheckRegistration(EElementInteractionEvent::Type event);
     void RefreshInteractionFlags();
 
 private:
@@ -142,7 +151,7 @@ private:
 
     struct CallbackInfos
     {
-        EElementEvent::Type event;
+        EElementInteractionEvent::Type event;
         CallbackInteractionEvent callback;
     };
     std::vector<CallbackInfos> m_callbacks;

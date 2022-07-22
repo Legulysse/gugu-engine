@@ -42,8 +42,8 @@ void ElementListItem::SetList(ElementList* _pList)
     m_list = _pList;
     
     GetInteractions()->SetDependsOnPropagationList();
-    GetInteractions()->AddInteractionFlag(EElementEvent::Focus);
-    GetInteractions()->AddInteractionFlag(EElementEvent::Click);
+    GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Focus);
+    GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Click);
 }
 
 void ElementListItem::SetElement(Element* _pElement)

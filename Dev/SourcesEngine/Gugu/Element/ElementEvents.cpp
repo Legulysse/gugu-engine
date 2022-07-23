@@ -83,20 +83,20 @@ bool ElementEvents::IsInteractionEnabled() const
 //    return ((m_interactionFlags & flag) != EElementInteraction::None);
 //}
 
-void ElementEvents::SetInteractionFlags(int _iFlags)
-{
-    m_interactionFlags = _iFlags;
-}
-
-void ElementEvents::AddInteractionFlag(EElementInteractionEvent::Type _eFlag)
-{
-    m_interactionFlags = m_interactionFlags | _eFlag;
-}
-
-void ElementEvents::RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag)
-{
-    m_interactionFlags = m_interactionFlags & ~_eFlag;
-}
+//void ElementEvents::SetInteractionFlags(int _iFlags)
+//{
+//    m_interactionFlags = _iFlags;
+//}
+//
+//void ElementEvents::AddInteractionFlag(EElementInteractionEvent::Type _eFlag)
+//{
+//    m_interactionFlags = m_interactionFlags | _eFlag;
+//}
+//
+//void ElementEvents::RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag)
+//{
+//    m_interactionFlags = m_interactionFlags & ~_eFlag;
+//}
 
 //int ElementEvents::GetInteractionFlags() const
 //{
@@ -238,33 +238,34 @@ void ElementEvents::RemoveAllCallbacks()
 
 void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
 {
-    for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
+    if (event == EElementInteractionEvent::MouseEnter
+        || event == EElementInteractionEvent::MouseLeave)
     {
-        if (event == EElementInteractionEvent::MouseEnter
-            || event == EElementInteractionEvent::MouseLeave)
-        {
-            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Focus);
-        }
-        else if (event == EElementInteractionEvent::MousePressed
-            || event == EElementInteractionEvent::MouseReleased)
-        {
-            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Click);
-        }
-        else if (event == EElementInteractionEvent::MouseSelected
-            || event == EElementInteractionEvent::MouseDeselected)
-        {
-            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Selection);
-        }
-        else if (event == EElementInteractionEvent::MouseScrolled)
-        {
-            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Scroll);
-        }
-        else if (event == EElementInteractionEvent::MouseDragStart
-            || event == EElementInteractionEvent::MouseDragStop
-            || event == EElementInteractionEvent::MouseDragMove)
-        {
-            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Drag);
-        }
+        GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Focus);
+    }
+    else if (event == EElementInteractionEvent::MousePressed
+        || event == EElementInteractionEvent::MouseReleased)
+    {
+        GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Click);
+    }
+    else if (event == EElementInteractionEvent::MouseSelected
+        || event == EElementInteractionEvent::MouseDeselected)
+    {
+        GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Selection);
+    }
+    else if (event == EElementInteractionEvent::MouseScrolled)
+    {
+        GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Scroll);
+    }
+    else if (event == EElementInteractionEvent::MouseDragStart
+        || event == EElementInteractionEvent::MouseDragStop
+        || event == EElementInteractionEvent::MouseDragMove)
+    {
+        GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Drag);
+    }
+    else if (event == EElementInteractionEvent::RawSFEvent)
+    {
+        GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::RawSFEvent);
     }
 }
 

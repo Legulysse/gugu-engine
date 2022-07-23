@@ -17,6 +17,11 @@ namespace gugu
     class Camera;
 }
 
+namespace sf
+{
+    class Event;
+}
+
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
@@ -33,14 +38,14 @@ namespace EElementInteractionEvent
         
         //Destroyed   = 0x0003,   // Temporary hack to access callbacks
 
-        RawSFEvent  = 0x0004,
+        //RawSFEvent  = 0x0004,
         //Selection   = 0x0010,
         //Focus       = 0x0020,
         //Click       = 0x0040,
         //Scroll      = 0x0080,
         //Drag        = 0x0100,
 
-        // Interactions (The element will register to window events automatically)
+        // Interactions (The element will register to window events automatically when needed)
         MouseEnter,
         MouseLeave,
         MousePressed,
@@ -51,6 +56,7 @@ namespace EElementInteractionEvent
         MouseDragStart,
         MouseDragStop,
         MouseDragMove,
+        RawSFEvent,
 
         //TODO
         InteractionEnabled,
@@ -78,17 +84,21 @@ namespace EElementInteraction
         Click       = 0x0004,
         Scroll      = 0x0008,
         Drag        = 0x0010,
+        RawSFEvent  = 0x0020,
     };
 }
 
 struct ElementInteractionInfos
 {
-    // Common infos (except MouseLeave and MouseDeselected).
+    // Common infos (except RawSFEvent, MouseLeave and MouseDeselected).
     Vector2f localPickingPosition = Vector2::Zero_f;
-    Camera* camera = nullptr;
+    const Camera* camera = nullptr;
 
     // MouseScrolled infos.
     int scrollDelta = 0;
+
+    // RawSFEvent infos.
+    const sf::Event* rawSFEvent = nullptr;
 };
 
 // TODO: disabled/absorb should be individual flags to not mess with interaction flags.
@@ -116,9 +126,9 @@ public:
     //bool HasInteraction(EElementInteraction::Type flag) const;
 
     // TODO: DEPRECATE ?
-    void SetInteractionFlags(int _iFlags);
-    void AddInteractionFlag(EElementInteractionEvent::Type _eFlag);
-    void RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag);
+    //void SetInteractionFlags(int _iFlags);
+    //void AddInteractionFlag(EElementInteractionEvent::Type _eFlag);
+    //void RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag);
 
     // TODO: DEPRECATE ?
   //  int GetInteractionFlags() const;

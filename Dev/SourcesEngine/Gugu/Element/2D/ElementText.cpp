@@ -43,6 +43,10 @@ ElementText::ElementText()
 
     SetFont(GetResources()->GetDefaultFont());
     SetFontSize(20);
+
+    GetInteractions()->AddCallback(EElementInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
+    GetInteractions()->AddCallback(EElementInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
+    GetInteractions()->AddCallback(EElementInteractionEvent::RawSFEvent, std::bind(&ElementText::OnSFEvent, this, std::placeholders::_1));
 }
 
 ElementText::~ElementText()
@@ -103,13 +107,11 @@ void ElementText::SetEditable(bool _bIsEditable)
 
         if (m_isEditable)
         {
-            GetInteractions()->AddCallback(EElementInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
-            GetInteractions()->AddCallback(EElementInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
+            //TODO: I need some kind of toggle for events/callbacks
         }
         else
         {
-            GetInteractions()->RemoveCallbacks(EElementInteractionEvent::MouseSelected);
-            GetInteractions()->RemoveCallbacks(EElementInteractionEvent::MouseDeselected);
+            //TODO: I need some kind of toggle for events/callbacks
 
             StopEditionImpl();
         }
@@ -360,10 +362,18 @@ void ElementText::OnMouseDeselected()
     StopEditionImpl();
 }
 
-bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
+void ElementText::OnSFEvent(const ElementInteractionInfos& interactionInfos)
 {
     if (!m_isEditing)
-        return true;
+        return;     // return true;
+
+    return ProcessSFEvent(*interactionInfos.rawSFEvent);
+}
+
+void ElementText::ProcessSFEvent(const sf::Event& _oSFEvent)
+{
+    if (!m_isEditing)
+        return;     // return true;
 
     if (_oSFEvent.type == sf::Event::KeyPressed)
     {
@@ -376,13 +386,13 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
                 if (m_callbackOnValidate)
                     m_callbackOnValidate();
 
-                return false;
+                return;     // return false;
             }
             else
             {
                 m_textValue += '\n';
                 Recompute();
-                return false;
+                return;     // return false;
             }
         }
         else if (_oSFEvent.key.code == sf::Keyboard::Backspace)
@@ -391,7 +401,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
             {
                 m_textValue.erase(m_textValue.getSize() - 1, 1);
                 Recompute();
-                return false;
+                return;     // return false;
             }
         }
     }
@@ -401,7 +411,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
         {
             m_textValue += _oSFEvent.text.unicode;
             Recompute();
-            return false;
+            return;     // return false;
         }
 #if 0
         char cNewChar = '\0';
@@ -463,7 +473,7 @@ bool ElementText::OnSFEvent(const sf::Event& _oSFEvent)
 #endif
     }
 
-    return true;
+    return;     // return true;
 }
 
 void ElementText::SetOnValidate(const Callback& callbackOnValidate)

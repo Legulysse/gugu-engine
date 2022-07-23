@@ -81,6 +81,7 @@ private:
     std::vector<ElementEvents*> m_mouseSelectionElementEventHandlers;
     std::vector<ElementEvents*> m_mouseScrollElementEventHandlers;
     std::vector<ElementEvents*> m_mouseDragElementEventHandlers;
+    std::vector<ElementEvents*> m_rawSFEventElementEventHandlers;
 
     //std::vector<InteractiveElementEntry> m_interactiveElements;
 

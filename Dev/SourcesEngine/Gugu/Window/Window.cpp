@@ -538,7 +538,7 @@ bool Window::ProcessEvents()
         }
         else if (m_consoleNode->IsVisible())
         {
-            m_consoleTextEntry->OnSFEvent(event);
+            m_consoleTextEntry->ProcessSFEvent(event);
             propagateEvent = false;
         }
 

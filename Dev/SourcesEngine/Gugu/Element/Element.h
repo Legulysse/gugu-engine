@@ -223,7 +223,7 @@ public:
 
     //virtual void OnMouseScrolled(int _iDelta) {}
 
-    virtual bool OnSFEvent(const sf::Event& _oSFEvent) { return true; }     //Return true : allow event to be propagated.
+    //virtual bool OnSFEvent(const sf::Event& _oSFEvent) { return true; }     //Return true : allow event to be propagated.
     
     //----------------------------------------------
     // Loading

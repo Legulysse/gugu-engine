@@ -151,6 +151,10 @@ void HandlerEvents::RegisterElementEventHandler(ElementEvents* elementEventHandl
     {
         m_mouseDragElementEventHandlers.push_back(elementEventHandler);
     }
+    else if (interactionType == EElementInteraction::RawSFEvent)
+    {
+        m_rawSFEventElementEventHandlers.push_back(elementEventHandler);
+    }
 }
 
 void HandlerEvents::UnregisterElementEventHandler(ElementEvents* elementEventHandler)
@@ -166,6 +170,7 @@ void HandlerEvents::UnregisterElementEventHandler(ElementEvents* elementEventHan
     StdVectorRemove(m_mouseSelectionElementEventHandlers, elementEventHandler);
     StdVectorRemove(m_mouseScrollElementEventHandlers, elementEventHandler);
     StdVectorRemove(m_mouseDragElementEventHandlers, elementEventHandler);
+    StdVectorRemove(m_rawSFEventElementEventHandlers, elementEventHandler);
 }
 //
 //void HandlerEvents::AddMouseSelectionElementEventHandler(ElementEvents* elementEventHandler)
@@ -628,21 +633,29 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
         }
     }
 
-    //if (bContinue)
-    //{
-    //    for (size_t i = 0; i < m_interactiveElements.size(); ++i)
-    //    {
-    //        Element* pElement = m_interactiveElements[i].element;
-    //        if (pElement->HasInteractionFlag(EElementInteractionEvent::RawSFEvent))
-    //        {
-    //            if (!pElement->OnSFEvent(_oSFEvent))
-    //            {
-    //                bContinue = false;
-    //                break;
-    //            }
-    //        }
-    //    }
-    //}
+    if (bContinue)
+    {
+        for (size_t i = 0; i < m_rawSFEventElementEventHandlers.size(); ++i)
+        {
+            ElementEvents* elementEventHandler = m_rawSFEventElementEventHandlers[i];
+            Element* pElement = elementEventHandler->GetElement();
+
+            Vector2f localPickedCoords;
+            //Element* pElement = m_interactiveElements[i].element;
+            if (elementEventHandler->IsInteractionEnabled())
+            {
+                ElementInteractionInfos interactionInfos;
+                interactionInfos.rawSFEvent = &_oSFEvent;
+                elementEventHandler->FireCallbacks(EElementInteractionEvent::RawSFEvent, interactionInfos);
+
+                //if (!pElement->OnSFEvent(_oSFEvent))
+                //{
+                //    bContinue = false;
+                //    break;
+                //}
+            }
+        }
+    }
 }
 
 bool HandlerEvents::PropagateToListeners(const sf::Event& _oSFEvent)

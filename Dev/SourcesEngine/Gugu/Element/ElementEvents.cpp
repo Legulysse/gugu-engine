@@ -16,12 +16,12 @@
 // File Implementation
 
 namespace gugu {
-        
+
 ElementEvents::ElementEvents(Element* element)
     : m_element(element)
     , m_handler(nullptr)
     , m_dependsOnPropagationList(false)
-    , m_disabled(false)
+    , m_interactionEnabled(true)
     , m_interactionFlags(EElementInteractionEvent::None)
 {
 }
@@ -68,9 +68,14 @@ void ElementEvents::UnregisterHandlerEvents()
     }
 }
 
+void ElementEvents::SetInteractionEnabled(bool enabled)
+{
+    m_interactionEnabled = enabled;
+}
+
 bool ElementEvents::IsInteractionEnabled() const
 {
-    return m_element->IsVisible() && !m_disabled;
+    return m_interactionEnabled && m_element->IsVisible();
 }
 
 //bool ElementEvents::HasInteraction(EElementInteraction::Type flag) const

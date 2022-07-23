@@ -123,7 +123,7 @@ void ElementButton::SetDisabled(bool _bDisabled)
 
     if (m_isDisabled)
     {
-        GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Disabled);
+        GetInteractions()->SetInteractionEnabled(false);
 
         if (m_currentSprite)
         {
@@ -132,7 +132,7 @@ void ElementButton::SetDisabled(bool _bDisabled)
     }
     else
     {
-        GetInteractions()->RemoveInteractionFlag(EElementInteractionEvent::Disabled);
+        GetInteractions()->SetInteractionEnabled(true);
 
         if (m_currentSprite)
         {

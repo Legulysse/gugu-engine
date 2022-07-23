@@ -28,8 +28,8 @@ namespace EElementInteractionEvent
     {
         None        = 0x0000,
         
-        Disabled    = 0x0001,   // Disable Events on self
-        Absorb      = 0x0002,   // Disable Events on children
+        //Disabled    = 0x0001,   // Disable Events on self
+        //Absorb      = 0x0002,   // Disable Events on children
         
         //Destroyed   = 0x0003,   // Temporary hack to access callbacks
 
@@ -111,6 +111,7 @@ public:
     //void RegisterHandlerEvents(HandlerEvents* _pHandler);
     void UnregisterHandlerEvents();
 
+    void SetInteractionEnabled(bool enabled);
     bool IsInteractionEnabled() const;
     //bool HasInteraction(EElementInteraction::Type flag) const;
 
@@ -151,7 +152,7 @@ private:
     Element* m_element;
     HandlerEvents* m_handler;
     bool m_dependsOnPropagationList;
-    bool m_disabled;
+    bool m_interactionEnabled;
     int m_interactionFlags;
 
     struct InteractionCallbackInfos

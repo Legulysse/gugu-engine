@@ -200,9 +200,9 @@ public:
 
     //int GetInteractionFlags() const;
     //bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
-    bool HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const;
+    //bool HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const;
 
-    virtual void GetPropagationList(std::vector<ElementEvents*>& _vecPropagationList) {} //Return Elements that are not Children but should have Interactions (like Items)
+    //virtual void GetPropagationList(std::vector<ElementEvents*>& _vecPropagationList) {} //Return Elements that are not Children but should have Interactions (like Items)
 
     void InitInteractions();
     ElementEvents* GetInteractions();

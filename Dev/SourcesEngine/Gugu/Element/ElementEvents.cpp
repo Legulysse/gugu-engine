@@ -37,15 +37,15 @@ Element* ElementEvents::GetElement() const
     return m_element;
 }
 
-void ElementEvents::SetDependsOnPropagationList()
-{
-    if (m_handler)
-    {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "An element should not be registered to a window event handler if it is used through an element propagation list");
-    }
-
-    m_dependsOnPropagationList = true;
-}
+//void ElementEvents::SetDependsOnPropagationList()
+//{
+//    if (m_handler)
+//    {
+//        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "An element should not be registered to a window event handler if it is used through an element propagation list");
+//    }
+//
+//    m_dependsOnPropagationList = true;
+//}
 
 //void ElementEvents::RegisterHandlerEvents(HandlerEvents* _pHandler)
 //{

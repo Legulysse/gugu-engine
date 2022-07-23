@@ -547,12 +547,12 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
 //    return false;
 //}
 
-bool Element::HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const
-{
-    //if (m_interactions)
-    //    return m_interactions->HasInteractionFlag(_eFlag);
-    return false;
-}
+//bool Element::HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const
+//{
+//    //if (m_interactions)
+//    //    return m_interactions->HasInteractionFlag(_eFlag);
+//    return false;
+//}
 
 void Element::InitInteractions()
 {

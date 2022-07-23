@@ -40,8 +40,6 @@ void ElementListItem::SetList(ElementList* _pList)
     SetParent(_pList);
 
     m_list = _pList;
-    
-    GetInteractions()->SetDependsOnPropagationList();
 }
 
 void ElementListItem::SetElement(Element* _pElement)

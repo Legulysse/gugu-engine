@@ -107,7 +107,7 @@ public:
 
     Element* GetElement() const;
 
-    void SetDependsOnPropagationList();
+//    void SetDependsOnPropagationList();
     //void RegisterHandlerEvents(HandlerEvents* _pHandler);
     void UnregisterHandlerEvents();
 

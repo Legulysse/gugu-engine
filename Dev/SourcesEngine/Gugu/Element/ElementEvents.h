@@ -38,7 +38,7 @@ namespace EElementInteractionEvent
         //Focus       = 0x0020,
         //Click       = 0x0040,
         //Scroll      = 0x0080,
-        Drag        = 0x0100,
+        //Drag        = 0x0100,
 
         // Interactions (The element will register to window events automatically)
         MouseEnter,
@@ -48,13 +48,13 @@ namespace EElementInteractionEvent
         MouseSelected,
         MouseDeselected,
         MouseScrolled,
+        MouseDragStart,
+        MouseDragStop,
+        MouseDragMove,
 
         //TODO
         InteractionEnabled,
         InteractionDisabled,
-        MouseDragStart,
-        MouseDragStop,
-        MouseDragMove,
     };
 }
 
@@ -83,14 +83,15 @@ namespace EElementInteraction
 
 struct ElementInteractionInfos
 {
-    Vector2f localPickingPosition;
-    Camera* camera;
+    // Common infos (except MouseLeave and MouseDeselected).
+    Vector2f localPickingPosition = Vector2::Zero_f;
+    Camera* camera = nullptr;
 
-    int scrollDelta;
+    // MouseScrolled infos.
+    int scrollDelta = 0;
 };
 
 // TODO: disabled/absorb should be individual flags to not mess with interaction flags.
-// TODO: split logic between interaction flags (selection, focus etc) and callback events (selected, focused, destroyed etc).
 class ElementEvents //TODO: rename as ElementEventHandler
 {
     friend class HandlerEvents;

@@ -80,6 +80,7 @@ private:
     std::vector<ElementEvents*> m_mouseClickElementEventHandlers;
     std::vector<ElementEvents*> m_mouseSelectionElementEventHandlers;
     std::vector<ElementEvents*> m_mouseScrollElementEventHandlers;
+    std::vector<ElementEvents*> m_mouseDragElementEventHandlers;
 
     //std::vector<InteractiveElementEntry> m_interactiveElements;
 

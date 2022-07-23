@@ -50,11 +50,10 @@ ElementList::ElementList()
     m_scrollButtonBottom->GetInteractions()->SetDependsOnPropagationList();
     m_scrollSlider->GetInteractions()->SetDependsOnPropagationList();
     
-    m_scrollSlider->GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Drag);
 
     m_scrollButtonTop->GetInteractions()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, -1));
     m_scrollButtonBottom->GetInteractions()->AddCallback(EElementInteractionEvent::MouseReleased, std::bind(&ElementList::ScrollItems, this, 1));
-    m_scrollSlider->GetInteractions()->AddCallback(EElementInteractionEvent::Drag, std::bind(&ElementList::OnScrollDrag, this));
+    m_scrollSlider->GetInteractions()->AddCallback(EElementInteractionEvent::MouseDragMove, std::bind(&ElementList::OnSliderDragMove, this, std::placeholders::_1));
 }
 
 ElementList::~ElementList()
@@ -233,7 +232,7 @@ void ElementList::OnMouseScrolled(const ElementInteractionInfos& interactionInfo
     ScrollItems(-interactionInfos.scrollDelta);
 }
 
-void ElementList::OnScrollDrag()
+void ElementList::OnSliderDragMove(const ElementInteractionInfos& interactionInfos)
 {
     if (m_items.size() != 0)
     {

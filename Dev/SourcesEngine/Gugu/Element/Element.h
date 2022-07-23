@@ -217,9 +217,9 @@ public:
     //virtual bool OnMouseSelected() { return true; }
     //virtual bool OnMouseDeselected() { return true; }
 
-    virtual void OnMouseDragStart() {}
-    virtual void OnMouseDragStop() {}
-    virtual void OnMouseDragMove() {}
+    //virtual void OnMouseDragStart() {}
+    //virtual void OnMouseDragStop() {}
+    //virtual void OnMouseDragMove() {}
 
     //virtual void OnMouseScrolled(int _iDelta) {}
 

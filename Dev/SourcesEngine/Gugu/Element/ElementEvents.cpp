@@ -235,15 +235,18 @@ void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
 {
     for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
     {
-        if (event == EElementInteractionEvent::MouseEnter || event == EElementInteractionEvent::MouseLeave)
+        if (event == EElementInteractionEvent::MouseEnter
+            || event == EElementInteractionEvent::MouseLeave)
         {
             GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Focus);
         }
-        else if (event == EElementInteractionEvent::MousePressed || event == EElementInteractionEvent::MouseReleased)
+        else if (event == EElementInteractionEvent::MousePressed
+            || event == EElementInteractionEvent::MouseReleased)
         {
             GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Click);
         }
-        else if (event == EElementInteractionEvent::MouseSelected || event == EElementInteractionEvent::MouseDeselected)
+        else if (event == EElementInteractionEvent::MouseSelected
+            || event == EElementInteractionEvent::MouseDeselected)
         {
             GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Selection);
         }
@@ -251,8 +254,12 @@ void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
         {
             GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Scroll);
         }
-
-        //TODO: other interactions
+        else if (event == EElementInteractionEvent::MouseDragStart
+            || event == EElementInteractionEvent::MouseDragStop
+            || event == EElementInteractionEvent::MouseDragMove)
+        {
+            GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Drag);
+        }
     }
 }
 

@@ -70,6 +70,9 @@ void ElementEvents::UnregisterHandlerEvents()
 
 void ElementEvents::SetInteractionEnabled(bool enabled)
 {
+    if (m_interactionEnabled == enabled)
+        return;
+
     m_interactionEnabled = enabled;
 
     if (m_interactionEnabled)

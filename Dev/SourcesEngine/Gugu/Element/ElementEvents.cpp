@@ -71,6 +71,15 @@ void ElementEvents::UnregisterHandlerEvents()
 void ElementEvents::SetInteractionEnabled(bool enabled)
 {
     m_interactionEnabled = enabled;
+
+    if (m_interactionEnabled)
+    {
+        FireCallbacks(EElementEvent::InteractionEnabled);
+    }
+    else
+    {
+        FireCallbacks(EElementEvent::InteractionDisabled);
+    }
 }
 
 bool ElementEvents::IsInteractionEnabled() const

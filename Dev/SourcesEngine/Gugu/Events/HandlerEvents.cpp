@@ -638,10 +638,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
         for (size_t i = 0; i < m_rawSFEventElementEventHandlers.size(); ++i)
         {
             ElementEvents* elementEventHandler = m_rawSFEventElementEventHandlers[i];
-            Element* pElement = elementEventHandler->GetElement();
 
-            Vector2f localPickedCoords;
-            //Element* pElement = m_interactiveElements[i].element;
             if (elementEventHandler->IsInteractionEnabled())
             {
                 ElementInteractionInfos interactionInfos;

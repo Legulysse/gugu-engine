@@ -37,14 +37,16 @@ ElementListItem::~ElementListItem()
 void ElementListItem::SetList(ElementList* _pList)
 {
     //TODO : remove from previous List
-    SetParent(_pList);
 
+    SetParent(_pList);
     m_list = _pList;
 }
 
 void ElementListItem::SetElement(Element* _pElement)
 {
     SafeDelete(m_elementImpl);
+
+    _pElement->SetParent(this);
     m_elementImpl = _pElement;
 }
 

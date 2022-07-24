@@ -574,30 +574,22 @@ bool Window::ProcessEvents()
 
         if (propagateEvent)
         {
-            std::vector<HandlerEvents::InteractiveElementEntry> vecRootElements;
+            std::vector<const Camera*> cameras;
 
             if (m_rootNode && m_mainCamera)
             {
-                m_rootNode->SortOnZIndex();
-
-                HandlerEvents::InteractiveElementEntry kEntry;
-                kEntry.element = m_rootNode;
-                kEntry.camera = m_mainCamera;
-                vecRootElements.push_back(kEntry);
+                cameras.push_back(m_mainCamera);
             }
 
             for (size_t i = 0; i < m_sceneBindings.size(); ++i)
             {
                 if (m_sceneBindings[i].scene && m_sceneBindings[i].scene->GetRootNode() && m_sceneBindings[i].camera)
                 {
-                    HandlerEvents::InteractiveElementEntry kEntry;
-                    kEntry.element = m_sceneBindings[i].scene->GetRootNode();
-                    kEntry.camera = m_sceneBindings[i].camera;
-                    vecRootElements.push_back(kEntry);
+                    cameras.push_back(m_sceneBindings[i].camera);
                 }
             }
 
-            m_handlerEvents->ProcessEventOnElements(event, vecRootElements);
+            m_handlerEvents->ProcessEventOnElements(event, cameras);
         }
     }
 

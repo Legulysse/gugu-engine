@@ -58,18 +58,20 @@ public:
     //void AddMouseScrollElementEventHandler(ElementEvents* elementEventHandler);
     //void RemoveMouseScrollElementEventHandler(ElementEvents* elementEventHandler);
 
-    void ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<InteractiveElementEntry>& _vecRootElements);
+    void ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras);
 
 private:
 
     bool CheckElementEventHandlerRegistration(ElementEvents* elementEventHandler);
 
-    void BeginEvent     (const std::vector<InteractiveElementEntry>& _vecRootElements);
-    void ProcessEvent   (const sf::Event& _oSFEvent, Camera* camera);
-    void FinishEvent    ();
+    void BeginInteractions(/*const std::vector<InteractiveElementEntry>& _vecRootElements*/);
+    bool ProcessEventListeners(const sf::Event& _oSFEvent);
+    bool ProcessElementInteractions(const sf::Event& _oSFEvent, const Camera* camera);
+    bool ProcessElements(const sf::Event& _oSFEvent);
+    //void FinishEvent();
 
     //void ParseElements          (Element* _pRoot, Camera* _pCamera);
-    bool PropagateToListeners   (const sf::Event& _oSFEvent);
+    //bool PropagateToListeners   (const sf::Event& _oSFEvent);
 
 private:
 

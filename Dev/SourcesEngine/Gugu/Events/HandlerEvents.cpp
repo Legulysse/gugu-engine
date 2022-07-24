@@ -218,19 +218,26 @@ void HandlerEvents::UnregisterElementEventHandler(ElementEvents* elementEventHan
 //    StdVectorRemove(m_mouseScrollElementEventHandlers, elementEventHandler);
 //}
 
-void HandlerEvents::ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<InteractiveElementEntry>& _vecRootElements)
+void HandlerEvents::ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras)
 {
-    BeginEvent(_vecRootElements);
-    //ProcessEvent(_oSFEvent);
-    //FinishEvent();
+    bool propagateEvent = ProcessEventListeners(_oSFEvent);
 
-    for (InteractiveElementEntry kEntry : _vecRootElements)
+    for (const Camera* camera : windowCameras)
     {
-        ProcessEvent(_oSFEvent, kEntry.camera);
+        if (propagateEvent)
+        {
+            BeginInteractions();
+            propagateEvent = ProcessElementInteractions(_oSFEvent, camera);
+        }
+    }
+
+    if (propagateEvent)
+    {
+        propagateEvent = ProcessElements(_oSFEvent);
     }
 }
 
-void HandlerEvents::BeginEvent(const std::vector<InteractiveElementEntry>& _vecRootElements)
+void HandlerEvents::BeginInteractions(/*const std::vector<InteractiveElementEntry>& _vecRootElements*/)
 {
     GUGU_SCOPE_TRACE_MAIN("Begin Event");
 
@@ -298,10 +305,10 @@ void HandlerEvents::BeginEvent(const std::vector<InteractiveElementEntry>& _vecR
     //    m_elementMouseDragged = nullptr;
 }
 
-void HandlerEvents::FinishEvent()
-{
-    //m_interactiveElements.clear();
-}
+//void HandlerEvents::FinishEvent()
+//{
+//    //m_interactiveElements.clear();
+//}
 //
 //void HandlerEvents::ParseElements(Element* root, Camera* camera)
 //{
@@ -336,14 +343,27 @@ void HandlerEvents::FinishEvent()
 //    }
 //}
 
-void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
+bool HandlerEvents::ProcessEventListeners(const sf::Event& _oSFEvent)
 {
-    GUGU_SCOPE_TRACE_MAIN("Handler Process Event");
+    GUGU_SCOPE_TRACE_MAIN("Process EventListeners");
 
-    if (!PropagateToListeners(_oSFEvent))
+    //TODO: add a way to make easy on/off listening, particularly for piled States
+    //TODO: invert true/false meaning
+
+    for (EventListener* listener : m_eventListeners)
     {
-        return;     //the event has been closed by a listener
+        if (listener && !listener->OnSFEvent(_oSFEvent))
+        {
+            return false;
+        }
     }
+
+    return true;
+}
+
+bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const Camera* camera)
+{
+    GUGU_SCOPE_TRACE_MAIN("Process ElementInteractions");
 
     Vector2i oMouseCoords = GetGameWindow()->GetMousePixelCoords();
     bool bContinue = true;
@@ -675,42 +695,34 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
         }
     }
 
-    if (bContinue)
+    return bContinue;
+}
+
+bool HandlerEvents::ProcessElements(const sf::Event& _oSFEvent)
+{
+    GUGU_SCOPE_TRACE_MAIN("Process Elements");
+
+    bool propagateEvent = true;
+
+    for (size_t i = m_rawSFEventElementEventHandlers.size(); i-- > 0;)
     {
-        for (size_t i = m_rawSFEventElementEventHandlers.size(); i-- > 0;)
+        ElementEvents* elementEventHandler = m_rawSFEventElementEventHandlers[i];
+
+        if (elementEventHandler->IsInteractionEnabled(EElementInteraction::RawSFEvent))
         {
-            ElementEvents* elementEventHandler = m_rawSFEventElementEventHandlers[i];
+            ElementInteractionInfos interactionInfos;
+            interactionInfos.rawSFEvent = &_oSFEvent;
+            elementEventHandler->FireCallbacks(EElementInteractionEvent::RawSFEvent, interactionInfos);
 
-            if (elementEventHandler->IsInteractionEnabled(EElementInteraction::RawSFEvent))
+            if (interactionInfos.absorbEvent)
             {
-                ElementInteractionInfos interactionInfos;
-                interactionInfos.rawSFEvent = &_oSFEvent;
-                elementEventHandler->FireCallbacks(EElementInteractionEvent::RawSFEvent, interactionInfos);
-
-                if (interactionInfos.absorbEvent)
-                {
-                    bContinue = false;
-                    break;
-                }
+                propagateEvent = false;
+                break;
             }
         }
     }
-}
 
-bool HandlerEvents::PropagateToListeners(const sf::Event& _oSFEvent)
-{
-    //TODO: add a way to make easy on/off listening, particularly for piled States
-    //TODO: invert true/false meaning
-
-    for (EventListener* listener : m_eventListeners)
-    {
-        if (listener && !listener->OnSFEvent(_oSFEvent))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return propagateEvent;
 }
 
 }   // namespace gugu

@@ -134,8 +134,9 @@ public:
     bool IsPicked(const Vector2f& globalCoords, Vector2f& localPickedCoords) const;
     virtual bool IsPickedLocal(Vector2f& localCoords) const;
 
-    Vector2f TransformToLocal(const Vector2f& point) const;
-    Vector2f TransformToGlobal(const Vector2f& point) const;
+    Vector2f TransformToLocal(const Vector2f& globalCoords) const;
+    Vector2f TransformToLocal(const Vector2f& ancestorCoords, Element* ancestorReference) const;
+    Vector2f TransformToGlobal(const Vector2f& localCoords) const;
 
     const sf::Transform& GetTransform() const;
     const sf::Transform& GetInverseTransform() const;

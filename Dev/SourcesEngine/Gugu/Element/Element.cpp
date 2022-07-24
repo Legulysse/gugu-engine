@@ -124,24 +124,39 @@ const std::vector<Element*>& Element::GetChildren() const
     return m_children;
 }
 
-Vector2f Element::TransformToLocal(const Vector2f& point) const
+Vector2f Element::TransformToLocal(const Vector2f& globalCoords) const
 {
     if (m_parent)
     {
-        return GetInverseTransform().transformPoint( m_parent->TransformToLocal(point) );
+        return GetInverseTransform().transformPoint(m_parent->TransformToLocal(globalCoords));
     }
 
-    return GetInverseTransform().transformPoint(point);
+    return GetInverseTransform().transformPoint(globalCoords);
 }
 
-Vector2f Element::TransformToGlobal(const Vector2f& point) const
+Vector2f Element::TransformToLocal(const Vector2f& ancestorCoords, Element* ancestorReference) const
+{
+    if (ancestorReference == this)
+    {
+        return ancestorCoords;
+    }
+
+    if (m_parent && ancestorReference != m_parent)
+    {
+        return GetInverseTransform().transformPoint(m_parent->TransformToLocal(ancestorCoords, ancestorReference));
+    }
+
+    return GetInverseTransform().transformPoint(ancestorCoords);
+}
+
+Vector2f Element::TransformToGlobal(const Vector2f& localCoords) const
 {
     if (m_parent)
     {
-        return m_parent->TransformToGlobal( GetTransform().transformPoint(point) );
+        return m_parent->TransformToGlobal(GetTransform().transformPoint(localCoords));
     }
 
-    return GetTransform().transformPoint(point);
+    return GetTransform().transformPoint(localCoords);
 }
 
 void Element::SetVisible(bool visible)

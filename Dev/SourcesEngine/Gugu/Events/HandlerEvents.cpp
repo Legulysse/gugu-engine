@@ -239,53 +239,61 @@ void HandlerEvents::ProcessEventOnElements(const sf::Event& _oSFEvent, const std
 
 void HandlerEvents::BeginInteractions(/*const std::vector<InteractiveElementEntry>& _vecRootElements*/)
 {
-    GUGU_SCOPE_TRACE_MAIN("Begin Event");
+    GUGU_SCOPE_TRACE_MAIN("Begin Interactions");
 
-    bool bFoundFocused = false;
-    bool bFoundSelected = false;
-    bool bFoundDragged = false;
-
-    //for (InteractiveElementEntry kEntry : _vecRootElements)
-    //{
-    //    ParseElements(kEntry.element, kEntry.camera);
-    //}
-
-    //TODO: check all arrays for deprecated pointers
-    for (ElementEvents* elementEventHandler : m_mouseFocusElementEventHandlers)
+    if (m_elementMouseFocused)
     {
-        if (elementEventHandler->GetElement() == m_elementMouseFocused)
+        bool bFoundFocused = false;
+        for (ElementEvents* elementEventHandler : m_mouseFocusElementEventHandlers)
         {
-            bFoundFocused = true;
-            break;
+            if (elementEventHandler->GetElement() == m_elementMouseFocused)
+            {
+                bFoundFocused = true;
+                break;
+            }
+        }
+
+        if (!bFoundFocused)
+        {
+            m_elementMouseFocused = nullptr;
         }
     }
 
-    for (ElementEvents* elementEventHandler : m_mouseSelectionElementEventHandlers)
+    if (m_elementMouseSelected)
     {
-        if (elementEventHandler->GetElement() == m_elementMouseSelected)
+        bool bFoundSelected = false;
+        for (ElementEvents* elementEventHandler : m_mouseSelectionElementEventHandlers)
         {
-            bFoundSelected = true;
-            break;
+            if (elementEventHandler->GetElement() == m_elementMouseSelected)
+            {
+                bFoundSelected = true;
+                break;
+            }
+        }
+
+        if (!bFoundSelected)
+        {
+            m_elementMouseSelected = nullptr;
         }
     }
 
-    for (ElementEvents* elementEventHandler : m_mouseDragElementEventHandlers)
+    if (m_elementMouseDragged)
     {
-        if (elementEventHandler->GetElement() == m_elementMouseDragged)
+        bool bFoundDragged = false;
+        for (ElementEvents* elementEventHandler : m_mouseDragElementEventHandlers)
         {
-            bFoundDragged = true;
-            break;
+            if (elementEventHandler->GetElement() == m_elementMouseDragged)
+            {
+                bFoundDragged = true;
+                break;
+            }
+        }
+
+        if (!bFoundDragged)
+        {
+            m_elementMouseDragged = nullptr;
         }
     }
-
-    if (!bFoundFocused)
-        m_elementMouseFocused = nullptr;
-
-    if (!bFoundSelected)
-        m_elementMouseSelected = nullptr;
-
-    if (!bFoundDragged)
-        m_elementMouseDragged = nullptr;
 
     //for (size_t i = 0; i < m_interactiveElements.size(); ++i)
     //{

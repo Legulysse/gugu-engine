@@ -505,27 +505,30 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             }
         }
     }
-    else if (_oSFEvent.type == sf::Event::MouseWheelMoved)
+    else if (_oSFEvent.type == sf::Event::MouseWheelScrolled)
     {
-        for (size_t i = m_mouseScrollElementEventHandlers.size(); i-- > 0;)
+        if (_oSFEvent.mouseWheelScroll.wheel == sf::Mouse::Wheel::VerticalWheel)
         {
-            ElementEvents* elementEventHandler = m_mouseScrollElementEventHandlers[i];
-            Element* pElement = elementEventHandler->GetElement();
-
-            Vector2f localPickedCoords;
-            if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Scroll)
-                && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
+            for (size_t i = m_mouseScrollElementEventHandlers.size(); i-- > 0;)
             {
-                ElementInteractionInfos interactionInfos;
-                interactionInfos.scrollDelta = _oSFEvent.mouseWheel.delta;
-                interactionInfos.localPickingPosition = localPickedCoords;
-                interactionInfos.camera = camera;
-                elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseScrolled, interactionInfos);
+                ElementEvents* elementEventHandler = m_mouseScrollElementEventHandlers[i];
+                Element* pElement = elementEventHandler->GetElement();
 
-                if (interactionInfos.absorbEvent)
+                Vector2f localPickedCoords;
+                if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Scroll)
+                    && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                 {
-                    bContinue = false;
-                    break;
+                    ElementInteractionInfos interactionInfos;
+                    interactionInfos.scrollDelta = (int)std::round(_oSFEvent.mouseWheelScroll.delta);
+                    interactionInfos.localPickingPosition = localPickedCoords;
+                    interactionInfos.camera = camera;
+                    elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseScrolled, interactionInfos);
+
+                    if (interactionInfos.absorbEvent)
+                    {
+                        bContinue = false;
+                        break;
+                    }
                 }
             }
         }

@@ -87,7 +87,7 @@ void ElementEvents::SetInteractionEnabled(bool enabled)
 
 bool ElementEvents::IsInteractionEnabled() const
 {
-    return m_interactionEnabled && m_element->IsVisible();
+    return m_interactionEnabled && m_element->IsVisible(true);
 }
 
 //bool ElementEvents::HasInteraction(EElementInteraction::Type flag) const

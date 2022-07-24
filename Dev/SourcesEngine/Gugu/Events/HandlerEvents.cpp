@@ -134,27 +134,45 @@ void HandlerEvents::RegisterElementEventHandler(ElementEvents* elementEventHandl
 
     if (interactionType == EElementInteraction::Focus)
     {
-        m_mouseFocusElementEventHandlers.push_back(elementEventHandler);
+        if (!StdVectorContains(m_mouseFocusElementEventHandlers, elementEventHandler))
+        {
+            m_mouseFocusElementEventHandlers.push_back(elementEventHandler);
+        }
     }
     else if (interactionType == EElementInteraction::Click)
     {
-        m_mouseClickElementEventHandlers.push_back(elementEventHandler);
+        if (!StdVectorContains(m_mouseClickElementEventHandlers, elementEventHandler))
+        {
+            m_mouseClickElementEventHandlers.push_back(elementEventHandler);
+        }
     }
     else if (interactionType == EElementInteraction::Selection)
     {
-        m_mouseSelectionElementEventHandlers.push_back(elementEventHandler);
+        if (!StdVectorContains(m_mouseSelectionElementEventHandlers, elementEventHandler))
+        {
+            m_mouseSelectionElementEventHandlers.push_back(elementEventHandler);
+        }
     }
     else if (interactionType == EElementInteraction::Scroll)
     {
-        m_mouseScrollElementEventHandlers.push_back(elementEventHandler);
+        if (!StdVectorContains(m_mouseScrollElementEventHandlers, elementEventHandler))
+        {
+            m_mouseScrollElementEventHandlers.push_back(elementEventHandler);
+        }
     }
     else if (interactionType == EElementInteraction::Drag)
     {
-        m_mouseDragElementEventHandlers.push_back(elementEventHandler);
+        if (!StdVectorContains(m_mouseDragElementEventHandlers, elementEventHandler))
+        {
+            m_mouseDragElementEventHandlers.push_back(elementEventHandler);
+        }
     }
     else if (interactionType == EElementInteraction::RawSFEvent)
     {
-        m_rawSFEventElementEventHandlers.push_back(elementEventHandler);
+        if (!StdVectorContains(m_rawSFEventElementEventHandlers, elementEventHandler))
+        {
+            m_rawSFEventElementEventHandlers.push_back(elementEventHandler);
+        }
     }
 }
 

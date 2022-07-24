@@ -389,7 +389,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                 Vector2f localPickedCoords;
                 //Element* pElement = m_interactiveElements[i].element;
                 if (//pElement->HasInteractionFlag(EElementInteractionEvent::Focus) && 
-                    elementEventHandler->IsInteractionEnabled()
+                    elementEventHandler->IsInteractionEnabled(EElementInteraction::Focus)
                     && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                 {
                     if (m_elementMouseFocused != pElement)
@@ -455,7 +455,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                 Vector2f localPickedCoords;
                 if (/*pElement->GetInteractions()->HasInteraction(EElementInteraction::Selection)
                     &&*/ 
-                    elementEventHandler->IsInteractionEnabled()
+                    elementEventHandler->IsInteractionEnabled(EElementInteraction::Selection)
                     && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                 {
                     if (m_elementMouseSelected != pElement)
@@ -522,7 +522,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                     Vector2f localPickedCoords;
                     //Element* pElement = m_interactiveElements[i].element;
                     if (//pElement->HasInteractionFlag(EElementInteractionEvent::Click) && 
-                        elementEventHandler->IsInteractionEnabled()
+                        elementEventHandler->IsInteractionEnabled(EElementInteraction::Click)
                         && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                     {
                         //pElement->OnMousePressed();
@@ -551,7 +551,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
 
                     Vector2f localPickedCoords;
                     if (//pElement->HasInteractionFlag(EElementInteractionEvent::Drag)
-                        elementEventHandler->IsInteractionEnabled()
+                        elementEventHandler->IsInteractionEnabled(EElementInteraction::Drag)
                         && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                     {
                         m_elementMouseDragged = pElement;
@@ -619,7 +619,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                     Vector2f localPickedCoords;
                     //Element* pElement = m_interactiveElements[i].element;
                     if (//pElement->HasInteractionFlag(EElementInteractionEvent::Click) 
-                        elementEventHandler->IsInteractionEnabled()
+                        elementEventHandler->IsInteractionEnabled(EElementInteraction::Click)
                         && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                     {
                         //if (pElement->OnMouseReleased())
@@ -652,7 +652,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
 
             Vector2f localPickedCoords;
             if (//pElement->HasInteractionFlag(EElementInteractionEvent::Scroll) &&
-                elementEventHandler->IsInteractionEnabled()
+                elementEventHandler->IsInteractionEnabled(EElementInteraction::Scroll)
                 && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
             {
                 //pElement->OnMouseScrolled(_oSFEvent.mouseWheel.delta);
@@ -681,7 +681,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
         {
             ElementEvents* elementEventHandler = m_rawSFEventElementEventHandlers[i];
 
-            if (elementEventHandler->IsInteractionEnabled())
+            if (elementEventHandler->IsInteractionEnabled(EElementInteraction::RawSFEvent))
             {
                 ElementInteractionInfos interactionInfos;
                 interactionInfos.rawSFEvent = &_oSFEvent;

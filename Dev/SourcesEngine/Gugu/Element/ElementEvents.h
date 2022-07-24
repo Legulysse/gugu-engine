@@ -54,8 +54,8 @@ namespace EElementEvent
         None,
 
         Destroyed,
-        InteractionEnabled,
-        InteractionDisabled,
+        InteractionsEnabled,
+        InteractionsDisabled,
     };
 }
 
@@ -65,9 +65,9 @@ namespace EElementInteraction
     {
         None        = 0x0000,
 
-        Selection   = 0x0001,
-        Focus       = 0x0002,
-        Click       = 0x0004,
+        Focus       = 0x0001,
+        Click       = 0x0002,
+        Selection   = 0x0004,
         Scroll      = 0x0008,
         Drag        = 0x0010,
         RawSFEvent  = 0x0020,
@@ -109,8 +109,9 @@ public:
     //void RegisterHandlerEvents(HandlerEvents* _pHandler);
     void UnregisterHandlerEvents();
 
-    void SetInteractionEnabled(bool enabled);
-    bool IsInteractionEnabled() const;
+    void SetAllInteractionsEnabled(bool enabled);
+    void SetInteractionEnabled(EElementInteraction::Type interactionType, bool enabled);
+    bool IsInteractionEnabled(EElementInteraction::Type interactionType) const;
     //bool HasInteraction(EElementInteraction::Type flag) const;
 
     // TODO: DEPRECATE ?
@@ -150,8 +151,9 @@ private:
     Element* m_element;
     HandlerEvents* m_handler;
     bool m_dependsOnPropagationList;
-    bool m_interactionEnabled;
+    bool m_interactionsEnabled;
     int m_interactionFlags;
+    int m_interactionsFilter;
 
     struct InteractionCallbackInfos
     {

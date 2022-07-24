@@ -21,8 +21,9 @@ ElementEvents::ElementEvents(Element* element)
     : m_element(element)
     , m_handler(nullptr)
     , m_dependsOnPropagationList(false)
-    , m_interactionEnabled(true)
+    , m_interactionsEnabled(true)
     , m_interactionFlags(EElementInteractionEvent::None)
+    , m_interactionsFilter(EElementInteractionEvent::None)
 {
 }
 
@@ -68,26 +69,40 @@ void ElementEvents::UnregisterHandlerEvents()
     }
 }
 
-void ElementEvents::SetInteractionEnabled(bool enabled)
+void ElementEvents::SetAllInteractionsEnabled(bool enabled)
 {
-    if (m_interactionEnabled == enabled)
+    if (m_interactionsEnabled == enabled)
         return;
 
-    m_interactionEnabled = enabled;
+    m_interactionsEnabled = enabled;
 
-    if (m_interactionEnabled)
+    if (m_interactionsEnabled)
     {
-        FireCallbacks(EElementEvent::InteractionEnabled);
+        FireCallbacks(EElementEvent::InteractionsEnabled);
     }
     else
     {
-        FireCallbacks(EElementEvent::InteractionDisabled);
+        FireCallbacks(EElementEvent::InteractionsDisabled);
     }
 }
 
-bool ElementEvents::IsInteractionEnabled() const
+void ElementEvents::SetInteractionEnabled(EElementInteraction::Type interactionType, bool enabled)
 {
-    return m_interactionEnabled && m_element->IsVisible(true);
+    if (enabled)
+    {
+        m_interactionsFilter = m_interactionsFilter & ~interactionType;
+    }
+    else
+    {
+        m_interactionsFilter = m_interactionsFilter | interactionType;
+    }
+}
+
+bool ElementEvents::IsInteractionEnabled(EElementInteraction::Type interactionType) const
+{
+    return m_interactionsEnabled
+        && (m_interactionsFilter & interactionType) == EElementInteraction::None
+        && m_element->IsVisible(true);
 }
 
 //bool ElementEvents::HasInteraction(EElementInteraction::Type flag) const

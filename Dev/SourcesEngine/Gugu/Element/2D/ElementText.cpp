@@ -47,6 +47,9 @@ ElementText::ElementText()
     GetInteractions()->AddCallback(EElementInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
     GetInteractions()->AddCallback(EElementInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
     GetInteractions()->AddCallback(EElementInteractionEvent::RawSFEvent, std::bind(&ElementText::OnSFEvent, this, std::placeholders::_1));
+
+    GetInteractions()->SetInteractionEnabled(EElementInteraction::Selection, false);
+    GetInteractions()->SetInteractionEnabled(EElementInteraction::RawSFEvent, false);
 }
 
 ElementText::~ElementText()
@@ -107,11 +110,11 @@ void ElementText::SetEditable(bool _bIsEditable)
 
         if (m_isEditable)
         {
-            //TODO: I need some kind of toggle for events/callbacks
+            GetInteractions()->SetInteractionEnabled(EElementInteraction::Selection, true);
         }
         else
         {
-            //TODO: I need some kind of toggle for events/callbacks
+            GetInteractions()->SetInteractionEnabled(EElementInteraction::Selection, false);
 
             StopEditionImpl();
         }
@@ -334,8 +337,7 @@ void ElementText::StartEditionImpl()
         m_sfTextCursor->setString("|");
     }
 
-    //TODO: plug to EventListener
-    //GetInteractions()->AddInteractionFlag(EElementInteractionEvent::RawSFEvent);
+    GetInteractions()->SetInteractionEnabled(EElementInteraction::RawSFEvent, true);
     
     Recompute();
 }
@@ -346,8 +348,7 @@ void ElementText::StopEditionImpl()
     m_isTickDisplayed   = false;
     m_isEditing     = false;
 
-    //TODO: plug to EventListener
-    //GetInteractions()->RemoveInteractionFlag(EElementInteractionEvent::RawSFEvent);
+    GetInteractions()->SetInteractionEnabled(EElementInteraction::RawSFEvent, false);
     
     Recompute();
 }

@@ -55,6 +55,9 @@ Element* ElementListItem::GetElement() const
 
 void ElementListItem::SetSelected(bool _bIsSelected)
 {
+    if (m_isSelected == _bIsSelected)
+        return;
+
     m_isSelected = _bIsSelected;
     
     if (m_isSelected && m_callbackOnSelected)

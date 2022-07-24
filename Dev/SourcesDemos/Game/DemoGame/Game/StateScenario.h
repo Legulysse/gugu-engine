@@ -5,6 +5,7 @@
 
 #include "Gugu/Misc/Pattern/State.h"
 #include "Gugu/Events/EventListener.h"
+#include "Gugu/Element/ElementEvents.h"
 #include "Gugu/Core/Callback.h"
 
 #include <string>
@@ -44,7 +45,7 @@ public:
 
 private:
 
-    void AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, const gugu::Callback& onClick);
+    void AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, const gugu::ElementEvents::DelegateInteractionEvent& onClick);
     void RefreshCharacterSheet();
 
     enum class EButtonUpdateStat

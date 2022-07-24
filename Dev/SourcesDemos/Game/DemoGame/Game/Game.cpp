@@ -249,9 +249,6 @@ void Game::CreateScenario()
     m_scene = GetScenes()->GetRootScene()->AddChildScene();
     GetGameWindow()->BindScene(m_scene, pCamera);
 
-    // Disable interactions on scene nodes (optimisation)
-    m_scene->GetRootNode()->GetInteractions()->AddInteractionFlag(EElementInteractionEvent::Absorb);
-    
     // Fill Scene
     m_grid = new Grid();
     m_grid->InitGrid(m_scene, 50, 50, 32.f, 32.f);

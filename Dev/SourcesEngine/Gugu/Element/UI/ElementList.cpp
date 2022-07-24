@@ -264,9 +264,11 @@ void ElementList::OnMousePressed(const ElementInteractionInfos& interactionInfos
         if (m_items[i]->IsPickedLocal(itemLocalPickedCoords))
         {
             ToggleItemSelected(i);
-            break;
+            return;
         }
     }
+
+    interactionInfos.absorbEvent = false;
 }
 
 void ElementList::OnMouseScrolled(const ElementInteractionInfos& interactionInfos)

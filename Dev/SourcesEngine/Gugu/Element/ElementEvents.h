@@ -76,15 +76,18 @@ namespace EElementInteraction
 
 struct ElementInteractionInfos
 {
-    // Common infos (except RawSFEvent, MouseLeave and MouseDeselected).
+    // Common infos (for all events except RawSFEvent, MouseLeave and MouseDeselected).
     Vector2f localPickingPosition = Vector2::Zero_f;
     const Camera* camera = nullptr;
 
-    // MouseScrolled infos.
+    // Scroll infos (for MouseScrolled).
     int scrollDelta = 0;
 
-    // RawSFEvent infos.
+    // Raw Event infos (for RawSFEvent).
     const sf::Event* rawSFEvent = nullptr;
+
+    // Optional return value (for MouseEnter, MouseSelected, MousePressed, MouseReleased, MouseScrolled, RawSFEvent).
+    mutable bool absorbEvent = true;
 };
 
 class ElementEvents //TODO: rename as ElementEventHandler

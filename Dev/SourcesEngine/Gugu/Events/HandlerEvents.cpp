@@ -118,6 +118,7 @@ bool HandlerEvents::CheckElementEventHandlerRegistration(ElementEvents* elementE
             return false;
         }
 
+        // Element is already registered.
         return true;
     }
 
@@ -362,7 +363,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
         }
         else
         {
-            for (size_t i = 0; i < m_mouseFocusElementEventHandlers.size(); ++i)
+            for (size_t i = m_mouseFocusElementEventHandlers.size(); i-- > 0;)
             {
                 ElementEvents* elementEventHandler = m_mouseFocusElementEventHandlers[i];
                 Element* pElement = elementEventHandler->GetElement();
@@ -397,8 +398,15 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseEnter, interactionInfos);
+
+                        if (interactionInfos.absorbEvent)
+                        {
+                            bContinue = false;
+                            break;
+                        }
                     }
 
+                    // TODO: Should I handle a MouseMove event ?
                     bContinue = false;
                     break;
                 }
@@ -421,7 +429,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
     {
         if (_oSFEvent.mouseButton.button == sf::Mouse::Left)
         {
-            for (size_t i = 0; i < m_mouseSelectionElementEventHandlers.size(); ++i)
+            for (size_t i = m_mouseSelectionElementEventHandlers.size(); i-- > 0;)
             {
                 ElementEvents* elementEventHandler = m_mouseSelectionElementEventHandlers[i];
                 Element* pElement = elementEventHandler->GetElement();
@@ -459,8 +467,15 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseSelected, interactionInfos);
+
+                        if (interactionInfos.absorbEvent)
+                        {
+                            bContinue = false;
+                            break;
+                        }
                     }
 
+                    // TODO: Should I handle a MouseReselected event ?
                     bContinue = false;
                     break;
                 }
@@ -481,7 +496,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
             //Mouse Press
             if (bContinue)
             {
-                for (size_t i = 0; i < m_mouseClickElementEventHandlers.size(); ++i)
+                for (size_t i = m_mouseClickElementEventHandlers.size(); i-- > 0;)
                 {
                     ElementEvents* elementEventHandler = m_mouseClickElementEventHandlers[i];
                     Element* pElement = elementEventHandler->GetElement();
@@ -499,8 +514,11 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EElementInteractionEvent::MousePressed, interactionInfos);
 
-                        bContinue = false;
-                        break;
+                        if (interactionInfos.absorbEvent)
+                        {
+                            bContinue = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -508,7 +526,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
             //Drag Start
             if (bContinue)
             {
-                for (size_t i = 0; i < m_mouseDragElementEventHandlers.size(); ++i)
+                for (size_t i = m_mouseDragElementEventHandlers.size(); i-- > 0;)
                 {
                     ElementEvents* elementEventHandler = m_mouseDragElementEventHandlers[i];
                     Element* pElement = elementEventHandler->GetElement();
@@ -575,7 +593,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
             //Mouse Release
             if (bContinue)
             {
-                for (size_t i = 0; i < m_mouseClickElementEventHandlers.size(); ++i)
+                for (size_t i = m_mouseClickElementEventHandlers.size(); i-- > 0;)
                 {
                     ElementEvents* elementEventHandler = m_mouseClickElementEventHandlers[i];
                     Element* pElement = elementEventHandler->GetElement();
@@ -597,8 +615,11 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseReleased, interactionInfos);
 
-                        bContinue = false;
-                        break;
+                        if (interactionInfos.absorbEvent)
+                        {
+                            bContinue = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -606,7 +627,7 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
     }
     else if (_oSFEvent.type == sf::Event::MouseWheelMoved)
     {
-        for (size_t i = 0; i < m_mouseScrollElementEventHandlers.size(); ++i)
+        for (size_t i = m_mouseScrollElementEventHandlers.size(); i-- > 0;)
         {
             ElementEvents* elementEventHandler = m_mouseScrollElementEventHandlers[i];
             Element* pElement = elementEventHandler->GetElement();
@@ -627,15 +648,18 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                 interactionInfos.camera = camera;
                 elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseScrolled, interactionInfos);
 
-                bContinue = false;
-                break;
+                if (interactionInfos.absorbEvent)
+                {
+                    bContinue = false;
+                    break;
+                }
             }
         }
     }
 
     if (bContinue)
     {
-        for (size_t i = 0; i < m_rawSFEventElementEventHandlers.size(); ++i)
+        for (size_t i = m_rawSFEventElementEventHandlers.size(); i-- > 0;)
         {
             ElementEvents* elementEventHandler = m_rawSFEventElementEventHandlers[i];
 
@@ -645,11 +669,11 @@ void HandlerEvents::ProcessEvent(const sf::Event& _oSFEvent, Camera* camera)
                 interactionInfos.rawSFEvent = &_oSFEvent;
                 elementEventHandler->FireCallbacks(EElementInteractionEvent::RawSFEvent, interactionInfos);
 
-                //if (!pElement->OnSFEvent(_oSFEvent))
-                //{
-                //    bContinue = false;
-                //    break;
-                //}
+                if (interactionInfos.absorbEvent)
+                {
+                    bContinue = false;
+                    break;
+                }
             }
         }
     }

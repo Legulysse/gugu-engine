@@ -38,8 +38,6 @@ HandlerEvents::~HandlerEvents()
     }
     m_eventListeners.clear();
 
-    //m_interactiveElements.clear();
-
     for (ElementEvents* elementEventHandler : m_elementEventHandlers)
     {
         if (elementEventHandler)
@@ -82,28 +80,6 @@ bool HandlerEvents::IsEventListenerRegistered(EventListener* _pEventListener) co
 
     return StdVectorContains(m_eventListeners, _pEventListener);
 }
-
-//void HandlerEvents::AddElementEventHandler(ElementEvents* elementEventHandler)
-//{
-//    if (!elementEventHandler || elementEventHandler->m_handler == this)
-//        return;
-//
-//    // Dont allow a listener to be registered on two handlers (this will also ensure it is not registered here already)
-//    elementEventHandler->UnregisterHandlerEvents();
-//
-//    elementEventHandler->m_handler = this;
-//    m_elementEventHandlers.push_back(elementEventHandler);
-//}
-//
-//void HandlerEvents::RemoveElementEventHandler(ElementEvents* elementEventHandler)
-//{
-//    if (!elementEventHandler || elementEventHandler->m_handler != this)
-//        return;
-//
-//    elementEventHandler->m_handler = nullptr;
-//    StdVectorRemove(m_elementEventHandlers, elementEventHandler);
-//
-//}
 
 bool HandlerEvents::CheckElementEventHandlerRegistration(ElementEvents* elementEventHandler)
 {
@@ -191,32 +167,6 @@ void HandlerEvents::UnregisterElementEventHandler(ElementEvents* elementEventHan
     StdVectorRemove(m_mouseDragElementEventHandlers, elementEventHandler);
     StdVectorRemove(m_rawSFEventElementEventHandlers, elementEventHandler);
 }
-//
-//void HandlerEvents::AddMouseSelectionElementEventHandler(ElementEvents* elementEventHandler)
-//{
-//    if (!CheckElementEventHandlerRegistration(elementEventHandler))
-//        return;
-//
-//    m_mouseSelectionElementEventHandlers.push_back(elementEventHandler);
-//}
-//
-//void HandlerEvents::RemoveMouseSelectionElementEventHandler(ElementEvents* elementEventHandler)
-//{
-//    StdVectorRemove(m_mouseSelectionElementEventHandlers, elementEventHandler);
-//}
-//
-//void HandlerEvents::AddMouseScrollElementEventHandler(ElementEvents* elementEventHandler)
-//{
-//    if (!CheckElementEventHandlerRegistration(elementEventHandler))
-//        return;
-//
-//    m_mouseScrollElementEventHandlers.push_back(elementEventHandler);
-//}
-//
-//void HandlerEvents::RemoveMouseScrollElementEventHandler(ElementEvents* elementEventHandler)
-//{
-//    StdVectorRemove(m_mouseScrollElementEventHandlers, elementEventHandler);
-//}
 
 void HandlerEvents::ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras)
 {
@@ -237,7 +187,7 @@ void HandlerEvents::ProcessEventOnElements(const sf::Event& _oSFEvent, const std
     }
 }
 
-void HandlerEvents::BeginInteractions(/*const std::vector<InteractiveElementEntry>& _vecRootElements*/)
+void HandlerEvents::BeginInteractions()
 {
     GUGU_SCOPE_TRACE_MAIN("Begin Interactions");
 
@@ -294,62 +244,7 @@ void HandlerEvents::BeginInteractions(/*const std::vector<InteractiveElementEntr
             m_elementMouseDragged = nullptr;
         }
     }
-
-    //for (size_t i = 0; i < m_interactiveElements.size(); ++i)
-    //{
-    //    if (m_interactiveElements[i].element == m_elementMouseFocused)
-    //        bFoundFocused = true;
-    //    if (m_interactiveElements[i].element == m_elementMouseSelected)
-    //        bFoundSelected = true;
-    //    if (m_interactiveElements[i].element == m_elementMouseDragged)
-    //        bFoundDragged = true;
-    //}
-
-    //if (!bFoundFocused)
-    //    m_elementMouseFocused = nullptr;
-    //if (!bFoundSelected)
-    //    m_elementMouseSelected = nullptr;
-    //if (!bFoundDragged)
-    //    m_elementMouseDragged = nullptr;
 }
-
-//void HandlerEvents::FinishEvent()
-//{
-//    //m_interactiveElements.clear();
-//}
-//
-//void HandlerEvents::ParseElements(Element* root, Camera* camera)
-//{
-//    if (!root->IsVisible())
-//        return;
-//
-//    for (ElementEvents* elementEventHandler : m_elementEventHandlers)
-//    {
-//        if (elementEventHandler->IsInteractionEnabled())
-//        {
-//            Element* element = elementEventHandler->GetElement();
-//
-//            std::vector<ElementEvents*> vecPropagationList;
-//            element->GetPropagationList(vecPropagationList);
-//
-//            for (size_t i = 0; i < vecPropagationList.size(); ++i)
-//            {
-//                if (vecPropagationList[i]->IsInteractionEnabled())
-//                {
-//                    InteractiveElementEntry kEntry;
-//                    kEntry.element = vecPropagationList[i]->GetElement();
-//                    kEntry.camera = camera;
-//                    m_interactiveElements.push_back(kEntry);
-//                }
-//            }
-//
-//            InteractiveElementEntry kEntry;
-//            kEntry.element = element;
-//            kEntry.camera = camera;
-//            m_interactiveElements.push_back(kEntry);
-//        }
-//    }
-//}
 
 bool HandlerEvents::ProcessEventListeners(const sf::Event& _oSFEvent)
 {
@@ -393,18 +288,6 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             interactionInfos.camera = camera;
             m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragMove, interactionInfos);
 
-            /*Vector2f fLocalCoord = Vector2f(oMouseCoords);
-            if (m_elementMouseDragged->GetParent())
-                fLocalCoord = m_elementMouseDragged->GetParent()->TransformToLocal(fLocalCoord);
-
-            m_elementMouseDragged->SetPosition(fLocalCoord - m_lastMouseCoords);
-            m_elementMouseDragged->OnMouseDragMove();
-
-            if (m_elementMouseDragged->GetInteractions())
-                m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::Drag);
-            */
-            //m_oLastMouseCoords = oMouseCoords;
-
             bContinue = false;
         }
         else
@@ -415,9 +298,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                 Element* pElement = elementEventHandler->GetElement();
 
                 Vector2f localPickedCoords;
-                //Element* pElement = m_interactiveElements[i].element;
-                if (//pElement->HasInteractionFlag(EElementInteractionEvent::Focus) && 
-                    elementEventHandler->IsInteractionEnabled(EElementInteraction::Focus)
+                if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Focus)
                     && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                 {
                     if (m_elementMouseFocused != pElement)
@@ -428,17 +309,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                             m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeave, interactionInfos);
                         }
 
-                        //if (m_elementMouseFocused)
-                        //{
-                        //    m_elementMouseFocused->OnMouseLeave();
-                        //    m_elementMouseFocused = nullptr;
-                        //}
-
                         m_elementMouseFocused = pElement;
-                        //m_elementMouseFocused->OnMouseEnter();
-
-                        //if (m_elementMouseFocused->GetInteractions())
-                        //    m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::Focus);
 
                         ElementInteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
@@ -465,9 +336,6 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                 m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeave, interactionInfos);
 
                 m_elementMouseFocused = nullptr;
-
-                //m_elementMouseFocused->OnMouseLeave();
-                //m_elementMouseFocused = nullptr;
             }
         }
     }
@@ -481,9 +349,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                 Element* pElement = elementEventHandler->GetElement();
 
                 Vector2f localPickedCoords;
-                if (/*pElement->GetInteractions()->HasInteraction(EElementInteraction::Selection)
-                    &&*/ 
-                    elementEventHandler->IsInteractionEnabled(EElementInteraction::Selection)
+                if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Selection)
                     && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                 {
                     if (m_elementMouseSelected != pElement)
@@ -492,22 +358,9 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                         {
                             ElementInteractionInfos interactionInfos;
                             m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDeselected, interactionInfos);
-
-                            //m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDeselected);
-
-                            //m_elementMouseSelected->OnMouseDeselected();
-                            //m_elementMouseSelected = nullptr;
                         }
 
                         m_elementMouseSelected = pElement;
-
-                        //if (m_elementMouseSelected->OnMouseSelected())
-                        //{
-                        //    if (m_elementMouseSelected->GetInteractions())
-                        //        m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementInteractionEvent::OnMouseSelected);
-                        //}
-
-                        //m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseSelected);
 
                         ElementInteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
@@ -530,9 +383,6 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             //Nothing got the selection, release the current one if needed
             if (bContinue && m_elementMouseSelected)
             {
-                //m_elementMouseSelected->OnMouseDeselected();
-                //m_elementMouseSelected = nullptr;
-
                 ElementInteractionInfos interactionInfos;
                 m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDeselected, interactionInfos);
 
@@ -548,13 +398,9 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                     Element* pElement = elementEventHandler->GetElement();
 
                     Vector2f localPickedCoords;
-                    //Element* pElement = m_interactiveElements[i].element;
-                    if (//pElement->HasInteractionFlag(EElementInteractionEvent::Click) && 
-                        elementEventHandler->IsInteractionEnabled(EElementInteraction::Click)
+                    if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Click)
                         && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                     {
-                        //pElement->OnMousePressed();
-
                         ElementInteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
@@ -578,8 +424,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                     Element* pElement = elementEventHandler->GetElement();
 
                     Vector2f localPickedCoords;
-                    if (//pElement->HasInteractionFlag(EElementInteractionEvent::Drag)
-                        elementEventHandler->IsInteractionEnabled(EElementInteraction::Drag)
+                    if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Drag)
                         && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                     {
                         m_elementMouseDragged = pElement;
@@ -589,14 +434,11 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseDragStart, interactionInfos);
 
-                        //m_elementMouseDragged->OnMouseDragStart();
-
                         Vector2f parentCoords = Vector2f(oMouseCoords);
                         if (m_elementMouseDragged->GetParent())
                             parentCoords = m_elementMouseDragged->GetParent()->TransformToLocal(parentCoords);
-                        m_lastMouseCoords = parentCoords - m_elementMouseDragged->GetPosition();
 
-                        //m_lastMouseCoords = m_elementMouseDragged->GetPosition() + localPickedCoords;
+                        m_lastMouseCoords = parentCoords - m_elementMouseDragged->GetPosition();
 
                         bContinue = false;
                         break;
@@ -645,17 +487,9 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                     Element* pElement = elementEventHandler->GetElement();
 
                     Vector2f localPickedCoords;
-                    //Element* pElement = m_interactiveElements[i].element;
-                    if (//pElement->HasInteractionFlag(EElementInteractionEvent::Click) 
-                        elementEventHandler->IsInteractionEnabled(EElementInteraction::Click)
+                    if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Click)
                         && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                     {
-                        //if (pElement->OnMouseReleased())
-                        //{
-                        //    if (pElement->GetInteractions())
-                        //        pElement->GetInteractions()->FireCallbacks(EElementInteractionEvent::Click);
-                        //}
-
                         ElementInteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
@@ -679,15 +513,9 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             Element* pElement = elementEventHandler->GetElement();
 
             Vector2f localPickedCoords;
-            if (//pElement->HasInteractionFlag(EElementInteractionEvent::Scroll) &&
-                elementEventHandler->IsInteractionEnabled(EElementInteraction::Scroll)
+            if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Scroll)
                 && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
             {
-                //pElement->OnMouseScrolled(_oSFEvent.mouseWheel.delta);
-
-                //if (pElement->GetInteractions())
-                //    pElement->GetInteractions()->FireCallbacks(EElementInteractionEvent::Scroll);
-
                 ElementInteractionInfos interactionInfos;
                 interactionInfos.scrollDelta = _oSFEvent.mouseWheel.delta;
                 interactionInfos.localPickingPosition = localPickedCoords;

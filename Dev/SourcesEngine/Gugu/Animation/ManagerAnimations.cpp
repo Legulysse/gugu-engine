@@ -69,7 +69,6 @@ SpriteAnimation* ManagerAnimations::AddAnimation(ElementSprite* sprite)
     SpriteAnimation* animation = new SpriteAnimation;
     animation->SetSprite(sprite);
 
-    sprite->InitInteractions();
     sprite->GetInteractions()->AddCallback(EElementEvent::Destroyed, std::bind(
         &ManagerAnimations::DeleteAnimationFromSprite,
         this,

@@ -525,61 +525,18 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
     m_showDebugBounds = showDebugBounds;
 }
 
-/*void Element::SetShader(sf::Shader* _pShader)
-{
-    m_pShader = _pShader;
-}*/
-
-//void Element::SetInteractionFlags(int _iFlags)
+//void Element::SetShader(sf::Shader* _pShader)
 //{
-//    InitInteractions();
-//    m_interactions->SetInteractionFlags(_iFlags);
-//}
-//
-//void Element::AddInteractionFlag(EElementInteractionEvent::Type _eFlag)
-//{
-//    InitInteractions();
-//    m_interactions->AddInteractionFlag(_eFlag);
-//}
-//
-//void Element::RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag)
-//{
-//    if (m_interactions)
-//        m_interactions->RemoveInteractionFlag(_eFlag);
+//    m_pShader = _pShader;
 //}
 
-//int Element::GetInteractionFlags() const
-//{
-//    if (m_interactions)
-//        return m_interactions->GetInteractionFlags();
-//    return EElementInteractionEvent::None;
-//}
-
-//bool Element::HasInteractionFlags() const
-//{
-//    if (m_interactions)
-//        return m_interactions->HasInteractionFlags();
-//    return false;
-//}
-
-//bool Element::HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const
-//{
-//    //if (m_interactions)
-//    //    return m_interactions->HasInteractionFlag(_eFlag);
-//    return false;
-//}
-
-void Element::InitInteractions()
+ElementEvents* Element::GetInteractions()
 {
     if (!m_interactions)
     {
         m_interactions = new ElementEvents(this);
     }
-}
 
-ElementEvents* Element::GetInteractions()
-{
-    InitInteractions();
     return m_interactions;
 }
 

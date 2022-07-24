@@ -195,37 +195,8 @@ public:
     //----------------------------------------------
     // Events
 
-    //void SetInteractionFlags(int _iFlags);
-    //void AddInteractionFlag(EElementInteractionEvent::Type _eFlag);
-    //void RemoveInteractionFlag(EElementInteractionEvent::Type _eFlag);
-
-    //int GetInteractionFlags() const;
-    //bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
-    //bool HasInteractionFlag(EElementInteractionEvent::Type _eFlag) const;
-
-    //virtual void GetPropagationList(std::vector<ElementEvents*>& _vecPropagationList) {} //Return Elements that are not Children but should have Interactions (like Items)
-
-    void InitInteractions();
     ElementEvents* GetInteractions();
 
-    //TODO: deprecate all those callbacks
-    //virtual void OnMouseEnter() {}
-    //virtual void OnMouseLeave() {}
-
-    //virtual bool OnMousePressed() { return true; }
-    //virtual bool OnMouseReleased() { return true; }
-
-    //virtual bool OnMouseSelected() { return true; }
-    //virtual bool OnMouseDeselected() { return true; }
-
-    //virtual void OnMouseDragStart() {}
-    //virtual void OnMouseDragStop() {}
-    //virtual void OnMouseDragMove() {}
-
-    //virtual void OnMouseScrolled(int _iDelta) {}
-
-    //virtual bool OnSFEvent(const sf::Event& _oSFEvent) { return true; }     //Return true : allow event to be propagated.
-    
     //----------------------------------------------
     // Loading
 

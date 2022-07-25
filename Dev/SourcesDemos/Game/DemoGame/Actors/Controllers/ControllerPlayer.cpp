@@ -33,7 +33,7 @@ void ControllerPlayer::InitControllerPlayer(CharacterHero* _pCharacter)
 {
     m_character = _pCharacter;
 
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 }
 
 void ControllerPlayer::Step(const DeltaTime& dt)

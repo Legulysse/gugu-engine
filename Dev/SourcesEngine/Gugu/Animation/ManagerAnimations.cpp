@@ -10,6 +10,7 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Animation/SpriteAnimation.h"
+#include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Trace.h"
@@ -69,8 +70,7 @@ SpriteAnimation* ManagerAnimations::AddAnimation(ElementSprite* sprite)
     SpriteAnimation* animation = new SpriteAnimation;
     animation->SetSprite(sprite);
 
-    sprite->InitInteractions();
-    sprite->GetInteractions()->AddCallback(EInteraction::Destroyed, std::bind(
+    sprite->GetEvents()->AddCallback(EElementEvent::Destroyed, std::bind(
         &ManagerAnimations::DeleteAnimationFromSprite,
         this,
         sprite));

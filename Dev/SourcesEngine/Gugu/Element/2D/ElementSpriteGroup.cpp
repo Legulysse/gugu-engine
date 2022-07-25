@@ -248,11 +248,6 @@ ElementSpriteGroupItem* ElementSpriteGroup::GetItem(int _iIndex) const
     return m_items[_iIndex];
 }
 
-void ElementSpriteGroup::GetPropagationList(std::vector<Element*>& _vecPropagationList)
-{
-    StdVectorAppend(m_items, _vecPropagationList);
-}
-
 bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
 {
     pugi::xml_document document;

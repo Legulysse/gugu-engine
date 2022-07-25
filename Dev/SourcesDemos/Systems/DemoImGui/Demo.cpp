@@ -11,7 +11,7 @@
 #include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Element/2D/ElementText.h"
+#include "Gugu/Element/UI/ElementEditableText.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
@@ -38,7 +38,7 @@ Demo::~Demo()
 
 void Demo::AppStart()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     // Register Inputs
     ManagerInputs* inputs = GetInputs();
@@ -94,7 +94,7 @@ void Demo::AppStart()
     m_textToggle->SetPosition(fPosX, fPosY);
 
     fPosY += fGapTextBigY;
-    ElementText* textEdit = m_root->AddChild<ElementText>();
+    ElementEditableText* textEdit = m_root->AddChild<ElementEditableText>();
     textEdit->SetText("Edit me...");
     textEdit->SetDebugBoundsVisible(true);
     textEdit->SetEditable(true);

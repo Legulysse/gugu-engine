@@ -52,6 +52,7 @@ void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, EL
         { ELogEngine::Resources, "Resources" },
         { ELogEngine::Audio, "Audio" },
         { ELogEngine::Network, "Network" },
+        { ELogEngine::Element, "Element" },
     };
 
     LogEntry entry;

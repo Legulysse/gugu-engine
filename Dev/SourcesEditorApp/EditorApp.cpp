@@ -30,7 +30,7 @@ EditorApp::~EditorApp()
 
 void EditorApp::AppStart()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 }
 
 void EditorApp::AppStop()

@@ -175,6 +175,7 @@ void LoggerEngine::Print(ELog::Type level, ELogEngine::Type category, const std:
         { ELogEngine::Resources, "[Resources] " },
         { ELogEngine::Audio, "[Audio] " },
         { ELogEngine::Network, "[Network] " },
+        { ELogEngine::Element, "[Element] " },
     };
 
     m_buffer << logCategoryAsStr.at(category);

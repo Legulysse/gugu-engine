@@ -33,7 +33,7 @@ StateMenuMain::~StateMenuMain()
 
 void StateMenuMain::Init()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     //Root UI
     m_menu = GetGameWindow()->GetUINode()->AddChild<Element>();

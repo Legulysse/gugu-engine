@@ -13,6 +13,7 @@
 #include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
@@ -35,7 +36,7 @@ StateMenuMain::~StateMenuMain()
 
 void StateMenuMain::Init()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
@@ -59,7 +60,7 @@ void StateMenuMain::Init()
     pBox->SetUnifiedPosition(UDim2(0.f, 50.f, 0.f, 50.f));
 
     m_menu = pBox;
-    m_menu->AddInteractionFlag(EInteraction::Drag);
+    m_menu->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, [](const InteractionInfos&) {});
 
     ElementButton* pButton;
     float padding = 20.f;

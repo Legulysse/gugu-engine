@@ -26,7 +26,7 @@ Demo::~Demo()
 
 void Demo::AppStart()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     // Set Mouse aspect
     GetGameWindow()->SetSystemMouseVisible(false);

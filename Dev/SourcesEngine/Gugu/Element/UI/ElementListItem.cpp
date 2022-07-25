@@ -37,17 +37,16 @@ ElementListItem::~ElementListItem()
 void ElementListItem::SetList(ElementList* _pList)
 {
     //TODO : remove from previous List
-    SetParent(_pList);
 
+    SetParent(_pList);
     m_list = _pList;
-    
-    AddInteractionFlag(EInteraction::Focus);
-    AddInteractionFlag(EInteraction::Click);
 }
 
 void ElementListItem::SetElement(Element* _pElement)
 {
     SafeDelete(m_elementImpl);
+
+    _pElement->SetParent(this);
     m_elementImpl = _pElement;
 }
 
@@ -58,6 +57,9 @@ Element* ElementListItem::GetElement() const
 
 void ElementListItem::SetSelected(bool _bIsSelected)
 {
+    if (m_isSelected == _bIsSelected)
+        return;
+
     m_isSelected = _bIsSelected;
     
     if (m_isSelected && m_callbackOnSelected)
@@ -89,20 +91,6 @@ void ElementListItem::SetOnSelected(const Callback& callback)
 void ElementListItem::SetOnDeselected(const Callback& callback)
 {
     m_callbackOnDeselected = callback;
-}
-
-void ElementListItem::OnMouseEnter()
-{
-}
-
-void ElementListItem::OnMouseLeave()
-{
-}
-
-bool ElementListItem::OnMousePressed()
-{
-    m_list->SetSelectedItem(this);
-    return false;
 }
 
 void ElementListItem::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)

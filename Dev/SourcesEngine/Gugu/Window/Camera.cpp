@@ -197,6 +197,12 @@ bool Camera::IsMouseOverCamera(const Vector2i& _kMouseCoords) const
 
 bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElement) const
 {
+    Vector2f localPickedCoords;
+    return IsMouseOverElement(_kMouseCoords, _pElement, localPickedCoords);
+}
+
+bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElement, Vector2f& localPickedCoords) const
+{
     if (!IsMouseOverCamera(_kMouseCoords))
         return false;
 
@@ -212,7 +218,7 @@ bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElemen
     if (!bSceneNode && !bWindowNode)
         return false;
 
-    return _pElement->IsPicked(GetPickedPosition(_kMouseCoords));
+    return _pElement->IsPicked(GetPickedPosition(_kMouseCoords), localPickedCoords);
 }
 
 }   // namespace gugu

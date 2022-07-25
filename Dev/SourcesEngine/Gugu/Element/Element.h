@@ -6,7 +6,6 @@
 #include "Gugu/System/Types.h"
 #include "Gugu/Math/UDim.h"
 #include "Gugu/Math/Vector2.h"
-#include "Gugu/Element/ElementInteractions.h"
 
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
@@ -19,6 +18,8 @@
 namespace gugu
 {
     struct RenderPass;
+    struct InteractionInfos;
+    class ElementEventHandler;
 }
 
 namespace pugi
@@ -130,10 +131,13 @@ public:
     //----------------------------------------------
     // Transform
 
-    virtual bool IsPicked(const Vector2f& _kGlobalCoords) const;
+    bool IsPicked(const Vector2f& globalCoords) const;
+    bool IsPicked(const Vector2f& globalCoords, Vector2f& localPickedCoords) const;
+    virtual bool IsPickedLocal(Vector2f& localCoords) const;
 
-    Vector2f TransformToLocal(const Vector2f& point) const;
-    Vector2f TransformToGlobal(const Vector2f& point) const;
+    Vector2f TransformToLocal(const Vector2f& globalCoords) const;
+    Vector2f TransformToLocal(const Vector2f& ancestorCoords, Element* ancestorReference) const;
+    Vector2f TransformToGlobal(const Vector2f& localCoords) const;
 
     const sf::Transform& GetTransform() const;
     const sf::Transform& GetInverseTransform() const;
@@ -190,41 +194,9 @@ public:
     void ComputeUnifiedDimensions();
 
     //----------------------------------------------
-    // Interactions
-
-    void SetInteractionFlags(int _iFlags);
-    void AddInteractionFlag(EInteraction::Type _eFlag);
-    void RemoveInteractionFlag(EInteraction::Type _eFlag);
-
-    int GetInteractionFlags() const;
-    bool HasInteractionFlags() const;   //Return true if Interaction flags are set besides Disabled and Absorb
-    bool HasInteractionFlag(EInteraction::Type _eFlag) const;
-
-    virtual void GetPropagationList(std::vector<Element*>& _vecPropagationList) {} //Return Elements that are not Children but should have Interactions (like Items)
-
-    void InitInteractions();
-    ElementInteractions* GetInteractions() const;
-
-    //----------------------------------------------
     // Events
 
-    //TODO: deprecate all those callbacks
-    virtual void OnMouseEnter() {}
-    virtual void OnMouseLeave() {}
-
-    virtual bool OnMousePressed() { return true; }
-    virtual bool OnMouseReleased() { return true; }
-
-    virtual bool OnMouseSelected() { return true; }
-    virtual bool OnMouseDeselected() { return true; }
-
-    virtual void OnMouseDragStart() {}
-    virtual void OnMouseDragStop() {}
-    virtual void OnMouseDragMove() {}
-
-    virtual void OnMouseScrolled(int _iDelta) {}
-
-    virtual bool OnSFEvent(const sf::Event& _oSFEvent) { return true; }     //Return true : allow event to be propagated.
+    ElementEventHandler* GetEvents();
 
     //----------------------------------------------
     // Loading
@@ -285,9 +257,9 @@ protected:
     UDim2 m_dimSize;
 
     //----------------------------------------------
-    // Interactions
+    // Events
 
-    ElementInteractions* m_interactions;
+    ElementEventHandler* m_eventHandler;
 };
 
 }   // namespace gugu

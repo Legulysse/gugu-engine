@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
+#include "Gugu/Core/Callback.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -52,17 +53,17 @@ public:
     void SetOnMousePressed(const Callback& _pActionOnPressed);
     void SetOnMouseReleased(const Callback& _pActionOnReleased);
 
-    virtual bool OnMousePressed() override;
-    virtual bool OnMouseReleased() override;
-    virtual void OnMouseEnter() override;
-    virtual void OnMouseLeave() override;
-
     ElementText* GetElementText() const;
 
     bool LoadFromFile(const std::string& path);
     virtual bool LoadFromXml(const pugi::xml_node& nodeSelf) override;
 
 protected:
+
+    void OnMousePressed(const InteractionInfos& interactionInfos);
+    void OnMouseReleased(const InteractionInfos& interactionInfos);
+    void OnMouseEntered(const InteractionInfos& interactionInfos);
+    void OnMouseLeft(const InteractionInfos& interactionInfos);
 
     void SetTextureImpl(Texture* textureIdle, Texture* textureFocused, Texture* textureDisabled);
 

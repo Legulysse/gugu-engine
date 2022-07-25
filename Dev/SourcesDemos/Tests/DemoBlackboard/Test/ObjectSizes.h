@@ -51,7 +51,7 @@ public:
     int                 m_iRenderPass;
     gugu::int32               m_iZIndex;
 
-    gugu::ElementInteractions* m_pInteractions;
+    gugu::ElementEventHandler* m_pInteractions;
 
     gugu::UDim2       m_oDimOrigin;
     gugu::UDim2       m_oDimPos;

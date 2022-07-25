@@ -57,7 +57,7 @@ Game::~Game()
 
 void Game::AppStart()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     //Set Mouse aspect
     GetGameWindow()->SetSystemMouseVisible(false);
@@ -249,9 +249,6 @@ void Game::CreateScenario()
     m_scene = GetScenes()->GetRootScene()->AddChildScene();
     GetGameWindow()->BindScene(m_scene, pCamera);
 
-    // Disable interactions on scene nodes (optimisation)
-    m_scene->GetRootNode()->AddInteractionFlag(EInteraction::Absorb);
-    
     // Fill Scene
     m_grid = new Grid();
     m_grid->InitGrid(m_scene, 50, 50, 32.f, 32.f);

@@ -18,7 +18,7 @@
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Element/2D/ElementText.h"
+#include "Gugu/Element/UI/ElementEditableText.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/Element/UI/ElementList.h"
 #include "Gugu/Element/UI/ElementListItem.h"
@@ -40,7 +40,7 @@ StateGuiTest::~StateGuiTest()
 
 void StateGuiTest::Init()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
@@ -53,7 +53,7 @@ void StateGuiTest::Init()
     pTile->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
 
     //Test EditLine
-    ElementText* pEditLine = m_root->AddChild<ElementText>();
+    ElementEditableText* pEditLine = m_root->AddChild<ElementEditableText>();
     //pEditLine->SetResizeRule(TextResizeRule::FitScale);
     pEditLine->SetText("Edit Me !");
     pEditLine->SetMultiline(false);
@@ -83,7 +83,7 @@ void StateGuiTest::Init()
     }
 
     //Test Multilined text
-    ElementText* pText = m_root->AddChild<ElementText>();
+    ElementEditableText* pText = m_root->AddChild<ElementEditableText>();
     pText->SetResizeRule(ETextResizeRule::FitHeight);
     pText->SetSize(600.f, 800.f);
     pText->SetMultiline(true);

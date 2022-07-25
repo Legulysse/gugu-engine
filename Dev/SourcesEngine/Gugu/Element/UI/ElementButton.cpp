@@ -8,10 +8,10 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/External/PugiXmlWrap.h"
@@ -36,8 +36,10 @@ ElementButton::ElementButton()
     m_actionOnPressed = nullptr;
     m_actionOnReleased = nullptr;
     
-    AddInteractionFlag(EInteraction::Focus);
-    AddInteractionFlag(EInteraction::Click);
+    GetEvents()->AddCallback(EInteractionEvent::MouseEntered, std::bind(&ElementButton::OnMouseEntered, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseLeft, std::bind(&ElementButton::OnMouseLeft, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementButton::OnMousePressed, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseReleased, std::bind(&ElementButton::OnMouseReleased, this, std::placeholders::_1));
 
     m_isDisabled = false;
 }
@@ -121,8 +123,6 @@ void ElementButton::SetDisabled(bool _bDisabled)
 
     if (m_isDisabled)
     {
-        AddInteractionFlag(EInteraction::Disabled);
-
         if (m_currentSprite)
         {
             m_currentSprite = m_spriteDisabled ? m_spriteDisabled : m_spriteIdle;
@@ -130,8 +130,6 @@ void ElementButton::SetDisabled(bool _bDisabled)
     }
     else
     {
-        RemoveInteractionFlag(EInteraction::Disabled);
-
         if (m_currentSprite)
         {
             m_currentSprite = m_spriteIdle;
@@ -149,39 +147,33 @@ void ElementButton::SetOnMouseReleased(const Callback& _pActionOnReleased)
     m_actionOnReleased = _pActionOnReleased;
 }
 
-bool ElementButton::OnMousePressed()
+void ElementButton::OnMousePressed(const InteractionInfos& interactionInfos)
 {
     if (m_actionOnPressed)
     {
         m_actionOnPressed();
-        return false;
     }
-
-    return true;
 }
 
-bool ElementButton::OnMouseReleased()
+void ElementButton::OnMouseReleased(const InteractionInfos& interactionInfos)
 {
     if (m_actionOnReleased)
     {
         m_actionOnReleased();
-        return false;
     }
-
-    return true;
 }
 
-void ElementButton::OnMouseEnter()
+void ElementButton::OnMouseEntered(const InteractionInfos& interactionInfos)
 {
-    if (m_currentSprite)
+    if (m_currentSprite && !m_isDisabled)
     {
         m_currentSprite = m_spriteFocused ? m_spriteFocused : m_spriteIdle;
     }
 }
 
-void ElementButton::OnMouseLeave()
+void ElementButton::OnMouseLeft(const InteractionInfos& interactionInfos)
 {
-    if (m_currentSprite)
+    if (m_currentSprite && !m_isDisabled)
     {
         m_currentSprite = m_spriteIdle;
     }

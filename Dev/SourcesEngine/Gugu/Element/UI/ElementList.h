@@ -28,9 +28,6 @@ public:
 
     void SetImageSet        (const std::string& _strImageSetPath);
     
-    void SetAllowSelection      (bool _bAllow);
-    void SetMultipleSelection   (bool _bMultiple);
-
     void AddItem            (ElementListItem* _pNewItem);
     void RemoveItem         (int _iIndex);
     void RemoveItem         (ElementListItem* _pItem);
@@ -39,8 +36,13 @@ public:
     void    GetItems        (std::vector<ElementListItem*>& _vecItems) const;
     int     GetItemCount    () const;
 
-    void SetSelectedItem    (int _iIndex);
-    void SetSelectedItem    (ElementListItem* _pNewItem);
+    void SetAllowSelection      (bool _bAllow);
+    void SetMultipleSelection   (bool _bMultiple);
+
+    void SetItemSelected    (int _iIndex, bool selected);
+    void SetItemSelected    (ElementListItem* _pNewItem, bool selected);
+    void ToggleItemSelected (int _iIndex);
+    void ToggleItemSelected (ElementListItem* _pNewItem);
 
     int                 GetSelectedIndex    () const;
     ElementListItem*    GetSelectedItem     () const;
@@ -49,12 +51,11 @@ public:
     void                GetSelectedItems    (std::vector<ElementListItem*>& _vecItems) const;
     void                GetSelectedElements (std::vector<Element*>& _vecElements) const;
 
-    virtual void        GetPropagationList(std::vector<Element*>& _vecPropagationList) override;
+protected:
 
-    virtual void OnMouseScrolled(int _iDelta) override;
-    void OnScrollDrag();
-
-private:
+    void OnMousePressed(const InteractionInfos& interactionInfos);
+    void OnMouseScrolled(const InteractionInfos& interactionInfos);
+    void OnSliderDragMoved(const InteractionInfos& interactionInfos);
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;

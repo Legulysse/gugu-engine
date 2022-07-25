@@ -30,7 +30,7 @@ StateDemoLayout::~StateDemoLayout()
 
 void StateDemoLayout::Init()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();

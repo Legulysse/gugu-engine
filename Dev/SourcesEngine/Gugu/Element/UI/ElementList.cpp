@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Window/Renderer.h"
+#include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/UI/ElementListItem.h"
 #include "Gugu/System/SystemUtility.h"
@@ -25,18 +25,14 @@ ElementList::ElementList()
     m_allowSelection = true;
     m_multipleSelection = false;
     
-    ElementSprite* pSprite;
+    m_scrollBackground = new ElementSprite;
+    m_scrollBackground->SetParent(this);
+    m_scrollBackground->SetSize(30.f, 30.f);
+    m_scrollBackground->SetVisible(false);
 
-    pSprite = new ElementSprite;
-    pSprite->SetParent(this);
-    pSprite->SetSize(30.f, 30.f);
-    pSprite->SetVisible(false);
-    m_scrollBackground = pSprite;
-
-    pSprite = new ElementSprite;
-    pSprite->SetParent(this);
-    pSprite->SetSize(30.f, 30.f);
-    m_scrollSlider = pSprite;
+    m_scrollSlider = new ElementSprite;
+    m_scrollSlider->SetParent(this);
+    m_scrollSlider->SetSize(30.f, 30.f);
 
     m_scrollButtonTop = new ElementSprite;
     m_scrollButtonTop->SetParent(this);
@@ -44,18 +40,12 @@ ElementList::ElementList()
     m_scrollButtonBottom = new ElementSprite;
     m_scrollButtonBottom->SetParent(this);
 
-    AddInteractionFlag(EInteraction::Scroll);
-    m_scrollButtonTop->AddInteractionFlag(EInteraction::Click);
-    m_scrollButtonBottom->AddInteractionFlag(EInteraction::Click);
-    m_scrollSlider->AddInteractionFlag(EInteraction::Drag);
+    GetEvents()->AddCallback(EInteractionEvent::MouseScrolled, std::bind(&ElementList::OnMouseScrolled, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementList::OnMousePressed, this, std::placeholders::_1));
 
-    m_scrollButtonTop->InitInteractions();
-    m_scrollButtonBottom->InitInteractions();
-    m_scrollSlider->InitInteractions();
-    
-    m_scrollButtonTop->GetInteractions()->AddCallback(EInteraction::Click, std::bind(&ElementList::OnMouseScrolled, this, 1));
-    m_scrollButtonBottom->GetInteractions()->AddCallback(EInteraction::Click, std::bind(&ElementList::OnMouseScrolled, this, -1));
-    m_scrollSlider->GetInteractions()->AddCallback(EInteraction::Drag, std::bind(&ElementList::OnScrollDrag, this));
+    m_scrollButtonTop->GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, -1));
+    m_scrollButtonBottom->GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, 1));
+    m_scrollSlider->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, std::bind(&ElementList::OnSliderDragMoved, this, std::placeholders::_1));
 }
 
 ElementList::~ElementList()
@@ -78,16 +68,6 @@ void ElementList::SetImageSet(const std::string& _strImageSetPath)
 
     RecomputeScrollBar();
     RecomputeItems();
-}
-
-void ElementList::SetAllowSelection(bool _bAllow)
-{
-    m_allowSelection = _bAllow;
-}
-
-void ElementList::SetMultipleSelection(bool _bMultiple)
-{
-    m_multipleSelection = _bMultiple;
 }
 
 void ElementList::AddItem(ElementListItem* _pNewItem)
@@ -143,23 +123,68 @@ int ElementList::GetItemCount() const
     return m_items.size();
 }
 
-void ElementList::SetSelectedItem(int _iIndex)
+void ElementList::SetAllowSelection(bool _bAllow)
 {
-    if (_iIndex >= 0 && _iIndex < (int)m_items.size())
-        SetSelectedItem(m_items[_iIndex]);
+    m_allowSelection = _bAllow;
 }
 
-void ElementList::SetSelectedItem(ElementListItem* _pNewItem)
+void ElementList::SetMultipleSelection(bool _bMultiple)
+{
+    m_multipleSelection = _bMultiple;
+}
+
+void ElementList::SetItemSelected(int _iIndex, bool selected)
+{
+    if (_iIndex >= 0 && _iIndex < (int)m_items.size())
+    {
+        SetItemSelected(m_items[_iIndex], selected);
+    }
+}
+
+void ElementList::SetItemSelected(ElementListItem* _pNewItem, bool selected)
+{
+    if (m_allowSelection && _pNewItem && _pNewItem->IsSelected() != selected)
+    {
+        _pNewItem->SetSelected(selected);
+
+        if (!m_multipleSelection && selected)
+        {
+            for (size_t i = 0; i < m_items.size(); ++i)
+            {
+                ElementListItem* pItem = m_items[i];
+                if (pItem != _pNewItem)
+                {
+                    pItem->SetSelected(false);
+                }
+            }
+        }
+    }
+}
+
+void ElementList::ToggleItemSelected(int _iIndex)
+{
+    if (_iIndex >= 0 && _iIndex < (int)m_items.size())
+    {
+        ToggleItemSelected(m_items[_iIndex]);
+    }
+}
+
+void ElementList::ToggleItemSelected(ElementListItem* _pNewItem)
 {
     if (m_allowSelection)
     {
-        for (size_t i = 0; i < m_items.size(); ++i)
+        _pNewItem->SetSelected(!_pNewItem->IsSelected());
+
+        if (!m_multipleSelection && _pNewItem->IsSelected())
         {
-            ElementListItem* pItem = m_items[i];
-            if (pItem == _pNewItem)
-                pItem->SetSelected(!pItem->IsSelected());
-            else if (!m_multipleSelection)
-                pItem->SetSelected(false);
+            for (size_t i = 0; i < m_items.size(); ++i)
+            {
+                ElementListItem* pItem = m_items[i];
+                if (pItem != _pNewItem)
+                {
+                    pItem->SetSelected(false);
+                }
+            }
         }
     }
 }
@@ -229,12 +254,29 @@ void ElementList::GetSelectedElements(std::vector<Element*>& _vecElements) const
     }
 }
 
-void ElementList::OnMouseScrolled(int _iDelta)
+void ElementList::OnMousePressed(const InteractionInfos& interactionInfos)
 {
-    ScrollItems(-_iDelta);
+    Vector2f localPickedCoords = interactionInfos.localPickingPosition;
+
+    for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
+    {
+        Vector2f itemLocalPickedCoords = m_items[i]->TransformToLocal(localPickedCoords, this);
+        if (m_items[i]->IsPickedLocal(itemLocalPickedCoords))
+        {
+            ToggleItemSelected(i);
+            return;
+        }
+    }
+
+    interactionInfos.absorbEvent = false;
 }
 
-void ElementList::OnScrollDrag()
+void ElementList::OnMouseScrolled(const InteractionInfos& interactionInfos)
+{
+    ScrollItems(-interactionInfos.scrollDelta);
+}
+
+void ElementList::OnSliderDragMoved(const InteractionInfos& interactionInfos)
 {
     if (m_items.size() != 0)
     {
@@ -350,18 +392,6 @@ void ElementList::RecomputeItems()
     {
         m_scrollSlider->SetSizeY(GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y);
         m_scrollSlider->SetPosition(m_scrollSlider->GetPosition().x, m_scrollButtonTop->GetSize().y);
-    }
-}
-
-void ElementList::GetPropagationList(std::vector<Element*>& _vecPropagationList)
-{
-    _vecPropagationList.push_back(m_scrollButtonTop);
-    _vecPropagationList.push_back(m_scrollSlider);
-    _vecPropagationList.push_back(m_scrollButtonBottom);
-
-    for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
-    {
-        _vecPropagationList.push_back(m_items[i]);
     }
 }
 

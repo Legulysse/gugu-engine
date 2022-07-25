@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/External/PugiXmlWrap.h"
 #include "Gugu/Math/MathUtility.h"
@@ -37,15 +38,15 @@ Element::Element()
 
     //m_pShader = nullptr;
 
-    m_interactions = nullptr;
+    m_eventHandler = nullptr;
 }
 
 Element::~Element()
 {
-    if (m_interactions)
+    if (m_eventHandler)
     {
-        m_interactions->FireCallbacks(EInteraction::Destroyed);
-        SafeDelete(m_interactions);
+        m_eventHandler->FireCallbacks(EElementEvent::Destroyed);
+        SafeDelete(m_eventHandler);
     }
 
     //SafeDelete(m_pShader);
@@ -124,24 +125,39 @@ const std::vector<Element*>& Element::GetChildren() const
     return m_children;
 }
 
-Vector2f Element::TransformToLocal(const Vector2f& point) const
+Vector2f Element::TransformToLocal(const Vector2f& globalCoords) const
 {
     if (m_parent)
     {
-        return GetInverseTransform().transformPoint( m_parent->TransformToLocal(point) );
+        return GetInverseTransform().transformPoint(m_parent->TransformToLocal(globalCoords));
     }
 
-    return GetInverseTransform().transformPoint(point);
+    return GetInverseTransform().transformPoint(globalCoords);
 }
 
-Vector2f Element::TransformToGlobal(const Vector2f& point) const
+Vector2f Element::TransformToLocal(const Vector2f& ancestorCoords, Element* ancestorReference) const
+{
+    if (ancestorReference == this)
+    {
+        return ancestorCoords;
+    }
+
+    if (m_parent && ancestorReference != m_parent)
+    {
+        return GetInverseTransform().transformPoint(m_parent->TransformToLocal(ancestorCoords, ancestorReference));
+    }
+
+    return GetInverseTransform().transformPoint(ancestorCoords);
+}
+
+Vector2f Element::TransformToGlobal(const Vector2f& localCoords) const
 {
     if (m_parent)
     {
-        return m_parent->TransformToGlobal( GetTransform().transformPoint(point) );
+        return m_parent->TransformToGlobal(GetTransform().transformPoint(localCoords));
     }
 
-    return GetTransform().transformPoint(point);
+    return GetTransform().transformPoint(localCoords);
 }
 
 void Element::SetVisible(bool visible)
@@ -510,70 +526,39 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
     m_showDebugBounds = showDebugBounds;
 }
 
-/*void Element::SetShader(sf::Shader* _pShader)
-{
-    m_pShader = _pShader;
-}*/
+//void Element::SetShader(sf::Shader* _pShader)
+//{
+//    m_pShader = _pShader;
+//}
 
-void Element::SetInteractionFlags(int _iFlags)
+ElementEventHandler* Element::GetEvents()
 {
-    InitInteractions();
-    m_interactions->SetInteractionFlags(_iFlags);
-}
-
-void Element::AddInteractionFlag(EInteraction::Type _eFlag)
-{
-    InitInteractions();
-    m_interactions->AddInteractionFlag(_eFlag);
-}
-
-void Element::RemoveInteractionFlag(EInteraction::Type _eFlag)
-{
-    if (m_interactions)
-        m_interactions->RemoveInteractionFlag(_eFlag);
-}
-
-int Element::GetInteractionFlags() const
-{
-    if (m_interactions)
-        return m_interactions->GetInteractionFlags();
-    return EInteraction::None;
-}
-
-bool Element::HasInteractionFlags() const
-{
-    if (m_interactions)
-        return m_interactions->HasInteractionFlags();
-    return false;
-}
-
-bool Element::HasInteractionFlag(EInteraction::Type _eFlag) const
-{
-    if (m_interactions)
-        return m_interactions->HasInteractionFlag(_eFlag);
-    return false;
-}
-
-void Element::InitInteractions()
-{
-    if (!m_interactions)
+    if (!m_eventHandler)
     {
-        m_interactions = new ElementInteractions;
+        m_eventHandler = new ElementEventHandler(this);
     }
+
+    return m_eventHandler;
 }
 
-ElementInteractions* Element::GetInteractions() const
+bool Element::IsPicked(const Vector2f& globalCoords) const
 {
-    return m_interactions;
+    Vector2f localPickedCoords = TransformToLocal(globalCoords);
+    return IsPickedLocal(localPickedCoords);
 }
 
-bool Element::IsPicked(const Vector2f& _kGlobalCoords) const
+bool Element::IsPicked(const Vector2f& globalCoords, Vector2f& localPickedCoords) const
 {
-    Vector2f oPosMouse = TransformToLocal(_kGlobalCoords);
-    Vector2f oPosBottomRight = GetSize();
+    localPickedCoords = TransformToLocal(globalCoords);
+    return IsPickedLocal(localPickedCoords);
+}
 
-    if (    oPosMouse.x >= 0 && oPosMouse.x < oPosBottomRight.x
-        &&  oPosMouse.y >= 0 && oPosMouse.y < oPosBottomRight.y )
+bool Element::IsPickedLocal(Vector2f& localCoords) const
+{
+    Vector2f bottomRight = GetSize();
+
+    if (localCoords.x >= 0 && localCoords.x < bottomRight.x
+        && localCoords.y >= 0 && localCoords.y < bottomRight.y)
     {
         return true;
     }

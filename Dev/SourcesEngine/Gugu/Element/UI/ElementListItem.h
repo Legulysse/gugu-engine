@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
+#include "Gugu/Core/Callback.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -37,10 +38,6 @@ public:
     void        SetOnSelected   (const Callback& callback);
     void        SetOnDeselected (const Callback& callback);
 
-    virtual void OnMouseEnter() override;
-    virtual void OnMouseLeave() override;
-    virtual bool OnMousePressed() override;
-    
 private:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;

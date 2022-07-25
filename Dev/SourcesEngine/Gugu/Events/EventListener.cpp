@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Events/HandlerEvents.h"
+#include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Window/Window.h"
 
 #include <SFML/Window/Event.hpp>
@@ -24,18 +24,18 @@ EventListener::EventListener()
 
 EventListener::~EventListener()
 {
-    UnregisterHandlerEvents();
+    UnregisterEventHandler();
 }
 
-void EventListener::RegisterHandlerEvents(Window* _pWindow)
+void EventListener::RegisterEventHandler(Window* _pWindow)
 {
-    if (_pWindow && _pWindow->GetHandlerEvents())
+    if (_pWindow && _pWindow->GetEventHandler())
     {
-        RegisterHandlerEvents(_pWindow->GetHandlerEvents());
+        RegisterEventHandler(_pWindow->GetEventHandler());
     }
 }
 
-void EventListener::RegisterHandlerEvents(HandlerEvents* _pHandler)
+void EventListener::RegisterEventHandler(WindowEventHandler* _pHandler)
 {
     if (_pHandler)
     {
@@ -43,7 +43,7 @@ void EventListener::RegisterHandlerEvents(HandlerEvents* _pHandler)
     }
 }
 
-void EventListener::UnregisterHandlerEvents()
+void EventListener::UnregisterEventHandler()
 {
     if (m_handler)
     {
@@ -58,10 +58,10 @@ bool EventListener::IsRegistered() const
 
 bool EventListener::IsRegistered(Window* _pWindow) const
 {
-    return (m_handler != nullptr && _pWindow != nullptr && m_handler == _pWindow->GetHandlerEvents());
+    return (m_handler != nullptr && _pWindow != nullptr && m_handler == _pWindow->GetEventHandler());
 }
 
-bool EventListener::IsRegistered(HandlerEvents* _pHandler) const
+bool EventListener::IsRegistered(WindowEventHandler* _pHandler) const
 {
     return (m_handler != nullptr && m_handler == _pHandler);
 }

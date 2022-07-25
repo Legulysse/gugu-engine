@@ -60,6 +60,7 @@ public:
     Vector2f        GetPickedPosition   (const Vector2i& _kMouseCoords) const;
     bool            IsMouseOverCamera   (const Vector2i& _kMouseCoords) const;
     bool            IsMouseOverElement  (const Vector2i& _kMouseCoords, Element* _pElement) const;
+    bool            IsMouseOverElement  (const Vector2i& _kMouseCoords, Element* _pElement, Vector2f& localPickedCoords) const;
 
 protected:
 

@@ -211,17 +211,17 @@ void Demo::AppUpdate(const DeltaTime& dt)
             Vector2i pickedCoords;
             if (m_grid4->PickCoords(localPickedPositionA, pickedCoords))
             {
-                m_gridData4->SetBlocked(pickedCoords, true);
+                m_gridData4->SetBlocked(pickedCoords, !GetInputs()->IsControlDown());
                 refresh = true;
             }
             else if (m_grid8->PickCoords(localPickedPositionB, pickedCoords))
             {
-                m_gridData8->SetBlocked(pickedCoords, true);
+                m_gridData8->SetBlocked(pickedCoords, !GetInputs()->IsControlDown());
                 refresh = true;
             }
             else if (m_grid6->PickCoords(localPickedPositionC, pickedCoords))
             {
-                m_gridData6->SetBlocked(pickedCoords, true);
+                m_gridData6->SetBlocked(pickedCoords, !GetInputs()->IsControlDown());
                 refresh = true;
             }
         }
@@ -253,9 +253,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
     // Imgui panel.
     if (ImGui::Begin("Grid Demo"))
     {
-        //const char* items[] = { "Square 4", "Square 8", "Hexagon" };
-        //static int item_current = 0;
-        //ImGui::Combo("Grid Type", &item_current, items, IM_ARRAYSIZE(items));
+        ImGui::TextWrapped("- left-click to move the green cells (propagation source).\n- right-click to add blue blockers.\n- ctrl + right-click to remove them.");
 
         if (ImGui::SliderInt("Neighbours Range", &m_neighboursRange, 1, 10))
         {

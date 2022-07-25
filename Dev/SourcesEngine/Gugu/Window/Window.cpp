@@ -53,7 +53,7 @@ Window::Window()
     m_hostImGui = false;
 
     m_mainCamera = nullptr;
-    m_handlerEvents = nullptr;
+    m_eventHandler = nullptr;
 
     m_rootNode = nullptr;
     m_rootUINode = nullptr;
@@ -78,7 +78,7 @@ Window::Window()
 Window::~Window()
 {
     SafeDelete(m_statsDrawer);
-    SafeDelete(m_handlerEvents);
+    SafeDelete(m_eventHandler);
 
     m_sfWindow->close();
 
@@ -139,7 +139,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_mainCamera->SetWindow(this);
 
     //Handlers
-    m_handlerEvents = new HandlerEvents;
+    m_eventHandler = new WindowEventHandler;
 
     //Root node
     m_rootNode = new Element;
@@ -589,7 +589,7 @@ bool Window::ProcessEvents()
                 }
             }
 
-            m_handlerEvents->ProcessWindowEvent(event, cameras);
+            m_eventHandler->ProcessWindowEvent(event, cameras);
         }
     }
 
@@ -652,9 +652,9 @@ sf::RenderWindow* Window::GetSFRenderWindow() const
     return m_sfWindow;
 }
 
-HandlerEvents* Window::GetHandlerEvents() const
+WindowEventHandler* Window::GetEventHandler() const
 {
-    return m_handlerEvents;
+    return m_eventHandler;
 }
 
 bool Window::Screenshot() const

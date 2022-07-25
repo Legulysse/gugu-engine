@@ -19,7 +19,7 @@ namespace gugu
     struct EngineConfig;
     struct EngineStats;
     struct FrameInfos;
-    class HandlerEvents;
+    class WindowEventHandler;
     class Element;
     class ElementSprite;
     class ElementText;
@@ -87,7 +87,7 @@ public:
 
     sf::RenderWindow*   GetSFRenderWindow() const;
 
-    HandlerEvents*      GetHandlerEvents() const;
+    WindowEventHandler*      GetEventHandler() const;
 
     bool ProcessEvents();
     bool IsInputAllowed() const;
@@ -130,7 +130,7 @@ protected:
     std::vector<Camera*>        m_cameras;
     std::vector<SceneBinding>   m_sceneBindings;
 
-    HandlerEvents*      m_handlerEvents;
+    WindowEventHandler*      m_eventHandler;
 
     Element*            m_rootNode;             //Root for all Window Elements
     Element*            m_rootUINode;           //Root for the interface content

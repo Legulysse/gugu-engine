@@ -5,7 +5,7 @@
 
 namespace gugu
 {
-    class HandlerEvents;
+    class WindowEventHandler;
     class Window;
 }
 
@@ -21,20 +21,20 @@ namespace gugu {
     
 class EventListener
 {
-    friend class HandlerEvents;
+    friend class WindowEventHandler;
 
 public:
 
     EventListener();
     virtual ~EventListener();
     
-    void RegisterHandlerEvents(Window* _pWindow);
-    void RegisterHandlerEvents(HandlerEvents* _pHandler);
-    void UnregisterHandlerEvents();
+    void RegisterEventHandler(Window* _pWindow);
+    void RegisterEventHandler(WindowEventHandler* _pHandler);
+    void UnregisterEventHandler();
 
     bool IsRegistered() const;
     bool IsRegistered(Window* _pWindow) const;
-    bool IsRegistered(HandlerEvents* _pHandler) const;
+    bool IsRegistered(WindowEventHandler* _pHandler) const;
 
     //TODO: rename as OnWindowEvent ?
     //TODO: add a OnInputEvent ?
@@ -42,7 +42,7 @@ public:
 
 private:
 
-    HandlerEvents* m_handler;
+    WindowEventHandler* m_handler;
 };
 
 }   // namespace gugu

@@ -29,7 +29,7 @@ namespace sf
 
 namespace gugu {
 
-class HandlerEvents
+class WindowEventHandler
 {
 public:
 
@@ -39,8 +39,8 @@ public:
         Camera* camera;
     };
 
-    HandlerEvents();
-    ~HandlerEvents();
+    WindowEventHandler();
+    ~WindowEventHandler();
 
     void AddEventListener(EventListener* _pEventListener);
     void RemoveEventListener(EventListener* _pEventListener);

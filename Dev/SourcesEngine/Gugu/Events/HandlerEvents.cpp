@@ -20,7 +20,7 @@
 
 namespace gugu {
 
-HandlerEvents::HandlerEvents()
+WindowEventHandler::WindowEventHandler()
 {
     m_elementMouseFocused = nullptr;
     m_elementMouseSelected = nullptr;
@@ -29,7 +29,7 @@ HandlerEvents::HandlerEvents()
     m_lastMouseCoords = Vector2f(0.f, 0.f);
 }
 
-HandlerEvents::~HandlerEvents()
+WindowEventHandler::~WindowEventHandler()
 {
     for (EventListener* listener : m_eventListeners)
     {
@@ -52,19 +52,19 @@ HandlerEvents::~HandlerEvents()
     m_mouseDragElementEventHandlers.clear();
 }
 
-void HandlerEvents::AddEventListener(EventListener* _pEventListener)
+void WindowEventHandler::AddEventListener(EventListener* _pEventListener)
 {
     if (!_pEventListener || _pEventListener->m_handler == this)
         return;
 
     // Dont allow a listener to be registered on two handlers (this will also ensure it is not registered here already)
-    _pEventListener->UnregisterHandlerEvents();
+    _pEventListener->UnregisterEventHandler();
 
     _pEventListener->m_handler = this;
     m_eventListeners.push_back(_pEventListener);
 }
 
-void HandlerEvents::RemoveEventListener(EventListener* _pEventListener)
+void WindowEventHandler::RemoveEventListener(EventListener* _pEventListener)
 {
     if (!_pEventListener || _pEventListener->m_handler != this)
         return;
@@ -73,7 +73,7 @@ void HandlerEvents::RemoveEventListener(EventListener* _pEventListener)
     StdVectorRemove(m_eventListeners, _pEventListener);
 }
 
-bool HandlerEvents::IsEventListenerRegistered(EventListener* _pEventListener) const
+bool WindowEventHandler::IsEventListenerRegistered(EventListener* _pEventListener) const
 {
     if (!_pEventListener)
         return false;
@@ -81,7 +81,7 @@ bool HandlerEvents::IsEventListenerRegistered(EventListener* _pEventListener) co
     return StdVectorContains(m_eventListeners, _pEventListener);
 }
 
-bool HandlerEvents::CheckElementEventHandlerRegistration(ElementEvents* elementEventHandler)
+bool WindowEventHandler::CheckElementEventHandlerRegistration(ElementEvents* elementEventHandler)
 {
     if (!elementEventHandler)
         return false;
@@ -103,7 +103,7 @@ bool HandlerEvents::CheckElementEventHandlerRegistration(ElementEvents* elementE
     return true;
 }
 
-void HandlerEvents::RegisterElementEventHandler(ElementEvents* elementEventHandler, EElementInteraction::Type interactionType)
+void WindowEventHandler::RegisterElementEventHandler(ElementEvents* elementEventHandler, EElementInteraction::Type interactionType)
 {
     if (!CheckElementEventHandlerRegistration(elementEventHandler))
         return;
@@ -152,7 +152,7 @@ void HandlerEvents::RegisterElementEventHandler(ElementEvents* elementEventHandl
     }
 }
 
-void HandlerEvents::UnregisterElementEventHandler(ElementEvents* elementEventHandler)
+void WindowEventHandler::UnregisterElementEventHandler(ElementEvents* elementEventHandler)
 {
     if (!elementEventHandler || elementEventHandler->m_handler != this)
         return;
@@ -168,7 +168,7 @@ void HandlerEvents::UnregisterElementEventHandler(ElementEvents* elementEventHan
     StdVectorRemove(m_rawSFEventElementEventHandlers, elementEventHandler);
 }
 
-void HandlerEvents::ProcessWindowEvent(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras)
+void WindowEventHandler::ProcessWindowEvent(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras)
 {
     bool propagateEvent = ProcessEventListeners(_oSFEvent);
 
@@ -187,7 +187,7 @@ void HandlerEvents::ProcessWindowEvent(const sf::Event& _oSFEvent, const std::ve
     }
 }
 
-void HandlerEvents::BeginInteractions()
+void WindowEventHandler::BeginInteractions()
 {
     GUGU_SCOPE_TRACE_MAIN("Begin Interactions");
 
@@ -246,7 +246,7 @@ void HandlerEvents::BeginInteractions()
     }
 }
 
-bool HandlerEvents::ProcessEventListeners(const sf::Event& _oSFEvent)
+bool WindowEventHandler::ProcessEventListeners(const sf::Event& _oSFEvent)
 {
     GUGU_SCOPE_TRACE_MAIN("Process EventListeners");
 
@@ -264,7 +264,7 @@ bool HandlerEvents::ProcessEventListeners(const sf::Event& _oSFEvent)
     return true;
 }
 
-bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const Camera* camera)
+bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, const Camera* camera)
 {
     GUGU_SCOPE_TRACE_MAIN("Process ElementInteractions");
 
@@ -537,7 +537,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
     return propagateEvent;
 }
 
-bool HandlerEvents::ProcessElements(const sf::Event& _oSFEvent)
+bool WindowEventHandler::ProcessElements(const sf::Event& _oSFEvent)
 {
     GUGU_SCOPE_TRACE_MAIN("Process Elements");
 

@@ -92,7 +92,7 @@ struct ElementInteractionInfos
 
 class ElementEvents //TODO: rename as ElementEventHandler
 {
-    friend class HandlerEvents;
+    friend class WindowEventHandler;
 
 public:
 
@@ -105,7 +105,7 @@ public:
 
     Element* GetElement() const;
 
-    void UnregisterHandlerEvents();
+    void UnregisterWindowEventHandler();
 
     void SetAllInteractionsEnabled(bool enabled);
     void SetInteractionEnabled(EElementInteraction::Type interactionType, bool enabled);
@@ -128,7 +128,7 @@ private:
 private:
 
     Element* m_element;
-    HandlerEvents* m_handler;
+    WindowEventHandler* m_handler;
     bool m_interactionsEnabled;
     int m_interactionsFilter;
 

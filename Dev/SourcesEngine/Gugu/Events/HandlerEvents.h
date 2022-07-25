@@ -49,7 +49,7 @@ public:
     void RegisterElementEventHandler(ElementEvents* elementEventHandler, EElementInteraction::Type interactionType);
     void UnregisterElementEventHandler(ElementEvents* elementEventHandler);
 
-    void ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras);
+    void ProcessWindowEvent(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras);
 
 private:
 

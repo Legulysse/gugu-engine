@@ -589,7 +589,7 @@ bool Window::ProcessEvents()
                 }
             }
 
-            m_handlerEvents->ProcessEventOnElements(event, cameras);
+            m_handlerEvents->ProcessWindowEvent(event, cameras);
         }
     }
 

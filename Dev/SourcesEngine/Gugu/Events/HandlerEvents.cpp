@@ -168,7 +168,7 @@ void HandlerEvents::UnregisterElementEventHandler(ElementEvents* elementEventHan
     StdVectorRemove(m_rawSFEventElementEventHandlers, elementEventHandler);
 }
 
-void HandlerEvents::ProcessEventOnElements(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras)
+void HandlerEvents::ProcessWindowEvent(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras)
 {
     bool propagateEvent = ProcessEventListeners(_oSFEvent);
 
@@ -269,7 +269,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
     GUGU_SCOPE_TRACE_MAIN("Process ElementInteractions");
 
     Vector2i oMouseCoords = GetGameWindow()->GetMousePixelCoords();
-    bool bContinue = true;
+    bool propagateEvent = true;
 
     if (_oSFEvent.type == sf::Event::MouseMoved)
     {
@@ -288,7 +288,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             interactionInfos.camera = camera;
             m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragMoved, interactionInfos);
 
-            bContinue = false;
+            propagateEvent = false;
         }
         else
         {
@@ -318,19 +318,19 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
 
                         if (interactionInfos.absorbEvent)
                         {
-                            bContinue = false;
+                            propagateEvent = false;
                             break;
                         }
                     }
 
                     // TODO: Should I handle a MouseMove event ?
-                    bContinue = false;
+                    propagateEvent = false;
                     break;
                 }
             }
 
             //Nothing got the Focus, release the current one if needed
-            if (bContinue && m_elementMouseFocused)
+            if (propagateEvent && m_elementMouseFocused)
             {
                 ElementInteractionInfos interactionInfos;
                 m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeft, interactionInfos);
@@ -369,19 +369,19 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
 
                         if (interactionInfos.absorbEvent)
                         {
-                            bContinue = false;
+                            propagateEvent = false;
                             break;
                         }
                     }
 
                     // TODO: Should I handle a MouseReselected event ?
-                    bContinue = false;
+                    propagateEvent = false;
                     break;
                 }
             }
 
             //Nothing got the selection, release the current one if needed
-            if (bContinue && m_elementMouseSelected)
+            if (propagateEvent && m_elementMouseSelected)
             {
                 ElementInteractionInfos interactionInfos;
                 m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDeselected, interactionInfos);
@@ -390,7 +390,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             }
 
             //Mouse Press
-            if (bContinue)
+            if (propagateEvent)
             {
                 for (size_t i = m_mouseClickElementEventHandlers.size(); i-- > 0;)
                 {
@@ -408,7 +408,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
 
                         if (interactionInfos.absorbEvent)
                         {
-                            bContinue = false;
+                            propagateEvent = false;
                             break;
                         }
                     }
@@ -416,7 +416,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             }
 
             //Drag Start
-            if (bContinue)
+            if (propagateEvent)
             {
                 for (size_t i = m_mouseDragElementEventHandlers.size(); i-- > 0;)
                 {
@@ -440,7 +440,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
 
                         m_lastMouseCoords = parentCoords - m_elementMouseDragged->GetPosition();
 
-                        bContinue = false;
+                        propagateEvent = false;
                         break;
                     }
                 }
@@ -452,7 +452,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
         if (_oSFEvent.mouseButton.button == sf::Mouse::Left)
         {
             //Drag Stop
-            if (bContinue && m_elementMouseDragged)
+            if (propagateEvent && m_elementMouseDragged)
             {
                 // Final DragMove
                 Vector2f parentCoords = Vector2f(oMouseCoords);
@@ -475,11 +475,11 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                 m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragEnded, interactionInfos);
 
                 m_elementMouseDragged = nullptr;
-                bContinue = false;
+                propagateEvent = false;
             }
 
             //Mouse Release
-            if (bContinue)
+            if (propagateEvent)
             {
                 for (size_t i = m_mouseClickElementEventHandlers.size(); i-- > 0;)
                 {
@@ -497,7 +497,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
 
                         if (interactionInfos.absorbEvent)
                         {
-                            bContinue = false;
+                            propagateEvent = false;
                             break;
                         }
                     }
@@ -526,7 +526,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
 
                     if (interactionInfos.absorbEvent)
                     {
-                        bContinue = false;
+                        propagateEvent = false;
                         break;
                     }
                 }
@@ -534,7 +534,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
         }
     }
 
-    return bContinue;
+    return propagateEvent;
 }
 
 bool HandlerEvents::ProcessElements(const sf::Event& _oSFEvent)

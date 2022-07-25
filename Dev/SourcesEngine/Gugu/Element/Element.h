@@ -18,7 +18,7 @@
 namespace gugu
 {
     struct RenderPass;
-    struct ElementInteractionInfos;
+    struct InteractionInfos;
     class ElementEventHandler;
 }
 

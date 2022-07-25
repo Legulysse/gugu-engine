@@ -74,7 +74,7 @@ namespace EElementInteraction
     };
 }
 
-struct ElementInteractionInfos
+struct InteractionInfos
 {
     // Common infos (for all events except RawSFEvent, MouseLeft and MouseDeselected).
     Vector2f localPickingPosition = Vector2::Zero_f;
@@ -96,7 +96,7 @@ class ElementEventHandler
 
 public:
 
-    using DelegateInteractionEvent = std::function<void(const ElementInteractionInfos&)>;
+    using DelegateInteractionEvent = std::function<void(const InteractionInfos&)>;
 
 public:
 
@@ -113,7 +113,7 @@ public:
 
     void AddCallback(EInteractionEvent::Type event, const DelegateInteractionEvent& callback);
     void RemoveCallbacks(EInteractionEvent::Type event);
-    void FireCallbacks(EInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos);
+    void FireCallbacks(EInteractionEvent::Type event, const InteractionInfos& interactionInfos);
 
     void AddCallback(EElementEvent::Type event, const Callback& callback);
     void RemoveCallbacks(EElementEvent::Type event);

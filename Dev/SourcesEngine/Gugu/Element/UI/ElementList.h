@@ -53,9 +53,9 @@ public:
 
 protected:
 
-    void OnMousePressed(const ElementInteractionInfos& interactionInfos);
-    void OnMouseScrolled(const ElementInteractionInfos& interactionInfos);
-    void OnSliderDragMoved(const ElementInteractionInfos& interactionInfos);
+    void OnMousePressed(const InteractionInfos& interactionInfos);
+    void OnMouseScrolled(const InteractionInfos& interactionInfos);
+    void OnSliderDragMoved(const InteractionInfos& interactionInfos);
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;

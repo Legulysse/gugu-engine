@@ -108,7 +108,7 @@ void ElementEventHandler::RemoveCallbacks(EInteractionEvent::Type event)
     }
 }
 
-void ElementEventHandler::FireCallbacks(EInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos)
+void ElementEventHandler::FireCallbacks(EInteractionEvent::Type event, const InteractionInfos& interactionInfos)
 {
     for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
     {

@@ -151,7 +151,7 @@ void ElementButton::SetOnMouseReleased(const Callback& _pActionOnReleased)
     m_actionOnReleased = _pActionOnReleased;
 }
 
-void ElementButton::OnMousePressed(const ElementInteractionInfos& interactionInfos)
+void ElementButton::OnMousePressed(const InteractionInfos& interactionInfos)
 {
     if (m_actionOnPressed)
     {
@@ -159,7 +159,7 @@ void ElementButton::OnMousePressed(const ElementInteractionInfos& interactionInf
     }
 }
 
-void ElementButton::OnMouseReleased(const ElementInteractionInfos& interactionInfos)
+void ElementButton::OnMouseReleased(const InteractionInfos& interactionInfos)
 {
     if (m_actionOnReleased)
     {
@@ -167,7 +167,7 @@ void ElementButton::OnMouseReleased(const ElementInteractionInfos& interactionIn
     }
 }
 
-void ElementButton::OnMouseEntered(const ElementInteractionInfos& interactionInfos)
+void ElementButton::OnMouseEntered(const InteractionInfos& interactionInfos)
 {
     if (m_currentSprite)
     {
@@ -175,7 +175,7 @@ void ElementButton::OnMouseEntered(const ElementInteractionInfos& interactionInf
     }
 }
 
-void ElementButton::OnMouseLeft(const ElementInteractionInfos& interactionInfos)
+void ElementButton::OnMouseLeft(const InteractionInfos& interactionInfos)
 {
     if (m_currentSprite)
     {

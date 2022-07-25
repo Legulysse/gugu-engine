@@ -71,7 +71,7 @@ public:
 
 private:
 
-    void OnSFEvent(const ElementInteractionInfos& interactionInfos);
+    void OnSFEvent(const InteractionInfos& interactionInfos);
 
     void OnMouseSelected();
     void OnMouseDeselected();

@@ -254,7 +254,7 @@ void ElementList::GetSelectedElements(std::vector<Element*>& _vecElements) const
     }
 }
 
-void ElementList::OnMousePressed(const ElementInteractionInfos& interactionInfos)
+void ElementList::OnMousePressed(const InteractionInfos& interactionInfos)
 {
     Vector2f localPickedCoords = interactionInfos.localPickingPosition;
 
@@ -271,12 +271,12 @@ void ElementList::OnMousePressed(const ElementInteractionInfos& interactionInfos
     interactionInfos.absorbEvent = false;
 }
 
-void ElementList::OnMouseScrolled(const ElementInteractionInfos& interactionInfos)
+void ElementList::OnMouseScrolled(const InteractionInfos& interactionInfos)
 {
     ScrollItems(-interactionInfos.scrollDelta);
 }
 
-void ElementList::OnSliderDragMoved(const ElementInteractionInfos& interactionInfos)
+void ElementList::OnSliderDragMoved(const InteractionInfos& interactionInfos)
 {
     if (m_items.size() != 0)
     {

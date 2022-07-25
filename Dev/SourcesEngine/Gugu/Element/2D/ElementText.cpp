@@ -364,7 +364,7 @@ void ElementText::OnMouseDeselected()
     StopEditionImpl();
 }
 
-void ElementText::OnSFEvent(const ElementInteractionInfos& interactionInfos)
+void ElementText::OnSFEvent(const InteractionInfos& interactionInfos)
 {
     if (!m_isEditing)
         return;     // return true;

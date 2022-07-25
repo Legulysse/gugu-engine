@@ -60,10 +60,10 @@ public:
 
 protected:
 
-    void OnMousePressed(const ElementInteractionInfos& interactionInfos);
-    void OnMouseReleased(const ElementInteractionInfos& interactionInfos);
-    void OnMouseEntered(const ElementInteractionInfos& interactionInfos);
-    void OnMouseLeft(const ElementInteractionInfos& interactionInfos);
+    void OnMousePressed(const InteractionInfos& interactionInfos);
+    void OnMouseReleased(const InteractionInfos& interactionInfos);
+    void OnMouseEntered(const InteractionInfos& interactionInfos);
+    void OnMouseLeft(const InteractionInfos& interactionInfos);
 
     void SetTextureImpl(Texture* textureIdle, Texture* textureFocused, Texture* textureDisabled);
 

@@ -57,8 +57,8 @@ private:
 
     void BeginInteractions();
     bool ProcessEventListeners(const sf::Event& _oSFEvent);
-    bool ProcessElementInteractions(const sf::Event& _oSFEvent, const Camera* camera);
-    bool ProcessElementEvents(const sf::Event& _oSFEvent);
+    bool ProcessCameraElementInteractions(const sf::Event& _oSFEvent, const Camera* camera);
+    bool ProcessElementInteractions(const sf::Event& _oSFEvent);
 
 private:
 

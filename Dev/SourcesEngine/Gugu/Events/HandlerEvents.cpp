@@ -177,13 +177,13 @@ void WindowEventHandler::ProcessWindowEvent(const sf::Event& _oSFEvent, const st
         if (propagateEvent)
         {
             BeginInteractions();
-            propagateEvent = ProcessElementInteractions(_oSFEvent, camera);
+            propagateEvent = ProcessCameraElementInteractions(_oSFEvent, camera);
         }
     }
 
     if (propagateEvent)
     {
-        propagateEvent = ProcessElementEvents(_oSFEvent);
+        propagateEvent = ProcessElementInteractions(_oSFEvent);
     }
 }
 
@@ -264,9 +264,9 @@ bool WindowEventHandler::ProcessEventListeners(const sf::Event& _oSFEvent)
     return true;
 }
 
-bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, const Camera* camera)
+bool WindowEventHandler::ProcessCameraElementInteractions(const sf::Event& _oSFEvent, const Camera* camera)
 {
-    GUGU_SCOPE_TRACE_MAIN("Process ElementInteractions");
+    GUGU_SCOPE_TRACE_MAIN("Process CameraElementInteractions");
 
     Vector2i oMouseCoords = GetGameWindow()->GetMousePixelCoords();
     bool propagateEvent = true;
@@ -283,7 +283,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
 
             Vector2f localPickedCoords = m_elementMouseDragged->TransformToLocal(Vector2f(oMouseCoords));
 
-            ElementInteractionInfos interactionInfos;
+            InteractionInfos interactionInfos;
             interactionInfos.localPickingPosition = localPickedCoords;
             interactionInfos.camera = camera;
             m_elementMouseDragged->GetEvents()->FireCallbacks(EInteractionEvent::MouseDragMoved, interactionInfos);
@@ -305,13 +305,13 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                     {
                         if (m_elementMouseFocused)
                         {
-                            ElementInteractionInfos interactionInfos;
+                            InteractionInfos interactionInfos;
                             m_elementMouseFocused->GetEvents()->FireCallbacks(EInteractionEvent::MouseLeft, interactionInfos);
                         }
 
                         m_elementMouseFocused = pElement;
 
-                        ElementInteractionInfos interactionInfos;
+                        InteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EInteractionEvent::MouseEntered, interactionInfos);
@@ -332,7 +332,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
             //Nothing got the Focus, release the current one if needed
             if (propagateEvent && m_elementMouseFocused)
             {
-                ElementInteractionInfos interactionInfos;
+                InteractionInfos interactionInfos;
                 m_elementMouseFocused->GetEvents()->FireCallbacks(EInteractionEvent::MouseLeft, interactionInfos);
 
                 m_elementMouseFocused = nullptr;
@@ -356,13 +356,13 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                     {
                         if (m_elementMouseSelected)
                         {
-                            ElementInteractionInfos interactionInfos;
+                            InteractionInfos interactionInfos;
                             m_elementMouseSelected->GetEvents()->FireCallbacks(EInteractionEvent::MouseDeselected, interactionInfos);
                         }
 
                         m_elementMouseSelected = pElement;
 
-                        ElementInteractionInfos interactionInfos;
+                        InteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EInteractionEvent::MouseSelected, interactionInfos);
@@ -383,7 +383,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
             //Nothing got the selection, release the current one if needed
             if (propagateEvent && m_elementMouseSelected)
             {
-                ElementInteractionInfos interactionInfos;
+                InteractionInfos interactionInfos;
                 m_elementMouseSelected->GetEvents()->FireCallbacks(EInteractionEvent::MouseDeselected, interactionInfos);
 
                 m_elementMouseSelected = nullptr;
@@ -401,7 +401,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                     if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Click)
                         && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                     {
-                        ElementInteractionInfos interactionInfos;
+                        InteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EInteractionEvent::MousePressed, interactionInfos);
@@ -429,7 +429,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                     {
                         m_elementMouseDragged = pElement;
 
-                        ElementInteractionInfos interactionInfos;
+                        InteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EInteractionEvent::MouseDragBegan, interactionInfos);
@@ -463,13 +463,13 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
 
                 Vector2f localPickedCoords = m_elementMouseDragged->TransformToLocal(Vector2f(oMouseCoords));
 
-                ElementInteractionInfos dragMoveInteractionInfos;
+                InteractionInfos dragMoveInteractionInfos;
                 dragMoveInteractionInfos.localPickingPosition = localPickedCoords;
                 dragMoveInteractionInfos.camera = camera;
                 m_elementMouseDragged->GetEvents()->FireCallbacks(EInteractionEvent::MouseDragMoved, dragMoveInteractionInfos);
 
                 // Actual DragStop
-                ElementInteractionInfos interactionInfos;
+                InteractionInfos interactionInfos;
                 interactionInfos.localPickingPosition = localPickedCoords;
                 interactionInfos.camera = camera;
                 m_elementMouseDragged->GetEvents()->FireCallbacks(EInteractionEvent::MouseDragEnded, interactionInfos);
@@ -490,7 +490,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                     if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Click)
                         && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                     {
-                        ElementInteractionInfos interactionInfos;
+                        InteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
                         elementEventHandler->FireCallbacks(EInteractionEvent::MouseReleased, interactionInfos);
@@ -518,7 +518,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                 if (elementEventHandler->IsInteractionEnabled(EElementInteraction::Scroll)
                     && camera->IsMouseOverElement(oMouseCoords, pElement, localPickedCoords))
                 {
-                    ElementInteractionInfos interactionInfos;
+                    InteractionInfos interactionInfos;
                     interactionInfos.scrollDelta = (int)std::round(_oSFEvent.mouseWheelScroll.delta);
                     interactionInfos.localPickingPosition = localPickedCoords;
                     interactionInfos.camera = camera;
@@ -537,9 +537,9 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
     return propagateEvent;
 }
 
-bool WindowEventHandler::ProcessElementEvents(const sf::Event& _oSFEvent)
+bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent)
 {
-    GUGU_SCOPE_TRACE_MAIN("Process ElementEvents");
+    GUGU_SCOPE_TRACE_MAIN("Process ElementInteractions");
 
     bool propagateEvent = true;
 
@@ -549,7 +549,7 @@ bool WindowEventHandler::ProcessElementEvents(const sf::Event& _oSFEvent)
 
         if (elementEventHandler->IsInteractionEnabled(EElementInteraction::RawSFEvent))
         {
-            ElementInteractionInfos interactionInfos;
+            InteractionInfos interactionInfos;
             interactionInfos.rawSFEvent = &_oSFEvent;
             elementEventHandler->FireCallbacks(EInteractionEvent::RawSFEvent, interactionInfos);
 

@@ -36,10 +36,10 @@ ElementButton::ElementButton()
     m_actionOnPressed = nullptr;
     m_actionOnReleased = nullptr;
     
-    GetInteractions()->AddCallback(EElementInteractionEvent::MouseEntered, std::bind(&ElementButton::OnMouseEntered, this, std::placeholders::_1));
-    GetInteractions()->AddCallback(EElementInteractionEvent::MouseLeft, std::bind(&ElementButton::OnMouseLeft, this, std::placeholders::_1));
-    GetInteractions()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementButton::OnMousePressed, this, std::placeholders::_1));
-    GetInteractions()->AddCallback(EElementInteractionEvent::MouseReleased, std::bind(&ElementButton::OnMouseReleased, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EElementInteractionEvent::MouseEntered, std::bind(&ElementButton::OnMouseEntered, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EElementInteractionEvent::MouseLeft, std::bind(&ElementButton::OnMouseLeft, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementButton::OnMousePressed, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EElementInteractionEvent::MouseReleased, std::bind(&ElementButton::OnMouseReleased, this, std::placeholders::_1));
 
     m_isDisabled = false;
 }
@@ -123,7 +123,7 @@ void ElementButton::SetDisabled(bool _bDisabled)
 
     if (m_isDisabled)
     {
-        GetInteractions()->SetAllInteractionsEnabled(false);
+        GetEvents()->SetAllInteractionsEnabled(false);
 
         if (m_currentSprite)
         {
@@ -132,7 +132,7 @@ void ElementButton::SetDisabled(bool _bDisabled)
     }
     else
     {
-        GetInteractions()->SetAllInteractionsEnabled(true);
+        GetEvents()->SetAllInteractionsEnabled(true);
 
         if (m_currentSprite)
         {

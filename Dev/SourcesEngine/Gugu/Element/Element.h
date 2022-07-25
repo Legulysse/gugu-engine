@@ -19,7 +19,7 @@ namespace gugu
 {
     struct RenderPass;
     struct ElementInteractionInfos;
-    class ElementEvents;
+    class ElementEventHandler;
 }
 
 namespace pugi
@@ -196,7 +196,7 @@ public:
     //----------------------------------------------
     // Events
 
-    ElementEvents* GetInteractions();
+    ElementEventHandler* GetEvents();
 
     //----------------------------------------------
     // Loading
@@ -259,7 +259,7 @@ protected:
     //----------------------------------------------
     // Events
 
-    ElementEvents* m_interactions;
+    ElementEventHandler* m_eventHandler;
 };
 
 }   // namespace gugu

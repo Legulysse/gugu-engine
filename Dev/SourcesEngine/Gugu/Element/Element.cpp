@@ -38,15 +38,15 @@ Element::Element()
 
     //m_pShader = nullptr;
 
-    m_interactions = nullptr;
+    m_eventHandler = nullptr;
 }
 
 Element::~Element()
 {
-    if (m_interactions)
+    if (m_eventHandler)
     {
-        m_interactions->FireCallbacks(EElementEvent::Destroyed);
-        SafeDelete(m_interactions);
+        m_eventHandler->FireCallbacks(EElementEvent::Destroyed);
+        SafeDelete(m_eventHandler);
     }
 
     //SafeDelete(m_pShader);
@@ -531,14 +531,14 @@ void Element::SetDebugBoundsVisible(bool showDebugBounds)
 //    m_pShader = _pShader;
 //}
 
-ElementEvents* Element::GetInteractions()
+ElementEventHandler* Element::GetEvents()
 {
-    if (!m_interactions)
+    if (!m_eventHandler)
     {
-        m_interactions = new ElementEvents(this);
+        m_eventHandler = new ElementEventHandler(this);
     }
 
-    return m_interactions;
+    return m_eventHandler;
 }
 
 bool Element::IsPicked(const Vector2f& globalCoords) const

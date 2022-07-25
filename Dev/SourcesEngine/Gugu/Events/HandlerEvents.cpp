@@ -38,7 +38,7 @@ WindowEventHandler::~WindowEventHandler()
     }
     m_eventListeners.clear();
 
-    for (ElementEvents* elementEventHandler : m_elementEventHandlers)
+    for (ElementEventHandler* elementEventHandler : m_elementEventHandlers)
     {
         if (elementEventHandler)
             elementEventHandler->m_handler = nullptr;
@@ -81,14 +81,14 @@ bool WindowEventHandler::IsEventListenerRegistered(EventListener* _pEventListene
     return StdVectorContains(m_eventListeners, _pEventListener);
 }
 
-bool WindowEventHandler::CheckElementEventHandlerRegistration(ElementEvents* elementEventHandler)
+bool WindowEventHandler::CheckElementEventHandlerRegistration(ElementEventHandler* eventHandler)
 {
-    if (!elementEventHandler)
+    if (!eventHandler)
         return false;
 
-    if (elementEventHandler->m_handler != nullptr)
+    if (eventHandler->m_handler != nullptr)
     {
-        if (elementEventHandler->m_handler != this)
+        if (eventHandler->m_handler != this)
         {
             // Dont allow a listener to be registered on two handlers.
             return false;
@@ -98,74 +98,74 @@ bool WindowEventHandler::CheckElementEventHandlerRegistration(ElementEvents* ele
         return true;
     }
 
-    elementEventHandler->m_handler = this;
-    m_elementEventHandlers.push_back(elementEventHandler);
+    eventHandler->m_handler = this;
+    m_elementEventHandlers.push_back(eventHandler);
     return true;
 }
 
-void WindowEventHandler::RegisterElementEventHandler(ElementEvents* elementEventHandler, EElementInteraction::Type interactionType)
+void WindowEventHandler::RegisterElementEventHandler(ElementEventHandler* eventHandler, EElementInteraction::Type interactionType)
 {
-    if (!CheckElementEventHandlerRegistration(elementEventHandler))
+    if (!CheckElementEventHandlerRegistration(eventHandler))
         return;
 
     if (interactionType == EElementInteraction::Focus)
     {
-        if (!StdVectorContains(m_mouseFocusElementEventHandlers, elementEventHandler))
+        if (!StdVectorContains(m_mouseFocusElementEventHandlers, eventHandler))
         {
-            m_mouseFocusElementEventHandlers.push_back(elementEventHandler);
+            m_mouseFocusElementEventHandlers.push_back(eventHandler);
         }
     }
     else if (interactionType == EElementInteraction::Click)
     {
-        if (!StdVectorContains(m_mouseClickElementEventHandlers, elementEventHandler))
+        if (!StdVectorContains(m_mouseClickElementEventHandlers, eventHandler))
         {
-            m_mouseClickElementEventHandlers.push_back(elementEventHandler);
+            m_mouseClickElementEventHandlers.push_back(eventHandler);
         }
     }
     else if (interactionType == EElementInteraction::Selection)
     {
-        if (!StdVectorContains(m_mouseSelectionElementEventHandlers, elementEventHandler))
+        if (!StdVectorContains(m_mouseSelectionElementEventHandlers, eventHandler))
         {
-            m_mouseSelectionElementEventHandlers.push_back(elementEventHandler);
+            m_mouseSelectionElementEventHandlers.push_back(eventHandler);
         }
     }
     else if (interactionType == EElementInteraction::Scroll)
     {
-        if (!StdVectorContains(m_mouseScrollElementEventHandlers, elementEventHandler))
+        if (!StdVectorContains(m_mouseScrollElementEventHandlers, eventHandler))
         {
-            m_mouseScrollElementEventHandlers.push_back(elementEventHandler);
+            m_mouseScrollElementEventHandlers.push_back(eventHandler);
         }
     }
     else if (interactionType == EElementInteraction::Drag)
     {
-        if (!StdVectorContains(m_mouseDragElementEventHandlers, elementEventHandler))
+        if (!StdVectorContains(m_mouseDragElementEventHandlers, eventHandler))
         {
-            m_mouseDragElementEventHandlers.push_back(elementEventHandler);
+            m_mouseDragElementEventHandlers.push_back(eventHandler);
         }
     }
     else if (interactionType == EElementInteraction::RawSFEvent)
     {
-        if (!StdVectorContains(m_rawSFEventElementEventHandlers, elementEventHandler))
+        if (!StdVectorContains(m_rawSFEventElementEventHandlers, eventHandler))
         {
-            m_rawSFEventElementEventHandlers.push_back(elementEventHandler);
+            m_rawSFEventElementEventHandlers.push_back(eventHandler);
         }
     }
 }
 
-void WindowEventHandler::UnregisterElementEventHandler(ElementEvents* elementEventHandler)
+void WindowEventHandler::UnregisterElementEventHandler(ElementEventHandler* eventHandler)
 {
-    if (!elementEventHandler || elementEventHandler->m_handler != this)
+    if (!eventHandler || eventHandler->m_handler != this)
         return;
 
-    elementEventHandler->m_handler = nullptr;
-    StdVectorRemove(m_elementEventHandlers, elementEventHandler);
+    eventHandler->m_handler = nullptr;
+    StdVectorRemove(m_elementEventHandlers, eventHandler);
 
-    StdVectorRemove(m_mouseFocusElementEventHandlers, elementEventHandler);
-    StdVectorRemove(m_mouseClickElementEventHandlers, elementEventHandler);
-    StdVectorRemove(m_mouseSelectionElementEventHandlers, elementEventHandler);
-    StdVectorRemove(m_mouseScrollElementEventHandlers, elementEventHandler);
-    StdVectorRemove(m_mouseDragElementEventHandlers, elementEventHandler);
-    StdVectorRemove(m_rawSFEventElementEventHandlers, elementEventHandler);
+    StdVectorRemove(m_mouseFocusElementEventHandlers, eventHandler);
+    StdVectorRemove(m_mouseClickElementEventHandlers, eventHandler);
+    StdVectorRemove(m_mouseSelectionElementEventHandlers, eventHandler);
+    StdVectorRemove(m_mouseScrollElementEventHandlers, eventHandler);
+    StdVectorRemove(m_mouseDragElementEventHandlers, eventHandler);
+    StdVectorRemove(m_rawSFEventElementEventHandlers, eventHandler);
 }
 
 void WindowEventHandler::ProcessWindowEvent(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras)
@@ -183,7 +183,7 @@ void WindowEventHandler::ProcessWindowEvent(const sf::Event& _oSFEvent, const st
 
     if (propagateEvent)
     {
-        propagateEvent = ProcessElements(_oSFEvent);
+        propagateEvent = ProcessElementEvents(_oSFEvent);
     }
 }
 
@@ -194,7 +194,7 @@ void WindowEventHandler::BeginInteractions()
     if (m_elementMouseFocused)
     {
         bool bFoundFocused = false;
-        for (ElementEvents* elementEventHandler : m_mouseFocusElementEventHandlers)
+        for (ElementEventHandler* elementEventHandler : m_mouseFocusElementEventHandlers)
         {
             if (elementEventHandler->GetElement() == m_elementMouseFocused)
             {
@@ -212,7 +212,7 @@ void WindowEventHandler::BeginInteractions()
     if (m_elementMouseSelected)
     {
         bool bFoundSelected = false;
-        for (ElementEvents* elementEventHandler : m_mouseSelectionElementEventHandlers)
+        for (ElementEventHandler* elementEventHandler : m_mouseSelectionElementEventHandlers)
         {
             if (elementEventHandler->GetElement() == m_elementMouseSelected)
             {
@@ -230,7 +230,7 @@ void WindowEventHandler::BeginInteractions()
     if (m_elementMouseDragged)
     {
         bool bFoundDragged = false;
-        for (ElementEvents* elementEventHandler : m_mouseDragElementEventHandlers)
+        for (ElementEventHandler* elementEventHandler : m_mouseDragElementEventHandlers)
         {
             if (elementEventHandler->GetElement() == m_elementMouseDragged)
             {
@@ -286,7 +286,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
             ElementInteractionInfos interactionInfos;
             interactionInfos.localPickingPosition = localPickedCoords;
             interactionInfos.camera = camera;
-            m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragMoved, interactionInfos);
+            m_elementMouseDragged->GetEvents()->FireCallbacks(EElementInteractionEvent::MouseDragMoved, interactionInfos);
 
             propagateEvent = false;
         }
@@ -294,7 +294,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
         {
             for (size_t i = m_mouseFocusElementEventHandlers.size(); i-- > 0;)
             {
-                ElementEvents* elementEventHandler = m_mouseFocusElementEventHandlers[i];
+                ElementEventHandler* elementEventHandler = m_mouseFocusElementEventHandlers[i];
                 Element* pElement = elementEventHandler->GetElement();
 
                 Vector2f localPickedCoords;
@@ -306,7 +306,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                         if (m_elementMouseFocused)
                         {
                             ElementInteractionInfos interactionInfos;
-                            m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeft, interactionInfos);
+                            m_elementMouseFocused->GetEvents()->FireCallbacks(EElementInteractionEvent::MouseLeft, interactionInfos);
                         }
 
                         m_elementMouseFocused = pElement;
@@ -333,7 +333,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
             if (propagateEvent && m_elementMouseFocused)
             {
                 ElementInteractionInfos interactionInfos;
-                m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeft, interactionInfos);
+                m_elementMouseFocused->GetEvents()->FireCallbacks(EElementInteractionEvent::MouseLeft, interactionInfos);
 
                 m_elementMouseFocused = nullptr;
             }
@@ -345,7 +345,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
         {
             for (size_t i = m_mouseSelectionElementEventHandlers.size(); i-- > 0;)
             {
-                ElementEvents* elementEventHandler = m_mouseSelectionElementEventHandlers[i];
+                ElementEventHandler* elementEventHandler = m_mouseSelectionElementEventHandlers[i];
                 Element* pElement = elementEventHandler->GetElement();
 
                 Vector2f localPickedCoords;
@@ -357,7 +357,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                         if (m_elementMouseSelected)
                         {
                             ElementInteractionInfos interactionInfos;
-                            m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDeselected, interactionInfos);
+                            m_elementMouseSelected->GetEvents()->FireCallbacks(EElementInteractionEvent::MouseDeselected, interactionInfos);
                         }
 
                         m_elementMouseSelected = pElement;
@@ -384,7 +384,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
             if (propagateEvent && m_elementMouseSelected)
             {
                 ElementInteractionInfos interactionInfos;
-                m_elementMouseSelected->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDeselected, interactionInfos);
+                m_elementMouseSelected->GetEvents()->FireCallbacks(EElementInteractionEvent::MouseDeselected, interactionInfos);
 
                 m_elementMouseSelected = nullptr;
             }
@@ -394,7 +394,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
             {
                 for (size_t i = m_mouseClickElementEventHandlers.size(); i-- > 0;)
                 {
-                    ElementEvents* elementEventHandler = m_mouseClickElementEventHandlers[i];
+                    ElementEventHandler* elementEventHandler = m_mouseClickElementEventHandlers[i];
                     Element* pElement = elementEventHandler->GetElement();
 
                     Vector2f localPickedCoords;
@@ -420,7 +420,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
             {
                 for (size_t i = m_mouseDragElementEventHandlers.size(); i-- > 0;)
                 {
-                    ElementEvents* elementEventHandler = m_mouseDragElementEventHandlers[i];
+                    ElementEventHandler* elementEventHandler = m_mouseDragElementEventHandlers[i];
                     Element* pElement = elementEventHandler->GetElement();
 
                     Vector2f localPickedCoords;
@@ -466,13 +466,13 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
                 ElementInteractionInfos dragMoveInteractionInfos;
                 dragMoveInteractionInfos.localPickingPosition = localPickedCoords;
                 dragMoveInteractionInfos.camera = camera;
-                m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragMoved, dragMoveInteractionInfos);
+                m_elementMouseDragged->GetEvents()->FireCallbacks(EElementInteractionEvent::MouseDragMoved, dragMoveInteractionInfos);
 
                 // Actual DragStop
                 ElementInteractionInfos interactionInfos;
                 interactionInfos.localPickingPosition = localPickedCoords;
                 interactionInfos.camera = camera;
-                m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragEnded, interactionInfos);
+                m_elementMouseDragged->GetEvents()->FireCallbacks(EElementInteractionEvent::MouseDragEnded, interactionInfos);
 
                 m_elementMouseDragged = nullptr;
                 propagateEvent = false;
@@ -483,7 +483,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
             {
                 for (size_t i = m_mouseClickElementEventHandlers.size(); i-- > 0;)
                 {
-                    ElementEvents* elementEventHandler = m_mouseClickElementEventHandlers[i];
+                    ElementEventHandler* elementEventHandler = m_mouseClickElementEventHandlers[i];
                     Element* pElement = elementEventHandler->GetElement();
 
                     Vector2f localPickedCoords;
@@ -511,7 +511,7 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
         {
             for (size_t i = m_mouseScrollElementEventHandlers.size(); i-- > 0;)
             {
-                ElementEvents* elementEventHandler = m_mouseScrollElementEventHandlers[i];
+                ElementEventHandler* elementEventHandler = m_mouseScrollElementEventHandlers[i];
                 Element* pElement = elementEventHandler->GetElement();
 
                 Vector2f localPickedCoords;
@@ -537,15 +537,15 @@ bool WindowEventHandler::ProcessElementInteractions(const sf::Event& _oSFEvent, 
     return propagateEvent;
 }
 
-bool WindowEventHandler::ProcessElements(const sf::Event& _oSFEvent)
+bool WindowEventHandler::ProcessElementEvents(const sf::Event& _oSFEvent)
 {
-    GUGU_SCOPE_TRACE_MAIN("Process Elements");
+    GUGU_SCOPE_TRACE_MAIN("Process ElementEvents");
 
     bool propagateEvent = true;
 
     for (size_t i = m_rawSFEventElementEventHandlers.size(); i-- > 0;)
     {
-        ElementEvents* elementEventHandler = m_rawSFEventElementEventHandlers[i];
+        ElementEventHandler* elementEventHandler = m_rawSFEventElementEventHandlers[i];
 
         if (elementEventHandler->IsInteractionEnabled(EElementInteraction::RawSFEvent))
         {

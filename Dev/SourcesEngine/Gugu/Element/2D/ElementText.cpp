@@ -45,12 +45,12 @@ ElementText::ElementText()
     SetFont(GetResources()->GetDefaultFont());
     SetFontSize(20);
 
-    GetInteractions()->AddCallback(EElementInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
-    GetInteractions()->AddCallback(EElementInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
-    GetInteractions()->AddCallback(EElementInteractionEvent::RawSFEvent, std::bind(&ElementText::OnSFEvent, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EElementInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
+    GetEvents()->AddCallback(EElementInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
+    GetEvents()->AddCallback(EElementInteractionEvent::RawSFEvent, std::bind(&ElementText::OnSFEvent, this, std::placeholders::_1));
 
-    GetInteractions()->SetInteractionEnabled(EElementInteraction::Selection, false);
-    GetInteractions()->SetInteractionEnabled(EElementInteraction::RawSFEvent, false);
+    GetEvents()->SetInteractionEnabled(EElementInteraction::Selection, false);
+    GetEvents()->SetInteractionEnabled(EElementInteraction::RawSFEvent, false);
 }
 
 ElementText::~ElementText()
@@ -111,11 +111,11 @@ void ElementText::SetEditable(bool _bIsEditable)
 
         if (m_isEditable)
         {
-            GetInteractions()->SetInteractionEnabled(EElementInteraction::Selection, true);
+            GetEvents()->SetInteractionEnabled(EElementInteraction::Selection, true);
         }
         else
         {
-            GetInteractions()->SetInteractionEnabled(EElementInteraction::Selection, false);
+            GetEvents()->SetInteractionEnabled(EElementInteraction::Selection, false);
 
             StopEditionImpl();
         }
@@ -338,7 +338,7 @@ void ElementText::StartEditionImpl()
         m_sfTextCursor->setString("|");
     }
 
-    GetInteractions()->SetInteractionEnabled(EElementInteraction::RawSFEvent, true);
+    GetEvents()->SetInteractionEnabled(EElementInteraction::RawSFEvent, true);
     
     Recompute();
 }
@@ -349,7 +349,7 @@ void ElementText::StopEditionImpl()
     m_isTickDisplayed   = false;
     m_isEditing     = false;
 
-    GetInteractions()->SetInteractionEnabled(EElementInteraction::RawSFEvent, false);
+    GetEvents()->SetInteractionEnabled(EElementInteraction::RawSFEvent, false);
     
     Recompute();
 }

@@ -17,7 +17,7 @@
 
 namespace gugu {
 
-ElementEvents::ElementEvents(Element* element)
+ElementEventHandler::ElementEventHandler(Element* element)
     : m_element(element)
     , m_handler(nullptr)
     , m_interactionsEnabled(true)
@@ -25,18 +25,18 @@ ElementEvents::ElementEvents(Element* element)
 {
 }
 
-ElementEvents::~ElementEvents()
+ElementEventHandler::~ElementEventHandler()
 {
     RemoveAllCallbacks();
     UnregisterWindowEventHandler();
 }
 
-Element* ElementEvents::GetElement() const
+Element* ElementEventHandler::GetElement() const
 {
     return m_element;
 }
 
-void ElementEvents::UnregisterWindowEventHandler()
+void ElementEventHandler::UnregisterWindowEventHandler()
 {
     if (m_handler)
     {
@@ -44,7 +44,7 @@ void ElementEvents::UnregisterWindowEventHandler()
     }
 }
 
-void ElementEvents::SetAllInteractionsEnabled(bool enabled)
+void ElementEventHandler::SetAllInteractionsEnabled(bool enabled)
 {
     if (m_interactionsEnabled == enabled)
         return;
@@ -61,7 +61,7 @@ void ElementEvents::SetAllInteractionsEnabled(bool enabled)
     }
 }
 
-void ElementEvents::SetInteractionEnabled(EElementInteraction::Type interactionType, bool enabled)
+void ElementEventHandler::SetInteractionEnabled(EElementInteraction::Type interactionType, bool enabled)
 {
     if (enabled)
     {
@@ -73,14 +73,14 @@ void ElementEvents::SetInteractionEnabled(EElementInteraction::Type interactionT
     }
 }
 
-bool ElementEvents::IsInteractionEnabled(EElementInteraction::Type interactionType) const
+bool ElementEventHandler::IsInteractionEnabled(EElementInteraction::Type interactionType) const
 {
     return m_interactionsEnabled
         && (m_interactionsFilter & interactionType) == EElementInteraction::None
         && m_element->IsVisible(true);
 }
 
-void ElementEvents::AddCallback(EElementInteractionEvent::Type event, const DelegateInteractionEvent& callback)
+void ElementEventHandler::AddCallback(EElementInteractionEvent::Type event, const DelegateInteractionEvent& callback)
 {
     if (!callback || event == EElementInteractionEvent::None)
         return;
@@ -93,7 +93,7 @@ void ElementEvents::AddCallback(EElementInteractionEvent::Type event, const Dele
     CheckRegistration(event);
 }
 
-void ElementEvents::RemoveCallbacks(EElementInteractionEvent::Type event)
+void ElementEventHandler::RemoveCallbacks(EElementInteractionEvent::Type event)
 {
     for (auto iteCallback = m_interactionCallbacks.begin(); iteCallback != m_interactionCallbacks.end();)
     {
@@ -108,7 +108,7 @@ void ElementEvents::RemoveCallbacks(EElementInteractionEvent::Type event)
     }
 }
 
-void ElementEvents::FireCallbacks(EElementInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos)
+void ElementEventHandler::FireCallbacks(EElementInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos)
 {
     for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
     {
@@ -119,7 +119,7 @@ void ElementEvents::FireCallbacks(EElementInteractionEvent::Type event, const El
     }
 }
 
-void ElementEvents::AddCallback(EElementEvent::Type event, const Callback& callback)
+void ElementEventHandler::AddCallback(EElementEvent::Type event, const Callback& callback)
 {
     if (!callback || event == EElementEvent::None)
         return;
@@ -130,7 +130,7 @@ void ElementEvents::AddCallback(EElementEvent::Type event, const Callback& callb
     m_elementCallbacks.push_back(kInfos);
 }
 
-void ElementEvents::RemoveCallbacks(EElementEvent::Type event)
+void ElementEventHandler::RemoveCallbacks(EElementEvent::Type event)
 {
     for (auto iteCallback = m_elementCallbacks.begin(); iteCallback != m_elementCallbacks.end();)
     {
@@ -145,7 +145,7 @@ void ElementEvents::RemoveCallbacks(EElementEvent::Type event)
     }
 }
 
-void ElementEvents::FireCallbacks(EElementEvent::Type event)
+void ElementEventHandler::FireCallbacks(EElementEvent::Type event)
 {
     for (size_t i = 0; i < m_elementCallbacks.size(); ++i)
     {
@@ -156,13 +156,13 @@ void ElementEvents::FireCallbacks(EElementEvent::Type event)
     }
 }
 
-void ElementEvents::RemoveAllCallbacks()
+void ElementEventHandler::RemoveAllCallbacks()
 {
     m_elementCallbacks.clear();
     m_interactionCallbacks.clear();
 }
 
-void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
+void ElementEventHandler::CheckRegistration(EElementInteractionEvent::Type event)
 {
     if (event == EElementInteractionEvent::MouseEntered
         || event == EElementInteractionEvent::MouseLeft)

@@ -40,12 +40,12 @@ ElementList::ElementList()
     m_scrollButtonBottom = new ElementSprite;
     m_scrollButtonBottom->SetParent(this);
 
-    GetInteractions()->AddCallback(EElementInteractionEvent::MouseScrolled, std::bind(&ElementList::OnMouseScrolled, this, std::placeholders::_1));
-    GetInteractions()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementList::OnMousePressed, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EElementInteractionEvent::MouseScrolled, std::bind(&ElementList::OnMouseScrolled, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementList::OnMousePressed, this, std::placeholders::_1));
 
-    m_scrollButtonTop->GetInteractions()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, -1));
-    m_scrollButtonBottom->GetInteractions()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, 1));
-    m_scrollSlider->GetInteractions()->AddCallback(EElementInteractionEvent::MouseDragMoved, std::bind(&ElementList::OnSliderDragMoved, this, std::placeholders::_1));
+    m_scrollButtonTop->GetEvents()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, -1));
+    m_scrollButtonBottom->GetEvents()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, 1));
+    m_scrollSlider->GetEvents()->AddCallback(EElementInteractionEvent::MouseDragMoved, std::bind(&ElementList::OnSliderDragMoved, this, std::placeholders::_1));
 }
 
 ElementList::~ElementList()

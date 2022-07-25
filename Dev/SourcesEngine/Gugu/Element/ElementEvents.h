@@ -90,7 +90,7 @@ struct ElementInteractionInfos
     mutable bool absorbEvent = true;
 };
 
-class ElementEvents //TODO: rename as ElementEventHandler
+class ElementEventHandler
 {
     friend class WindowEventHandler;
 
@@ -100,8 +100,8 @@ public:
 
 public:
 
-    ElementEvents(Element* element);
-    virtual ~ElementEvents();
+    ElementEventHandler(Element* element);
+    virtual ~ElementEventHandler();
 
     Element* GetElement() const;
 

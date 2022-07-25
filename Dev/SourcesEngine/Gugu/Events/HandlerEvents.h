@@ -46,31 +46,31 @@ public:
     void RemoveEventListener(EventListener* _pEventListener);
     bool IsEventListenerRegistered(EventListener* _pEventListener) const;
 
-    void RegisterElementEventHandler(ElementEvents* elementEventHandler, EElementInteraction::Type interactionType);
-    void UnregisterElementEventHandler(ElementEvents* elementEventHandler);
+    void RegisterElementEventHandler(ElementEventHandler* eventHandler, EElementInteraction::Type interactionType);
+    void UnregisterElementEventHandler(ElementEventHandler* eventHandler);
 
     void ProcessWindowEvent(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras);
 
 private:
 
-    bool CheckElementEventHandlerRegistration(ElementEvents* elementEventHandler);
+    bool CheckElementEventHandlerRegistration(ElementEventHandler* eventHandler);
 
     void BeginInteractions();
     bool ProcessEventListeners(const sf::Event& _oSFEvent);
     bool ProcessElementInteractions(const sf::Event& _oSFEvent, const Camera* camera);
-    bool ProcessElements(const sf::Event& _oSFEvent);
+    bool ProcessElementEvents(const sf::Event& _oSFEvent);
 
 private:
 
     std::vector<EventListener*> m_eventListeners;
 
-    std::vector<ElementEvents*> m_elementEventHandlers;
-    std::vector<ElementEvents*> m_mouseFocusElementEventHandlers;
-    std::vector<ElementEvents*> m_mouseClickElementEventHandlers;
-    std::vector<ElementEvents*> m_mouseSelectionElementEventHandlers;
-    std::vector<ElementEvents*> m_mouseScrollElementEventHandlers;
-    std::vector<ElementEvents*> m_mouseDragElementEventHandlers;
-    std::vector<ElementEvents*> m_rawSFEventElementEventHandlers;
+    std::vector<ElementEventHandler*> m_elementEventHandlers;
+    std::vector<ElementEventHandler*> m_mouseFocusElementEventHandlers;
+    std::vector<ElementEventHandler*> m_mouseClickElementEventHandlers;
+    std::vector<ElementEventHandler*> m_mouseSelectionElementEventHandlers;
+    std::vector<ElementEventHandler*> m_mouseScrollElementEventHandlers;
+    std::vector<ElementEventHandler*> m_mouseDragElementEventHandlers;
+    std::vector<ElementEventHandler*> m_rawSFEventElementEventHandlers;
 
     Element* m_elementMouseFocused;
     Element* m_elementMouseSelected;

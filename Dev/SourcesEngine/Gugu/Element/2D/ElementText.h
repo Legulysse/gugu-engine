@@ -4,8 +4,6 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
-#include "Gugu/Core/Callback.h"
-#include "Gugu/System/Types.h"
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -54,57 +52,35 @@ public:
 
     void SetFont        (const std::string& _strFontPath);
     void SetFont        (Font* _pFont);
-    void SetFontSize    (uint32 _uiSize);
+    void SetFontSize    (size_t _uiSize);
     void SetFontColor   (const sf::Color& _oColor);
     //TODO: Add accessors for all sf::Text methods (LineSpacing, LetterSpacing, Style, etc)
 
     void SetResizeRule  (ETextResizeRule::Type _eResizeRule);
     void SetMultiline   (bool _bIsMultiline);
-    void SetEditable    (bool _bIsEditable);
 
-    void StartEdition   ();
-    void StopEdition    ();
-
-    void ProcessSFEvent(const sf::Event& _oSFEvent);
-
-    void SetOnValidate(const Callback& callbackOnValidate);
-
-private:
-
-    void OnSFEvent(const InteractionInfos& interactionInfos);
-
-    void OnMouseSelected();
-    void OnMouseDeselected();
-
-    void StartEditionImpl();
-    void StopEditionImpl();
+protected:
 
     void Recompute();
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
     
+    virtual void OnRecompute() {}
+    virtual void OnTextRendered(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
+
 protected:
 
     Font* m_font;
 
     sf::Text* m_sfText;
-    sf::Text* m_sfTextCursor;
-
     sf::String m_textValue;
 
     ETextResizeRule::Type m_resizeRule;
     bool m_isMultiline;
-    bool m_isEditable;
-    
     bool m_skipRecomputeOnResize;
-    bool m_isEditing;
-    bool m_isTickDisplayed;
-    float m_timeSinceTick;
 
     //std::vector<sf::Text*> m_components;
-
-    Callback m_callbackOnValidate;
 };
 
 }   // namespace gugu

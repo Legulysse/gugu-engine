@@ -22,7 +22,7 @@ namespace gugu
     class WindowEventHandler;
     class Element;
     class ElementSprite;
-    class ElementText;
+    class ElementEditableText;
     class Camera;
     class Renderer;
     class Scene;
@@ -135,7 +135,7 @@ protected:
     Element*            m_rootNode;             //Root for all Window Elements
     Element*            m_rootUINode;           //Root for the interface content
     Element*            m_consoleNode;          //Root for the console
-    ElementText*        m_consoleTextEntry;
+    ElementEditableText* m_consoleTextEntry;
     ElementSprite*      m_mouseNode;            //Root for the mouse
 
     bool                m_systemMouseVisible;

@@ -26,36 +26,19 @@ ElementText::ElementText()
 {
     m_textValue = "";
 
-    m_resizeRule   = ETextResizeRule::FitSize;
-    m_isMultiline   = false;
-    m_isEditable    = false;
-
+    m_resizeRule = ETextResizeRule::FitSize;
+    m_isMultiline = false;
     m_skipRecomputeOnResize = false;
-    m_isEditing     = false;
-    m_isTickDisplayed   = false;
-    m_timeSinceTick = 0.f;
-
-    m_callbackOnValidate = nullptr;
 
     m_sfText = new sf::Text;
     m_sfText->setFillColor(sf::Color(0, 0, 0));
 
-    m_sfTextCursor = nullptr;
-
     SetFont(GetResources()->GetDefaultFont());
     SetFontSize(20);
-
-    GetEvents()->AddCallback(EInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
-    GetEvents()->AddCallback(EInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
-    GetEvents()->AddCallback(EInteractionEvent::RawSFEvent, std::bind(&ElementText::OnSFEvent, this, std::placeholders::_1));
-
-    GetEvents()->SetInteractionEnabled(EInteractionType::Selection, false);
-    GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, false);
 }
 
 ElementText::~ElementText()
 {
-    SafeDelete(m_sfTextCursor);
     SafeDelete(m_sfText);
 
     //ClearStdVector(m_components);
@@ -77,7 +60,7 @@ void ElementText::SetFont(Font* _pFont)
     }
 }
 
-void ElementText::SetFontSize(uint32 _uiSize)
+void ElementText::SetFontSize(size_t _uiSize)
 {
     m_sfText->setCharacterSize(_uiSize);
     
@@ -103,25 +86,6 @@ void ElementText::SetMultiline(bool _bIsMultiline)
     Recompute();
 }
 
-void ElementText::SetEditable(bool _bIsEditable)
-{
-    if (m_isEditable != _bIsEditable)
-    {
-        m_isEditable = _bIsEditable;
-
-        if (m_isEditable)
-        {
-            GetEvents()->SetInteractionEnabled(EInteractionType::Selection, true);
-        }
-        else
-        {
-            GetEvents()->SetInteractionEnabled(EInteractionType::Selection, false);
-
-            StopEditionImpl();
-        }
-    }
-}
-
 void ElementText::SetText(const sf::String& value /*, bool _bResize */)
 {
     if (m_textValue != value)
@@ -145,12 +109,9 @@ sf::String ElementText::GetText() const
 
 void ElementText::Recompute()
 {
-    size_t textSize = 0;
-
     if (!m_isMultiline)
     {
         m_sfText->setString(m_textValue);
-        textSize = m_textValue.getSize();
     }
     else
     {
@@ -277,7 +238,6 @@ void ElementText::Recompute()
         }
 
         m_sfText->setString(strTextImpl);
-        textSize = strTextImpl.size();
     }
 
     //TODO: Here I can split my sf::Text into an array (1 line = 1 sf::Text) to allow center-alignment & line visibility.
@@ -303,200 +263,11 @@ void ElementText::Recompute()
         SetSizeY(m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height);
     }
 
-    if (m_isEditing)
-    {
-        //TODO: Some fonts may not have the '|' character
-        m_sfTextCursor->setFont(*m_sfText->getFont());
-        m_sfTextCursor->setCharacterSize(m_sfText->getCharacterSize());
-        m_sfTextCursor->setStyle(m_sfText->getStyle());
-        m_sfTextCursor->setFillColor(m_sfText->getFillColor());
-        m_sfTextCursor->setScale(m_sfText->getScale());
-
-        m_sfTextCursor->setPosition(m_sfText->getTransform().transformPoint(m_sfText->findCharacterPos(textSize)));
-    }
-}
-
-void ElementText::StartEdition()
-{
-    StartEditionImpl();
-}
-
-void ElementText::StopEdition()
-{
-    StopEditionImpl();
-}
-
-void ElementText::StartEditionImpl()
-{
-    m_timeSinceTick = 0.f;
-    m_isTickDisplayed   = true;
-    m_isEditing     = true;
-    
-    if (!m_sfTextCursor)
-    {
-        m_sfTextCursor = new sf::Text;
-        m_sfTextCursor->setString("|");
-    }
-
-    GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, true);
-    
-    Recompute();
-}
-
-void ElementText::StopEditionImpl()
-{
-    m_timeSinceTick = 0.f;
-    m_isTickDisplayed   = false;
-    m_isEditing     = false;
-
-    GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, false);
-    
-    Recompute();
-}
-
-void ElementText::OnMouseSelected()
-{
-    StartEditionImpl();
-}
-
-void ElementText::OnMouseDeselected()
-{
-    StopEditionImpl();
-}
-
-void ElementText::OnSFEvent(const InteractionInfos& interactionInfos)
-{
-    if (!m_isEditing)
-        return;     // return true;
-
-    return ProcessSFEvent(*interactionInfos.rawSFEvent);
-}
-
-void ElementText::ProcessSFEvent(const sf::Event& _oSFEvent)
-{
-    if (!m_isEditing)
-        return;     // return true;
-
-    if (_oSFEvent.type == sf::Event::KeyPressed)
-    {
-        if (_oSFEvent.key.code == sf::Keyboard::Enter)
-        {
-            if (!m_isMultiline)
-            {
-                StopEditionImpl();
-
-                if (m_callbackOnValidate)
-                    m_callbackOnValidate();
-
-                return;     // return false;
-            }
-            else
-            {
-                m_textValue += '\n';
-                Recompute();
-                return;     // return false;
-            }
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Backspace)
-        {
-            if (!m_textValue.isEmpty())
-            {
-                m_textValue.erase(m_textValue.getSize() - 1, 1);
-                Recompute();
-                return;     // return false;
-            }
-        }
-    }
-    else if (_oSFEvent.type == sf::Event::TextEntered)
-    {
-        if (std::isprint(_oSFEvent.text.unicode))
-        {
-            m_textValue += _oSFEvent.text.unicode;
-            Recompute();
-            return;     // return false;
-        }
-#if 0
-        char cNewChar = '\0';
-
-        if (_oSFEvent.key.code >= sf::Keyboard::A && _oSFEvent.key.code <= sf::Keyboard::Z)
-        {
-            cNewChar = (char)('a' + (_oSFEvent.key.code - sf::Keyboard::A));
-
-            if (_oSFEvent.key.shift)
-                cNewChar += 'A' - 'a';
-        }
-        else if (_oSFEvent.key.code >= sf::Keyboard::Num0 && _oSFEvent.key.code <= sf::Keyboard::Num9)
-        {
-            cNewChar = (char)('0' + (_oSFEvent.key.code - sf::Keyboard::Num0));
-        }
-        else if (_oSFEvent.key.code >= sf::Keyboard::Numpad0 && _oSFEvent.key.code <= sf::Keyboard::Numpad9)
-        {
-            cNewChar = (char)('0' + (_oSFEvent.key.code - sf::Keyboard::Numpad0));
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Add)
-        {
-            cNewChar = '+';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Subtract)
-        {
-            cNewChar = '-';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Multiply)
-        {
-            cNewChar = '*';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Divide)
-        {
-            cNewChar = '/';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Period)
-        {
-            cNewChar = '.';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Space)
-        {
-            cNewChar = ' ';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Return && m_isMultiline)
-        {
-            cNewChar = '\n';
-        }
-
-        if (cNewChar != '\0')
-        {
-            std::string strNewChar;
-            strNewChar = cNewChar;
-
-            m_textValue.insert(m_textValue.getSize(), strNewChar);
-            SetText(m_textValue /*, false */);
-
-            return false;
-        }
-#endif
-    }
-
-    return;     // return true;
-}
-
-void ElementText::SetOnValidate(const Callback& callbackOnValidate)
-{
-    m_callbackOnValidate = callbackOnValidate;
+    OnRecompute();
 }
 
 void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    //TODO: register the element to an Update call.
-    //if (m_isEditing)
-    //{
-    //    m_timeSinceTick += dt.s();
-
-    //    if (m_timeSinceTick >= 0.75f)
-    //    {
-    //        m_timeSinceTick = 0.f;
-    //        m_isTickDisplayed = !m_isTickDisplayed;
-    //    }
-    //}
-
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
@@ -522,17 +293,7 @@ void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTr
         //        _kRenderPass.frameInfos->statDrawCalls += 1;
         //}
 
-        if (m_isTickDisplayed)
-        {
-            _kRenderPass.target->draw(*m_sfTextCursor, _kTransformSelf);
-
-            //Stats
-            if (_kRenderPass.frameInfos)
-            {
-                _kRenderPass.frameInfos->statDrawCalls += 1;
-                // TODO: find  away to retrieve triangles count.
-            }
-        }
+        OnTextRendered(_kRenderPass, _kTransformSelf);
     }
 }
 

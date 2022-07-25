@@ -17,7 +17,7 @@
 
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Element/2D/ElementText.h"
+#include "Gugu/Element/UI/ElementEditableText.h"
 
 #include "Gugu/Scene/Scene.h"
 
@@ -177,7 +177,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     pConsoleBackground->SetTexture(pTextureConsole);
     pConsoleBackground->SetUnifiedSize(UDim2(1.f, 0.f, 0.f, 200.f));
 
-    m_consoleTextEntry = pConsoleBackground->AddChild<ElementText>();
+    m_consoleTextEntry = pConsoleBackground->AddChild<ElementEditableText>();
     m_consoleTextEntry->SetResizeRule(ETextResizeRule::FixedSize);
     m_consoleTextEntry->SetFont(pFont);
     m_consoleTextEntry->SetText("");

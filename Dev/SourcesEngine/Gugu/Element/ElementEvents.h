@@ -59,7 +59,7 @@ namespace EElementEvent
     };
 }
 
-namespace EElementInteraction
+namespace EInteractionType
 {
     enum Type
     {
@@ -108,8 +108,8 @@ public:
     void UnregisterWindowEventHandler();
 
     void SetAllInteractionsEnabled(bool enabled);
-    void SetInteractionEnabled(EElementInteraction::Type interactionType, bool enabled);
-    bool IsInteractionEnabled(EElementInteraction::Type interactionType) const;
+    void SetInteractionEnabled(EInteractionType::Type interactionType, bool enabled);
+    bool IsInteractionEnabled(EInteractionType::Type interactionType) const;
 
     void AddCallback(EInteractionEvent::Type event, const DelegateInteractionEvent& callback);
     void RemoveCallbacks(EInteractionEvent::Type event);

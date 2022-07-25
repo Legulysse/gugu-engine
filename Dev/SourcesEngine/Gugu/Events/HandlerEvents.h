@@ -46,7 +46,7 @@ public:
     void RemoveEventListener(EventListener* _pEventListener);
     bool IsEventListenerRegistered(EventListener* _pEventListener) const;
 
-    void RegisterElementEventHandler(ElementEventHandler* eventHandler, EElementInteraction::Type interactionType);
+    void RegisterElementEventHandler(ElementEventHandler* eventHandler, EInteractionType::Type interactionType);
     void UnregisterElementEventHandler(ElementEventHandler* eventHandler);
 
     void ProcessWindowEvent(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras);

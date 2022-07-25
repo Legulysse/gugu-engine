@@ -6,7 +6,6 @@
 #include "Gugu/System/Types.h"
 #include "Gugu/Math/UDim.h"
 #include "Gugu/Math/Vector2.h"
-#include "Gugu/Element/ElementEvents.h"
 
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
@@ -19,6 +18,8 @@
 namespace gugu
 {
     struct RenderPass;
+    struct ElementInteractionInfos;
+    class ElementEvents;
 }
 
 namespace pugi

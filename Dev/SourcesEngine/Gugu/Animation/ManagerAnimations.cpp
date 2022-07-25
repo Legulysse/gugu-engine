@@ -10,6 +10,7 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Animation/SpriteAnimation.h"
+#include "Gugu/Element/ElementEvents.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Trace.h"

@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
+#include "Gugu/Core/Callback.h"
 #include "Gugu/System/Types.h"
 
 #include <SFML/Graphics/Color.hpp>

@@ -33,16 +33,16 @@ namespace EElementInteractionEvent
     {
         None,
         
-        MouseEnter,
-        MouseLeave,
+        MouseEntered,
+        MouseLeft,
         MousePressed,
         MouseReleased,
         MouseSelected,
         MouseDeselected,
         MouseScrolled,
-        MouseDragStart,
-        MouseDragStop,
-        MouseDragMove,
+        MouseDragBegan,
+        MouseDragMoved,
+        MouseDragEnded,
         RawSFEvent,
     };
 }
@@ -76,7 +76,7 @@ namespace EElementInteraction
 
 struct ElementInteractionInfos
 {
-    // Common infos (for all events except RawSFEvent, MouseLeave and MouseDeselected).
+    // Common infos (for all events except RawSFEvent, MouseLeft and MouseDeselected).
     Vector2f localPickingPosition = Vector2::Zero_f;
     const Camera* camera = nullptr;
 
@@ -86,7 +86,7 @@ struct ElementInteractionInfos
     // Raw Event infos (for RawSFEvent).
     const sf::Event* rawSFEvent = nullptr;
 
-    // Optional return value (for MouseEnter, MouseSelected, MousePressed, MouseReleased, MouseScrolled, RawSFEvent).
+    // Optional return value (for MouseEntered, MouseSelected, MousePressed, MouseReleased, MouseScrolled, RawSFEvent).
     mutable bool absorbEvent = true;
 };
 

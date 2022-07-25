@@ -164,8 +164,8 @@ void ElementEvents::RemoveAllCallbacks()
 
 void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
 {
-    if (event == EElementInteractionEvent::MouseEnter
-        || event == EElementInteractionEvent::MouseLeave)
+    if (event == EElementInteractionEvent::MouseEntered
+        || event == EElementInteractionEvent::MouseLeft)
     {
         GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Focus);
     }
@@ -183,9 +183,9 @@ void ElementEvents::CheckRegistration(EElementInteractionEvent::Type event)
     {
         GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Scroll);
     }
-    else if (event == EElementInteractionEvent::MouseDragStart
-        || event == EElementInteractionEvent::MouseDragStop
-        || event == EElementInteractionEvent::MouseDragMove)
+    else if (event == EElementInteractionEvent::MouseDragBegan
+        || event == EElementInteractionEvent::MouseDragMoved
+        || event == EElementInteractionEvent::MouseDragEnded)
     {
         GetGameWindow()->GetHandlerEvents()->RegisterElementEventHandler(this, EElementInteraction::Drag);
     }

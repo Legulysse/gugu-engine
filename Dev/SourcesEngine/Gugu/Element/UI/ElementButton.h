@@ -62,8 +62,8 @@ protected:
 
     void OnMousePressed(const ElementInteractionInfos& interactionInfos);
     void OnMouseReleased(const ElementInteractionInfos& interactionInfos);
-    void OnMouseEnter(const ElementInteractionInfos& interactionInfos);
-    void OnMouseLeave(const ElementInteractionInfos& interactionInfos);
+    void OnMouseEntered(const ElementInteractionInfos& interactionInfos);
+    void OnMouseLeft(const ElementInteractionInfos& interactionInfos);
 
     void SetTextureImpl(Texture* textureIdle, Texture* textureFocused, Texture* textureDisabled);
 

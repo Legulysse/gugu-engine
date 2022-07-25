@@ -36,8 +36,8 @@ ElementButton::ElementButton()
     m_actionOnPressed = nullptr;
     m_actionOnReleased = nullptr;
     
-    GetInteractions()->AddCallback(EElementInteractionEvent::MouseEnter, std::bind(&ElementButton::OnMouseEnter, this, std::placeholders::_1));
-    GetInteractions()->AddCallback(EElementInteractionEvent::MouseLeave, std::bind(&ElementButton::OnMouseLeave, this, std::placeholders::_1));
+    GetInteractions()->AddCallback(EElementInteractionEvent::MouseEntered, std::bind(&ElementButton::OnMouseEntered, this, std::placeholders::_1));
+    GetInteractions()->AddCallback(EElementInteractionEvent::MouseLeft, std::bind(&ElementButton::OnMouseLeft, this, std::placeholders::_1));
     GetInteractions()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementButton::OnMousePressed, this, std::placeholders::_1));
     GetInteractions()->AddCallback(EElementInteractionEvent::MouseReleased, std::bind(&ElementButton::OnMouseReleased, this, std::placeholders::_1));
 
@@ -167,7 +167,7 @@ void ElementButton::OnMouseReleased(const ElementInteractionInfos& interactionIn
     }
 }
 
-void ElementButton::OnMouseEnter(const ElementInteractionInfos& interactionInfos)
+void ElementButton::OnMouseEntered(const ElementInteractionInfos& interactionInfos)
 {
     if (m_currentSprite)
     {
@@ -175,7 +175,7 @@ void ElementButton::OnMouseEnter(const ElementInteractionInfos& interactionInfos
     }
 }
 
-void ElementButton::OnMouseLeave(const ElementInteractionInfos& interactionInfos)
+void ElementButton::OnMouseLeft(const ElementInteractionInfos& interactionInfos)
 {
     if (m_currentSprite)
     {

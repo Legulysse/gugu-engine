@@ -286,7 +286,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             ElementInteractionInfos interactionInfos;
             interactionInfos.localPickingPosition = localPickedCoords;
             interactionInfos.camera = camera;
-            m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragMove, interactionInfos);
+            m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragMoved, interactionInfos);
 
             bContinue = false;
         }
@@ -306,7 +306,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                         if (m_elementMouseFocused)
                         {
                             ElementInteractionInfos interactionInfos;
-                            m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeave, interactionInfos);
+                            m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeft, interactionInfos);
                         }
 
                         m_elementMouseFocused = pElement;
@@ -314,7 +314,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                         ElementInteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
-                        elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseEnter, interactionInfos);
+                        elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseEntered, interactionInfos);
 
                         if (interactionInfos.absorbEvent)
                         {
@@ -333,7 +333,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
             if (bContinue && m_elementMouseFocused)
             {
                 ElementInteractionInfos interactionInfos;
-                m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeave, interactionInfos);
+                m_elementMouseFocused->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseLeft, interactionInfos);
 
                 m_elementMouseFocused = nullptr;
             }
@@ -432,7 +432,7 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                         ElementInteractionInfos interactionInfos;
                         interactionInfos.localPickingPosition = localPickedCoords;
                         interactionInfos.camera = camera;
-                        elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseDragStart, interactionInfos);
+                        elementEventHandler->FireCallbacks(EElementInteractionEvent::MouseDragBegan, interactionInfos);
 
                         Vector2f parentCoords = Vector2f(oMouseCoords);
                         if (m_elementMouseDragged->GetParent())
@@ -466,13 +466,13 @@ bool HandlerEvents::ProcessElementInteractions(const sf::Event& _oSFEvent, const
                 ElementInteractionInfos dragMoveInteractionInfos;
                 dragMoveInteractionInfos.localPickingPosition = localPickedCoords;
                 dragMoveInteractionInfos.camera = camera;
-                m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragMove, dragMoveInteractionInfos);
+                m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragMoved, dragMoveInteractionInfos);
 
                 // Actual DragStop
                 ElementInteractionInfos interactionInfos;
                 interactionInfos.localPickingPosition = localPickedCoords;
                 interactionInfos.camera = camera;
-                m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragStop, interactionInfos);
+                m_elementMouseDragged->GetInteractions()->FireCallbacks(EElementInteractionEvent::MouseDragEnded, interactionInfos);
 
                 m_elementMouseDragged = nullptr;
                 bContinue = false;

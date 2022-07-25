@@ -36,7 +36,7 @@ StateScenario::~StateScenario()
 
 void StateScenario::Init()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     //Init Scene
     GetGame()->CreateScenario();
@@ -187,7 +187,7 @@ void StateScenario::Init()
     RefreshCharacterSheet();
 }
 
-void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, const gugu::ElementEvents::DelegateInteractionEvent& onClick)
+void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::ElementText*& textValue, float positionX, float positionY, float positionColumnX, const gugu::ElementEventHandler::DelegateInteractionEvent& onClick)
 {
     float positionColumnOffsetXLeftButton = -40.f;
     float positionColumnOffsetXRightButton = 40.f;
@@ -212,7 +212,7 @@ void StateScenario::AddCharacterSheetAttribute(const std::string& label, gugu::E
         buttonValueRight->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(positionColumnX + positionColumnOffsetXRightButton, positionY));
         buttonValueRight->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
         buttonValueRight->SetSubImage("uipack_rpg.imageset.xml", "arrowBrown_right");
-        buttonValueRight->GetInteractions()->AddCallback(EElementInteractionEvent::MousePressed, onClick);
+        buttonValueRight->GetEvents()->AddCallback(EInteractionEvent::MousePressed, onClick);
     }
 }
 

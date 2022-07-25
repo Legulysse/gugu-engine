@@ -33,7 +33,7 @@ Demo::~Demo()
 
 void Demo::AppStart()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     //Create a custom Renderer
     m_renderer = new RendererDemo;

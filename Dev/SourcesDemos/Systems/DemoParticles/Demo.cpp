@@ -37,7 +37,7 @@ Demo::~Demo()
 
 void Demo::AppStart()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     // Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();

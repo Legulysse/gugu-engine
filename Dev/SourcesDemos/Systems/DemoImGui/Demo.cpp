@@ -38,7 +38,7 @@ Demo::~Demo()
 
 void Demo::AppStart()
 {
-    RegisterHandlerEvents(GetGameWindow());
+    RegisterEventHandler(GetGameWindow());
 
     // Register Inputs
     ManagerInputs* inputs = GetInputs();

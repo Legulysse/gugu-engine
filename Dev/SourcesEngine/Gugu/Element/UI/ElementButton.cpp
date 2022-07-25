@@ -22,26 +22,24 @@
 namespace gugu {
 
 ElementButton::ElementButton()
+    : m_spriteIdle(nullptr)
+    , m_spriteFocused(nullptr)
+    , m_spriteDisabled(nullptr)
+    , m_currentSprite(nullptr)
+    , m_text(nullptr)
+    , m_actionOnPressed(nullptr)
+    , m_actionOnReleased(nullptr)
+    , m_isDisabled(false)
 {
-    m_spriteIdle = nullptr;
-    m_spriteFocused = nullptr;
-    m_spriteDisabled = nullptr;
-    m_currentSprite = nullptr;
-
     m_text = new ElementText;
     m_text->SetParent(this);
 
     SetTextAlignment(UDim2::POSITION_TOP_CENTER);
 
-    m_actionOnPressed = nullptr;
-    m_actionOnReleased = nullptr;
-    
     GetEvents()->AddCallback(EInteractionEvent::MouseEntered, std::bind(&ElementButton::OnMouseEntered, this, std::placeholders::_1));
     GetEvents()->AddCallback(EInteractionEvent::MouseLeft, std::bind(&ElementButton::OnMouseLeft, this, std::placeholders::_1));
     GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementButton::OnMousePressed, this, std::placeholders::_1));
     GetEvents()->AddCallback(EInteractionEvent::MouseReleased, std::bind(&ElementButton::OnMouseReleased, this, std::placeholders::_1));
-
-    m_isDisabled = false;
 }
 
 ElementButton::~ElementButton()

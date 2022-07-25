@@ -36,6 +36,24 @@
 namespace gugu {
 
 Engine::Engine()
+    : m_renderer(nullptr)
+    , m_managerInputs(nullptr)
+    , m_managerAudio(nullptr)
+    , m_managerNetwork(nullptr)
+    , m_managerResources(nullptr)
+    , m_managerAnimations(nullptr)
+    , m_managerVisualEffects(nullptr)
+    , m_managerScenes(nullptr)
+    , m_logEngine(nullptr)
+    , m_traceGroupMain(nullptr)
+    , m_traceLifetime(0)
+    , m_application(nullptr)
+    , m_stopLoop(false)
+    , m_timeSinceLastStep(sf::Time::Zero)
+    , m_useSpeedMultiplier(false)
+    , m_speedMultiplier(1.f)
+    , m_pauseLoop(false)
+    , m_injectTime(sf::Time::Zero)
 {
     // This constructor should stay empty.
     // Because it's a singleton, if a GetInstance() is called inside by another system but the constructor isn't finished,
@@ -67,17 +85,6 @@ void Engine::Init(const EngineConfig& config)
 
     NormalizePathSelf(m_engineConfig.pathAssets, true);
     NormalizePathSelf(m_engineConfig.pathScreenshots, true);
-
-    //-- Init Engine core --//
-    m_stopLoop = false;
-    m_useSpeedMultiplier = false;
-    m_speedMultiplier = 1.f;
-    m_pauseLoop = false;
-    m_injectTime = sf::Time::Zero;
-
-    m_application = nullptr;
-    m_renderer = nullptr;
-    m_gameWindow = nullptr;
 
     //-- Init Managers --//
     m_managerResources = new ManagerResources;

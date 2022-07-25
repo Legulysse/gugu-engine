@@ -19,8 +19,8 @@
 namespace gugu {
     
 ElementUILayout::ElementUILayout()
+    : m_blockEvents(false)
 {
-    m_blockEvents = false;
 }
 
 ElementUILayout::~ElementUILayout()

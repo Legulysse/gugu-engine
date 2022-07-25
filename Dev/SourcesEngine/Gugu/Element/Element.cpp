@@ -20,25 +20,19 @@
 namespace gugu {
         
 Element::Element()
+    : m_parent(nullptr)
+    , m_flipV(false)
+    , m_flipH(false)
+    , m_renderPass(GUGU_RENDERPASS_DEFAULT)
+    , m_isVisible(true)
+    , m_zIndex(0)
+    , m_showDebugBounds(false)
+    , m_useDimOrigin(false)
+    , m_useDimPosition(false)
+    , m_useDimSize(false)
+    //, m_pShader(nullptr)
+    , m_eventHandler(nullptr)
 {
-    m_parent = nullptr;
-
-    m_flipV = false;
-    m_flipH = false;
-
-    m_renderPass = GUGU_RENDERPASS_DEFAULT;
-    m_isVisible = true;
-    m_zIndex = 0;
-
-    m_showDebugBounds = false;
-
-    m_useDimOrigin = false;
-    m_useDimPosition = false;
-    m_useDimSize = false;
-
-    //m_pShader = nullptr;
-
-    m_eventHandler = nullptr;
 }
 
 Element::~Element()

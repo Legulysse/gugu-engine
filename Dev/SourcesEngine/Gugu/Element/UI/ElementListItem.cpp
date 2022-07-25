@@ -20,13 +20,12 @@
 namespace gugu {
     
 ElementListItem::ElementListItem()
+    : m_list(nullptr)
+    , m_elementImpl(nullptr)
+    , m_isSelected(false)
+    , m_callbackOnSelected(nullptr)
+    , m_callbackOnDeselected(nullptr)
 {
-    m_list = nullptr;
-    m_elementImpl = nullptr;
-    m_isSelected = false;
-    
-    m_callbackOnSelected = nullptr;
-    m_callbackOnDeselected = nullptr;
 }
 
 ElementListItem::~ElementListItem()

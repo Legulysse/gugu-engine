@@ -22,16 +22,13 @@
 namespace gugu {
     
 ElementEditableText::ElementEditableText()
+    : m_sfTextCursor(nullptr)
+    , m_callbackOnValidate(nullptr)
+    , m_isEditable(false)
+    , m_isEditing(false)
+    , m_isTickDisplayed(false)
+    , m_timeSinceTick(0.f)
 {
-    m_isEditable    = false;
-    m_isEditing = false;
-    m_isTickDisplayed = false;
-    m_timeSinceTick = 0.f;
-
-    m_callbackOnValidate = nullptr;
-
-    m_sfTextCursor = nullptr;
-
     GetEvents()->AddCallback(EInteractionEvent::MouseSelected, std::bind(&ElementEditableText::OnMouseSelected, this));
     GetEvents()->AddCallback(EInteractionEvent::MouseDeselected, std::bind(&ElementEditableText::OnMouseDeselected, this));
     GetEvents()->AddCallback(EInteractionEvent::RawSFEvent, std::bind(&ElementEditableText::OnSFEvent, this, std::placeholders::_1));

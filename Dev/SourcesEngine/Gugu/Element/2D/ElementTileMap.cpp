@@ -22,7 +22,7 @@
 namespace gugu {
 
 ElementTileMap::ElementTileMap()
-: m_texture(nullptr)
+    : m_texture(nullptr)
 {
 }
 

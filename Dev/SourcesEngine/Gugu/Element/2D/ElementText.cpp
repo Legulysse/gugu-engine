@@ -22,14 +22,12 @@
 namespace gugu {
     
 ElementText::ElementText()
-: m_font(nullptr)
+    : m_font(nullptr)
+    , m_sfText(nullptr)
+    , m_resizeRule(ETextResizeRule::FitSize)
+    , m_isMultiline(false)
+    , m_skipRecomputeOnResize(false)
 {
-    m_textValue = "";
-
-    m_resizeRule = ETextResizeRule::FitSize;
-    m_isMultiline = false;
-    m_skipRecomputeOnResize = false;
-
     m_sfText = new sf::Text;
     m_sfText->setFillColor(sf::Color(0, 0, 0));
 

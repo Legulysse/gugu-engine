@@ -22,11 +22,11 @@
 namespace gugu {
     
 ElementSpriteBase::ElementSpriteBase()
-: m_color(sf::Color::White)
-, m_dirtyVertices(true)
-, m_repeatTexture(false)
-, m_flipTextureV(false)
-, m_flipTextureH(false)
+    : m_color(sf::Color::White)
+    , m_dirtyVertices(true)
+    , m_repeatTexture(false)
+    , m_flipTextureV(false)
+    , m_flipTextureH(false)
 {
 }
 

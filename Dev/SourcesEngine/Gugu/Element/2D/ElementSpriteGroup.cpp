@@ -95,10 +95,10 @@ size_t ElementSpriteGroupItem::RecomputeItemVertices(sf::VertexArray& vertices, 
 
 
 ElementSpriteGroup::ElementSpriteGroup()
-: m_texture(nullptr)
-, m_color(sf::Color::White)
-, m_applyColor(false)
-, m_needRecompute(true)
+    : m_texture(nullptr)
+    , m_color(sf::Color::White)
+    , m_applyColor(false)
+    , m_needRecompute(true)
 {
 }
 

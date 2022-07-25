@@ -19,12 +19,15 @@
 namespace gugu {
     
 ElementList::ElementList()
+    : m_scrollBackground(nullptr)
+    , m_scrollSlider(nullptr)
+    , m_scrollButtonTop(nullptr)
+    , m_scrollButtonBottom(nullptr)
+    , m_currentIndexTop(0)
+    , m_displayedItemCount(0)
+    , m_allowSelection(true)
+    , m_multipleSelection(false)
 {
-    m_currentIndexTop = 0;
-    m_displayedItemCount = 0;
-    m_allowSelection = true;
-    m_multipleSelection = false;
-    
     m_scrollBackground = new ElementSprite;
     m_scrollBackground->SetParent(this);
     m_scrollBackground->SetSize(30.f, 30.f);

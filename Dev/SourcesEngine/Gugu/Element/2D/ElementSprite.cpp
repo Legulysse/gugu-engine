@@ -22,7 +22,7 @@
 namespace gugu {
     
 ElementSprite::ElementSprite()
-: m_texture(nullptr)
+    : m_texture(nullptr)
 {
 }
 

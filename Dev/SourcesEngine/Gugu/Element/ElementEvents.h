@@ -27,7 +27,7 @@ namespace sf
 
 namespace gugu {
     
-namespace EElementInteractionEvent
+namespace EInteractionEvent
 {
     enum Type
     {
@@ -111,9 +111,9 @@ public:
     void SetInteractionEnabled(EElementInteraction::Type interactionType, bool enabled);
     bool IsInteractionEnabled(EElementInteraction::Type interactionType) const;
 
-    void AddCallback(EElementInteractionEvent::Type event, const DelegateInteractionEvent& callback);
-    void RemoveCallbacks(EElementInteractionEvent::Type event);
-    void FireCallbacks(EElementInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos);
+    void AddCallback(EInteractionEvent::Type event, const DelegateInteractionEvent& callback);
+    void RemoveCallbacks(EInteractionEvent::Type event);
+    void FireCallbacks(EInteractionEvent::Type event, const ElementInteractionInfos& interactionInfos);
 
     void AddCallback(EElementEvent::Type event, const Callback& callback);
     void RemoveCallbacks(EElementEvent::Type event);
@@ -123,7 +123,7 @@ public:
 
 private:
 
-    void CheckRegistration(EElementInteractionEvent::Type event);
+    void CheckRegistration(EInteractionEvent::Type event);
 
 private:
 
@@ -134,7 +134,7 @@ private:
 
     struct InteractionCallbackInfos
     {
-        EElementInteractionEvent::Type event;
+        EInteractionEvent::Type event;
         DelegateInteractionEvent callback;
     };
     std::vector<InteractionCallbackInfos> m_interactionCallbacks;

@@ -36,10 +36,10 @@ ElementButton::ElementButton()
     m_actionOnPressed = nullptr;
     m_actionOnReleased = nullptr;
     
-    GetEvents()->AddCallback(EElementInteractionEvent::MouseEntered, std::bind(&ElementButton::OnMouseEntered, this, std::placeholders::_1));
-    GetEvents()->AddCallback(EElementInteractionEvent::MouseLeft, std::bind(&ElementButton::OnMouseLeft, this, std::placeholders::_1));
-    GetEvents()->AddCallback(EElementInteractionEvent::MousePressed, std::bind(&ElementButton::OnMousePressed, this, std::placeholders::_1));
-    GetEvents()->AddCallback(EElementInteractionEvent::MouseReleased, std::bind(&ElementButton::OnMouseReleased, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseEntered, std::bind(&ElementButton::OnMouseEntered, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseLeft, std::bind(&ElementButton::OnMouseLeft, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementButton::OnMousePressed, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseReleased, std::bind(&ElementButton::OnMouseReleased, this, std::placeholders::_1));
 
     m_isDisabled = false;
 }

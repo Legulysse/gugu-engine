@@ -45,9 +45,9 @@ ElementText::ElementText()
     SetFont(GetResources()->GetDefaultFont());
     SetFontSize(20);
 
-    GetEvents()->AddCallback(EElementInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
-    GetEvents()->AddCallback(EElementInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
-    GetEvents()->AddCallback(EElementInteractionEvent::RawSFEvent, std::bind(&ElementText::OnSFEvent, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseSelected, std::bind(&ElementText::OnMouseSelected, this));
+    GetEvents()->AddCallback(EInteractionEvent::MouseDeselected, std::bind(&ElementText::OnMouseDeselected, this));
+    GetEvents()->AddCallback(EInteractionEvent::RawSFEvent, std::bind(&ElementText::OnSFEvent, this, std::placeholders::_1));
 
     GetEvents()->SetInteractionEnabled(EElementInteraction::Selection, false);
     GetEvents()->SetInteractionEnabled(EElementInteraction::RawSFEvent, false);

@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Element/ElementEvents.h"
+#include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/External/PugiXmlWrap.h"
 #include "Gugu/Math/MathUtility.h"

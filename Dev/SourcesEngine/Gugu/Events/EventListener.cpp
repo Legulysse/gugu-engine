@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Events/HandlerEvents.h"
+#include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Window/Window.h"
 
 #include <SFML/Window/Event.hpp>

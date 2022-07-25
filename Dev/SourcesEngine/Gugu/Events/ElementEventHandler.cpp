@@ -2,14 +2,14 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Element/ElementEvents.h"
+#include "Gugu/Events/ElementEventHandler.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
 
 #include "Gugu/Element/Element.h"
 #include "Gugu/Window/Window.h"
-#include "Gugu/Events/HandlerEvents.h"
+#include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////

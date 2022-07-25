@@ -12,7 +12,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/Events/HandlerEvents.h"
+#include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Window/Camera.h"
 
 #include "Gugu/Element/Element.h"

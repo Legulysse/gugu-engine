@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Element/ElementEvents.h"
+#include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Font.h"
 #include "Gugu/Window/Renderer.h"

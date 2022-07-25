@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Element/ElementEvents.h"
+#include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"

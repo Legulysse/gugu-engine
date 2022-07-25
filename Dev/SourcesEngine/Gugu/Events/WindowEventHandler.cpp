@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Events/HandlerEvents.h"
+#include "Gugu/Events/WindowEventHandler.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes

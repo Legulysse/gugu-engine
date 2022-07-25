@@ -123,8 +123,6 @@ void ElementButton::SetDisabled(bool _bDisabled)
 
     if (m_isDisabled)
     {
-        GetEvents()->SetAllInteractionsEnabled(false);
-
         if (m_currentSprite)
         {
             m_currentSprite = m_spriteDisabled ? m_spriteDisabled : m_spriteIdle;
@@ -132,8 +130,6 @@ void ElementButton::SetDisabled(bool _bDisabled)
     }
     else
     {
-        GetEvents()->SetAllInteractionsEnabled(true);
-
         if (m_currentSprite)
         {
             m_currentSprite = m_spriteIdle;
@@ -169,7 +165,7 @@ void ElementButton::OnMouseReleased(const InteractionInfos& interactionInfos)
 
 void ElementButton::OnMouseEntered(const InteractionInfos& interactionInfos)
 {
-    if (m_currentSprite)
+    if (m_currentSprite && !m_isDisabled)
     {
         m_currentSprite = m_spriteFocused ? m_spriteFocused : m_spriteIdle;
     }
@@ -177,7 +173,7 @@ void ElementButton::OnMouseEntered(const InteractionInfos& interactionInfos)
 
 void ElementButton::OnMouseLeft(const InteractionInfos& interactionInfos)
 {
-    if (m_currentSprite)
+    if (m_currentSprite && !m_isDisabled)
     {
         m_currentSprite = m_spriteIdle;
     }

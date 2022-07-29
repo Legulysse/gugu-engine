@@ -13,8 +13,10 @@
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/OutputLogPanel.h"
 #include "Gugu/Editor/Panel/Document/DatasheetPanel.h"
+#include "Gugu/Editor/Panel/Document/AnimSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ParticleEffectPanel.h"
+#include "Gugu/Editor/Panel/Document/TexturePanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
@@ -531,9 +533,17 @@ void Editor::OpenDocument(const std::string& resourceID)
     {
         newDocument = new ImageSetPanel(GetResources()->GetImageSet(resourceID));
     }
+    else if (resourceType == EResourceType::AnimSet)
+    {
+        newDocument = new AnimSetPanel(GetResources()->GetAnimSet(resourceID));
+    }
     else if (resourceType == EResourceType::ParticleEffect)
     {
         newDocument = new ParticleEffectPanel(GetResources()->GetParticleEffect(resourceID));
+    }
+    else if (resourceType == EResourceType::Texture)
+    {
+        newDocument = new TexturePanel(GetResources()->GetTexture(resourceID));
     }
     else if (resourceType == EResourceType::Unknown)
     {

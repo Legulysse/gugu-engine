@@ -42,6 +42,7 @@ protected:
 private:
 
     RenderViewport* m_renderViewport;
+    float m_zoomFactor;
 
     ParticleEffect* m_particleEffect;
     ParticleSystem* m_particleSystem;

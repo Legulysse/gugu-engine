@@ -29,6 +29,7 @@ ParticleEffectPanel::ParticleEffectPanel(ParticleEffect* resource)
     : DocumentPanel(resource)
     , m_particleEffect(resource)
     , m_renderViewport(nullptr)
+    , m_zoomFactor(1.f)
     , m_particleSystem(nullptr)
     , m_elementParticle(nullptr)
     , m_followCursor(false)
@@ -96,10 +97,9 @@ void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
     }
 
     // Toolbar.
-    static float zoomFactor = 1.f;
-    if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
     {
-        m_renderViewport->SetZoom(zoomFactor);
+        m_renderViewport->SetZoom(m_zoomFactor);
     }
 
     if (ImGui::Checkbox("Follow Cursor", &m_followCursor))

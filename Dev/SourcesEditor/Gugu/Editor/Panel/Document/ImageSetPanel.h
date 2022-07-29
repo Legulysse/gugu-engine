@@ -46,6 +46,7 @@ private:
 private:
 
     RenderViewport* m_renderViewport;
+    float m_zoomFactor;
 
     ImageSet* m_imageSet;
     int m_selectedIndex;

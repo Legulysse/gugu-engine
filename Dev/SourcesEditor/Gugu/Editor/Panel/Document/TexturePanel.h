@@ -34,6 +34,7 @@ protected:
 private:
 
     RenderViewport* m_renderViewport;
+    float m_zoomFactor;
 
     Texture* m_texture;
 };

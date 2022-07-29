@@ -31,6 +31,7 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     : DocumentPanel(resource)
     , m_imageSet(resource)
     , m_renderViewport(nullptr)
+    , m_zoomFactor(1.f)
     , m_selectedIndex(-1)
     , m_gizmoCenter(nullptr)
     , m_isDraggingGizmo(false)
@@ -57,10 +58,9 @@ ImageSetPanel::~ImageSetPanel()
 void ImageSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.
-    static float zoomFactor = 1.f;
-    if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
     {
-        m_renderViewport->SetZoom(zoomFactor);
+        m_renderViewport->SetZoom(m_zoomFactor);
     }
 
     // Viewport.

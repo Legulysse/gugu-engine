@@ -37,6 +37,7 @@ protected:
 private:
 
     RenderViewport* m_renderViewport;
+    float m_zoomFactor;
 
     AnimSet* m_animSet;
 };

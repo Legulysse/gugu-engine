@@ -25,6 +25,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     : DocumentPanel(resource)
     , m_animSet(resource)
     , m_renderViewport(nullptr)
+    , m_zoomFactor(1.f)
 {
     // Setup RenderViewport and Sprite.
     m_renderViewport = new RenderViewport(true);
@@ -38,10 +39,9 @@ AnimSetPanel::~AnimSetPanel()
 void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.
-    static float zoomFactor = 1.f;
-    if (ImGui::SliderFloat("Zoom Factor", &zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
     {
-        m_renderViewport->SetZoom(zoomFactor);
+        m_renderViewport->SetZoom(m_zoomFactor);
     }
 
     // Viewport.

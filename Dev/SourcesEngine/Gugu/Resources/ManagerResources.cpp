@@ -559,7 +559,12 @@ bool ManagerResources::RemoveResource(Resource* _pResource)
     if (!_pResource)
         return false;
 
-    auto iteResource = m_resources.find(_pResource->GetID());
+    return RemoveResource(_pResource->GetID());
+}
+
+bool ManagerResources::RemoveResource(const std::string& resourceID)
+{
+    auto iteResource = m_resources.find(resourceID);
     if (iteResource != m_resources.end())
     {
         ResourceInfo* pInfo = iteResource->second;
@@ -576,12 +581,19 @@ bool ManagerResources::DeleteResource(Resource* _pResource)
     if (!_pResource)
         return false;
 
-    FileInfo oFileInfo = _pResource->GetFileInfo();
+    return DeleteResource(_pResource->GetID());
+}
 
-    if (RemoveResource(_pResource))
+bool ManagerResources::DeleteResource(const std::string& resourceID)
+{
+    FileInfo fileInfo;
+    GetResourceFileInfo(resourceID, fileInfo);
+
+    if (RemoveResource(resourceID))
     {
-        return RemoveFile(oFileInfo.GetPathName());
+        return RemoveFile(fileInfo.GetPathName());
     }
+
     return false;
 }
 

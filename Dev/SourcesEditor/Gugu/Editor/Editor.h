@@ -53,9 +53,11 @@ public:
     void OpenProject(const std::string& projectPathFile);
     bool CloseProject();
     bool IsProjectOpen() const;
+    const ProjectSettings* GetProjectSettings() const;
 
     bool OpenModalDialog(BaseModalDialog* modalDialog);
-    void OpenDocument(const std::string& resourceID);
+    bool OpenDocument(const std::string& resourceID);
+    bool CloseDocument(const std::string& resourceID, bool forceIgnoreDirty);
 
     void RefreshAssets();
     void ResetPanels();

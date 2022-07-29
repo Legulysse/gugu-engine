@@ -104,8 +104,11 @@ public:
     bool        RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos);
     bool        AddResource     (Resource* _pNewResource, const FileInfo& _oFileInfo);
     bool        MoveResource    (Resource* _pResource, const FileInfo& _oFileInfo);
+
     bool        RemoveResource  (Resource* _pResource);
+    bool        RemoveResource  (const std::string& resourceID);
     bool        DeleteResource  (Resource* _pResource);
+    bool        DeleteResource  (const std::string& resourceID);
 
     //TODO: Editor hack, waiting for ResourceContext to split editor and project resources.
     void        RemoveResourcesFromPath (const std::string& _strPath);

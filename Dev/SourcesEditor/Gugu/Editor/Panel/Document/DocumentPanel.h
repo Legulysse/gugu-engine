@@ -43,10 +43,11 @@ public:
     void RaiseDirty();
     bool IsDirty() const;
 
-    bool IsClosing() const;
-    bool IsClosed() const;
+    bool Close();
     void CancelClosing();
     void ValidateClosing();
+    bool IsClosing() const;
+    bool IsClosed() const;
 
 protected:
 

@@ -124,7 +124,7 @@ void Editor::OpenProjectImpl(const std::string& projectPathFile)
             m_datasheetParser = new DatasheetParser;
             m_datasheetParser->ParseBinding(m_project->projectBindingPathFile);
 
-            m_assetsExplorerPanel->RefreshContent(m_project->projectAssetsPath);
+            m_assetsExplorerPanel->RaiseDirtyContent();
         }
         else
         {
@@ -173,6 +173,11 @@ void Editor::CloseProjectImpl()
 bool Editor::IsProjectOpen() const
 {
     return m_project != nullptr;
+}
+
+const ProjectSettings* Editor::GetProjectSettings() const
+{
+    return m_project;
 }
 
 bool Editor::OnSFEvent(const sf::Event& event)
@@ -510,18 +515,18 @@ bool Editor::OpenModalDialog(BaseModalDialog* modalDialog)
     return true;
 }
 
-void Editor::OpenDocument(const std::string& resourceID)
+bool Editor::OpenDocument(const std::string& resourceID)
 {
     FileInfo resourceFileInfo;
     if (!GetResources()->GetResourceFileInfo(resourceID, resourceFileInfo))
-        return;
+        return false;
 
     for (DocumentPanel* document : m_documentPanels)
     {
         if (document->IsSameResource(resourceID))
         {
             document->ForceFocus();
-            return;
+            return true;
         }
     }
 
@@ -573,6 +578,28 @@ void Editor::OpenDocument(const std::string& resourceID)
     {
         m_documentPanels.push_back(newDocument);
     }
+
+    return true;
+}
+
+bool Editor::CloseDocument(const std::string& resourceID, bool forceIgnoreDirty)
+{
+    for (DocumentPanel* document : m_documentPanels)
+    {
+        if (document->IsSameResource(resourceID))
+        {
+            bool closed = document->Close();
+
+            if (!closed && forceIgnoreDirty)
+            {
+                document->ValidateClosing();
+            }
+
+            return document->IsClosed();
+        }
+    }
+
+    return true;
 }
 
 bool Editor::RaiseCheckDirtyDocuments()
@@ -663,8 +690,7 @@ bool Editor::SaveAllClosingDirtyDocuments()
 
 void Editor::RefreshAssets()
 {
-    //TODO: This is probably unsafe, we could be in the middle of drawing the assets tree view.
-    m_assetsExplorerPanel->RefreshContent(m_project->projectAssetsPath);
+    m_assetsExplorerPanel->RaiseDirtyContent();
 }
 
 void Editor::ResetPanels()

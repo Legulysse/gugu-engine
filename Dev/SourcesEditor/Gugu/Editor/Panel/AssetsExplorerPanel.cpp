@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Editor/Editor.h"
+#include "Gugu/Editor/Core/ProjectSettings.h"
 #include "Gugu/Editor/Modal/NewResourceDialog.h"
 
 #include "Gugu/Resources/ManagerResources.h"
@@ -23,6 +24,7 @@ namespace gugu {
 
 AssetsExplorerPanel::AssetsExplorerPanel()
     : m_rootNode(nullptr)
+    , m_dirtyContent(false)
 {
     m_title = "Assets Explorer";
 }
@@ -34,6 +36,8 @@ AssetsExplorerPanel::~AssetsExplorerPanel()
 
 void AssetsExplorerPanel::ClearContent()
 {
+    m_dirtyContent = false;
+
     if (m_rootNode)
     {
         RecursiveDeleteTreeNodes(m_rootNode);
@@ -41,8 +45,17 @@ void AssetsExplorerPanel::ClearContent()
     }
 }
 
-void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
+void AssetsExplorerPanel::RaiseDirtyContent()
 {
+    m_dirtyContent = true;
+}
+
+void AssetsExplorerPanel::RefreshContent()
+{
+    const std::string& projectAssetsPath = GetEditor()->GetProjectSettings()->projectAssetsPath;
+
+    m_dirtyContent = false;
+
     ClearContent();
 
     // Refresh assets tree structure.
@@ -104,6 +117,7 @@ void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
         TreeNode* newNode = new TreeNode;
         newNode->isFolder = false;
         newNode->name = resourceInfo->fileInfo.GetName();
+        newNode->ressourceID = resourceInfo->resourceID;
         currentDirectory->children.push_back(newNode);
     }
 
@@ -112,6 +126,11 @@ void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
 
 void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
 {
+    if (m_dirtyContent)
+    {
+        RefreshContent();
+    }
+
     if (ImGui::Begin(m_title.c_str(), false))
     {
         if (m_rootNode)
@@ -281,10 +300,13 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
         // Open Document.
         if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))     // ImGui::IsMouseDoubleClicked(0) 
         {
-            GetEditor()->OpenDocument(node->name);
+            GetEditor()->OpenDocument(node->ressourceID);
 
             // TODO: handle selection.
         }
+
+        // Context menu.
+        HandleFileContextMenu(node);
 
         // Drag and drop.
         if (test_drag_and_drop && ImGui::BeginDragDropSource())
@@ -311,12 +333,12 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
     {
         if (ImGui::BeginMenu("New..."))
         {
-            if (ImGui::MenuItem("Folder"))
+            if (ImGui::MenuItem("Folder (wip)"))
             {
             }
 
             ImGui::Separator();
-            if (ImGui::MenuItem("Datasheet"))
+            if (ImGui::MenuItem("Datasheet (wip)"))
             {
             }
 
@@ -343,6 +365,25 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
         if (ImGui::MenuItem("Open in Explorer"))
         {
             OpenFileExplorer(node->path);
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
+{
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::MenuItem("Delete"))
+        {
+            if (GetEditor()->CloseDocument(node->ressourceID, true))
+            {
+                if (GetResources()->DeleteResource(node->ressourceID))
+                {
+                    GetEditor()->RefreshAssets();
+                }
+            }
         }
 
         ImGui::EndPopup();

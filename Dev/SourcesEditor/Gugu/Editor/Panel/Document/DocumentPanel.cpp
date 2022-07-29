@@ -190,13 +190,21 @@ bool DocumentPanel::IsDirty() const
     return m_dirty;
 }
 
-bool DocumentPanel::IsClosing() const
+bool DocumentPanel::Close()
 {
-    return m_closing;
-}
+    if (m_closed)
+        return true;
 
-bool DocumentPanel::IsClosed() const
-{
+    if (m_dirty)
+    {
+        m_closing = true;
+    }
+    else
+    {
+        m_closing = false;
+        m_closed = true;
+    }
+
     return m_closed;
 }
 
@@ -207,8 +215,21 @@ void DocumentPanel::CancelClosing()
 
 void DocumentPanel::ValidateClosing()
 {
-    m_closed = m_closing;
-    m_closing = false;
+    if (m_closing)
+    {
+        m_closing = false;
+        m_closed = true;
+    }
+}
+
+bool DocumentPanel::IsClosing() const
+{
+    return m_closing;
+}
+
+bool DocumentPanel::IsClosed() const
+{
+    return m_closed;
 }
 
 }   //namespace gugu

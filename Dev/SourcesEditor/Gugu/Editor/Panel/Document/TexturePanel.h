@@ -27,12 +27,9 @@ public:
     TexturePanel(Texture* resource);
     virtual ~TexturePanel();
 
-    virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
-
 protected:
 
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
-
+    virtual void UpdatePanelImpl(const DeltaTime& dt) override;
 
 private:
 

@@ -37,10 +37,6 @@ void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
     DisplayDatasheet();
 }
 
-void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
-{
-}
-
 void DatasheetPanel::DisplayDatasheet()
 {
     DisplayParentReference();

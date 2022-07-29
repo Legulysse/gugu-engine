@@ -46,17 +46,17 @@ void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
     ClearContent();
 
     // Refresh assets tree structure.
-    std::vector<const gugu::ResourceInfo*> vecInfos;
-    gugu::GetResources()->GetAllResourceInfos(vecInfos);
+    std::vector<const ResourceInfo*> vecInfos;
+    GetResources()->GetAllResourceInfos(vecInfos);
 
     m_rootNode = new TreeNode;
     m_rootNode->isFolder = true;
     m_rootNode->name = "ROOT";
 
-    std::string editorAssetsPath = gugu::GetResources()->GetPathAssets();
+    std::string editorAssetsPath = GetResources()->GetPathAssets();
 
     std::vector<std::string> tokens;
-    for (const gugu::ResourceInfo* resourceInfo : vecInfos)
+    for (const ResourceInfo* resourceInfo : vecInfos)
     {
         TreeNode* currentDirectory = m_rootNode;
 
@@ -110,7 +110,7 @@ void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
     RecursiveSortTreeNodes(m_rootNode);
 }
 
-void AssetsExplorerPanel::UpdatePanel(const gugu::DeltaTime& dt)
+void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
 {
     if (ImGui::Begin(m_title.c_str(), false))
     {

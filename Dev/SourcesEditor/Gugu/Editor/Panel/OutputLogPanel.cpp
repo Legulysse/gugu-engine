@@ -66,7 +66,7 @@ void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, EL
     m_scrollToBottom = true;
 }
 
-void OutputLogPanel::UpdatePanel(const gugu::DeltaTime& dt)
+void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
 {
     if (ImGui::Begin(m_title.c_str(), false))
     {

@@ -25,7 +25,7 @@ public:
     BasePanel();
     virtual ~BasePanel();
 
-    virtual void UpdatePanel(const gugu::DeltaTime& dt) = 0;
+    virtual void UpdatePanel(const DeltaTime& dt) = 0;
 
 protected:
 

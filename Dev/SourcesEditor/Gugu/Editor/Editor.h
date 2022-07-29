@@ -47,7 +47,7 @@ public:
 
     const EditorConfig& GetEditorConfig() const;
 
-    void Update(const gugu::DeltaTime& dt);
+    void Update(const DeltaTime& dt);
     bool OnSFEvent(const sf::Event& event);
 
     void OpenProject(const std::string& projectPathFile);

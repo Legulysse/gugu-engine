@@ -31,14 +31,13 @@ public:
     ParticleEffectPanel(ParticleEffect* resource);
     virtual ~ParticleEffectPanel();
 
-    virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
-
 protected:
 
     void ResetParticleSystem();
 
     virtual void OnUndoRedo() override;
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
+    virtual void UpdatePanelImpl(const DeltaTime& dt) override;
+    virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
 private:
 

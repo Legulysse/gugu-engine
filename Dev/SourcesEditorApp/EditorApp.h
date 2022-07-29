@@ -11,7 +11,7 @@
 
 namespace gugu {
     
-class EditorApp : public gugu::Application, public gugu::EventListener
+class EditorApp : public Application, public EventListener
 {
 public:
 
@@ -21,7 +21,7 @@ public:
     virtual void AppStart() override;
     virtual void AppStop() override;
 
-    virtual void AppUpdate(const gugu::DeltaTime& dt) override;
+    virtual void AppUpdate(const DeltaTime& dt) override;
 
     virtual bool OnMainWindowCloseEvent() override;
 

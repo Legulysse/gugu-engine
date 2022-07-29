@@ -9,8 +9,6 @@
 
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
-#include "Gugu/Engine.h"
-#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
@@ -71,7 +69,7 @@ void ImageSetPanel::UpdatePanelImpl(const DeltaTime& dt)
     m_renderViewport->ImGuiEnd();
 }
 
-void ImageSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
+void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 {
     // Selected SubImage edition.
     if (m_selectedIndex >= 0)
@@ -463,23 +461,23 @@ void ImageSetPanel::OnDragGizmoEdge(Element* edge, Vector2f edgePosition)
     // Top Left corner
     if (edge == m_gizmoEdgeTopLeft || edge == m_gizmoEdgeLeft || edge == m_gizmoEdgeBottomLeft)
     {
-        kPositionTopLeft.x = gugu::Min(edgePosition.x, kPositionBottomRight.x - 1.f);      //-1 to ensure no size of 0
+        kPositionTopLeft.x = Min(edgePosition.x, kPositionBottomRight.x - 1.f);      //-1 to ensure no size of 0
     }
 
     if (edge == m_gizmoEdgeTopLeft || edge == m_gizmoEdgeTop || edge == m_gizmoEdgeTopRight)
     {
-        kPositionTopLeft.y = gugu::Min(edgePosition.y, kPositionBottomRight.y - 1.f);      //-1 to ensure no size of 0
+        kPositionTopLeft.y = Min(edgePosition.y, kPositionBottomRight.y - 1.f);      //-1 to ensure no size of 0
     }
 
     // Bottom Right corner
     if (edge == m_gizmoEdgeTopRight || edge == m_gizmoEdgeRight || edge == m_gizmoEdgeBottomRight)
     {
-        kPositionBottomRight.x = gugu::Max(edgePosition.x, kPositionTopLeft.x + 1.f);      //+1 to ensure no size of 0
+        kPositionBottomRight.x = Max(edgePosition.x, kPositionTopLeft.x + 1.f);      //+1 to ensure no size of 0
     }
 
     if (edge == m_gizmoEdgeBottomLeft || edge == m_gizmoEdgeBottom || edge == m_gizmoEdgeBottomRight)
     {
-        kPositionBottomRight.y = gugu::Max(edgePosition.y, kPositionTopLeft.y + 1.f);      //+1 to ensure no size of 0
+        kPositionBottomRight.y = Max(edgePosition.y, kPositionTopLeft.y + 1.f);      //+1 to ensure no size of 0
     }
 
     // Snap to pixel.

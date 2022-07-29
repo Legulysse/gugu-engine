@@ -73,10 +73,10 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
     ImGui::SameLine();
     if (ImGui::Button("Validate"))
     {
-        gugu::FileInfo fileInfo(m_resourcePath, m_resourceName + "." + m_resourceExtension);
+        FileInfo fileInfo(m_resourcePath, m_resourceName + "." + m_resourceExtension);
 
         //TODO: centralize resource type instanciation somewhere.
-        gugu::Resource* newResource = nullptr;
+        Resource* newResource = nullptr;
 
         if (m_resourceType == EResourceType::ImageSet)
         {
@@ -93,7 +93,7 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
 
         if (newResource)
         {
-            bool bSuccess = gugu::GetResources()->AddResource(newResource, fileInfo);
+            bool bSuccess = GetResources()->AddResource(newResource, fileInfo);
             if (bSuccess)
             {
                 newResource->SaveToFile();

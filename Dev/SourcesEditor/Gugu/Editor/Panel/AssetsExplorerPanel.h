@@ -28,7 +28,7 @@ public:
     AssetsExplorerPanel();
     virtual ~AssetsExplorerPanel();
 
-    virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
+    virtual void UpdatePanel(const DeltaTime& dt) override;
 
     void RefreshContent(const std::string& projectAssetsPath);
     void ClearContent();

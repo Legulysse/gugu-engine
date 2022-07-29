@@ -65,6 +65,11 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
     m_closing |= !isOpen;
 }
 
+void DocumentPanel::UpdateProperties(const DeltaTime& dt)
+{
+    UpdatePropertiesImpl(dt);
+}
+
 bool DocumentPanel::Save()
 {
     if (m_resource && m_resource->SaveToFile())

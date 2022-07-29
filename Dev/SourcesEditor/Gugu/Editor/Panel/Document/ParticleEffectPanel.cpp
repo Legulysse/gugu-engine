@@ -9,14 +9,11 @@
 
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
-#include "Gugu/Engine.h"
 #include "Gugu/Core/DeltaTime.h"
-#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/VisualEffects/ParticleSystem.h"
 #include "Gugu/VisualEffects/ManagerVisualEffects.h"
 #include "Gugu/Element/2D/ElementParticles.h"
-#include "Gugu/Window/Window.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 
@@ -158,7 +155,7 @@ void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
     m_renderViewport->ImGuiEnd();
 }
 
-void ParticleEffectPanel::UpdateProperties(const gugu::DeltaTime& dt)
+void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 {
     int id = 0;
     bool updated = false;

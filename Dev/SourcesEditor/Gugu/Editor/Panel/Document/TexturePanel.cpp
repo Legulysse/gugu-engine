@@ -54,8 +54,4 @@ void TexturePanel::UpdatePanelImpl(const DeltaTime& dt)
     m_renderViewport->ImGuiEnd();
 }
 
-void TexturePanel::UpdateProperties(const gugu::DeltaTime& dt)
-{
-}
-
 }   //namespace gugu

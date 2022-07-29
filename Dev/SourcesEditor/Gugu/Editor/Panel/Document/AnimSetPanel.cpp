@@ -49,7 +49,7 @@ void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
     m_renderViewport->ImGuiEnd();
 }
 
-void AnimSetPanel::UpdateProperties(const gugu::DeltaTime& dt)
+void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 {
 }
 

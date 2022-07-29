@@ -28,8 +28,8 @@ public:
     DocumentPanel(Resource* resource);
     virtual ~DocumentPanel();
 
-    virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
-    virtual void UpdateProperties(const gugu::DeltaTime& dt) = 0;
+    virtual void UpdatePanel(const DeltaTime& dt) final;
+    virtual void UpdateProperties(const DeltaTime& dt) final;
 
     bool Save();
     bool Undo();
@@ -57,7 +57,8 @@ protected:
     virtual void OnSaved() {}
     virtual void OnUndoRedo() {}
 
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) = 0;
+    virtual void UpdatePanelImpl(const DeltaTime& dt) = 0;
+    virtual void UpdatePropertiesImpl(const DeltaTime& dt) {}
 
 protected:
 

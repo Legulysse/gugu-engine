@@ -75,14 +75,12 @@ bool SpriteAnimation::HasAnimation(const std::string& _strNameAnim) const
     return (m_animSet && m_animSet->GetAnimation(_strNameAnim));
 }
 
-void SpriteAnimation::StartAnimation(const std::string& _strNameAnim, bool _bLoop, float _fSpeed)
+void SpriteAnimation::StartAnimation(const std::string& _strNameAnim)
 {
     StopAnimation();
 
     if (m_animSet)
         m_animation = m_animSet->GetAnimation(_strNameAnim);
-
-    m_animLoop = _bLoop;
 
     RestartAnimation();
 }
@@ -91,8 +89,6 @@ void SpriteAnimation::RestartAnimation()
 {
     if (m_animation)
     {
-        m_animPause            = false;
-
         m_animIndexCurrent  = 0;
         m_animDurationCurrent  = 0.f;
 
@@ -102,9 +98,7 @@ void SpriteAnimation::RestartAnimation()
 
 void SpriteAnimation::StopAnimation()
 {
-    m_animation         = nullptr;
-    m_animPause         = false;
-
+    m_animation = nullptr;
     m_animIndexCurrent  = 0;
     m_animDurationCurrent  = 0.f;
 

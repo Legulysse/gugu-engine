@@ -40,7 +40,7 @@ public:
 
     bool    HasAnimation            (const std::string& _strNameAnim) const;
 
-    void    StartAnimation          (const std::string& _strNameAnim, bool _bLoop = true, float _fSpeed = 1.f);
+    void    StartAnimation          (const std::string& _strNameAnim);
     void    RestartAnimation        ();
     void    StopAnimation           ();
 

@@ -276,6 +276,16 @@ void Editor::Update(const DeltaTime& dt)
             ImGui::EndMenu();
         }
 
+        if (ImGui::BeginMenu("View"))
+        {
+            if (ImGui::MenuItem("Reset Panels", "F1"))
+            {
+                ResetPanels();
+            }
+
+            ImGui::EndMenu();
+        }
+
         if (ImGui::MenuItem("Imgui Demo"))
         {
             m_showImGuiDemo = !m_showImGuiDemo;

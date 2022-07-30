@@ -94,6 +94,26 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     //ImGuiTreeNodeFlags animationNodeFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
     //ImGuiTreeNodeFlags frameNodeFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
 
+    // Animation edition buttons.
+    {
+        if (ImGui::Button("Add Animation"))
+        {
+            OnAddAnimation();
+        }
+
+        ImGui::BeginDisabled(m_currentAnimation == nullptr);
+
+        ImGui::SameLine();
+        if (ImGui::Button("Remove Animation"))
+        {
+            OnRemoveAnimation();
+        }
+
+        ImGui::EndDisabled();
+    }
+
+    ImGui::Spacing();
+
     // Animations list.
     ImGuiTableFlags animationTableflags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /*| ImGuiTableFlags_NoPadInnerX */;
     if (ImGui::BeginTable("_ANIMATIONS_TABLE", 3, animationTableflags))
@@ -139,13 +159,13 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
             //ImGui::SameLine();
             //ImGui::TableSetColumnIndex(columnIndex++);
-            ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns /*| ImGuiSelectableFlags_AllowItemOverlap*/;
-            if (ImGui::Selectable(animation->GetName().c_str(), m_currentAnimation == animation, selectable_flags, ImVec2(0, row_min_height)))
+            ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
+            if (ImGui::Selectable("##_ANIMATION_SELECTABLE", m_currentAnimation == animation, selectable_flags, ImVec2(0, row_min_height)))
             {
                 if (m_currentAnimation != animation)
                 {
                     m_currentAnimation = animation;
-                    m_spriteAnimation->StartAnimation(animation->GetName());
+                    m_spriteAnimation->StartAnimation(animation);
 
                     m_currentFrame = nullptr;
                     if (m_currentAnimation->GetFrameCount() > 0)
@@ -153,6 +173,14 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                         m_currentFrame = m_currentAnimation->GetFrame(0);
                     }
                 }
+            }
+
+            ImGui::SameLine();
+            std::string animationName = animation->GetName();
+            if (ImGui::InputText("##_ANIMATION_NAME", &animationName))
+            {
+                animation->SetName(animationName);
+                RaiseDirty();
             }
 
             ImGui::TableSetColumnIndex(columnIndex++);
@@ -210,7 +238,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                             if (m_currentAnimation != animation)
                             {
                                 m_currentAnimation = animation;
-                                m_spriteAnimation->StartAnimation(m_currentAnimation->GetName());
+                                m_spriteAnimation->StartAnimation(m_currentAnimation);
                             }
 
                             m_currentFrame = animationFrames[frameIndex];
@@ -312,6 +340,29 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         }
     }
 #endif
+}
+
+void AnimSetPanel::OnAddAnimation()
+{
+    m_animSet->AddAnimation(StringFormat("Animation_{0}", m_animSet->GetAnimations().size()));
+
+    RaiseDirty();
+}
+
+void AnimSetPanel::OnRemoveAnimation()
+{
+    if (!m_currentAnimation)
+        return;
+
+    if (m_spriteAnimation->GetAnimation() == m_currentAnimation)
+    {
+        m_spriteAnimation->StopAnimation();
+    }
+
+    m_animSet->DeleteAnimation(m_currentAnimation);
+    m_currentAnimation = nullptr;
+
+    RaiseDirty();
 }
 
 }   //namespace gugu

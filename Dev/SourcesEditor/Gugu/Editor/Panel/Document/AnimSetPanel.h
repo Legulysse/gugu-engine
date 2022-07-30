@@ -38,6 +38,9 @@ protected:
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
+    void OnAddAnimation();
+    void OnRemoveAnimation();
+
 private:
 
     RenderViewport* m_renderViewport;

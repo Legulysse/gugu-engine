@@ -43,11 +43,14 @@ private:
     RenderViewport* m_renderViewport;
     float m_zoomFactor;
     bool m_autoPlay;
+    float m_speedFactor;
 
     AnimSet* m_animSet;
     SpriteAnimation* m_spriteAnimation;
     Animation* m_currentAnimation;
     AnimationFrame* m_currentFrame;
+
+    //std::set<std::string> m_openedAnimations;
 };
 
 }   //namespace gugu

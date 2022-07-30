@@ -282,4 +282,10 @@ void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vect
     std::set_intersection(setContainerA.begin(), setContainerA.end(), setContainerB.begin(), setContainerB.end(), std::back_inserter(_vecIntersection));
 }
 
+template<typename T>
+bool StdSetContains(const std::set<T>& _vecContainer, const T& _tValue)
+{
+    return std::find(_vecContainer.begin(), _vecContainer.end(), _tValue) != _vecContainer.end();
+}
+
 }   // namespace gugu

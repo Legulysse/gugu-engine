@@ -164,6 +164,9 @@ void StdVectorDifference(const std::vector<T>& _vecFrom, const std::vector<T>& _
 template<typename T>
 void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vector<T>& _vecContainerB, std::vector<T>& _vecIntersection);
 
+template<typename T>
+bool StdSetContains(const std::set<T>& _vecContainer, const T& _tValue);
+
 //----------------------------------------------
 // OS
 

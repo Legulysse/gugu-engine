@@ -77,10 +77,20 @@ bool SpriteAnimation::HasAnimation(const std::string& _strNameAnim) const
 
 void SpriteAnimation::StartAnimation(const std::string& _strNameAnim)
 {
+    if (m_animSet)
+    {
+        StartAnimation(m_animSet->GetAnimation(_strNameAnim));
+    }
+}
+
+void SpriteAnimation::StartAnimation(Animation* animation)
+{
+    if (!animation || !m_animSet || animation->GetAnimSet() != m_animSet)
+        return;
+
     StopAnimation();
 
-    if (m_animSet)
-        m_animation = m_animSet->GetAnimation(_strNameAnim);
+    m_animation = animation;
 
     RestartAnimation();
 }
@@ -102,7 +112,7 @@ void SpriteAnimation::StopAnimation()
     m_animIndexCurrent  = 0;
     m_animDurationCurrent  = 0.f;
 
-    //TODO: Call InitCurrentAnimationFrame() and force empty Sprites ?
+    InitCurrentAnimationFrame();
 }
 
 bool SpriteAnimation::IsAnimationPlaying() const
@@ -291,6 +301,10 @@ AnimationFrame* SpriteAnimation::InitCurrentAnimationFrame()
                 kMove.y = -kMove.y;
             m_sprite->Move(kMove);
         }
+    }
+    else
+    {
+        m_sprite->SetTexture(nullptr);
     }
 
     return pCurrentFrame;

@@ -41,6 +41,7 @@ public:
     bool    HasAnimation            (const std::string& _strNameAnim) const;
 
     void    StartAnimation          (const std::string& _strNameAnim);
+    void    StartAnimation          (Animation* animation);
     void    RestartAnimation        ();
     void    StopAnimation           ();
 

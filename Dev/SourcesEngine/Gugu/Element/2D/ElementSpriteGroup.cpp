@@ -114,10 +114,7 @@ void ElementSpriteGroup::SetTexture(const std::string& _strTexturePath)
 
 void ElementSpriteGroup::SetTexture(Texture* _pTexture)
 {
-    if (_pTexture)
-    {
-        m_texture = _pTexture;
-    }
+    m_texture = _pTexture;
 }
 
 Texture* ElementSpriteGroup::GetTexture() const

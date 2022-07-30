@@ -37,10 +37,15 @@ void ElementSprite::SetTexture(const std::string& _strTexturePath)
 
 void ElementSprite::SetTexture(Texture* _pTexture)
 {
-    if (_pTexture)
+    m_texture = _pTexture;
+
+    if (m_texture)
     {
-        m_texture = _pTexture;
         SetSubRect(m_texture->GetRect());
+    }
+    else
+    {
+        SetSubRect(sf::IntRect());
     }
 }
 

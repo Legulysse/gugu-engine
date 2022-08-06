@@ -11,13 +11,14 @@
 
 #include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Animation/SpriteAnimation.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"
+#include "Gugu/Resources/ImageSet.h"
+#include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
-
-#include <imgui.h>
-#include <imgui_stdlib.h>
+#include "Gugu/External/ImGuiWrapper.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -29,22 +30,25 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     , m_animSet(resource)
     , m_renderViewport(nullptr)
     , m_zoomFactor(1.f)
-    , m_autoPlay(true)
     , m_speedFactor(1.f)
-    , m_spriteAnimation(nullptr)
+    , m_autoPlay(true)
+    , m_originFromAnimation(false)
+    , m_moveFromAnimation(false)
     , m_currentAnimation(nullptr)
     , m_currentFrame(nullptr)
+    , m_spriteAnimation(nullptr)
+    , m_sprite(nullptr)
 {
     // Setup RenderViewport and Sprite.
     m_renderViewport = new RenderViewport(true);
     m_renderViewport->SetSize(Vector2u(500, 500));
 
     // Setup animation
-    ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
-    sprite->SetUnifiedPosition(UDim2::POSITION_CENTER);
-    sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+    m_sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
+    m_sprite->SetUnifiedPosition(UDim2::POSITION_CENTER);
+    m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
 
-    m_spriteAnimation = GetAnimations()->AddAnimation(sprite);
+    m_spriteAnimation = GetAnimations()->AddAnimation(m_sprite);
     m_spriteAnimation->ChangeAnimSet(m_animSet);
 
     m_currentAnimation = m_animSet->GetAnimation(0);
@@ -92,6 +96,28 @@ void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
         m_spriteAnimation->SetAnimationPause(!m_autoPlay);
     }
 
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Origin", &m_originFromAnimation))
+    {
+        m_spriteAnimation->SetOriginFromAnimation(m_originFromAnimation);
+
+        if (!m_originFromAnimation)
+        {
+            m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+        }
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Move", &m_moveFromAnimation))
+    {
+        m_spriteAnimation->SetMoveFromAnimation(m_moveFromAnimation);
+
+        if (!m_moveFromAnimation)
+        {
+            m_sprite->SetUnifiedPosition(UDim2::POSITION_CENTER);
+        }
+    }
+
     // Viewport.
     m_renderViewport->ImGuiBegin();
     m_renderViewport->ImGuiEnd();
@@ -106,6 +132,57 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     //ImGuiTreeNodeFlags animationNodeFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
     //ImGuiTreeNodeFlags frameNodeFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
+
+
+    // AnimSet edition.
+    ImageSet* mainImageSet = m_animSet->GetImageSet();
+    std::string mainImageSetID = !mainImageSet ? "" : mainImageSet->GetID();
+    if (ImGui::InputText("ImageSet", &mainImageSetID, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        UpdateMainImageSet(GetResources()->GetImageSet(mainImageSetID));
+    }
+
+    ImGui::Spacing();
+
+    // Frame edition
+    if (m_currentFrame)
+    {
+        ImGui::BeginDisabled(m_animSet->GetImageSet() == nullptr);
+
+        SubImage* frameSubImage = !m_animSet->GetImageSet() ? nullptr : m_currentFrame->GetSubImage();
+        std::string frameSubImageName = !frameSubImage ? "" : frameSubImage->GetName();
+        if (ImGui::InputText("SubImage", &frameSubImageName, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            m_currentFrame->SetSubImage(m_animSet->GetImageSet()->GetSubImage(frameSubImageName));
+            RaiseDirty();
+        }
+
+        ImGui::EndDisabled();
+
+        Texture* frameTexture = m_currentFrame->GetTexture();
+        std::string frameTextureId = !frameTexture ? "" : frameTexture->GetID();
+        if (ImGui::InputText("Texture", &frameTextureId, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            m_currentFrame->SetTexture(GetResources()->GetTexture(frameTextureId));
+            RaiseDirty();
+        }
+
+        Vector2f frameOrigin = m_currentFrame->GetOrigin();
+        if (ImGui::InputVector2("Origin", &frameOrigin))
+        {
+            m_currentFrame->SetOrigin(frameOrigin);
+            RaiseDirty();
+        }
+
+        Vector2f frameMoveOffset = m_currentFrame->GetMoveOffset();
+        if (ImGui::InputVector2("Move Offset", &frameMoveOffset))
+        {
+            m_currentFrame->SetMoveOffset(frameMoveOffset);
+            RaiseDirty();
+        }
+    }
+
+    ImGui::Spacing();
 
     // Animation edition buttons.
     {
@@ -125,8 +202,6 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         ImGui::EndDisabled();
     }
 
-    ImGui::Spacing();
-
     // Animations list.
     ImGuiTableFlags animationTableflags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /*| ImGuiTableFlags_NoPadInnerX */;
     if (ImGui::BeginTable("_ANIMATIONS_TABLE", 5, animationTableflags))
@@ -134,9 +209,9 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         ImGuiTableColumnFlags animationColumnFlags = ImGuiTableColumnFlags_WidthFixed;
         ImGui::TableSetupColumn("name", animationColumnFlags, 120.f);
         ImGui::TableSetupColumn("play", animationColumnFlags, 30.f);
-        ImGui::TableSetupColumn("duration", animationColumnFlags, 40.f);
-        ImGui::TableSetupColumn("actions", animationColumnFlags, 120.f);
-        ImGui::TableSetupColumn("remove", animationColumnFlags, 120.f);
+        ImGui::TableSetupColumn("duration", animationColumnFlags, 50.f);
+        ImGui::TableSetupColumn("actions", animationColumnFlags, 40.f);
+        ImGui::TableSetupColumn("remove", animationColumnFlags, 40.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 
@@ -216,6 +291,8 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                 AnimationFrame* referenceFrame = (animation->GetFrameCount() == 0) ? nullptr : animation->GetFrame(0);
                 AnimationFrame* newFrame = animation->AddFrame(0);
                 CopyFrame(newFrame, referenceFrame);
+
+                RaiseDirty();
             }
 
             // Remove.
@@ -305,6 +382,8 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                             AnimationFrame* referenceFrame = frame;
                             AnimationFrame* newFrame = animation->AddFrame(frameIndex + 1);
                             CopyFrame(newFrame, referenceFrame);
+
+                            RaiseDirty();
                         }
 
                         // Remove.
@@ -324,13 +403,14 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                                 if (isCurrentFrame)
                                 {
                                     m_currentFrame = animation->GetFrame(Min(animation->GetFrameCount() - 1, removedFrameIndex));
-
                                 }
 
                                 if (m_currentFrame)
                                 {
                                     m_spriteAnimation->SetCurrentFrame(m_currentFrame);
                                 }
+
+                                RaiseDirty();
                             }
                         }
 
@@ -355,6 +435,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
         ImGui::EndTable();
     }
+
 #else
     {
         const std::vector<Animation*>& animations = m_animSet->GetAnimations();
@@ -416,7 +497,6 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 void AnimSetPanel::OnAddAnimation()
 {
     m_animSet->AddAnimation(StringFormat("Animation_{0}", m_animSet->GetAnimations().size()));
-
     RaiseDirty();
 }
 
@@ -434,6 +514,39 @@ void AnimSetPanel::OnRemoveAnimation()
     m_currentAnimation = nullptr;
 
     RaiseDirty();
+}
+
+void AnimSetPanel::UpdateMainImageSet(ImageSet* newImageSet)
+{
+    ImageSet* mainImageSet = m_animSet->GetImageSet();
+
+    if (mainImageSet == newImageSet)
+        return;
+
+    const std::vector<Animation*>& animations = m_animSet->GetAnimations();
+
+    for (size_t i = 0; i < animations.size(); ++i)
+    {
+        const std::vector<AnimationFrame*>& frames = animations[i]->GetFrames();
+
+        for (size_t ii = 0; ii < frames.size(); ++ii)
+        {
+            // TODO: handle frames with explicit reference on an ImageSet (currently info is lost after loading).
+            if (!newImageSet)
+            {
+                frames[ii]->SetSubImage(nullptr);
+            }
+            else if (frames[ii]->GetSubImage())
+            {
+                frames[ii]->SetSubImage(newImageSet->GetSubImage(frames[ii]->GetSubImage()->GetName()));
+            }
+        }
+    }
+
+    m_animSet->SetImageSet(newImageSet);
+    RaiseDirty();
+
+    m_spriteAnimation->RestartAnimation();
 }
 
 void AnimSetPanel::CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame)

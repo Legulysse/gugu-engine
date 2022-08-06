@@ -112,6 +112,8 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         ImGui::EndDisabled();
     }
 
+    ImGui::Spacing();
+
     // SubImages list.
     ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /* | ImGuiTableFlags_NoPadInnerX */;
     if (ImGui::BeginTable("SubImages Table", 6, flags))

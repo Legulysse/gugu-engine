@@ -15,9 +15,11 @@ namespace gugu
     class DeltaTime;
     class RenderViewport;
     class AnimSet;
+    class ImageSet;
     class Animation;
     class AnimationFrame;
     class SpriteAnimation;
+    class ElementSprite;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -41,19 +43,25 @@ protected:
     void OnAddAnimation();
     void OnRemoveAnimation();
 
+    void UpdateMainImageSet(ImageSet* newImageSet);
+
     void CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame);
 
 private:
 
     RenderViewport* m_renderViewport;
     float m_zoomFactor;
-    bool m_autoPlay;
     float m_speedFactor;
+    bool m_autoPlay;
+    bool m_originFromAnimation;
+    bool m_moveFromAnimation;
 
     AnimSet* m_animSet;
-    SpriteAnimation* m_spriteAnimation;
     Animation* m_currentAnimation;
     AnimationFrame* m_currentFrame;
+
+    SpriteAnimation* m_spriteAnimation;
+    ElementSprite* m_sprite;
 
     //std::set<std::string> m_openedAnimations;
 };

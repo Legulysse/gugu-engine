@@ -41,6 +41,8 @@ protected:
     void OnAddAnimation();
     void OnRemoveAnimation();
 
+    void CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame);
+
 private:
 
     RenderViewport* m_renderViewport;

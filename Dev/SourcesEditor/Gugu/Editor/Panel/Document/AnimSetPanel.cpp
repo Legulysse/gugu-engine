@@ -14,6 +14,7 @@
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -45,6 +46,18 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
 
     m_spriteAnimation = GetAnimations()->AddAnimation(sprite);
     m_spriteAnimation->ChangeAnimSet(m_animSet);
+
+    m_currentAnimation = m_animSet->GetAnimation(0);
+
+    if (m_currentAnimation)
+    {
+        m_spriteAnimation->StartAnimation(m_currentAnimation);
+
+        if (m_currentAnimation->GetFrameCount() > 0)
+        {
+            m_currentFrame = m_currentAnimation->GetFrame(0);
+        }
+    }
 }
 
 AnimSetPanel::~AnimSetPanel()
@@ -116,12 +129,14 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     // Animations list.
     ImGuiTableFlags animationTableflags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /*| ImGuiTableFlags_NoPadInnerX */;
-    if (ImGui::BeginTable("_ANIMATIONS_TABLE", 3, animationTableflags))
+    if (ImGui::BeginTable("_ANIMATIONS_TABLE", 5, animationTableflags))
     {
         ImGuiTableColumnFlags animationColumnFlags = ImGuiTableColumnFlags_WidthFixed;
-        ImGui::TableSetupColumn("name", animationColumnFlags, 100.f);
+        ImGui::TableSetupColumn("name", animationColumnFlags, 120.f);
         ImGui::TableSetupColumn("play", animationColumnFlags, 30.f);
-        ImGui::TableSetupColumn("duration", animationColumnFlags, 60.f);
+        ImGui::TableSetupColumn("duration", animationColumnFlags, 40.f);
+        ImGui::TableSetupColumn("actions", animationColumnFlags, 120.f);
+        ImGui::TableSetupColumn("remove", animationColumnFlags, 120.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 
@@ -139,6 +154,10 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                 // Setup ItemWidth once.
                 int headerIndex = 0;
 
+                ImGui::TableSetColumnIndex(headerIndex++);
+                ImGui::PushItemWidth(-1);
+                ImGui::TableSetColumnIndex(headerIndex++);
+                ImGui::PushItemWidth(-1);
                 ImGui::TableSetColumnIndex(headerIndex++);
                 ImGui::PushItemWidth(-1);
                 ImGui::TableSetColumnIndex(headerIndex++);
@@ -189,6 +208,19 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             // Empty column.
             ImGui::TableSetColumnIndex(columnIndex++);
 
+            // Actions.
+            ImGui::TableSetColumnIndex(columnIndex++);
+
+            if (ImGui::Button("Add"))
+            {
+                AnimationFrame* referenceFrame = (animation->GetFrameCount() == 0) ? nullptr : animation->GetFrame(0);
+                AnimationFrame* newFrame = animation->AddFrame(0);
+                CopyFrame(newFrame, referenceFrame);
+            }
+
+            // Remove.
+            ImGui::TableSetColumnIndex(columnIndex++);
+
             //ImGui::TableSetColumnIndex(columnIndex++);
             //ImGui::Text(animation->GetName().c_str());
 
@@ -227,13 +259,15 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                         //    ImGui::PushItemWidth(-1);
                         //}
 
+                        AnimationFrame* frame = animationFrames[frameIndex];
+
                         int frameColumnIndex = 0;
                         ImGui::TableSetColumnIndex(frameColumnIndex++);
 
                         std::string frameName = StringFormat("{0} [{1}]", animation->GetName(), frameIndex);
 
                         ImGuiSelectableFlags selectable_frame_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
-                        if (ImGui::Selectable(frameName.c_str(), m_currentFrame == animationFrames[frameIndex], selectable_frame_flags, ImVec2(0, frame_row_min_height)))
+                        if (ImGui::Selectable(frameName.c_str(), m_currentFrame == frame, selectable_frame_flags, ImVec2(0, frame_row_min_height)))
                         {
                             if (m_currentAnimation != animation)
                             {
@@ -241,7 +275,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                                 m_spriteAnimation->StartAnimation(m_currentAnimation);
                             }
 
-                            m_currentFrame = animationFrames[frameIndex];
+                            m_currentFrame = frame;
 
                             if (!m_autoPlay)
                             {
@@ -250,17 +284,54 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                         }
 
                         ImGui::TableSetColumnIndex(frameColumnIndex++);
-                        ImGui::Text(m_spriteAnimation->GetAnimationFrame() == animationFrames[frameIndex] ? "<-" : "");
+                        ImGui::Text(m_spriteAnimation->GetAnimationFrame() == frame ? "<-" : "");
 
                         //ImGui::TableSetColumnIndex(frameColumnIndex++);
                         //ImGui::Text("%f", animationFrames[frameIndex]->GetDuration());
 
                         ImGui::TableSetColumnIndex(frameColumnIndex++);
-                        float frameDuration = animationFrames[frameIndex]->GetDuration();
+                        float frameDuration = frame->GetDuration();
                         if (ImGui::InputFloat("##_FRAME_DURATION", &frameDuration))
                         {
-                            animationFrames[frameIndex]->SetDuration(frameDuration);
+                            frame->SetDuration(frameDuration);
                             RaiseDirty();
+                        }
+
+                        // Actions.
+                        ImGui::TableSetColumnIndex(frameColumnIndex++);
+
+                        if (ImGui::Button("Add"))
+                        {
+                            AnimationFrame* referenceFrame = frame;
+                            AnimationFrame* newFrame = animation->AddFrame(frameIndex + 1);
+                            CopyFrame(newFrame, referenceFrame);
+                        }
+
+                        // Remove.
+                        ImGui::TableSetColumnIndex(frameColumnIndex++);
+
+                        if (ImGui::Button("X"))
+                        {
+                            if (frame)
+                            {
+                                bool isCurrentFrame = m_currentFrame == frame;
+
+                                size_t removedFrameIndex = animation->GetFrameIndex(frame);
+                                animation->DeleteFrame(frame);
+
+                                m_spriteAnimation->RestartAnimation();
+
+                                if (isCurrentFrame)
+                                {
+                                    m_currentFrame = animation->GetFrame(Min(animation->GetFrameCount() - 1, removedFrameIndex));
+
+                                }
+
+                                if (m_currentFrame)
+                                {
+                                    m_spriteAnimation->SetCurrentFrame(m_currentFrame);
+                                }
+                            }
                         }
 
                         ImGui::PopID();
@@ -363,6 +434,18 @@ void AnimSetPanel::OnRemoveAnimation()
     m_currentAnimation = nullptr;
 
     RaiseDirty();
+}
+
+void AnimSetPanel::CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame)
+{
+    if (referenceFrame)
+    {
+        targetFrame->SetDuration(referenceFrame->GetDuration());
+        targetFrame->SetTexture(referenceFrame->GetTexture());
+        targetFrame->SetSubImage(referenceFrame->GetSubImage());
+        targetFrame->SetOrigin(referenceFrame->GetOrigin());
+        targetFrame->SetMoveOffset(referenceFrame->GetMoveOffset());
+    }
 }
 
 }   //namespace gugu

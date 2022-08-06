@@ -152,8 +152,13 @@ const std::string& Animation::GetName() const
 
 AnimationFrame* Animation::AddFrame()
 {
+    return AddFrame(m_frames.size());
+}
+
+AnimationFrame* Animation::AddFrame(size_t insertIndex)
+{
     AnimationFrame* pFrame = new AnimationFrame(this);
-    m_frames.push_back(pFrame);
+    StdVectorInsertAt(m_frames, insertIndex, pFrame);
     return pFrame;
 }
 
@@ -227,10 +232,22 @@ Animation* AnimSet::GetAnimation(const std::string& _strName) const
 {
     for (size_t i = 0; i < m_animations.size(); ++i)
     {
-        Animation* pAnimation = m_animations[i];
-        if (pAnimation->IsName(_strName))
-            return pAnimation;
+        if (m_animations[i]->IsName(_strName))
+        {
+            return m_animations[i];
+        }
     }
+
+    return nullptr;
+}
+
+Animation* AnimSet::GetAnimation(size_t index) const
+{
+    if (index >= 0 && index < m_animations.size())
+    {
+        return m_animations[index];
+    }
+
     return nullptr;
 }
 

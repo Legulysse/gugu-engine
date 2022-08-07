@@ -16,6 +16,7 @@ namespace gugu
     class RenderViewport;
     class ImageSet;
     class Element;
+    class ElementSprite;
     class ElementSFDrawable;
 }
 
@@ -50,6 +51,8 @@ private:
 
     ImageSet* m_imageSet;
     int m_selectedIndex;
+
+    ElementSprite* m_sprite;
 
     ElementSFDrawable* m_gizmoCenter;
     ElementSFDrawable* m_gizmoEdgeTopLeft;

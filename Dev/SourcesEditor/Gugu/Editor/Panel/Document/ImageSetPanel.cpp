@@ -9,7 +9,9 @@
 
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ImageSet.h"
+#include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
 #include "Gugu/System/SystemUtility.h"
@@ -34,6 +36,7 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     , m_zoomFactor(1.f)
     , m_selectedIndex(-1)
     , m_gizmoCenter(nullptr)
+    , m_sprite(nullptr)
     , m_isDraggingGizmo(false)
     , m_draggedGizmo(nullptr)
     , m_gizmoOffsetGlobalPosition(0, 0)
@@ -41,10 +44,10 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     // Setup RenderViewport and Sprite.
     m_renderViewport = new RenderViewport(true);
 
-    ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
-    sprite->SetTexture(m_imageSet->GetTexture());
+    m_sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
+    m_sprite->SetTexture(m_imageSet->GetTexture());
 
-    m_renderViewport->SetSize(Vector2u(sprite->GetSize()));
+    m_renderViewport->SetSize(Vector2u(m_sprite->GetSize()));
 
     // Setup gizmo.
     CreateGizmo();
@@ -71,6 +74,19 @@ void ImageSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 
 void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 {
+    // ImageSet edition.
+    Texture* texture = m_imageSet->GetTexture();
+    std::string textureId = !texture ? "" : texture->GetID();
+    if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        m_imageSet->SetTexture(GetResources()->GetTexture(textureId));
+        RaiseDirty();
+
+        m_sprite->SetTexture(m_imageSet->GetTexture());
+    }
+
+    ImGui::Spacing();
+
     // Selected SubImage edition.
     if (m_selectedIndex >= 0)
     {
@@ -131,120 +147,124 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         const std::vector<SubImage*>& subImages = m_imageSet->GetSubImages();
 
         // TODO: handle sort (ImGuiTableSortSpecs).
-        // TODO: handle big list (ImGuiListClipper).
-        for (size_t rowIndex = 0; rowIndex < subImages.size(); ++rowIndex)
+        ImGuiListClipper clipper;
+        clipper.Begin(subImages.size());
+        while (clipper.Step())
         {
-            ImGui::PushID(rowIndex);
-
-            float row_min_height = 0.f;
-            ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
-
-            if (rowIndex == 0)
+            for (int rowIndex = clipper.DisplayStart; rowIndex < clipper.DisplayEnd; ++rowIndex)
             {
-                // Setup ItemWidth once.
-                int headerIndex = 0;
+                ImGui::PushID(rowIndex);
 
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-            }
+                float row_min_height = 0.f;
+                ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
+
+                if (rowIndex == 0)
+                {
+                    // Setup ItemWidth once.
+                    int headerIndex = 0;
+
+                    ImGui::TableSetColumnIndex(headerIndex++);
+                    ImGui::PushItemWidth(-1);
+                    ImGui::TableSetColumnIndex(headerIndex++);
+                    ImGui::PushItemWidth(-1);
+                    ImGui::TableSetColumnIndex(headerIndex++);
+                    ImGui::PushItemWidth(-1);
+                    ImGui::TableSetColumnIndex(headerIndex++);
+                    ImGui::PushItemWidth(-1);
+                    ImGui::TableSetColumnIndex(headerIndex++);
+                    ImGui::PushItemWidth(-1);
+                    ImGui::TableSetColumnIndex(headerIndex++);
+                    ImGui::PushItemWidth(-1);
+                }
 
 #if 1
-            std::string name = subImages[rowIndex]->GetName();
-            sf::IntRect rect = subImages[rowIndex]->GetRect();
+                std::string name = subImages[rowIndex]->GetName();
+                sf::IntRect rect = subImages[rowIndex]->GetRect();
 
-            int columnIndex = 0;
-            ImGui::TableSetColumnIndex(columnIndex++);
+                int columnIndex = 0;
+                ImGui::TableSetColumnIndex(columnIndex++);
 
-            char label[32];
-            sprintf(label, "%04d", rowIndex);
-            ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
-            if (ImGui::Selectable(label, (int)rowIndex == m_selectedIndex, selectable_flags, ImVec2(0, row_min_height)))
-            {
-                m_selectedIndex = rowIndex;
-            }
+                char label[32];
+                sprintf(label, "%04d", rowIndex);
+                ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
+                if (ImGui::Selectable(label, rowIndex == m_selectedIndex, selectable_flags, ImVec2(0, row_min_height)))
+                {
+                    m_selectedIndex = rowIndex;
+                }
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text(name.c_str());
+                ImGui::TableSetColumnIndex(columnIndex++);
+                ImGui::Text(name.c_str());
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%d", rect.left);
+                ImGui::TableSetColumnIndex(columnIndex++);
+                ImGui::Text("%d", rect.left);
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%d", rect.top);
+                ImGui::TableSetColumnIndex(columnIndex++);
+                ImGui::Text("%d", rect.top);
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%d", rect.width);
+                ImGui::TableSetColumnIndex(columnIndex++);
+                ImGui::Text("%d", rect.width);
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%d", rect.height);
+                ImGui::TableSetColumnIndex(columnIndex++);
+                ImGui::Text("%d", rect.height);
 
-            ImGui::PopID();
+                ImGui::PopID();
 #else
-            std::string name = subImages[rowIndex]->GetName();
-            sf::IntRect rect = subImages[rowIndex]->GetRect();
+                std::string name = subImages[rowIndex]->GetName();
+                sf::IntRect rect = subImages[rowIndex]->GetRect();
 
-            int columnIndex = 0;
-            bool dirtyName = false;
-            bool dirtyRect = false;
-            bool forceFocus = false;
+                int columnIndex = 0;
+                bool dirtyName = false;
+                bool dirtyRect = false;
+                bool forceFocus = false;
 
-            ImGui::TableSetColumnIndex(columnIndex++);
+                ImGui::TableSetColumnIndex(columnIndex++);
 
-            char label[32];
-            sprintf(label, "%04d", rowIndex);
-            ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
-            if (ImGui::Selectable(label, (int)rowIndex == m_selectedIndex, selectable_flags , ImVec2(0, row_min_height)))
-            {
-                m_selectedIndex = rowIndex;
-            }
+                char label[32];
+                sprintf(label, "%04d", rowIndex);
+                ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
+                if (ImGui::Selectable(label, (int)rowIndex == m_selectedIndex, selectable_flags, ImVec2(0, row_min_height)))
+                {
+                    m_selectedIndex = rowIndex;
+                }
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            dirtyName |= ImGui::InputText("##name", &name);
-            forceFocus |= ImGui::IsItemFocused();
+                ImGui::TableSetColumnIndex(columnIndex++);
+                dirtyName |= ImGui::InputText("##name", &name);
+                forceFocus |= ImGui::IsItemFocused();
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            dirtyRect |= ImGui::InputInt("##left", &rect.left, 0);
-            forceFocus |= ImGui::IsItemFocused();
+                ImGui::TableSetColumnIndex(columnIndex++);
+                dirtyRect |= ImGui::InputInt("##left", &rect.left, 0);
+                forceFocus |= ImGui::IsItemFocused();
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            dirtyRect |= ImGui::InputInt("##top", &rect.top, 0);
-            forceFocus |= ImGui::IsItemFocused();
+                ImGui::TableSetColumnIndex(columnIndex++);
+                dirtyRect |= ImGui::InputInt("##top", &rect.top, 0);
+                forceFocus |= ImGui::IsItemFocused();
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            dirtyRect |= ImGui::InputInt("##width", &rect.width, 0);
-            forceFocus |= ImGui::IsItemFocused();
+                ImGui::TableSetColumnIndex(columnIndex++);
+                dirtyRect |= ImGui::InputInt("##width", &rect.width, 0);
+                forceFocus |= ImGui::IsItemFocused();
 
-            ImGui::TableSetColumnIndex(columnIndex++);
-            dirtyRect |= ImGui::InputInt("##height", &rect.height, 0);
-            forceFocus |= ImGui::IsItemFocused();
+                ImGui::TableSetColumnIndex(columnIndex++);
+                dirtyRect |= ImGui::InputInt("##height", &rect.height, 0);
+                forceFocus |= ImGui::IsItemFocused();
 
-            ImGui::PopID();
+                ImGui::PopID();
 
-            if (dirtyName)
-            {
-                subImages[rowIndex]->SetName(name);
-            }
+                if (dirtyName)
+                {
+                    subImages[rowIndex]->SetName(name);
+                }
 
-            if (dirtyRect)
-            {
-                subImages[rowIndex]->SetRect(rect);
-            }
+                if (dirtyRect)
+                {
+                    subImages[rowIndex]->SetRect(rect);
+                }
 
-            if (forceFocus || dirtyName || dirtyRect)
-            {
-                m_selectedIndex = rowIndex;
-            }
+                if (forceFocus || dirtyName || dirtyRect)
+                {
+                    m_selectedIndex = rowIndex;
+                }
 #endif
+            }
         }
 
         ImGui::EndTable();

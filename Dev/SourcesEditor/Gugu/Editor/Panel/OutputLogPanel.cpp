@@ -95,45 +95,50 @@ void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
             ImGui::TableSetupScrollFreeze(0, 1);
             ImGui::TableHeadersRow();
 
-            for (size_t rowIndex = 0; rowIndex < m_logs.size(); ++rowIndex)
+            ImGuiListClipper clipper;
+            clipper.Begin(m_logs.size());
+            while (clipper.Step())
             {
-                ImGui::PushID(rowIndex);
-
-                float row_min_height = 0.f;
-                ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
-
-                if (rowIndex == 0)
+                for (int rowIndex = clipper.DisplayStart; rowIndex < clipper.DisplayEnd; ++rowIndex)
                 {
-                    // Setup ItemWidth once.
-                    int headerIndex = 0;
+                    ImGui::PushID(rowIndex);
 
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
+                    float row_min_height = 0.f;
+                    ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
+
+                    if (rowIndex == 0)
+                    {
+                        // Setup ItemWidth once.
+                        int headerIndex = 0;
+
+                        ImGui::TableSetColumnIndex(headerIndex++);
+                        ImGui::PushItemWidth(-1);
+                        ImGui::TableSetColumnIndex(headerIndex++);
+                        ImGui::PushItemWidth(-1);
+                        ImGui::TableSetColumnIndex(headerIndex++);
+                        ImGui::PushItemWidth(-1);
+                        ImGui::TableSetColumnIndex(headerIndex++);
+                        ImGui::PushItemWidth(-1);
+                    }
+
+                    ELog::Type logLevel = m_logs[rowIndex].level;
+                    ImVec4 color = logColorPerLevel.at(logLevel);
+
+                    int columnIndex = 0;
+                    ImGui::TableSetColumnIndex(columnIndex++);
+                    ImGui::TextColored(color_greyDetails, m_logs[rowIndex].timestamp.c_str());
+
+                    ImGui::TableSetColumnIndex(columnIndex++);
+                    ImGui::TextColored(color_greyDetails, m_logs[rowIndex].categoryStr.c_str());
+
+                    ImGui::TableSetColumnIndex(columnIndex++);
+                    ImGui::TextColored(color, m_logs[rowIndex].levelStr.c_str());
+
+                    ImGui::TableSetColumnIndex(columnIndex++);
+                    ImGui::TextColored(color, m_logs[rowIndex].text.c_str());
+
+                    ImGui::PopID();
                 }
-
-                ELog::Type logLevel = m_logs[rowIndex].level;
-                ImVec4 color = logColorPerLevel.at(logLevel);
-
-                int columnIndex = 0;
-                ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::TextColored(color_greyDetails, m_logs[rowIndex].timestamp.c_str());
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::TextColored(color_greyDetails, m_logs[rowIndex].categoryStr.c_str());
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::TextColored(color, m_logs[rowIndex].levelStr.c_str());
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::TextColored(color, m_logs[rowIndex].text.c_str());
-
-                ImGui::PopID();
             }
 
             if (m_scrollToBottom)

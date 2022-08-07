@@ -117,6 +117,7 @@ void AssetsExplorerPanel::RefreshContent()
         TreeNode* newNode = new TreeNode;
         newNode->isFolder = false;
         newNode->name = resourceInfo->fileInfo.GetName();
+        newNode->path = resourceInfo->fileInfo.GetPath(false);
         newNode->ressourceID = resourceInfo->resourceID;
         currentDirectory->children.push_back(newNode);
     }
@@ -384,6 +385,12 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
                     GetEditor()->RefreshAssets();
                 }
             }
+        }
+
+        ImGui::Separator();
+        if (ImGui::MenuItem("Open in Explorer"))
+        {
+            OpenFileExplorer(node->path);
         }
 
         ImGui::EndPopup();

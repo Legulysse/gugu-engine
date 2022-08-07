@@ -2,7 +2,7 @@
 <ParticleEffect>
 	<Loop value="true" />
 	<Duration value="5000" />
-	<MaxParticleCount value="50000" />
+	<MaxParticleCount value="500" />
 	<ParticleShape value="Quad" />
 	<SortBuffer value="true" />
 	<LocalSpace value="false" />

@@ -50,6 +50,9 @@ public:
     bool IsRunning() const;
     void StopEmitting();
 
+    void SetPaused(bool paused);
+    bool IsPaused() const;
+
     size_t GetMaxParticleCount() const;
     size_t GetActiveParticleCount() const;
     size_t GetParticleDataSize() const;
@@ -75,6 +78,7 @@ private:
     // Runtime
     bool m_running;
     bool m_stopEmitting;
+    bool m_paused;
     int m_currentDuration;
     size_t m_activeParticleCount;
     size_t m_nextEmitIndex;

@@ -65,6 +65,11 @@ void ParticleEffectPanel::OnUndoRedo()
     ResetParticleSystem();
 }
 
+void ParticleEffectPanel::OnVisibilityChanged(bool visible)
+{
+    m_particleSystem->SetPaused(!visible);
+}
+
 void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     //TODO: If this panel is not focused, I should be able to pause the particle system.

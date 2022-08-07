@@ -79,6 +79,11 @@ void AnimSetPanel::OnUndoRedo()
     m_spriteAnimation->StopAnimation();
 }
 
+void AnimSetPanel::OnVisibilityChanged(bool visible)
+{
+    m_spriteAnimation->SetAnimationPause(!m_autoPlay || !visible);
+}
+
 void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.

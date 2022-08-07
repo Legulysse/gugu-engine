@@ -58,6 +58,8 @@ protected:
     virtual void OnSaved() {}
     virtual void OnUndoRedo() {}
 
+    virtual void OnVisibilityChanged(bool visible) {}
+
     virtual void UpdatePanelImpl(const DeltaTime& dt) = 0;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) {}
 
@@ -66,6 +68,7 @@ protected:
     std::string m_resourceID;
     Resource* m_resource;
 
+    bool m_visible;
     bool m_focused;
     bool m_closing;
     bool m_closed;

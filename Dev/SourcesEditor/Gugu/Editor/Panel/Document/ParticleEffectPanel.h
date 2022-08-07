@@ -34,6 +34,8 @@ protected:
     void ResetParticleSystem();
 
     virtual void OnUndoRedo() override;
+    virtual void OnVisibilityChanged(bool visible) override;
+
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 

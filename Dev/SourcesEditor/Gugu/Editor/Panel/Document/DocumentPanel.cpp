@@ -24,6 +24,7 @@ namespace gugu {
 DocumentPanel::DocumentPanel(Resource* resource)
     : m_resource(resource)
     , m_dirty(false)
+    , m_visible(false)
     , m_focused(false)
     , m_closing(false)
     , m_closed(false)
@@ -41,6 +42,8 @@ DocumentPanel::~DocumentPanel()
 
 void DocumentPanel::UpdatePanel(const DeltaTime& dt)
 {
+    bool wasVisible = m_visible;
+    m_visible = false;
     m_focused = false;
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_HorizontalScrollbar;
@@ -53,6 +56,13 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
     bool isOpen = true;
     if (ImGui::Begin(m_title.c_str(), &isOpen, flags))
     {
+        m_visible = true;
+
+        if (m_visible && !wasVisible)
+        {
+            OnVisibilityChanged(true);
+        }
+
         if (ImGui::IsWindowFocused())
         {
             m_focused = true;
@@ -60,7 +70,14 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
 
         UpdatePanelImpl(dt);
     }
+
+    if (!m_visible && wasVisible)
+    {
+        OnVisibilityChanged(false);
+    }
+
     ImGui::End();
+
 
     m_closing |= !isOpen;
 }

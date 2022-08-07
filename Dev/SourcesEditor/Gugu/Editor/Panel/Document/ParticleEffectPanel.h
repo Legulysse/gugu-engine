@@ -5,8 +5,6 @@
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
-#include "Gugu/Math/Vector2.h"
-
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 

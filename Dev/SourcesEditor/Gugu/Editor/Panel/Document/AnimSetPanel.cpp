@@ -34,6 +34,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     , m_autoPlay(true)
     , m_originFromAnimation(false)
     , m_moveFromAnimation(false)
+    , m_flipH(false)
     , m_currentAnimation(nullptr)
     , m_currentFrame(nullptr)
     , m_spriteAnimation(nullptr)
@@ -118,6 +119,12 @@ void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
         }
     }
 
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Flip H", &m_flipH))
+    {
+        m_sprite->SetFlipH(m_flipH);
+    }
+
     // Viewport.
     m_renderViewport->ImGuiBegin();
     m_renderViewport->ImGuiEnd();
@@ -168,14 +175,14 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         }
 
         Vector2f frameOrigin = m_currentFrame->GetOrigin();
-        if (ImGui::InputVector2("Origin", &frameOrigin))
+        if (ImGui::InputFloat2("Origin", &frameOrigin))
         {
             m_currentFrame->SetOrigin(frameOrigin);
             RaiseDirty();
         }
 
         Vector2f frameMoveOffset = m_currentFrame->GetMoveOffset();
-        if (ImGui::InputVector2("Move Offset", &frameMoveOffset))
+        if (ImGui::InputFloat2("Move Offset", &frameMoveOffset))
         {
             m_currentFrame->SetMoveOffset(frameMoveOffset);
             RaiseDirty();

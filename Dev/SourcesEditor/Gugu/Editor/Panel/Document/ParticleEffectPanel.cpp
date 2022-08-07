@@ -16,9 +16,7 @@
 #include "Gugu/Element/2D/ElementParticles.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
-
-#include <imgui.h>
-#include <imgui_stdlib.h>
+#include "Gugu/External/ImGuiWrapper.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -163,22 +161,6 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     ParticleSystemSettings* particleSettings = m_particleEffect->GetParticleSettings();
 
     // Helpers
-    auto ColorConvertSfmlToFloat4 = [](const sf::Color& color) -> ImVec4
-    {
-        return ImGui::ColorConvertU32ToFloat4((color.a << 24) | (color.b << 16) | (color.g << 8) | color.r);
-    };
-
-    auto ColorConvertFloat4ToSfml = [](const ImVec4& color) -> sf::Color
-    {
-        sf::Uint32 colorU32 = ImGui::ColorConvertFloat4ToU32(color);
-        return sf::Color(
-            (sf::Uint8)((colorU32 & 0x000000ff) >> 0),
-            (sf::Uint8)((colorU32 & 0x0000ff00) >> 8),
-            (sf::Uint8)((colorU32 & 0x00ff0000) >> 16),
-            (sf::Uint8)((colorU32 & 0xff000000) >> 24)
-        );
-    };
-
     auto checkRandomSetting = [](int& id, bool& useRandom) -> bool
     {
         ImGui::PushID(id);
@@ -247,31 +229,21 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     updated |= checkRandomSetting(id, particleSettings->useRandomSpawnPerSecond);
     if (particleSettings->useRandomSpawnPerSecond)
     {
-        float spawnPerSecond[2] = { particleSettings->minSpawnPerSecond, particleSettings->maxSpawnPerSecond };
-        updated |= ImGui::InputFloat2("spawn per second", spawnPerSecond);
-        particleSettings->minSpawnPerSecond = spawnPerSecond[0];
-        particleSettings->maxSpawnPerSecond = spawnPerSecond[1];
+        updated |= ImGui::InputFloat2("spawn per second", &particleSettings->minSpawnPerSecond, &particleSettings->maxSpawnPerSecond);
     }
     else
     {
-        float spawnPerSecond = particleSettings->minSpawnPerSecond;
-        updated |= ImGui::InputFloat("spawn per second", &spawnPerSecond);
-        particleSettings->minSpawnPerSecond = spawnPerSecond;
+        updated |= ImGui::InputFloat("spawn per second", &particleSettings->minSpawnPerSecond);
     }
 
     updated |= checkRandomSetting(id, particleSettings->useRandomParticlesPerSpawn);
     if (particleSettings->useRandomParticlesPerSpawn)
     {
-        int particlesPerSpawn[2] = { particleSettings->minParticlesPerSpawn, particleSettings->maxParticlesPerSpawn };
-        updated |= ImGui::InputInt2("particles per spawn", particlesPerSpawn);
-        particleSettings->minParticlesPerSpawn = particlesPerSpawn[0];
-        particleSettings->maxParticlesPerSpawn = particlesPerSpawn[1];
+        updated |= ImGui::InputInt2("particles per spawn", &particleSettings->minParticlesPerSpawn, &particleSettings->maxParticlesPerSpawn);
     }
     else
     {
-        int particlesPerSpawn = particleSettings->minParticlesPerSpawn;
-        updated |= ImGui::InputInt("particles per spawn", &particlesPerSpawn, 0);
-        particleSettings->minParticlesPerSpawn = particlesPerSpawn;
+        updated |= ImGui::InputInt("particles per spawn", &particleSettings->minParticlesPerSpawn, 0);
     }
 
     ImGui::Spacing();
@@ -284,41 +256,28 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     if (particleSettings->emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::AngleDirection)
     {
-        ImVec2 emissionDirection = particleSettings->emissionDirection;
-        updated |= ImGui::InputFloat2("emission direction", (float*)&emissionDirection);
-        particleSettings->emissionDirection = emissionDirection;
-
+        updated |= ImGui::InputFloat2("emission direction", &particleSettings->emissionDirection);
         updated |= ImGui::InputFloat("emission angle", &particleSettings->emissionAngle);
     }
 
     updated |= checkRandomSetting(id, particleSettings->useRandomLifetime);
     if (particleSettings->useRandomLifetime)
     {
-        int lifetime[2] = { particleSettings->minLifetime, particleSettings->maxLifetime };
-        updated |= ImGui::InputInt2("lifetime (ms)", lifetime);
-        particleSettings->minLifetime = lifetime[0];
-        particleSettings->maxLifetime = lifetime[1];
+        updated |= ImGui::InputInt2("lifetime (ms)", &particleSettings->minLifetime, &particleSettings->maxLifetime);
     }
     else
     {
-        int lifetime = particleSettings->minLifetime;
-        updated |= ImGui::InputInt("lifetime (ms)", &lifetime, 0);
-        particleSettings->minLifetime = lifetime;
+        updated |= ImGui::InputInt("lifetime (ms)", &particleSettings->minLifetime, 0);
     }
 
     updated |= checkRandomSetting(id, particleSettings->useRandomVelocity);
     if (particleSettings->useRandomVelocity)
     {
-        float velocity[2] = { particleSettings->minVelocity, particleSettings->maxVelocity };
-        updated |= ImGui::InputFloat2("velocity", velocity);
-        particleSettings->minVelocity = velocity[0];
-        particleSettings->maxVelocity = velocity[1];
+        updated |= ImGui::InputFloat2("velocity", &particleSettings->minVelocity, &particleSettings->maxVelocity);
     }
     else
     {
-        float velocity = particleSettings->minVelocity;
-        updated |= ImGui::InputFloat("velocity", &velocity);
-        particleSettings->minVelocity = velocity;
+        updated |= ImGui::InputFloat("velocity", &particleSettings->minVelocity);
     }
 
     ImGui::Spacing();
@@ -329,18 +288,11 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     updated |= checkRandomSetting(id, particleSettings->useRandomStartSize);
     if (particleSettings->useRandomStartSize)
     {
-        ImVec2 minStartSize = particleSettings->minStartSize;
-        ImVec2 maxStartSize = particleSettings->maxStartSize;
-        ImVec4 startSize = ImVec4(minStartSize.x, minStartSize.y, maxStartSize.x, maxStartSize.y);
-        updated |= ImGui::InputFloat4("start size", (float*)&startSize);
-        particleSettings->minStartSize = Vector2f(startSize.x, startSize.y);
-        particleSettings->maxStartSize = Vector2f(startSize.z, startSize.w);
+        updated |= ImGui::InputFloat4("start size", &particleSettings->minStartSize, &particleSettings->maxStartSize);
     }
     else
     {
-        ImVec2 startSize = particleSettings->minStartSize;
-        updated |= ImGui::InputFloat2("start size", (float*)&startSize);
-        particleSettings->minStartSize = startSize;
+        updated |= ImGui::InputFloat2("start size", &particleSettings->minStartSize);
     }
 
     updated |= ImGui::Checkbox("update size over lifetime", &particleSettings->updateSizeOverLifetime);
@@ -349,35 +301,21 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     updated |= checkRandomSetting(id, particleSettings->useRandomEndSize);
     if (particleSettings->useRandomEndSize)
     {
-        ImVec2 minEndSize = particleSettings->minEndSize;
-        ImVec2 maxEndSize = particleSettings->maxEndSize;
-        ImVec4 endSize = ImVec4(minEndSize.x, minEndSize.y, maxEndSize.x, maxEndSize.y);
-        updated |= ImGui::InputFloat4("end size", (float*)&endSize);
-        particleSettings->minEndSize = Vector2f(endSize.x, endSize.y);
-        particleSettings->maxEndSize = Vector2f(endSize.z, endSize.w);
+        updated |= ImGui::InputFloat4("end size", &particleSettings->minEndSize, &particleSettings->maxEndSize);
     }
     else
     {
-        ImVec2 endSize = particleSettings->minEndSize;
-        updated |= ImGui::InputFloat2("end size", (float*)&endSize);
-        particleSettings->minEndSize = endSize;
+        updated |= ImGui::InputFloat2("end size", &particleSettings->minEndSize);
     }
 
     ImGui::EndDisabled();
 
     ImGui::Spacing();
 
-    ImVec4 startColor = ColorConvertSfmlToFloat4(particleSettings->startColor);
-    updated |= ImGui::ColorEdit4("start color", (float*)&startColor);
-    particleSettings->startColor = sf::Color(ColorConvertFloat4ToSfml(startColor));
-
+    updated |= ImGui::ColorEdit4("start color", &particleSettings->startColor);
     updated |= ImGui::Checkbox("update color over lifetime", &particleSettings->updateColorOverLifetime);
     ImGui::BeginDisabled(!particleSettings->updateColorOverLifetime);
-
-    ImVec4 endColor = ColorConvertSfmlToFloat4(particleSettings->endColor);
-    updated |= ImGui::ColorEdit4("end color", (float*)&endColor);
-    particleSettings->endColor = sf::Color(ColorConvertFloat4ToSfml(endColor));
-
+    updated |= ImGui::ColorEdit4("end color", &particleSettings->endColor);
     ImGui::EndDisabled();
 
     ImGui::Spacing();

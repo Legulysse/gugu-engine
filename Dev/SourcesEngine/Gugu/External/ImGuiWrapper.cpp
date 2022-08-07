@@ -12,7 +12,35 @@
 
 namespace ImGui {
 
-bool InputVector2(const char* label, gugu::Vector2f* v, const char* format, ImGuiInputTextFlags flags)
+bool InputInt2(const char* label, int* v1, int* v2, ImGuiInputTextFlags flags)
+{
+    int temp[2] = { *v1, *v2 };
+
+    bool updated = ImGui::InputInt2(label, temp, flags);
+    if (updated)
+    {
+        *v1 = temp[0];
+        *v2 = temp[1];
+    }
+
+    return updated;
+}
+
+bool InputFloat2(const char* label, float* v1, float* v2, const char* format, ImGuiInputTextFlags flags)
+{
+    float temp[2] = { *v1, *v2 };
+
+    bool updated = ImGui::InputFloat2(label, temp, format, flags);
+    if (updated)
+    {
+        *v1 = temp[0];
+        *v2 = temp[1];
+    }
+
+    return updated;
+}
+
+bool InputFloat2(const char* label, gugu::Vector2f* v, const char* format, ImGuiInputTextFlags flags)
 {
     float temp[2] = { v->x, v->y };
 
@@ -26,7 +54,7 @@ bool InputVector2(const char* label, gugu::Vector2f* v, const char* format, ImGu
     return updated;
 }
 
-bool InputVector4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, const char* format, ImGuiInputTextFlags flags)
+bool InputFloat4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, const char* format, ImGuiInputTextFlags flags)
 {
     float temp[4] = { v1->x, v1->y, v2->x, v2->y };
 
@@ -40,6 +68,35 @@ bool InputVector4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, con
     }
 
     return updated;
+}
+
+bool ColorEdit4(const char* label, sf::Color* color, ImGuiColorEditFlags flags)
+{
+    ImVec4 temp = ImGui::ColorConvertSfmlToFloat4(*color);
+
+    bool updated = ImGui::ColorEdit4(label, (float*)&temp, flags);
+    if (updated)
+    {
+        *color = ImGui::ColorConvertFloat4ToSfml(temp);
+    }
+
+    return updated;
+}
+
+ImVec4 ColorConvertSfmlToFloat4(const sf::Color& color)
+{
+    return ImGui::ColorConvertU32ToFloat4((color.a << 24) | (color.b << 16) | (color.g << 8) | color.r);
+}
+
+sf::Color ColorConvertFloat4ToSfml(const ImVec4& color)
+{
+    sf::Uint32 colorU32 = ImGui::ColorConvertFloat4ToU32(color);
+    return sf::Color(
+        (sf::Uint8)((colorU32 & 0x000000ff) >> 0),
+        (sf::Uint8)((colorU32 & 0x0000ff00) >> 8),
+        (sf::Uint8)((colorU32 & 0x00ff0000) >> 16),
+        (sf::Uint8)((colorU32 & 0xff000000) >> 24)
+    );
 }
 
 }   // namespace ImGui

@@ -55,6 +55,7 @@ private:
     bool m_autoPlay;
     bool m_originFromAnimation;
     bool m_moveFromAnimation;
+    bool m_flipH;
 
     AnimSet* m_animSet;
     Animation* m_currentAnimation;

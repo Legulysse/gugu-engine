@@ -16,7 +16,17 @@
 
 namespace ImGui {
 
-bool InputVector2(const char* label, gugu::Vector2f* v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
-bool InputVector4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
+// Scalar Inputs variations.
+bool InputInt2(const char* label, int* v1, int* v2, ImGuiInputTextFlags flags = 0);
+bool InputFloat2(const char* label, float* v1, float* v2, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
+bool InputFloat2(const char* label, gugu::Vector2f* v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
+bool InputFloat4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
+
+// Color Inputs variations.
+bool ColorEdit4(const char* label, sf::Color* color, ImGuiColorEditFlags flags = 0);
+
+// Color conversions.
+ImVec4 ColorConvertSfmlToFloat4(const sf::Color& color);
+sf::Color ColorConvertFloat4ToSfml(const ImVec4& color);
 
 }   // namespace ImGui

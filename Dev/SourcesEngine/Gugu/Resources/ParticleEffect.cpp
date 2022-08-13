@@ -172,6 +172,7 @@ bool ParticleEffect::LoadFromXml(const pugi::xml_document& document)
 bool ParticleEffect::SaveToXml(pugi::xml_document& document) const
 {
     pugi::xml_node nodeParticleEffect = document.append_child("ParticleEffect");
+    nodeParticleEffect.append_attribute("serializationVersion") = 1;
 
     static const std::map<ParticleSystemSettings::EParticleShape, std::string> particleShapeEnumToString = {
         { ParticleSystemSettings::EParticleShape::Point, "Point" },

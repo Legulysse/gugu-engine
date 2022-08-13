@@ -339,6 +339,8 @@ bool AnimSet::LoadFromXml(const pugi::xml_document& document)
 bool AnimSet::SaveToXml(pugi::xml_document& document) const
 {
     pugi::xml_node nodeAnimSet = document.append_child("AnimSet");
+    nodeAnimSet.append_attribute("serializationVersion") = 1;
+
     nodeAnimSet.append_attribute("imageSet") = (!m_imageSet) ? "" : m_imageSet->GetID().c_str();
 
     for (Animation* animation : m_animations)

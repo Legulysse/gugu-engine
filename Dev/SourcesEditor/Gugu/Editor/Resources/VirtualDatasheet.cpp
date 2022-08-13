@@ -440,8 +440,6 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
 {
     pugi::xml_node nodeDatasheet = document.append_child("Datasheet");
-
-    // Serialization version, could be used if the file format changes.
     nodeDatasheet.append_attribute("serializationVersion") = 1;
 
     // Binding version, could be used for application binding changes.

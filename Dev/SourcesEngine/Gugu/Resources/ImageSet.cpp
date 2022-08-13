@@ -201,6 +201,7 @@ bool ImageSet::LoadFromXml(const pugi::xml_document& document)
 bool ImageSet::SaveToXml(pugi::xml_document& document) const
 {
     pugi::xml_node nodeRoot = document.append_child("ImageSet");
+    nodeRoot.append_attribute("serializationVersion") = 1;
 
     nodeRoot.append_attribute("texture") = (!m_texture) ? "" : m_texture->GetID().c_str();
 

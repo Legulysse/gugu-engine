@@ -301,13 +301,9 @@ VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::strin
         VirtualDatasheet* datasheet = new VirtualDatasheet;
         if (GetResources()->InjectResource(resourceID, datasheet))
         {
-            // TODO: I should move this part inside LoadFromFile, and move the LoadFromFile call inside InjectResource.
-            std::string className = datasheet->GetFileInfo().GetExtension();
-            if (GetClassDefinition(className, datasheet->m_classDefinition))
-            {
-                datasheet->LoadFromFile();
-                return datasheet;
-            }
+            // TODO: I should move the LoadFromFile call inside InjectResource.
+            datasheet->LoadFromFile();
+            return datasheet;
         }
 
         // Safety, should not happen, just in case.

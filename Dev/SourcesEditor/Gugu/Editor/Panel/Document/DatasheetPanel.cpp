@@ -39,6 +39,9 @@ void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
 
 void DatasheetPanel::DisplayDatasheet()
 {
+    if (m_datasheet->m_classDefinition == nullptr)
+        return;
+
     DisplayParentReference();
 
     // Using those as a base value to create width/height that are factor of the size of our font
@@ -123,7 +126,7 @@ void DatasheetPanel::DisplayParentReference()
         }
     }
 
-    std::string parentObjectDefinition = m_datasheet->m_classDefinition->m_name;
+    std::string parentObjectDefinition = !m_datasheet->m_classDefinition ? "None" : m_datasheet->m_classDefinition->m_name;
     std::string description = parentReference ? "Valid Ref" : (dummyParentRefID.empty() ? "Empty Ref" : (invalidRecursiveParent ? "Invalid Recursive Ref" : "Invalid Ref"));
 
     ImGui::Indent();

@@ -12,6 +12,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Logger.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
 ////////////////////////////////////////////////////////////////
@@ -44,6 +45,12 @@ VirtualDatasheetObject::~VirtualDatasheetObject()
 
 bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition)
 {
+    if (!classDefinition)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "A null ClassDefinition has been provided on VirtualDatasheetObject loading");
+        return false;
+    }
+
     m_classDefinition = classDefinition;
 
     for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
@@ -334,9 +341,6 @@ VirtualDatasheet::VirtualDatasheet()
 VirtualDatasheet::~VirtualDatasheet()
 {
     Unload();
-
-    m_classDefinition = nullptr;
-    m_parentDatasheet = nullptr;
 }
 
 EResourceType::Type VirtualDatasheet::GetResourceType() const
@@ -389,10 +393,19 @@ void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, 
 void VirtualDatasheet::Unload()
 {
     SafeDelete(m_rootObject);
+
+    m_classDefinition = nullptr;
+    m_parentDatasheet = nullptr;
 }
 
 bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+
+    std::string className = GetFileInfo().GetExtension();
+    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(className, m_classDefinition))
+        return false;
+
     pugi::xml_node nodeDatasheetObject = document.child("Datasheet");
     if (!nodeDatasheetObject)
         return false;
@@ -404,8 +417,6 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
         SafeDelete(newRootObject);
         return false;
     }
-
-    Unload();
 
     m_rootObject = newRootObject;
 
@@ -452,7 +463,7 @@ bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
         nodeDatasheet.append_attribute("parent") = m_parentDatasheetID.c_str();
     }
 
-    if (!m_rootObject->SaveToXml(nodeDatasheet))
+    if (!m_rootObject || !m_rootObject->SaveToXml(nodeDatasheet))
         return false;
 
     return true;

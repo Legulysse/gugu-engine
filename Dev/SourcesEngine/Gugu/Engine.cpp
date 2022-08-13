@@ -36,8 +36,7 @@
 namespace gugu {
 
 Engine::Engine()
-    : m_renderer(nullptr)
-    , m_managerInputs(nullptr)
+    : m_managerInputs(nullptr)
     , m_managerAudio(nullptr)
     , m_managerNetwork(nullptr)
     , m_managerResources(nullptr)
@@ -48,6 +47,8 @@ Engine::Engine()
     , m_traceGroupMain(nullptr)
     , m_traceLifetime(0)
     , m_application(nullptr)
+    , m_gameWindow(nullptr)
+    , m_renderer(nullptr)
     , m_stopLoop(false)
     , m_timeSinceLastStep(sf::Time::Zero)
     , m_useSpeedMultiplier(false)

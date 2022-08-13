@@ -38,8 +38,6 @@ public:
 
     virtual EResourceType::Type GetResourceType() const;
 
-    virtual bool ReloadFromFile();
-
     virtual bool LoadFromFile();
     virtual bool LoadFromString(const std::string& source);
 

@@ -110,12 +110,6 @@ bool Resource::SaveToXmlString(std::string& result) const
     return true;
 }
 
-bool Resource::ReloadFromFile()
-{
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "ReloadFromFile is not supported for this type of resource");
-    return false;
-}
-
 void Resource::Unload()
 {
     GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Unload is not supported for this type of resource");

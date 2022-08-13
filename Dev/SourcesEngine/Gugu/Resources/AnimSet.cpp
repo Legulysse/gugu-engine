@@ -287,12 +287,12 @@ void AnimSet::Unload()
 
 bool AnimSet::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+    
     pugi::xml_node oNodeAnimSet = document.child("AnimSet");
     if (!oNodeAnimSet)
         return false;
 
-    Unload();
-    
     pugi::xml_attribute oAttributeMainImageSet = oNodeAnimSet.attribute("imageSet");
     if (oAttributeMainImageSet)
         m_imageSet = GetResources()->GetImageSet(oAttributeMainImageSet.as_string());

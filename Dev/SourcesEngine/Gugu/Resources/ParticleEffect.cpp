@@ -39,11 +39,11 @@ void ParticleEffect::Unload()
 
 bool ParticleEffect::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+
     pugi::xml_node nodeParticleEffect = document.child("ParticleEffect");
     if (!nodeParticleEffect)
         return false;
-
-    Unload();
 
     static const std::map<ParticleSystemSettings::EParticleShape, std::string> particleShapeEnumToString = {
         { ParticleSystemSettings::EParticleShape::Point, "Point" },

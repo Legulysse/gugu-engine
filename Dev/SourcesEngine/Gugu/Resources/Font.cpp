@@ -22,7 +22,7 @@ Font::Font()
 
 Font::~Font()
 {
-    SafeDelete(m_sfFont);
+    Unload();
 }
 
 void Font::SetSFFont(sf::Font* _pSFFont)
@@ -40,14 +40,22 @@ EResourceType::Type Font::GetResourceType() const
     return EResourceType::Font;
 }
 
+void Font::Unload()
+{
+    SafeDelete(m_sfFont);
+}
+
 bool Font::LoadFromFile()
 {
+    Unload();
+
     m_sfFont = new sf::Font;
     if (!m_sfFont->loadFromFile(GetFileInfo().GetPathName()))
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Font not found : {0}", GetFileInfo().GetPathName()));
         return false;
     }
+
     return true;
 }
 

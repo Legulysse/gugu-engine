@@ -160,11 +160,11 @@ void ImageSet::Unload()
 
 bool ImageSet::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+
     pugi::xml_node nodeRoot = document.child("ImageSet");
     if (!nodeRoot)
         return false;
-
-    Unload();
 
     pugi::xml_attribute oAttributeTexture = nodeRoot.attribute("texture");
     if (oAttributeTexture)

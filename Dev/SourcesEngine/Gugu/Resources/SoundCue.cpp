@@ -58,15 +58,16 @@ EResourceType::Type SoundCue::GetResourceType() const
 
 void SoundCue::Unload()
 {
+    m_audioFiles.clear();
 }
 
 bool SoundCue::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+
     pugi::xml_node nodeRoot = document.child("SoundCue");
     if (!nodeRoot)
         return false;
-
-    Unload();
 
     pugi::xml_node oNodeFiles = nodeRoot.child("Files");
     if (!oNodeFiles)

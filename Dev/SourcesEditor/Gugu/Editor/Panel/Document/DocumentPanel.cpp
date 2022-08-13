@@ -181,6 +181,16 @@ bool DocumentPanel::RedoState()
     return false;
 }
 
+Resource* DocumentPanel::GetResource() const
+{
+    return m_resource;
+}
+
+const std::string& DocumentPanel::GetResourceID() const
+{
+    return m_resourceID;
+}
+
 bool DocumentPanel::IsSameResource(const std::string& resourceID) const
 {
     return m_resourceID == resourceID;

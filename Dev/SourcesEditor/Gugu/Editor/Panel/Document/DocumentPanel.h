@@ -35,6 +35,8 @@ public:
     bool Undo();
     bool Redo();
 
+    Resource* GetResource() const;
+    const std::string& GetResourceID() const;
     bool IsSameResource(const std::string& resourceID) const;
 
     bool IsFocused() const;

@@ -642,6 +642,9 @@ void Editor::ValidateClosingDirtyDocuments()
         if (document->IsClosing() && document->IsDirty())
         {
             document->ValidateClosing();
+
+            Resource* resource = document->GetResource();
+            resource->LoadFromFile();
         }
     }
 }

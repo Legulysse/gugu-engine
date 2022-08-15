@@ -177,9 +177,12 @@ void WriteInFileEndline(const std::string& _strFileName, const std::string& _str
 void OpenFileExplorer(const std::string& path);
 void OpenWebBrowser(const std::string& _strURL);
 
-bool EnsureDirectoryExists(const std::string& _strPath);
+void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool recursive);
+void GetDirectories(const std::string& rootPath, std::vector<std::string>& directories, bool recursive);
 
-void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles, bool _bRecursive);
+bool DirectoryExists(const std::string& _strPath);
+
+bool EnsureDirectoryExists(const std::string& _strPath);
 bool RemoveFile(const std::string& _strPathName);
 
 // Get the current timestamp as milliseconds

@@ -74,7 +74,7 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
     GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Root folder : {0}", _strPathRoot));
 
     std::vector<FileInfo> vecFiles;
-    GetFilesList(_strPathRoot, vecFiles, true);
+    GetFiles(_strPathRoot, vecFiles, true);
 
     int iCount = 0;
     for (size_t i = 0; i < vecFiles.size(); ++i)

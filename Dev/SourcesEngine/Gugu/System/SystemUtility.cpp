@@ -456,44 +456,12 @@ void OpenWebBrowser(const std::string& _strURL)
 #endif
 }
 
-bool EnsureDirectoryExists(const std::string& _strPath)
-{
-    if (_strPath.empty())
-        return true;
-
-#if defined(GUGU_OS_WIN32)
-
-    std::vector<std::string> vecDirectories;
-    StdStringSplit(_strPath, "/", vecDirectories);
-
-    std::string strCombinedPath = "";
-    for (auto strSubDirectory : vecDirectories)
-    {
-        strCombinedPath += strSubDirectory;
-
-        if (!(CreateDirectoryA(strCombinedPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
-        {
-            return false;
-        }
-        
-        strCombinedPath += "/";
-    }
-
-    return true;
-
-#else
-
-    return false;
-
-#endif
-}
-
-void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles, bool _bRecursive)
+void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool recursive)
 {
 #if defined(GUGU_OS_WIN32)
 
     std::string strPathNormalized;
-    NormalizePath(_strPath, true, strPathNormalized);
+    NormalizePath(rootPath, true, strPathNormalized);
 
     //Win32 path conversion and filter
     std::string strRoot = strPathNormalized;
@@ -513,12 +481,14 @@ void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles,
         {
             if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                if (_bRecursive)
-                    GetFilesList(strPathNormalized + strFile, _vecFiles, _bRecursive);
+                if (recursive)
+                {
+                    GetFiles(strPathNormalized + strFile, files, recursive);
+                }
             }
             else
             {
-                _vecFiles.push_back(FileInfo(strPathNormalized, strFile));
+                files.push_back(FileInfo(strPathNormalized, strFile));
             }
         }
 
@@ -530,7 +500,7 @@ void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles,
 #elif defined(GUGU_OS_LINUX)
 
     std::string strPathNormalized;
-    NormalizePath(_strPath, true, strPathNormalized);
+    NormalizePath(rootPath, true, strPathNormalized);
 
     dirent* sdirent = nullptr;
     DIR* flux = nullptr;
@@ -544,17 +514,113 @@ void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles,
             {
                 if (sdirent->d_type == DT_DIR)
                 {
-                    if (_bRecursive)
-                        GetFilesList(strPathNormalized + strFile, _vecFiles, _bRecursive);
+                    if (recursive)
+                    {
+                        GetFiles(strPathNormalized + strFile, files, recursive);
+                    }
                 }
                 else
                 {
-                    _vecFiles.push_back(FileInfo(strPathNormalized, strFile));
+                    files.push_back(FileInfo(strPathNormalized, strFile));
                 }
             }
         }
+
         closedir(flux);
     }
+
+#endif
+}
+
+void GetDirectories(const std::string& rootPath, std::vector<std::string>& directories, bool recursive)
+{
+#if defined(GUGU_OS_WIN32)
+
+    std::string strPathNormalized;
+    NormalizePath(rootPath, true, strPathNormalized);
+
+    //Win32 path conversion and filter
+    std::string strRoot = strPathNormalized;
+    StdStringReplaceSelf(strRoot, '/', '\\');
+    strRoot += "*";
+
+    WIN32_FIND_DATAA FindFileData;
+    HANDLE hFind = INVALID_HANDLE_VALUE;
+
+    hFind = FindFirstFileA(strRoot.c_str(), &FindFileData);
+
+    BOOL bContinue = (hFind != INVALID_HANDLE_VALUE);
+    while (bContinue != 0)
+    {
+        std::string strFile(FindFileData.cFileName);
+        if (strFile[0] != '.')
+        {
+            if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            {
+                std::string directoryFullPath = strPathNormalized + strFile;
+
+                directories.push_back(directoryFullPath);
+
+                if (recursive)
+                {
+                    GetDirectories(directoryFullPath, directories, recursive);
+                }
+            }
+        }
+
+        bContinue = FindNextFileA(hFind, &FindFileData);
+    }
+
+    FindClose(hFind);
+
+#endif
+}
+
+bool DirectoryExists(const std::string& _strPath)
+{
+    if (_strPath.empty())
+        return true;
+
+#if defined(GUGU_OS_WIN32)
+
+    DWORD dwAttrib = GetFileAttributesA(_strPath.c_str());
+    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+
+#else
+
+    return false;
+
+#endif
+}
+
+bool EnsureDirectoryExists(const std::string& _strPath)
+{
+    if (_strPath.empty())
+        return true;
+
+#if defined(GUGU_OS_WIN32)
+
+    std::vector<std::string> vecDirectories;
+    StdStringSplit(_strPath, "/", vecDirectories);
+
+    std::string strCombinedPath = "";
+    for (auto strSubDirectory : vecDirectories)
+    {
+        strCombinedPath += strSubDirectory;
+
+        if (!(CreateDirectoryA(strCombinedPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
+        {
+            return false;
+        }
+
+        strCombinedPath += "/";
+    }
+
+    return true;
+
+#else
+
+    return false;
 
 #endif
 }

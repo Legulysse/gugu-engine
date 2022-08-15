@@ -331,16 +331,19 @@ void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeData, con
 }
 
 
-VirtualDatasheet::VirtualDatasheet()
-    : m_classDefinition(nullptr)
+VirtualDatasheet::VirtualDatasheet(DatasheetParser::ClassDefinition* classDefinition)
+    : m_classDefinition(classDefinition)
     , m_rootObject(nullptr)
     , m_parentDatasheet(nullptr)
 {
+    m_rootObject = new VirtualDatasheetObject;
 }
 
 VirtualDatasheet::~VirtualDatasheet()
 {
     Unload();
+
+    m_classDefinition = nullptr;
 }
 
 EResourceType::Type VirtualDatasheet::GetResourceType() const
@@ -394,7 +397,6 @@ void VirtualDatasheet::Unload()
 {
     SafeDelete(m_rootObject);
 
-    m_classDefinition = nullptr;
     m_parentDatasheet = nullptr;
 }
 
@@ -402,23 +404,16 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 {
     Unload();
 
-    std::string className = GetFileInfo().GetExtension();
-    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(className, m_classDefinition))
-        return false;
+    m_rootObject = new VirtualDatasheetObject;
 
     pugi::xml_node nodeDatasheetObject = document.child("Datasheet");
     if (!nodeDatasheetObject)
         return false;
 
-    VirtualDatasheetObject* newRootObject = new VirtualDatasheetObject;
-
-    if (!newRootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
+    if (!m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
     {
-        SafeDelete(newRootObject);
         return false;
     }
-
-    m_rootObject = newRootObject;
 
     std::string parentResourceID = "";
     VirtualDatasheet* parentDatasheet = nullptr;
@@ -463,7 +458,7 @@ bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
         nodeDatasheet.append_attribute("parent") = m_parentDatasheetID.c_str();
     }
 
-    if (!m_rootObject || !m_rootObject->SaveToXml(nodeDatasheet))
+    if (m_rootObject && !m_rootObject->SaveToXml(nodeDatasheet))
         return false;
 
     return true;

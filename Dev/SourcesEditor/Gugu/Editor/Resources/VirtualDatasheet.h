@@ -78,7 +78,7 @@ class VirtualDatasheet : public Resource
 {
 public:
 
-    VirtualDatasheet();
+    VirtualDatasheet(DatasheetParser::ClassDefinition* classDefinition);
     virtual ~VirtualDatasheet();
 
     virtual EResourceType::Type GetResourceType() const override;

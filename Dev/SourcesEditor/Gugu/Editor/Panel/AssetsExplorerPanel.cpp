@@ -10,6 +10,7 @@
 #include "Gugu/Editor/Editor.h"
 #include "Gugu/Editor/Core/ProjectSettings.h"
 #include "Gugu/Editor/Modal/NewResourceDialog.h"
+#include "Gugu/Editor/Modal/NewDirectoryDialog.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
@@ -70,6 +71,7 @@ void AssetsExplorerPanel::RefreshContent()
     m_rootNode = new TreeNode;
     m_rootNode->isFolder = true;
     m_rootNode->name = "ROOT";
+    m_rootNode->path = projectAssetsPath;
 
     // Build assets tree directory structure.
     std::vector<std::string> directories;
@@ -177,19 +179,25 @@ void AssetsExplorerPanel::RefreshContent()
 
 void AssetsExplorerPanel::CreateNewDirectory(TreeNode* parentNode)
 {
-    std::string newDirectoryName = "New_Folder";
-    std::string newDirectoryPath = CombinePaths(parentNode->path, newDirectoryName, false);
+    std::string directoryName = "New_Folder";
 
-    if (!DirectoryExists(newDirectoryPath) && EnsureDirectoryExists(newDirectoryPath))
-    {
-        TreeNode* newDirectory = new TreeNode;
-        newDirectory->isFolder = true;
-        newDirectory->name = newDirectoryName;
-        newDirectory->path = newDirectoryPath;
-        parentNode->children.push_back(newDirectory);
+    GetEditor()->OpenModalDialog(new NewDirectoryDialog(parentNode->path, directoryName,
+        [=](const std::string& validatedDirectoryName)
+        {
+            std::string validatedDirectoryPath = CombinePaths(parentNode->path, validatedDirectoryName, false);
 
-        SortTreeNodeChildren(parentNode, false);
-    }
+            if (!DirectoryExists(validatedDirectoryPath) && EnsureDirectoryExists(validatedDirectoryPath))
+            {
+                TreeNode* newDirectory = new TreeNode;
+                newDirectory->isFolder = true;
+                newDirectory->name = validatedDirectoryName;
+                newDirectory->path = validatedDirectoryPath;
+                parentNode->children.push_back(newDirectory);
+
+                SortTreeNodeChildren(parentNode, false);
+            }
+        }
+    ));
 }
 
 void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)

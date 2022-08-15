@@ -22,6 +22,15 @@
 
 namespace gugu {
 
+AssetsExplorerPanel::TreeNode::TreeNode()
+{
+}
+
+AssetsExplorerPanel::TreeNode::~TreeNode()
+{
+    ClearStdVector(children);
+}
+
 AssetsExplorerPanel::AssetsExplorerPanel()
     : m_rootNode(nullptr)
     , m_dirtyContent(false)
@@ -40,7 +49,6 @@ void AssetsExplorerPanel::ClearContent()
 
     if (m_rootNode)
     {
-        RecursiveDeleteTreeNodes(m_rootNode);
         SafeDelete(m_rootNode);
     }
 }
@@ -52,23 +60,65 @@ void AssetsExplorerPanel::RaiseDirtyContent()
 
 void AssetsExplorerPanel::RefreshContent()
 {
-    const std::string& projectAssetsPath = GetEditor()->GetProjectSettings()->projectAssetsPath;
-
     m_dirtyContent = false;
 
     ClearContent();
 
-    // Refresh assets tree structure.
-    std::vector<const ResourceInfo*> vecInfos;
-    GetResources()->GetAllResourceInfos(vecInfos);
+    const std::string& projectAssetsPath = GetEditor()->GetProjectSettings()->projectAssetsPath;
+    const std::string& editorAssetsPath = GetResources()->GetPathAssets();
 
     m_rootNode = new TreeNode;
     m_rootNode->isFolder = true;
     m_rootNode->name = "ROOT";
 
-    std::string editorAssetsPath = GetResources()->GetPathAssets();
+    // Build assets tree directory structure.
+    std::vector<std::string> directories;
+    GetDirectories(projectAssetsPath, directories, true);
 
     std::vector<std::string> tokens;
+    for (const std::string& directory : directories)
+    {
+        TreeNode* currentDirectory = m_rootNode;
+
+        // Hide the project path from the hierarchy.
+        std::string directoryPath = directory;
+        directoryPath.erase(0, projectAssetsPath.size());
+
+        StdStringSplit(directoryPath, "/", tokens);
+
+        std::string cumulatedPath = projectAssetsPath;
+        for (std::string directoryName : tokens)
+        {
+            cumulatedPath = cumulatedPath + "/" + directoryName;
+            bool foundDirectory = false;
+
+            for (size_t i = 0; i < currentDirectory->children.size(); ++i)
+            {
+                if (currentDirectory->children[i]->isFolder && currentDirectory->children[i]->name == directoryName)
+                {
+                    currentDirectory = currentDirectory->children[i];
+                    foundDirectory = true;
+                    break;
+                }
+            }
+
+            if (!foundDirectory)
+            {
+                TreeNode* newDirectory = new TreeNode;
+                newDirectory->isFolder = true;
+                newDirectory->name = directoryName;
+                newDirectory->path = cumulatedPath;
+                currentDirectory->children.push_back(newDirectory);
+
+                currentDirectory = newDirectory;
+            }
+        }
+    }
+
+    // Refresh assets tree structure with known Resources.
+    std::vector<const ResourceInfo*> vecInfos;
+    GetResources()->GetAllResourceInfos(vecInfos);
+
     for (const ResourceInfo* resourceInfo : vecInfos)
     {
         TreeNode* currentDirectory = m_rootNode;
@@ -122,7 +172,24 @@ void AssetsExplorerPanel::RefreshContent()
         currentDirectory->children.push_back(newNode);
     }
 
-    RecursiveSortTreeNodes(m_rootNode);
+    SortTreeNodeChildren(m_rootNode, true);
+}
+
+void AssetsExplorerPanel::CreateNewDirectory(TreeNode* parentNode)
+{
+    std::string newDirectoryName = "New_Folder";
+    std::string newDirectoryPath = CombinePaths(parentNode->path, newDirectoryName, false);
+
+    if (!DirectoryExists(newDirectoryPath) && EnsureDirectoryExists(newDirectoryPath))
+    {
+        TreeNode* newDirectory = new TreeNode;
+        newDirectory->isFolder = true;
+        newDirectory->name = newDirectoryName;
+        newDirectory->path = newDirectoryPath;
+        parentNode->children.push_back(newDirectory);
+
+        SortTreeNodeChildren(parentNode, false);
+    }
 }
 
 void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
@@ -209,23 +276,14 @@ void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
     ImGui::End();
 }
 
-void AssetsExplorerPanel::RecursiveSortTreeNodes(TreeNode* node)
+void AssetsExplorerPanel::SortTreeNodeChildren(TreeNode* rootNode, bool recursive)
 {
-    for (size_t i = 0; i < node->children.size(); ++i)
+    for (size_t i = 0; i < rootNode->children.size(); ++i)
     {
-        RecursiveSortTreeNodes(node->children[i]);
+        SortTreeNodeChildren(rootNode->children[i], recursive);
     }
 
-    std::sort(node->children.begin(), node->children.end(), AssetsExplorerPanel::CompareTreeNodes);
-}
-
-void AssetsExplorerPanel::RecursiveDeleteTreeNodes(TreeNode* node)
-{
-    for (size_t i = 0; i < node->children.size(); ++i)
-    {
-        RecursiveDeleteTreeNodes(node->children[i]);
-        SafeDelete(node->children[i]);
-    }
+    std::sort(rootNode->children.begin(), rootNode->children.end(), AssetsExplorerPanel::CompareTreeNodes);
 }
 
 void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool isTable, int depth, bool expandAll, bool collapseAll)
@@ -334,8 +392,9 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
     {
         if (ImGui::BeginMenu("New..."))
         {
-            if (ImGui::MenuItem("Folder (wip)"))
+            if (ImGui::MenuItem("Folder"))
             {
+                CreateNewDirectory(node);
             }
 
             ImGui::Separator();

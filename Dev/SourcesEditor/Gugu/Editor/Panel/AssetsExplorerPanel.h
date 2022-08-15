@@ -40,6 +40,9 @@ private:
     {
     public:
 
+        TreeNode();
+        ~TreeNode();
+
         std::string name;
         std::string path;
         bool isFolder;
@@ -48,8 +51,9 @@ private:
         std::string ressourceID;
     };
 
-    void RecursiveSortTreeNodes(TreeNode* node);
-    void RecursiveDeleteTreeNodes(TreeNode* node);
+    void CreateNewDirectory(TreeNode* parentNode);
+
+    void SortTreeNodeChildren(TreeNode* rootNode, bool recursive);
     void DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool table, int depth, bool expandAll, bool collapseAll);
 
     void HandleDirectoryContextMenu(TreeNode* node);

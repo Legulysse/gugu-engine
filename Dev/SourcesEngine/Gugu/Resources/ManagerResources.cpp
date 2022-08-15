@@ -499,6 +499,10 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
 
     m_resources.insert(iteResource, std::make_pair(strResourceID, pInfo));
 
+    GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Added Resource : ID = {0}, Path = {1}"
+        , strResourceID
+        , _oFileInfo.GetPathName()));
+
     return true;
 }
 
@@ -550,6 +554,10 @@ bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFile
         RemoveFile(oFileInfoOld.GetPathName());
         return true;
     }
+
+    GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Moved Resource : ID = {0}, Path = {1}"
+        , strResourceID
+        , _oFileInfo.GetPathName()));
 
     return false;
 }

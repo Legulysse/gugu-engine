@@ -92,6 +92,8 @@ public:
     bool GetEnumDefinition(const std::string& name, EnumDefinition*& enumDefinition) const;
     bool GetClassDefinition(const std::string& name, ClassDefinition*& classDefinition) const;
 
+    const std::vector<ClassDefinition*>& GetAllClassDefinitions() const;
+
     VirtualDatasheet* InstanciateDatasheetResource(const std::string& resourceID);
 
 private:

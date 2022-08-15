@@ -292,6 +292,11 @@ bool DatasheetParser::GetClassDefinition(const std::string& name, ClassDefinitio
     return false;
 }
 
+const std::vector<DatasheetParser::ClassDefinition*>& DatasheetParser::GetAllClassDefinitions() const
+{
+    return m_classDefinitions;
+}
+
 VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::string& resourceID)
 {
     // TODO: Maybe I can use the manager factory delegate instead, along with a datasheet type detection delegate ?

@@ -339,8 +339,9 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
             }
 
             ImGui::Separator();
-            if (ImGui::MenuItem("Datasheet (wip)"))
+            if (ImGui::MenuItem("Datasheet"))
             {
+                GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::Datasheet));
             }
 
             ImGui::Separator();

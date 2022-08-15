@@ -28,6 +28,7 @@ protected:
     std::string m_resourcePath;
     std::string m_resourceName;
     std::string m_resourceExtension;
+    std::string m_datasheetClassName;   // TODO: use pointer instead (need to move the definition outside of DatasheetParser class).
 };
 
 }   //namespace gugu

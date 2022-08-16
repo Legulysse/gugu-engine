@@ -218,14 +218,12 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             OnAddAnimation();
         }
 
-        ImGui::BeginDisabled(m_currentAnimation == nullptr);
-
         ImGui::SameLine();
+        ImGui::BeginDisabled(m_currentAnimation == nullptr);
         if (ImGui::Button("Remove Animation"))
         {
             OnRemoveAnimation();
         }
-
         ImGui::EndDisabled();
     }
 

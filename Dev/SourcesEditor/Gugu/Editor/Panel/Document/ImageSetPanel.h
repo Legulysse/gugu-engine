@@ -44,6 +44,11 @@ protected:
 
     void OnAddSubImage();
     void OnRemoveSubImage();
+    void OnRemoveAllSubImages();
+    void OnGenerateSubImages();
+
+    void GenerateSubImagesFromCount(int columnCount, int rowCount);
+    void GenerateSubImagesFromSize(const Vector2i& itemSize, const Vector2i& itemOffset);
 
 private:
 

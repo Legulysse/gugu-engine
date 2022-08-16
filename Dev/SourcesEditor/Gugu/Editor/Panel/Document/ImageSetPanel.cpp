@@ -7,7 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Editor.h"
 #include "Gugu/Editor/Widget/RenderViewport.h"
+#include "Gugu/Editor/Modal/GenerateSubImagesDialog.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ImageSet.h"
@@ -18,6 +20,7 @@
 #include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -87,6 +90,16 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     ImGui::Spacing();
 
+    // Generators.
+    ImGui::BeginDisabled(texture == nullptr);
+    if (ImGui::Button("Generate SubImages"))
+    {
+        OnGenerateSubImages();
+    }
+    ImGui::EndDisabled();
+
+    ImGui::Spacing();
+
     // Selected SubImage edition.
     if (m_selectedIndex >= 0)
     {
@@ -137,14 +150,20 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             OnAddSubImage();
         }
 
-        ImGui::BeginDisabled(m_selectedIndex < 0);
-
         ImGui::SameLine();
+        ImGui::BeginDisabled(m_selectedIndex < 0);
         if (ImGui::Button("Remove SubImage"))
         {
             OnRemoveSubImage();
         }
+        ImGui::EndDisabled();
 
+        ImGui::SameLine();
+        ImGui::BeginDisabled(m_imageSet->GetSubImageCount() == 0);
+        if (ImGui::Button("Clear All"))
+        {
+            OnRemoveAllSubImages();
+        }
         ImGui::EndDisabled();
     }
 
@@ -554,6 +573,82 @@ void ImageSetPanel::OnRemoveSubImage()
     m_selectedIndex = Clamp<int>(m_selectedIndex, -1, m_imageSet->GetSubImageCount() - 1);
 
     RaiseDirty();
+}
+
+void ImageSetPanel::OnRemoveAllSubImages()
+{
+    m_imageSet->DeleteAllSubImages();
+    m_selectedIndex = -1;
+
+    RaiseDirty();
+}
+
+void ImageSetPanel::OnGenerateSubImages()
+{
+    GetEditor()->OpenModalDialog(new GenerateSubImagesDialog(
+        std::bind(&ImageSetPanel::GenerateSubImagesFromCount, this, std::placeholders::_1, std::placeholders::_2),
+        std::bind(&ImageSetPanel::GenerateSubImagesFromSize, this, std::placeholders::_1, std::placeholders::_2)
+    ));
+}
+
+void ImageSetPanel::GenerateSubImagesFromCount(int columnCount, int rowCount)
+{
+    sf::Texture* texture = m_imageSet->GetTexture()->GetSFTexture();
+
+    if (texture && columnCount > 0 && rowCount > 0)
+    {
+        int width = (int)texture->getSize().x / columnCount;
+        int height = (int)texture->getSize().y / rowCount;
+
+        for (int y = 0; y < rowCount; ++y)
+        {
+            for (int x = 0; x < columnCount; ++x)
+            {
+                sf::IntRect rect = sf::IntRect(x * width, y * height, width, height);
+
+                gugu::SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat("x{0}_y{1}", x, y));
+                newSubImage->SetRect(rect);
+            }
+        }
+
+        RaiseDirty();
+    }
+}
+
+void ImageSetPanel::GenerateSubImagesFromSize(const Vector2i& itemSize, const Vector2i& itemOffset)
+{
+    sf::Texture* texture = m_imageSet->GetTexture()->GetSFTexture();
+
+    if (texture && itemSize.x > 0 && itemSize.y > 0 && itemOffset.x >= 0 && itemOffset.y >= 0)
+    {
+        int textureWidth = texture->getSize().x;
+        int textureHeight = texture->getSize().y;
+        int width = itemSize.x;
+        int height = itemSize.y;
+
+        int y = 0;
+        int top = 0;
+        while (top + height <= textureHeight)
+        {
+            int x = 0;
+            int left = 0;
+            while (left + width <= textureWidth)
+            {
+                sf::IntRect rect = sf::IntRect(left, top, width, height);
+
+                gugu::SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat("x{0}_y{1}", x, y));
+                newSubImage->SetRect(rect);
+
+                ++x;
+                left += width + itemOffset.x;
+            }
+
+            ++y;
+            top += height + itemOffset.y;
+        }
+
+        RaiseDirty();
+    }
 }
 
 }   //namespace gugu

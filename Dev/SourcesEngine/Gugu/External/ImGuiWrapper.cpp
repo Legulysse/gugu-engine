@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include <vector>
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -21,6 +23,20 @@ bool InputInt2(const char* label, int* v1, int* v2, ImGuiInputTextFlags flags)
     {
         *v1 = temp[0];
         *v2 = temp[1];
+    }
+
+    return updated;
+}
+
+bool InputInt2(const char* label, gugu::Vector2i* v, ImGuiInputTextFlags flags)
+{
+    int temp[2] = { v->x, v->y };
+
+    bool updated = ImGui::InputInt2(label, temp, flags);
+    if (updated)
+    {
+        v->x = temp[0];
+        v->y = temp[1];
     }
 
     return updated;
@@ -97,6 +113,32 @@ sf::Color ColorConvertFloat4ToSfml(const ImVec4& color)
         (sf::Uint8)((colorU32 & 0x00ff0000) >> 16),
         (sf::Uint8)((colorU32 & 0xff000000) >> 24)
     );
+}
+
+bool Combo(const char* label, const std::vector<std::string>& comboValues, size_t* selectedIndex, ImGuiComboFlags flags)
+{
+    bool updated = false;
+    if (ImGui::BeginCombo(label, comboValues[*selectedIndex].c_str()))
+    {
+        for (size_t i = 0; i < comboValues.size(); ++i)
+        {
+            bool selected = (*selectedIndex == i);
+            if (ImGui::Selectable(comboValues[i].c_str(), *selectedIndex == i))
+            {
+                *selectedIndex = i;
+                updated = true;
+            }
+
+            if (selected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return updated;
 }
 
 }   // namespace ImGui

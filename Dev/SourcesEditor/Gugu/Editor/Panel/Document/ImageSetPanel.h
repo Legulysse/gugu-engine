@@ -37,12 +37,13 @@ protected:
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
-private:
-
     void CreateGizmo();
     void UpdateGizmo();
 
     void OnDragGizmoEdge(Element* edge, Vector2f position);
+
+    void OnAddSubImage();
+    void OnRemoveSubImage();
 
 private:
 

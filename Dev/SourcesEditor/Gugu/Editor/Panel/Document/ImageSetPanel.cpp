@@ -130,6 +130,24 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     ImGui::Spacing();
 
+    // SubImage edition buttons.
+    {
+        if (ImGui::Button("Add SubImage"))
+        {
+            OnAddSubImage();
+        }
+
+        ImGui::BeginDisabled(m_selectedIndex < 0);
+
+        ImGui::SameLine();
+        if (ImGui::Button("Remove SubImage"))
+        {
+            OnRemoveSubImage();
+        }
+
+        ImGui::EndDisabled();
+    }
+
     // SubImages list.
     ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /* | ImGuiTableFlags_NoPadInnerX */;
     if (ImGui::BeginTable("SubImages Table", 6, flags))
@@ -510,6 +528,32 @@ void ImageSetPanel::OnDragGizmoEdge(Element* edge, Vector2f edgePosition)
 
     m_gizmoCenter->SetPosition(kPositionTopLeft);
     m_gizmoCenter->SetSize(kSize);
+}
+
+void ImageSetPanel::OnAddSubImage()
+{
+    SubImage* lastSubImage = m_imageSet->GetSubImage(m_imageSet->GetSubImageCount() - 1);
+    SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat("SubImage_{0}", m_imageSet->GetSubImageCount()));
+
+    if (lastSubImage)
+    {
+        newSubImage->SetRect(lastSubImage->GetRect());
+    }
+
+    m_selectedIndex = m_imageSet->GetSubImageCount() - 1;
+
+    RaiseDirty();
+}
+
+void ImageSetPanel::OnRemoveSubImage()
+{
+    if (m_selectedIndex < 0)
+        return;
+
+    m_imageSet->DeleteSubImage(m_imageSet->GetSubImage(m_selectedIndex));
+    m_selectedIndex = Clamp<int>(m_selectedIndex, -1, m_imageSet->GetSubImageCount() - 1);
+
+    RaiseDirty();
 }
 
 }   //namespace gugu

@@ -193,6 +193,21 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             RaiseDirty();
         }
     }
+    else
+    {
+        ImGui::BeginDisabled();
+
+        std::string dummyStrA;
+        std::string dummyStrB;
+        Vector2f dummyVecA;
+        Vector2f dummyVecB;
+        ImGui::InputText("SubImage", &dummyStrA);
+        ImGui::InputText("Texture", &dummyStrB);
+        ImGui::InputFloat2("Origin", &dummyVecA);
+        ImGui::InputFloat2("Move Offset", &dummyVecB);
+
+        ImGui::EndDisabled();
+    }
 
     ImGui::Spacing();
 
@@ -524,6 +539,7 @@ void AnimSetPanel::OnRemoveAnimation()
 
     m_animSet->DeleteAnimation(m_currentAnimation);
     m_currentAnimation = nullptr;
+    m_currentFrame = nullptr;
 
     RaiseDirty();
 }

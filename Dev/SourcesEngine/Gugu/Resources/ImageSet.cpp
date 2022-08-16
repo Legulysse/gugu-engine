@@ -86,12 +86,6 @@ Texture* ImageSet::GetTexture() const
 
 SubImage* ImageSet::AddSubImage(const std::string& _strName)
 {
-    for (size_t i = 0; i < m_subImages.size(); ++i)
-    {
-        if (m_subImages[i]->IsName(_strName))
-            return nullptr;
-    }
-
     SubImage* pSubImage = new SubImage(this);
     m_subImages.push_back(pSubImage);
     pSubImage->SetName(_strName);

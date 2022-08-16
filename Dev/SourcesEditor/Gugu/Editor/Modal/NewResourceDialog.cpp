@@ -93,7 +93,7 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
         //TODO: Check ID.
     }
 
-    ImGui::BeginDisabled(true);
+    ImGui::BeginDisabled();
     if (ImGui::InputText("Extension", &m_resourceExtension, ImGuiInputTextFlags_EnterReturnsTrue))
     {
         //TODO: Check Extension.

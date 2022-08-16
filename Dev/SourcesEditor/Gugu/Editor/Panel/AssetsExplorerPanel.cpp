@@ -179,9 +179,7 @@ void AssetsExplorerPanel::RefreshContent()
 
 void AssetsExplorerPanel::CreateNewDirectory(TreeNode* parentNode)
 {
-    std::string directoryName = "New_Folder";
-
-    GetEditor()->OpenModalDialog(new NewDirectoryDialog(parentNode->path, directoryName,
+    GetEditor()->OpenModalDialog(new NewDirectoryDialog(parentNode->path, "",
         [=](const std::string& validatedDirectoryName)
         {
             std::string validatedDirectoryPath = CombinePaths(parentNode->path, validatedDirectoryName, false);

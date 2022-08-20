@@ -80,7 +80,7 @@ std::string StringFormat(const std::string& _tValue, const T1& _tArg1, const T2&
 template<typename... TArgs>
 std::string StringFormat(const std::string& _tValue, const TArgs&... _tArgs);
 
-struct FormatParameters
+struct FormatParameters     // TODO: rename as StringFormatParameters ? or StringFormatArgs ?
 {
     template<typename T>
     void Add(const std::string& strName, const T& tParam);

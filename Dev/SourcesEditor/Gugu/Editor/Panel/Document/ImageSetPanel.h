@@ -58,6 +58,8 @@ private:
     ImageSet* m_imageSet;
     int m_selectedIndex;
 
+    std::string m_frameNameTemplate;
+
     ElementSprite* m_sprite;
 
     ElementSFDrawable* m_gizmoCenter;

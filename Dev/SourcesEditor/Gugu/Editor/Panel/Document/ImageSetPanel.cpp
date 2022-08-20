@@ -39,6 +39,7 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     , m_zoomFactor(1.f)
     , m_selectedIndex(-1)
     , m_gizmoCenter(nullptr)
+    , m_frameNameTemplate("x{x}_y{y}")
     , m_sprite(nullptr)
     , m_isDraggingGizmo(false)
     , m_draggedGizmo(nullptr)
@@ -91,6 +92,8 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     ImGui::Spacing();
 
     // Generators.
+    ImGui::InputText("Frame Name Template", &m_frameNameTemplate);
+
     ImGui::BeginDisabled(texture == nullptr);
     if (ImGui::Button("Generate SubImages"))
     {
@@ -604,9 +607,13 @@ void ImageSetPanel::GenerateSubImagesFromCount(int columnCount, int rowCount)
         {
             for (int x = 0; x < columnCount; ++x)
             {
-                sf::IntRect rect = sf::IntRect(x * width, y * height, width, height);
+                FormatParameters formatParams;
+                formatParams.Add("x", x);
+                formatParams.Add("y", y);
 
-                gugu::SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat("x{0}_y{1}", x, y));
+                gugu::SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat(m_frameNameTemplate, formatParams));
+
+                sf::IntRect rect = sf::IntRect(x * width, y * height, width, height);
                 newSubImage->SetRect(rect);
             }
         }
@@ -634,9 +641,13 @@ void ImageSetPanel::GenerateSubImagesFromSize(const Vector2i& itemSize, const Ve
             int left = 0;
             while (left + width <= textureWidth)
             {
-                sf::IntRect rect = sf::IntRect(left, top, width, height);
+                FormatParameters formatParams;
+                formatParams.Add("x", x);
+                formatParams.Add("y", y);
 
-                gugu::SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat("x{0}_y{1}", x, y));
+                gugu::SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat(m_frameNameTemplate, formatParams));
+
+                sf::IntRect rect = sf::IntRect(left, top, width, height);
                 newSubImage->SetRect(rect);
 
                 ++x;

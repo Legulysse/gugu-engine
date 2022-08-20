@@ -63,7 +63,8 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
             OnVisibilityChanged(true);
         }
 
-        if (ImGui::IsWindowFocused())
+        ImGuiFocusedFlags focusedFlags = ImGuiFocusedFlags_ChildWindows;
+        if (ImGui::IsWindowFocused(focusedFlags))
         {
             m_focused = true;
         }

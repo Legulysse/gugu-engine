@@ -42,8 +42,14 @@ protected:
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
+    void SelectAnimation(Animation* animation);
+
     void OnAddAnimation();
     void OnRemoveAnimation();
+    void OnGenerateAnimationFrames();
+
+    void GenerateAnimationFramesFromDirectory(const std::string& path);
+    void GenerateAnimationFramesFromImageSet(size_t from, size_t to);
 
     void UpdateMainImageSet(ImageSet* newImageSet);
 
@@ -62,6 +68,8 @@ private:
     AnimSet* m_animSet;
     Animation* m_currentAnimation;
     AnimationFrame* m_currentFrame;
+
+    float m_defaultDuration;
 
     SpriteAnimation* m_spriteAnimation;
     ElementSprite* m_sprite;

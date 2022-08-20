@@ -7,7 +7,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Editor.h"
+#include "Gugu/Editor/Core/ProjectSettings.h"
 #include "Gugu/Editor/Widget/RenderViewport.h"
+#include "Gugu/Editor/Modal/GenerateAnimationFramesDialog.h"
 
 #include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Animation/SpriteAnimation.h"
@@ -37,6 +40,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     , m_flipH(false)
     , m_currentAnimation(nullptr)
     , m_currentFrame(nullptr)
+    , m_defaultDuration(0.1f)
     , m_spriteAnimation(nullptr)
     , m_sprite(nullptr)
 {
@@ -52,17 +56,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     m_spriteAnimation = GetAnimations()->AddAnimation(m_sprite);
     m_spriteAnimation->ChangeAnimSet(m_animSet);
 
-    m_currentAnimation = m_animSet->GetAnimation(0);
-
-    if (m_currentAnimation)
-    {
-        m_spriteAnimation->StartAnimation(m_currentAnimation);
-
-        if (m_currentAnimation->GetFrameCount() > 0)
-        {
-            m_currentFrame = m_currentAnimation->GetFrame(0);
-        }
-    }
+    SelectAnimation(m_animSet->GetAnimation(0));
 }
 
 AnimSetPanel::~AnimSetPanel()
@@ -73,10 +67,7 @@ AnimSetPanel::~AnimSetPanel()
 void AnimSetPanel::OnUndoRedo()
 {
     // TODO: keep animation and frame names, and try to restore selection.
-    m_currentAnimation = nullptr;
-    m_currentFrame = nullptr;
-
-    m_spriteAnimation->StopAnimation();
+    SelectAnimation(nullptr);
 }
 
 void AnimSetPanel::OnVisibilityChanged(bool visible)
@@ -153,6 +144,18 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     {
         UpdateMainImageSet(GetResources()->GetImageSet(mainImageSetID));
     }
+
+    ImGui::Spacing();
+
+    // Generators.
+    ImGui::InputFloat("Default Duration", &m_defaultDuration);
+
+    ImGui::BeginDisabled(m_currentAnimation == nullptr);
+    if (ImGui::Button("Generate Animation Frames"))
+    {
+        OnGenerateAnimationFrames();
+    }
+    ImGui::EndDisabled();
 
     ImGui::Spacing();
 
@@ -283,14 +286,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             {
                 if (m_currentAnimation != animation)
                 {
-                    m_currentAnimation = animation;
-                    m_spriteAnimation->StartAnimation(animation);
-
-                    m_currentFrame = nullptr;
-                    if (m_currentAnimation->GetFrameCount() > 0)
-                    {
-                        m_currentFrame = m_currentAnimation->GetFrame(0);
-                    }
+                    SelectAnimation(animation);
                 }
             }
 
@@ -373,8 +369,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                         {
                             if (m_currentAnimation != animation)
                             {
-                                m_currentAnimation = animation;
-                                m_spriteAnimation->StartAnimation(m_currentAnimation);
+                                SelectAnimation(animation);
                             }
 
                             m_currentFrame = frame;
@@ -519,10 +514,32 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 #endif
 }
 
+void AnimSetPanel::SelectAnimation(Animation* animation)
+{
+    m_currentAnimation = animation;
+    m_currentFrame = nullptr;
+
+    if (m_currentAnimation)
+    {
+        m_spriteAnimation->StartAnimation(m_currentAnimation);
+
+        if (m_currentAnimation->GetFrameCount() > 0)
+        {
+            m_currentFrame = m_currentAnimation->GetFrame(0);
+        }
+    }
+    else
+    {
+        m_spriteAnimation->StopAnimation();
+    }
+}
+
 void AnimSetPanel::OnAddAnimation()
 {
-    m_animSet->AddAnimation(StringFormat("Animation_{0}", m_animSet->GetAnimations().size()));
+    Animation* newAnimation = m_animSet->AddAnimation(StringFormat("Animation_{0}", m_animSet->GetAnimations().size()));
     RaiseDirty();
+
+    SelectAnimation(newAnimation);
 }
 
 void AnimSetPanel::OnRemoveAnimation()
@@ -538,6 +555,72 @@ void AnimSetPanel::OnRemoveAnimation()
     m_animSet->DeleteAnimation(m_currentAnimation);
     m_currentAnimation = nullptr;
     m_currentFrame = nullptr;
+
+    RaiseDirty();
+}
+
+void AnimSetPanel::OnGenerateAnimationFrames()
+{
+    GetEditor()->OpenModalDialog(new GenerateAnimationFramesDialog(
+        m_animSet->GetImageSet(),
+        std::bind(&AnimSetPanel::GenerateAnimationFramesFromDirectory, this, std::placeholders::_1),
+        std::bind(&AnimSetPanel::GenerateAnimationFramesFromImageSet, this, std::placeholders::_1, std::placeholders::_2)
+    ));
+}
+
+void AnimSetPanel::GenerateAnimationFramesFromDirectory(const std::string& path)
+{
+    if (!m_currentAnimation)
+        return;
+
+    std::string targetPath = CombinePaths(GetEditor()->GetProjectSettings()->projectAssetsPath, path, false);
+
+    if (!StdStringStartsWith(targetPath, GetEditor()->GetProjectSettings()->projectAssetsPath))
+        return;
+
+    std::vector<FileInfo> directoryFiles;
+    GetFiles(targetPath, directoryFiles, false);
+
+    std::sort(directoryFiles.begin(), directoryFiles.end());
+
+    for (size_t i = 0; i < directoryFiles.size(); ++i)
+    {
+        std::string resourceID = GetResources()->GetResourceID(directoryFiles[i]);
+        if (GetResources()->HasResource(resourceID))
+        {
+            Texture* texture = GetResources()->GetTexture(resourceID);
+            if (texture)
+            {
+                AnimationFrame* newFrame = m_currentAnimation->AddFrame();
+                newFrame->SetTexture(texture);
+                newFrame->SetDuration(m_defaultDuration);
+            }
+        }
+    }
+
+    RaiseDirty();
+}
+
+void AnimSetPanel::GenerateAnimationFramesFromImageSet(size_t from, size_t to)
+{
+    if (!m_currentAnimation)
+        return;
+
+    ImageSet* imageSet = m_animSet->GetImageSet();
+    if (!imageSet)
+        return;
+
+    const std::vector<SubImage*>& subImages = imageSet->GetSubImages();
+
+    if (from > to || to >= subImages.size())
+        return;
+
+    for (size_t i = from; i <= to; ++i)
+    {
+        AnimationFrame* newFrame = m_currentAnimation->AddFrame();
+        newFrame->SetSubImage(subImages[i]);
+        newFrame->SetDuration(m_defaultDuration);
+    }
 
     RaiseDirty();
 }
@@ -579,6 +662,7 @@ void AnimSetPanel::CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* 
 {
     if (referenceFrame)
     {
+        // TODO: copy ctor used in AddFrame ?
         targetFrame->SetDuration(referenceFrame->GetDuration());
         targetFrame->SetTexture(referenceFrame->GetTexture());
         targetFrame->SetSubImage(referenceFrame->GetSubImage());

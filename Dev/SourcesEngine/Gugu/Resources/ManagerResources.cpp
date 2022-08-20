@@ -422,6 +422,7 @@ std::string ManagerResources::GetResourceID(const Resource* _pResource) const
 
 std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
 {
+    // TODO: I should be able to deduce an ID from a FileInfo.
     auto iteCurrent = m_resources.begin();
     while (iteCurrent != m_resources.end())
     {

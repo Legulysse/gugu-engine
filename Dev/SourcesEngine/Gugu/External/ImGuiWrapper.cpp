@@ -123,7 +123,7 @@ bool Combo(const char* label, const std::vector<std::string>& comboValues, size_
         for (size_t i = 0; i < comboValues.size(); ++i)
         {
             bool selected = (*selectedIndex == i);
-            if (ImGui::Selectable(comboValues[i].c_str(), *selectedIndex == i))
+            if (ImGui::Selectable(comboValues[i].c_str(), selected))
             {
                 *selectedIndex = i;
                 updated = true;

@@ -127,4 +127,9 @@ bool Resource::SaveToXml(pugi::xml_document& document) const
     return false;
 }
 
+void Resource::GetDependencies(std::vector<Resource*>& dependencies) const
+{
+    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "GetDependencies is not supported for this type of resource");
+}
+
 }   // namespace gugu

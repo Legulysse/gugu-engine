@@ -16,6 +16,7 @@ namespace gugu
     class RenderViewport;
     class AnimSet;
     class ImageSet;
+    class SubImage;
     class Animation;
     class AnimationFrame;
     class SpriteAnimation;
@@ -33,6 +34,8 @@ public:
 
     AnimSetPanel(AnimSet* resource);
     virtual ~AnimSetPanel();
+
+    void OnSubImageRemoved(SubImage* subImage);
 
 protected:
 
@@ -52,8 +55,9 @@ protected:
     void GenerateAnimationFramesFromImageSet(size_t from, size_t to);
 
     void UpdateMainImageSet(ImageSet* newImageSet);
+    void CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame);  //TODO: invert from/to.
 
-    void CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame);
+    void OnDependencyUpdated(const Resource* dependency, bool removed);
 
 private:
 

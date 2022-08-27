@@ -279,6 +279,28 @@ EResourceType::Type AnimSet::GetResourceType() const
     return EResourceType::AnimSet;
 }
 
+void AnimSet::GetDependencies(std::vector<Resource*>& dependencies) const
+{
+    if (m_imageSet)
+    {
+        dependencies.push_back(m_imageSet);
+
+        m_imageSet->GetDependencies(dependencies);
+    }
+
+    for (size_t i = 0; i < m_animations.size(); ++i)
+    {
+        for (size_t ii = 0; ii < m_animations[i]->GetFrames().size(); ++ii)
+        {
+            Texture* texture = m_animations[i]->GetFrame(ii)->GetTexture();
+            if (texture)
+            {
+                dependencies.push_back(texture);
+            }
+        }
+    }
+}
+
 void AnimSet::Unload()
 {
     ClearStdVector(m_animations);
@@ -322,6 +344,7 @@ bool AnimSet::LoadFromXml(const pugi::xml_document& document)
                     std::string strFrameSubImage = oAttributeSubImage.as_string();
                     ImageSet* pFrameImageSet = m_imageSet;
 
+                    // TODO: deprecate multiple imagesets.
                     pugi::xml_attribute oAttributeNameSet = oNodeFrame.attribute("nameSet");
                     if (oAttributeNameSet)
                         pFrameImageSet = GetResources()->GetImageSet(oAttributeNameSet.as_string());
@@ -373,6 +396,7 @@ bool AnimSet::SaveToXml(pugi::xml_document& document) const
             }
             else if (frame->GetSubImage())
             {
+                // TODO: deprecate multiple imagesets.
                 if (m_imageSet != frame->GetSubImage()->GetImageSet())
                     nodeFrame.append_attribute("nameSet") = frame->GetSubImage()->GetImageSet()->GetID().c_str();
                 nodeFrame.append_attribute("subImage") = frame->GetSubImage()->GetName().c_str();

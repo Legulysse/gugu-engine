@@ -58,6 +58,7 @@ public:
     bool OpenModalDialog(BaseModalDialog* modalDialog);
     bool OpenDocument(const std::string& resourceID);
     bool CloseDocument(const std::string& resourceID, bool forceIgnoreDirty);
+    const std::vector<DocumentPanel*>& GetDocuments() const;
 
     void RefreshAssets();
     void ResetPanels();

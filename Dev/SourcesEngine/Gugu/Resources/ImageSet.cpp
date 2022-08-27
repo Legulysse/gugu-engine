@@ -146,6 +146,14 @@ EResourceType::Type ImageSet::GetResourceType() const
     return EResourceType::ImageSet;
 }
 
+void ImageSet::GetDependencies(std::vector<Resource*>& dependencies) const
+{
+    if (m_texture)
+    {
+        dependencies.push_back(m_texture);
+    }
+}
+
 void ImageSet::Unload()
 {
     DeleteAllSubImages();

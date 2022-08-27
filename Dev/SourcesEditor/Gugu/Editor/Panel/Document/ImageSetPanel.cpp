@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Editor/Editor.h"
+#include "Gugu/Editor/Panel/Document/AnimSetPanel.h"
 #include "Gugu/Editor/Widget/RenderViewport.h"
 #include "Gugu/Editor/Modal/GenerateSubImagesDialog.h"
 
@@ -572,7 +573,18 @@ void ImageSetPanel::OnRemoveSubImage()
     if (m_selectedIndex < 0)
         return;
 
-    m_imageSet->DeleteSubImage(m_imageSet->GetSubImage(m_selectedIndex));
+    SubImage* subImage = m_imageSet->GetSubImage(m_selectedIndex);
+
+    for (auto& document : GetEditor()->GetDocuments())
+    {
+        AnimSetPanel* animSetPanel = dynamic_cast<AnimSetPanel*>(document);
+        if (animSetPanel)
+        {
+            animSetPanel->OnSubImageRemoved(subImage);
+        }
+    }
+
+    m_imageSet->DeleteSubImage(subImage);
     m_selectedIndex = Clamp<int>(m_selectedIndex, -1, m_imageSet->GetSubImageCount() - 1);
 
     RaiseDirty();

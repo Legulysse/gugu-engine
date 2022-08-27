@@ -612,6 +612,11 @@ bool Editor::CloseDocument(const std::string& resourceID, bool forceIgnoreDirty)
     return true;
 }
 
+const std::vector<DocumentPanel*>& Editor::GetDocuments() const
+{
+    return m_documentPanels;
+}
+
 bool Editor::RaiseCheckDirtyDocuments()
 {
     bool hasDirtyDocuments = false;

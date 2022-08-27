@@ -60,6 +60,7 @@ void ManagerResources::Init(const EngineConfig& config)
 
 void ManagerResources::Release()
 {
+    m_resourceListeners.clear();
     m_datasheetObjectFactories.clear();
 
     ClearStdMap(m_datasheetEnums);
@@ -576,8 +577,17 @@ bool ManagerResources::RemoveResource(const std::string& resourceID)
     auto iteResource = m_resources.find(resourceID);
     if (iteResource != m_resources.end())
     {
+        const Resource* removedResource = iteResource->second->resource;
+
         ResourceInfo* pInfo = iteResource->second;
         m_resources.erase(iteResource);
+
+        if (removedResource)
+        {
+            // TODO: plug and test those calls when moving/renaming/unloading resources.
+            TriggerResourceUpdated(removedResource, true);
+            RemoveAllResourceListeners(removedResource);
+        }
 
         SafeDelete(pInfo);
     }
@@ -767,6 +777,72 @@ const DatasheetEnum* ManagerResources::GetDatasheetEnum(const std::string& _strN
         return (iteElement->second);
     }
     return nullptr;
+}
+
+void ManagerResources::RegisterResourceListenerOnDependencies(const Resource* resource, const void* handle, const DelegateResourceUpdated& delegateResourceUpdated)
+{
+    std::vector<Resource*> dependencies;
+    resource->GetDependencies(dependencies);
+
+    for (Resource* dependency : dependencies)
+    {
+        RegisterResourceListener(dependency, handle, delegateResourceUpdated);
+    }
+}
+
+void ManagerResources::RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceUpdated& delegateResourceUpdated)
+{
+    auto it = m_resourceListeners.find(resource);
+    if (it == m_resourceListeners.end())
+    {
+        it = m_resourceListeners.insert(it, std::make_pair(resource, std::vector<ResourceListener>()));
+    }
+
+    ResourceListener dependencyListener;
+    dependencyListener.handle = handle;
+    dependencyListener.delegateResourceUpdated = delegateResourceUpdated;
+
+    it->second.push_back(dependencyListener);
+}
+
+void ManagerResources::UnregisterResourceListeners(const void* handle)
+{
+    for (auto& kvp : m_resourceListeners)
+    {
+        size_t i = 0;
+        while (i < kvp.second.size())
+        {
+            if (kvp.second[i].handle == handle)
+            {
+                StdVectorRemoveAt(kvp.second, i);
+            }
+            else
+            {
+                ++i;
+            }
+        }
+    }
+}
+
+void ManagerResources::RemoveAllResourceListeners(const Resource* resource)
+{
+    auto it = m_resourceListeners.find(resource);
+    if (it != m_resourceListeners.end())
+    {
+        m_resourceListeners.erase(it);
+    }
+}
+
+void ManagerResources::TriggerResourceUpdated(const Resource* resource, bool removed)
+{
+    auto it = m_resourceListeners.find(resource);
+    if (it != m_resourceListeners.end())
+    {
+        for (const auto& resourceListener : it->second)
+        {
+            resourceListener.delegateResourceUpdated(resource, removed);
+        }
+    }
 }
 
 ManagerResources* GetResources()

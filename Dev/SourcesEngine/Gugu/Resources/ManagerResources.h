@@ -51,6 +51,7 @@ class ManagerResources
 public:
 
     using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (const std::string&)>;
+    using DelegateResourceUpdated = std::function<void(const Resource* resource, bool removed)>;
 
 public:
 
@@ -136,6 +137,12 @@ public:
     void RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum);
     const DatasheetEnum* GetDatasheetEnum(const std::string& _strName);
 
+    void RegisterResourceListenerOnDependencies(const Resource* resource, const void* handle, const DelegateResourceUpdated& delegateResourceUpdated);
+    void RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceUpdated& delegateResourceUpdated);
+    void UnregisterResourceListeners(const void* handle);
+    void RemoveAllResourceListeners(const Resource* resource);
+    void TriggerResourceUpdated(const Resource* resource, bool removed);
+
 private:
 
     Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
@@ -157,6 +164,13 @@ private:
 
     std::vector<DelegateDatasheetObjectFactory> m_datasheetObjectFactories;
     std::map<ResourceMapKey, const DatasheetEnum*>  m_datasheetEnums;
+
+    struct ResourceListener
+    {
+        const void* handle;
+        DelegateResourceUpdated delegateResourceUpdated;
+    };
+    std::map<const Resource*, std::vector<ResourceListener>> m_resourceListeners;
 };
 
 ManagerResources* GetResources();

@@ -57,10 +57,16 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     m_spriteAnimation->ChangeAnimSet(m_animSet);
 
     SelectAnimation(m_animSet->GetAnimation(0));
+
+    // Dependencies
+    GetResources()->RegisterResourceListenerOnDependencies(m_animSet, this, std::bind(&AnimSetPanel::OnDependencyUpdated, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 AnimSetPanel::~AnimSetPanel()
 {
+    // Dependencies
+    GetResources()->UnregisterResourceListeners(this);
+
     SafeDelete(m_renderViewport);
 }
 
@@ -633,14 +639,13 @@ void AnimSetPanel::UpdateMainImageSet(ImageSet* newImageSet)
         return;
 
     const std::vector<Animation*>& animations = m_animSet->GetAnimations();
-
     for (size_t i = 0; i < animations.size(); ++i)
     {
         const std::vector<AnimationFrame*>& frames = animations[i]->GetFrames();
-
         for (size_t ii = 0; ii < frames.size(); ++ii)
         {
             // TODO: handle frames with explicit reference on an ImageSet (currently info is lost after loading).
+            // TODO: deprecate multiple imagesets instead.
             if (!newImageSet)
             {
                 frames[ii]->SetSubImage(nullptr);
@@ -668,6 +673,44 @@ void AnimSetPanel::CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* 
         targetFrame->SetSubImage(referenceFrame->GetSubImage());
         targetFrame->SetOrigin(referenceFrame->GetOrigin());
         targetFrame->SetMoveOffset(referenceFrame->GetMoveOffset());
+    }
+}
+
+void AnimSetPanel::OnSubImageRemoved(SubImage* subImage)
+{
+    // TODO: This could be removed when I stop using direct references between resources.
+    bool updated = false;
+
+    const std::vector<Animation*>& animations = m_animSet->GetAnimations();
+    for (size_t i = 0; i < animations.size(); ++i)
+    {
+        const std::vector<AnimationFrame*>& frames = animations[i]->GetFrames();
+        for (size_t ii = 0; ii < frames.size(); ++ii)
+        {
+            if (frames[ii]->GetSubImage() == subImage)
+            {
+                frames[ii]->SetSubImage(nullptr);
+                updated = true;
+            }
+        }
+    }
+
+    if (updated)
+    {
+        RaiseDirty();
+    }
+}
+
+void AnimSetPanel::OnDependencyUpdated(const Resource* dependency, bool removed)
+{
+    // TODO: Move this part in the Resource itself.
+    // TODO: find a way to refresh the reunning animation if needed (maybe keep the callback in addition to the internal resource callback ?).
+    if (dependency == m_animSet->GetImageSet())
+    {
+        if (removed)
+        {
+            UpdateMainImageSet(nullptr);
+        }
     }
 }
 

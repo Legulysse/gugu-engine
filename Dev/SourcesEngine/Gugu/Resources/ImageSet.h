@@ -72,6 +72,8 @@ public:
 
     virtual EResourceType::Type GetResourceType() const override;
 
+    virtual void GetDependencies(std::vector<Resource*>& dependencies) const override;
+
 protected:
 
     virtual void Unload() override;

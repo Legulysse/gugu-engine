@@ -6,6 +6,8 @@
 #include "Gugu/System/FileInfo.h"
 #include "Gugu/Resources/EnumsResources.h"
 
+#include <vector>
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -43,6 +45,9 @@ public:
 
     virtual bool SaveToFile() const;
     virtual bool SaveToString(std::string& result) const;
+
+    virtual void GetDependencies(std::vector<Resource*>& dependencies) const;
+    //virtual void OnDependencyRemoved(Resource* removedResource);
 
 protected:
 

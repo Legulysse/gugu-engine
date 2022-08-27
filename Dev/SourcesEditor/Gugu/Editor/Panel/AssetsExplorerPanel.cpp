@@ -170,7 +170,7 @@ void AssetsExplorerPanel::RefreshContent()
         newNode->isFolder = false;
         newNode->name = resourceInfo->fileInfo.GetName();
         newNode->path = resourceInfo->fileInfo.GetPath(false);
-        newNode->ressourceID = resourceInfo->resourceID;
+        newNode->resourceID = resourceInfo->resourceID;
         currentDirectory->children.push_back(newNode);
     }
 
@@ -365,7 +365,7 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
         // Open Document.
         if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))     // ImGui::IsMouseDoubleClicked(0) 
         {
-            GetEditor()->OpenDocument(node->ressourceID);
+            GetEditor()->OpenDocument(node->resourceID);
 
             // TODO: handle selection.
         }
@@ -444,9 +444,9 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
     {
         if (ImGui::MenuItem("Delete"))
         {
-            if (GetEditor()->CloseDocument(node->ressourceID, true))
+            if (GetEditor()->CloseDocument(node->resourceID, true))
             {
-                if (GetResources()->DeleteResource(node->ressourceID))
+                if (GetResources()->DeleteResource(node->resourceID))
                 {
                     GetEditor()->RefreshAssets();
                 }

@@ -48,7 +48,7 @@ private:
         bool isFolder;
         std::vector<TreeNode*> children;
 
-        std::string ressourceID;
+        std::string resourceID;
     };
 
     void CreateNewDirectory(TreeNode* parentNode);

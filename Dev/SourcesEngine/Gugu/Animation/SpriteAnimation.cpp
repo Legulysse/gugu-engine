@@ -286,6 +286,10 @@ AnimationFrame* SpriteAnimation::InitCurrentAnimationFrame()
         {
             m_sprite->SetTexture(pCurrentFrame->GetTexture());
         }
+        else
+        {
+            m_sprite->SetTexture(nullptr);
+        }
 
         if (m_originFromAnimation)
         {

@@ -53,7 +53,13 @@ void ElementSprite::SetSubImage(const std::string& _strImageSetName, const std::
 {
     ImageSet* pImageSet = GetResources()->GetImageSet(_strImageSetName);
     if (pImageSet)
+    {
         SetSubImage(pImageSet->GetSubImage(_strSubImageName));
+    }
+    else
+    {
+        SetTexture(nullptr);
+    }
 }
 
 void ElementSprite::SetSubImage(SubImage* _pSubImage)
@@ -62,6 +68,10 @@ void ElementSprite::SetSubImage(SubImage* _pSubImage)
     {
         m_texture = _pSubImage->GetImageSet()->GetTexture();
         SetSubRect(_pSubImage->GetRect());
+    }
+    else
+    {
+        SetTexture(nullptr);
     }
 }
 

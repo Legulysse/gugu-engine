@@ -285,19 +285,40 @@ void AnimSet::GetDependencies(std::vector<Resource*>& dependencies) const
     {
         dependencies.push_back(m_imageSet);
 
+        // TODO: Do I need an option to retrieve or not indirect dependencies ?
         m_imageSet->GetDependencies(dependencies);
     }
 
     for (size_t i = 0; i < m_animations.size(); ++i)
     {
-        for (size_t ii = 0; ii < m_animations[i]->GetFrames().size(); ++ii)
+        const std::vector<AnimationFrame*>& frames = m_animations[i]->GetFrames();
+        for (size_t ii = 0; ii < frames.size(); ++ii)
         {
-            Texture* texture = m_animations[i]->GetFrame(ii)->GetTexture();
+            Texture* texture = frames[ii]->GetTexture();
             if (texture)
             {
                 dependencies.push_back(texture);
             }
         }
+    }
+}
+
+void AnimSet::OnDependencyRemoved(const Resource* removedDependency)
+{
+    if (m_imageSet == removedDependency)
+    {
+        for (size_t i = 0; i < m_animations.size(); ++i)
+        {
+            const std::vector<AnimationFrame*>& frames = m_animations[i]->GetFrames();
+            for (size_t ii = 0; ii < frames.size(); ++ii)
+            {
+                // TODO: handle frames with explicit reference on an ImageSet (currently info is lost after loading).
+                // TODO: deprecate multiple imagesets instead.
+                frames[ii]->SetSubImage(nullptr);
+            }
+        }
+
+        m_imageSet = nullptr;
     }
 }
 

@@ -57,7 +57,7 @@ protected:
     void UpdateMainImageSet(ImageSet* newImageSet);
     void CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame);  //TODO: invert from/to.
 
-    void OnDependencyUpdated(const Resource* dependency, bool removed);
+    void OnDependencyRemoved(const Resource* dependency);
 
 private:
 

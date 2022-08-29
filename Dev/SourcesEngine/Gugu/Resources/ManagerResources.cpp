@@ -368,6 +368,8 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
         pResource->Init(_pResourceInfo);
         pResource->LoadFromFile();
 
+        RegisterResourceListenerOnDependencies(pResource, pResource, std::bind(&Resource::OnDependencyRemoved, pResource, std::placeholders::_1));
+
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", oFileInfo.GetName()));
     }
 
@@ -388,6 +390,8 @@ bool ManagerResources::InjectResource(const std::string& _strResourceID, Resourc
         {
             iteAsset->second->resource = _pResource;
             _pResource->Init(iteAsset->second);
+
+            RegisterResourceListenerOnDependencies(_pResource, _pResource, std::bind(&Resource::OnDependencyRemoved, _pResource, std::placeholders::_1));
 
             GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Injected Resource : {0}", _strResourceID));
             return true;
@@ -497,9 +501,11 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
     pInfo->fileInfo = _oFileInfo;
     pInfo->resource = _pNewResource;
 
+    m_resources.insert(iteResource, std::make_pair(strResourceID, pInfo));
+
     _pNewResource->Init(pInfo);
 
-    m_resources.insert(iteResource, std::make_pair(strResourceID, pInfo));
+    RegisterResourceListenerOnDependencies(_pNewResource, _pNewResource, std::bind(&Resource::OnDependencyRemoved, _pNewResource, std::placeholders::_1));
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Added Resource : ID = {0}, Path = {1}"
         , strResourceID
@@ -584,9 +590,10 @@ bool ManagerResources::RemoveResource(const std::string& resourceID)
 
         if (removedResource)
         {
-            // TODO: plug and test those calls when moving/renaming/unloading resources.
-            TriggerResourceUpdated(removedResource, true);
-            RemoveAllResourceListeners(removedResource);
+            UnregisterResourceListeners(removedResource);
+
+            NotifyResourceRemoved(removedResource);
+            RemoveAllListenersFromResource(removedResource);
         }
 
         SafeDelete(pInfo);
@@ -779,18 +786,18 @@ const DatasheetEnum* ManagerResources::GetDatasheetEnum(const std::string& _strN
     return nullptr;
 }
 
-void ManagerResources::RegisterResourceListenerOnDependencies(const Resource* resource, const void* handle, const DelegateResourceUpdated& delegateResourceUpdated)
+void ManagerResources::RegisterResourceListenerOnDependencies(const Resource* resource, const void* handle, const DelegateResourceRemoved& delegateResourceRemoved)
 {
     std::vector<Resource*> dependencies;
     resource->GetDependencies(dependencies);
 
     for (Resource* dependency : dependencies)
     {
-        RegisterResourceListener(dependency, handle, delegateResourceUpdated);
+        RegisterResourceListener(dependency, handle, delegateResourceRemoved);
     }
 }
 
-void ManagerResources::RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceUpdated& delegateResourceUpdated)
+void ManagerResources::RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceRemoved& delegateResourceRemoved)
 {
     auto it = m_resourceListeners.find(resource);
     if (it == m_resourceListeners.end())
@@ -800,13 +807,14 @@ void ManagerResources::RegisterResourceListener(const Resource* resource, const 
 
     ResourceListener dependencyListener;
     dependencyListener.handle = handle;
-    dependencyListener.delegateResourceUpdated = delegateResourceUpdated;
+    dependencyListener.delegateResourceRemoved = delegateResourceRemoved;
 
     it->second.push_back(dependencyListener);
 }
 
 void ManagerResources::UnregisterResourceListeners(const void* handle)
 {
+    // Remove all listeners originating from this handle.
     for (auto& kvp : m_resourceListeners)
     {
         size_t i = 0;
@@ -824,8 +832,9 @@ void ManagerResources::UnregisterResourceListeners(const void* handle)
     }
 }
 
-void ManagerResources::RemoveAllResourceListeners(const Resource* resource)
+void ManagerResources::RemoveAllListenersFromResource(const Resource* resource)
 {
+    // Remove all listeners listening to this resource.
     auto it = m_resourceListeners.find(resource);
     if (it != m_resourceListeners.end())
     {
@@ -833,14 +842,14 @@ void ManagerResources::RemoveAllResourceListeners(const Resource* resource)
     }
 }
 
-void ManagerResources::TriggerResourceUpdated(const Resource* resource, bool removed)
+void ManagerResources::NotifyResourceRemoved(const Resource* resource)
 {
     auto it = m_resourceListeners.find(resource);
     if (it != m_resourceListeners.end())
     {
         for (const auto& resourceListener : it->second)
         {
-            resourceListener.delegateResourceUpdated(resource, removed);
+            resourceListener.delegateResourceRemoved(resource);
         }
     }
 }

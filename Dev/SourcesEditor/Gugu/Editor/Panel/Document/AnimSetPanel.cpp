@@ -59,7 +59,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     SelectAnimation(m_animSet->GetAnimation(0));
 
     // Dependencies
-    GetResources()->RegisterResourceListenerOnDependencies(m_animSet, this, std::bind(&AnimSetPanel::OnDependencyUpdated, this, std::placeholders::_1, std::placeholders::_2));
+    GetResources()->RegisterResourceListenerOnDependencies(m_animSet, this, std::bind(&AnimSetPanel::OnDependencyRemoved, this, std::placeholders::_1));
 }
 
 AnimSetPanel::~AnimSetPanel()
@@ -701,17 +701,14 @@ void AnimSetPanel::OnSubImageRemoved(SubImage* subImage)
     }
 }
 
-void AnimSetPanel::OnDependencyUpdated(const Resource* dependency, bool removed)
+void AnimSetPanel::OnDependencyRemoved(const Resource* dependency)
 {
     // TODO: Move this part in the Resource itself.
     // TODO: find a way to refresh the reunning animation if needed (maybe keep the callback in addition to the internal resource callback ?).
-    if (dependency == m_animSet->GetImageSet())
-    {
-        if (removed)
-        {
-            UpdateMainImageSet(nullptr);
-        }
-    }
+
+    RaiseDirty();
+
+    m_spriteAnimation->RestartAnimation();
 }
 
 }   //namespace gugu

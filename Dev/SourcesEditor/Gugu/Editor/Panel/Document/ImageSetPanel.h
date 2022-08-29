@@ -42,6 +42,8 @@ protected:
 
     void OnDragGizmoEdge(Element* edge, Vector2f position);
 
+    void RefreshSpriteTexture();
+
     void OnAddSubImage();
     void OnRemoveSubImage();
     void OnRemoveAllSubImages();
@@ -49,6 +51,8 @@ protected:
 
     void GenerateSubImagesFromCount(int columnCount, int rowCount);
     void GenerateSubImagesFromSize(const Vector2i& itemSize, const Vector2i& itemOffset);
+
+    void OnDependencyRemoved(const Resource* dependency);
 
 private:
 

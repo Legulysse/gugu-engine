@@ -50,16 +50,20 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     m_renderViewport = new RenderViewport(true);
 
     m_sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
-    m_sprite->SetTexture(m_imageSet->GetTexture());
-
-    m_renderViewport->SetSize(Vector2u(m_sprite->GetSize()));
+    RefreshSpriteTexture();
 
     // Setup gizmo.
     CreateGizmo();
+
+    // Dependencies
+    GetResources()->RegisterResourceListenerOnDependencies(m_imageSet, this, std::bind(&ImageSetPanel::OnDependencyRemoved, this, std::placeholders::_1));
 }
 
 ImageSetPanel::~ImageSetPanel()
 {
+    // Dependencies
+    GetResources()->UnregisterResourceListeners(this);
+
     SafeDelete(m_renderViewport);
 }
 
@@ -87,7 +91,7 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         m_imageSet->SetTexture(GetResources()->GetTexture(textureId));
         RaiseDirty();
 
-        m_sprite->SetTexture(m_imageSet->GetTexture());
+        RefreshSpriteTexture();
     }
 
     ImGui::Spacing();
@@ -553,6 +557,22 @@ void ImageSetPanel::OnDragGizmoEdge(Element* edge, Vector2f edgePosition)
     m_gizmoCenter->SetSize(kSize);
 }
 
+void ImageSetPanel::RefreshSpriteTexture()
+{
+    Texture* texture = m_imageSet->GetTexture();
+    m_sprite->SetTexture(texture);
+
+    if (texture)
+    {
+        Vector2u size = texture->GetSize();
+
+        if (size.x > 0 && size.y > 0)
+        {
+            m_renderViewport->SetSize(size);
+        }
+    }
+}
+
 void ImageSetPanel::OnAddSubImage()
 {
     SubImage* lastSubImage = m_imageSet->GetSubImage(m_imageSet->GetSubImageCount() - 1);
@@ -672,6 +692,13 @@ void ImageSetPanel::GenerateSubImagesFromSize(const Vector2i& itemSize, const Ve
 
         RaiseDirty();
     }
+}
+
+void ImageSetPanel::OnDependencyRemoved(const Resource* dependency)
+{
+    RefreshSpriteTexture();
+
+    RaiseDirty();
 }
 
 }   //namespace gugu

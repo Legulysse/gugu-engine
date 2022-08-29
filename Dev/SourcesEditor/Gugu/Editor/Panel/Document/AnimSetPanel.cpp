@@ -148,7 +148,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     std::string mainImageSetID = !mainImageSet ? "" : mainImageSet->GetID();
     if (ImGui::InputText("ImageSet", &mainImageSetID, ImGuiInputTextFlags_EnterReturnsTrue))
     {
-        UpdateMainImageSet(GetResources()->GetImageSet(mainImageSetID));
+        ChangeMainImageSet(GetResources()->GetImageSet(mainImageSetID));
     }
 
     ImGui::Spacing();
@@ -631,7 +631,7 @@ void AnimSetPanel::GenerateAnimationFramesFromImageSet(size_t from, size_t to)
     RaiseDirty();
 }
 
-void AnimSetPanel::UpdateMainImageSet(ImageSet* newImageSet)
+void AnimSetPanel::ChangeMainImageSet(ImageSet* newImageSet)
 {
     ImageSet* mainImageSet = m_animSet->GetImageSet();
 
@@ -703,9 +703,6 @@ void AnimSetPanel::OnSubImageRemoved(SubImage* subImage)
 
 void AnimSetPanel::OnDependencyRemoved(const Resource* dependency)
 {
-    // TODO: Move this part in the Resource itself.
-    // TODO: find a way to refresh the reunning animation if needed (maybe keep the callback in addition to the internal resource callback ?).
-
     RaiseDirty();
 
     m_spriteAnimation->RestartAnimation();

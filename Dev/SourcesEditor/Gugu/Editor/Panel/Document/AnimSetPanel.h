@@ -54,7 +54,7 @@ protected:
     void GenerateAnimationFramesFromDirectory(const std::string& path);
     void GenerateAnimationFramesFromImageSet(size_t from, size_t to);
 
-    void UpdateMainImageSet(ImageSet* newImageSet);
+    void ChangeMainImageSet(ImageSet* newImageSet);
     void CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame);  //TODO: invert from/to.
 
     void OnDependencyRemoved(const Resource* dependency);

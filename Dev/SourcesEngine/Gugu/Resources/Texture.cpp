@@ -74,9 +74,9 @@ bool Texture::IsRepeated() const
     return false;
 }
 
-Vector2i Texture::GetSize() const
+Vector2u Texture::GetSize() const
 {
-    return m_sfTexture ? Vector2i(m_sfTexture->getSize()) : Vector2i();
+    return m_sfTexture ? m_sfTexture->getSize() : Vector2u();
 }
 
 sf::IntRect Texture::GetRect() const

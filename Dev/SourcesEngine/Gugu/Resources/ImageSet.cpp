@@ -154,6 +154,14 @@ void ImageSet::GetDependencies(std::vector<Resource*>& dependencies) const
     }
 }
 
+void ImageSet::OnDependencyRemoved(const Resource* removedDependency)
+{
+    if (m_texture == removedDependency)
+    {
+        m_texture = nullptr;
+    }
+}
+
 void ImageSet::Unload()
 {
     DeleteAllSubImages();

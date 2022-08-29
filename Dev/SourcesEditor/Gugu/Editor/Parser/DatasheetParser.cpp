@@ -311,8 +311,6 @@ VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::strin
 
             if (GetResources()->InjectResource(resourceID, datasheet))
             {
-                // TODO: I should move the LoadFromFile call inside InjectResource.
-                datasheet->LoadFromFile();
                 return datasheet;
             }
 

@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/Sound.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/External/PugiXmlWrap.h"
@@ -54,6 +55,28 @@ bool SoundCue::GetRandomSound(SoundParameters& _kParameters) const
 EResourceType::Type SoundCue::GetResourceType() const
 {
     return EResourceType::SoundCue;
+}
+
+void SoundCue::GetDependencies(std::vector<Resource*>& dependencies) const
+{
+    for (auto& audioFile : m_audioFiles)
+    {
+        if (audioFile.sound)
+        {
+            dependencies.push_back(audioFile.sound);
+        }
+    }
+}
+
+void SoundCue::OnDependencyRemoved(const Resource* removedDependency)
+{
+    for (auto& audioFile : m_audioFiles)
+    {
+        if (audioFile.sound == removedDependency)
+        {
+            audioFile.sound = nullptr;
+        }
+    }
 }
 
 void SoundCue::Unload()

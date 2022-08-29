@@ -390,6 +390,7 @@ bool ManagerResources::InjectResource(const std::string& _strResourceID, Resourc
         {
             iteAsset->second->resource = _pResource;
             _pResource->Init(iteAsset->second);
+            _pResource->LoadFromFile();
 
             RegisterResourceListenerOnDependencies(_pResource, _pResource, std::bind(&Resource::OnDependencyRemoved, _pResource, std::placeholders::_1));
 

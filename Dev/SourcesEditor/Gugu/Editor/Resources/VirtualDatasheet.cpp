@@ -43,6 +43,63 @@ VirtualDatasheetObject::~VirtualDatasheetObject()
     ClearStdVector(m_dataValues);
 }
 
+void VirtualDatasheetObject::GetDependencies(std::vector<Resource*>& dependencies) const
+{
+    GetDependencies(m_dataValues, dependencies);
+}
+
+void VirtualDatasheetObject::GetDependencies(const std::vector<VirtualDatasheetObject::DataValue*>& dataValues, std::vector<Resource*>& dependencies) const
+{
+    for (auto dataValue : dataValues)
+    {
+        if (dataValue->value_objectReference)
+        {
+            dependencies.push_back(dataValue->value_objectReference);
+        }
+        else if (dataValue->value_objectInstance)
+        {
+            dataValue->value_objectInstance->GetDependencies(dependencies);
+        }
+        else
+        {
+            GetDependencies(dataValue->value_children, dependencies);
+        }
+    }
+}
+
+void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependency)
+{
+    const VirtualDatasheet* removedDatasheet = dynamic_cast<const VirtualDatasheet*>(removedDependency);
+
+    // TODO: Handle recursive reparenting on child objects (this could be tied to RefreshParentObject future updates).
+    if (removedDatasheet && removedDatasheet->m_rootObject == m_parentObject)
+    {
+        m_parentObject = nullptr;
+    }
+
+    OnDependencyRemoved(removedDependency, m_dataValues);
+}
+
+void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependency, std::vector<VirtualDatasheetObject::DataValue*>& dataValues)
+{
+    for (auto dataValue : dataValues)
+    {
+        if (dataValue->value_objectReference == removedDependency)
+        {
+            dataValue->value_string = "";
+            dataValue->value_objectReference = nullptr;
+        }
+        else if (dataValue->value_objectInstance)
+        {
+            dataValue->value_objectInstance->OnDependencyRemoved(removedDependency);
+        }
+        else
+        {
+            OnDependencyRemoved(removedDependency, dataValue->value_children);
+        }
+    }
+}
+
 bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition)
 {
     if (!classDefinition)
@@ -109,7 +166,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 
 void VirtualDatasheetObject::RefreshParentObject(VirtualDatasheetObject* parentObject)
 {
-    // TODO: Handle recursive reparenting on child objects when it is supported.
+    // TODO: Handle recursive reparenting on child objects when it is supported (this could be tied to OnDependencyRemoved future updates).
     m_parentObject = parentObject;
 }
 
@@ -349,6 +406,27 @@ VirtualDatasheet::~VirtualDatasheet()
 EResourceType::Type VirtualDatasheet::GetResourceType() const
 {
     return EResourceType::Datasheet;    // TODO: Should I use Custom ? Or a dedicated VirtualDatasheet enum value ?
+}
+
+void VirtualDatasheet::GetDependencies(std::vector<Resource*>& dependencies) const
+{
+    if (m_parentDatasheet)
+    {
+        dependencies.push_back(m_parentDatasheet);
+    }
+
+    m_rootObject->GetDependencies(dependencies);
+}
+
+void VirtualDatasheet::OnDependencyRemoved(const Resource* removedDependency)
+{
+    if (m_parentDatasheet == removedDependency)
+    {
+        m_parentDatasheetID = "";
+        m_parentDatasheet = nullptr;
+    }
+
+    m_rootObject->OnDependencyRemoved(removedDependency);
 }
 
 bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const

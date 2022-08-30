@@ -279,11 +279,11 @@ EResourceType::Type AnimSet::GetResourceType() const
     return EResourceType::AnimSet;
 }
 
-void AnimSet::GetDependencies(std::vector<Resource*>& dependencies) const
+void AnimSet::GetDependencies(std::set<Resource*>& dependencies) const
 {
     if (m_imageSet)
     {
-        dependencies.push_back(m_imageSet);
+        dependencies.insert(m_imageSet);
 
         // TODO: Do I need an option to retrieve or not indirect dependencies ?
         m_imageSet->GetDependencies(dependencies);
@@ -297,7 +297,7 @@ void AnimSet::GetDependencies(std::vector<Resource*>& dependencies) const
             Texture* texture = frames[ii]->GetTexture();
             if (texture)
             {
-                dependencies.push_back(texture);
+                dependencies.insert(texture);
             }
         }
     }

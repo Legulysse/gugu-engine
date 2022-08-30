@@ -56,13 +56,13 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     CreateGizmo();
 
     // Dependencies
-    GetResources()->RegisterResourceListenerOnDependencies(m_imageSet, this, std::bind(&ImageSetPanel::OnDependencyRemoved, this, std::placeholders::_1));
+    GetResources()->RegisterResourceListener(m_imageSet, this, STD_BIND_3(&ImageSetPanel::OnResourceEvent, this));
 }
 
 ImageSetPanel::~ImageSetPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(this);
+    GetResources()->UnregisterResourceListeners(m_imageSet, this);
 
     SafeDelete(m_renderViewport);
 }
@@ -694,11 +694,14 @@ void ImageSetPanel::GenerateSubImagesFromSize(const Vector2i& itemSize, const Ve
     }
 }
 
-void ImageSetPanel::OnDependencyRemoved(const Resource* dependency)
+void ImageSetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    RefreshSpriteTexture();
+    if (event == EResourceEvent::DependencyRemoved)
+    {
+        RefreshSpriteTexture();
 
-    RaiseDirty();
+        RaiseDirty();
+    }
 }
 
 }   //namespace gugu

@@ -43,7 +43,7 @@ protected:
     void DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData);
     void DisplayInstanceDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData);
 
-    void OnDependencyRemoved(const Resource* dependency);
+    void OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency);
 
 protected:
 

@@ -50,7 +50,7 @@ public:
     VirtualDatasheetObject();
     ~VirtualDatasheetObject();
 
-    void GetDependencies(std::vector<Resource*>& dependencies) const;
+    void GetDependencies(std::set<Resource*>& dependencies) const;
     void OnDependencyRemoved(const Resource* removedDependency);
 
     bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition);
@@ -64,7 +64,7 @@ public:
 
 protected:
 
-    void GetDependencies(const std::vector<VirtualDatasheetObject::DataValue*>& dataValues, std::vector<Resource*>& dependencies) const;
+    void GetDependencies(const std::vector<VirtualDatasheetObject::DataValue*>& dataValues, std::set<Resource*>& dependencies) const;
     void OnDependencyRemoved(const Resource* removedDependency, std::vector<VirtualDatasheetObject::DataValue*>& dataValues);
 
     void ParseInlineDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue);
@@ -89,7 +89,7 @@ public:
 
     virtual EResourceType::Type GetResourceType() const override;
 
-    virtual void GetDependencies(std::vector<Resource*>& dependencies) const override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
     virtual void OnDependencyRemoved(const Resource* removedDependency) override;
 
     bool IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const;    // TODO: I could use an enum for error returns, and reuse them in other cases of references error feedbacks.

@@ -146,11 +146,11 @@ EResourceType::Type ImageSet::GetResourceType() const
     return EResourceType::ImageSet;
 }
 
-void ImageSet::GetDependencies(std::vector<Resource*>& dependencies) const
+void ImageSet::GetDependencies(std::set<Resource*>& dependencies) const
 {
     if (m_texture)
     {
-        dependencies.push_back(m_texture);
+        dependencies.insert(m_texture);
     }
 }
 

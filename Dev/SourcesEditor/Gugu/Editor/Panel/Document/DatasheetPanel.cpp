@@ -27,13 +27,13 @@ DatasheetPanel::DatasheetPanel(VirtualDatasheet* resource)
     , m_datasheet(resource)
 {
     // Dependencies
-    GetResources()->RegisterResourceListenerOnDependencies(m_datasheet, this, std::bind(&DatasheetPanel::OnDependencyRemoved, this, std::placeholders::_1));
+    GetResources()->RegisterResourceListener(m_datasheet, this, STD_BIND_3(&DatasheetPanel::OnResourceEvent, this));
 }
 
 DatasheetPanel::~DatasheetPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(this);
+    GetResources()->UnregisterResourceListeners(m_datasheet, this);
 }
 
 void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
@@ -619,9 +619,12 @@ void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMembe
     }
 }
 
-void DatasheetPanel::OnDependencyRemoved(const Resource* dependency)
+void DatasheetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    RaiseDirty();
+    if (event == EResourceEvent::DependencyRemoved)
+    {
+        RaiseDirty();
+    }
 }
 
 }   //namespace gugu

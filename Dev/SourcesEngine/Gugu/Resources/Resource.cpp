@@ -130,7 +130,7 @@ bool Resource::SaveToXml(pugi::xml_document& document) const
     return false;
 }
 
-void Resource::GetDependencies(std::vector<Resource*>& dependencies) const
+void Resource::GetDependencies(std::set<Resource*>& dependencies) const
 {
     // No dependencies by default.
 }

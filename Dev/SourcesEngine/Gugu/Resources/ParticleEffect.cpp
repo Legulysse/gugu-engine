@@ -30,11 +30,11 @@ EResourceType::Type ParticleEffect::GetResourceType() const
     return EResourceType::ParticleEffect;
 }
 
-void ParticleEffect::GetDependencies(std::vector<Resource*>& dependencies) const
+void ParticleEffect::GetDependencies(std::set<Resource*>& dependencies) const
 {
     if (m_particleSettings.imageSet)
     {
-        dependencies.push_back(m_particleSettings.imageSet);
+        dependencies.insert(m_particleSettings.imageSet);
     }
 }
 

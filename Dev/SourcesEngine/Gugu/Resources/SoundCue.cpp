@@ -57,13 +57,13 @@ EResourceType::Type SoundCue::GetResourceType() const
     return EResourceType::SoundCue;
 }
 
-void SoundCue::GetDependencies(std::vector<Resource*>& dependencies) const
+void SoundCue::GetDependencies(std::set<Resource*>& dependencies) const
 {
     for (auto& audioFile : m_audioFiles)
     {
         if (audioFile.sound)
         {
-            dependencies.push_back(audioFile.sound);
+            dependencies.insert(audioFile.sound);
         }
     }
 }

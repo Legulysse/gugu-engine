@@ -49,13 +49,13 @@ ParticleEffectPanel::ParticleEffectPanel(ParticleEffect* resource)
     m_particleSystem = m_elementParticle->CreateParticleSystem(m_particleEffect, true);
 
     // Dependencies
-    GetResources()->RegisterResourceListenerOnDependencies(m_particleEffect, this, std::bind(&ParticleEffectPanel::OnDependencyRemoved, this, std::placeholders::_1));
+    GetResources()->RegisterResourceListener(m_particleEffect, this, STD_BIND_3(&ParticleEffectPanel::OnResourceEvent, this));
 }
 
 ParticleEffectPanel::~ParticleEffectPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(this);
+    GetResources()->UnregisterResourceListeners(m_particleEffect, this);
 
     m_particleSystem = nullptr;
     SafeDelete(m_renderViewport);
@@ -353,13 +353,16 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     }
 }
 
-void ParticleEffectPanel::OnDependencyRemoved(const Resource* dependency)
+void ParticleEffectPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    m_particleSystem->Init(m_particleEffect);
-    m_particleSystem->Restart();
-    m_maxParticleCount = 0;
+    if (event == EResourceEvent::DependencyRemoved)
+    {
+        m_particleSystem->Init(m_particleEffect);
+        m_particleSystem->Restart();
+        m_maxParticleCount = 0;
 
-    RaiseDirty();
+        RaiseDirty();
+    }
 }
 
 }   //namespace gugu

@@ -5,6 +5,7 @@
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
+#include "Gugu/Resources/EnumsResources.h"
 #include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
@@ -57,7 +58,7 @@ protected:
     void ChangeMainImageSet(ImageSet* newImageSet);
     void CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* referenceFrame);  //TODO: invert from/to.
 
-    void OnDependencyRemoved(const Resource* dependency);
+    void OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency);
 
 private:
 

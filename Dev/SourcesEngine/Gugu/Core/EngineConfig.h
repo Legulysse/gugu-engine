@@ -38,6 +38,7 @@ struct EngineConfig
     std::string defaultFont;
     std::string debugFont;
     bool defaultTextureSmooth;
+    bool handleResourceDependencies;
 
     // Graphics
     EGameWindow::Type gameWindow;
@@ -71,6 +72,7 @@ struct EngineConfig
         defaultFont = "";
         debugFont = "";
         defaultTextureSmooth = false;
+        handleResourceDependencies = false;
 
         gameWindow = EGameWindow::Sfml;
         windowWidth = 800;

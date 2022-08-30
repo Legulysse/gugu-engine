@@ -43,18 +43,18 @@ VirtualDatasheetObject::~VirtualDatasheetObject()
     ClearStdVector(m_dataValues);
 }
 
-void VirtualDatasheetObject::GetDependencies(std::vector<Resource*>& dependencies) const
+void VirtualDatasheetObject::GetDependencies(std::set<Resource*>& dependencies) const
 {
     GetDependencies(m_dataValues, dependencies);
 }
 
-void VirtualDatasheetObject::GetDependencies(const std::vector<VirtualDatasheetObject::DataValue*>& dataValues, std::vector<Resource*>& dependencies) const
+void VirtualDatasheetObject::GetDependencies(const std::vector<VirtualDatasheetObject::DataValue*>& dataValues, std::set<Resource*>& dependencies) const
 {
     for (auto dataValue : dataValues)
     {
         if (dataValue->value_objectReference)
         {
-            dependencies.push_back(dataValue->value_objectReference);
+            dependencies.insert(dataValue->value_objectReference);
         }
         else if (dataValue->value_objectInstance)
         {
@@ -408,11 +408,11 @@ EResourceType::Type VirtualDatasheet::GetResourceType() const
     return EResourceType::Datasheet;    // TODO: Should I use Custom ? Or a dedicated VirtualDatasheet enum value ?
 }
 
-void VirtualDatasheet::GetDependencies(std::vector<Resource*>& dependencies) const
+void VirtualDatasheet::GetDependencies(std::set<Resource*>& dependencies) const
 {
     if (m_parentDatasheet)
     {
-        dependencies.push_back(m_parentDatasheet);
+        dependencies.insert(m_parentDatasheet);
     }
 
     m_rootObject->GetDependencies(dependencies);

@@ -5,6 +5,8 @@
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
+#include "Gugu/Resources/EnumsResources.h"
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -39,7 +41,7 @@ protected:
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
-    void OnDependencyRemoved(const Resource* dependency);
+    void OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency);
 
 private:
 

@@ -59,13 +59,13 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     SelectAnimation(m_animSet->GetAnimation(0));
 
     // Dependencies
-    GetResources()->RegisterResourceListenerOnDependencies(m_animSet, this, std::bind(&AnimSetPanel::OnDependencyRemoved, this, std::placeholders::_1));
+    GetResources()->RegisterResourceListener(m_animSet, this, STD_BIND_3(&AnimSetPanel::OnResourceEvent, this));
 }
 
 AnimSetPanel::~AnimSetPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(this);
+    GetResources()->UnregisterResourceListeners(m_animSet, this);
 
     SafeDelete(m_renderViewport);
 }
@@ -701,11 +701,14 @@ void AnimSetPanel::OnSubImageRemoved(SubImage* subImage)
     }
 }
 
-void AnimSetPanel::OnDependencyRemoved(const Resource* dependency)
+void AnimSetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    RaiseDirty();
+    if (event == EResourceEvent::DependencyRemoved)
+    {
+        m_spriteAnimation->RestartAnimation();
 
-    m_spriteAnimation->RestartAnimation();
+        RaiseDirty();
+    }
 }
 
 }   //namespace gugu

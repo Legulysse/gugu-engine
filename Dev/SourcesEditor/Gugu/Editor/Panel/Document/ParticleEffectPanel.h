@@ -39,6 +39,8 @@ protected:
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
+    void OnDependencyRemoved(const Resource* dependency);
+
 private:
 
     RenderViewport* m_renderViewport;

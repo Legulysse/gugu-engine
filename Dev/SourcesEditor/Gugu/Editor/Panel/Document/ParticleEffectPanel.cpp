@@ -10,7 +10,9 @@
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
 #include "Gugu/Core/DeltaTime.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ParticleEffect.h"
+#include "Gugu/Resources/ImageSet.h"
 #include "Gugu/VisualEffects/ParticleSystem.h"
 #include "Gugu/VisualEffects/ManagerVisualEffects.h"
 #include "Gugu/Element/2D/ElementParticles.h"
@@ -44,11 +46,17 @@ ParticleEffectPanel::ParticleEffectPanel(ParticleEffect* resource)
     // Test Particle
     m_elementParticle = m_renderViewport->GetRoot()->AddChild<ElementParticles>();
     m_elementParticle->SetUnifiedPosition(UDim2::POSITION_CENTER);
-    m_particleSystem = m_elementParticle->CreateParticleSystem(*m_particleEffect->GetParticleSettings(), true);
+    m_particleSystem = m_elementParticle->CreateParticleSystem(m_particleEffect, true);
+
+    // Dependencies
+    GetResources()->RegisterResourceListenerOnDependencies(m_particleEffect, this, std::bind(&ParticleEffectPanel::OnDependencyRemoved, this, std::placeholders::_1));
 }
 
 ParticleEffectPanel::~ParticleEffectPanel()
 {
+    // Dependencies
+    GetResources()->UnregisterResourceListeners(this);
+
     m_particleSystem = nullptr;
     SafeDelete(m_renderViewport);
 }
@@ -325,7 +333,12 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     ImGui::Spacing();
 
-    updated |= ImGui::InputText("imageSet", &particleSettings->imageSetID);
+    std::string imageSetID = particleSettings->imageSet == nullptr ? "" : particleSettings->imageSet->GetID();
+    if (ImGui::InputText("imageSet", &imageSetID, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        particleSettings->imageSet = (imageSetID == "") ? nullptr : GetResources()->GetImageSet(imageSetID);
+        updated = true;
+    }
 
     // Finalize
     if (updated)
@@ -338,6 +351,15 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
         RaiseDirty();
     }
+}
+
+void ParticleEffectPanel::OnDependencyRemoved(const Resource* dependency)
+{
+    m_particleSystem->Init(m_particleEffect);
+    m_particleSystem->Restart();
+    m_maxParticleCount = 0;
+
+    RaiseDirty();
 }
 
 }   //namespace gugu

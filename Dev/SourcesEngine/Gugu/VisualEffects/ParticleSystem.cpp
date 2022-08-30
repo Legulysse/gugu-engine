@@ -119,14 +119,10 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     m_dataEndSize.resize(m_maxParticleCount);
     m_dataVelocity.resize(m_maxParticleCount);
 
-    if (m_settings.imageSetID != "")
+    if (m_settings.imageSet && m_settings.imageSet->GetSubImageCount() > 0 && m_settings.imageSet->GetTexture())
     {
-        ImageSet* imageSet = GetResources()->GetImageSet(m_settings.imageSetID);
-        if (imageSet && imageSet->GetSubImageCount() > 0 && imageSet->GetTexture())
-        {
-            m_imageSet = imageSet;
-            m_texture = m_imageSet->GetTexture()->GetSFTexture();
-        }
+        m_imageSet = m_settings.imageSet;
+        m_texture = m_imageSet->GetTexture()->GetSFTexture();
     }
 }
 

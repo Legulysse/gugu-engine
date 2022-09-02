@@ -162,6 +162,7 @@ private:
     Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
 
     void RegisterResourceDependencies(Resource* resource);
+    void UpdateResourceDependencies(Resource* resource);
     void UnregisterResourceDependencies(Resource* resource);
     void NotifyResourceRemoved(const Resource* resource);
 

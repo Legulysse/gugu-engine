@@ -366,10 +366,12 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     if (pResource)
     {
         _pResourceInfo->resource = pResource;
+        RegisterResourceDependencies(pResource);
+
         pResource->Init(_pResourceInfo);
         pResource->LoadFromFile();
 
-        RegisterResourceDependencies(pResource);
+        UpdateResourceDependencies(pResource);
 
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", oFileInfo.GetName()));
     }
@@ -390,10 +392,12 @@ bool ManagerResources::InjectResource(const std::string& _strResourceID, Resourc
         if (iteAsset->second->resource == nullptr)
         {
             iteAsset->second->resource = _pResource;
+            RegisterResourceDependencies(_pResource);
+
             _pResource->Init(iteAsset->second);
             _pResource->LoadFromFile();
 
-            RegisterResourceDependencies(_pResource);
+            UpdateResourceDependencies(_pResource);
 
             GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Injected Resource : {0}", _strResourceID));
             return true;
@@ -504,10 +508,11 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
     pInfo->resource = _pNewResource;
 
     m_resources.insert(iteResource, std::make_pair(strResourceID, pInfo));
+    RegisterResourceDependencies(_pNewResource);
 
     _pNewResource->Init(pInfo);
 
-    RegisterResourceDependencies(_pNewResource);
+    UpdateResourceDependencies(_pNewResource);
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Added Resource : ID = {0}, Path = {1}"
         , strResourceID
@@ -796,7 +801,21 @@ void ManagerResources::RegisterResourceDependencies(Resource* resource)
     if (it == m_resourceDependencies.end())
     {
         it = m_resourceDependencies.insert(it, std::make_pair(resource, ResourceDependencies()));
+    }
+    else
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RegisterResourceDependencies failed, Resource already registered : {0}", resource->GetID()));
+    }
+}
 
+void ManagerResources::UpdateResourceDependencies(Resource* resource)
+{
+    if (!m_handleResourceDependencies)
+        return;
+
+    auto it = m_resourceDependencies.find(resource);
+    if (it != m_resourceDependencies.end())
+    {
         resource->GetDependencies(it->second.dependencies);
 
         for (const auto& dependency : it->second.dependencies)
@@ -810,7 +829,7 @@ void ManagerResources::RegisterResourceDependencies(Resource* resource)
     }
     else
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RegisterResourceDependencies failed, Resource already registered : {0}", resource->GetID()));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("UpdateResourceDependencies failed, Unregistered Resource : {0}", resource->GetID()));
     }
 }
 

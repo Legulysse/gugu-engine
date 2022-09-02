@@ -41,7 +41,7 @@ void DependenciesPanel::UpdatePanel(const DeltaTime& dt)
             auto it = resourceDependencies.find(lastActiveDocument->GetResource());
             if (it != resourceDependencies.end())
             {
-                if (ImGui::TreeNodeEx(StringFormat("Active Document ({0}):", it->first->GetID()).c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+                if (ImGui::TreeNodeEx(StringFormat("Active Document ({0}):###_ACTIVE_DOCUMENT", it->first->GetID()).c_str(), ImGuiTreeNodeFlags_DefaultOpen))
                 {
                     DisplayResourceDependencies(it->second);
 
@@ -56,7 +56,7 @@ void DependenciesPanel::UpdatePanel(const DeltaTime& dt)
         {
             for (const auto& kvp : resourceDependencies)
             {
-                if (ImGui::TreeNodeEx(StringFormat("{0}", kvp.first->GetID()).c_str(), ImGuiTreeNodeFlags_None))
+                if (ImGui::TreeNodeEx(kvp.first->GetID().c_str(), ImGuiTreeNodeFlags_None))
                 {
                     DisplayResourceDependencies(kvp.second);
 

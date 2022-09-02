@@ -79,7 +79,6 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
 
     ImGui::End();
 
-
     m_closing |= !isOpen;
 }
 

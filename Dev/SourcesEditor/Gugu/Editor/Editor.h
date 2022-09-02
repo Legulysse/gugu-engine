@@ -21,6 +21,7 @@ namespace gugu
     class DocumentPanel;
     class AssetsExplorerPanel;
     class OutputLogPanel;
+    class DependenciesPanel;
     class ImageSetPanel;
     class DatasheetParser;
 }
@@ -59,6 +60,7 @@ public:
     bool OpenDocument(const std::string& resourceID);
     bool CloseDocument(const std::string& resourceID, bool forceIgnoreDirty);
     const std::vector<DocumentPanel*>& GetDocuments() const;
+    DocumentPanel* GetLastActiveDocument() const;
 
     void RefreshAssets();
     void ResetPanels();
@@ -97,11 +99,11 @@ private:
     bool m_pendingCloseDocument;
 
     bool m_resetPanels;
-    bool m_showSearchResults;
     bool m_showImGuiDemo;
 
     AssetsExplorerPanel* m_assetsExplorerPanel;
     OutputLogPanel* m_outputLogPanel;
+    DependenciesPanel* m_dependenciesPanel;
 
     std::vector<BaseModalDialog*> m_modalDialogs;
 

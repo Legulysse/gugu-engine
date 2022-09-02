@@ -6,6 +6,7 @@
 #include "Gugu/Math/Vector2.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <imgui_stdlib.h>
 
 #include <vector>
@@ -14,6 +15,9 @@
 // File Declarations
 
 namespace ImGui {
+
+// Text variation.
+void Text(const std::string& text);
 
 // Scalar Inputs variations.
 bool InputInt2(const char* label, int* v1, int* v2, ImGuiInputTextFlags flags = 0);

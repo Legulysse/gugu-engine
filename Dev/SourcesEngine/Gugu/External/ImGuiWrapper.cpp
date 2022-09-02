@@ -14,6 +14,11 @@
 
 namespace ImGui {
 
+void Text(const std::string& text)
+{
+    ImGui::Text(text.c_str());
+}
+
 bool InputInt2(const char* label, int* v1, int* v2, ImGuiInputTextFlags flags)
 {
     int temp[2] = { *v1, *v2 };

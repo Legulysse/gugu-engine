@@ -934,6 +934,11 @@ void ManagerResources::NotifyResourceRemoved(const Resource* resource)
     }
 }
 
+const std::map<const Resource*, ManagerResources::ResourceDependencies>& ManagerResources::GetResourceDependencies() const
+{
+    return m_resourceDependencies;
+}
+
 ManagerResources* GetResources()
 {
     return GetEngine()->GetManagerResources();

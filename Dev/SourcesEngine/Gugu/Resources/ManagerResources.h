@@ -54,6 +54,19 @@ public:
     using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (const std::string&)>;
     using DelegateResourceEvent = std::function<void(const Resource* resource, EResourceEvent, const Resource* dependency)>;
 
+    struct ResourceListener
+    {
+        const void* handle;
+        DelegateResourceEvent delegateResourceEvent;
+    };
+
+    struct ResourceDependencies
+    {
+        std::set<Resource*> dependencies;
+        std::set<Resource*> referencers;
+        std::vector<ResourceListener> listeners;
+    };
+
 public:
 
     ManagerResources();
@@ -142,6 +155,8 @@ public:
     void UnregisterResourceListeners(const Resource* resource, const void* handle);
     void UnregisterResourceListeners(const void* handle);
 
+    const std::map<const Resource*, ResourceDependencies>& GetResourceDependencies() const;
+
 private:
 
     Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
@@ -169,17 +184,6 @@ private:
     std::vector<DelegateDatasheetObjectFactory> m_datasheetObjectFactories;
     std::map<ResourceMapKey, const DatasheetEnum*> m_datasheetEnums;
 
-    struct ResourceListener
-    {
-        const void* handle;
-        DelegateResourceEvent delegateResourceEvent;
-    };
-    struct ResourceDependencies
-    {
-        std::set<Resource*> dependencies;
-        std::set<Resource*> referencers;
-        std::vector<ResourceListener> listeners;
-    };
     std::map<const Resource*, ResourceDependencies> m_resourceDependencies;
 };
 

@@ -12,6 +12,7 @@
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/OutputLogPanel.h"
+#include "Gugu/Editor/Panel/DependenciesPanel.h"
 #include "Gugu/Editor/Panel/Document/DatasheetPanel.h"
 #include "Gugu/Editor/Panel/Document/AnimSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
@@ -25,10 +26,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/System/SystemUtility.h"
-
-#include <imgui.h>
-#include <imgui_internal.h>
-#include <imgui_stdlib.h>
+#include "Gugu/External/ImGuiWrapper.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -42,10 +40,10 @@ Editor::Editor()
     , m_pendingCloseProject(false)
     , m_pendingCloseDocument(false)
     , m_resetPanels(false)
-    , m_showSearchResults(true)
     , m_showImGuiDemo(false)
     , m_assetsExplorerPanel(nullptr)
     , m_outputLogPanel(nullptr)
+    , m_dependenciesPanel(nullptr)
     , m_lastActiveDocument(nullptr)
     , m_datasheetParser(nullptr)
 {
@@ -78,8 +76,9 @@ void Editor::Init(const EditorConfig& editorConfig)
     io.ConfigWindowsResizeFromEdges = true;
 
     // Create Panels.
-    m_outputLogPanel = new OutputLogPanel;
     m_assetsExplorerPanel = new AssetsExplorerPanel;
+    m_outputLogPanel = new OutputLogPanel;
+    m_dependenciesPanel = new DependenciesPanel;
 
     // Open last project if available.
     if (editorConfig.projectPathFile != "")
@@ -93,8 +92,10 @@ void Editor::Release()
     CloseProjectImpl();
 
     ClearStdVector(m_modalDialogs);
+
     SafeDelete(m_assetsExplorerPanel);
     SafeDelete(m_outputLogPanel);
+    SafeDelete(m_dependenciesPanel);
 
     Editor::DeleteInstance();
 }
@@ -423,6 +424,7 @@ void Editor::Update(const DeltaTime& dt)
         ImGuiID dock_id_down = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
 
         ImGui::DockBuilderDockWindow("Assets Explorer", dock_id_left);
+        ImGui::DockBuilderDockWindow("Dependencies", dock_id_left);
         ImGui::DockBuilderDockWindow("Output Log", dock_id_down);
         ImGui::DockBuilderDockWindow("Search Results", dock_id_down);
         ImGui::DockBuilderDockWindow("Properties", dock_id_right);
@@ -432,11 +434,10 @@ void Editor::Update(const DeltaTime& dt)
     ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-    // Update AssetsExplorer panel.
+    // Update standard panels.
     m_assetsExplorerPanel->UpdatePanel(dt);
-
-    // Update OutpuLog panel.
     m_outputLogPanel->UpdatePanel(dt);
+    m_dependenciesPanel->UpdatePanel(dt);
 
     //TODO: search
     //if (m_showSearchResults)
@@ -617,6 +618,11 @@ const std::vector<DocumentPanel*>& Editor::GetDocuments() const
     return m_documentPanels;
 }
 
+DocumentPanel* Editor::GetLastActiveDocument() const
+{
+    return m_lastActiveDocument;
+}
+
 bool Editor::RaiseCheckDirtyDocuments()
 {
     bool hasDirtyDocuments = false;
@@ -714,7 +720,6 @@ void Editor::RefreshAssets()
 void Editor::ResetPanels()
 {
     m_resetPanels = true;
-    m_showSearchResults = true;
 }
 
 bool Editor::CloseEditor()

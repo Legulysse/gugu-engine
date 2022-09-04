@@ -15,8 +15,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/System/SystemUtility.h"
-
-#include <imgui.h>
+#include "Gugu/External/ImGuiWrapper.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -219,9 +218,6 @@ void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
             static bool test_drag_and_drop = true;
             static bool testTable = false;
 
-            bool expandAll = false;
-            bool collapseAll = false;
-
             static bool test_config = false;
             ImGui::Checkbox("Test Config", &test_config);
             if (test_config)
@@ -252,14 +248,12 @@ void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
 
             ImGui::Spacing();
             ImGui::Checkbox("Show as Table", &testTable);
-            expandAll = ImGui::Button("Expand All");
-            collapseAll = ImGui::Button("Collapse All");
             ImGui::Spacing();
 
             if (!testTable)
             {
                 ImGui::PushID("AssetsTable");
-                DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0, expandAll, collapseAll);
+                DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0);
                 ImGui::PopID();
             }
             else
@@ -272,7 +266,7 @@ void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
                     ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, TEXT_BASE_WIDTH * 18.0f);
                     ImGui::TableHeadersRow();
 
-                    DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0, expandAll, collapseAll);
+                    DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0);
 
                     ImGui::EndTable();
                 }
@@ -292,7 +286,47 @@ void AssetsExplorerPanel::SortTreeNodeChildren(TreeNode* rootNode, bool recursiv
     std::sort(rootNode->children.begin(), rootNode->children.end(), AssetsExplorerPanel::CompareTreeNodes);
 }
 
-void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool isTable, int depth, bool expandAll, bool collapseAll)
+void AssetsExplorerPanel::CollapseNode(TreeNode* rootNode, bool collapseSelf, bool collapseChildren, bool recursive)
+{
+    if (collapseSelf)
+    {
+        ImGui::GetStateStorage()->SetInt(ImGui::GetID(rootNode->name.c_str()), 0);
+    }
+
+    if (collapseChildren)
+    {
+        ImGui::PushID(rootNode->name.c_str());
+
+        for (size_t i = 0; i < rootNode->children.size(); ++i)
+        {
+            CollapseNode(rootNode->children[i], true, recursive, recursive);
+        }
+
+        ImGui::PopID();
+    }
+}
+
+void AssetsExplorerPanel::ExpandNode(TreeNode* rootNode, bool expandSelf, bool expandChildren, bool recursive)
+{
+    if (expandSelf)
+    {
+        ImGui::GetStateStorage()->SetInt(ImGui::GetID(rootNode->name.c_str()), 1);
+    }
+
+    if (expandChildren)
+    {
+        ImGui::PushID(rootNode->name.c_str());
+
+        for (size_t i = 0; i < rootNode->children.size(); ++i)
+        {
+            ExpandNode(rootNode->children[i], true, recursive, recursive);
+        }
+
+        ImGui::PopID();
+    }
+}
+
+void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool isTable, int depth)
 {
     if (isTable)
     {
@@ -308,19 +342,13 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
             nodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
         }
 
-        if (expandAll)
-        {
-            ImGui::SetNextItemOpen(true);
-        }
-        else if (collapseAll)
-        {
-            ImGui::SetNextItemOpen(false);
-        }
-
         bool isOpen = ImGui::TreeNodeEx(node->name.c_str(), nodeFlags);
 
         // Context menu.
-        HandleDirectoryContextMenu(node);
+        bool collapseAll = false;
+        bool collapseChildren = false;
+        bool expandAll = false;
+        HandleDirectoryContextMenu(node, &collapseAll, &collapseChildren, &expandAll);
 
         // Drag and drop.
         if (test_drag_and_drop && ImGui::BeginDragDropSource())
@@ -344,10 +372,25 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
             ++depth;
             for (size_t i = 0; i < node->children.size(); ++i)
             {
-                DisplayTreeNode(node->children[i], directoryFlags, fileFlags, test_drag_and_drop, isTable, depth, expandAll, collapseAll);
+                DisplayTreeNode(node->children[i], directoryFlags, fileFlags, test_drag_and_drop, isTable, depth);
             }
 
             ImGui::TreePop();
+        }
+
+        if (collapseAll)
+        {
+            CollapseNode(node, true, true, true);
+        }
+
+        if (collapseChildren)
+        {
+            CollapseNode(node, false, true, true);
+        }
+
+        if (expandAll)
+        {
+            ExpandNode(node, true, true, true);
         }
     }
     else
@@ -392,7 +435,7 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
     }
 }
 
-void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
+void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node, bool* collapseAll, bool* collapseChildren, bool* expandAll)
 {
     if (ImGui::BeginPopupContextItem())
     {
@@ -432,6 +475,22 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
         if (ImGui::MenuItem("Open in Explorer"))
         {
             OpenFileExplorer(node->path);
+        }
+
+        ImGui::Separator();
+        if (ImGui::MenuItem("Collapse All"))
+        {
+            *collapseAll = true;
+        }
+
+        if (ImGui::MenuItem("Collapse Children"))
+        {
+            *collapseChildren = true;
+        }
+
+        if (ImGui::MenuItem("Expand All"))
+        {
+            *expandAll = true;
         }
 
         ImGui::EndPopup();

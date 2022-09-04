@@ -54,9 +54,12 @@ private:
     void CreateNewDirectory(TreeNode* parentNode);
 
     void SortTreeNodeChildren(TreeNode* rootNode, bool recursive);
-    void DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool table, int depth, bool expandAll, bool collapseAll);
+    void CollapseNode(TreeNode* rootNode, bool collapseSelf, bool collapseChildren, bool recursive);
+    void ExpandNode(TreeNode* rootNode, bool expandSelf, bool expandChildren, bool recursive);
 
-    void HandleDirectoryContextMenu(TreeNode* node);
+    void DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool table, int depth);
+
+    void HandleDirectoryContextMenu(TreeNode* node, bool* collapseAll, bool* collapseChildren, bool* expandAll);
     void HandleFileContextMenu(TreeNode* node);
 
     static bool CompareTreeNodes(const TreeNode* left, const TreeNode* right);

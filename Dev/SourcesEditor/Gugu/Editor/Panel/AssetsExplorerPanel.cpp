@@ -288,6 +288,9 @@ void AssetsExplorerPanel::SortTreeNodeChildren(TreeNode* rootNode, bool recursiv
 
 void AssetsExplorerPanel::CollapseNode(TreeNode* rootNode, bool collapseSelf, bool collapseChildren, bool recursive)
 {
+    if (!rootNode->isFolder)
+        return;
+
     if (collapseSelf)
     {
         ImGui::GetStateStorage()->SetInt(ImGui::GetID(rootNode->name.c_str()), 0);
@@ -308,6 +311,9 @@ void AssetsExplorerPanel::CollapseNode(TreeNode* rootNode, bool collapseSelf, bo
 
 void AssetsExplorerPanel::ExpandNode(TreeNode* rootNode, bool expandSelf, bool expandChildren, bool recursive)
 {
+    if (!rootNode->isFolder)
+        return;
+
     if (expandSelf)
     {
         ImGui::GetStateStorage()->SetInt(ImGui::GetID(rootNode->name.c_str()), 1);

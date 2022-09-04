@@ -22,13 +22,7 @@ OutputLogPanel::OutputLogPanel()
 {
     m_title = "Output Log";
 
-    GetLogEngine()->RegisterDelegate(this, std::bind(
-        &OutputLogPanel::PrintLog,
-        this,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3,
-        std::placeholders::_4));
+    GetLogEngine()->RegisterDelegate(this, STD_BIND_4(&OutputLogPanel::PrintLog, this));
 }
 
 OutputLogPanel::~OutputLogPanel()

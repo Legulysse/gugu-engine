@@ -569,8 +569,8 @@ void AnimSetPanel::OnGenerateAnimationFrames()
 {
     GetEditor()->OpenModalDialog(new GenerateAnimationFramesDialog(
         m_animSet->GetImageSet(),
-        std::bind(&AnimSetPanel::GenerateAnimationFramesFromDirectory, this, std::placeholders::_1),
-        std::bind(&AnimSetPanel::GenerateAnimationFramesFromImageSet, this, std::placeholders::_1, std::placeholders::_2)
+        STD_BIND_1(&AnimSetPanel::GenerateAnimationFramesFromDirectory, this),
+        STD_BIND_2(&AnimSetPanel::GenerateAnimationFramesFromImageSet, this)
     ));
 }
 

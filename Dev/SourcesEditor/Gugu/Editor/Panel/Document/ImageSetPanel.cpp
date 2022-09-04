@@ -621,8 +621,8 @@ void ImageSetPanel::OnRemoveAllSubImages()
 void ImageSetPanel::OnGenerateSubImages()
 {
     GetEditor()->OpenModalDialog(new GenerateSubImagesDialog(
-        std::bind(&ImageSetPanel::GenerateSubImagesFromCount, this, std::placeholders::_1, std::placeholders::_2),
-        std::bind(&ImageSetPanel::GenerateSubImagesFromSize, this, std::placeholders::_1, std::placeholders::_2)
+        STD_BIND_2(&ImageSetPanel::GenerateSubImagesFromCount, this),
+        STD_BIND_2(&ImageSetPanel::GenerateSubImagesFromSize, this)
     ));
 }
 

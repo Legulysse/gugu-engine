@@ -36,10 +36,10 @@ ElementButton::ElementButton()
 
     SetTextAlignment(UDim2::POSITION_TOP_CENTER);
 
-    GetEvents()->AddCallback(EInteractionEvent::MouseEntered, std::bind(&ElementButton::OnMouseEntered, this, std::placeholders::_1));
-    GetEvents()->AddCallback(EInteractionEvent::MouseLeft, std::bind(&ElementButton::OnMouseLeft, this, std::placeholders::_1));
-    GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementButton::OnMousePressed, this, std::placeholders::_1));
-    GetEvents()->AddCallback(EInteractionEvent::MouseReleased, std::bind(&ElementButton::OnMouseReleased, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseEntered, STD_BIND_1(&ElementButton::OnMouseEntered, this));
+    GetEvents()->AddCallback(EInteractionEvent::MouseLeft, STD_BIND_1(&ElementButton::OnMouseLeft, this));
+    GetEvents()->AddCallback(EInteractionEvent::MousePressed, STD_BIND_1(&ElementButton::OnMousePressed, this));
+    GetEvents()->AddCallback(EInteractionEvent::MouseReleased, STD_BIND_1(&ElementButton::OnMouseReleased, this));
 }
 
 ElementButton::~ElementButton()

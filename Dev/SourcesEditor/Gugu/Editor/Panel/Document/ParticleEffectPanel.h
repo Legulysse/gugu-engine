@@ -5,7 +5,7 @@
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
-#include "Gugu/Math/Vector2.h"
+#include "Gugu/Resources/EnumsResources.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -31,18 +31,22 @@ public:
     ParticleEffectPanel(ParticleEffect* resource);
     virtual ~ParticleEffectPanel();
 
-    virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
-
 protected:
 
     void ResetParticleSystem();
 
     virtual void OnUndoRedo() override;
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
+    virtual void OnVisibilityChanged(bool visible) override;
+
+    virtual void UpdatePanelImpl(const DeltaTime& dt) override;
+    virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
+
+    void OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency);
 
 private:
 
     RenderViewport* m_renderViewport;
+    float m_zoomFactor;
 
     ParticleEffect* m_particleEffect;
     ParticleSystem* m_particleSystem;

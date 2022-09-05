@@ -6,6 +6,8 @@
 #include "Gugu/System/FileInfo.h"
 #include "Gugu/Resources/EnumsResources.h"
 
+#include <set>
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -38,13 +40,14 @@ public:
 
     virtual EResourceType::Type GetResourceType() const;
 
-    virtual bool ReloadFromFile();
-
     virtual bool LoadFromFile();
     virtual bool LoadFromString(const std::string& source);
 
     virtual bool SaveToFile() const;
     virtual bool SaveToString(std::string& result) const;
+
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const;
+    virtual void OnDependencyRemoved(const Resource* removedDependency);
 
 protected:
 

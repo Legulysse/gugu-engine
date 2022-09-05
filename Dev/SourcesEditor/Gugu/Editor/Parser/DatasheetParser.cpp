@@ -292,26 +292,31 @@ bool DatasheetParser::GetClassDefinition(const std::string& name, ClassDefinitio
     return false;
 }
 
+const std::vector<DatasheetParser::ClassDefinition*>& DatasheetParser::GetAllClassDefinitions() const
+{
+    return m_classDefinitions;
+}
+
 VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::string& resourceID)
 {
     // TODO: Maybe I can use the manager factory delegate instead, along with a datasheet type detection delegate ?
     if (GetResources()->HasResource(resourceID) && !GetResources()->IsResourceLoaded(resourceID))
     {
-        // TODO: Maybe I should test the datasheet type against a provided base type, to avoid loading invalid references ?
-        VirtualDatasheet* datasheet = new VirtualDatasheet;
-        if (GetResources()->InjectResource(resourceID, datasheet))
+        std::string className = GetResources()->GetResourceFileInfo(resourceID).GetExtension();
+
+        DatasheetParser::ClassDefinition* classDefinition;
+        if (GetClassDefinition(className, classDefinition))
         {
-            // TODO: I should move this part inside LoadFromFile, and move the LoadFromFile call inside InjectResource.
-            std::string className = datasheet->GetFileInfo().GetExtension();
-            if (GetClassDefinition(className, datasheet->m_classDefinition))
+            VirtualDatasheet* datasheet = new VirtualDatasheet(classDefinition);
+
+            if (GetResources()->InjectResource(resourceID, datasheet))
             {
-                datasheet->LoadFromFile();
                 return datasheet;
             }
-        }
 
-        // Safety, should not happen, just in case.
-        SafeDelete(datasheet);
+            // Safety, should not happen, just in case.
+            SafeDelete(datasheet);
+        }
     }
 
     return nullptr;

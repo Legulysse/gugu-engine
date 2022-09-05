@@ -30,11 +30,9 @@ public:
     DatasheetPanel(VirtualDatasheet* resource);
     virtual ~DatasheetPanel();
 
-    virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
-
 protected:
 
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
+    virtual void UpdatePanelImpl(const DeltaTime& dt) override;
 
     void DisplayDatasheet();
     void DisplayParentReference();
@@ -44,6 +42,8 @@ protected:
     void DisplayInlineDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue);
     void DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData);
     void DisplayInstanceDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData);
+
+    void OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency);
 
 protected:
 

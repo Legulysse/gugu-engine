@@ -8,21 +8,32 @@
 // Includes
 
 #include "Gugu/Editor/Editor.h"
+#include "Gugu/Editor/Core/ProjectSettings.h"
 #include "Gugu/Editor/Modal/NewResourceDialog.h"
+#include "Gugu/Editor/Modal/NewDirectoryDialog.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/System/SystemUtility.h"
-
-#include <imgui.h>
+#include "Gugu/External/ImGuiWrapper.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
 namespace gugu {
 
+AssetsExplorerPanel::TreeNode::TreeNode()
+{
+}
+
+AssetsExplorerPanel::TreeNode::~TreeNode()
+{
+    ClearStdVector(children);
+}
+
 AssetsExplorerPanel::AssetsExplorerPanel()
     : m_rootNode(nullptr)
+    , m_dirtyContent(false)
 {
     m_title = "Assets Explorer";
 }
@@ -34,29 +45,82 @@ AssetsExplorerPanel::~AssetsExplorerPanel()
 
 void AssetsExplorerPanel::ClearContent()
 {
+    m_dirtyContent = false;
+
     if (m_rootNode)
     {
-        RecursiveDeleteTreeNodes(m_rootNode);
         SafeDelete(m_rootNode);
     }
 }
 
-void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
+void AssetsExplorerPanel::RaiseDirtyContent()
 {
+    m_dirtyContent = true;
+}
+
+void AssetsExplorerPanel::RefreshContent()
+{
+    m_dirtyContent = false;
+
     ClearContent();
 
-    // Refresh assets tree structure.
-    std::vector<const gugu::ResourceInfo*> vecInfos;
-    gugu::GetResources()->GetAllResourceInfos(vecInfos);
+    const std::string& projectAssetsPath = GetEditor()->GetProjectSettings()->projectAssetsPath;
+    const std::string& editorAssetsPath = GetResources()->GetPathAssets();
 
     m_rootNode = new TreeNode;
     m_rootNode->isFolder = true;
     m_rootNode->name = "ROOT";
+    m_rootNode->path = projectAssetsPath;
 
-    std::string editorAssetsPath = gugu::GetResources()->GetPathAssets();
+    // Build assets tree directory structure.
+    std::vector<std::string> directories;
+    GetDirectories(projectAssetsPath, directories, true);
 
     std::vector<std::string> tokens;
-    for (const gugu::ResourceInfo* resourceInfo : vecInfos)
+    for (const std::string& directory : directories)
+    {
+        TreeNode* currentDirectory = m_rootNode;
+
+        // Hide the project path from the hierarchy.
+        std::string directoryPath = directory;
+        directoryPath.erase(0, projectAssetsPath.size());
+
+        StdStringSplit(directoryPath, "/", tokens);
+
+        std::string cumulatedPath = projectAssetsPath;
+        for (std::string directoryName : tokens)
+        {
+            cumulatedPath = cumulatedPath + "/" + directoryName;
+            bool foundDirectory = false;
+
+            for (size_t i = 0; i < currentDirectory->children.size(); ++i)
+            {
+                if (currentDirectory->children[i]->isFolder && currentDirectory->children[i]->name == directoryName)
+                {
+                    currentDirectory = currentDirectory->children[i];
+                    foundDirectory = true;
+                    break;
+                }
+            }
+
+            if (!foundDirectory)
+            {
+                TreeNode* newDirectory = new TreeNode;
+                newDirectory->isFolder = true;
+                newDirectory->name = directoryName;
+                newDirectory->path = cumulatedPath;
+                currentDirectory->children.push_back(newDirectory);
+
+                currentDirectory = newDirectory;
+            }
+        }
+    }
+
+    // Refresh assets tree structure with known Resources.
+    std::vector<const ResourceInfo*> vecInfos;
+    GetResources()->GetAllResourceInfos(vecInfos);
+
+    for (const ResourceInfo* resourceInfo : vecInfos)
     {
         TreeNode* currentDirectory = m_rootNode;
 
@@ -104,14 +168,42 @@ void AssetsExplorerPanel::RefreshContent(const std::string& projectAssetsPath)
         TreeNode* newNode = new TreeNode;
         newNode->isFolder = false;
         newNode->name = resourceInfo->fileInfo.GetName();
+        newNode->path = resourceInfo->fileInfo.GetPath(false);
+        newNode->resourceID = resourceInfo->resourceID;
         currentDirectory->children.push_back(newNode);
     }
 
-    RecursiveSortTreeNodes(m_rootNode);
+    SortTreeNodeChildren(m_rootNode, true);
 }
 
-void AssetsExplorerPanel::UpdatePanel(const gugu::DeltaTime& dt)
+void AssetsExplorerPanel::CreateNewDirectory(TreeNode* parentNode)
 {
+    GetEditor()->OpenModalDialog(new NewDirectoryDialog(parentNode->path, "",
+        [=](const std::string& validatedDirectoryName)
+        {
+            std::string validatedDirectoryPath = CombinePaths(parentNode->path, validatedDirectoryName, false);
+
+            if (!DirectoryExists(validatedDirectoryPath) && EnsureDirectoryExists(validatedDirectoryPath))
+            {
+                TreeNode* newDirectory = new TreeNode;
+                newDirectory->isFolder = true;
+                newDirectory->name = validatedDirectoryName;
+                newDirectory->path = validatedDirectoryPath;
+                parentNode->children.push_back(newDirectory);
+
+                SortTreeNodeChildren(parentNode, false);
+            }
+        }
+    ));
+}
+
+void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
+{
+    if (m_dirtyContent)
+    {
+        RefreshContent();
+    }
+
     if (ImGui::Begin(m_title.c_str(), false))
     {
         if (m_rootNode)
@@ -125,9 +217,6 @@ void AssetsExplorerPanel::UpdatePanel(const gugu::DeltaTime& dt)
             static ImGuiTreeNodeFlags fileFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
             static bool test_drag_and_drop = true;
             static bool testTable = false;
-
-            bool expandAll = false;
-            bool collapseAll = false;
 
             static bool test_config = false;
             ImGui::Checkbox("Test Config", &test_config);
@@ -159,14 +248,12 @@ void AssetsExplorerPanel::UpdatePanel(const gugu::DeltaTime& dt)
 
             ImGui::Spacing();
             ImGui::Checkbox("Show as Table", &testTable);
-            expandAll = ImGui::Button("Expand All");
-            collapseAll = ImGui::Button("Collapse All");
             ImGui::Spacing();
 
             if (!testTable)
             {
                 ImGui::PushID("AssetsTable");
-                DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0, expandAll, collapseAll);
+                DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0);
                 ImGui::PopID();
             }
             else
@@ -179,7 +266,7 @@ void AssetsExplorerPanel::UpdatePanel(const gugu::DeltaTime& dt)
                     ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, TEXT_BASE_WIDTH * 18.0f);
                     ImGui::TableHeadersRow();
 
-                    DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0, expandAll, collapseAll);
+                    DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0);
 
                     ImGui::EndTable();
                 }
@@ -189,26 +276,63 @@ void AssetsExplorerPanel::UpdatePanel(const gugu::DeltaTime& dt)
     ImGui::End();
 }
 
-void AssetsExplorerPanel::RecursiveSortTreeNodes(TreeNode* node)
+void AssetsExplorerPanel::SortTreeNodeChildren(TreeNode* rootNode, bool recursive)
 {
-    for (size_t i = 0; i < node->children.size(); ++i)
+    for (size_t i = 0; i < rootNode->children.size(); ++i)
     {
-        RecursiveSortTreeNodes(node->children[i]);
+        SortTreeNodeChildren(rootNode->children[i], recursive);
     }
 
-    std::sort(node->children.begin(), node->children.end(), AssetsExplorerPanel::CompareTreeNodes);
+    std::sort(rootNode->children.begin(), rootNode->children.end(), AssetsExplorerPanel::CompareTreeNodes);
 }
 
-void AssetsExplorerPanel::RecursiveDeleteTreeNodes(TreeNode* node)
+void AssetsExplorerPanel::CollapseNode(TreeNode* rootNode, bool collapseSelf, bool collapseChildren, bool recursive)
 {
-    for (size_t i = 0; i < node->children.size(); ++i)
+    if (!rootNode->isFolder)
+        return;
+
+    if (collapseSelf)
     {
-        RecursiveDeleteTreeNodes(node->children[i]);
-        SafeDelete(node->children[i]);
+        ImGui::GetStateStorage()->SetInt(ImGui::GetID(rootNode->name.c_str()), 0);
+    }
+
+    if (collapseChildren)
+    {
+        ImGui::PushID(rootNode->name.c_str());
+
+        for (size_t i = 0; i < rootNode->children.size(); ++i)
+        {
+            CollapseNode(rootNode->children[i], true, recursive, recursive);
+        }
+
+        ImGui::PopID();
     }
 }
 
-void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool isTable, int depth, bool expandAll, bool collapseAll)
+void AssetsExplorerPanel::ExpandNode(TreeNode* rootNode, bool expandSelf, bool expandChildren, bool recursive)
+{
+    if (!rootNode->isFolder)
+        return;
+
+    if (expandSelf)
+    {
+        ImGui::GetStateStorage()->SetInt(ImGui::GetID(rootNode->name.c_str()), 1);
+    }
+
+    if (expandChildren)
+    {
+        ImGui::PushID(rootNode->name.c_str());
+
+        for (size_t i = 0; i < rootNode->children.size(); ++i)
+        {
+            ExpandNode(rootNode->children[i], true, recursive, recursive);
+        }
+
+        ImGui::PopID();
+    }
+}
+
+void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, int fileFlags, bool test_drag_and_drop, bool isTable, int depth)
 {
     if (isTable)
     {
@@ -224,19 +348,13 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
             nodeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
         }
 
-        if (expandAll)
-        {
-            ImGui::SetNextItemOpen(true);
-        }
-        else if (collapseAll)
-        {
-            ImGui::SetNextItemOpen(false);
-        }
-
         bool isOpen = ImGui::TreeNodeEx(node->name.c_str(), nodeFlags);
 
         // Context menu.
-        HandleDirectoryContextMenu(node);
+        bool collapseAll = false;
+        bool collapseChildren = false;
+        bool expandAll = false;
+        HandleDirectoryContextMenu(node, &collapseAll, &collapseChildren, &expandAll);
 
         // Drag and drop.
         if (test_drag_and_drop && ImGui::BeginDragDropSource())
@@ -260,10 +378,25 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
             ++depth;
             for (size_t i = 0; i < node->children.size(); ++i)
             {
-                DisplayTreeNode(node->children[i], directoryFlags, fileFlags, test_drag_and_drop, isTable, depth, expandAll, collapseAll);
+                DisplayTreeNode(node->children[i], directoryFlags, fileFlags, test_drag_and_drop, isTable, depth);
             }
 
             ImGui::TreePop();
+        }
+
+        if (collapseAll)
+        {
+            CollapseNode(node, true, true, true);
+        }
+
+        if (collapseChildren)
+        {
+            CollapseNode(node, false, true, true);
+        }
+
+        if (expandAll)
+        {
+            ExpandNode(node, true, true, true);
         }
     }
     else
@@ -281,10 +414,13 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
         // Open Document.
         if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))     // ImGui::IsMouseDoubleClicked(0) 
         {
-            GetEditor()->OpenDocument(node->name);
+            GetEditor()->OpenDocument(node->resourceID);
 
             // TODO: handle selection.
         }
+
+        // Context menu.
+        HandleFileContextMenu(node);
 
         // Drag and drop.
         if (test_drag_and_drop && ImGui::BeginDragDropSource())
@@ -305,7 +441,7 @@ void AssetsExplorerPanel::DisplayTreeNode(TreeNode* node, int directoryFlags, in
     }
 }
 
-void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
+void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node, bool* collapseAll, bool* collapseChildren, bool* expandAll)
 {
     if (ImGui::BeginPopupContextItem())
     {
@@ -313,11 +449,13 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
         {
             if (ImGui::MenuItem("Folder"))
             {
+                CreateNewDirectory(node);
             }
 
             ImGui::Separator();
             if (ImGui::MenuItem("Datasheet"))
             {
+                GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::Datasheet));
             }
 
             ImGui::Separator();
@@ -337,6 +475,47 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node)
             }
 
             ImGui::EndMenu();
+        }
+
+        ImGui::Separator();
+        if (ImGui::MenuItem("Open in Explorer"))
+        {
+            OpenFileExplorer(node->path);
+        }
+
+        ImGui::Separator();
+        if (ImGui::MenuItem("Collapse All"))
+        {
+            *collapseAll = true;
+        }
+
+        if (ImGui::MenuItem("Collapse Children"))
+        {
+            *collapseChildren = true;
+        }
+
+        if (ImGui::MenuItem("Expand All"))
+        {
+            *expandAll = true;
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
+{
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::MenuItem("Delete"))
+        {
+            if (GetEditor()->CloseDocument(node->resourceID, true))
+            {
+                if (GetResources()->DeleteResource(node->resourceID))
+                {
+                    GetEditor()->RefreshAssets();
+                }
+            }
         }
 
         ImGui::Separator();

@@ -1,6 +1,11 @@
 #pragma once
 
 ////////////////////////////////////////////////////////////////
+// Includes
+
+#include "Gugu/System/Types.h"
+
+////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
@@ -24,5 +29,11 @@ namespace EResourceType
         Custom,
     };
 }
+
+enum class EResourceEvent : uint8
+{
+    ResourceRemoved,
+    DependencyRemoved,
+};
 
 }   // namespace gugu

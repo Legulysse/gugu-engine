@@ -12,6 +12,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Logger.h"
 #include "Gugu/External/PugiXmlWrap.h"
 
 ////////////////////////////////////////////////////////////////
@@ -42,8 +43,71 @@ VirtualDatasheetObject::~VirtualDatasheetObject()
     ClearStdVector(m_dataValues);
 }
 
+void VirtualDatasheetObject::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    GetDependencies(m_dataValues, dependencies);
+}
+
+void VirtualDatasheetObject::GetDependencies(const std::vector<VirtualDatasheetObject::DataValue*>& dataValues, std::set<Resource*>& dependencies) const
+{
+    for (auto dataValue : dataValues)
+    {
+        if (dataValue->value_objectReference)
+        {
+            dependencies.insert(dataValue->value_objectReference);
+        }
+        else if (dataValue->value_objectInstance)
+        {
+            dataValue->value_objectInstance->GetDependencies(dependencies);
+        }
+        else
+        {
+            GetDependencies(dataValue->value_children, dependencies);
+        }
+    }
+}
+
+void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependency)
+{
+    const VirtualDatasheet* removedDatasheet = dynamic_cast<const VirtualDatasheet*>(removedDependency);
+
+    // TODO: Handle recursive reparenting on child objects (this could be tied to RefreshParentObject future updates).
+    if (removedDatasheet && removedDatasheet->m_rootObject == m_parentObject)
+    {
+        m_parentObject = nullptr;
+    }
+
+    OnDependencyRemoved(removedDependency, m_dataValues);
+}
+
+void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependency, std::vector<VirtualDatasheetObject::DataValue*>& dataValues)
+{
+    for (auto dataValue : dataValues)
+    {
+        if (dataValue->value_objectReference == removedDependency)
+        {
+            dataValue->value_string = "";
+            dataValue->value_objectReference = nullptr;
+        }
+        else if (dataValue->value_objectInstance)
+        {
+            dataValue->value_objectInstance->OnDependencyRemoved(removedDependency);
+        }
+        else
+        {
+            OnDependencyRemoved(removedDependency, dataValue->value_children);
+        }
+    }
+}
+
 bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition)
 {
+    if (!classDefinition)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "A null ClassDefinition has been provided on VirtualDatasheetObject loading");
+        return false;
+    }
+
     m_classDefinition = classDefinition;
 
     for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
@@ -102,7 +166,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 
 void VirtualDatasheetObject::RefreshParentObject(VirtualDatasheetObject* parentObject)
 {
-    // TODO: Handle recursive reparenting on child objects when it is supported.
+    // TODO: Handle recursive reparenting on child objects when it is supported (this could be tied to OnDependencyRemoved future updates).
     m_parentObject = parentObject;
 }
 
@@ -324,11 +388,12 @@ void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeData, con
 }
 
 
-VirtualDatasheet::VirtualDatasheet()
-    : m_classDefinition(nullptr)
+VirtualDatasheet::VirtualDatasheet(DatasheetParser::ClassDefinition* classDefinition)
+    : m_classDefinition(classDefinition)
     , m_rootObject(nullptr)
     , m_parentDatasheet(nullptr)
 {
+    m_rootObject = new VirtualDatasheetObject;
 }
 
 VirtualDatasheet::~VirtualDatasheet()
@@ -336,12 +401,32 @@ VirtualDatasheet::~VirtualDatasheet()
     Unload();
 
     m_classDefinition = nullptr;
-    m_parentDatasheet = nullptr;
 }
 
 EResourceType::Type VirtualDatasheet::GetResourceType() const
 {
     return EResourceType::Datasheet;    // TODO: Should I use Custom ? Or a dedicated VirtualDatasheet enum value ?
+}
+
+void VirtualDatasheet::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    if (m_parentDatasheet)
+    {
+        dependencies.insert(m_parentDatasheet);
+    }
+
+    m_rootObject->GetDependencies(dependencies);
+}
+
+void VirtualDatasheet::OnDependencyRemoved(const Resource* removedDependency)
+{
+    if (m_parentDatasheet == removedDependency)
+    {
+        m_parentDatasheetID = "";
+        m_parentDatasheet = nullptr;
+    }
+
+    m_rootObject->OnDependencyRemoved(removedDependency);
 }
 
 bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
@@ -389,25 +474,24 @@ void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, 
 void VirtualDatasheet::Unload()
 {
     SafeDelete(m_rootObject);
+
+    m_parentDatasheet = nullptr;
 }
 
 bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+
+    m_rootObject = new VirtualDatasheetObject;
+
     pugi::xml_node nodeDatasheetObject = document.child("Datasheet");
     if (!nodeDatasheetObject)
         return false;
 
-    VirtualDatasheetObject* newRootObject = new VirtualDatasheetObject;
-
-    if (!newRootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
+    if (!m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
     {
-        SafeDelete(newRootObject);
         return false;
     }
-
-    Unload();
-
-    m_rootObject = newRootObject;
 
     std::string parentResourceID = "";
     VirtualDatasheet* parentDatasheet = nullptr;
@@ -450,7 +534,7 @@ bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
         nodeDatasheet.append_attribute("parent") = m_parentDatasheetID.c_str();
     }
 
-    if (!m_rootObject->SaveToXml(nodeDatasheet))
+    if (m_rootObject && !m_rootObject->SaveToXml(nodeDatasheet))
         return false;
 
     return true;

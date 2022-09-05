@@ -152,8 +152,13 @@ const std::string& Animation::GetName() const
 
 AnimationFrame* Animation::AddFrame()
 {
+    return AddFrame(m_frames.size());
+}
+
+AnimationFrame* Animation::AddFrame(size_t insertIndex)
+{
     AnimationFrame* pFrame = new AnimationFrame(this);
-    m_frames.push_back(pFrame);
+    StdVectorInsertAt(m_frames, insertIndex, pFrame);
     return pFrame;
 }
 
@@ -227,10 +232,22 @@ Animation* AnimSet::GetAnimation(const std::string& _strName) const
 {
     for (size_t i = 0; i < m_animations.size(); ++i)
     {
-        Animation* pAnimation = m_animations[i];
-        if (pAnimation->IsName(_strName))
-            return pAnimation;
+        if (m_animations[i]->IsName(_strName))
+        {
+            return m_animations[i];
+        }
     }
+
+    return nullptr;
+}
+
+Animation* AnimSet::GetAnimation(size_t index) const
+{
+    if (index >= 0 && index < m_animations.size())
+    {
+        return m_animations[index];
+    }
+
     return nullptr;
 }
 
@@ -262,6 +279,49 @@ EResourceType::Type AnimSet::GetResourceType() const
     return EResourceType::AnimSet;
 }
 
+void AnimSet::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    if (m_imageSet)
+    {
+        dependencies.insert(m_imageSet);
+
+        // TODO: Do I need an option to retrieve or not indirect dependencies ?
+        m_imageSet->GetDependencies(dependencies);
+    }
+
+    for (size_t i = 0; i < m_animations.size(); ++i)
+    {
+        const std::vector<AnimationFrame*>& frames = m_animations[i]->GetFrames();
+        for (size_t ii = 0; ii < frames.size(); ++ii)
+        {
+            Texture* texture = frames[ii]->GetTexture();
+            if (texture)
+            {
+                dependencies.insert(texture);
+            }
+        }
+    }
+}
+
+void AnimSet::OnDependencyRemoved(const Resource* removedDependency)
+{
+    if (m_imageSet == removedDependency)
+    {
+        for (size_t i = 0; i < m_animations.size(); ++i)
+        {
+            const std::vector<AnimationFrame*>& frames = m_animations[i]->GetFrames();
+            for (size_t ii = 0; ii < frames.size(); ++ii)
+            {
+                // TODO: handle frames with explicit reference on an ImageSet (currently info is lost after loading).
+                // TODO: deprecate multiple imagesets instead.
+                frames[ii]->SetSubImage(nullptr);
+            }
+        }
+
+        m_imageSet = nullptr;
+    }
+}
+
 void AnimSet::Unload()
 {
     ClearStdVector(m_animations);
@@ -270,12 +330,12 @@ void AnimSet::Unload()
 
 bool AnimSet::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+    
     pugi::xml_node oNodeAnimSet = document.child("AnimSet");
     if (!oNodeAnimSet)
         return false;
 
-    Unload();
-    
     pugi::xml_attribute oAttributeMainImageSet = oNodeAnimSet.attribute("imageSet");
     if (oAttributeMainImageSet)
         m_imageSet = GetResources()->GetImageSet(oAttributeMainImageSet.as_string());
@@ -305,6 +365,7 @@ bool AnimSet::LoadFromXml(const pugi::xml_document& document)
                     std::string strFrameSubImage = oAttributeSubImage.as_string();
                     ImageSet* pFrameImageSet = m_imageSet;
 
+                    // TODO: deprecate multiple imagesets.
                     pugi::xml_attribute oAttributeNameSet = oNodeFrame.attribute("nameSet");
                     if (oAttributeNameSet)
                         pFrameImageSet = GetResources()->GetImageSet(oAttributeNameSet.as_string());
@@ -358,6 +419,7 @@ bool AnimSet::SaveToXml(pugi::xml_document& document) const
             }
             else if (frame->GetSubImage())
             {
+                // TODO: deprecate multiple imagesets.
                 if (m_imageSet != frame->GetSubImage()->GetImageSet())
                     nodeFrame.append_attribute("nameSet") = frame->GetSubImage()->GetImageSet()->GetID().c_str();
                 nodeFrame.append_attribute("subImage") = frame->GetSubImage()->GetName().c_str();
@@ -369,6 +431,20 @@ bool AnimSet::SaveToXml(pugi::xml_document& document) const
             if (frame->FillEventString(events))
             {
                 nodeFrame.append_attribute("events") = events.c_str();
+            }
+
+            if (frame->GetOrigin() != Vector2::Zero_f)
+            {
+                pugi::xml_node nodeOrigin = nodeFrame.append_child("Origin");
+                nodeOrigin.append_attribute("x").set_value(frame->GetOrigin().x);
+                nodeOrigin.append_attribute("y").set_value(frame->GetOrigin().y);
+            }
+
+            if (frame->GetMoveOffset() != Vector2::Zero_f)
+            {
+                pugi::xml_node nodeMove = nodeFrame.append_child("Move");
+                nodeMove.append_attribute("x").set_value(frame->GetMoveOffset().x);
+                nodeMove.append_attribute("y").set_value(frame->GetMoveOffset().y);
             }
         }
     }

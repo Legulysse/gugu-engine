@@ -202,7 +202,7 @@ void LoggerEngine::IncrementFrameNumber()
     m_frameNumber = m_frameNumber == 999 ? 1 : m_frameNumber + 1;
 }
 
-void LoggerEngine::RegisterDelegate(void* handle, const DelegateLog& delegateLog)
+void LoggerEngine::RegisterDelegate(const void* handle, const DelegateLog& delegateLog)
 {
     DelegateInfos infos;
     infos.delegateLog = delegateLog;
@@ -211,7 +211,7 @@ void LoggerEngine::RegisterDelegate(void* handle, const DelegateLog& delegateLog
     m_delegates.push_back(infos);
 }
 
-void LoggerEngine::UnregisterDelegate(void* handle)
+void LoggerEngine::UnregisterDelegate(const void* handle)
 {
     StdVectorRemoveIf(m_delegates, [&](const auto& item) { return item.handle == handle; });
 }

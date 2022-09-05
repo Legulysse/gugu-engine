@@ -80,7 +80,7 @@ std::string StringFormat(const std::string& _tValue, const T1& _tArg1, const T2&
 template<typename... TArgs>
 std::string StringFormat(const std::string& _tValue, const TArgs&... _tArgs);
 
-struct FormatParameters
+struct FormatParameters     // TODO: rename as StringFormatParameters ? or StringFormatArgs ?
 {
     template<typename T>
     void Add(const std::string& strName, const T& tParam);
@@ -164,6 +164,9 @@ void StdVectorDifference(const std::vector<T>& _vecFrom, const std::vector<T>& _
 template<typename T>
 void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vector<T>& _vecContainerB, std::vector<T>& _vecIntersection);
 
+template<typename T>
+bool StdSetContains(const std::set<T>& _vecContainer, const T& _tValue);
+
 //----------------------------------------------
 // OS
 
@@ -174,9 +177,12 @@ void WriteInFileEndline(const std::string& _strFileName, const std::string& _str
 void OpenFileExplorer(const std::string& path);
 void OpenWebBrowser(const std::string& _strURL);
 
-bool EnsureDirectoryExists(const std::string& _strPath);
+void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool recursive);
+void GetDirectories(const std::string& rootPath, std::vector<std::string>& directories, bool recursive);
 
-void GetFilesList(const std::string& _strPath, std::vector<FileInfo>& _vecFiles, bool _bRecursive);
+bool DirectoryExists(const std::string& _strPath);
+
+bool EnsureDirectoryExists(const std::string& _strPath);
 bool RemoveFile(const std::string& _strPathName);
 
 // Get the current timestamp as milliseconds

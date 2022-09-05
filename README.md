@@ -14,11 +14,8 @@ PugiXml 1.11.4 : used by the Engine.
 Python 3.x : used for build and utility scripts.  
 Premake 5 alpha 16 : used by build scripts.  
 
-ImGui 1.84.1 (docking) : used by the new Editor.  
+ImGui 1.84.1 (docking) : used by the Editor.  
 ImGui-SFML 2.3 : used for the ImGui integration.  
-
-Qt 5.7.0 : used by the old Editor.  
-Qt Creator 4.1.0 : used for the old Editor.  
 
 ## Setup
 
@@ -48,11 +45,9 @@ This demo will run in /Version/DemoGame.
 
 ### Editor
 
-You can find an early draft of the editor in /Tools/GuguEditorOld, and a remake in /Tools/GuguEditor.  
-Their sources can be found in /Dev/EditorOld and /Dev/SourcesEditor.  
+You can find the editor in /Tools/GuguEditor.  
+Its sources can be found in /Dev/SourcesEditor and /Dev/SourcesEditorApp.  
 The old version can help create imagesets and animsets from existing textures.  
-The new version allows the edition of gameplay datasheets, and will later include the old imageset and animset edition tools.  
-Please note that those are very early drafts.  
+The editor allows the edition of gameplay datasheets, imagesets, animsets, and particle effects.  
 
-![Demo Game](/Docs/Pictures/EditorOld.png)
 ![Demo Game](/Docs/Pictures/Editor_01.png)

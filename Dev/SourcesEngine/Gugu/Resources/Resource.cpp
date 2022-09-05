@@ -110,27 +110,34 @@ bool Resource::SaveToXmlString(std::string& result) const
     return true;
 }
 
-bool Resource::ReloadFromFile()
-{
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "ReloadFromFile is not supported for this type of resource");
-    return false;
-}
-
 void Resource::Unload()
 {
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Unload is not supported for this type of resource");
+    // TODO: If I want to activate those error messages, I need to ensure they wont spam the editor for resources like Textures.
+    //GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Unload is not supported for this type of resource");
 }
 
 bool Resource::LoadFromXml(const pugi::xml_document& document)
 {
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "LoadFromXml is not supported for this type of resource");
+    // TODO: If I want to activate those error messages, I need to ensure they wont spam the editor for resources like Textures.
+    //GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "LoadFromXml is not supported for this type of resource");
     return false;
 }
 
 bool Resource::SaveToXml(pugi::xml_document& document) const
 {
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "SaveToXml is not supported for this type of resource");
+    // TODO: If I want to activate those error messages, I need to ensure they wont spam the editor for resources like Textures.
+    //GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "SaveToXml is not supported for this type of resource");
     return false;
+}
+
+void Resource::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    // No dependencies by default.
+}
+
+void Resource::OnDependencyRemoved(const Resource* removedDependency)
+{
+    // No dependencies by default.
 }
 
 }   // namespace gugu

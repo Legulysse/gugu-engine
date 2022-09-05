@@ -11,6 +11,7 @@
 
 #include <map>
 #include <vector>
+#include <set>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -51,6 +52,20 @@ class ManagerResources
 public:
 
     using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (const std::string&)>;
+    using DelegateResourceEvent = std::function<void(const Resource* resource, EResourceEvent event, const Resource* dependency)>;    // TODO: Is dependency reference necessary ?
+
+    struct ResourceListener
+    {
+        const void* handle;
+        DelegateResourceEvent delegateResourceEvent;
+    };
+
+    struct ResourceDependencies
+    {
+        std::set<Resource*> dependencies;
+        std::set<Resource*> referencers;
+        std::vector<ResourceListener> listeners;
+    };
 
 public:
 
@@ -104,8 +119,11 @@ public:
     bool        RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos);
     bool        AddResource     (Resource* _pNewResource, const FileInfo& _oFileInfo);
     bool        MoveResource    (Resource* _pResource, const FileInfo& _oFileInfo);
+
     bool        RemoveResource  (Resource* _pResource);
+    bool        RemoveResource  (const std::string& resourceID);
     bool        DeleteResource  (Resource* _pResource);
+    bool        DeleteResource  (const std::string& resourceID);
 
     //TODO: Editor hack, waiting for ResourceContext to split editor and project resources.
     void        RemoveResourcesFromPath (const std::string& _strPath);
@@ -133,27 +151,41 @@ public:
     void RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum);
     const DatasheetEnum* GetDatasheetEnum(const std::string& _strName);
 
+    bool RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceEvent& delegateResourceEvent);
+    void UnregisterResourceListeners(const Resource* resource, const void* handle);
+    void UnregisterResourceListeners(const void* handle);
+
+    void UpdateResourceDependencies(Resource* resource);
+    const std::map<const Resource*, ResourceDependencies>& GetResourceDependencies() const;
+
 private:
 
     Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
+
+    void RegisterResourceDependencies(Resource* resource);
+    void UnregisterResourceDependencies(Resource* resource);
+    void NotifyResourceRemoved(const Resource* resource);
 
 private:
 
     //typedef Hash ResourceMapKey;
     typedef std::string ResourceMapKey;
 
-    std::string                     m_pathAssets;
-    std::string                     m_pathScreenshots;
-    std::string                     m_defaultFont;
-    std::string                     m_debugFont;
-    bool                            m_useFullPath; //TODO: some kind of enum RessourceIDPolicy
-    bool                            m_defaultTextureSmooth;
+    std::string m_pathAssets;
+    std::string m_pathScreenshots;
+    std::string m_defaultFont;
+    std::string m_debugFont;
+    bool m_useFullPath;         //TODO: some kind of enum RessourceIDPolicy.
+    bool m_defaultTextureSmooth;
+    bool m_handleResourceDependencies;
 
     std::map<ResourceMapKey, ResourceInfo*> m_resources;
     std::map<ResourceMapKey, Texture*> m_customTextures;
 
     std::vector<DelegateDatasheetObjectFactory> m_datasheetObjectFactories;
-    std::map<ResourceMapKey, const DatasheetEnum*>  m_datasheetEnums;
+    std::map<ResourceMapKey, const DatasheetEnum*> m_datasheetEnums;
+
+    std::map<const Resource*, ResourceDependencies> m_resourceDependencies;
 };
 
 ManagerResources* GetResources();

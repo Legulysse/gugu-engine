@@ -8,6 +8,8 @@
 // Includes
 
 #include "Gugu/Editor/Editor.h"
+#include "Gugu/Editor/Parser/DatasheetParser.h"
+#include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"
@@ -29,6 +31,7 @@ NewResourceDialog::NewResourceDialog(const std::string& resourcePath, EResourceT
     , m_resourcePath(resourcePath)
     , m_resourceName("")
     , m_resourceExtension("")
+    , m_datasheetClassName("")
 {
     //TODO: centralize resource type extensions somewhere.
     static const std::map<EResourceType::Type, std::string> resourceExtensions
@@ -51,6 +54,37 @@ NewResourceDialog::~NewResourceDialog()
 
 void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
 {
+    if (m_resourceType == EResourceType::Datasheet)
+    {
+        std::string dummy = m_datasheetClassName;
+
+        ImGuiComboFlags flags = 0;
+        if (ImGui::BeginCombo("Datasheet Class", dummy.c_str(), flags))
+        {
+            const std::vector<DatasheetParser::ClassDefinition*>& classDefinitions = GetEditor()->GetDatasheetParser()->GetAllClassDefinitions();
+
+            for (size_t i = 0; i < classDefinitions.size(); ++i)
+            {
+                if (classDefinitions[i]->isAbstract)
+                    continue;
+
+                bool selected = (dummy == classDefinitions[i]->m_name);
+                if (ImGui::Selectable(classDefinitions[i]->m_name.c_str(), selected))
+                {
+                    m_datasheetClassName = classDefinitions[i]->m_name;
+                    m_resourceExtension = m_datasheetClassName;
+                }
+
+                if (selected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+
+            ImGui::EndCombo();
+        }
+    }
+
     ImGui::LabelText("Path", m_resourcePath.c_str());
 
     ImGui::Spacing();
@@ -59,10 +93,12 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
         //TODO: Check ID.
     }
 
+    ImGui::BeginDisabled();
     if (ImGui::InputText("Extension", &m_resourceExtension, ImGuiInputTextFlags_EnterReturnsTrue))
     {
         //TODO: Check Extension.
     }
+    ImGui::EndDisabled();
 
     ImGui::Spacing();
     if (ImGui::Button("Cancel"))
@@ -71,12 +107,13 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
     }
 
     ImGui::SameLine();
+    ImGui::BeginDisabled(m_resourceName.empty() || m_resourceExtension.empty());
     if (ImGui::Button("Validate"))
     {
-        gugu::FileInfo fileInfo(m_resourcePath, m_resourceName + "." + m_resourceExtension);
+        FileInfo fileInfo(m_resourcePath, m_resourceName + "." + m_resourceExtension);
 
         //TODO: centralize resource type instanciation somewhere.
-        gugu::Resource* newResource = nullptr;
+        Resource* newResource = nullptr;
 
         if (m_resourceType == EResourceType::ImageSet)
         {
@@ -90,10 +127,18 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
         {
             newResource = new ParticleEffect;
         }
+        else if (m_resourceType == EResourceType::Datasheet)
+        {
+            DatasheetParser::ClassDefinition* classDefinition;
+            if (GetEditor()->GetDatasheetParser()->GetClassDefinition(m_datasheetClassName, classDefinition))
+            {
+                newResource = new VirtualDatasheet(classDefinition);
+            }
+        }
 
         if (newResource)
         {
-            bool bSuccess = gugu::GetResources()->AddResource(newResource, fileInfo);
+            bool bSuccess = GetResources()->AddResource(newResource, fileInfo);
             if (bSuccess)
             {
                 newResource->SaveToFile();
@@ -109,6 +154,7 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
 
         CloseModalImpl();
     }
+    ImGui::EndDisabled();
 }
 
 }   //namespace gugu

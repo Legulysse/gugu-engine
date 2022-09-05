@@ -170,6 +170,10 @@ public:
     //TODO: Store reference to parent, at least a Getter
     const DatasheetObject* GetRootObject() const;
 
+protected:
+
+    virtual void Unload() override;
+
 private:
 
     DatasheetObject* m_rootObject;

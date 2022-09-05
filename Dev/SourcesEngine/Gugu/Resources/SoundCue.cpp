@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/Sound.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/External/PugiXmlWrap.h"
@@ -56,17 +57,40 @@ EResourceType::Type SoundCue::GetResourceType() const
     return EResourceType::SoundCue;
 }
 
+void SoundCue::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    for (auto& audioFile : m_audioFiles)
+    {
+        if (audioFile.sound)
+        {
+            dependencies.insert(audioFile.sound);
+        }
+    }
+}
+
+void SoundCue::OnDependencyRemoved(const Resource* removedDependency)
+{
+    for (auto& audioFile : m_audioFiles)
+    {
+        if (audioFile.sound == removedDependency)
+        {
+            audioFile.sound = nullptr;
+        }
+    }
+}
+
 void SoundCue::Unload()
 {
+    m_audioFiles.clear();
 }
 
 bool SoundCue::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+
     pugi::xml_node nodeRoot = document.child("SoundCue");
     if (!nodeRoot)
         return false;
-
-    Unload();
 
     pugi::xml_node oNodeFiles = nodeRoot.child("Files");
     if (!oNodeFiles)

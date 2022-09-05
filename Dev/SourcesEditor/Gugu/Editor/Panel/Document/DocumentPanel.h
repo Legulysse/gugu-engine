@@ -28,13 +28,15 @@ public:
     DocumentPanel(Resource* resource);
     virtual ~DocumentPanel();
 
-    virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
-    virtual void UpdateProperties(const gugu::DeltaTime& dt) = 0;
+    virtual void UpdatePanel(const DeltaTime& dt) final;
+    virtual void UpdateProperties(const DeltaTime& dt) final;
 
     bool Save();
     bool Undo();
     bool Redo();
 
+    Resource* GetResource() const;
+    const std::string& GetResourceID() const;
     bool IsSameResource(const std::string& resourceID) const;
 
     bool IsFocused() const;
@@ -43,10 +45,11 @@ public:
     void RaiseDirty();
     bool IsDirty() const;
 
-    bool IsClosing() const;
-    bool IsClosed() const;
+    bool Close();
     void CancelClosing();
     void ValidateClosing();
+    bool IsClosing() const;
+    bool IsClosed() const;
 
 protected:
 
@@ -57,13 +60,17 @@ protected:
     virtual void OnSaved() {}
     virtual void OnUndoRedo() {}
 
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) = 0;
+    virtual void OnVisibilityChanged(bool visible) {}
+
+    virtual void UpdatePanelImpl(const DeltaTime& dt) = 0;
+    virtual void UpdatePropertiesImpl(const DeltaTime& dt) {}
 
 protected:
 
     std::string m_resourceID;
     Resource* m_resource;
 
+    bool m_visible;
     bool m_focused;
     bool m_closing;
     bool m_closed;

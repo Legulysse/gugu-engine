@@ -9,6 +9,7 @@
 
 #include "Gugu/Editor/Editor.h"
 
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
@@ -24,6 +25,7 @@ namespace gugu {
 DocumentPanel::DocumentPanel(Resource* resource)
     : m_resource(resource)
     , m_dirty(false)
+    , m_visible(false)
     , m_focused(false)
     , m_closing(false)
     , m_closed(false)
@@ -41,6 +43,8 @@ DocumentPanel::~DocumentPanel()
 
 void DocumentPanel::UpdatePanel(const DeltaTime& dt)
 {
+    bool wasVisible = m_visible;
+    m_visible = false;
     m_focused = false;
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_HorizontalScrollbar;
@@ -53,16 +57,35 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
     bool isOpen = true;
     if (ImGui::Begin(m_title.c_str(), &isOpen, flags))
     {
-        if (ImGui::IsWindowFocused())
+        m_visible = true;
+
+        if (m_visible && !wasVisible)
+        {
+            OnVisibilityChanged(true);
+        }
+
+        ImGuiFocusedFlags focusedFlags = ImGuiFocusedFlags_ChildWindows;
+        if (ImGui::IsWindowFocused(focusedFlags))
         {
             m_focused = true;
         }
 
         UpdatePanelImpl(dt);
     }
+
+    if (!m_visible && wasVisible)
+    {
+        OnVisibilityChanged(false);
+    }
+
     ImGui::End();
 
     m_closing |= !isOpen;
+}
+
+void DocumentPanel::UpdateProperties(const DeltaTime& dt)
+{
+    UpdatePropertiesImpl(dt);
 }
 
 bool DocumentPanel::Save()
@@ -159,6 +182,16 @@ bool DocumentPanel::RedoState()
     return false;
 }
 
+Resource* DocumentPanel::GetResource() const
+{
+    return m_resource;
+}
+
+const std::string& DocumentPanel::GetResourceID() const
+{
+    return m_resourceID;
+}
+
 bool DocumentPanel::IsSameResource(const std::string& resourceID) const
 {
     return m_resourceID == resourceID;
@@ -176,6 +209,8 @@ void DocumentPanel::ForceFocus()
 
 void DocumentPanel::RaiseDirty()
 {
+    GetResources()->UpdateResourceDependencies(m_resource);
+
     SaveState();
     m_dirty = true;
 }
@@ -185,13 +220,21 @@ bool DocumentPanel::IsDirty() const
     return m_dirty;
 }
 
-bool DocumentPanel::IsClosing() const
+bool DocumentPanel::Close()
 {
-    return m_closing;
-}
+    if (m_closed)
+        return true;
 
-bool DocumentPanel::IsClosed() const
-{
+    if (m_dirty)
+    {
+        m_closing = true;
+    }
+    else
+    {
+        m_closing = false;
+        m_closed = true;
+    }
+
     return m_closed;
 }
 
@@ -202,8 +245,21 @@ void DocumentPanel::CancelClosing()
 
 void DocumentPanel::ValidateClosing()
 {
-    m_closed = m_closing;
-    m_closing = false;
+    if (m_closing)
+    {
+        m_closing = false;
+        m_closed = true;
+    }
+}
+
+bool DocumentPanel::IsClosing() const
+{
+    return m_closing;
+}
+
+bool DocumentPanel::IsClosed() const
+{
+    return m_closed;
 }
 
 }   //namespace gugu

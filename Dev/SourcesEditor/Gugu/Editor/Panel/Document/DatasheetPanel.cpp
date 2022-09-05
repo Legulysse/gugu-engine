@@ -26,10 +26,14 @@ DatasheetPanel::DatasheetPanel(VirtualDatasheet* resource)
     : DocumentPanel(resource)
     , m_datasheet(resource)
 {
+    // Dependencies
+    GetResources()->RegisterResourceListener(m_datasheet, this, STD_BIND_3(&DatasheetPanel::OnResourceEvent, this));
 }
 
 DatasheetPanel::~DatasheetPanel()
 {
+    // Dependencies
+    GetResources()->UnregisterResourceListeners(m_datasheet, this);
 }
 
 void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
@@ -37,12 +41,11 @@ void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
     DisplayDatasheet();
 }
 
-void DatasheetPanel::UpdateProperties(const gugu::DeltaTime& dt)
-{
-}
-
 void DatasheetPanel::DisplayDatasheet()
 {
+    if (m_datasheet->m_classDefinition == nullptr)
+        return;
+
     DisplayParentReference();
 
     // Using those as a base value to create width/height that are factor of the size of our font
@@ -127,7 +130,7 @@ void DatasheetPanel::DisplayParentReference()
         }
     }
 
-    std::string parentObjectDefinition = m_datasheet->m_classDefinition->m_name;
+    std::string parentObjectDefinition = !m_datasheet->m_classDefinition ? "None" : m_datasheet->m_classDefinition->m_name;
     std::string description = parentReference ? "Valid Ref" : (dummyParentRefID.empty() ? "Empty Ref" : (invalidRecursiveParent ? "Invalid Recursive Ref" : "Invalid Ref"));
 
     ImGui::Indent();
@@ -613,6 +616,14 @@ void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMembe
 
         ImGui::EndDisabled();
         ImGui::PopID();
+    }
+}
+
+void DatasheetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
+{
+    if (event == EResourceEvent::DependencyRemoved)
+    {
+        RaiseDirty();
     }
 }
 

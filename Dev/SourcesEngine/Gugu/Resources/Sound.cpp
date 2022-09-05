@@ -24,7 +24,7 @@ Sound::Sound()
 
 Sound::~Sound()
 {
-    SafeDelete(m_sfSoundBuffer);
+    Unload();
 }
 
 sf::SoundBuffer* Sound::GetSFSoundBuffer() const
@@ -37,14 +37,22 @@ EResourceType::Type Sound::GetResourceType() const
     return EResourceType::Sound;
 }
 
+void Sound::Unload()
+{
+    SafeDelete(m_sfSoundBuffer);
+}
+
 bool Sound::LoadFromFile()
 {
+    Unload();
+
     m_sfSoundBuffer = new sf::SoundBuffer;
     if (!m_sfSoundBuffer->loadFromFile(GetFileInfo().GetPathName()))
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Sound not found : {0}", GetFileInfo().GetPathName()));
         return false;
     }
+
     return true;
 }
 

@@ -10,6 +10,14 @@
 #include <string>
 
 ////////////////////////////////////////////////////////////////
+// Forward Declarations
+
+namespace gugu
+{
+    class ImageSet;
+}
+
+////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
@@ -87,7 +95,7 @@ struct ParticleSystemSettings
     bool updateColorOverLifetime = false;
     sf::Color startColor = sf::Color::White;
     sf::Color endColor = sf::Color::Black;
-    std::string imageSetID = "";
+    ImageSet* imageSet = nullptr;
 };
 
 }   //namespace gugu

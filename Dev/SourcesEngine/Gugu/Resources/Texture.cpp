@@ -25,7 +25,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-    SafeDelete(m_sfTexture);
+    Unload();
 }
 
 void Texture::SetSFTexture(sf::Texture* _pSFTexture)
@@ -74,13 +74,30 @@ bool Texture::IsRepeated() const
     return false;
 }
 
+Vector2u Texture::GetSize() const
+{
+    return m_sfTexture ? m_sfTexture->getSize() : Vector2u();
+}
+
+sf::IntRect Texture::GetRect() const
+{
+    return m_sfTexture ? sf::IntRect(Vector2i(), Vector2i(m_sfTexture->getSize())) : sf::IntRect();
+}
+
 EResourceType::Type Texture::GetResourceType() const
 {
     return EResourceType::Texture;
 }
 
+void Texture::Unload()
+{
+    SafeDelete(m_sfTexture);
+}
+
 bool Texture::LoadFromFile()
 {
+    Unload();
+
     m_sfTexture = new sf::Texture;
     if (!m_sfTexture->loadFromFile(GetFileInfo().GetPathName()))
     {
@@ -102,29 +119,6 @@ bool Texture::LoadFromFile()
     m_sfTexture->setRepeated(false);
 
     return true;
-}
-
-bool Texture::ReloadFromFile()
-{
-    if (!m_sfTexture)
-        return false;
-
-    if (m_sfTexture->loadFromFile(GetFileInfo().GetPathName()))
-    {
-        return true;
-    }
-
-    return false;
-}
-
-Vector2i Texture::GetSize() const
-{
-    return m_sfTexture ? Vector2i(m_sfTexture->getSize()) : Vector2i();
-}
-
-sf::IntRect Texture::GetRect() const
-{
-    return m_sfTexture ? sf::IntRect(Vector2i(), Vector2i(m_sfTexture->getSize())) : sf::IntRect();
 }
 
 }   // namespace gugu

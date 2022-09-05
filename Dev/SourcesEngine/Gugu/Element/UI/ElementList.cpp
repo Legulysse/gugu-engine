@@ -43,12 +43,12 @@ ElementList::ElementList()
     m_scrollButtonBottom = new ElementSprite;
     m_scrollButtonBottom->SetParent(this);
 
-    GetEvents()->AddCallback(EInteractionEvent::MouseScrolled, std::bind(&ElementList::OnMouseScrolled, this, std::placeholders::_1));
-    GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementList::OnMousePressed, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseScrolled, STD_BIND_1(&ElementList::OnMouseScrolled, this));
+    GetEvents()->AddCallback(EInteractionEvent::MousePressed, STD_BIND_1(&ElementList::OnMousePressed, this));
 
     m_scrollButtonTop->GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, -1));
     m_scrollButtonBottom->GetEvents()->AddCallback(EInteractionEvent::MousePressed, std::bind(&ElementList::ScrollItems, this, 1));
-    m_scrollSlider->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, std::bind(&ElementList::OnSliderDragMoved, this, std::placeholders::_1));
+    m_scrollSlider->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, STD_BIND_1(&ElementList::OnSliderDragMoved, this));
 }
 
 ElementList::~ElementList()

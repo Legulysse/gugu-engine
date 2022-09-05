@@ -19,7 +19,7 @@ public:
 
 protected:
 
-    virtual void UpdateModalImpl(const gugu::DeltaTime& dt) override;
+    virtual void UpdateModalImpl(const DeltaTime& dt) override;
 
 protected:
 

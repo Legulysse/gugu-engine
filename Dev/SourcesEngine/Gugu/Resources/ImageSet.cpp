@@ -86,12 +86,6 @@ Texture* ImageSet::GetTexture() const
 
 SubImage* ImageSet::AddSubImage(const std::string& _strName)
 {
-    for (size_t i = 0; i < m_subImages.size(); ++i)
-    {
-        if (m_subImages[i]->IsName(_strName))
-            return nullptr;
-    }
-
     SubImage* pSubImage = new SubImage(this);
     m_subImages.push_back(pSubImage);
     pSubImage->SetName(_strName);
@@ -152,6 +146,22 @@ EResourceType::Type ImageSet::GetResourceType() const
     return EResourceType::ImageSet;
 }
 
+void ImageSet::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    if (m_texture)
+    {
+        dependencies.insert(m_texture);
+    }
+}
+
+void ImageSet::OnDependencyRemoved(const Resource* removedDependency)
+{
+    if (m_texture == removedDependency)
+    {
+        m_texture = nullptr;
+    }
+}
+
 void ImageSet::Unload()
 {
     DeleteAllSubImages();
@@ -160,11 +170,11 @@ void ImageSet::Unload()
 
 bool ImageSet::LoadFromXml(const pugi::xml_document& document)
 {
+    Unload();
+
     pugi::xml_node nodeRoot = document.child("ImageSet");
     if (!nodeRoot)
         return false;
-
-    Unload();
 
     pugi::xml_attribute oAttributeTexture = nodeRoot.attribute("texture");
     if (oAttributeTexture)

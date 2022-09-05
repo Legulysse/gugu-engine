@@ -28,6 +28,10 @@ public:
 
 protected:
 
+    virtual void Unload() override;
+
+protected:
+
     sf::Font* m_sfFont;
 };
 

@@ -28,6 +28,7 @@ namespace gugu {
 ParticleSystem::ParticleSystem()
     : m_running(false)
     , m_stopEmitting(false)
+    , m_paused(false)
     , m_activeParticleCount(0)
     , m_currentDuration(0)
     , m_nextEmitIndex(0)
@@ -118,14 +119,10 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     m_dataEndSize.resize(m_maxParticleCount);
     m_dataVelocity.resize(m_maxParticleCount);
 
-    if (m_settings.imageSetID != "")
+    if (m_settings.imageSet && m_settings.imageSet->GetSubImageCount() > 0 && m_settings.imageSet->GetTexture())
     {
-        ImageSet* imageSet = GetResources()->GetImageSet(m_settings.imageSetID);
-        if (imageSet && imageSet->GetSubImageCount() > 0 && imageSet->GetTexture())
-        {
-            m_imageSet = imageSet;
-            m_texture = m_imageSet->GetTexture()->GetSFTexture();
-        }
+        m_imageSet = m_settings.imageSet;
+        m_texture = m_imageSet->GetTexture()->GetSFTexture();
     }
 }
 
@@ -152,6 +149,7 @@ void ParticleSystem::Start()
     }
 
     m_running = true;
+    m_paused = false;
     m_currentDuration = 0;
     
     // TODO: Wait for the update to trigger a pending StartImpl ? to ensure we are not polluting Step.
@@ -178,6 +176,7 @@ void ParticleSystem::Stop()
         return;
 
     m_running = false;
+    m_paused = false;
     m_activeParticleCount = 0;
     m_currentDuration = 0;
     m_nextEmitIndex = 0;
@@ -212,6 +211,16 @@ bool ParticleSystem::IsRunning() const
 void ParticleSystem::StopEmitting()
 {
     m_stopEmitting = true;
+}
+
+void ParticleSystem::SetPaused(bool paused)
+{
+    m_paused = paused;
+}
+
+bool ParticleSystem::IsPaused() const
+{
+    return m_paused;
 }
 
 size_t ParticleSystem::GetMaxParticleCount() const
@@ -390,6 +399,9 @@ void ParticleSystem::Update(const DeltaTime& dt)
     {
         SetEmitterPosition(Vector2::Zero_f);
     }
+
+    if (m_paused)
+        return;
 
     // Update live particles.
     for (size_t i = 0; i < m_maxParticleCount; ++i)

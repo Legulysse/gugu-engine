@@ -95,8 +95,8 @@ public:
     void SetUseTimestamp(bool useTimestamp);
     void IncrementFrameNumber();
 
-    void RegisterDelegate(void* handle, const DelegateLog& delegateLog);
-    void UnregisterDelegate(void* handle);
+    void RegisterDelegate(const void* handle, const DelegateLog& delegateLog);
+    void UnregisterDelegate(const void* handle);
 
 protected:
 
@@ -106,7 +106,7 @@ protected:
     struct DelegateInfos
     {
         DelegateLog delegateLog;
-        void* handle;
+        const void* handle;
     };
     std::vector<DelegateInfos> m_delegates;
 };

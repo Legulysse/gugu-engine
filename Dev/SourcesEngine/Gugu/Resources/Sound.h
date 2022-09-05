@@ -26,7 +26,11 @@ public:
     
     virtual EResourceType::Type GetResourceType() const override;
 
-    virtual bool    LoadFromFile() override;
+    virtual bool LoadFromFile() override;
+
+protected:
+
+    virtual void Unload() override;
 
 protected:
 

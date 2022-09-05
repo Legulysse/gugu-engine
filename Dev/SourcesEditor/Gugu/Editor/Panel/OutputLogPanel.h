@@ -30,7 +30,7 @@ public:
     OutputLogPanel();
     virtual ~OutputLogPanel();
 
-    virtual void UpdatePanel(const gugu::DeltaTime& dt) override;
+    virtual void UpdatePanel(const DeltaTime& dt) override;
 
 private:
 

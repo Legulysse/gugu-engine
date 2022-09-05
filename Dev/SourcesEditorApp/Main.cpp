@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
     config.windowWidth = 1440;
     config.windowHeight = 900;
     config.maximizeWindow = true;
+    config.handleResourceDependencies = true;
 
     GetEngine()->Init(config);
 

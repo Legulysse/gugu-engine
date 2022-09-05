@@ -577,7 +577,7 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
         }
 
         //Debug Bounds
-        if (m_showDebugBounds || (_kRenderPass.frameInfos && _kRenderPass.frameInfos->showBounds))
+        if (_kRenderPass.frameInfos && (m_showDebugBounds || _kRenderPass.frameInfos->showBounds))
         {
             // TODO: Maybe try to render all bounds in a single drawcall ?
             _kRenderPass.frameInfos->defaultBoundsShape.setSize(m_size);

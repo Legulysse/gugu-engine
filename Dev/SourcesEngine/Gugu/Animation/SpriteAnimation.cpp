@@ -75,14 +75,22 @@ bool SpriteAnimation::HasAnimation(const std::string& _strNameAnim) const
     return (m_animSet && m_animSet->GetAnimation(_strNameAnim));
 }
 
-void SpriteAnimation::StartAnimation(const std::string& _strNameAnim, bool _bLoop, float _fSpeed)
+void SpriteAnimation::StartAnimation(const std::string& _strNameAnim)
 {
+    if (m_animSet)
+    {
+        StartAnimation(m_animSet->GetAnimation(_strNameAnim));
+    }
+}
+
+void SpriteAnimation::StartAnimation(Animation* animation)
+{
+    if (!animation || !m_animSet || animation->GetAnimSet() != m_animSet)
+        return;
+
     StopAnimation();
 
-    if (m_animSet)
-        m_animation = m_animSet->GetAnimation(_strNameAnim);
-
-    m_animLoop = _bLoop;
+    m_animation = animation;
 
     RestartAnimation();
 }
@@ -91,8 +99,6 @@ void SpriteAnimation::RestartAnimation()
 {
     if (m_animation)
     {
-        m_animPause            = false;
-
         m_animIndexCurrent  = 0;
         m_animDurationCurrent  = 0.f;
 
@@ -102,13 +108,11 @@ void SpriteAnimation::RestartAnimation()
 
 void SpriteAnimation::StopAnimation()
 {
-    m_animation         = nullptr;
-    m_animPause         = false;
-
+    m_animation = nullptr;
     m_animIndexCurrent  = 0;
     m_animDurationCurrent  = 0.f;
 
-    //TODO: Call InitCurrentAnimationFrame() and force empty Sprites ?
+    InitCurrentAnimationFrame();
 }
 
 bool SpriteAnimation::IsAnimationPlaying() const
@@ -282,6 +286,10 @@ AnimationFrame* SpriteAnimation::InitCurrentAnimationFrame()
         {
             m_sprite->SetTexture(pCurrentFrame->GetTexture());
         }
+        else
+        {
+            m_sprite->SetTexture(nullptr);
+        }
 
         if (m_originFromAnimation)
         {
@@ -297,6 +305,10 @@ AnimationFrame* SpriteAnimation::InitCurrentAnimationFrame()
                 kMove.y = -kMove.y;
             m_sprite->Move(kMove);
         }
+    }
+    else
+    {
+        m_sprite->SetTexture(nullptr);
     }
 
     return pCurrentFrame;

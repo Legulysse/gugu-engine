@@ -54,12 +54,14 @@ void ManagerResources::Init(const EngineConfig& config)
     m_defaultFont = config.defaultFont;
     m_debugFont = config.debugFont;
     m_defaultTextureSmooth = config.defaultTextureSmooth;
+    m_handleResourceDependencies = config.handleResourceDependencies;
 
     ParseDirectory(m_pathAssets);
 }
 
 void ManagerResources::Release()
 {
+    m_resourceDependencies.clear();
     m_datasheetObjectFactories.clear();
 
     ClearStdMap(m_datasheetEnums);
@@ -74,7 +76,7 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
     GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Root folder : {0}", _strPathRoot));
 
     std::vector<FileInfo> vecFiles;
-    GetFilesList(_strPathRoot, vecFiles, true);
+    GetFiles(_strPathRoot, vecFiles, true);
 
     int iCount = 0;
     for (size_t i = 0; i < vecFiles.size(); ++i)
@@ -364,8 +366,12 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     if (pResource)
     {
         _pResourceInfo->resource = pResource;
+        RegisterResourceDependencies(pResource);
+
         pResource->Init(_pResourceInfo);
         pResource->LoadFromFile();
+
+        UpdateResourceDependencies(pResource);
 
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", oFileInfo.GetName()));
     }
@@ -386,7 +392,12 @@ bool ManagerResources::InjectResource(const std::string& _strResourceID, Resourc
         if (iteAsset->second->resource == nullptr)
         {
             iteAsset->second->resource = _pResource;
+            RegisterResourceDependencies(_pResource);
+
             _pResource->Init(iteAsset->second);
+            _pResource->LoadFromFile();
+
+            UpdateResourceDependencies(_pResource);
 
             GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Injected Resource : {0}", _strResourceID));
             return true;
@@ -422,6 +433,7 @@ std::string ManagerResources::GetResourceID(const Resource* _pResource) const
 
 std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
 {
+    // TODO: I should be able to deduce an ID from a FileInfo.
     auto iteCurrent = m_resources.begin();
     while (iteCurrent != m_resources.end())
     {
@@ -495,9 +507,16 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
     pInfo->fileInfo = _oFileInfo;
     pInfo->resource = _pNewResource;
 
+    m_resources.insert(iteResource, std::make_pair(strResourceID, pInfo));
+    RegisterResourceDependencies(_pNewResource);
+
     _pNewResource->Init(pInfo);
 
-    m_resources.insert(iteResource, std::make_pair(strResourceID, pInfo));
+    UpdateResourceDependencies(_pNewResource);
+
+    GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Added Resource : ID = {0}, Path = {1}"
+        , strResourceID
+        , _oFileInfo.GetPathName()));
 
     return true;
 }
@@ -551,6 +570,10 @@ bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFile
         return true;
     }
 
+    GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Moved Resource : ID = {0}, Path = {1}"
+        , strResourceID
+        , _oFileInfo.GetPathName()));
+
     return false;
 }
 
@@ -559,11 +582,24 @@ bool ManagerResources::RemoveResource(Resource* _pResource)
     if (!_pResource)
         return false;
 
-    auto iteResource = m_resources.find(_pResource->GetID());
+    return RemoveResource(_pResource->GetID());
+}
+
+bool ManagerResources::RemoveResource(const std::string& resourceID)
+{
+    auto iteResource = m_resources.find(resourceID);
     if (iteResource != m_resources.end())
     {
+        Resource* removedResource = iteResource->second->resource;
+
         ResourceInfo* pInfo = iteResource->second;
         m_resources.erase(iteResource);
+
+        if (removedResource)
+        {
+            NotifyResourceRemoved(removedResource);
+            UnregisterResourceDependencies(removedResource);
+        }
 
         SafeDelete(pInfo);
     }
@@ -576,12 +612,19 @@ bool ManagerResources::DeleteResource(Resource* _pResource)
     if (!_pResource)
         return false;
 
-    FileInfo oFileInfo = _pResource->GetFileInfo();
+    return DeleteResource(_pResource->GetID());
+}
 
-    if (RemoveResource(_pResource))
+bool ManagerResources::DeleteResource(const std::string& resourceID)
+{
+    FileInfo fileInfo;
+    GetResourceFileInfo(resourceID, fileInfo);
+
+    if (RemoveResource(resourceID))
     {
-        return RemoveFile(oFileInfo.GetPathName());
+        return RemoveFile(fileInfo.GetPathName());
     }
+
     return false;
 }
 
@@ -745,7 +788,221 @@ const DatasheetEnum* ManagerResources::GetDatasheetEnum(const std::string& _strN
     {
         return (iteElement->second);
     }
+
     return nullptr;
+}
+
+void ManagerResources::RegisterResourceDependencies(Resource* resource)
+{
+    if (!m_handleResourceDependencies)
+        return;
+
+    auto it = m_resourceDependencies.find(resource);
+    if (it == m_resourceDependencies.end())
+    {
+        it = m_resourceDependencies.insert(it, std::make_pair(resource, ResourceDependencies()));
+    }
+    else
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RegisterResourceDependencies failed, Resource already registered : {0}", resource->GetID()));
+    }
+}
+
+void ManagerResources::UpdateResourceDependencies(Resource* resource)
+{
+    if (!m_handleResourceDependencies)
+        return;
+
+    auto it = m_resourceDependencies.find(resource);
+    if (it != m_resourceDependencies.end())
+    {
+        bool updatedDependencies = false;
+
+        // Gather resource dependencies.
+        if (it->second.dependencies.empty())
+        {
+            resource->GetDependencies(it->second.dependencies);
+
+            updatedDependencies = !it->second.dependencies.empty();
+        }
+        else
+        {
+            std::set<Resource*> newDependencies;
+            resource->GetDependencies(newDependencies);
+
+            // Remove resource from its previous dependencies referencers.
+            std::vector<Resource*> difference;
+            std::set_difference(it->second.dependencies.begin(), it->second.dependencies.end(),
+                newDependencies.begin(), newDependencies.end(), std::back_inserter(difference));
+
+            for (const auto& dependency : difference)
+            {
+                auto itDependency = m_resourceDependencies.find(dependency);
+                if (itDependency != m_resourceDependencies.end())
+                {
+                    itDependency->second.referencers.erase(resource);
+                }
+            }
+
+            std::swap(it->second.dependencies, newDependencies);
+
+            updatedDependencies = !difference.empty();
+        }
+
+        // Register resource to its dependencies referencers.
+        for (const auto& dependency : it->second.dependencies)
+        {
+            auto itDependency = m_resourceDependencies.find(dependency);
+            if (itDependency != m_resourceDependencies.end())
+            {
+                itDependency->second.referencers.insert(resource);
+            }
+        }
+
+        if (updatedDependencies)
+        {
+            // If dependencies changed, we need to inform referencers in case they were depending on them too.
+            for (const auto& referencer : it->second.referencers)
+            {
+                UpdateResourceDependencies(referencer);
+            }
+        }
+    }
+    else
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("UpdateResourceDependencies failed, Unregistered Resource : {0}", resource->GetID()));
+    }
+}
+
+void ManagerResources::UnregisterResourceDependencies(Resource* resource)
+{
+    auto it = m_resourceDependencies.find(resource);
+    if (it != m_resourceDependencies.end())
+    {
+        // Remove resource from its dependencies referencers.
+        for (const auto& dependency : it->second.dependencies)
+        {
+            auto itDependency = m_resourceDependencies.find(dependency);
+            if (itDependency != m_resourceDependencies.end())
+            {
+                itDependency->second.referencers.erase(resource);
+            }
+        }
+
+        // Remove resource from its referencers dependencies.
+        for (const auto& referencer : it->second.referencers)
+        {
+            auto itReferencer = m_resourceDependencies.find(referencer);
+            if (itReferencer != m_resourceDependencies.end())
+            {
+                itReferencer->second.dependencies.erase(resource);
+            }
+        }
+
+        // Remove resource from cache.
+        m_resourceDependencies.erase(it);
+    }
+}
+
+bool ManagerResources::RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceEvent& delegateResourceEvent)
+{
+    if (!resource || !handle)
+        return false;
+
+    auto it = m_resourceDependencies.find(resource);
+    if (it != m_resourceDependencies.end())
+    {
+        ResourceListener resourceListener;
+        resourceListener.handle = handle;
+        resourceListener.delegateResourceEvent = delegateResourceEvent;
+
+        it->second.listeners.push_back(resourceListener);
+        return true;
+    }
+    else
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RegisterResourceListener failed, Resource not loaded : {0}", resource->GetID()));
+        return false;
+    }
+}
+
+void ManagerResources::UnregisterResourceListeners(const Resource* resource, const void* handle)
+{
+    auto it = m_resourceDependencies.find(resource);
+    if (it != m_resourceDependencies.end())
+    {
+        size_t i = 0;
+        while (i < it->second.listeners.size())
+        {
+            if (it->second.listeners[i].handle == handle)
+            {
+                StdVectorRemoveAt(it->second.listeners, i);
+            }
+            else
+            {
+                ++i;
+            }
+        }
+    }
+}
+
+void ManagerResources::UnregisterResourceListeners(const void* handle)
+{
+    // Remove all listeners originating from this handle.
+    for (auto& kvp : m_resourceDependencies)
+    {
+        size_t i = 0;
+        while (i < kvp.second.listeners.size())
+        {
+            if (kvp.second.listeners[i].handle == handle)
+            {
+                StdVectorRemoveAt(kvp.second.listeners, i);
+            }
+            else
+            {
+                ++i;
+            }
+        }
+    }
+}
+
+void ManagerResources::NotifyResourceRemoved(const Resource* resource)
+{
+    auto it = m_resourceDependencies.find(resource);
+    if (it != m_resourceDependencies.end())
+    {
+        // Notify referencers that a dependency has been removed.
+        std::set<Resource*> referencers = it->second.referencers;
+        for (const auto& referencer : referencers)
+        {
+            referencer->OnDependencyRemoved(resource);
+        }
+
+        for (const auto& referencer : referencers)
+        {
+            auto itReferencer = m_resourceDependencies.find(referencer);
+            if (itReferencer != m_resourceDependencies.end())
+            {
+                std::vector<ResourceListener> listeners = itReferencer->second.listeners;
+                for (const auto& resourceListener : listeners)
+                {
+                    resourceListener.delegateResourceEvent(referencer, EResourceEvent::DependencyRemoved, resource);
+                }
+            }
+        }
+
+        // Notify the resource itself being removed.
+        std::vector<ResourceListener> listeners = it->second.listeners;
+        for (const auto& resourceListener : listeners)
+        {
+            resourceListener.delegateResourceEvent(resource, EResourceEvent::ResourceRemoved, nullptr);
+        }
+    }
+}
+
+const std::map<const Resource*, ManagerResources::ResourceDependencies>& ManagerResources::GetResourceDependencies() const
+{
+    return m_resourceDependencies;
 }
 
 ManagerResources* GetResources()

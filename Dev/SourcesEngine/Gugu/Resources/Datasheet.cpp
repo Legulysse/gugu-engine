@@ -401,12 +401,13 @@ bool DatasheetObject::ReadEnumValues(DatasheetParserContext& _kContext, const st
 
 
 Datasheet::Datasheet()
+    : m_rootObject(nullptr)
 {
 }
 
 Datasheet::~Datasheet()
 {
-    SafeDelete(m_rootObject);
+    Unload();
 }
 
 EResourceType::Type Datasheet::GetResourceType() const
@@ -414,8 +415,15 @@ EResourceType::Type Datasheet::GetResourceType() const
     return EResourceType::Datasheet;
 }
 
+void Datasheet::Unload()
+{
+    SafeDelete(m_rootObject);
+}
+
 bool Datasheet::LoadFromFile()
 {
+    Unload();
+
     // TODO: handle extensions with several dots (like name.type.xml instead of name.type).
     m_rootObject = GetResources()->InstanciateDatasheetObject(m_resourceInfos->fileInfo.GetExtension());
     if (!m_rootObject)

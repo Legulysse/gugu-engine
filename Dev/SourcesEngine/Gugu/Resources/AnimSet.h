@@ -89,6 +89,7 @@ public:
     const std::string& GetName () const;
 
     AnimationFrame* AddFrame        ();
+    AnimationFrame* AddFrame        (size_t insertIndex);
     void            DeleteFrame     (AnimationFrame* _pFrame);
 
     AnimationFrame* GetFrame        (size_t _uiIndex) const;
@@ -120,6 +121,7 @@ public:
     void        DeleteAnimation     (Animation* _pAnimation);
 
     Animation* GetAnimation(const std::string& _strName) const;
+    Animation* GetAnimation(size_t index) const;
 
     const std::vector<Animation*>& GetAnimations() const;
     void GetAnimationNames(std::vector<std::string>& _vecAnimationNames) const;
@@ -128,6 +130,9 @@ public:
     ImageSet*   GetImageSet () const;
 
     virtual EResourceType::Type GetResourceType() const override;
+
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
+    virtual void OnDependencyRemoved(const Resource* removedDependency) override;
 
 protected:
 

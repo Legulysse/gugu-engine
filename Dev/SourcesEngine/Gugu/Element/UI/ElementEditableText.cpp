@@ -29,9 +29,9 @@ ElementEditableText::ElementEditableText()
     , m_isTickDisplayed(false)
     , m_timeSinceTick(0.f)
 {
-    GetEvents()->AddCallback(EInteractionEvent::MouseSelected, std::bind(&ElementEditableText::OnMouseSelected, this));
-    GetEvents()->AddCallback(EInteractionEvent::MouseDeselected, std::bind(&ElementEditableText::OnMouseDeselected, this));
-    GetEvents()->AddCallback(EInteractionEvent::RawSFEvent, std::bind(&ElementEditableText::OnSFEvent, this, std::placeholders::_1));
+    GetEvents()->AddCallback(EInteractionEvent::MouseSelected, STD_BIND(&ElementEditableText::OnMouseSelected, this));
+    GetEvents()->AddCallback(EInteractionEvent::MouseDeselected, STD_BIND(&ElementEditableText::OnMouseDeselected, this));
+    GetEvents()->AddCallback(EInteractionEvent::RawSFEvent, STD_BIND_1(&ElementEditableText::OnSFEvent, this));
 
     GetEvents()->SetInteractionEnabled(EInteractionType::Selection, false);
     GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, false);

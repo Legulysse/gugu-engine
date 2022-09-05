@@ -5,6 +5,7 @@
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
+#include "Gugu/Resources/EnumsResources.h"
 #include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
@@ -16,6 +17,7 @@ namespace gugu
     class RenderViewport;
     class ImageSet;
     class Element;
+    class ElementSprite;
     class ElementSFDrawable;
 }
 
@@ -31,25 +33,39 @@ public:
     ImageSetPanel(ImageSet* resource);
     virtual ~ImageSetPanel();
 
-    virtual void UpdateProperties(const gugu::DeltaTime& dt) override;
-
 protected:
 
-    virtual void UpdatePanelImpl(const gugu::DeltaTime& dt) override;
-
-private:
+    virtual void UpdatePanelImpl(const DeltaTime& dt) override;
+    virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
     void CreateGizmo();
     void UpdateGizmo();
 
     void OnDragGizmoEdge(Element* edge, Vector2f position);
 
+    void RefreshSpriteTexture();
+
+    void OnAddSubImage();
+    void OnRemoveSubImage();
+    void OnRemoveAllSubImages();
+    void OnGenerateSubImages();
+
+    void GenerateSubImagesFromCount(int columnCount, int rowCount);
+    void GenerateSubImagesFromSize(const Vector2i& itemSize, const Vector2i& itemOffset);
+
+    void OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency);
+
 private:
 
     RenderViewport* m_renderViewport;
+    float m_zoomFactor;
 
     ImageSet* m_imageSet;
     int m_selectedIndex;
+
+    std::string m_frameNameTemplate;
+
+    ElementSprite* m_sprite;
 
     ElementSFDrawable* m_gizmoCenter;
     ElementSFDrawable* m_gizmoEdgeTopLeft;

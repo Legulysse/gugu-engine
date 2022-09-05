@@ -37,10 +37,7 @@ void ElementTileMap::SetTexture(const std::string& _strTexturePath)
 
 void ElementTileMap::SetTexture(Texture* _pTexture)
 {
-    if (_pTexture)
-    {
-        m_texture = _pTexture;
-    }
+    m_texture = _pTexture;
 }
 
 Texture* ElementTileMap::GetTexture() const

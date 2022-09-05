@@ -222,7 +222,6 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                     ImGui::PushItemWidth(-1);
                 }
 
-#if 1
                 std::string name = subImages[rowIndex]->GetName();
                 sf::IntRect rect = subImages[rowIndex]->GetRect();
 
@@ -253,62 +252,6 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                 ImGui::Text("%d", rect.height);
 
                 ImGui::PopID();
-#else
-                std::string name = subImages[rowIndex]->GetName();
-                sf::IntRect rect = subImages[rowIndex]->GetRect();
-
-                int columnIndex = 0;
-                bool dirtyName = false;
-                bool dirtyRect = false;
-                bool forceFocus = false;
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-
-                char label[32];
-                sprintf(label, "%04d", rowIndex);
-                ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
-                if (ImGui::Selectable(label, (int)rowIndex == m_selectedIndex, selectable_flags, ImVec2(0, row_min_height)))
-                {
-                    m_selectedIndex = rowIndex;
-                }
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-                dirtyName |= ImGui::InputText("##name", &name);
-                forceFocus |= ImGui::IsItemFocused();
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-                dirtyRect |= ImGui::InputInt("##left", &rect.left, 0);
-                forceFocus |= ImGui::IsItemFocused();
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-                dirtyRect |= ImGui::InputInt("##top", &rect.top, 0);
-                forceFocus |= ImGui::IsItemFocused();
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-                dirtyRect |= ImGui::InputInt("##width", &rect.width, 0);
-                forceFocus |= ImGui::IsItemFocused();
-
-                ImGui::TableSetColumnIndex(columnIndex++);
-                dirtyRect |= ImGui::InputInt("##height", &rect.height, 0);
-                forceFocus |= ImGui::IsItemFocused();
-
-                ImGui::PopID();
-
-                if (dirtyName)
-                {
-                    subImages[rowIndex]->SetName(name);
-                }
-
-                if (dirtyRect)
-                {
-                    subImages[rowIndex]->SetRect(rect);
-                }
-
-                if (forceFocus || dirtyName || dirtyRect)
-                {
-                    m_selectedIndex = rowIndex;
-                }
-#endif
             }
         }
 

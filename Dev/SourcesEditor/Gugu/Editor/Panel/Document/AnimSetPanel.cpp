@@ -134,7 +134,6 @@ void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 
 void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 {
-#if 1
     //const ImGuiStyle& style = ImGui::GetStyle();
 
     //bool changedSelectionThisFrame = false;
@@ -461,63 +460,6 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
         ImGui::EndTable();
     }
-
-#else
-    {
-        const std::vector<Animation*>& animations = m_animSet->GetAnimations();
-
-        for (size_t i = 0; i < animations.size(); ++i)
-        {
-            if (ImGui::Button(animations[i]->GetName().c_str()))
-            {
-                m_spriteAnimation->StartAnimation(animations[i]->GetName());
-
-                m_currentAnimation = animations[i];
-                m_currentFrame = nullptr;
-            }
-
-            if (m_currentAnimation == animations[i])
-            {
-                ImGui::SameLine();
-                ImGui::Text("Selected");
-            }
-        }
-
-        if (m_currentAnimation)
-        {
-            const std::vector<AnimationFrame*>& animationFrames = m_currentAnimation->GetFrames();
-
-            for (size_t i = 0; i < animationFrames.size(); ++i)
-            {
-                if (ImGui::Button(StringFormat("Frame {0}", i).c_str()))
-                {
-                    if (!m_autoPlay)
-                    {
-                        m_spriteAnimation->SetCurrentFrame(i);
-                    }
-
-                    m_currentFrame = animationFrames[i];
-                }
-
-                if (m_currentFrame == animationFrames[i])
-                {
-                    ImGui::SameLine();
-                    ImGui::Text("Selected");
-                }
-            }
-        }
-
-        if (m_currentFrame)
-        {
-            float frameDuration = m_currentFrame->GetDuration();
-            if (ImGui::InputFloat("Duration", &frameDuration))
-            {
-                m_currentFrame->SetDuration(frameDuration);
-                RaiseDirty();
-            }
-        }
-    }
-#endif
 }
 
 void AnimSetPanel::SelectAnimation(Animation* animation)

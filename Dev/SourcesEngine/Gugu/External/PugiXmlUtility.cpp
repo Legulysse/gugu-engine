@@ -7,8 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Element/Element.h"
-#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Math/UDim.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -23,12 +22,6 @@ xml_string_writer::xml_string_writer(std::string& target)
 void xml_string_writer::write(const void* data, size_t size)
 {
     m_target->append(static_cast<const char*>(data), size);
-}
-
-bool XmlLoadFile(pugi::xml_document& _kDoc, const std::string& _strFile)
-{
-    pugi::xml_parse_result result = _kDoc.load_file(GetResources()->GetResourcePathName(_strFile).c_str());
-    return result;
 }
 
 bool XmlReadAttribute(const pugi::xml_node& _kNode, const std::string& _strName, bool& _bValue)
@@ -109,29 +102,46 @@ bool XmlReadAttribute(const pugi::xml_node& _kNode, const std::string& _strName,
     return true;
 }
 
-bool XmlReadUDimension(const pugi::xml_node& _kNode, UDim2& _oDim)
+bool XmlReadVector2(const pugi::xml_node& node, Vector2f& value)
 {
-    return (    XmlReadAttribute(_kNode, "xRel", _oDim.x.relative)
-            &&  XmlReadAttribute(_kNode, "xAbs", _oDim.x.absolute)
-            &&  XmlReadAttribute(_kNode, "yRel", _oDim.y.relative)
-            &&  XmlReadAttribute(_kNode, "yAbs", _oDim.y.absolute)
-            );
-}
-
-bool XmlReadVector2(const pugi::xml_node& _kNode, Vector2f& _kVector)
-{
-    return (    XmlReadAttribute(_kNode, "x", _kVector.x)
-            &&  XmlReadAttribute(_kNode, "y", _kVector.y)
-            );
-}
-
-bool XmlReadValue(const pugi::xml_node& _kNode, std::string& _strValue)
-{
-    if (!_kNode)
+    if (!node)
         return false;
 
-    _strValue = _kNode.child_value();
+    value.x = node.attribute("x").as_float(value.x);
+    value.y = node.attribute("y").as_float(value.y);
+    return true;
+}
 
+bool XmlReadRect(const pugi::xml_node& node, sf::IntRect& value)
+{
+    if (!node)
+        return false;
+
+    value.left = node.attribute("x").as_int(value.left);
+    value.top = node.attribute("y").as_int(value.top);
+    value.width = node.attribute("w").as_int(value.width);
+    value.height = node.attribute("h").as_int(value.height);
+    return true;
+}
+
+bool XmlReadUDim2(const pugi::xml_node& node, UDim2& value)
+{
+    if (!node)
+        return false;
+
+    value.x.relative = node.attribute("xRel").as_float(value.x.relative);
+    value.y.relative = node.attribute("yRel").as_float(value.y.relative);
+    value.x.absolute = node.attribute("xAbs").as_float(value.x.absolute);
+    value.y.absolute = node.attribute("yAbs").as_float(value.y.absolute);
+    return true;
+}
+
+bool XmlReadValue(const pugi::xml_node& node, std::string& value)
+{
+    if (!node)
+        return false;
+
+    value = node.child_value();
     return true;
 }
 

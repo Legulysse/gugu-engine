@@ -183,25 +183,14 @@ bool ImageSet::LoadFromXml(const pugi::xml_document& document)
     for (pugi::xml_node oNodeSubImage = nodeRoot.child("SubImage"); oNodeSubImage; oNodeSubImage = oNodeSubImage.next_sibling("SubImage"))
     {
         pugi::xml_attribute oAttributeName = oNodeSubImage.attribute("name");
-        pugi::xml_attribute oAttributeX = oNodeSubImage.attribute("x");
-        pugi::xml_attribute oAttributeY = oNodeSubImage.attribute("y");
-        pugi::xml_attribute oAttributeW = oNodeSubImage.attribute("w");
-        pugi::xml_attribute oAttributeH = oNodeSubImage.attribute("h");
-
-        //Try to read SubImage
-        if (oAttributeName
-            && oAttributeX
-            && oAttributeY
-            && oAttributeW
-            && oAttributeH)
+        if (oAttributeName)
         {
             std::string strNameSubImage = oAttributeName.as_string();
-            int x = oAttributeX.as_int();
-            int y = oAttributeY.as_int();
-            int w = oAttributeW.as_int();
-            int h = oAttributeH.as_int();
 
-            m_subImages.push_back(new SubImage(this, strNameSubImage, sf::IntRect(x, y, w, h)));
+            sf::IntRect rect;
+            XmlReadRect(oNodeSubImage, rect);
+
+            m_subImages.push_back(new SubImage(this, strNameSubImage, rect));
         }
     }
 

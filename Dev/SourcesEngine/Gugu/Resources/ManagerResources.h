@@ -155,6 +155,7 @@ public:
     void UnregisterResourceListeners(const Resource* resource, const void* handle);
     void UnregisterResourceListeners(const void* handle);
 
+    void UpdateResourceDependencies(Resource* resource);
     const std::map<const Resource*, ResourceDependencies>& GetResourceDependencies() const;
 
 private:
@@ -162,7 +163,6 @@ private:
     Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
 
     void RegisterResourceDependencies(Resource* resource);
-    void UpdateResourceDependencies(Resource* resource);
     void UnregisterResourceDependencies(Resource* resource);
     void NotifyResourceRemoved(const Resource* resource);
 

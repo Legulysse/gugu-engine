@@ -656,6 +656,8 @@ void Editor::ValidateClosingDirtyDocuments()
 
             Resource* resource = document->GetResource();
             resource->LoadFromFile();
+
+            GetResources()->UpdateResourceDependencies(resource);
         }
     }
 }

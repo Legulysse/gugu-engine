@@ -816,14 +816,55 @@ void ManagerResources::UpdateResourceDependencies(Resource* resource)
     auto it = m_resourceDependencies.find(resource);
     if (it != m_resourceDependencies.end())
     {
-        resource->GetDependencies(it->second.dependencies);
+        bool updatedDependencies = false;
 
+        // Gather resource dependencies.
+        if (it->second.dependencies.empty())
+        {
+            resource->GetDependencies(it->second.dependencies);
+
+            updatedDependencies = !it->second.dependencies.empty();
+        }
+        else
+        {
+            std::set<Resource*> newDependencies;
+            resource->GetDependencies(newDependencies);
+
+            // Remove resource from its previous dependencies referencers.
+            std::vector<Resource*> difference;
+            std::set_difference(it->second.dependencies.begin(), it->second.dependencies.end(),
+                newDependencies.begin(), newDependencies.end(), std::back_inserter(difference));
+
+            for (const auto& dependency : difference)
+            {
+                auto itDependency = m_resourceDependencies.find(dependency);
+                if (itDependency != m_resourceDependencies.end())
+                {
+                    itDependency->second.referencers.erase(resource);
+                }
+            }
+
+            std::swap(it->second.dependencies, newDependencies);
+
+            updatedDependencies = !difference.empty();
+        }
+
+        // Register resource to its dependencies referencers.
         for (const auto& dependency : it->second.dependencies)
         {
             auto itDependency = m_resourceDependencies.find(dependency);
             if (itDependency != m_resourceDependencies.end())
             {
                 itDependency->second.referencers.insert(resource);
+            }
+        }
+
+        if (updatedDependencies)
+        {
+            // If dependencies changed, we need to inform referencers in case they were depending on them too.
+            for (const auto& referencer : it->second.referencers)
+            {
+                UpdateResourceDependencies(referencer);
             }
         }
     }

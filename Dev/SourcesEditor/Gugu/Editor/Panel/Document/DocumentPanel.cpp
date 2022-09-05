@@ -9,6 +9,7 @@
 
 #include "Gugu/Editor/Editor.h"
 
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
@@ -208,6 +209,8 @@ void DocumentPanel::ForceFocus()
 
 void DocumentPanel::RaiseDirty()
 {
+    GetResources()->UpdateResourceDependencies(m_resource);
+
     SaveState();
     m_dirty = true;
 }

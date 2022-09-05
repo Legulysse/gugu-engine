@@ -337,7 +337,7 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     if (ImGui::InputText("imageSet", &imageSetID, ImGuiInputTextFlags_EnterReturnsTrue))
     {
         particleSettings->imageSet = (imageSetID == "") ? nullptr : GetResources()->GetImageSet(imageSetID);
-        updated = true;
+        updated |= true;
     }
 
     // Finalize

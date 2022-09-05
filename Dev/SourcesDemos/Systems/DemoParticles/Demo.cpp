@@ -10,6 +10,8 @@
 #include "Gugu/Element/2D/ElementParticles.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
 #include "Gugu/VisualEffects/ParticleSystem.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ImageSet.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
@@ -428,7 +430,12 @@ void Demo::AppUpdate(const DeltaTime& dt)
 
                 ImGui::Spacing();
 
-                updated |= ImGui::InputText("imageSet", &m_particleSystemSettings[i].imageSetID);
+                std::string imageSetID = m_particleSystemSettings[i].imageSet == nullptr ? "" : m_particleSystemSettings[i].imageSet->GetID();
+                if (ImGui::InputText("imageSet", &imageSetID, ImGuiInputTextFlags_EnterReturnsTrue))
+                {
+                    m_particleSystemSettings[i].imageSet = (imageSetID == "") ? nullptr : GetResources()->GetImageSet(imageSetID);
+                    updated |= true;
+                }
 
                 ImGui::TreePop();
 

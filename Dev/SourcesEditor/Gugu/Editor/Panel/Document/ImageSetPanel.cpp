@@ -555,6 +555,15 @@ void ImageSetPanel::OnRemoveSubImage()
 
 void ImageSetPanel::OnRemoveAllSubImages()
 {
+    for (auto& document : GetEditor()->GetDocuments())
+    {
+        AnimSetPanel* animSetPanel = dynamic_cast<AnimSetPanel*>(document);
+        if (animSetPanel)
+        {
+            animSetPanel->OnAllSubImagesRemoved(m_imageSet);
+        }
+    }
+
     m_imageSet->DeleteAllSubImages();
     m_selectedIndex = -1;
 

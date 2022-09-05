@@ -37,6 +37,7 @@ public:
     virtual ~AnimSetPanel();
 
     void OnSubImageRemoved(SubImage* subImage);
+    void OnAllSubImagesRemoved(ImageSet* imageSet);
 
 protected:
 

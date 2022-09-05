@@ -643,6 +643,34 @@ void AnimSetPanel::OnSubImageRemoved(SubImage* subImage)
     }
 }
 
+void AnimSetPanel::OnAllSubImagesRemoved(ImageSet* imageSet)
+{
+    // TODO: This could be removed when I stop using direct references between resources.
+    bool updated = false;
+
+    if (m_animSet->GetImageSet() == imageSet)
+    {
+        const std::vector<Animation*>& animations = m_animSet->GetAnimations();
+        for (size_t i = 0; i < animations.size(); ++i)
+        {
+            const std::vector<AnimationFrame*>& frames = animations[i]->GetFrames();
+            for (size_t ii = 0; ii < frames.size(); ++ii)
+            {
+                if (frames[ii]->GetSubImage() != nullptr)
+                {
+                    frames[ii]->SetSubImage(nullptr);
+                    updated = true;
+                }
+            }
+        }
+    }
+
+    if (updated)
+    {
+        RaiseDirty();
+    }
+}
+
 void AnimSetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
     if (event == EResourceEvent::DependencyRemoved)

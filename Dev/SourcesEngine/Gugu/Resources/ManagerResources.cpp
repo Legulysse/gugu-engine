@@ -972,14 +972,19 @@ void ManagerResources::NotifyResourceRemoved(const Resource* resource)
     if (it != m_resourceDependencies.end())
     {
         // Notify referencers that a dependency has been removed.
-        for (const auto& referencer : it->second.referencers)
+        std::set<Resource*> referencers = it->second.referencers;
+        for (const auto& referencer : referencers)
         {
             referencer->OnDependencyRemoved(resource);
+        }
 
+        for (const auto& referencer : referencers)
+        {
             auto itReferencer = m_resourceDependencies.find(referencer);
             if (itReferencer != m_resourceDependencies.end())
             {
-                for (const auto& resourceListener : itReferencer->second.listeners)
+                std::vector<ResourceListener> listeners = itReferencer->second.listeners;
+                for (const auto& resourceListener : listeners)
                 {
                     resourceListener.delegateResourceEvent(referencer, EResourceEvent::DependencyRemoved, resource);
                 }
@@ -987,7 +992,8 @@ void ManagerResources::NotifyResourceRemoved(const Resource* resource)
         }
 
         // Notify the resource itself being removed.
-        for (const auto& resourceListener : it->second.listeners)
+        std::vector<ResourceListener> listeners = it->second.listeners;
+        for (const auto& resourceListener : listeners)
         {
             resourceListener.delegateResourceEvent(resource, EResourceEvent::ResourceRemoved, nullptr);
         }

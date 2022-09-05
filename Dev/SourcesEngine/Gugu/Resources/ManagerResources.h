@@ -52,7 +52,7 @@ class ManagerResources
 public:
 
     using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (const std::string&)>;
-    using DelegateResourceEvent = std::function<void(const Resource* resource, EResourceEvent, const Resource* dependency)>;
+    using DelegateResourceEvent = std::function<void(const Resource* resource, EResourceEvent event, const Resource* dependency)>;    // TODO: Is dependency reference necessary ?
 
     struct ResourceListener
     {

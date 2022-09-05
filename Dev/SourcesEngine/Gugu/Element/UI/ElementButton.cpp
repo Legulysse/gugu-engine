@@ -14,7 +14,7 @@
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/External/PugiXmlWrap.h"
+#include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

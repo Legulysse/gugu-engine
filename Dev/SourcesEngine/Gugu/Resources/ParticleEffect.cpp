@@ -9,7 +9,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ImageSet.h"
-#include "Gugu/External/PugiXmlWrap.h"
+#include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

@@ -11,7 +11,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/External/PugiXmlWrap.h"
+#include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

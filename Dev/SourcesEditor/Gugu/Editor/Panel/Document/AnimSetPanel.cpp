@@ -21,7 +21,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
-#include "Gugu/External/ImGuiWrapper.h"
+#include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

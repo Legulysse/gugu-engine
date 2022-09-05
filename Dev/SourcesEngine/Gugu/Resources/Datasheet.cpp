@@ -9,7 +9,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
-#include "Gugu/External/PugiXmlWrap.h"
+#include "Gugu/External/PugiXmlUtility.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Core/Application.h"
 #include "Gugu/Debug/Logger.h"

@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/External/ImGuiWrapper.h"
+#include "Gugu/External/ImGuiUtility.h"
 
 #include <array>
 

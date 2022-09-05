@@ -11,7 +11,7 @@
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Logger.h"
-#include "Gugu/External/PugiXmlWrap.h"
+#include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

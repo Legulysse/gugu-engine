@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/ImageSet.h"
-#include "Gugu/External/ImGuiWrapper.h"
+#include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

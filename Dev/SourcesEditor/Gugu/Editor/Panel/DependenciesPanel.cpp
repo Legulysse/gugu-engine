@@ -13,7 +13,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/External/ImGuiWrapper.h"
+#include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

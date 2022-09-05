@@ -9,7 +9,7 @@
 
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/External/PugiXmlWrap.h"
+#include "Gugu/External/PugiXmlUtility.h"
 #include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>

@@ -435,16 +435,12 @@ bool AnimSet::SaveToXml(pugi::xml_document& document) const
 
             if (frame->GetOrigin() != Vector2::Zero_f)
             {
-                pugi::xml_node nodeOrigin = nodeFrame.append_child("Origin");
-                nodeOrigin.append_attribute("x").set_value(frame->GetOrigin().x);
-                nodeOrigin.append_attribute("y").set_value(frame->GetOrigin().y);
+                XmlWriteVector2(nodeFrame.append_child("Origin"), frame->GetOrigin());
             }
 
             if (frame->GetMoveOffset() != Vector2::Zero_f)
             {
-                pugi::xml_node nodeMove = nodeFrame.append_child("Move");
-                nodeMove.append_attribute("x").set_value(frame->GetMoveOffset().x);
-                nodeMove.append_attribute("y").set_value(frame->GetMoveOffset().y);
+                XmlWriteVector2(nodeFrame.append_child("Move"), frame->GetMoveOffset());
             }
         }
     }

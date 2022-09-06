@@ -593,27 +593,21 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
 
 bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
 {
-    pugi::xml_node nodeSize = _oNodeElement.child("Size");
-    if (nodeSize)
+    Vector2f size;
+    if (XmlReadVector2(_oNodeElement.child("Size"), size))
     {
-        Vector2f size;
-        XmlReadVector2(nodeSize, size);
         SetSize(size);
     }
 
-    pugi::xml_node oNodeUDimPosition = _oNodeElement.child("UPosition");
-    if (!oNodeUDimPosition.empty())
+    UDim2 dimPosition;
+    if (XmlReadUDim2(_oNodeElement.child("UPosition"), dimPosition))
     {
-        UDim2 dimPosition;
-        XmlReadUDim2(oNodeUDimPosition, dimPosition);
         SetUnifiedPosition(dimPosition);
     }
 
-    pugi::xml_node oNodeUDimSize = _oNodeElement.child("USize");
-    if (!oNodeUDimSize.empty())
+    UDim2 dimSize;
+    if (XmlReadUDim2(_oNodeElement.child("USize"), dimSize))
     {
-        UDim2 dimSize;
-        XmlReadUDim2(oNodeUDimSize, dimSize);
         SetUnifiedSize(dimSize);
     }
 

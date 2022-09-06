@@ -182,14 +182,11 @@ bool ImageSet::LoadFromXml(const pugi::xml_document& document)
 
     for (pugi::xml_node oNodeSubImage = nodeRoot.child("SubImage"); oNodeSubImage; oNodeSubImage = oNodeSubImage.next_sibling("SubImage"))
     {
-        pugi::xml_attribute oAttributeName = oNodeSubImage.attribute("name");
-        if (oAttributeName)
+        std::string strNameSubImage = oNodeSubImage.attribute("name").as_string();
+        if (!strNameSubImage.empty())
         {
-            std::string strNameSubImage = oAttributeName.as_string();
-
             sf::IntRect rect;
             XmlReadRect(oNodeSubImage, rect);
-
             m_subImages.push_back(new SubImage(this, strNameSubImage, rect));
         }
     }
@@ -207,13 +204,8 @@ bool ImageSet::SaveToXml(pugi::xml_document& document) const
     for (const SubImage* subImage : m_subImages)
     {
         pugi::xml_node nodeSubImage = nodeRoot.append_child("SubImage");
-
-        sf::IntRect oRect = subImage->GetRect();
         nodeSubImage.append_attribute("name") = subImage->GetName().c_str();
-        nodeSubImage.append_attribute("x") = oRect.left;
-        nodeSubImage.append_attribute("y") = oRect.top;
-        nodeSubImage.append_attribute("w") = oRect.width;
-        nodeSubImage.append_attribute("h") = oRect.height;
+        XmlWriteRect(nodeSubImage, subImage->GetRect());
     }
 
     return true;

@@ -207,8 +207,8 @@ bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElemen
         return false;
 
     const Element* pTopParent = _pElement->GetTopParent();
-    bool bSceneNode = true;
-    bool bWindowNode = true;
+    bool bSceneNode = false;
+    bool bWindowNode = false;
 
     if (m_scene)
         bSceneNode = (m_scene->GetRootNode() == pTopParent);

@@ -2,6 +2,7 @@
 // Includes
 
 #include "Gugu/Common.h"
+#include "Gugu/Engine.h"
 #include "AllUnitTests.h"
 
 #if defined(GUGU_ENV_VISUAL )
@@ -27,10 +28,28 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
-    RunUnitTests_Math();
-    RunUnitTests_System();
+    //Init engine
+    EngineConfig config;
+    config.applicationName = "GuguEngine Unit Tests";
+    config.pathAssets = "Assets";
+    config.defaultFont = "Roboto-Regular.ttf";
+    config.debugFont = "Roboto-Regular.ttf";
+    config.gameWindow = EGameWindow::Sfml;
+    config.windowWidth = 200;
+    config.windowHeight = 200;
+
+    GetEngine()->Init(config);
 
     //----------------------------------------------
+
+    // TODO: Maybe I could separate standalone tests before engine initialization (and add a special test for engine init).
+    RunUnitTests_Math();
+    RunUnitTests_System();
+    RunUnitTests_Element();
+
+    //----------------------------------------------
+
+    GetEngine()->Release();
 
     return 0;
 }

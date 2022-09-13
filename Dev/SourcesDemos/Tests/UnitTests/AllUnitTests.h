@@ -8,3 +8,4 @@
 
 void RunUnitTests_Math();
 void RunUnitTests_System();
+void RunUnitTests_Element();

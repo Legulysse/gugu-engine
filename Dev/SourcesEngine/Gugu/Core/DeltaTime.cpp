@@ -14,9 +14,11 @@ DeltaTime::DeltaTime(const sf::Time& time, const sf::Time& unscaledTime, float s
     m_unscaledTime = unscaledTime;
     m_scale = scale;
 
-    // Cache the conversion (it will be used a lot).
+    // Cache the conversions (it will be used a lot).
     m_seconds = m_time.asSeconds();
     m_unscaledSeconds = m_unscaledTime.asSeconds();
+    m_milliseconds = m_time.asMilliseconds();
+    m_unscaledMilliseconds = m_unscaledTime.asMilliseconds();
 }
 
 sf::Time DeltaTime::GetTime() const
@@ -39,9 +41,9 @@ float DeltaTime::s() const
     return m_seconds;
 }
 
-int DeltaTime::ms() const
+int32 DeltaTime::ms() const
 {
-    return m_time.asMilliseconds();
+    return m_milliseconds;
 }
 
 int64 DeltaTime::micro() const
@@ -54,9 +56,9 @@ float DeltaTime::unscaled_s() const
     return m_unscaledSeconds;
 }
 
-int DeltaTime::unscaled_ms() const
+int32 DeltaTime::unscaled_ms() const
 {
-    return m_unscaledTime.asMilliseconds();
+    return m_unscaledMilliseconds;
 }
 
 int64 DeltaTime::unscaled_micro() const

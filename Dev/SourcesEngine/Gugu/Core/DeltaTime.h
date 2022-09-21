@@ -34,9 +34,12 @@ private:
 
     sf::Time m_time;
     sf::Time m_unscaledTime;
+    float m_scale;
+
     float m_seconds;
     float m_unscaledSeconds;
-    float m_scale;
+    int32 m_milliseconds;
+    int32 m_unscaledMilliseconds;
 };
 
 }   // namespace gugu

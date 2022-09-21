@@ -7,7 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/EditorVersion.h"
 #include "Gugu/Editor/Core/ProjectSettings.h"
+#include "Gugu/Editor/Modal/AboutDialog.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
@@ -228,7 +230,7 @@ void Editor::Update(const DeltaTime& dt)
     {
         if (ImGui::BeginMenu("Editor"))
         {
-            if (ImGui::MenuItem("Open Project"))
+            if (ImGui::MenuItem("Open Project..."))
             {
                 GetEditor()->OpenModalDialog(new OpenProjectDialog(m_editorConfig.projectPathFile));
             }
@@ -236,6 +238,12 @@ void Editor::Update(const DeltaTime& dt)
             if (ImGui::MenuItem("Close Project"))
             {
                 CloseProject();
+            }
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("About..."))
+            {
+                GetEditor()->OpenModalDialog(new AboutDialog());
             }
 
             ImGui::Separator();

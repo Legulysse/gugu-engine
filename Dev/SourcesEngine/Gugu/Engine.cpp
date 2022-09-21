@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Version.h"
+#include "Gugu/EngineVersion.h"
 #include "Gugu/Core/Application.h"
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Inputs/ManagerInputs.h"

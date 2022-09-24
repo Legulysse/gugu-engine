@@ -428,7 +428,8 @@ bool Datasheet::LoadFromFile()
     m_rootObject = GetResources()->InstanciateDatasheetObject(m_resourceInfos->fileInfo.GetExtension());
     if (!m_rootObject)
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasheet : {0}", GetID()));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Could not instantiate Datasheet Root Object : {0}", GetID()));
+        return false;
     }
 
     std::vector<Datasheet*> ancestors;

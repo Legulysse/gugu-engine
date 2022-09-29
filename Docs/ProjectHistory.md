@@ -1,6 +1,6 @@
 # Project History
 
-## ??/??/???? - Version 0.7 (WIP 20/07/2021)
+## ??/??/???? - Version 0.7 (WIP 20/07/2022)
 - Itération Editor (undo/redo, particles editor, project settings, save on close popup, context menus pour la manipulation d'assets, OutputLog panel).
 - Rangement des demos dans differents dossiers (separation des tests, des demos de systemes, de la demo HelloWorld, et de la demo Game).
 - Ajout d'un ManagerVisualEffects et d'un ParticleSystem (nouvelle ressource ParticleEffect).
@@ -15,7 +15,7 @@
 - Separation entre Renderer (virtual) et DefaultRenderer.
 - Refacto de la commande speed (multiplicateur).
 - Update des scripts de build (wrapper pour un menu par defaut, option pour les subrepos).
-- Ajout des commande ruler, pause, time.
+- Ajout des commandes ruler, pause, time.
 - Ajout des fonctions de rounding, de random dans un cercle/anneau, et de random pondéré.
 - Itération SystemUtility (manipulation de paths).
 - Clean Element (suppression de Step/Update, suppression des parametres de size sur les callbacks de resize, renommage des fonctions de Transform).

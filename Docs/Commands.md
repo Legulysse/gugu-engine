@@ -13,7 +13,7 @@ Display all Elements bounds.
 Display vertical and horizontal lines centered on cursor, with graduations every 100 pixels.
 
 ### > trace [int:nbFrames]
-Trace performances for the next [nbFrames] frames (default : trace 10).
+Trace performances for the next [nbFrames] frames (default : trace 10).  
 Generates a json file readable in chrome://tracing/ (chrome) or about://tracing/ (opera).
 
 ### > speed [float:multiplier]

@@ -101,12 +101,16 @@ void StringNumberFormatSelf(std::string& value, size_t leadingZeros = 0, const s
 // Paths
 
 // Convert all '\\' to '/', strip all "/xxx/.." parts, strip leading '/' if needed, add trailing '/' if needed.
-std::string NormalizePath(const std::string& _strPath, bool trailingSlash);
-void NormalizePath(const std::string& _strPath, bool trailingSlash, std::string& _strNormalized);
-void NormalizePathSelf(std::string& _strPath, bool trailingSlash);
+std::string NormalizePath(const std::string& path, bool trailingSlash);
+void NormalizePath(const std::string& path, bool trailingSlash, std::string& resultPath);
+void NormalizePathSelf(std::string& path, bool trailingSlash);
+
+std::string EnsureTrailingPathSeparator(const std::string& path);
+void EnsureTrailingPathSeparator(const std::string& path, std::string& resultPath);
+void EnsureTrailingPathSeparatorSelf(std::string& path);
 
 std::string PathFromPathFile(const std::string& pathFile, bool trailingSlash);
-void PathFromPathFile(const std::string& pathFile, bool trailingSlash, std::string& path);
+void PathFromPathFile(const std::string& pathFile, bool trailingSlash, std::string& resultPath);
 void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash);
 
 std::string FileFromPathFile(const std::string& pathFile);
@@ -115,9 +119,6 @@ void FileFromPathFileSelf(std::string& pathFile);
 
 std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash);
 void CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash, std::string& resultPath);
-
-std::string CombinePathFile(const std::string& pathLeft, const std::string& pathFileRight);
-void CombinePathFile(const std::string& pathLeft, const std::string& pathFileRight, std::string& resultPathFile);
 
 //----------------------------------------------
 // Containers

@@ -21,23 +21,27 @@ FileInfo::FileInfo()
 
 FileInfo::FileInfo(const std::string& path, const std::string& name)
 {
-    NormalizePath(path, true, m_pathName);
-
-    m_indexSeparator = m_pathName.empty() ? std::string::npos : m_pathName.size() - 1;
-
-    // TODO: I could check that name does not contain any slash (maybe just directly apply CombinePaths ?).
-    m_pathName += name;
-    m_name = name;
+    CombinePaths(path, name, false, m_pathName);
+    UpdateFromPathName();
 }
 
 FileInfo::FileInfo(const std::string& pathName)
 {
     NormalizePath(pathName, false, m_pathName);
+    UpdateFromPathName();
+}
 
-    m_indexSeparator = m_pathName.find_last_of("/");
+void FileInfo::UpdateFromPathName()
+{
+    m_indexSeparator = m_pathName.find_last_of('/');
+
     if (m_indexSeparator != std::string::npos)
     {
         m_name = m_pathName.substr(m_indexSeparator + 1);
+    }
+    else
+    {
+        m_name = m_pathName;
     }
 }
 

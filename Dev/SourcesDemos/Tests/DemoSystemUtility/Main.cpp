@@ -164,12 +164,12 @@ int main(int argc, char* argv[])
 
     {
         std::string pathA, pathB, pathC, pathD, pathE, pathF;
-        CombinePathFile("..", "file.txt", pathA);               // "../file.txt"
-        CombinePathFile("..", "./file.txt", pathB);             // "../file.txt"
-        CombinePathFile("../hello/..", "./file.txt", pathC);    // "../file.txt"
-        CombinePathFile("/hello/", "/world/file.txt", pathD);   // "hello/world/file.txt"
-        CombinePathFile("", "file.txt", pathE);                 // "file.txt"
-        CombinePathFile("hello", "", pathF);                    // "hello"
+        CombinePaths("..", "file.txt", false, pathA);               // "../file.txt"
+        CombinePaths("..", "./file.txt", false, pathB);             // "../file.txt"
+        CombinePaths("../hello/..", "./file.txt", false, pathC);    // "../file.txt"
+        CombinePaths("/hello/", "/world/file.txt", false, pathD);   // "hello/world/file.txt"
+        CombinePaths("", "file.txt", false, pathE);                 // "file.txt"
+        CombinePaths("hello", "", false, pathF);                    // "hello"
     }
 
     // Containers

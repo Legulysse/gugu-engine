@@ -33,6 +33,10 @@ public:
 
 private:
 
+    void UpdateFromPathName();
+
+private:
+
     std::string m_pathName;
     std::string m_name;
     size_t m_indexSeparator;

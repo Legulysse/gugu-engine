@@ -43,9 +43,13 @@ int main(int argc, char* argv[])
     //----------------------------------------------
 
     // TODO: Maybe I could separate standalone tests before engine initialization (and add a special test for engine init).
-    RunUnitTests_Math();
-    RunUnitTests_System();
-    RunUnitTests_Element();
+    UnitTestResults results("UnitTests.log");
+
+    RunUnitTests_Math(&results);
+    RunUnitTests_System(&results);
+    RunUnitTests_Element(&results);
+
+    results.PrintResults();
 
     //----------------------------------------------
 

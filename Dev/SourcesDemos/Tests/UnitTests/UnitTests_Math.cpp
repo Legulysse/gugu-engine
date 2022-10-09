@@ -1,8 +1,12 @@
 ////////////////////////////////////////////////////////////////
-// Includes
+// Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Debug/UnitTest.h"
+#include "AllUnitTests.h"
+
+////////////////////////////////////////////////////////////////
+// Includes
+
 #include "Gugu/Math/MathUtility.h"
 
 using namespace gugu;
@@ -10,9 +14,9 @@ using namespace gugu;
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
-void RunUnitTests_Math()
+void RunUnitTests_Math(UnitTestResults* results)
 {
-    GUGU_UTEST_INIT("Math", "UnitTests_Math.log");
+    GUGU_UTEST_INIT("Math", "UnitTests_Math.log", results);
 
     //----------------------------------------------
 

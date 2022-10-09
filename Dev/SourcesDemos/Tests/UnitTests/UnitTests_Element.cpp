@@ -1,8 +1,12 @@
 ////////////////////////////////////////////////////////////////
-// Includes
+// Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Debug/UnitTest.h"
+#include "AllUnitTests.h"
+
+////////////////////////////////////////////////////////////////
+// Includes
+
 #include "Gugu/Element/Element.h"
 #include "Gugu/Core/EngineConfig.h"
 #include "Gugu/Window/Window.h"
@@ -20,9 +24,9 @@ bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon)
     return ApproxEqual(left.x, right.x, epsilon) && ApproxEqual(left.y, right.y, epsilon);
 }
 
-void RunUnitTests_Element()
+void RunUnitTests_Element(UnitTestResults* results)
 {
-    GUGU_UTEST_INIT("Element", "UnitTests_Element.log");
+    GUGU_UTEST_INIT("Element", "UnitTests_Element.log", results);
 
     //----------------------------------------------
 

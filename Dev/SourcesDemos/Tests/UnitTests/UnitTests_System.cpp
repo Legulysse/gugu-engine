@@ -1,17 +1,20 @@
 ////////////////////////////////////////////////////////////////
-// Includes
+// Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Debug/UnitTest.h"
+#include "AllUnitTests.h"
+
+////////////////////////////////////////////////////////////////
+// Includes
 
 using namespace gugu;
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
-void RunUnitTests_System()
+void RunUnitTests_System(UnitTestResults* results)
 {
-    GUGU_UTEST_INIT("System", "UnitTests_System.log");
+    GUGU_UTEST_INIT("System", "UnitTests_System.log", results);
 
     //----------------------------------------------
 

@@ -12,12 +12,63 @@
 
 namespace gugu {
 
+class UnitTestResults
+{
+public:
+
+    UnitTestResults(const std::string& logPathFile)
+    {
+        m_logger.SetFilePath(logPathFile);
+        m_logger.SetConsoleOutput(true, true);
+        m_logger.SetAutoflush(true);
+
+        m_logger.Print("");
+        m_logger.Print("**************** Unit Tests - Begin ****************");
+    }
+
+    void AddTestResults(const std::string& testHeader, size_t testCount, size_t successCount)
+    {
+        m_logger.SetConsoleOutput(false, false);
+        m_logger.Print(StringFormat("Tests : {0} ({1}/{2})", testHeader, successCount, testCount));
+        m_logger.SetConsoleOutput(true, true);
+
+        m_testCount += testCount;
+        m_successCount += successCount;
+    }
+
+    void PrintResults()
+    {
+        m_logger.Print("");
+        m_logger.Print("**************** Unit Tests - End ****************");
+        m_logger.Print("Nb Tests : " + ToString(m_testCount));
+        m_logger.Print("Nb Succeeded : " + ToString(m_successCount));
+
+        if (m_testCount - m_successCount > 0)
+        {
+            m_logger.Print("Nb Failed : " + ToString(m_testCount - m_successCount));
+        }
+
+        m_logger.Print("**************************************************");
+        m_logger.Print("");
+    }
+
+private:
+
+    Logger m_logger;
+
+    size_t m_testCount = 0;
+    size_t m_successCount = 0;
+};
+
 class UnitTestHandler
 {
 public:
 
-    void Init(const std::string& name, const std::string& logPathFile)
+    UnitTestHandler(const std::string& header, const std::string& logPathFile, UnitTestResults* testResults)
     {
+        m_header = header;
+        m_testResults = testResults;
+
         m_totalTestCount = 0;
         m_totalSuccessCount = 0;
 
@@ -29,14 +80,31 @@ public:
         m_logger.SetConsoleOutput(true, true);
         m_logger.SetAutoflush(true);
 
-        m_logger.Print("******** Unit Tests : " + name + " ********");
+        m_logger.Print("");
+        m_logger.Print("-------- Unit Tests : " + m_header + " --------");
+    }
+
+    void Finalize()
+    {
+        FinalizeSubSection();
+
+        PrintResults();
+
+        if (m_testResults)
+        {
+            m_testResults->AddTestResults(m_header, m_totalTestCount, m_totalSuccessCount);
+        }
     }
 
     void PrintResults()
     {
-        FinalizeSubSection();
+        if (m_testResults)
+        {
+            m_logger.SetConsoleOutput(false, false);
+        }
 
-        m_logger.Print("******** Results ********");
+        m_logger.Print("");
+        m_logger.Print("-------- Results --------");
         m_logger.Print("Nb Tests : " + ToString(m_totalTestCount));
         m_logger.Print("Nb Succeeded : " + ToString(m_totalSuccessCount));
 
@@ -44,13 +112,21 @@ public:
         {
             m_logger.Print("Nb Failed : " + ToString(m_totalTestCount - m_totalSuccessCount));
         }
+
+        m_logger.Print("-------------------------");
+        m_logger.Print("");
+
+        if (m_testResults)
+        {
+            m_logger.SetConsoleOutput(true, true);
+        }
     }
 
     void BeginSection(const std::string& title)
     {
         FinalizeSubSection();
 
-        m_logger.Print("**** Main Section : " + title + " ****");
+        m_logger.Print("Section : " + title);
     }
 
     void BeginSubSection(const std::string& title)
@@ -75,7 +151,7 @@ public:
         }
         else
         {
-            m_logger.Print(StringFormat("Failed: {1}({2}) -> {0}", expression, file, line));
+            m_logger.Print(StringFormat("Test Failed: {1}({2}) -> {0}", expression, file, line));
         }
 
         return result;
@@ -96,7 +172,10 @@ private:
 
 private:
 
+    std::string m_header;
     Logger m_logger;
+    UnitTestResults* m_testResults;
+
     size_t m_totalTestCount;
     size_t m_totalSuccessCount;
 
@@ -106,23 +185,22 @@ private:
     size_t m_subSectionSuccessCount;
 };
 
-#define GUGU_UTEST_INIT(NAME, LOG_FILE)     \
-    UnitTestHandler unitTestHandler;        \
-    unitTestHandler.Init(NAME, LOG_FILE)
+#define GUGU_UTEST_INIT(NAME, LOG_FILE, RESULTS_PTR)            \
+    UnitTestHandler unitTestHandler(NAME, LOG_FILE, RESULTS_PTR)
 
-#define GUGU_UTEST_FINALIZE()               \
-    unitTestHandler.PrintResults()
+#define GUGU_UTEST_FINALIZE()                                   \
+    unitTestHandler.Finalize()
 
-#define GUGU_UTEST_SECTION(NAME)            \
+#define GUGU_UTEST_SECTION(NAME)                                \
     unitTestHandler.BeginSection(NAME)
 
-#define GUGU_UTEST_SUBSECTION(NAME)         \
+#define GUGU_UTEST_SUBSECTION(NAME)                             \
     unitTestHandler.BeginSubSection(NAME)
 
-#define GUGU_UTEST_CHECK(EXPRESSION)            \
-    unitTestHandler.LogTestResult((bool)(EXPRESSION),   \
-        GUGU_STRINGIZE(EXPRESSION),             \
-        __FILE__,                               \
+#define GUGU_UTEST_CHECK(EXPRESSION)                            \
+    unitTestHandler.LogTestResult((bool)(EXPRESSION),           \
+        GUGU_STRINGIZE(EXPRESSION),                             \
+        __FILE__,                                               \
         __LINE__)                              
 
 }   // namespace gugu

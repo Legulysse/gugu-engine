@@ -1,11 +1,11 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/UnitTest.h"
 
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
-void RunUnitTests_Math();
-void RunUnitTests_System();
-void RunUnitTests_Element();
+void RunUnitTests_Math(gugu::UnitTestResults* results);
+void RunUnitTests_System(gugu::UnitTestResults* results);
+void RunUnitTests_Element(gugu::UnitTestResults* results);

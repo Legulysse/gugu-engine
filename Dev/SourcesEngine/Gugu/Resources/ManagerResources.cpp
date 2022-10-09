@@ -181,35 +181,35 @@ void ManagerResources::SaveAll()
 
 EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) const
 {
-    if (fileInfo.IsExtension("png") || fileInfo.IsExtension("jpg"))
+    if (fileInfo.HasExtension("png") || fileInfo.HasExtension("jpg"))
     {
         return EResourceType::Texture;
     }
-    else if (fileInfo.IsExtension("ttf"))
+    else if (fileInfo.HasExtension("ttf"))
     {
         return EResourceType::Font;
     }
-    //else if (fileInfo.IsExtension("sound.xml"))  // TODO: sound and music files are basically the same thing, I cant deduce them from file extension alone.
+    //else if (fileInfo.HasExtension("sound.xml"))  // TODO: sound and music files are basically the same thing, I cant deduce them from file extension alone.
     //{
     //    return EResourceType::Sound;
     //}
-    //else if (fileInfo.IsExtension("music.xml"))
+    //else if (fileInfo.HasExtension("music.xml"))
     //{
     //    return EResourceType::Music;
     //}
-    else if (fileInfo.IsExtension("sound.xml") || fileInfo.IsExtension("sound"))
+    else if (fileInfo.HasExtension("sound.xml") || fileInfo.HasExtension("sound"))
     {
         return EResourceType::SoundCue;
     }
-    else if (fileInfo.IsExtension("imageset.xml") || fileInfo.IsExtension("imageset"))
+    else if (fileInfo.HasExtension("imageset.xml") || fileInfo.HasExtension("imageset"))
     {
         return EResourceType::ImageSet;
     }
-    else if (fileInfo.IsExtension("animset.xml") || fileInfo.IsExtension("animset"))
+    else if (fileInfo.HasExtension("animset.xml") || fileInfo.HasExtension("animset"))
     {
         return EResourceType::AnimSet;
     }
-    else if (fileInfo.IsExtension("particle.xml") || fileInfo.IsExtension("particle"))
+    else if (fileInfo.HasExtension("particle.xml") || fileInfo.HasExtension("particle"))
     {
         return EResourceType::ParticleEffect;
     }

@@ -255,7 +255,7 @@ bool DatasheetParser::IsDatasheet(const FileInfo& fileInfo) const
 {
     for (ClassDefinition* classDefinition : m_classDefinitions)
     {
-        if (fileInfo.IsExtension(classDefinition->m_name))
+        if (fileInfo.HasExtension(classDefinition->m_name))
         {
             return true;
         }

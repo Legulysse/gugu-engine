@@ -24,7 +24,8 @@ public:
 
     std::string GetPrettyName() const;
     std::string GetExtension() const;
-    bool IsExtension(const std::string& extension) const;
+    std::string GetAllExtensions() const;
+    bool HasExtension(const std::string& extension) const;
 
     bool operator < (const FileInfo& other) const;    //Used by std sorts
     bool operator == (const FileInfo& other) const;

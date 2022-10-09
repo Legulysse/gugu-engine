@@ -84,8 +84,8 @@ void Engine::Init(const EngineConfig& config)
     //-- Pre-compute config parameters --//
     m_engineConfig = config;
 
-    NormalizePathSelf(m_engineConfig.pathAssets, true);
-    NormalizePathSelf(m_engineConfig.pathScreenshots, true);
+    NormalizePathSelf(m_engineConfig.pathAssets);
+    NormalizePathSelf(m_engineConfig.pathScreenshots);
 
     //-- Init Managers --//
     m_managerResources = new ManagerResources;

@@ -521,9 +521,9 @@ void AnimSetPanel::GenerateAnimationFramesFromDirectory(const std::string& path)
     if (!m_currentAnimation)
         return;
 
-    std::string targetPath = CombinePaths(GetEditor()->GetProjectSettings()->projectAssetsPath, path, false);
+    std::string targetPath = CombinePaths(GetEditor()->GetProjectSettings()->projectAssetsPath, path);
 
-    if (!StdStringStartsWith(targetPath, GetEditor()->GetProjectSettings()->projectAssetsPath))
+    if (!PathStartsWith(targetPath, GetEditor()->GetProjectSettings()->projectAssetsPath))
         return;
 
     std::vector<FileInfo> directoryFiles;

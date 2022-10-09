@@ -639,12 +639,15 @@ void ManagerResources::RemoveResourcesFromPath(const std::string& _strPath)
         auto iteResource = it;
         ++it;
 
-        if (StdStringStartsWith(iteResource->second->fileInfo.GetPath(true), _strPath))
+        if (PathStartsWith(iteResource->second->fileInfo.GetPath(), _strPath))
         {
             ResourceInfo* pInfo = iteResource->second;
             m_resources.erase(iteResource);
 
             SafeDelete(pInfo);
+
+            // TODO: Check with this call instead.
+            //RemoveResource(iteResource->first);
         }
     }
 }

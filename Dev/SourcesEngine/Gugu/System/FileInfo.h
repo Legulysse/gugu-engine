@@ -18,7 +18,7 @@ public:
     FileInfo(const std::string& path, const std::string& name);
     FileInfo(const std::string& pathName);
 
-    std::string GetPath(bool trailingSlash) const;
+    std::string GetPath() const;
     const std::string& GetName() const;
     const std::string& GetPathName() const;
 

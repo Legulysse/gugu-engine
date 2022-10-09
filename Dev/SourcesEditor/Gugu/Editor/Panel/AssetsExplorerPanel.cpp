@@ -124,10 +124,10 @@ void AssetsExplorerPanel::RefreshContent()
     {
         TreeNode* currentDirectory = m_rootNode;
 
-        std::string resourcePath = resourceInfo->fileInfo.GetPath(true);
+        std::string resourcePath = resourceInfo->fileInfo.GetPath();
 
         // Ignore Editor assets.
-        if (StdStringStartsWith(resourcePath, editorAssetsPath))
+        if (PathStartsWith(resourcePath, editorAssetsPath))
         {
             continue;
         }
@@ -168,7 +168,7 @@ void AssetsExplorerPanel::RefreshContent()
         TreeNode* newNode = new TreeNode;
         newNode->isFolder = false;
         newNode->name = resourceInfo->fileInfo.GetName();
-        newNode->path = resourceInfo->fileInfo.GetPath(false);
+        newNode->path = resourceInfo->fileInfo.GetPath();
         newNode->resourceID = resourceInfo->resourceID;
         currentDirectory->children.push_back(newNode);
     }
@@ -181,7 +181,7 @@ void AssetsExplorerPanel::CreateNewDirectory(TreeNode* parentNode)
     GetEditor()->OpenModalDialog(new NewDirectoryDialog(parentNode->path, "",
         [=](const std::string& validatedDirectoryName)
         {
-            std::string validatedDirectoryPath = CombinePaths(parentNode->path, validatedDirectoryName, false);
+            std::string validatedDirectoryPath = CombinePaths(parentNode->path, validatedDirectoryName);
 
             if (!DirectoryExists(validatedDirectoryPath) && EnsureDirectoryExists(validatedDirectoryPath))
             {

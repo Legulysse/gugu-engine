@@ -21,13 +21,13 @@ FileInfo::FileInfo()
 
 FileInfo::FileInfo(const std::string& path, const std::string& name)
 {
-    CombinePaths(path, name, false, m_pathName);
+    CombinePaths(path, name, m_pathName);
     UpdateFromPathName();
 }
 
 FileInfo::FileInfo(const std::string& pathName)
 {
-    NormalizePath(pathName, false, m_pathName);
+    NormalizePath(pathName, m_pathName);
     UpdateFromPathName();
 }
 
@@ -45,10 +45,10 @@ void FileInfo::UpdateFromPathName()
     }
 }
 
-std::string FileInfo::GetPath(bool trailingSlash) const
+std::string FileInfo::GetPath() const
 {
     //TODO: optimize this (wait for string_view ?).
-    return m_indexSeparator == std::string::npos ? std::string() : m_pathName.substr(0, trailingSlash ? m_indexSeparator + 1 : m_indexSeparator);
+    return m_indexSeparator == std::string::npos ? std::string() : m_pathName.substr(0, m_indexSeparator);
 }
 
 const std::string& FileInfo::GetName() const
@@ -104,8 +104,8 @@ bool FileInfo::HasExtension(const std::string& extension) const
 bool FileInfo::operator < (const FileInfo& other) const
 {
     //TODO: optimize this (wait for string_view ?).
-    std::string path = GetPath(false);
-    std::string otherPath = other.GetPath(false);
+    std::string path = GetPath();
+    std::string otherPath = other.GetPath();
     return path < otherPath || (path == otherPath && m_name < other.m_name);
 }
 

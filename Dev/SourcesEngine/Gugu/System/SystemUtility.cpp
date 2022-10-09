@@ -258,20 +258,20 @@ void StringNumberFormatSelf(std::string& value, size_t leadingZeros, const std::
     }
 }
 
-std::string NormalizePath(const std::string& path, bool trailingSlash)
+std::string NormalizePath(const std::string& path)
 {
     std::string resultPath = path;
-    NormalizePathSelf(resultPath, trailingSlash);
+    NormalizePathSelf(resultPath);
     return resultPath;
 }
 
-void NormalizePath(const std::string& path, bool trailingSlash, std::string& resultPath)
+void NormalizePath(const std::string& path, std::string& resultPath)
 {
     resultPath = path;
-    NormalizePathSelf(resultPath, trailingSlash);
+    NormalizePathSelf(resultPath);
 }
 
-void NormalizePathSelf(std::string& path, bool trailingSlash)
+void NormalizePathSelf(std::string& path)
 {
     // Normalize separator.
     StdStringReplaceSelf(path, '\\', '/');
@@ -361,20 +361,20 @@ void EnsureTrailingPathSeparatorSelf(std::string& path)
     }
 }
 
-std::string PathFromPathFile(const std::string& pathFile, bool trailingSlash)
+std::string PathFromPathFile(const std::string& pathFile)
 {
     std::string resultPath = pathFile;
-    PathFromPathFileSelf(resultPath, trailingSlash);
+    PathFromPathFileSelf(resultPath);
     return resultPath;
 }
 
-void PathFromPathFile(const std::string& pathFile, bool trailingSlash, std::string& path)
+void PathFromPathFile(const std::string& pathFile, std::string& path)
 {
     path = pathFile;
-    PathFromPathFileSelf(path, trailingSlash);
+    PathFromPathFileSelf(path);
 }
 
-void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash)
+void PathFromPathFileSelf(std::string& pathFile)
 {
     size_t indexDot = pathFile.rfind('.');
     size_t indexSlash = pathFile.rfind('/');
@@ -388,7 +388,7 @@ void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash)
         pathFile.erase(indexSlashOrZero);
     }
 
-    NormalizePathSelf(pathFile, trailingSlash);
+    NormalizePathSelf(pathFile);
 }
 
 std::string FileFromPathFile(const std::string& pathFile)
@@ -414,14 +414,14 @@ void FileFromPathFileSelf(std::string& pathFile)
     }
 }
 
-std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash)
+std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight)
 {
     std::string resultPath;
-    CombinePaths(pathLeft, pathRight, trailingSlash, resultPath);
+    CombinePaths(pathLeft, pathRight, resultPath);
     return resultPath;
 }
 
-void CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash, std::string& resultPath)
+void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std::string& resultPath)
 {
     if (pathLeft.empty() && pathRight.empty())
     {
@@ -430,18 +430,24 @@ void CombinePaths(const std::string& pathLeft, const std::string& pathRight, boo
     else if (pathLeft.empty())
     {
         resultPath = pathRight;
-        NormalizePathSelf(resultPath, trailingSlash);
+        NormalizePathSelf(resultPath);
     }
     else if (pathRight.empty())
     {
         resultPath = pathLeft;
-        NormalizePathSelf(resultPath, trailingSlash);
+        NormalizePathSelf(resultPath);
     }
     else
     {
         resultPath = pathLeft + '/' + pathRight;
-        NormalizePathSelf(resultPath, trailingSlash);
+        NormalizePathSelf(resultPath);
     }
+}
+
+bool PathStartsWith(const std::string& path, const std::string& subPath)
+{
+    //TODO: I can probably avoid creating strings here and directly compare paths.
+    return StdStringStartsWith(EnsureTrailingPathSeparator(path), EnsureTrailingPathSeparator(subPath));
 }
 
 void OpenFileExplorer(const std::string& path)
@@ -466,12 +472,12 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
 #if defined(GUGU_OS_WIN32)
 
     std::string strPathNormalized;
-    NormalizePath(rootPath, true, strPathNormalized);
+    NormalizePath(rootPath, strPathNormalized);
 
     //Win32 path conversion and filter
     std::string strRoot = strPathNormalized;
     StdStringReplaceSelf(strRoot, '/', '\\');
-    strRoot += "*";
+    strRoot += "/*";
 
     WIN32_FIND_DATAA FindFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
@@ -488,7 +494,8 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
             {
                 if (recursive)
                 {
-                    GetFiles(strPathNormalized + strFile, files, recursive);
+                    // TODO: Should I provide some kind of CombinePathsUnsafe() ?
+                    GetFiles(strPathNormalized + '/' + strFile, files, recursive);
                 }
             }
             else
@@ -505,11 +512,12 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
 #elif defined(GUGU_OS_LINUX)
 
     std::string strPathNormalized;
-    NormalizePath(rootPath, true, strPathNormalized);
+    NormalizePath(rootPath, strPathNormalized);
 
     dirent* sdirent = nullptr;
     DIR* flux = nullptr;
 
+    // TODO: Check this works now that I removed the trailing '/'.
     if ((flux = opendir(strPathNormalized.c_str())) != nullptr)
     {
         while ((sdirent = readdir(flux)) != nullptr)
@@ -521,7 +529,7 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
                 {
                     if (recursive)
                     {
-                        GetFiles(strPathNormalized + strFile, files, recursive);
+                        GetFiles(strPathNormalized + '/' + strFile, files, recursive);
                     }
                 }
                 else
@@ -542,12 +550,12 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
 #if defined(GUGU_OS_WIN32)
 
     std::string strPathNormalized;
-    NormalizePath(rootPath, true, strPathNormalized);
+    NormalizePath(rootPath, strPathNormalized);
 
     //Win32 path conversion and filter
     std::string strRoot = strPathNormalized;
     StdStringReplaceSelf(strRoot, '/', '\\');
-    strRoot += "*";
+    strRoot += "/*";
 
     WIN32_FIND_DATAA FindFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
@@ -562,7 +570,7 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
         {
             if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                std::string directoryFullPath = strPathNormalized + strFile;
+                std::string directoryFullPath = strPathNormalized + '/' + strFile;
 
                 directories.push_back(directoryFullPath);
 

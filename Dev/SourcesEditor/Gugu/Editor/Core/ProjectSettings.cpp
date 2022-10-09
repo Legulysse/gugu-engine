@@ -30,10 +30,10 @@ bool ProjectSettings::LoadFromFile(const std::string& pathFile)
     projectPathFile = pathFile;
 
     projectPath = pathFile;
-    PathFromPathFile(pathFile, false, projectPath);
+    PathFromPathFile(pathFile, projectPath);
 
-    projectAssetsPath = CombinePaths(projectPath, nodeProject.child("AssetsPath").attribute("value").value(), false);
-    projectBindingPathFile = CombinePaths(projectPath, nodeProject.child("BindingPathFile").attribute("value").value(), false);
+    projectAssetsPath = CombinePaths(projectPath, nodeProject.child("AssetsPath").attribute("value").value());
+    projectBindingPathFile = CombinePaths(projectPath, nodeProject.child("BindingPathFile").attribute("value").value());
 
     return true;
 }

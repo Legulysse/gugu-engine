@@ -22,24 +22,24 @@ void RunUnitTests_System(UnitTestResults* results)
     {
         GUGU_UTEST_SUBSECTION("NormalizePath");
         {
-            GUGU_UTEST_CHECK(NormalizePath("", false) == "");
-            GUGU_UTEST_CHECK(NormalizePath("/", false) == "");
-            GUGU_UTEST_CHECK(NormalizePath("./hello/my/../world", false) == "hello/world");
-            GUGU_UTEST_CHECK(NormalizePath("../hello/world", false) == "../hello/world");
-            GUGU_UTEST_CHECK(NormalizePath("hello/world/../..", false) == "");
-            GUGU_UTEST_CHECK(NormalizePath("hello/world/../../../..", false) == "../..");
-            GUGU_UTEST_CHECK(NormalizePath("../../hello/my/../world/../", false) == "../../hello");
-            GUGU_UTEST_CHECK(NormalizePath("./", false) == "");
-            GUGU_UTEST_CHECK(NormalizePath("../", false) == "..");
-            GUGU_UTEST_CHECK(NormalizePath("/..", false) == "..");
-            GUGU_UTEST_CHECK(NormalizePath("/../", false) == "..");
-            GUGU_UTEST_CHECK(NormalizePath("/../", false) == "..");
-            GUGU_UTEST_CHECK(NormalizePath("../hello/world/..", false) == "../hello");
-            GUGU_UTEST_CHECK(NormalizePath("///////", false) == "");
-            GUGU_UTEST_CHECK(NormalizePath(".///////", false) == "");
-            GUGU_UTEST_CHECK(NormalizePath(".//.///.//", false) == "");
-            GUGU_UTEST_CHECK(NormalizePath(".folder/hello../..../..world/....", false) == ".folder/hello../..../..world/....");
-            GUGU_UTEST_CHECK(NormalizePath("./hello/my/../world.xml", false) == "hello/world.xml");
+            GUGU_UTEST_CHECK(NormalizePath("") == "");
+            GUGU_UTEST_CHECK(NormalizePath("/") == "");
+            GUGU_UTEST_CHECK(NormalizePath("./hello/my/../world") == "hello/world");
+            GUGU_UTEST_CHECK(NormalizePath("../hello/world") == "../hello/world");
+            GUGU_UTEST_CHECK(NormalizePath("hello/world/../..") == "");
+            GUGU_UTEST_CHECK(NormalizePath("hello/world/../../../..") == "../..");
+            GUGU_UTEST_CHECK(NormalizePath("../../hello/my/../world/../") == "../../hello");
+            GUGU_UTEST_CHECK(NormalizePath("./") == "");
+            GUGU_UTEST_CHECK(NormalizePath("../") == "..");
+            GUGU_UTEST_CHECK(NormalizePath("/..") == "..");
+            GUGU_UTEST_CHECK(NormalizePath("/../") == "..");
+            GUGU_UTEST_CHECK(NormalizePath("/../") == "..");
+            GUGU_UTEST_CHECK(NormalizePath("../hello/world/..") == "../hello");
+            GUGU_UTEST_CHECK(NormalizePath("///////") == "");
+            GUGU_UTEST_CHECK(NormalizePath(".///////") == "");
+            GUGU_UTEST_CHECK(NormalizePath(".//.///.//") == "");
+            GUGU_UTEST_CHECK(NormalizePath(".folder/hello../..../..world/....") == ".folder/hello../..../..world/....");
+            GUGU_UTEST_CHECK(NormalizePath("./hello/my/../world.xml") == "hello/world.xml");
         }
 
         GUGU_UTEST_SUBSECTION("EnsureTrailingPathSeparator");
@@ -61,13 +61,13 @@ void RunUnitTests_System(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("PathFromPathFile");
         {
-            GUGU_UTEST_CHECK(PathFromPathFile("", false) == "");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world/", false) == "hello/world");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world.xml", false) == "hello");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world", false) == "hello/world");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../my.world/", false) == "hello/my.world");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../my.world/file.xml", false) == "hello/my.world");
-            GUGU_UTEST_CHECK(PathFromPathFile("file.xml", false) == "");
+            GUGU_UTEST_CHECK(PathFromPathFile("") == "");
+            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world/") == "hello/world");
+            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world.xml") == "hello");
+            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world") == "hello/world");
+            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../my.world/") == "hello/my.world");
+            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../my.world/file.xml") == "hello/my.world");
+            GUGU_UTEST_CHECK(PathFromPathFile("file.xml") == "");
         }
 
         GUGU_UTEST_SUBSECTION("FileFromPathFile");
@@ -83,22 +83,31 @@ void RunUnitTests_System(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("CombinePaths");
         {
-            GUGU_UTEST_CHECK(CombinePaths("", "", false) == "");
-            GUGU_UTEST_CHECK(CombinePaths("/hello/", "/world/", false) == "hello/world");
-            GUGU_UTEST_CHECK(CombinePaths("/", "/", false) == "");
-            GUGU_UTEST_CHECK(CombinePaths("../hello", "../world", false) == "../world");
-            GUGU_UTEST_CHECK(CombinePaths("../hello/..", "world", false) == "../world");
-            GUGU_UTEST_CHECK(CombinePaths("hello/my", "./world", false) == "hello/my/world");
-            GUGU_UTEST_CHECK(CombinePaths("/hello/", "", false) == "hello");
-            GUGU_UTEST_CHECK(CombinePaths("", "/world/", false) == "world");
-            GUGU_UTEST_CHECK(CombinePaths("/../", "/../", false) == "../..");
-            GUGU_UTEST_CHECK(CombinePaths("..", "..", false) == "../..");
-            GUGU_UTEST_CHECK(CombinePaths("..", "file.txt", false) == "../file.txt");
-            GUGU_UTEST_CHECK(CombinePaths("..", "./file.txt", false) == "../file.txt");
-            GUGU_UTEST_CHECK(CombinePaths("../hello/..", "./file.txt", false) == "../file.txt");
-            GUGU_UTEST_CHECK(CombinePaths("/hello/", "/world/file.txt", false) == "hello/world/file.txt");
-            GUGU_UTEST_CHECK(CombinePaths("", "file.txt", false) == "file.txt");
-            GUGU_UTEST_CHECK(CombinePaths("hello", "", false) == "hello");
+            GUGU_UTEST_CHECK(CombinePaths("", "") == "");
+            GUGU_UTEST_CHECK(CombinePaths("/hello/", "/world/") == "hello/world");
+            GUGU_UTEST_CHECK(CombinePaths("/", "/") == "");
+            GUGU_UTEST_CHECK(CombinePaths("../hello", "../world") == "../world");
+            GUGU_UTEST_CHECK(CombinePaths("../hello/..", "world") == "../world");
+            GUGU_UTEST_CHECK(CombinePaths("hello/my", "./world") == "hello/my/world");
+            GUGU_UTEST_CHECK(CombinePaths("/hello/", "") == "hello");
+            GUGU_UTEST_CHECK(CombinePaths("", "/world/") == "world");
+            GUGU_UTEST_CHECK(CombinePaths("/../", "/../") == "../..");
+            GUGU_UTEST_CHECK(CombinePaths("..", "..") == "../..");
+            GUGU_UTEST_CHECK(CombinePaths("..", "file.txt") == "../file.txt");
+            GUGU_UTEST_CHECK(CombinePaths("..", "./file.txt") == "../file.txt");
+            GUGU_UTEST_CHECK(CombinePaths("../hello/..", "./file.txt") == "../file.txt");
+            GUGU_UTEST_CHECK(CombinePaths("/hello/", "/world/file.txt") == "hello/world/file.txt");
+            GUGU_UTEST_CHECK(CombinePaths("", "file.txt") == "file.txt");
+            GUGU_UTEST_CHECK(CombinePaths("hello", "") == "hello");
+        }
+
+        GUGU_UTEST_SUBSECTION("PathStartsWith");
+        {
+            GUGU_UTEST_CHECK(PathStartsWith("", ""));
+            GUGU_UTEST_CHECK(PathStartsWith("Assets/Directory", "Assets"));
+            GUGU_UTEST_CHECK(PathStartsWith("Assets/Directory", "Assets/Directory"));
+            GUGU_UTEST_CHECK(!PathStartsWith("Assets/Directory", "Assets/DirectoryBis"));
+            GUGU_UTEST_CHECK(!PathStartsWith("Assets/DirectoryBis", "Assets/Directory"));
         }
     }
 
@@ -115,8 +124,7 @@ void RunUnitTests_System(UnitTestResults* results)
             {
                 const FileInfo fileInfo("hello", "world.txt");
 
-                GUGU_UTEST_CHECK(fileInfo.GetPath(false) == "hello");
-                GUGU_UTEST_CHECK(fileInfo.GetPath(true) == "hello/");
+                GUGU_UTEST_CHECK(fileInfo.GetPath() == "hello");
                 GUGU_UTEST_CHECK(fileInfo.GetName() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPathName() == "hello/world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
@@ -128,8 +136,7 @@ void RunUnitTests_System(UnitTestResults* results)
             {
                 const FileInfo fileInfo("hello", "world.txt");
 
-                GUGU_UTEST_CHECK(fileInfo.GetPath(false) == "hello");
-                GUGU_UTEST_CHECK(fileInfo.GetPath(true) == "hello/");
+                GUGU_UTEST_CHECK(fileInfo.GetPath() == "hello");
                 GUGU_UTEST_CHECK(fileInfo.GetName() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPathName() == "hello/world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
@@ -141,8 +148,7 @@ void RunUnitTests_System(UnitTestResults* results)
             {
                 const FileInfo fileInfo("", "world.txt");
 
-                GUGU_UTEST_CHECK(fileInfo.GetPath(false) == "");
-                GUGU_UTEST_CHECK(fileInfo.GetPath(true) == "");
+                GUGU_UTEST_CHECK(fileInfo.GetPath() == "");
                 GUGU_UTEST_CHECK(fileInfo.GetName() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPathName() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
@@ -154,8 +160,7 @@ void RunUnitTests_System(UnitTestResults* results)
             {
                 const FileInfo fileInfo("", ".txt");
 
-                GUGU_UTEST_CHECK(fileInfo.GetPath(false) == "");
-                GUGU_UTEST_CHECK(fileInfo.GetPath(true) == "");
+                GUGU_UTEST_CHECK(fileInfo.GetPath() == "");
                 GUGU_UTEST_CHECK(fileInfo.GetName() == ".txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPathName() == ".txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "");
@@ -167,8 +172,7 @@ void RunUnitTests_System(UnitTestResults* results)
             {
                 const FileInfo fileInfo("", "world.file.txt");
 
-                GUGU_UTEST_CHECK(fileInfo.GetPath(false) == "");
-                GUGU_UTEST_CHECK(fileInfo.GetPath(true) == "");
+                GUGU_UTEST_CHECK(fileInfo.GetPath() == "");
                 GUGU_UTEST_CHECK(fileInfo.GetName() == "world.file.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPathName() == "world.file.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
@@ -181,8 +185,7 @@ void RunUnitTests_System(UnitTestResults* results)
             {
                 const FileInfo fileInfo("", "world");
 
-                GUGU_UTEST_CHECK(fileInfo.GetPath(false) == "");
-                GUGU_UTEST_CHECK(fileInfo.GetPath(true) == "");
+                GUGU_UTEST_CHECK(fileInfo.GetPath() == "");
                 GUGU_UTEST_CHECK(fileInfo.GetName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetPathName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
@@ -195,8 +198,7 @@ void RunUnitTests_System(UnitTestResults* results)
             {
                 const FileInfo fileInfo("world.txt");
 
-                GUGU_UTEST_CHECK(fileInfo.GetPath(false) == "");
-                GUGU_UTEST_CHECK(fileInfo.GetPath(true) == "");
+                GUGU_UTEST_CHECK(fileInfo.GetPath() == "");
                 GUGU_UTEST_CHECK(fileInfo.GetName() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPathName() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");

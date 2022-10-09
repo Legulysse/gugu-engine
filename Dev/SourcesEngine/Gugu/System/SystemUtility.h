@@ -100,25 +100,27 @@ void StringNumberFormatSelf(std::string& value, size_t leadingZeros = 0, const s
 //----------------------------------------------
 // Paths
 
-// Convert all '\\' to '/', strip all "/xxx/.." parts, strip leading '/' if needed, add trailing '/' if needed.
-std::string NormalizePath(const std::string& path, bool trailingSlash);
-void NormalizePath(const std::string& path, bool trailingSlash, std::string& resultPath);
-void NormalizePathSelf(std::string& path, bool trailingSlash);
+// Convert all '\\' to '/', strip all "/xxx/.." parts, strip leading and trailing '/' if needed.
+std::string NormalizePath(const std::string& path);
+void NormalizePath(const std::string& path, std::string& resultPath);
+void NormalizePathSelf(std::string& path);
 
 std::string EnsureTrailingPathSeparator(const std::string& path);
 void EnsureTrailingPathSeparator(const std::string& path, std::string& resultPath);
 void EnsureTrailingPathSeparatorSelf(std::string& path);
 
-std::string PathFromPathFile(const std::string& pathFile, bool trailingSlash);
-void PathFromPathFile(const std::string& pathFile, bool trailingSlash, std::string& resultPath);
-void PathFromPathFileSelf(std::string& pathFile, bool trailingSlash);
+std::string PathFromPathFile(const std::string& pathFile);
+void PathFromPathFile(const std::string& pathFile, std::string& resultPath);
+void PathFromPathFileSelf(std::string& pathFile);
 
 std::string FileFromPathFile(const std::string& pathFile);
 void FileFromPathFile(const std::string& pathFile, std::string& file);
 void FileFromPathFileSelf(std::string& pathFile);
 
-std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash);
-void CombinePaths(const std::string& pathLeft, const std::string& pathRight, bool trailingSlash, std::string& resultPath);
+std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight);
+void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std::string& resultPath);
+
+bool PathStartsWith(const std::string& path, const std::string& subPath);
 
 //----------------------------------------------
 // Containers

@@ -136,7 +136,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(FileInfo("hello/world.txt") == FileInfo("hello", "world.txt"));
             GUGU_UTEST_CHECK(FileInfo("world.txt") == FileInfo("", "world.txt"));
 
-            FileInfo infoA("hello", "world.txt");
+            const FileInfo infoA("hello", "world.txt");
 
             GUGU_UTEST_CHECK(infoA.GetPath(false) == "hello");
             GUGU_UTEST_CHECK(infoA.GetPath(true) == "hello/");
@@ -146,7 +146,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(infoA.GetExtension() == "txt");
             GUGU_UTEST_CHECK(infoA.IsExtension("txt"));
 
-            FileInfo infoB("", "world.txt");
+            const FileInfo infoB("", "world.txt");
 
             GUGU_UTEST_CHECK(infoB.GetPath(false) == "");
             GUGU_UTEST_CHECK(infoB.GetPath(true) == "");
@@ -156,7 +156,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(infoB.GetExtension() == "txt");
             GUGU_UTEST_CHECK(infoB.IsExtension("txt"));
 
-            FileInfo infoC("", ".txt");
+            const FileInfo infoC("", ".txt");
 
             GUGU_UTEST_CHECK(infoC.GetPath(false) == "");
             GUGU_UTEST_CHECK(infoC.GetPath(true) == "");
@@ -166,7 +166,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(infoC.GetExtension() == "txt");
             GUGU_UTEST_CHECK(infoC.IsExtension("txt"));
 
-            FileInfo infoD("", "world.file.txt");
+            const FileInfo infoD("", "world.file.txt");
 
             GUGU_UTEST_CHECK(infoD.GetPath(false) == "");
             GUGU_UTEST_CHECK(infoD.GetPath(true) == "");

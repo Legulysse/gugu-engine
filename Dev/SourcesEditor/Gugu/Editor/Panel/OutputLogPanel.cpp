@@ -18,7 +18,11 @@
 namespace gugu {
 
 OutputLogPanel::OutputLogPanel()
-    : m_scrollToBottom(true)
+    : m_showInfos(true)
+    , m_showWarnings(true)
+    , m_showErrors(true)
+    , m_showDebugs(false)
+    , m_scrollToBottom(true)
 {
     m_title = "Output Log";
 
@@ -58,7 +62,36 @@ void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, EL
     entry.text = text;
 
     m_logs.push_back(entry);
+    size_t newLogEntryIndex = m_logs.size() - 1;
+
+    if (IsLogEntryVisible(entry))
+    {
+        m_visibleLogIndices.push_back(newLogEntryIndex);
+    }
+
     m_scrollToBottom = true;
+}
+
+void OutputLogPanel::RecomputeLogsVisibility()
+{
+    m_visibleLogIndices.clear();
+    m_visibleLogIndices.reserve(m_logs.size());
+
+    for (size_t i = 0; i < m_logs.size(); ++i)
+    {
+        if (IsLogEntryVisible(m_logs[i]))
+        {
+            m_visibleLogIndices.push_back(i);
+        }
+    }
+}
+
+bool OutputLogPanel::IsLogEntryVisible(const LogEntry& entry) const
+{
+    return (entry.level == ELog::Info && m_showInfos
+        || entry.level == ELog::Warning && m_showWarnings
+        || entry.level == ELog::Error && m_showErrors
+        || entry.level == ELog::Debug && m_showDebugs);
 }
 
 void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
@@ -79,8 +112,41 @@ void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
             { ELog::Error, color_red },
         };
 
+        // Control buttons.
+        {
+            if (ImGui::Checkbox("Infos", &m_showInfos))
+            {
+                RecomputeLogsVisibility();
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Checkbox("Warnings", &m_showWarnings))
+            {
+                RecomputeLogsVisibility();
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Checkbox("Errors", &m_showErrors))
+            {
+                RecomputeLogsVisibility();
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Checkbox("Debug", &m_showDebugs))
+            {
+                RecomputeLogsVisibility();
+            }
+
+            ImGui::SameLine(0.f, 40.f);
+            if (ImGui::Button("Clear logs"))
+            {
+                m_logs.clear();
+                m_visibleLogIndices.clear();
+            }
+        }
+
         ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollX /* | ImGuiTableFlags_NoPadInnerX */;
-        if (ImGui::BeginTable("Logs", 4, flags))
+        if (ImGui::BeginTable("_LOGS_TABLE", 4, flags))
         {
             ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
             ImGui::TableSetupColumn("time", columnFlags, 140.f);
@@ -91,12 +157,14 @@ void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
             ImGui::TableHeadersRow();
 
             ImGuiListClipper clipper;
-            clipper.Begin(m_logs.size());
+            clipper.Begin(m_visibleLogIndices.size());
             while (clipper.Step())
             {
                 for (int rowIndex = clipper.DisplayStart; rowIndex < clipper.DisplayEnd; ++rowIndex)
                 {
-                    ImGui::PushID(rowIndex);
+                    size_t logIndex = m_visibleLogIndices[rowIndex];
+
+                    ImGui::PushID(logIndex);
 
                     float row_min_height = 0.f;
                     ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
@@ -116,21 +184,21 @@ void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
                         ImGui::PushItemWidth(-1);
                     }
 
-                    ELog::Type logLevel = m_logs[rowIndex].level;
+                    ELog::Type logLevel = m_logs[logIndex].level;
                     ImVec4 color = logColorPerLevel.at(logLevel);
 
                     int columnIndex = 0;
                     ImGui::TableSetColumnIndex(columnIndex++);
-                    ImGui::TextColored(color_greyDetails, m_logs[rowIndex].timestamp.c_str());
+                    ImGui::TextColored(color_greyDetails, m_logs[logIndex].timestamp.c_str());
 
                     ImGui::TableSetColumnIndex(columnIndex++);
-                    ImGui::TextColored(color_greyDetails, m_logs[rowIndex].categoryStr.c_str());
+                    ImGui::TextColored(color_greyDetails, m_logs[logIndex].categoryStr.c_str());
 
                     ImGui::TableSetColumnIndex(columnIndex++);
-                    ImGui::TextColored(color, m_logs[rowIndex].levelStr.c_str());
+                    ImGui::TextColored(color, m_logs[logIndex].levelStr.c_str());
 
                     ImGui::TableSetColumnIndex(columnIndex++);
-                    ImGui::TextColored(color, m_logs[rowIndex].text.c_str());
+                    ImGui::TextColored(color, m_logs[logIndex].text.c_str());
 
                     ImGui::PopID();
                 }

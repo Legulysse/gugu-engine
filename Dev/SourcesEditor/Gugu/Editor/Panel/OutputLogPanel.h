@@ -25,6 +25,17 @@ namespace gugu {
 
 class OutputLogPanel : public BasePanel
 {
+private:
+
+    struct LogEntry
+    {
+        ELog::Type level;
+        std::string timestamp;
+        std::string levelStr;
+        std::string categoryStr;
+        std::string text;
+    };
+
 public:
 
     OutputLogPanel();
@@ -36,17 +47,18 @@ private:
 
     void PrintLog(const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text);
 
+    void RecomputeLogsVisibility();
+    bool IsLogEntryVisible(const LogEntry& entry) const;
+
 private:
 
-    struct LogEntry
-    {
-        ELog::Type level;
-        std::string timestamp;
-        std::string levelStr;
-        std::string categoryStr;
-        std::string text;
-    };
     std::vector<LogEntry> m_logs;
+
+    std::vector<size_t> m_visibleLogIndices;
+    bool m_showInfos;
+    bool m_showWarnings;
+    bool m_showErrors;
+    bool m_showDebugs;
 
     bool m_scrollToBottom;
 };

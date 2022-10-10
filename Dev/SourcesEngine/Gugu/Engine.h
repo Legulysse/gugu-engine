@@ -99,6 +99,8 @@ public:
     LoggerEngine*       GetLogEngine() const;
     TraceGroup*         GetTraceGroupMain() const;
 
+    const EngineConfig& GetEngineConfig() const;
+
 private:
     
     EngineConfig m_engineConfig;

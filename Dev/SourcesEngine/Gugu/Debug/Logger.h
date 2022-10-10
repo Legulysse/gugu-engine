@@ -72,6 +72,7 @@ namespace ELogEngine {
     enum Type
     {
         Engine,
+        Editor,
         Resources,
         Audio,
         Network,

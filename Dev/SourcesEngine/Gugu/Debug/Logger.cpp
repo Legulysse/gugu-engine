@@ -172,6 +172,7 @@ void LoggerEngine::Print(ELog::Type level, ELogEngine::Type category, const std:
     static const std::map<ELogEngine::Type, std::string> logCategoryAsStr
     {
         { ELogEngine::Engine, "[Engine] " },
+        { ELogEngine::Editor, "[Editor] " },
         { ELogEngine::Resources, "[Resources] " },
         { ELogEngine::Audio, "[Audio] " },
         { ELogEngine::Network, "[Network] " },

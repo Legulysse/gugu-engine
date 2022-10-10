@@ -43,6 +43,7 @@ void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, EL
     static const std::map<ELogEngine::Type, std::string> logCategoryAsStr
     {
         { ELogEngine::Engine, "Engine" },
+        { ELogEngine::Editor, "Editor" },
         { ELogEngine::Resources, "Resources" },
         { ELogEngine::Audio, "Audio" },
         { ELogEngine::Network, "Network" },

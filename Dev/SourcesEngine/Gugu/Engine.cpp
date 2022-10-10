@@ -758,6 +758,11 @@ TraceGroup* Engine::GetTraceGroupMain() const
     return m_traceGroupMain;
 }
 
+const EngineConfig& Engine::GetEngineConfig() const
+{
+    return m_engineConfig;
+}
+
 Engine* GetEngine()
 {
     return Engine::GetInstance();

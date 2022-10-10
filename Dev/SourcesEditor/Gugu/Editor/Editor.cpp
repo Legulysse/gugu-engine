@@ -65,6 +65,23 @@ void Editor::Init(const EditorConfig& editorConfig)
 
     NormalizePathSelf(m_editorConfig.projectPathFile);
 
+    // Additional ImGui Setup.
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // TODO: Does not seem supported by the SFML backend.
+    io.ConfigWindowsResizeFromEdges = true;
+
+    // Create standard Panels.
+    m_assetsExplorerPanel = new AssetsExplorerPanel;
+    m_outputLogPanel = new OutputLogPanel;
+    m_dependenciesPanel = new DependenciesPanel;
+
+    // Check engine.
+    if (!GetEngine()->GetEngineConfig().handleResourceDependencies)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Editor, "Engine is not setup to handle ResourceDependencies, Editor will likely crash");
+    }
+
     // Register Inputs.
     ManagerInputs* inputs = GetInputs();
     inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
@@ -72,17 +89,6 @@ void Editor::Init(const EditorConfig& editorConfig)
     inputs->RegisterInput("SaveAllDocuments", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, true, false));
     inputs->RegisterInput("Undo", inputs->BuildKeyboardEvent(sf::Keyboard::Z, true, false, false));
     inputs->RegisterInput("Redo", inputs->BuildKeyboardEvent(sf::Keyboard::Y, true, false, false));
-
-    // Additional ImGui Setup.
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // TODO: Does not seem supported by the SFML backend.
-    io.ConfigWindowsResizeFromEdges = true;
-
-    // Create Panels.
-    m_assetsExplorerPanel = new AssetsExplorerPanel;
-    m_outputLogPanel = new OutputLogPanel;
-    m_dependenciesPanel = new DependenciesPanel;
 
     // Open last project if available.
     if (m_editorConfig.projectPathFile != "")

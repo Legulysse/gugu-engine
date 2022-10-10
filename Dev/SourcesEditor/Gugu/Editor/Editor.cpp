@@ -63,6 +63,8 @@ void Editor::Init(const EditorConfig& editorConfig)
 {
     m_editorConfig = editorConfig;
 
+    NormalizePathSelf(m_editorConfig.projectPathFile);
+
     // Register Inputs.
     ManagerInputs* inputs = GetInputs();
     inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
@@ -83,9 +85,9 @@ void Editor::Init(const EditorConfig& editorConfig)
     m_dependenciesPanel = new DependenciesPanel;
 
     // Open last project if available.
-    if (editorConfig.projectPathFile != "")
+    if (m_editorConfig.projectPathFile != "")
     {
-        OpenProject(editorConfig.projectPathFile);
+        OpenProject(m_editorConfig.projectPathFile);
     }
 }
 

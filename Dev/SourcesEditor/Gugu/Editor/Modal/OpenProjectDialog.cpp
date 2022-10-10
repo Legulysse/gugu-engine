@@ -9,6 +9,8 @@
 
 #include "Gugu/Editor/Editor.h"
 
+#include "Gugu/System/SystemUtility.h"
+
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
@@ -31,6 +33,7 @@ void OpenProjectDialog::UpdateModalImpl(const DeltaTime& dt)
 {
     if (ImGui::InputText("Project Path File", &m_projectPath, ImGuiInputTextFlags_EnterReturnsTrue))
     {
+        NormalizePathSelf(m_projectPath);
     }
 
     ImGui::Spacing();

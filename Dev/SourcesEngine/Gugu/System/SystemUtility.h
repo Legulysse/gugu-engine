@@ -105,21 +105,26 @@ std::string NormalizePath(const std::string& path);
 void NormalizePath(const std::string& path, std::string& resultPath);
 void NormalizePathSelf(std::string& path);
 
+// Combine two given paths into a single path with a separator. The resulting path will be normalized.
+std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight);
+void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std::string& resultPath);
+
+// Simply append a trailing path separator '/' if there is none already. The given path is considered as normalized.
 std::string EnsureTrailingPathSeparator(const std::string& path);
 void EnsureTrailingPathSeparator(const std::string& path, std::string& resultPath);
 void EnsureTrailingPathSeparatorSelf(std::string& path);
 
+// Return the directories path part of a given pathFile. The given path is considered as normalized.
 std::string PathFromPathFile(const std::string& pathFile);
 void PathFromPathFile(const std::string& pathFile, std::string& resultPath);
 void PathFromPathFileSelf(std::string& pathFile);
 
+// Return the file name part of a given pathFile. The given path is considered as normalized.
 std::string FileFromPathFile(const std::string& pathFile);
 void FileFromPathFile(const std::string& pathFile, std::string& file);
 void FileFromPathFileSelf(std::string& pathFile);
 
-std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight);
-void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std::string& resultPath);
-
+// Check if a given path starts with a given subPath. Both paths are considered as complete and normalized.
 bool PathStartsWith(const std::string& path, const std::string& subPath);
 
 //----------------------------------------------

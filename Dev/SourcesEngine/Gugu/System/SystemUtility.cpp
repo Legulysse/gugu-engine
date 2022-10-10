@@ -340,6 +340,36 @@ void NormalizePathSelf(std::string& path)
     }
 }
 
+std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight)
+{
+    std::string resultPath;
+    CombinePaths(pathLeft, pathRight, resultPath);
+    return resultPath;
+}
+
+void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std::string& resultPath)
+{
+    if (pathLeft.empty() && pathRight.empty())
+    {
+        resultPath = "";
+    }
+    else if (pathLeft.empty())
+    {
+        resultPath = pathRight;
+        NormalizePathSelf(resultPath);
+    }
+    else if (pathRight.empty())
+    {
+        resultPath = pathLeft;
+        NormalizePathSelf(resultPath);
+    }
+    else
+    {
+        resultPath = pathLeft + '/' + pathRight;
+        NormalizePathSelf(resultPath);
+    }
+}
+
 std::string EnsureTrailingPathSeparator(const std::string& path)
 {
     std::string resultPath = path;
@@ -376,19 +406,16 @@ void PathFromPathFile(const std::string& pathFile, std::string& path)
 
 void PathFromPathFileSelf(std::string& pathFile)
 {
-    size_t indexDot = pathFile.rfind('.');
     size_t indexSlash = pathFile.rfind('/');
-    size_t indexSlashOrZero = indexSlash != std::string::npos ? indexSlash : 0;
 
-    // Check that the last '.' is not the last character, and that it is after the last '/'.
-    if (indexDot != std::string::npos
-        && indexDot != pathFile.size() - 1
-        && indexDot > indexSlashOrZero)
+    if (indexSlash != std::string::npos)
     {
-        pathFile.erase(indexSlashOrZero);
+        pathFile.erase(indexSlash);
     }
-
-    NormalizePathSelf(pathFile);
+    else
+    {
+        pathFile = "";
+    }
 }
 
 std::string FileFromPathFile(const std::string& pathFile)
@@ -411,36 +438,6 @@ void FileFromPathFileSelf(std::string& pathFile)
     if (indexSlash != std::string::npos)
     {
         pathFile.erase(0, indexSlash + 1);
-    }
-}
-
-std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight)
-{
-    std::string resultPath;
-    CombinePaths(pathLeft, pathRight, resultPath);
-    return resultPath;
-}
-
-void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std::string& resultPath)
-{
-    if (pathLeft.empty() && pathRight.empty())
-    {
-        resultPath = "";
-    }
-    else if (pathLeft.empty())
-    {
-        resultPath = pathRight;
-        NormalizePathSelf(resultPath);
-    }
-    else if (pathRight.empty())
-    {
-        resultPath = pathLeft;
-        NormalizePathSelf(resultPath);
-    }
-    else
-    {
-        resultPath = pathLeft + '/' + pathRight;
-        NormalizePathSelf(resultPath);
     }
 }
 

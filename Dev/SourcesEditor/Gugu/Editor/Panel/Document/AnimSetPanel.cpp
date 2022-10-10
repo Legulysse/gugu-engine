@@ -310,7 +310,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             // Empty column (used in frames section).
             ImGui::TableSetColumnIndex(columnIndex++);
 
-            if (isAnimationNodeOpen)
+            // Frames.
             {
                 ImGui::Indent();
 

@@ -177,7 +177,7 @@ public:
     bool excludeCaster;
     bool excludeTarget;
     float maxRadius;
-    float angleFromDirection;
+    float maxAngleFromDirection;
     std::vector< const DS_Effect* > effectsOnHit;
 
 protected:

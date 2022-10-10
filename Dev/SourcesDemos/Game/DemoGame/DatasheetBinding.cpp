@@ -213,7 +213,7 @@ DS_EffectArea::DS_EffectArea()
     excludeCaster = false;
     excludeTarget = false;
     maxRadius = 50;
-    angleFromDirection = -1;
+    maxAngleFromDirection = -1;
 }
 
 DS_EffectArea::~DS_EffectArea()
@@ -228,7 +228,7 @@ void DS_EffectArea::ParseMembers(gugu::DatasheetParserContext& context)
     ReadBool(context, "excludeCaster", excludeCaster);
     ReadBool(context, "excludeTarget", excludeTarget);
     ReadFloat(context, "maxRadius", maxRadius);
-    ReadFloat(context, "maxAngleFromDirection", angleFromDirection);
+    ReadFloat(context, "maxAngleFromDirection", maxAngleFromDirection);
     ReadArrayInstance(context, "effectsOnHit", "effect", effectsOnHit);
 }
 

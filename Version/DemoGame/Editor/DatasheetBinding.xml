@@ -17,25 +17,25 @@
     <!-- Assets -->
     
     <Class name="spriteInfo" code="DS_SpriteInfo">
-        <Data type="string"                     name="imageset"         code="imageSet" />
-        <Data type="string"                     name="animset"          code="animSet" />
+        <Data type="string" name="imageset" code="imageSet" />
+        <Data type="string" name="animset" code="animSet" />
     </Class>
     
     <!-- Entity -->
     
     <Class name="character" code="DS_Character" abstract="True">
-        <Data type="string"                     name="name"             code="name"       default="CHARACTER_NAME" />
-        <Data type="float"                      name="health"           code="health"     default="50" />
-        <Data type="float"                      name="speed"            code="speed"      default="50" />
-        <Data type="instance:spriteInfo"        name="sprite"           code="sprite" />
+        <Data type="string" name="name" default="CHARACTER_NAME" />
+        <Data type="float" name="health" default="50" />
+        <Data type="float" name="speed" default="50" />
+        <Data type="instance:spriteInfo" name="sprite" />
     </Class>
     
     <Class name="hero" code="DS_Hero" base="character">
-        <Data type="float"                        name="stamina"                code="stamina"              default="50" />
-        <Data type="float"                        name="staminaRecovery"        code="staminaRecovery"      default="50" />
-        <Data type="float"                        name="staminaRecoveryDelay"   code="staminaRecoveryDelay" default="50" />
-        <Data type="float"                        name="mana"                   code="mana"                 default="50" />
-        <Data type="float"                        name="manaRecovery"           code="manaRecovery"         default="50" />
+        <Data type="float" name="stamina" default="50" />
+        <Data type="float" name="staminaRecovery" default="50" />
+        <Data type="float" name="staminaRecoveryDelay" default="50" />
+        <Data type="float" name="mana" default="50" />
+        <Data type="float" name="manaRecovery" default="50" />
     </Class>
     
     <Class name="enemy" code="DS_Enemy" base="character">
@@ -44,43 +44,43 @@
     <!-- Skill -->
     
     <Class name="skill" code="DS_Skill">
-        <Data type="string" name="name" code="name" />
-        <Data type="float" name="staminaCost" code="staminaCost" default="-1" />
-        <Data type="float" name="manaCost" code="manaCost" default="-1" />
-        <Data type="bool" name="useAttackSpeed" code="useAttackSpeed" default="false" />
-        <Data type="float" name="cooldown" code="cooldown" default="-1" />
-        <Data type="array:instance:effect" name="effects" code="effects" />
+        <Data type="string" name="name" />
+        <Data type="float" name="staminaCost" default="-1" />
+        <Data type="float" name="manaCost" default="-1" />
+        <Data type="bool" name="useAttackSpeed" default="false" />
+        <Data type="float" name="cooldown" default="-1" />
+        <Data type="array:instance:effect" name="effects" />
     </Class>
     
     <!-- Effect -->
     
     <Class name="effect" code="DS_Effect" abstract="True">
-        <Data type="effectCenter" name="center" code="center" default="Target" />
+        <Data type="effectCenter" name="center" default="Target" />
     </Class>
     
     <Class name="effectArea" code="DS_EffectArea" base="effect">
-        <Data type="bool" name="excludeCaster" code="excludeCaster" default="false" />
-        <Data type="bool" name="excludeTarget" code="excludeTarget" default="false" />
-        <Data type="float" name="maxRadius" code="maxRadius" default="50" />
-        <Data type="float" name="maxAngleFromDirection" code="angleFromDirection" default="-1" />
-        <Data type="array:instance:effect" name="effectsOnHit" code="effectsOnHit" />
+        <Data type="bool" name="excludeCaster" default="false" />
+        <Data type="bool" name="excludeTarget" default="false" />
+        <Data type="float" name="maxRadius" default="50" />
+        <Data type="float" name="maxAngleFromDirection" default="-1" />
+        <Data type="array:instance:effect" name="effectsOnHit" />
     </Class>
     
     <Class name="effectProjectile" code="DS_EffectProjectile" base="effect">
-        <Data type="projectileAim" name="aim" code="aim" default="Direction" />
-        <Data type="float" name="speed" code="speed" default="500" />
-        <Data type="float" name="lifetime" code="lifetime" default="2" />
-        <Data type="int" name="maximumHits" code="maximumHits" default="1" />
-        <Data type="array:instance:effect" name="effectsOnHit" code="effectsOnHit" />
-        <Data type="array:instance:effect" name="effectsOnDestination" code="effectsOnDestination" />
+        <Data type="projectileAim" name="aim" default="Direction" />
+        <Data type="float" name="speed" default="500" />
+        <Data type="float" name="lifetime" default="2" />
+        <Data type="int" name="maximumHits" default="1" />
+        <Data type="array:instance:effect" name="effectsOnHit" />
+        <Data type="array:instance:effect" name="effectsOnDestination" />
     </Class>
     
     <Class name="effectDamage" code="DS_EffectDamage" base="effect">
-        <Data type="float" name="damage" code="damage" default="10" />
+        <Data type="float" name="damage" default="10" />
     </Class>
     
     <Class name="effectHeal" code="DS_EffectHeal" base="effect">
-        <Data type="float" name="heal" code="heal" default="10" />
+        <Data type="float" name="heal" default="10" />
     </Class>
     
 </Binding>

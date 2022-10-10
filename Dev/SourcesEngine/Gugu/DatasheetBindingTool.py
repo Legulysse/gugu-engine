@@ -525,8 +525,10 @@ def ParseXmlBinding(_xmlBinding):
     
 def ParseXmlEnum(_xmlEnum):
     newEnum = DefinitionEnum()
+    
     if 'name' in _xmlEnum.attributes:
         newEnum.name = _xmlEnum.attributes['name'].value
+        
     if 'code' in _xmlEnum.attributes:
         newEnum.code = _xmlEnum.attributes['code'].value
     
@@ -541,12 +543,16 @@ def ParseXmlEnum(_xmlEnum):
 
 def ParseXmlClass(_xmlClass):
     newClass = DefinitionClass()
+    
     if 'name' in _xmlClass.attributes:
         newClass.name = _xmlClass.attributes['name'].value
+        
     if 'code' in _xmlClass.attributes:
         newClass.code = _xmlClass.attributes['code'].value
+        
     if 'base' in _xmlClass.attributes:
         newClass.baseClassName = _xmlClass.attributes['base'].value
+        
     if 'abstract' in _xmlClass.attributes:
         newClass.isAbstract = _xmlClass.attributes['abstract'].value
     
@@ -560,14 +566,25 @@ def ParseXmlClass(_xmlClass):
     xmlNodeListMembers = _xmlClass.getElementsByTagName('Data')
     for xmlMember in xmlNodeListMembers :
         newMember = DefinitionMember()
+        
         if 'name' in xmlMember.attributes:
             newMember.name = xmlMember.attributes['name'].value
+        else:
+            print('Error : A Class Member has been declared without a name (class '+ newClass.name +').')
+            
         if 'code' in xmlMember.attributes:
             newMember.code = xmlMember.attributes['code'].value
+        else:
+            newMember.code = newMember.name
+            
         if 'type' in xmlMember.attributes:
             newMember.ParseType(xmlMember.attributes['type'].value)
+        else:
+            print('Error : A Class Member has been declared without a type (class '+ newClass.name +').')
+            
         if 'default' in xmlMember.attributes:
             newMember.default = xmlMember.attributes['default'].value
+            
         newClass.members.append(newMember)
         
     return newClass

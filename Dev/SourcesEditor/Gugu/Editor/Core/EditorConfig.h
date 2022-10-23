@@ -12,8 +12,10 @@ namespace gugu {
 
 struct EditorConfig
 {
-    std::string projectPathFile = "";
+    std::string defaultProjectPathFile = "";
     size_t maxUndoStateCount = 100;
+
+    bool LoadFromFile(const std::string& pathFile);
 };
 
 }   // namespace gugu

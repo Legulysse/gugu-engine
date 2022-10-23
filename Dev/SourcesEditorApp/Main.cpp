@@ -47,10 +47,14 @@ int main(int argc, char* argv[])
     // Init editor
 
     EditorConfig editorConfig;
+    editorConfig.LoadFromFile("EditorConfig.xml");
+
 #if 0
-    editorConfig.projectPathFile = "../../Version/DemoSystems/Editor/ProjectSettings.xml";
+#if 0
+    editorConfig.defaultProjectPathFile = "../../Version/DemoSystems/Editor/ProjectSettings.xml";
 #else
-    editorConfig.projectPathFile = "../../Version/DemoGame/Editor/ProjectSettings.xml";
+    editorConfig.defaultProjectPathFile = "../../Version/DemoGame/Editor/ProjectSettings.xml";
+#endif
 #endif
 
     GetEditor()->Init(editorConfig);

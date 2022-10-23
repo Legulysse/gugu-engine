@@ -9,6 +9,7 @@
 
 #include "Gugu/Editor/EditorVersion.h"
 #include "Gugu/Editor/Core/ProjectSettings.h"
+#include "Gugu/Editor/Core/UserSettings.h"
 #include "Gugu/Editor/Modal/AboutDialog.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
@@ -63,7 +64,7 @@ void Editor::Init(const EditorConfig& editorConfig)
 {
     m_editorConfig = editorConfig;
 
-    NormalizePathSelf(m_editorConfig.projectPathFile);
+    NormalizePathSelf(m_editorConfig.defaultProjectPathFile);
 
     // Additional ImGui Setup.
     ImGuiIO& io = ImGui::GetIO();
@@ -90,10 +91,19 @@ void Editor::Init(const EditorConfig& editorConfig)
     inputs->RegisterInput("Undo", inputs->BuildKeyboardEvent(sf::Keyboard::Z, true, false, false));
     inputs->RegisterInput("Redo", inputs->BuildKeyboardEvent(sf::Keyboard::Y, true, false, false));
 
+    // TODO: Save UserSettings
+    // TODO: FileExists utility.
     // Open last project if available.
-    if (m_editorConfig.projectPathFile != "")
+    UserSettings m_userSettings;
+    bool hasUserSettings = m_userSettings.LoadFromFile("User/UserSettings.xml");
+
+    if (hasUserSettings && !m_userSettings.lastProjectPathFile.empty())
     {
-        OpenProject(m_editorConfig.projectPathFile);
+        OpenProject(m_userSettings.lastProjectPathFile);
+    }
+    else if (m_editorConfig.defaultProjectPathFile != "")
+    {
+        OpenProject(m_editorConfig.defaultProjectPathFile);
     }
 }
 
@@ -240,7 +250,7 @@ void Editor::Update(const DeltaTime& dt)
         {
             if (ImGui::MenuItem("Open Project..."))
             {
-                GetEditor()->OpenModalDialog(new OpenProjectDialog(m_editorConfig.projectPathFile));
+                GetEditor()->OpenModalDialog(new OpenProjectDialog(m_editorConfig.defaultProjectPathFile));
             }
 
             if (ImGui::MenuItem("Close Project"))

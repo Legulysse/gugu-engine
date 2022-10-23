@@ -23,8 +23,8 @@ bool ProjectSettings::LoadFromFile(const std::string& pathFile)
     if (!result)
         return false;
 
-    pugi::xml_node nodeProject = document.child("ProjectSettings");
-    if (!nodeProject)
+    pugi::xml_node rootNode = document.child("ProjectSettings");
+    if (!rootNode)
         return false;
 
     projectPathFile = pathFile;
@@ -32,8 +32,8 @@ bool ProjectSettings::LoadFromFile(const std::string& pathFile)
     projectPath = pathFile;
     PathFromPathFile(pathFile, projectPath);
 
-    projectAssetsPath = CombinePaths(projectPath, nodeProject.child("AssetsPath").attribute("value").value());
-    projectBindingPathFile = CombinePaths(projectPath, nodeProject.child("BindingPathFile").attribute("value").value());
+    projectAssetsPath = CombinePaths(projectPath, rootNode.child("AssetsPath").attribute("value").value());
+    projectBindingPathFile = CombinePaths(projectPath, rootNode.child("BindingPathFile").attribute("value").value());
 
     return true;
 }

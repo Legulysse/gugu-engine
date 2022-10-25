@@ -63,8 +63,8 @@ Window::Window()
 
     m_systemMouseVisible = true;
     m_mouseVisible = false;
-    m_windowHovered = true;
-    m_windowFocused = true;
+    m_windowHovered = false;
+    m_windowFocused = false;
 
     m_backgroundColor = sf::Color(128,128,128,255);
 
@@ -196,6 +196,8 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
 
     // Finalize
     ComputeSize(m_sfWindow->getSize().x, m_sfWindow->getSize().y);
+
+    m_windowFocused = m_sfWindow->hasFocus();
 }
 
 void Window::SetRenderer(Renderer* _pRenderer)
@@ -594,6 +596,16 @@ bool Window::ProcessEvents()
     }
 
     return false;
+}
+
+bool Window::IsFocused() const
+{
+    return m_windowFocused;
+}
+
+bool Window::IsHovered() const
+{
+    return m_windowHovered;
 }
 
 bool Window::IsInputAllowed() const

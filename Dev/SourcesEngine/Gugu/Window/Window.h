@@ -92,6 +92,9 @@ public:
     bool ProcessEvents();
     bool IsInputAllowed() const;
 
+    bool IsFocused() const;
+    bool IsHovered() const;
+    
     bool IsConsoleVisible() const;
 
     bool Screenshot() const;

@@ -12,12 +12,12 @@ namespace gugu {
 
 struct ProjectSettings
 {
-public:
-
     std::string projectPathFile;
     std::string projectPath;
     std::string projectAssetsPath;
     std::string projectBindingPathFile;
+
+public:
 
     bool LoadFromFile(const std::string& pathFile);
 };

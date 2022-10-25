@@ -12,9 +12,9 @@ namespace gugu {
 
 struct UserSettings
 {
-public:
-
     std::string lastProjectPathFile;
+
+public:
 
     bool LoadFromFile(const std::string& pathFile);
 };

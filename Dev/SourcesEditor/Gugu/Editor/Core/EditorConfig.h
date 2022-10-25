@@ -15,6 +15,8 @@ struct EditorConfig
     std::string defaultProjectPathFile = "";
     size_t maxUndoStateCount = 100;
 
+public:
+
     bool LoadFromFile(const std::string& pathFile);
 };
 

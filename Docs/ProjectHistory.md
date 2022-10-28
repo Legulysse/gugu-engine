@@ -1,16 +1,21 @@
 # Project History
 
-## ??/??/???? - Version 0.7 (WIP 20/07/2022)
-- Itération Editor (undo/redo, particles editor, project settings, save on close popup, context menus pour la manipulation d'assets, OutputLog panel).
+## ??/??/???? - Version 0.7 (WIP 28/10/2022)
+- Editor: ajout du undo/redo, d'un fichier ProjectSettings, d'un fichier EditorConfig, et d'une popup de sauvegarde à la fermeture.
+- Editor: Ajout du ParticleEffect editor, de l'AnimSet editor, d'un viewer pour les textures, et de l'OutputLog.
+- Editor: Ajout d'un gestionnaire de dépendances entre Resources.
 - Rangement des demos dans differents dossiers (separation des tests, des demos de systemes, de la demo HelloWorld, et de la demo Game).
 - Ajout d'un ManagerVisualEffects et d'un ParticleSystem (nouvelle ressource ParticleEffect).
-- Ajout de UnitTests (MathUtility, et SystemUtility).
+- Ajout de UnitTests (MathUtility, SystemUtility, Elements).
+- Refacto Events (WindowEventHandler et ElementEventhandler, utilisation de listes de listeners plutot qu'un parsing de toute l'arborescence, split InteractionEvents et ElementEvents).
 - Refacto DeltaTime (ajout unscaled time).
 - Refacto des calculs de la loop centrale.
 - Iteration sur l'alignement au pixel des Elements (arrondi sur les UDim et la camera).
 - Refacto ElementButton (utilisation d'un ElementSpriteGroup).
+- Separation entre ElementText et ElementEditableText.
 - Ajout d'un système de template xml sur les ElementSpriteGroup.
-- Itération datasheets (flag "abstract", declaration de fonctions dans le binding).
+- Itération datasheets (flag "abstract", declaration de fonctions dans le binding, attribut "code" optionnel sur les membres).
+- Ajout d'un attribut SerializationVersion sur les différents fichiers de Resources.
 - Refacto de World/Level en ManagerScenes/Scene.
 - Separation entre Renderer (virtual) et DefaultRenderer.
 - Refacto de la commande speed (multiplicateur).
@@ -18,6 +23,8 @@
 - Ajout des commandes ruler, pause, time.
 - Ajout des fonctions de rounding, de random dans un cercle/anneau, et de random pondéré.
 - Itération SystemUtility (manipulation de paths).
+- Ajout de ImGuiUtility, renommage de PugiXmlWrap en PugiXmlUtility.
+- Update FileInfo.
 - Clean Element (suppression de Step/Update, suppression des parametres de size sur les callbacks de resize, renommage des fonctions de Transform).
 - Utilisation de l'event TextEntered sur ElementText.
 - Clean Logger (meilleure separation entre Logger et EngineLogger, frame count, output dans visual studio).
@@ -83,6 +90,7 @@
 - Clean Element : Gestion du sf::Transform en interne à la place d'un héritage sur sf::Transformable
 - const correctness
 - Mise à jour SFML trunk vers SFML 2.2 + integration des sources dans le projet
+- Abandon du module 3D (Ogre).
 
 ## 03/08/2014 - Version 0.2
 - Ajout de la gestion des resources par nom

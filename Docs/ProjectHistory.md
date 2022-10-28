@@ -58,47 +58,47 @@
 - Ajout du zoom sur les cameras.
 
 ## 04/07/2018 - Version 0.5.1
-- Script de conversion des tabs en espaces
-- Mise à jour SFML 2.5.0
+- Script de conversion des tabs en espaces.
+- Mise à jour SFML 2.5.0.
 
 ## 30/06/2018 - Version 0.5
-- Grosse refacto generale (arbo, renommages, camelCase) en preparation de la mise en open-source
-- Update/Optimisation des ElementSprite et ElementTile avec l'utilisation d'un VertexArray à la place de sf::sprites
-- Ajout de ElementTileMap et ElementSpriteGroup
-- Separation entre les assets de la demo Game et des autres demos
-- Separation des sources de PugiXml dans un projet dédié
+- Grosse refacto generale (arbo, renommages, camelCase) en preparation de la mise en open-source.
+- Update/Optimisation des ElementSprite et ElementTile avec l'utilisation d'un VertexArray à la place de sf::sprites.
+- Ajout de ElementTileMap et ElementSpriteGroup.
+- Separation entre les assets de la demo Game et des autres demos.
+- Separation des sources de PugiXml dans un projet dédié.
 
 ## 19/12/2017 - Version 0.4
-- Ajout démos (Camera, Audio, Callback, UI, Network, Math, System)
-- Ajout d'un état Disabled sur les ElementButtons
-- Ajout de l'outil de Scope Trace (generation d'un json exploitable sur chrome/opera)
-- Mise à jour des Flip (Flip generique autour du pivot pour les Element, FlipTexture pour les sprites)
-- Itération commande console (ajout commandes stats, fps, trace)
-- Itération World/Level (render, camera, levels, actors)
-- Itération Animations (root-motion)
-- Itération Audio (Music playlist)
-- Itération du Build process (mise en place simplifiée pour un nouveau projet, flags de compilation accelérée)
-- Itération System Utility (FormatString)
-- Mise à jour SFML 2.4.2
-- Mise à jour Editor Qt 5.7
+- Ajout démos (Camera, Audio, Callback, UI, Network, Math, System).
+- Ajout d'un état Disabled sur les ElementButtons.
+- Ajout de l'outil de Scope Trace (generation d'un json exploitable sur chrome/opera).
+- Mise à jour des Flip (Flip generique autour du pivot pour les Element, FlipTexture pour les sprites).
+- Itération commande console (ajout commandes stats, fps, trace).
+- Itération World/Level (render, camera, levels, actors).
+- Itération Animations (root-motion).
+- Itération Audio (Music playlist).
+- Itération du Build process (mise en place simplifiée pour un nouveau projet, flags de compilation accelérée).
+- Itération System Utility (FormatString).
+- Mise à jour SFML 2.4.2.
+- Mise à jour Editor Qt 5.7.
 
 ## 20/05/2015 - Version 0.3
-- Ajout de petites démos (HelloWorld, Datasheets, Game)
-- Ajout de la gestion d'un Renderer avec passes de rendu
-- Remplacement du ManagerEvent par un HandlerEvents associé à chaque Window
-- Itération sur les Datasheets (héritage, enums)
-- Clean Element : Gestion du sf::Transform en interne à la place d'un héritage sur sf::Transformable
-- const correctness
-- Mise à jour SFML trunk vers SFML 2.2 + integration des sources dans le projet
+- Ajout de petites démos (HelloWorld, Datasheets, Game).
+- Ajout de la gestion d'un Renderer avec passes de rendu.
+- Remplacement du ManagerEvent par un HandlerEvents associé à chaque Window.
+- Itération sur les Datasheets (héritage, enums).
+- Clean Element : Gestion du sf::Transform en interne à la place d'un héritage sur sf::Transformable.
+- const correctness.
+- Mise à jour SFML trunk vers SFML 2.2 + integration des sources dans le projet.
 - Abandon du module 3D (Ogre).
 
 ## 03/08/2014 - Version 0.2
-- Ajout de la gestion des resources par nom
-- Ajout des bases pour les Datasheets
-- Mise à jour du système Audio (SoundCues, MusicLayers and fades)
-- Itération de l'Editeur (ImageSets et AnimSets)
-- Ajout du MeshViewer
-- Mise à jour Ogre 1.8 + bases d'archi pour le World 3D
+- Ajout de la gestion des resources par nom.
+- Ajout des bases pour les Datasheets.
+- Mise à jour du système Audio (SoundCues, MusicLayers and fades).
+- Itération de l'Editeur (ImageSets et AnimSets).
+- Ajout du MeshViewer.
+- Mise à jour Ogre 1.8 + bases d'archi pour le World 3D.
 
 ## 11/06/2013 - Version 0.1
 

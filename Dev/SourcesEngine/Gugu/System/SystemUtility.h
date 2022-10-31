@@ -19,7 +19,15 @@
 // File Declarations
 
 namespace gugu {
-    
+
+//----------------------------------------------
+// Constants
+
+namespace System
+{
+    const char PathSeparator = '/';
+}
+
 //----------------------------------------------
 // General
 
@@ -56,6 +64,7 @@ void StdStringReplace(const std::string& value, const char& from, const char& to
 void StdStringReplaceSelf(std::string& value, const char& from, const char& to);
 
 void StdStringSplit(const std::string& _strValue, const std::string& _strDelimiter, std::vector<std::string>& _vecTokens);
+void StdStringSplit(const std::string& _strValue, const char& _strDelimiter, std::vector<std::string>& _vecTokens);
 
 std::string StdStringToLower(const std::string& _strValue);
 void StdStringToLower(const std::string& _strValue, std::string& _strResult);

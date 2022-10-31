@@ -85,12 +85,12 @@ void AssetsExplorerPanel::RefreshContent()
         std::string directoryPath = directory;
         directoryPath.erase(0, projectAssetsPath.size());
 
-        StdStringSplit(directoryPath, "/", tokens);
+        StdStringSplit(directoryPath, System::PathSeparator, tokens);
 
         std::string cumulatedPath = projectAssetsPath;
         for (std::string directoryName : tokens)
         {
-            cumulatedPath = cumulatedPath + "/" + directoryName;
+            cumulatedPath = cumulatedPath + System::PathSeparator + directoryName;
             bool foundDirectory = false;
 
             for (size_t i = 0; i < currentDirectory->children.size(); ++i)
@@ -135,12 +135,12 @@ void AssetsExplorerPanel::RefreshContent()
         // Hide the project path from the hierarchy.
         resourcePath.erase(0, projectAssetsPath.size());
 
-        StdStringSplit(resourcePath, "/", tokens);
+        StdStringSplit(resourcePath, System::PathSeparator, tokens);
 
         std::string cumulatedPath = projectAssetsPath;
         for (std::string directoryName : tokens)
         {
-            cumulatedPath = cumulatedPath + "/" + directoryName;
+            cumulatedPath = cumulatedPath + System::PathSeparator + directoryName;
             bool foundDirectory = false;
 
             for (size_t i = 0; i < currentDirectory->children.size(); ++i)

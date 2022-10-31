@@ -128,6 +128,9 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(PathStartsWith("Assets/Directory/", "Assets"));
             GUGU_UTEST_CHECK(PathStartsWith("Assets/Directory/", "Assets/"));
             GUGU_UTEST_CHECK(PathStartsWith("Assets/Directory", "Assets/Directory"));
+            GUGU_UTEST_CHECK(PathStartsWith("Assets/Directory", "Assets/Directory/"));
+            GUGU_UTEST_CHECK(PathStartsWith("Assets/Directory/", "Assets/Directory"));
+            GUGU_UTEST_CHECK(PathStartsWith("Assets/Directory/", "Assets/Directory/"));
             GUGU_UTEST_CHECK(!PathStartsWith("Assets/Directory", "Assets/DirectoryBis"));
             GUGU_UTEST_CHECK(!PathStartsWith("Assets/DirectoryBis", "Assets/Directory"));
         }
@@ -318,6 +321,52 @@ void RunUnitTests_System(UnitTestResults* results)
             {
                 std::vector<std::string> tokens;
                 StdStringSplit("hello world", "o", tokens);
+
+                if (GUGU_UTEST_CHECK(tokens.size() == 3))
+                {
+                    GUGU_UTEST_CHECK(tokens[0] == "hell");
+                    GUGU_UTEST_CHECK(tokens[1] == " w");
+                    GUGU_UTEST_CHECK(tokens[2] == "rld");
+                }
+            }
+
+            {
+                std::vector<std::string> tokens;
+                StdStringSplit("hello world", ' ', tokens);
+
+                if (GUGU_UTEST_CHECK(tokens.size() == 2))
+                {
+                    GUGU_UTEST_CHECK(tokens[0] == "hello");
+                    GUGU_UTEST_CHECK(tokens[1] == "world");
+                }
+            }
+
+            {
+                std::vector<std::string> tokens;
+                StdStringSplit("  hello   world  ", ' ', tokens);
+
+                if (GUGU_UTEST_CHECK(tokens.size() == 2))
+                {
+                    GUGU_UTEST_CHECK(tokens[0] == "hello");
+                    GUGU_UTEST_CHECK(tokens[1] == "world");
+                }
+            }
+
+            {
+                std::vector<std::string> tokens;
+                StdStringSplit("hello world", 'l', tokens);
+
+                if (GUGU_UTEST_CHECK(tokens.size() == 3))
+                {
+                    GUGU_UTEST_CHECK(tokens[0] == "he");
+                    GUGU_UTEST_CHECK(tokens[1] == "o wor");
+                    GUGU_UTEST_CHECK(tokens[2] == "d");
+                }
+            }
+
+            {
+                std::vector<std::string> tokens;
+                StdStringSplit("hello world", 'o', tokens);
 
                 if (GUGU_UTEST_CHECK(tokens.size() == 3))
                 {

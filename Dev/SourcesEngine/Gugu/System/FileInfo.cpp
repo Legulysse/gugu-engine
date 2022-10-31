@@ -33,7 +33,7 @@ FileInfo::FileInfo(const std::string& pathName)
 
 void FileInfo::UpdateFromPathName()
 {
-    m_indexSeparator = m_pathName.find_last_of('/');
+    m_indexSeparator = m_pathName.find_last_of(System::PathSeparator);
 
     if (m_indexSeparator != std::string::npos)
     {

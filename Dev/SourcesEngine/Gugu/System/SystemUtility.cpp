@@ -498,36 +498,36 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
 {
 #if defined(GUGU_OS_WIN32)
 
-    std::string strPathNormalized;
-    NormalizePath(rootPath, strPathNormalized);
+    std::string normalizedPath;
+    NormalizePath(rootPath, normalizedPath);
 
     //Win32 path conversion and filter
-    std::string strRoot = strPathNormalized;
-    StdStringReplaceSelf(strRoot, System::PathSeparator, '\\');
-    strRoot += "/*";
+    std::string filterPath = normalizedPath;
+    StdStringReplaceSelf(filterPath, System::PathSeparator, '\\');
+    filterPath += "\\*";
 
     WIN32_FIND_DATAA FindFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
 
-    hFind = FindFirstFileA(strRoot.c_str(), &FindFileData);
+    hFind = FindFirstFileA(filterPath.c_str(), &FindFileData);
 
     BOOL bContinue = (hFind != INVALID_HANDLE_VALUE);
     while (bContinue != 0)
     {
-        std::string strFile(FindFileData.cFileName);
-        if (strFile[0] != '.')
+        std::string fileName(FindFileData.cFileName);
+        if (fileName[0] != '.')
         {
             if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
                 if (recursive)
                 {
                     // TODO: Should I provide some kind of CombinePathsUnsafe() ?
-                    GetFiles(strPathNormalized + System::PathSeparator + strFile, files, recursive);
+                    GetFiles(normalizedPath + System::PathSeparator + fileName, files, recursive);
                 }
             }
             else
             {
-                files.push_back(FileInfo(strPathNormalized, strFile));
+                files.push_back(FileInfo(normalizedPath, fileName));
             }
         }
 
@@ -538,30 +538,30 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
 
 #elif defined(GUGU_OS_LINUX)
 
-    std::string strPathNormalized;
-    NormalizePath(rootPath, strPathNormalized);
+    std::string normalizedPath;
+    NormalizePath(rootPath, normalizedPath);
 
     dirent* sdirent = nullptr;
     DIR* flux = nullptr;
 
     // TODO: Check this works now that I removed the trailing '/'.
-    if ((flux = opendir(strPathNormalized.c_str())) != nullptr)
+    if ((flux = opendir(normalizedPath.c_str())) != nullptr)
     {
         while ((sdirent = readdir(flux)) != nullptr)
         {
-            std::string strFile(sdirent->d_name);
-            if (strFile[0] != '.')
+            std::string fileName(sdirent->d_name);
+            if (fileName[0] != '.')
             {
                 if (sdirent->d_type == DT_DIR)
                 {
                     if (recursive)
                     {
-                        GetFiles(strPathNormalized + System::PathSeparator + strFile, files, recursive);
+                        GetFiles(normalizedPath + System::PathSeparator + fileName, files, recursive);
                     }
                 }
                 else
                 {
-                    files.push_back(FileInfo(strPathNormalized, strFile));
+                    files.push_back(FileInfo(normalizedPath, fileName));
                 }
             }
         }
@@ -576,28 +576,28 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
 {
 #if defined(GUGU_OS_WIN32)
 
-    std::string strPathNormalized;
-    NormalizePath(rootPath, strPathNormalized);
+    std::string normalizedPath;
+    NormalizePath(rootPath, normalizedPath);
 
     //Win32 path conversion and filter
-    std::string strRoot = strPathNormalized;
-    StdStringReplaceSelf(strRoot, System::PathSeparator, '\\');
-    strRoot += "/*";
+    std::string filterPath = normalizedPath;
+    StdStringReplaceSelf(filterPath, System::PathSeparator, '\\');
+    filterPath += "\\*";
 
     WIN32_FIND_DATAA FindFileData;
     HANDLE hFind = INVALID_HANDLE_VALUE;
 
-    hFind = FindFirstFileA(strRoot.c_str(), &FindFileData);
+    hFind = FindFirstFileA(filterPath.c_str(), &FindFileData);
 
     BOOL bContinue = (hFind != INVALID_HANDLE_VALUE);
     while (bContinue != 0)
     {
-        std::string strFile(FindFileData.cFileName);
-        if (strFile[0] != '.')
+        std::string fileName(FindFileData.cFileName);
+        if (fileName[0] != '.')
         {
             if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                std::string directoryFullPath = strPathNormalized + System::PathSeparator + strFile;
+                std::string directoryFullPath = normalizedPath + System::PathSeparator + fileName;
 
                 directories.push_back(directoryFullPath);
 

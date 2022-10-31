@@ -124,14 +124,14 @@ void EnsureTrailingPathSeparator(const std::string& path, std::string& resultPat
 void EnsureTrailingPathSeparatorSelf(std::string& path);
 
 // Return the directories path part of a given pathFile. The given path is considered as normalized.
-std::string PathFromPathFile(const std::string& pathFile);
-void PathFromPathFile(const std::string& pathFile, std::string& resultPath);
-void PathFromPathFileSelf(std::string& pathFile);
+std::string DirectoryPartFromPath(const std::string& pathFile);
+void DirectoryPartFromPath(const std::string& pathFile, std::string& resultPath);
+void DirectoryPartFromPathSelf(std::string& pathFile);
 
 // Return the file name part of a given pathFile. The given path is considered as normalized.
-std::string FileFromPathFile(const std::string& pathFile);
-void FileFromPathFile(const std::string& pathFile, std::string& file);
-void FileFromPathFileSelf(std::string& pathFile);
+std::string NamePartFromPath(const std::string& pathFile);
+void NamePartFromPath(const std::string& pathFile, std::string& file);
+void NamePartFromPathSelf(std::string& pathFile);
 
 // Check if a given path starts with a given subPath. Both paths are considered as complete and normalized.
 bool PathStartsWith(const std::string& path, const std::string& subPath);

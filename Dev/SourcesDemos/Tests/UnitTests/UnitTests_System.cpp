@@ -61,40 +61,40 @@ void RunUnitTests_System(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("PathFromPathFile");
         {
-            GUGU_UTEST_CHECK(PathFromPathFile("") == "");
-            GUGU_UTEST_CHECK(PathFromPathFile("hello/world/") == "hello/world");
-            GUGU_UTEST_CHECK(PathFromPathFile("hello/world") == "hello");
-            GUGU_UTEST_CHECK(PathFromPathFile("/world/") == "/world");
-            GUGU_UTEST_CHECK(PathFromPathFile("/world") == "");
-            GUGU_UTEST_CHECK(PathFromPathFile("world/") == "world");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world/") == "./hello/my/../world");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world.xml") == "./hello/my/..");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../world") == "./hello/my/..");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../my.world/") == "./hello/my/../my.world");
-            GUGU_UTEST_CHECK(PathFromPathFile("./hello/my/../my.world/file.xml") == "./hello/my/../my.world");
-            GUGU_UTEST_CHECK(PathFromPathFile("file.xml") == "");
-            GUGU_UTEST_CHECK(PathFromPathFile(NormalizePath("./hello/my/../world.xml")) == "hello");
-            GUGU_UTEST_CHECK(PathFromPathFile(NormalizePath("./hello/my/../world")) == "hello");
-            GUGU_UTEST_CHECK(PathFromPathFile(NormalizePath("./hello/my/../my.world/file.xml")) == "hello/my.world");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("") == "");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("hello/world/") == "hello/world");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("hello/world") == "hello");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("/world/") == "/world");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("/world") == "");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("world/") == "world");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("./hello/my/../world/") == "./hello/my/../world");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("./hello/my/../world.xml") == "./hello/my/..");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("./hello/my/../world") == "./hello/my/..");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("./hello/my/../my.world/") == "./hello/my/../my.world");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("./hello/my/../my.world/file.xml") == "./hello/my/../my.world");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath("file.xml") == "");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath(NormalizePath("./hello/my/../world.xml")) == "hello");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath(NormalizePath("./hello/my/../world")) == "hello");
+            GUGU_UTEST_CHECK(DirectoryPartFromPath(NormalizePath("./hello/my/../my.world/file.xml")) == "hello/my.world");
         }
 
-        GUGU_UTEST_SUBSECTION("FileFromPathFile");
+        GUGU_UTEST_SUBSECTION("NamePartFromPath");
         {
-            GUGU_UTEST_CHECK(FileFromPathFile("") == "");
-            GUGU_UTEST_CHECK(FileFromPathFile("hello/world/") == "");
-            GUGU_UTEST_CHECK(FileFromPathFile("hello/world") == "world");
-            GUGU_UTEST_CHECK(FileFromPathFile("/world/") == "");
-            GUGU_UTEST_CHECK(FileFromPathFile("/world") == "world");
-            GUGU_UTEST_CHECK(FileFromPathFile("world/") == "");
-            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../world/") == "");
-            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../world.xml") == "world.xml");
-            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../world") == "world");
-            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../my.world/") == "");
-            GUGU_UTEST_CHECK(FileFromPathFile("./hello/my/../my.world/file.xml") == "file.xml");
-            GUGU_UTEST_CHECK(FileFromPathFile("file.xml") == "file.xml");
-            GUGU_UTEST_CHECK(FileFromPathFile(NormalizePath("./hello/my/../world.xml")) == "world.xml");
-            GUGU_UTEST_CHECK(FileFromPathFile(NormalizePath("./hello/my/../world")) == "world");
-            GUGU_UTEST_CHECK(FileFromPathFile(NormalizePath("./hello/my/../my.world/file.xml")) == "file.xml");
+            GUGU_UTEST_CHECK(NamePartFromPath("") == "");
+            GUGU_UTEST_CHECK(NamePartFromPath("hello/world/") == "");
+            GUGU_UTEST_CHECK(NamePartFromPath("hello/world") == "world");
+            GUGU_UTEST_CHECK(NamePartFromPath("/world/") == "");
+            GUGU_UTEST_CHECK(NamePartFromPath("/world") == "world");
+            GUGU_UTEST_CHECK(NamePartFromPath("world/") == "");
+            GUGU_UTEST_CHECK(NamePartFromPath("./hello/my/../world/") == "");
+            GUGU_UTEST_CHECK(NamePartFromPath("./hello/my/../world.xml") == "world.xml");
+            GUGU_UTEST_CHECK(NamePartFromPath("./hello/my/../world") == "world");
+            GUGU_UTEST_CHECK(NamePartFromPath("./hello/my/../my.world/") == "");
+            GUGU_UTEST_CHECK(NamePartFromPath("./hello/my/../my.world/file.xml") == "file.xml");
+            GUGU_UTEST_CHECK(NamePartFromPath("file.xml") == "file.xml");
+            GUGU_UTEST_CHECK(NamePartFromPath(NormalizePath("./hello/my/../world.xml")) == "world.xml");
+            GUGU_UTEST_CHECK(NamePartFromPath(NormalizePath("./hello/my/../world")) == "world");
+            GUGU_UTEST_CHECK(NamePartFromPath(NormalizePath("./hello/my/../my.world/file.xml")) == "file.xml");
         }
 
         GUGU_UTEST_SUBSECTION("CombinePaths");

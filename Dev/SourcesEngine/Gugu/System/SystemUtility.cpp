@@ -421,20 +421,20 @@ void EnsureTrailingPathSeparatorSelf(std::string& path)
     }
 }
 
-std::string PathFromPathFile(const std::string& pathFile)
+std::string DirectoryPartFromPath(const std::string& pathFile)
 {
     std::string resultPath = pathFile;
-    PathFromPathFileSelf(resultPath);
+    DirectoryPartFromPathSelf(resultPath);
     return resultPath;
 }
 
-void PathFromPathFile(const std::string& pathFile, std::string& path)
+void DirectoryPartFromPath(const std::string& pathFile, std::string& path)
 {
     path = pathFile;
-    PathFromPathFileSelf(path);
+    DirectoryPartFromPathSelf(path);
 }
 
-void PathFromPathFileSelf(std::string& pathFile)
+void DirectoryPartFromPathSelf(std::string& pathFile)
 {
     size_t indexSlash = pathFile.rfind(System::PathSeparator);
 
@@ -448,20 +448,20 @@ void PathFromPathFileSelf(std::string& pathFile)
     }
 }
 
-std::string FileFromPathFile(const std::string& pathFile)
+std::string NamePartFromPath(const std::string& pathFile)
 {
     std::string resultFile = pathFile;
-    FileFromPathFileSelf(resultFile);
+    NamePartFromPathSelf(resultFile);
     return resultFile;
 }
 
-void FileFromPathFile(const std::string& pathFile, std::string& file)
+void NamePartFromPath(const std::string& pathFile, std::string& file)
 {
     file = pathFile;
-    FileFromPathFileSelf(file);
+    NamePartFromPathSelf(file);
 }
 
-void FileFromPathFileSelf(std::string& pathFile)
+void NamePartFromPathSelf(std::string& pathFile)
 {
     size_t indexSlash = pathFile.rfind(System::PathSeparator);
 

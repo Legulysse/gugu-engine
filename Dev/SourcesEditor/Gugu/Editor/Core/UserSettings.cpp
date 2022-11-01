@@ -27,7 +27,7 @@ bool UserSettings::LoadFromFile(const std::string& pathFile)
     if (!rootNode)
         return false;
 
-    lastProjectPathFile = rootNode.child("LastProjectPathFile").attribute("value").value();
+    lastProjectFilePath = rootNode.child("LastProjectFilePath").attribute("value").value();
 
     return true;
 }

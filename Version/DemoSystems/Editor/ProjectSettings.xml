@@ -2,5 +2,5 @@
 <ProjectSettings>
     <Name value="Demo Systems" />
     <AssetsPath value="../Assets" />
-    <BindingPathFile value="DatasheetBinding.xml" />
+    <BindingFilePath value="DatasheetBinding.xml" />
 </ProjectSettings>

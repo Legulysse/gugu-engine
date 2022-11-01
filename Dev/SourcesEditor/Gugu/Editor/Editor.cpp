@@ -64,7 +64,7 @@ void Editor::Init(const EditorConfig& editorConfig)
 {
     m_editorConfig = editorConfig;
 
-    NormalizePathSelf(m_editorConfig.defaultProjectPathFile);
+    NormalizePathSelf(m_editorConfig.defaultProjectFilePath);
 
     // Additional ImGui Setup.
     ImGuiIO& io = ImGui::GetIO();
@@ -97,13 +97,13 @@ void Editor::Init(const EditorConfig& editorConfig)
     UserSettings m_userSettings;
     bool hasUserSettings = m_userSettings.LoadFromFile("User/UserSettings.xml");
 
-    if (hasUserSettings && !m_userSettings.lastProjectPathFile.empty())
+    if (hasUserSettings && !m_userSettings.lastProjectFilePath.empty())
     {
-        OpenProject(m_userSettings.lastProjectPathFile);
+        OpenProject(m_userSettings.lastProjectFilePath);
     }
-    else if (m_editorConfig.defaultProjectPathFile != "")
+    else if (m_editorConfig.defaultProjectFilePath != "")
     {
-        OpenProject(m_editorConfig.defaultProjectPathFile);
+        OpenProject(m_editorConfig.defaultProjectFilePath);
     }
 }
 
@@ -143,7 +143,7 @@ void Editor::OpenProjectImpl(const std::string& projectPathFile)
 
             // Create the DatasheetParser.
             m_datasheetParser = new DatasheetParser;
-            m_datasheetParser->ParseBinding(m_project->projectBindingPathFile);
+            m_datasheetParser->ParseBinding(m_project->projectBindingFilePath);
 
             m_assetsExplorerPanel->RaiseDirtyContent();
         }
@@ -250,7 +250,7 @@ void Editor::Update(const DeltaTime& dt)
         {
             if (ImGui::MenuItem("Open Project..."))
             {
-                GetEditor()->OpenModalDialog(new OpenProjectDialog(m_editorConfig.defaultProjectPathFile));
+                GetEditor()->OpenModalDialog(new OpenProjectDialog(m_editorConfig.defaultProjectFilePath));
             }
 
             if (ImGui::MenuItem("Close Project"))

@@ -12,7 +12,7 @@ namespace gugu {
 
 struct UserSettings
 {
-    std::string lastProjectPathFile;
+    std::string lastProjectFilePath;
 
 public:
 

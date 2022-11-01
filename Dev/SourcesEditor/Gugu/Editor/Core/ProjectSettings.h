@@ -12,10 +12,8 @@ namespace gugu {
 
 struct ProjectSettings
 {
-    std::string projectPathFile;
-    std::string projectPath;
     std::string projectAssetsPath;
-    std::string projectBindingPathFile;
+    std::string projectBindingFilePath;
 
 public:
 

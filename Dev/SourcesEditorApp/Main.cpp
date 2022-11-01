@@ -51,9 +51,9 @@ int main(int argc, char* argv[])
 
 #if 0
 #if 0
-    editorConfig.defaultProjectPathFile = "../../Version/DemoSystems/Editor/ProjectSettings.xml";
+    editorConfig.defaultProjectFilePath = "../../Version/DemoSystems/Editor/ProjectSettings.xml";
 #else
-    editorConfig.defaultProjectPathFile = "../../Version/DemoGame/Editor/ProjectSettings.xml";
+    editorConfig.defaultProjectFilePath = "../../Version/DemoGame/Editor/ProjectSettings.xml";
 #endif
 #endif
 

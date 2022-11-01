@@ -28,7 +28,7 @@ bool EditorConfig::LoadFromFile(const std::string& pathFile)
     if (!rootNode)
         return false;
 
-    defaultProjectPathFile = rootNode.child("DefaultProjectPathFile").attribute("value").as_string(defaultProjectPathFile.c_str());
+    defaultProjectFilePath = rootNode.child("DefaultProjectFilePath").attribute("value").as_string(defaultProjectFilePath.c_str());
     maxUndoStateCount = Max<size_t>(1, rootNode.child("MaxUndoStateCount").attribute("value").as_uint(maxUndoStateCount));
 
     return true;

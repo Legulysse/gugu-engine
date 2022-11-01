@@ -27,13 +27,11 @@ bool ProjectSettings::LoadFromFile(const std::string& pathFile)
     if (!rootNode)
         return false;
 
-    projectPathFile = pathFile;
+    std::string projectDirectoryPath = pathFile;
+    DirectoryPartFromPath(pathFile, projectDirectoryPath);
 
-    projectPath = pathFile;
-    DirectoryPartFromPath(pathFile, projectPath);
-
-    projectAssetsPath = CombinePaths(projectPath, rootNode.child("AssetsPath").attribute("value").value());
-    projectBindingPathFile = CombinePaths(projectPath, rootNode.child("BindingPathFile").attribute("value").value());
+    projectAssetsPath = CombinePaths(projectDirectoryPath, rootNode.child("AssetsPath").attribute("value").value());
+    projectBindingFilePath = CombinePaths(projectDirectoryPath, rootNode.child("BindingFilePath").attribute("value").value());
 
     return true;
 }

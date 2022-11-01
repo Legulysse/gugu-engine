@@ -82,7 +82,7 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
     for (size_t i = 0; i < vecFiles.size(); ++i)
     {
         const FileInfo& kFileInfos = vecFiles[i];
-        std::string strResourceID = (!m_useFullPath) ? kFileInfos.GetName() : kFileInfos.GetPathName().substr(_strPathRoot.length());
+        std::string strResourceID = (!m_useFullPath) ? kFileInfos.GetFileName() : kFileInfos.GetFilePath().substr(_strPathRoot.length());
 
         if (RegisterResourceInfo(strResourceID, kFileInfos))
         {
@@ -137,7 +137,7 @@ bool ManagerResources::GetResourcePathName(const std::string& _strName, std::str
     auto iteElement = m_resources.find(_strName);
     if (iteElement != m_resources.end())
     {
-        pathName = (*iteElement).second->fileInfo.GetPathName();
+        pathName = (*iteElement).second->fileInfo.GetFilePath();
         return true;
     }
 
@@ -310,7 +310,7 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
 
     if (_pResourceInfo->resource)
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource ignored, resource already loaded : {0}", _pResourceInfo->fileInfo.GetName()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource ignored, resource already loaded : {0}", _pResourceInfo->fileInfo.GetFileName()));
         return _pResourceInfo->resource;
     }
 
@@ -360,7 +360,7 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     }
     else
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource extension : {0}", oFileInfo.GetName()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource extension : {0}", oFileInfo.GetFileName()));
     }
 
     if (pResource)
@@ -373,7 +373,7 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
 
         UpdateResourceDependencies(pResource);
 
-        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", oFileInfo.GetName()));
+        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", oFileInfo.GetFileName()));
     }
 
     return pResource;
@@ -464,15 +464,15 @@ bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, c
         
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Registered Resource : ID = {0}, Path = {1}"
             , _strResourceID
-            , _kFileInfos.GetPathName()));
+            , _kFileInfos.GetFilePath()));
         
         return true;
     }
     
     GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("A Resource ID is already registered : ID = {0}, New Path = {1}, Registered Path = {2}"
         , _strResourceID
-        , _kFileInfos.GetPathName()
-        , iteAsset->second->fileInfo.GetPathName()));
+        , _kFileInfos.GetFilePath()
+        , iteAsset->second->fileInfo.GetFilePath()));
         
     return false;
 }
@@ -482,8 +482,8 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
     if (!_pNewResource)
         return false;
 
-    std::string strPathName = _oFileInfo.GetPathName();
-    std::string strName     = _oFileInfo.GetName();
+    std::string strPathName = _oFileInfo.GetFilePath();
+    std::string strName     = _oFileInfo.GetFileName();
 
     if (strName.empty())
     {
@@ -516,7 +516,7 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Added Resource : ID = {0}, Path = {1}"
         , strResourceID
-        , _oFileInfo.GetPathName()));
+        , _oFileInfo.GetFilePath()));
 
     return true;
 }
@@ -526,8 +526,8 @@ bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFile
     if (!_pResource)
         return false;
 
-    std::string strNewPathName = _oFileInfo.GetPathName();
-    std::string strNewName     = _oFileInfo.GetName();
+    std::string strNewPathName = _oFileInfo.GetFilePath();
+    std::string strNewName     = _oFileInfo.GetFileName();
 
     if (strNewName.empty())
     {
@@ -551,7 +551,7 @@ bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFile
     auto iteOldResource = m_resources.find(_pResource->GetID());
     if (iteOldResource == m_resources.end())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource not found : {0}", oFileInfoOld.GetName()));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource not found : {0}", oFileInfoOld.GetFileName()));
         return false;
     }
 
@@ -566,13 +566,13 @@ bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFile
     //Delete old file, save new file
     if (_pResource->SaveToFile())
     {
-        RemoveFile(oFileInfoOld.GetPathName());
+        RemoveFile(oFileInfoOld.GetFilePath());
         return true;
     }
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Moved Resource : ID = {0}, Path = {1}"
         , strResourceID
-        , _oFileInfo.GetPathName()));
+        , _oFileInfo.GetFilePath()));
 
     return false;
 }
@@ -622,7 +622,7 @@ bool ManagerResources::DeleteResource(const std::string& resourceID)
 
     if (RemoveResource(resourceID))
     {
-        return RemoveFile(fileInfo.GetPathName());
+        return RemoveFile(fileInfo.GetFilePath());
     }
 
     return false;
@@ -639,7 +639,7 @@ void ManagerResources::RemoveResourcesFromPath(const std::string& _strPath)
         auto iteResource = it;
         ++it;
 
-        if (PathStartsWith(iteResource->second->fileInfo.GetPath(), _strPath))
+        if (PathStartsWith(iteResource->second->fileInfo.GetDirectoryPath(), _strPath))
         {
             RemoveResource(iteResource->first);
         }

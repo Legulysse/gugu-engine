@@ -124,7 +124,7 @@ void AssetsExplorerPanel::RefreshContent()
     {
         TreeNode* currentDirectory = m_rootNode;
 
-        std::string resourcePath = resourceInfo->fileInfo.GetPath();
+        std::string resourcePath = resourceInfo->fileInfo.GetDirectoryPath();
 
         // Ignore Editor assets.
         if (PathStartsWith(resourcePath, editorAssetsPath))
@@ -167,8 +167,8 @@ void AssetsExplorerPanel::RefreshContent()
 
         TreeNode* newNode = new TreeNode;
         newNode->isFolder = false;
-        newNode->name = resourceInfo->fileInfo.GetName();
-        newNode->path = resourceInfo->fileInfo.GetPath();
+        newNode->name = resourceInfo->fileInfo.GetFileName();
+        newNode->path = resourceInfo->fileInfo.GetDirectoryPath();
         newNode->resourceID = resourceInfo->resourceID;
         currentDirectory->children.push_back(newNode);
     }

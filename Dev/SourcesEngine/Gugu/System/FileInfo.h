@@ -15,12 +15,12 @@ class FileInfo
 public:
 
     FileInfo();
-    FileInfo(const std::string& path, const std::string& name);
-    FileInfo(const std::string& pathName);
+    FileInfo(const std::string& directoryPath, const std::string& fileName);
+    FileInfo(const std::string& path);
 
-    std::string GetPath() const;
-    const std::string& GetName() const;
-    const std::string& GetPathName() const;
+    std::string GetDirectoryPath() const;
+    const std::string& GetFileName() const;
+    const std::string& GetFilePath() const;
 
     std::string GetPrettyName() const;
     std::string GetExtension() const;
@@ -33,12 +33,12 @@ public:
 
 private:
 
-    void UpdateFromPathName();
+    void UpdateFromPath();
 
 private:
 
-    std::string m_pathName;
-    std::string m_name;
+    std::string m_path;
+    std::string m_fileName;
     size_t m_indexSeparator;
 };
 

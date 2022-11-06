@@ -1,4 +1,4 @@
-# gugu::Engine 0.6
+# gugu::Engine 0.7
 [![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
 
 A minimalist 2D game engine, written in C++, mainly based on SFML, ImGui, and PugiXml.

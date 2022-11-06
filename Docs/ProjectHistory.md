@@ -1,6 +1,6 @@
 # Project History
 
-## ??/??/???? - Version 0.7 (WIP 06/11/2022)
+## 06/11/2022 - Version 0.7
 - Editor: ajout du undo/redo, d'un fichier ProjectSettings, d'un fichier EditorConfig, et d'une popup de sauvegarde à la fermeture.
 - Editor: Ajout du ParticleEffect editor, de l'AnimSet editor, d'un viewer pour les textures, et de l'OutputLog.
 - Editor: Ajout d'un gestionnaire de dépendances entre Resources.

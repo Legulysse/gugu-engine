@@ -11,18 +11,18 @@ Contributors : Diccy, Amitsouko
 SFML 2.5.1 : used by the Engine.  
 PugiXml 1.11.4 : used by the Engine.  
 
-Python 3.x : used for build and utility scripts.  
-Premake 5 alpha 16 : used by build scripts.  
-
 ImGui 1.84.1 (docking) : used by the Editor.  
 ImGui-SFML 2.3 : used for the ImGui integration.  
+
+Python 3.x : used for build and utility scripts.  
+Premake 5 alpha 16 : used by build scripts.  
 
 ## Setup
 
 The project makefiles are generated through Premake.  
 
 You can use /Tools/Build.py to spawn a little prompt with a menu to select your target (visual studio, gnu makefile, etc).  
-Alternatively, you can use /Tools/Build_vs.bat to generate the visual2019 build files directly, without using python.  
+Alternatively, you can use /Tools/Build_vs2019.bat to generate the visual2019 build files directly, without using python.  
 The generated project files will be available in /Dev/Build.  
 
 ## Quick Overview
@@ -41,13 +41,12 @@ Once compiled, most of them will run in /Version/DemoTests.
 The demo Game is a bit bigger, and is aimed to become a sample of a fully functional mini roguelike, to show all of the engine systems working together.  
 This demo will run in /Version/DemoGame.  
 
-![Demo Game](/Docs/Pictures/DemoGame_02.png)
+![Demo Game](/Docs/Pictures/DemoGame_03.png)
 
 ### Editor
 
 You can find the editor in /Tools/GuguEditor.  
 Its sources can be found in /Dev/SourcesEditor and /Dev/SourcesEditorApp.  
-The old version can help create imagesets and animsets from existing textures.  
 The editor allows the edition of gameplay datasheets, imagesets, animsets, and particle effects.  
 
-![Demo Game](/Docs/Pictures/Editor_01.png)
+![Demo Game](/Docs/Pictures/Editor_02.png)

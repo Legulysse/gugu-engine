@@ -1,6 +1,6 @@
 # Project History
 
-## ??/??/???? - Version 0.7 (WIP 28/10/2022)
+## ??/??/???? - Version 0.7 (WIP 06/11/2022)
 - Editor: ajout du undo/redo, d'un fichier ProjectSettings, d'un fichier EditorConfig, et d'une popup de sauvegarde à la fermeture.
 - Editor: Ajout du ParticleEffect editor, de l'AnimSet editor, d'un viewer pour les textures, et de l'OutputLog.
 - Editor: Ajout d'un gestionnaire de dépendances entre Resources.
@@ -23,8 +23,8 @@
 - Refacto de la commande speed (multiplicateur).
 - Ajout des fonctions de rounding, de random dans un cercle/anneau, et de random pondéré.
 - Itération SystemUtility (manipulation de paths).
+- Update FileInfo (renommage des getters sous la forme GetFilePath, GetFileName, GetDirectoryPath).
 - Ajout de ImGuiUtility, renommage de PugiXmlWrap en PugiXmlUtility.
-- Update FileInfo.
 - Clean Logger (meilleure separation entre Logger et EngineLogger, frame count, output dans visual studio).
 - Update des scripts de build (wrapper pour un menu par defaut, option pour les subrepos).
 - Mise à jour premake 5.0.0-beta1 (visual 2022).

@@ -59,7 +59,7 @@ bool ManagerInputs::ModifyInput(const std::string& _strInputName, const sf::Even
 void ManagerInputs::LoadInputFile(const std::string& _strPath)
 {
     pugi::xml_document oDoc;
-    pugi::xml_parse_result result = oDoc.load_file(GetResources()->GetResourcePathName(_strPath).c_str());
+    pugi::xml_parse_result result = oDoc.load_file(GetResources()->GetResourceFilePath(_strPath).c_str());
     if (!result)
         return;
 

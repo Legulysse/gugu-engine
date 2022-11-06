@@ -132,7 +132,7 @@ bool ManagerResources::GetResourceFileInfo(const std::string& _strName, FileInfo
     return false;
 }
 
-bool ManagerResources::GetResourcePathName(const std::string& _strName, std::string& pathName) const
+bool ManagerResources::GetResourceFilePath(const std::string& _strName, std::string& pathName) const
 {
     auto iteElement = m_resources.find(_strName);
     if (iteElement != m_resources.end())
@@ -151,10 +151,10 @@ FileInfo ManagerResources::GetResourceFileInfo(const std::string& _strName) cons
     return fileInfo;
 }
 
-std::string ManagerResources::GetResourcePathName(const std::string& _strName) const
+std::string ManagerResources::GetResourceFilePath(const std::string& _strName) const
 {
     std::string pathName;
-    GetResourcePathName(_strName, pathName);
+    GetResourceFilePath(_strName, pathName);
     return pathName;
 }
 

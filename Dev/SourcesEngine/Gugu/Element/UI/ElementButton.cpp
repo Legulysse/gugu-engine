@@ -219,7 +219,7 @@ ElementText* ElementButton::GetElementText() const
 bool ElementButton::LoadFromFile(const std::string& path)
 {
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(GetResources()->GetResourcePathName(path).c_str());
+    pugi::xml_parse_result result = document.load_file(GetResources()->GetResourceFilePath(path).c_str());
     if (!result)
         return false;
 

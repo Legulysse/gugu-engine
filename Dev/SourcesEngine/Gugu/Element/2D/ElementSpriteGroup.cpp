@@ -248,7 +248,7 @@ ElementSpriteGroupItem* ElementSpriteGroup::GetItem(int _iIndex) const
 bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
 {
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(GetResources()->GetResourcePathName(_strPath).c_str());
+    pugi::xml_parse_result result = document.load_file(GetResources()->GetResourceFilePath(_strPath).c_str());
     if (!result)
         return false;
 
@@ -358,7 +358,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
             }
 
             pugi::xml_document document;
-            pugi::xml_parse_result result = document.load_file(GetResources()->GetResourcePathName(nodeTemplateSource.as_string()).c_str());
+            pugi::xml_parse_result result = document.load_file(GetResources()->GetResourceFilePath(nodeTemplateSource.as_string()).c_str());
             if (result)
             {
                 pugi::xml_node nodeTemplateRoot = document.child("Template");

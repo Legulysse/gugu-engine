@@ -59,7 +59,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(EnsureTrailingPathSeparator("world/") == "world/");
         }
 
-        GUGU_UTEST_SUBSECTION("PathFromPathFile");
+        GUGU_UTEST_SUBSECTION("DirectoryPartFromPath");
         {
             GUGU_UTEST_CHECK(DirectoryPartFromPath("") == "");
             GUGU_UTEST_CHECK(DirectoryPartFromPath("hello/world/") == "hello/world");

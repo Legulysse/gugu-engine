@@ -91,7 +91,7 @@ private:
     EditorConfig m_editorConfig;
 
     ProjectSettings* m_project;
-    std::string m_pendingOpenProjectPathFile;
+    std::string m_pendingOpenProjectFilePath;
 
     bool m_checkDirtyDocuments;
     bool m_pendingCloseEditor;

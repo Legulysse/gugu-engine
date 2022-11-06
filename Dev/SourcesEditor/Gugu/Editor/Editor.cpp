@@ -127,7 +127,7 @@ const EditorConfig& Editor::GetEditorConfig() const
 
 void Editor::OpenProject(const std::string& projectPathFile)
 {
-    m_pendingOpenProjectPathFile = projectPathFile;
+    m_pendingOpenProjectFilePath = projectPathFile;
 }
 
 void Editor::OpenProjectImpl(const std::string& projectPathFile)
@@ -237,10 +237,10 @@ bool Editor::OnSFEvent(const sf::Event& event)
 void Editor::Update(const DeltaTime& dt)
 {
     // Handle pending open project.
-    if (!m_pendingOpenProjectPathFile.empty())
+    if (!m_pendingOpenProjectFilePath.empty())
     {
-        OpenProjectImpl(m_pendingOpenProjectPathFile);
-        m_pendingOpenProjectPathFile = "";
+        OpenProjectImpl(m_pendingOpenProjectFilePath);
+        m_pendingOpenProjectFilePath = "";
     }
 
     // Main menu bar.

@@ -14,15 +14,13 @@ local pathEditorVersion = EnsureSlash("../Tools/GuguEditor")
 
 BuildCfg = {
     -- Solution
-    DirSolution     = EnsureSlash(pathSolution),
-    SubDirBinaries  = EnsureSlash("Build_".._ACTION),
+    DirSolution         = EnsureSlash(pathSolution),
     
     -- Engine
     DirSourcesEngine    = EnsureSlash(pathDev.."SourcesEngine"),
     DirSourcesSfml      = EnsureSlash(pathDev.."SourcesSFML"),
     DirSourcesPugiXml   = EnsureSlash(pathDev.."SourcesPugiXml"),
     DirSourcesImGui     = EnsureSlash(pathDev.."SourcesImGui"),
-    DirLibEngine        = EnsureSlash(pathSolution.."Build"),
     
     -- Editor
     DirEditorVersion    = EnsureSlash(pathEditorVersion),
@@ -33,16 +31,11 @@ BuildCfg = {
 
 -- Build Solution
 solution "GuguEngine"
-
-    location (BuildCfg.DirSolution)
-    package.guid = "8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942"
-    
-    configurations { "Debug", "Release" }
-    platforms { "x86", "x64" }
-    cppdialect "c++14"
+    IncludeDefaultSolutionDefinition(BuildCfg)
     
     -- GUIDs can be generated from here : https://www.guidgenerator.com/online-guid-generator.aspx
-
+    package.guid = "8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942"
+    
     group "Demos/Game"
     ProjectDefault(BuildCfg, "DemoGame"         , pathDev.."SourcesDemos/Game/DemoGame"         	, pathVersion.."DemoGame", "9F765D56-4450-4839-9060-DF16801FA23C")
     

@@ -1,24 +1,11 @@
--- Utility
-function EnsureSlash(path)
-	if string.len(path) > 0 and string.sub(path, -1) ~= "/" then
-		return path.."/"
-	end
-	return path
-end
 
 -- Project GuguEditor App
 function ProjectAppGuguEditor(BuildCfg)
     
-	SubDirBinaries = EnsureSlash(BuildCfg.SubDirBinaries)
-	
     project ("GuguEditorApp")
-        language "C++"
-        defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
-        systemversion "latest"
-        characterset "Unicode"
-        targetdir   (BuildCfg.DirEditorVersion..SubDirBinaries)
-        debugdir    (BuildCfg.DirEditorVersion)
-        uuid        ("E4D3697E-E0B5-4343-B000-E895BACF446A")
+        IncludeDefaultAppDefinition(BuildCfg, "GuguEditor", BuildCfg.DirEditorVersion)
+    
+        uuid "E4D3697E-E0B5-4343-B000-E895BACF446A"
         
         -- Projects dependencies
         dependson { "GuguEditor" }
@@ -41,11 +28,6 @@ function ProjectAppGuguEditor(BuildCfg)
             BuildCfg.DirSourcesImGui,
         }
         
-        -- Libs directories
-        libdirs {
-            BuildCfg.DirLibEngine,
-        }
-		
         filter { "system:windows", "action:codelite", "platforms:x86" }
 			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x86", }
         filter { "system:windows", "action:codelite", "platforms:x64" }
@@ -74,46 +56,24 @@ function ProjectAppGuguEditor(BuildCfg)
         filter { "system:linux" }
             links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
 		
-        -- Target
-        filter { "configurations:Debug" }
-            kind "ConsoleApp"
-            defines { "DEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            symbols "On"
-            targetname ("GuguEditor-d")
+        IncludeExtraWarnings()
             
-        filter { "configurations:Release" }
-            kind "WindowedApp"
-            defines { "NDEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            optimize "On"
-            targetname ("GuguEditor")
-            
-        filter { "platforms:x86" }
-            architecture "x32"
-            
-        filter { "platforms:x64" }
-            architecture "x64"
-            
-        -- Options
-        filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019" }
-            warnings "Extra"
-            disablewarnings { "4100", "4189" } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
-            
+        -- Finalize
+        filter {}
+        
 end
 
 -- Project GuguEditor
 function ProjectLibGuguEditor(BuildCfg)
 
     project "GuguEditor"
-        kind "StaticLib"
-        language "C++"
-        defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
-        systemversion "latest"
-        characterset "Unicode"
-        targetdir (BuildCfg.DirLibEngine)
+        IncludeDefaultLibDefinition(BuildCfg, "GuguEditorLib")
+        
         uuid "D56FC1A7-034F-4E7F-9DBB-B615C3C5C070"
         
+        -- Projects dependencies
+        dependson { "GuguEngine", "ImGui", "SFML", "PugiXml" }
+
         files {
             BuildCfg.DirSourcesEditor.."**.h",
             BuildCfg.DirSourcesEditor.."**.hpp",
@@ -128,43 +88,21 @@ function ProjectLibGuguEditor(BuildCfg)
             BuildCfg.DirSourcesImGui,
         })
 		
-        dependson { "GuguEngine", "ImGui", "SFML", "PugiXml" } -- project dependency
-
-        filter { "configurations:Debug" }
-            defines { "DEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            symbols "On"
-            targetname "GuguEditorLib-s-d"
-
-        filter { "configurations:Release" }
-            defines { "NDEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            optimize "On" -- Off, On, Debug, Size, Speed, Full
-            targetname "GuguEditorLib-s"
-            
-        filter { "platforms:x86" }
-            architecture "x32"
-            
-        filter { "platforms:x64" }
-            architecture "x64"
-            
-        filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019" }
-            warnings "Extra"
-            disablewarnings { "4100", } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
+        IncludeExtraWarnings()
+        
 end
 
 -- Project GuguEngine
 function ProjectLibGuguEngine(BuildCfg)
 
     project "GuguEngine"
-        kind "StaticLib"
-        language "C++"
-        defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS" }
-        systemversion "latest"
-        characterset "Unicode"
-        targetdir (BuildCfg.DirLibEngine)
+        IncludeDefaultLibDefinition(BuildCfg, "GuguEngine")
+        
         uuid "59E650EC-0FD8-4D3C-A9E3-29DFF2AA5096"
         
+        -- Projects dependencies
+        dependson { "ImGui", "SFML", "PugiXml" }
+
         files {
             BuildCfg.DirSourcesEngine.."**.h",
             BuildCfg.DirSourcesEngine.."**.hpp",
@@ -178,29 +116,8 @@ function ProjectLibGuguEngine(BuildCfg)
             BuildCfg.DirSourcesImGui,
         })
 		
-        dependson { "ImGui", "SFML", "PugiXml" } -- project dependency
-
-        filter { "configurations:Debug" }
-            defines { "DEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            symbols "On"
-            targetname "GuguEngine-s-d"
-
-        filter { "configurations:Release" }
-            defines { "NDEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            optimize "On" -- Off, On, Debug, Size, Speed, Full
-            targetname "GuguEngine-s"
-            
-        filter { "platforms:x86" }
-            architecture "x32"
-            
-        filter { "platforms:x64" }
-            architecture "x64"
-            
-        filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019" }
-            warnings "Extra"
-            disablewarnings { "4100", } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
+        IncludeExtraWarnings()
+        
 end
 
 -- Project ImGui
@@ -209,14 +126,13 @@ function ProjectLibImGui(BuildCfg)
     DirImGuiSources = BuildCfg.DirSourcesImGui
 
     project "ImGui"
-        kind "StaticLib"
-        language "C++"
-        defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
-        systemversion "latest"
-        characterset "Unicode"
-        targetdir (BuildCfg.DirLibEngine)
+        IncludeDefaultLibDefinition(BuildCfg, "ImGui")
+      
         uuid "11A07067-A137-4C3C-B6ED-F2DC8BE3639D"
         
+        -- Projects dependencies
+        dependson { "SFML" }
+
         files {
             DirImGuiSources.."**.h",
             DirImGuiSources.."**.cpp",
@@ -226,25 +142,6 @@ function ProjectLibImGui(BuildCfg)
             BuildCfg.DirSourcesSfml.."include/",
         }
 
-        dependson { "SFML" } -- project dependency
-
-        filter { "configurations:Debug" }
-            defines { "DEBUG", "_DEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            symbols "On"
-            targetname "ImGui-s-d"
-
-        filter { "configurations:Release" }
-            defines { "NDEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            optimize "On"
-            targetname "ImGui-s"
-            
-        filter { "platforms:x86" }
-            architecture "x32"
-            
-        filter { "platforms:x64" }
-            architecture "x64"
 end
 
 -- Project SFML
@@ -255,12 +152,9 @@ function ProjectLibSFML(BuildCfg)
     DirSfmlExternals = BuildCfg.DirSourcesSfml.."extlibs/"
 
     project "SFML"
-        kind "StaticLib"
-        language "C++"
-        defines { "SFML_STATIC", "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" } -- OV_EXCLUDE_STATIC_CALLBACKS and FLAC__NO_DLL are parts of modifications made in the SFML repo, see the Notes.txt there
-        systemversion "latest"
-        characterset "Unicode"
-        targetdir (BuildCfg.DirLibEngine)
+        IncludeDefaultLibDefinition(BuildCfg, "SFML")
+        
+        defines { "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL" } -- OV_EXCLUDE_STATIC_CALLBACKS and FLAC__NO_DLL are parts of modifications made in the SFML repo, see the Notes.txt there
         uuid "936D68B9-FF55-CA40-9A14-7C2D95524D8B"
         
         files {
@@ -282,24 +176,6 @@ function ProjectLibSFML(BuildCfg)
             DirSfmlExternals.."headers/vorbis",
         }
 
-        filter { "configurations:Debug" }
-            defines { "DEBUG", "_DEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            symbols "On"
-            targetname "SFML-s-d"
-
-        filter { "configurations:Release" }
-            defines { "NDEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            optimize "On"
-            targetname "SFML-s"
-            
-        filter { "platforms:x86" }
-            architecture "x32"
-            
-        filter { "platforms:x64" }
-            architecture "x64"
-            
         filter { "system:windows" }
 			includedirs {
                 --DirSfmlExternals.."headers/libfreetype/windows",
@@ -335,6 +211,10 @@ function ProjectLibSFML(BuildCfg)
 				DirSfmlSources.."SFML/System/Win32/**",
 				DirSfmlSources.."SFML/Network/Win32/**",
             }
+            
+        -- Finalize
+        filter {}
+        
 end
 
 -- Project PugiXml
@@ -343,12 +223,8 @@ function ProjectLibPugiXml(BuildCfg)
     DirPugiXmlSources = BuildCfg.DirSourcesPugiXml
 
     project "PugiXml"
-        kind "StaticLib"
-        language "C++"
-        defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
-        systemversion "latest"
-        characterset "Unicode"
-        targetdir (BuildCfg.DirLibEngine)
+        IncludeDefaultLibDefinition(BuildCfg, "PugiXml")
+    
         uuid "2961203D-3842-4A18-9129-7295D98964CF"
         
         files {
@@ -358,22 +234,115 @@ function ProjectLibPugiXml(BuildCfg)
         includedirs {
             DirPugiXmlSources,
         }
+end
 
-        filter { "configurations:Debug" }
-            defines { "DEBUG", "_DEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            symbols "On"
-            targetname "PugiXml-s-d"
+-- Default Solution
+function IncludeDefaultSolutionDefinition(BuildCfg)
 
-        filter { "configurations:Release" }
-            defines { "NDEBUG" }
-            flags { "NoMinimalRebuild", "MultiProcessorCompile" }
-            optimize "On"
-            targetname "PugiXml-s"
-            
-        filter { "platforms:x86" }
-            architecture "x32"
-            
-        filter { "platforms:x64" }
-            architecture "x64"
+    location (BuildCfg.DirSolution)
+    configurations { "Debug", "Release" }
+    platforms { "x64", "x86" }
+    cppdialect "c++14"
+    
+end
+
+-- Default App Project
+function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirVersion)
+
+	DirVersion = EnsureSlash(DirVersion)
+    SubDirBinaries  = EnsureSlash("Build_%{cfg.platform}_".._ACTION)
+    
+    language "C++"
+    defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    systemversion "latest"
+    characterset "Unicode"
+    
+    objdir("%{wks.location}/obj")
+    targetdir(DirVersion..SubDirBinaries)
+    debugdir(DirVersion)
+    
+    libdirs { "%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}" }
+    
+    filter { "configurations:Debug" }
+        kind "ConsoleApp"
+        defines { "DEBUG" }
+        flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+        symbols "On"
+        targetname (TargetName.."-d")
+        
+    filter { "configurations:Release" }
+        kind "WindowedApp"
+        defines { "NDEBUG" }
+        flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+        optimize "On"
+        targetname (TargetName)
+        
+    filter { "platforms:x86" }
+        architecture "x86"
+    filter { "platforms:x64" }
+        architecture "x86_64"
+        
+    -- Options
+    IncludeExtraWarnings()
+        
+    -- Finalize
+    filter {}
+    
+end
+
+-- Default Lib Project
+function IncludeDefaultLibDefinition(BuildCfg, TargetName)
+
+    kind "StaticLib"
+    language "C++"
+    defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    systemversion "latest"
+    characterset "Unicode"
+    
+    objdir("%{wks.location}/obj")
+    targetdir("%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}")
+
+    libdirs { "%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}" }
+
+    filter { "configurations:Debug" }
+        defines { "DEBUG", "_DEBUG" }
+        flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+        symbols "On"
+        targetname (TargetName.."-s-d")
+
+    filter { "configurations:Release" }
+        defines { "NDEBUG" }
+        flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+        optimize "On"
+        targetname (TargetName.."-s")
+        
+    filter { "platforms:x86" }
+        architecture "x86"
+    filter { "platforms:x64" }
+        architecture "x86_64"
+        
+    -- Finalize
+    filter {}
+    
+end
+
+-- Extra warnings (only for visual studio)
+function IncludeExtraWarnings()
+
+    -- Options
+    filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019" }
+        warnings "Extra"
+        disablewarnings { "4100", "4189" } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
+
+    -- Finalize
+    filter {}
+    
+end
+
+-- Path Utility
+function EnsureSlash(path)
+	if string.len(path) > 0 and string.sub(path, -1) ~= "/" then
+		return path.."/"
+	end
+	return path
 end

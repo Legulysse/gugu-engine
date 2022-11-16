@@ -28,36 +28,12 @@ function ProjectAppGuguEditor(BuildCfg)
             BuildCfg.DirSourcesImGui,
         }
         
-        filter { "system:windows", "action:codelite", "platforms:x86" }
-			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x86", }
-        filter { "system:windows", "action:codelite", "platforms:x64" }
-			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x64", }
-
-        filter { "system:windows", "action:vs2013", "platforms:x86" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x86", }
-        filter { "system:windows", "action:vs2013", "platforms:x64" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x64", }
-            
-        filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x86" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
-        filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x64" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x64", }
-            
-        -- Links
-        filter { "configurations:Debug" }
-            links { "GuguEditorLib-s-d", "GuguEngine-s-d", "ImGui-s-d", "SFML-s-d", "PugiXml-s-d" }
-            
-        filter { "configurations:Release" }
-            links { "GuguEditorLib-s", "GuguEngine-s", "ImGui-s", "SFML-s", "PugiXml-s" }
-            
-        filter { "system:windows" }
-			links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
-            
-        filter { "system:linux" }
-            links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
-		
+        -- Linker
+        IncludeEngineWithEditorLinkerDefinition()
+        
+        -- Options
         IncludeExtraWarnings()
-            
+        
         -- Finalize
         filter {}
         
@@ -88,6 +64,7 @@ function ProjectLibGuguEditor(BuildCfg)
             BuildCfg.DirSourcesImGui,
         })
 		
+        -- Options
         IncludeExtraWarnings()
         
 end
@@ -116,6 +93,7 @@ function ProjectLibGuguEngine(BuildCfg)
             BuildCfg.DirSourcesImGui,
         })
 		
+        -- Options
         IncludeExtraWarnings()
         
 end
@@ -282,9 +260,6 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirVersion)
     filter { "platforms:x64" }
         architecture "x86_64"
         
-    -- Options
-    IncludeExtraWarnings()
-        
     -- Finalize
     filter {}
     
@@ -321,6 +296,67 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     filter { "platforms:x64" }
         architecture "x86_64"
         
+    -- Finalize
+    filter {}
+    
+end
+
+function IncludeEngineWithEditorLinkerDefinition()
+    IncludeLinkerDefinitions(true, true)
+end
+
+function IncludeEngineLinkerDefinition()
+    IncludeLinkerDefinitions(true, false)
+end
+
+function IncludeSFMLOnlyLinkerDefinition()
+    IncludeLinkerDefinitions(false, false)
+end
+
+function IncludeLinkerDefinitions(IncludeEngine, IncludeEditor)
+
+    -- Link directories
+    filter { "system:windows", "action:codelite", "platforms:x86" }
+        libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x86", }
+    filter { "system:windows", "action:codelite", "platforms:x64" }
+        libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x64", }
+
+    filter { "system:windows", "action:vs2013", "platforms:x86" }
+        libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x86", }
+    filter { "system:windows", "action:vs2013", "platforms:x64" }
+        libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x64", }
+        
+    filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x86" }
+        libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
+    filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x64" }
+        libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x64", }
+        
+    -- Link libraries
+    if IncludeEditor then
+        filter { "configurations:Debug" }
+            links { "GuguEditorLib-s-d" }
+        filter { "configurations:Release" }
+            links { "GuguEditorLib-s" }
+    end
+    
+    if IncludeEngine then
+        filter { "configurations:Debug" }
+            links { "GuguEngine-s-d", "ImGui-s-d","PugiXml-s-d" }
+        filter { "configurations:Release" }
+            links { "GuguEngine-s", "ImGui-s", "PugiXml-s" }
+    end
+    
+    filter { "configurations:Debug" }
+        links { "SFML-s-d" }
+    filter { "configurations:Release" }
+        links { "SFML-s" }
+
+    filter { "system:windows" }
+        links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
+        
+    filter { "system:linux" }
+        links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
+    
     -- Finalize
     filter {}
     

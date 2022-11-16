@@ -28,30 +28,12 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
             BuildCfg.DirSourcesImGui,
         }
         
-        -- Libs directories
-        filter { "system:windows", "action:codelite", "platforms:x86" }
-			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x86", }
-        filter { "system:windows", "action:codelite", "platforms:x64" }
-			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x64", }
-
-        filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x86" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
-        filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x64" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x64", }
-            
-        -- Links
-        filter { "configurations:Debug" }
-            links { "GuguEngine-s-d", "ImGui-s-d", "SFML-s-d", "PugiXml-s-d" }
-            
-        filter { "configurations:Release" }
-            links { "GuguEngine-s", "ImGui-s", "SFML-s", "PugiXml-s" }
-            
-        filter { "system:windows" }
-			links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
-            
-        filter { "system:linux" }
-            links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
-		
+        -- Linker
+        IncludeEngineLinkerDefinition()
+        
+        -- Options
+        IncludeExtraWarnings()
+        
         -- Finalize
         filter {}
         
@@ -84,30 +66,12 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
             BuildCfg.DirSourcesSfml.."include/",
         }
         
-        -- Libs directories
-        filter { "system:windows", "action:codelite", "platforms:x86" }
-			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x86", }
-        filter { "system:windows", "action:codelite", "platforms:x64" }
-			libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-mingw/x64", }
-
-        filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x86" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
-        filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x64" }
-            libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x64", }
-            
-        -- Links
-        filter { "configurations:Debug" }
-            links { "SFML-s-d" }
-            
-        filter { "configurations:Release" }
-            links { "SFML-s" }
-            
-        filter { "system:windows" }
-			links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
-            
-        filter { "system:linux" }
-            links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }
-
+        -- Linker
+        IncludeSFMLOnlyLinkerDefinition()
+        
+        -- Options
+        IncludeExtraWarnings()
+        
         -- Finalize
         filter {}
     

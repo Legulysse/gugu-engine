@@ -317,10 +317,12 @@ function ProjectLibPugiXml(BuildCfg)
 end
 
 -- Default Solution
-function IncludeDefaultSolutionDefinition(BuildCfg)
+function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
 
+	DirSolution = EnsureSlash(DirSolution)
+    
     -- Base Definition
-    location (BuildCfg.DirSolution)
+    location (DirSolution.._ACTION)
     configurations { "Debug", "Release" }
     platforms { "x64", "x86" }
     cppdialect "c++14"

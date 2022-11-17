@@ -11,9 +11,6 @@ local pathDevEngine = EnsureSlash("../Dev")
 local pathVersion 	= EnsureSlash("Version")
 
 BuildCfg = {
-    -- Solution
-    DirSolution     = EnsureSlash(pathDev.."Build/".._ACTION),
-    
     -- Engine
     DirSourcesEngine    = EnsureSlash(pathDevEngine.."SourcesEngine"),
     DirSourcesSfml      = EnsureSlash(pathDevEngine.."SourcesSFML"),
@@ -24,7 +21,7 @@ BuildCfg = {
 
 -- Build Solution
 solution "SampleProject"
-    IncludeDefaultSolutionDefinition(BuildCfg)
+    IncludeDefaultSolutionDefinition(BuildCfg, pathDev.."Build")
 
     -- GUIDs can be generated from here : https://www.guidgenerator.com/online-guid-generator.aspx
     package.guid = "BEBB4888-E0C7-482A-9304-DD406237C589"

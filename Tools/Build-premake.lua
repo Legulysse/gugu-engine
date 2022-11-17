@@ -11,9 +11,6 @@ local pathVersion 	= EnsureSlash("../Version")
 local pathEditorVersion = EnsureSlash("../Tools/GuguEditor")
 
 BuildCfg = {
-    -- Solution
-    DirSolution         = EnsureSlash(pathDev.."Build/".._ACTION),
-    
     -- Engine
     DirSourcesEngine    = EnsureSlash(pathDev.."SourcesEngine"),
     DirSourcesSfml      = EnsureSlash(pathDev.."SourcesSFML"),
@@ -29,7 +26,7 @@ BuildCfg = {
 
 -- Build Solution
 solution "GuguEngine"
-    IncludeDefaultSolutionDefinition(BuildCfg)
+    IncludeDefaultSolutionDefinition(BuildCfg, pathDev.."Build")
     
     -- GUIDs can be generated from here : https://www.guidgenerator.com/online-guid-generator.aspx
     package.guid = "8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942"

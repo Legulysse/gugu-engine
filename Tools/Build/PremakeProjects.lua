@@ -4,6 +4,8 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
 	DirSources = EnsureSlash(DirSources)
 	
     project (ProjectName)
+
+        -- Base Definition
         IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirVersion)
 
         uuid(ProjectID)
@@ -19,7 +21,6 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
             DirSources.."**.tpp",
         }
         
-        -- Includes directories
         includedirs {
             DirSources,
             BuildCfg.DirSourcesEngine,
@@ -45,6 +46,8 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
 	DirSources = EnsureSlash(DirSources)
 	
     project (ProjectName)
+    
+        -- Base Definition
         IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirVersion)
         
         uuid(ProjectID)
@@ -60,7 +63,6 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
             DirSources.."**.tpp",
         }
         
-        -- Includes directories
         includedirs {
             DirSources,
             BuildCfg.DirSourcesSfml.."include/",

@@ -3,6 +3,8 @@
 function ProjectAppGuguEditor(BuildCfg)
     
     project ("GuguEditorApp")
+    
+        -- Base Definition
         IncludeDefaultAppDefinition(BuildCfg, "GuguEditor", BuildCfg.DirEditorVersion)
     
         uuid "E4D3697E-E0B5-4343-B000-E895BACF446A"
@@ -18,7 +20,6 @@ function ProjectAppGuguEditor(BuildCfg)
             BuildCfg.DirSourcesEditorApp.."**.tpp",
         }
         
-        -- Includes directories
         includedirs {
             BuildCfg.DirSourcesEditorApp,
             BuildCfg.DirSourcesEditor,
@@ -43,6 +44,8 @@ end
 function ProjectLibGuguEditor(BuildCfg)
 
     project "GuguEditor"
+    
+        -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "GuguEditorLib")
         
         uuid "D56FC1A7-034F-4E7F-9DBB-B615C3C5C070"
@@ -50,19 +53,21 @@ function ProjectLibGuguEditor(BuildCfg)
         -- Projects dependencies
         dependson { "GuguEngine", "ImGui", "SFML", "PugiXml" }
 
+        -- Files
         files {
             BuildCfg.DirSourcesEditor.."**.h",
             BuildCfg.DirSourcesEditor.."**.hpp",
             BuildCfg.DirSourcesEditor.."**.cpp",
             BuildCfg.DirSourcesEditor.."**.tpp",
         }
-        includedirs ({
+        
+        includedirs {
             BuildCfg.DirSourcesEditor,
             BuildCfg.DirSourcesEngine,
             BuildCfg.DirSourcesSfml.."include/",
             BuildCfg.DirSourcesPugiXml,
             BuildCfg.DirSourcesImGui,
-        })
+        }
 		
         -- Options
         IncludeExtraWarnings()
@@ -73,6 +78,8 @@ end
 function ProjectLibGuguEngine(BuildCfg)
 
     project "GuguEngine"
+    
+        -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "GuguEngine")
         
         uuid "59E650EC-0FD8-4D3C-A9E3-29DFF2AA5096"
@@ -80,18 +87,20 @@ function ProjectLibGuguEngine(BuildCfg)
         -- Projects dependencies
         dependson { "ImGui", "SFML", "PugiXml" }
 
+        -- Files
         files {
             BuildCfg.DirSourcesEngine.."**.h",
             BuildCfg.DirSourcesEngine.."**.hpp",
             BuildCfg.DirSourcesEngine.."**.cpp",
             BuildCfg.DirSourcesEngine.."**.tpp",
         }
-        includedirs ({
+        
+        includedirs {
             BuildCfg.DirSourcesEngine,
             BuildCfg.DirSourcesSfml.."include/",
             BuildCfg.DirSourcesPugiXml,
             BuildCfg.DirSourcesImGui,
-        })
+        }
 		
         -- Options
         IncludeExtraWarnings()
@@ -104,6 +113,8 @@ function ProjectLibImGui(BuildCfg)
     DirImGuiSources = BuildCfg.DirSourcesImGui
 
     project "ImGui"
+    
+        -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "ImGui")
       
         uuid "11A07067-A137-4C3C-B6ED-F2DC8BE3639D"
@@ -111,10 +122,12 @@ function ProjectLibImGui(BuildCfg)
         -- Projects dependencies
         dependson { "SFML" }
 
+        -- Files
         files {
             DirImGuiSources.."**.h",
             DirImGuiSources.."**.cpp",
         }
+        
         includedirs {
             DirImGuiSources,
             BuildCfg.DirSourcesSfml.."include/",
@@ -130,17 +143,21 @@ function ProjectLibSFML(BuildCfg)
     DirSfmlExternals = BuildCfg.DirSourcesSfml.."extlibs/"
 
     project "SFML"
+    
+        -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "SFML")
         
         defines { "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL" } -- OV_EXCLUDE_STATIC_CALLBACKS and FLAC__NO_DLL are parts of modifications made in the SFML repo, see the Notes.txt there
         uuid "936D68B9-FF55-CA40-9A14-7C2D95524D8B"
         
+        -- Files
         files {
             DirSfmlHeaders.."**.hpp",
             DirSfmlHeaders.."**.inl",
             DirSfmlSources.."**.hpp",
             DirSfmlSources.."**.cpp",
         }
+        
         includedirs {
             DirSfmlHeaders,
             DirSfmlSources,
@@ -201,14 +218,18 @@ function ProjectLibPugiXml(BuildCfg)
     DirPugiXmlSources = BuildCfg.DirSourcesPugiXml
 
     project "PugiXml"
-        IncludeDefaultLibDefinition(BuildCfg, "PugiXml")
     
+        -- Base Definition
+        IncludeDefaultLibDefinition(BuildCfg, "PugiXml")
+        
         uuid "2961203D-3842-4A18-9129-7295D98964CF"
         
+        -- Files
         files {
             DirPugiXmlSources.."**.hpp",
             DirPugiXmlSources.."**.cpp",
         }
+        
         includedirs {
             DirPugiXmlSources,
         }
@@ -217,6 +238,7 @@ end
 -- Default Solution
 function IncludeDefaultSolutionDefinition(BuildCfg)
 
+    -- Base Definition
     location (BuildCfg.DirSolution)
     configurations { "Debug", "Release" }
     platforms { "x64", "x86" }
@@ -230,17 +252,20 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirVersion)
 	DirVersion = EnsureSlash(DirVersion)
     SubDirBinaries  = EnsureSlash("Build_%{cfg.platform}_".._ACTION)
     
+    -- Base Definition
     language "C++"
     defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
     systemversion "latest"
     characterset "Unicode"
     
+    -- Build Directories
     objdir("%{wks.location}/obj")
     targetdir(DirVersion..SubDirBinaries)
     debugdir(DirVersion)
     
     libdirs { "%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}" }
-    
+
+    -- Target Definitions    
     filter { "configurations:Debug" }
         kind "ConsoleApp"
         defines { "DEBUG" }
@@ -268,17 +293,20 @@ end
 -- Default Lib Project
 function IncludeDefaultLibDefinition(BuildCfg, TargetName)
 
+    -- Base Definition
     kind "StaticLib"
     language "C++"
     defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
     systemversion "latest"
     characterset "Unicode"
     
+    -- Build Directories
     objdir("%{wks.location}/obj")
     targetdir("%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}")
 
     libdirs { "%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}" }
 
+    -- Target Definitions
     filter { "configurations:Debug" }
         defines { "DEBUG", "_DEBUG" }
         flags { "NoMinimalRebuild", "MultiProcessorCompile" }

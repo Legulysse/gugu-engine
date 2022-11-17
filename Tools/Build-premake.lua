@@ -2,8 +2,7 @@
 -- Setup the include path of the engine build scripts directory
 package.path = package.path .. ";./Build/?.lua"
 
-require "PremakeEngine"
-require "PremakeProjects"
+require "PremakeUtility"
 
 
 -- Solution Configuration

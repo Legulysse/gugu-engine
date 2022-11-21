@@ -15,6 +15,8 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
         dependson { "GuguEngine" }
         
         -- Files
+        IncludeEngineHeadersDefinition()
+        
         files {
             DirSources.."**.h",
             DirSources.."**.hpp",
@@ -24,10 +26,6 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
         
         includedirs {
             DirSources,
-            BuildCfg.DirSourcesEngine,
-            BuildCfg.DirSourcesSfml.."include/",
-            BuildCfg.DirSourcesPugiXml,
-            BuildCfg.DirSourcesImGui,
         }
         
         -- Linker
@@ -94,6 +92,8 @@ function ProjectAppGuguEditor(BuildCfg)
         dependson { "GuguEditor" }
         
         -- Files
+        IncludeEngineHeadersDefinition()
+        
         files {
             BuildCfg.DirSourcesEditorApp.."**.h",
             BuildCfg.DirSourcesEditorApp.."**.hpp",
@@ -104,10 +104,6 @@ function ProjectAppGuguEditor(BuildCfg)
         includedirs {
             BuildCfg.DirSourcesEditorApp,
             BuildCfg.DirSourcesEditor,
-            BuildCfg.DirSourcesEngine,
-            BuildCfg.DirSourcesSfml.."include/",
-            BuildCfg.DirSourcesPugiXml,
-            BuildCfg.DirSourcesImGui,
         }
         
         -- Linker
@@ -135,6 +131,8 @@ function ProjectLibGuguEditor(BuildCfg)
         dependson { "GuguEngine", "ImGui", "SFML", "PugiXml" }
 
         -- Files
+        IncludeEngineHeadersDefinition()
+        
         files {
             BuildCfg.DirSourcesEditor.."**.h",
             BuildCfg.DirSourcesEditor.."**.hpp",
@@ -144,10 +142,6 @@ function ProjectLibGuguEditor(BuildCfg)
         
         includedirs {
             BuildCfg.DirSourcesEditor,
-            BuildCfg.DirSourcesEngine,
-            BuildCfg.DirSourcesSfml.."include/",
-            BuildCfg.DirSourcesPugiXml,
-            BuildCfg.DirSourcesImGui,
         }
 		
         -- Options
@@ -169,6 +163,8 @@ function ProjectLibGuguEngine(BuildCfg)
         dependson { "ImGui", "SFML", "PugiXml" }
 
         -- Files
+        IncludeEngineHeadersDefinition()
+        
         files {
             BuildCfg.DirSourcesEngine.."**.h",
             BuildCfg.DirSourcesEngine.."**.hpp",
@@ -176,13 +172,6 @@ function ProjectLibGuguEngine(BuildCfg)
             BuildCfg.DirSourcesEngine.."**.tpp",
         }
         
-        includedirs {
-            BuildCfg.DirSourcesEngine,
-            BuildCfg.DirSourcesSfml.."include/",
-            BuildCfg.DirSourcesPugiXml,
-            BuildCfg.DirSourcesImGui,
-        }
-		
         -- Options
         IncludeExtraWarnings()
         
@@ -191,7 +180,9 @@ end
 -- Project ImGui
 function ProjectLibImGui(BuildCfg)
 
-    DirImGuiSources = BuildCfg.DirSourcesImGui
+    DirSourcesImGui = BuildCfg.DirSourcesImGui
+    DirSourcesImGuiSFML = BuildCfg.DirSourcesImGuiSFML
+    DirSourcesImGuiSetup = BuildCfg.DirSourcesImGuiSetup
 
     project "ImGui"
     
@@ -205,13 +196,18 @@ function ProjectLibImGui(BuildCfg)
 
         -- Files
         files {
-            DirImGuiSources.."**.h",
-            DirImGuiSources.."**.cpp",
+            DirSourcesImGui.."**.h",
+            DirSourcesImGui.."**.cpp",
+            DirSourcesImGuiSFML.."**.h",
+            DirSourcesImGuiSFML.."**.cpp",
+            DirSourcesImGuiSetup.."gugu-imconfig.h",
         }
         
         includedirs {
-            DirImGuiSources,
             BuildCfg.DirSourcesSfml.."include/",
+            DirSourcesImGui,
+            DirSourcesImGuiSFML,
+            DirSourcesImGuiSetup,
         }
 
 end
@@ -330,7 +326,9 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirVersion)
     
     -- Base Definition
     language "C++"
-    defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"", "IMGUI_DISABLE_INCLUDE_IMCONFIG_H" }
+    defines { "SFML_STATIC" }
+    defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
     systemversion "latest"
     characterset "Unicode"
     
@@ -372,7 +370,9 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     -- Base Definition
     kind "StaticLib"
     language "C++"
-    defines { "SFML_STATIC", "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"", "IMGUI_DISABLE_INCLUDE_IMCONFIG_H" }
+    defines { "SFML_STATIC" }
+    defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
     systemversion "latest"
     characterset "Unicode"
     
@@ -402,6 +402,19 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
         
     -- Finalize
     filter {}
+    
+end
+
+function IncludeEngineHeadersDefinition()
+
+    includedirs {
+        BuildCfg.DirSourcesEngine,
+        BuildCfg.DirSourcesSfml.."include/",
+        BuildCfg.DirSourcesPugiXml,
+        BuildCfg.DirSourcesImGui,
+        BuildCfg.DirSourcesImGuiSFML,
+        BuildCfg.DirSourcesImGuiSetup,
+    }
     
 end
 

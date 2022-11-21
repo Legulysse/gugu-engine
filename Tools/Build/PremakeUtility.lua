@@ -228,7 +228,7 @@ function ProjectLibSFML(BuildCfg)
         -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "SFML")
         
-        defines { "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL" } -- OV_EXCLUDE_STATIC_CALLBACKS and FLAC__NO_DLL are parts of modifications made in the SFML repo, see the Notes.txt there
+        defines { "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL" }  -- Avoids warnings in vorbisfile.h
         uuid "936D68B9-FF55-CA40-9A14-7C2D95524D8B"
         
         -- Files
@@ -244,18 +244,11 @@ function ProjectLibSFML(BuildCfg)
             DirSfmlSources,
             DirSfmlExternals.."headers",
             DirSfmlExternals.."headers/AL",
-            DirSfmlExternals.."headers/FLAC",
             DirSfmlExternals.."headers/freetype2",
-            DirSfmlExternals.."headers/jpeg",
-            DirSfmlExternals.."headers/ogg",
             DirSfmlExternals.."headers/stb_image",
-            DirSfmlExternals.."headers/vorbis",
         }
 
         filter { "system:windows" }
-			includedirs {
-                --DirSfmlExternals.."headers/libfreetype/windows",
-            }
 			excludes { 
                 DirSfmlSources.."SFML/Main/SFMLActivity.cpp",
                 DirSfmlSources.."SFML/Main/MainAndroid.cpp",

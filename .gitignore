@@ -1,9 +1,12 @@
-## Manual Ignore
+## Build Directories
 
 **/*__pycache__/
 **/*Dev/Build/
-[Bb]uild_*/
-[Bb]uild-*/
+**/[Bb]uild_*/
+
+
+## User Files
+
 *.pro.user
 Trace_*.json
 imgui.ini

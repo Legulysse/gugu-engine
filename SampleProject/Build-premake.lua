@@ -16,6 +16,8 @@ BuildCfg = {
     DirSourcesSfml      = EnsureSlash(pathDevEngine.."SourcesSFML"),
     DirSourcesPugiXml   = EnsureSlash(pathDevEngine.."SourcesPugiXml"),
     DirSourcesImGui     = EnsureSlash(pathDevEngine.."SourcesImGui"),
+    DirSourcesImGuiSetup = EnsureSlash(pathDevEngine.."SourcesImGuiSetup"),
+    DirSourcesImGuiSFML = EnsureSlash(pathDevEngine.."SourcesImGuiSFML"),
 }
 
 

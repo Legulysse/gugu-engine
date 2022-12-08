@@ -12,9 +12,7 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
-
-#include <imgui.h>
-#include <imgui_stdlib.h>
+#include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

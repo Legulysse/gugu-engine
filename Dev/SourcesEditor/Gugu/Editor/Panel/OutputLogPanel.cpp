@@ -7,8 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include <imgui.h>
-#include <imgui_stdlib.h>
+#include "Gugu/External/ImGuiUtility.h"
 
 #include <map>
 

@@ -19,12 +19,10 @@
 #include "Gugu/Element/2D/ElementSFDrawable.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/External/ImGuiUtility.h"
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Texture.hpp>
-
-#include <imgui.h>
-#include <imgui_stdlib.h>
 
 #include <array>
 

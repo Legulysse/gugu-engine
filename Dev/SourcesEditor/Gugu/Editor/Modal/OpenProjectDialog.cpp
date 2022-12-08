@@ -10,9 +10,7 @@
 #include "Gugu/Editor/Editor.h"
 
 #include "Gugu/System/SystemUtility.h"
-
-#include <imgui.h>
-#include <imgui_stdlib.h>
+#include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

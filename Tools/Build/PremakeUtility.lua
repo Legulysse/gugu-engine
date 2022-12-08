@@ -196,13 +196,15 @@ function ProjectLibImGui(BuildCfg)
 
         -- Files
         files {
-            DirSourcesImGui.."**.h",
-            DirSourcesImGui.."**.cpp",
-            DirSourcesImGuiSFML.."**.h",
-            DirSourcesImGuiSFML.."**.cpp",
+            DirSourcesImGui.."*.h",
+            DirSourcesImGui.."*.cpp",
+            DirSourcesImGui.."misc/cpp/*.h",
+            DirSourcesImGui.."misc/cpp/*.cpp",
+            DirSourcesImGuiSFML.."*.h",
+            DirSourcesImGuiSFML.."*.cpp",
             DirSourcesImGuiSetup.."gugu-imconfig.h",
         }
-        
+    
         includedirs {
             BuildCfg.DirSourcesSfml.."include/",
             DirSourcesImGui,

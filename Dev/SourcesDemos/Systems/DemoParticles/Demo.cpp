@@ -17,9 +17,7 @@
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Scene/ManagerScenes.h"
 #include "Gugu/Scene/Scene.h"
-
-#include <imgui.h>
-#include <imgui_stdlib.h>
+#include "Gugu/External/ImGuiUtility.h"
 
 using namespace gugu;
 

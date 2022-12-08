@@ -1,5 +1,0 @@
-
-On Visual Studio, FLAC/assert.h needs to be removed, or it will override the standard assert macro and break the build.
-I needed to add the macros "OV_EXCLUDE_STATIC_CALLBACKS" and "FLAC__NO_DLL" on the SFML lib build
-
-For Project builds, I had to use libs-msvc/ for vs2013, and libs-msvc-universal/ for vs2015 (and 2017 ?)

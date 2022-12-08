@@ -7,18 +7,9 @@ require "PremakeUtility"
 
 -- Solution Configuration
 local pathDev 		= EnsureSlash("Dev")
-local pathDevEngine = EnsureSlash("../Dev")
 local pathVersion 	= EnsureSlash("Version")
 
-BuildCfg = {
-    -- Engine
-    DirSourcesEngine    = EnsureSlash(pathDevEngine.."SourcesEngine"),
-    DirSourcesSfml      = EnsureSlash(pathDevEngine.."SourcesSFML"),
-    DirSourcesPugiXml   = EnsureSlash(pathDevEngine.."SourcesPugiXml"),
-    DirSourcesImGui     = EnsureSlash(pathDevEngine.."SourcesImGui"),
-    DirSourcesImGuiSetup = EnsureSlash(pathDevEngine.."SourcesImGuiSetup"),
-    DirSourcesImGuiSFML = EnsureSlash(pathDevEngine.."SourcesImGuiSFML"),
-}
+BuildCfg = SetupBuildCfg("../")
 
 
 -- Build Solution

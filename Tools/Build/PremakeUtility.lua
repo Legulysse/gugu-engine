@@ -310,6 +310,48 @@ function ProjectLibPugiXml(BuildCfg)
         }
 end
 
+-- Helper for BuildCfg setup
+function SetupBuildCfg(pathEngineRoot)
+
+    pathEngineRoot = EnsureSlash(pathEngineRoot)
+
+    BuildCfg = {
+        -- Engine
+        DirSourcesEngine    = EnsureSlash(pathEngineRoot.."Dev/SourcesEngine"),
+        DirSourcesImGuiSetup = EnsureSlash(pathEngineRoot.."Dev/SourcesImGuiSetup"),
+        DirSourcesSfml      = EnsureSlash(pathEngineRoot.."Externals/SFML"),
+        DirSourcesPugiXml   = EnsureSlash(pathEngineRoot.."Externals/PugiXml"),
+        DirSourcesImGui     = EnsureSlash(pathEngineRoot.."Externals/ImGui"),
+        DirSourcesImGuiSFML = EnsureSlash(pathEngineRoot.."Externals/ImGuiSFML"),
+    }
+    
+    return BuildCfg
+end
+
+function SetupBuildCfgWithEditor(pathEngineRoot, pathEditorVersion)
+
+    pathEngineRoot = EnsureSlash(pathEngineRoot)
+    pathEditorVersion = EnsureSlash(pathEditorVersion)
+
+    BuildCfg = {
+        -- Engine
+        DirSourcesEngine    = EnsureSlash(pathEngineRoot.."Dev/SourcesEngine"),
+        DirSourcesImGuiSetup = EnsureSlash(pathEngineRoot.."Dev/SourcesImGuiSetup"),
+        DirSourcesSfml      = EnsureSlash(pathEngineRoot.."Externals/SFML"),
+        DirSourcesPugiXml   = EnsureSlash(pathEngineRoot.."Externals/PugiXml"),
+        DirSourcesImGui     = EnsureSlash(pathEngineRoot.."Externals/ImGui"),
+        DirSourcesImGuiSFML = EnsureSlash(pathEngineRoot.."Externals/ImGuiSFML"),
+        
+        -- Editor
+        DirEditorVersion    = EnsureSlash(pathEditorVersion),
+        DirSourcesEditorApp = EnsureSlash(pathEngineRoot.."Dev/SourcesEditorApp"),
+        DirSourcesEditor    = EnsureSlash(pathEngineRoot.."Dev/SourcesEditor"),
+    }
+    
+    return BuildCfg
+end
+
+
 -- Default Solution
 function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
 

@@ -361,7 +361,7 @@ function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
     location (DirSolution.._ACTION)
     configurations { "Debug", "Release" }
     platforms { "x64", "x86" }
-    cppdialect "c++14"
+    cppdialect "c++17"
     
 end
 

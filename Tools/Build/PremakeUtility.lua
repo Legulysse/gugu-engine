@@ -448,9 +448,9 @@ function IncludeLinkerDefinitions(IncludeEngine, IncludeEditor)
     filter { "system:windows", "action:vs2013", "platforms:x64" }
         libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc/x64", }
         
-    filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x86" }
+    filter { "system:windows", "action:vs2015 or vs2017 or vs2019 or vs2022", "platforms:x86" }
         libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x86", }
-    filter { "system:windows", "action:vs2015 or vs2017 or vs2019", "platforms:x64" }
+    filter { "system:windows", "action:vs2015 or vs2017 or vs2019 or vs2022", "platforms:x64" }
         libdirs { BuildCfg.DirSourcesSfml.."extlibs/libs-msvc-universal/x64", }
         
     -- Link libraries
@@ -489,7 +489,7 @@ end
 function IncludeExtraWarnings()
 
     -- Options
-    filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019" }
+    filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019 or vs2022" }
         warnings "Extra"
         disablewarnings { "4100", "4189" } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
 

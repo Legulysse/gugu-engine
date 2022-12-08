@@ -81,7 +81,7 @@
     <!-- Condition -->
     
     <Class name="condition" code="DS_Condition" abstract="True">
-        <Data type="bool" name="not" code="not" default="false" />
+        <Data type="bool" name="intendedResult" code="intendedResult" default="true" />
         <Method declaration="bool IsValid(const struct ConditionContext&amp; context) const;" />
         <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const = 0;" />
     </Class>

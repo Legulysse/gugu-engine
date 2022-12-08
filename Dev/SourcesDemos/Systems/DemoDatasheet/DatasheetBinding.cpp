@@ -16,7 +16,7 @@ namespace demoproject {
 
 bool DS_Condition::IsValid(const ConditionContext& context) const
 {
-    return IsValidImpl(context) != not;
+    return IsValidImpl(context) == intendedResult;
 }
 
 bool DS_ConditionAnd::IsValidImpl(const struct ConditionContext& context) const

@@ -253,7 +253,7 @@ void DS_Skill::ParseMembers(gugu::DatasheetParserContext& context)
 ////////////////////////////////////////////////////////////////
 DS_Condition::DS_Condition()
 {
-    not = false;
+    intendedResult = true;
 }
 
 DS_Condition::~DS_Condition()
@@ -264,7 +264,7 @@ void DS_Condition::ParseMembers(gugu::DatasheetParserContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    ReadBool(context, "not", not);
+    ReadBool(context, "intendedResult", intendedResult);
 }
 
 ////////////////////////////////////////////////////////////////

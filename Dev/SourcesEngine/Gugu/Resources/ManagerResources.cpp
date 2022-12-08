@@ -291,7 +291,7 @@ Resource* ManagerResources::GetResource(const std::string& _strName, EResourceTy
 bool ManagerResources::LoadResource(const std::string& _strName, EResourceType::Type _eExplicitType)
 {
     if (_strName.empty())
-        return nullptr;
+        return false;
 
     auto iteElement = m_resources.find(_strName);
     if (iteElement == m_resources.end())
@@ -382,7 +382,7 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
 bool ManagerResources::InjectResource(const std::string& _strResourceID, Resource* _pResource)
 {
     if (_strResourceID.empty())
-        return nullptr;
+        return false;
 
     ResourceMapKey mapKey(_strResourceID);
 
@@ -448,7 +448,7 @@ std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
 bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos)
 {
     if (_strResourceID.empty())
-        return nullptr;
+        return false;
 
     ResourceMapKey mapKey(_strResourceID);
 

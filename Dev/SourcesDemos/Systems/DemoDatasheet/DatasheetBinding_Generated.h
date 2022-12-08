@@ -227,7 +227,7 @@ public:
 
 public:
 
-    bool not;
+    bool intendedResult;
 
 protected:
 

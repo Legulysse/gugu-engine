@@ -5,6 +5,7 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include <cmath>
 #include <set>  // for std::less specialization
 
 ////////////////////////////////////////////////////////////////

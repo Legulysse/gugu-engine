@@ -6,6 +6,7 @@ require "PremakeUtility"
 
 
 -- Solution Configuration
+local pathExternals = EnsureSlash("../Externals")
 local pathDev 		= EnsureSlash("../Dev")
 local pathVersion 	= EnsureSlash("../Version")
 local pathEditorVersion = EnsureSlash("../Tools/GuguEditor")
@@ -13,8 +14,8 @@ local pathEditorVersion = EnsureSlash("../Tools/GuguEditor")
 BuildCfg = {
     -- Engine
     DirSourcesEngine    = EnsureSlash(pathDev.."SourcesEngine"),
-    DirSourcesSfml      = EnsureSlash(pathDev.."SourcesSFML"),
-    DirSourcesPugiXml   = EnsureSlash(pathDev.."SourcesPugiXml"),
+    DirSourcesSfml      = EnsureSlash(pathExternals.."SFML"),
+    DirSourcesPugiXml   = EnsureSlash(pathExternals.."PugiXml"),
     DirSourcesImGui     = EnsureSlash(pathDev.."SourcesImGui"),
     DirSourcesImGuiSetup = EnsureSlash(pathDev.."SourcesImGuiSetup"),
     DirSourcesImGuiSFML = EnsureSlash(pathDev.."SourcesImGuiSFML"),

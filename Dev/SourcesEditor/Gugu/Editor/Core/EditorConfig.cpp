@@ -9,8 +9,7 @@
 
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
-
-#include <PugiXml/pugixml.hpp>
+#include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

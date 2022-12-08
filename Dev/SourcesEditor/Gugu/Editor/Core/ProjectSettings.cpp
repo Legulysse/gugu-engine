@@ -8,8 +8,7 @@
 // Includes
 
 #include "Gugu/System/SystemUtility.h"
-
-#include <PugiXml/pugixml.hpp>
+#include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

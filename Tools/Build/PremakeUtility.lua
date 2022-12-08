@@ -241,40 +241,43 @@ function ProjectLibSFML(BuildCfg)
             DirSfmlExternals.."headers",
             DirSfmlExternals.."headers/AL",
             DirSfmlExternals.."headers/freetype2",
+            DirSfmlExternals.."headers/glad/include",
+            DirSfmlExternals.."headers/minimp3",
             DirSfmlExternals.."headers/stb_image",
+            DirSfmlExternals.."headers/vulkan",
         }
 
         filter { "system:windows" }
 			excludes { 
                 DirSfmlSources.."SFML/Main/SFMLActivity.cpp",
                 DirSfmlSources.."SFML/Main/MainAndroid.cpp",
-                DirSfmlSources.."SFML/Window/EGLCheck.**",
-                DirSfmlSources.."SFML/Window/EglContext.**",
+				DirSfmlSources.."SFML/Network/Unix/**",
+				DirSfmlSources.."SFML/System/Android/**",
+				DirSfmlSources.."SFML/System/Unix/**",
                 DirSfmlSources.."SFML/Window/Android/**",
+				DirSfmlSources.."SFML/Window/DRM/**",
 				DirSfmlSources.."SFML/Window/FreeBSD/**",
                 DirSfmlSources.."SFML/Window/iOS/**",
+				DirSfmlSources.."SFML/Window/NetBSD/**",
 				DirSfmlSources.."SFML/Window/OpenBSD/**",
 				DirSfmlSources.."SFML/Window/OSX/**",
                 DirSfmlSources.."SFML/Window/Unix/**",
-				DirSfmlSources.."SFML/System/Android/**",
-				DirSfmlSources.."SFML/System/Unix/**",
-				DirSfmlSources.."SFML/Network/Unix/**",
             }
 		
         filter { "system:linux" }
 			excludes { 
                 DirSfmlSources.."SFML/Main/**",
-                DirSfmlSources.."SFML/Window/EGLCheck.**",
-                DirSfmlSources.."SFML/Window/EglContext.**",
+				DirSfmlSources.."SFML/Network/Win32/**",
+				DirSfmlSources.."SFML/System/Android/**",
+				DirSfmlSources.."SFML/System/Win32/**",
                 DirSfmlSources.."SFML/Window/Android/**",
+				DirSfmlSources.."SFML/Window/DRM/**",
 				DirSfmlSources.."SFML/Window/FreeBSD/**",
                 DirSfmlSources.."SFML/Window/iOS/**",
+				DirSfmlSources.."SFML/Window/NetBSD/**",
 				DirSfmlSources.."SFML/Window/OpenBSD/**",
 				DirSfmlSources.."SFML/Window/OSX/**",
                 DirSfmlSources.."SFML/Window/Win32/**",
-				DirSfmlSources.."SFML/System/Android/**",
-				DirSfmlSources.."SFML/System/Win32/**",
-				DirSfmlSources.."SFML/Network/Win32/**",
             }
             
         -- Finalize
@@ -285,7 +288,7 @@ end
 -- Project PugiXml
 function ProjectLibPugiXml(BuildCfg)
 
-    DirPugiXmlSources = BuildCfg.DirSourcesPugiXml
+    DirPugiXmlSources = BuildCfg.DirSourcesPugiXml.."src/"
 
     project "PugiXml"
     
@@ -410,7 +413,7 @@ function IncludeEngineHeadersDefinition()
     includedirs {
         BuildCfg.DirSourcesEngine,
         BuildCfg.DirSourcesSfml.."include/",
-        BuildCfg.DirSourcesPugiXml,
+        BuildCfg.DirSourcesPugiXml.."src/",
         BuildCfg.DirSourcesImGui,
         BuildCfg.DirSourcesImGuiSFML,
         BuildCfg.DirSourcesImGuiSetup,
@@ -469,6 +472,7 @@ function IncludeLinkerDefinitions(IncludeEngine, IncludeEditor)
         links { "SFML-s" }
 
     filter { "system:windows" }
+        links { "legacy_stdio_definitions" }  -- fix: error LNK2019: unresolved external symbol _sprintf
         links { "freetype", "gdi32", "opengl32", "winmm", "openal32", "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac", "ws2_32" }
         
     filter { "system:linux" }

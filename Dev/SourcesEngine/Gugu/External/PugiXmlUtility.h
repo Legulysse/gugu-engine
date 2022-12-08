@@ -7,7 +7,7 @@
 #include "Gugu/Math/Vector2.h"
 
 #include <SFML/Graphics/Rect.hpp>
-#include <PugiXml/pugixml.hpp>
+#include <pugixml.hpp>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

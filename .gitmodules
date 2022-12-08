@@ -1,0 +1,6 @@
+[submodule "Externals/PugiXml"]
+	path = Externals/PugiXml
+	url = https://github.com/zeux/pugixml.git
+[submodule "Externals/SFML"]
+	path = Externals/SFML
+	url = https://github.com/SFML/SFML.git

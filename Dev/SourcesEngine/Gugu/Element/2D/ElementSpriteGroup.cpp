@@ -211,7 +211,7 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
             if (_kRenderPass.frameInfos)
             {
                 _kRenderPass.frameInfos->statDrawCalls += 1;
-                _kRenderPass.frameInfos->statTriangles += m_vertices.getVertexCount() / 3;
+                _kRenderPass.frameInfos->statTriangles += (int)m_vertices.getVertexCount() / 3;
             }
 
             //TODO: special stat category for ElementSpriteGroup

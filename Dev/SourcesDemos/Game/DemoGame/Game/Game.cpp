@@ -325,7 +325,7 @@ void Game::ClearScenario()
 void Game::GetStatus(int& floor, int& enemies) const
 {
     floor = m_floor;
-    enemies = m_controllersAI.size();
+    enemies = (int)m_controllersAI.size();
 }
 
 void Game::GetCharactersInRange(std::vector<Character*>& characters, const Vector2f& center, float radius) const

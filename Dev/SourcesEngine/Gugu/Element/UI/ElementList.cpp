@@ -300,10 +300,22 @@ int ElementList::ScrollItems(int _iDelta)
 {
     int iComputedDelta = 0;
 
-    if (m_items.size() > 0)
+    if (m_items.size() == 0)
+    {
+        m_currentIndexTop = 0;
+    }
+    else
     {
         size_t iOldIndexTop = m_currentIndexTop;
-        m_currentIndexTop = m_items.size() == 0 ? 0 : Clamp<size_t>(m_currentIndexTop + _iDelta, 0, m_items.size() - 1);
+
+        if (_iDelta < 0)
+        {
+            m_currentIndexTop = m_currentIndexTop - Min(m_currentIndexTop, (size_t)Absolute(_iDelta));
+        }
+        else
+        {
+            m_currentIndexTop = m_currentIndexTop + Min(m_items.size() - m_currentIndexTop, (size_t)_iDelta);
+        }
 
         RecomputeItems();   //This may change m_iCurrentIndexTop
 
@@ -349,16 +361,22 @@ void ElementList::RecomputeItems()
         }
 
         //Compute additional number of items by moving the top
-        for (size_t i = m_currentIndexTop - 1; i >= 0; --i)
+        if (m_currentIndexTop > 0)
         {
-            pElement = m_items[i];
-            fSizeItems += pElement->GetSize().y;
+            size_t i = m_currentIndexTop;
+            while (i != 0)
+            {
+                --i;
 
-            if (fSizeItems > GetSize().y)
-                break;
+                pElement = m_items[i];
+                fSizeItems += pElement->GetSize().y;
 
-            m_currentIndexTop = i;
-            ++m_displayedItemCount;
+                if (fSizeItems > GetSize().y)
+                    break;
+
+                m_currentIndexTop = i;
+                ++m_displayedItemCount;
+            }
         }
 
         //Flag all items as invisible

@@ -14,14 +14,14 @@ namespace gugu {
     
 struct EngineStats
 {
-    uint32 maxStatCount = 150;
+    int maxStatCount = 150;
     std::list<int> loopTimes;
     std::list<int> stepTimes;
     std::list<int> updateTimes;
     std::list<int> renderTimes;
     std::list<int> stepCount;
-    uint32 animationCount = 0;
-    uint32 particleSystemCount = 0;
+    int animationCount = 0;
+    int particleSystemCount = 0;
     bool isTracing = false;
 };
 

@@ -106,7 +106,7 @@ void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
         if (_kRenderPass.frameInfos)
         {
             _kRenderPass.frameInfos->statDrawCalls += 1;
-            _kRenderPass.frameInfos->statTriangles += m_vertices.getVertexCount() / 3;
+            _kRenderPass.frameInfos->statTriangles += (int)m_vertices.getVertexCount() / 3;
         }
 
         _kRenderPass.statRenderedSprites += 1;

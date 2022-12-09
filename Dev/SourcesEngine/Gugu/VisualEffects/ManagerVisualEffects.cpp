@@ -49,7 +49,7 @@ void ManagerVisualEffects::Update(const DeltaTime& dt, EngineStats& stats)
         particleSystem->Update(dt);
     }
 
-    stats.particleSystemCount = m_particleSystems.size();
+    stats.particleSystemCount = (int)m_particleSystems.size();
 }
 
 void ManagerVisualEffects::AddParticleSystem(ParticleSystem* particleSystem)

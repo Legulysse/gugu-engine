@@ -59,7 +59,7 @@ void ManagerAnimations::Update(const DeltaTime& dt, EngineStats& stats)
         animation->StepAnimation(dt);
     }
 
-    stats.animationCount = m_spriteAnimations.size();
+    stats.animationCount = (int)m_spriteAnimations.size();
 }
 
 SpriteAnimation* ManagerAnimations::AddAnimation(ElementSprite* sprite)

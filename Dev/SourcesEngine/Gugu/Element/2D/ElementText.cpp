@@ -276,7 +276,7 @@ void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTr
             if (_kRenderPass.frameInfos)
             {
                 _kRenderPass.frameInfos->statDrawCalls += 1;
-                // TODO: find  away to retrieve triangles count.
+                // TODO: find a way to retrieve triangles count.
             }
 
             _kRenderPass.statRenderedTexts += 1;

@@ -207,7 +207,7 @@ void ElementTileMap::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _
             if (_kRenderPass.frameInfos)
             {
                 _kRenderPass.frameInfos->statDrawCalls += 1;
-                _kRenderPass.frameInfos->statTriangles += m_vertices.getVertexCount() / 3;
+                _kRenderPass.frameInfos->statTriangles += (int)m_vertices.getVertexCount() / 3;
             }
 
             //TODO: special stat category for ElementTileMap

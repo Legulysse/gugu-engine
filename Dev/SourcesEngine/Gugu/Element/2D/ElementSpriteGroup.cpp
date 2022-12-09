@@ -224,7 +224,7 @@ void ElementSpriteGroup::RaiseNeedRecompute()
     m_needRecompute = true;
 }
 
-int ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
+size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
 {
     _pNewItem->SetSpriteGroup(this);
     m_items.push_back(_pNewItem);
@@ -238,9 +238,9 @@ int ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
     return m_items.size() - 1;
 }
 
-ElementSpriteGroupItem* ElementSpriteGroup::GetItem(int _iIndex) const
+ElementSpriteGroupItem* ElementSpriteGroup::GetItem(size_t _iIndex) const
 {
-    if (_iIndex < 0 || _iIndex >= (int)m_items.size())
+    if (_iIndex < 0 || _iIndex >= m_items.size())
         return nullptr;
     return m_items[_iIndex];
 }

@@ -58,7 +58,7 @@ void ElementText::SetFont(Font* _pFont)
     }
 }
 
-void ElementText::SetFontSize(size_t _uiSize)
+void ElementText::SetFontSize(unsigned int _uiSize)
 {
     m_sfText->setCharacterSize(_uiSize);
     

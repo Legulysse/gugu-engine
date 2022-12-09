@@ -27,9 +27,9 @@ float GetRandf()
     return ((float)rand()) / ((float)RAND_MAX + 1);
 }
 
-int GetRandom(int _iMax)
+size_t GetRandom(size_t _iMax)
 {
-    return (int)(GetRandf() * _iMax);
+	return (size_t)(GetRandf() * _iMax);
 }
 
 float GetRandomf(float _fMax)

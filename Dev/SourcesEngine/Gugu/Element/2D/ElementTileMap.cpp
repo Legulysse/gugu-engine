@@ -45,7 +45,7 @@ Texture* ElementTileMap::GetTexture() const
     return m_texture;
 }
 
-int ElementTileMap::GetTileCount() const
+size_t ElementTileMap::GetTileCount() const
 {
     return m_vertices.getVertexCount() / 6;
 }

@@ -18,8 +18,8 @@ void ResetRandSeed();
 // Return a random value in range [0, 1[.    // TODO: Thread safety ?
 float GetRandf();
 
-// Return a random int value in range [0, max[.
-int GetRandom(int _iMax);
+// Return a random size_t value in range [0, max[.
+size_t GetRandom(size_t _iMax);
 
 // Return a random float value in range [0, max[.
 float GetRandomf(float _fMax);

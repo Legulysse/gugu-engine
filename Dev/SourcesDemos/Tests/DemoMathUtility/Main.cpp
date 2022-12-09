@@ -121,11 +121,10 @@ int main(int argc, char* argv[])
     // Random
     ResetRandSeed();
 
-    std::map<int, int> kResultsA;
+    std::map<size_t, int> kResultsA;
     std::set<float> kResultsB;
     std::map<int, int> kResultsC;
     std::set<float> kResultsD;
-    std::map<int, int> kResultsE;
 
     for (int i = 0; i < 10000; ++i)
     {
@@ -143,21 +142,15 @@ int main(int argc, char* argv[])
     {
         kResultsD.insert(GetRandomf(-5.f, 5.f));
     }
-    for (int i = 0; i < 10000; ++i)
-    {
-        kResultsE[GetRandom(-10)] += 1;
-    }
 
-    int minA = kResultsA.begin()->first;
-    int maxA = kResultsA.rbegin()->first;
+    size_t minA = kResultsA.begin()->first;
+    size_t maxA = kResultsA.rbegin()->first;
     float minB = *kResultsB.begin();
     float maxB = *kResultsB.rbegin();
     int minC = kResultsC.begin()->first;
     int maxC = kResultsC.rbegin()->first;
     float minD = *kResultsD.begin();
     float maxD = *kResultsD.rbegin();
-    int minE = kResultsE.begin()->first;
-    int maxE = kResultsE.rbegin()->first;
 
     // Weighted Random
     {

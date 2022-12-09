@@ -47,7 +47,7 @@ bool SoundCue::GetRandomSound(SoundParameters& _kParameters) const
     if (m_audioFiles.empty())
         return false;
 
-    int iIndex = GetRandom(m_audioFiles.size());
+    size_t iIndex = GetRandom(m_audioFiles.size());
     _kParameters = m_audioFiles[iIndex];
     return true;
 }

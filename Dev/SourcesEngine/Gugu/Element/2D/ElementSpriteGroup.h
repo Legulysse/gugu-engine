@@ -62,8 +62,8 @@ public:
 
     void SetColor(const sf::Color& color);
 
-    int AddItem(ElementSpriteGroupItem* _pNewItem);
-    ElementSpriteGroupItem* GetItem(int _iIndex) const;
+    size_t AddItem(ElementSpriteGroupItem* _pNewItem);
+    ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
 
     void RaiseNeedRecompute();
 

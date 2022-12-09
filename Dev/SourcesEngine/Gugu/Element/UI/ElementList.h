@@ -29,25 +29,25 @@ public:
     void SetImageSet        (const std::string& _strImageSetPath);
     
     void AddItem            (ElementListItem* _pNewItem);
-    void RemoveItem         (int _iIndex);
+    void RemoveItem         (size_t _iIndex);
     void RemoveItem         (ElementListItem* _pItem);
     void RemoveAllItems     ();
     
     void    GetItems        (std::vector<ElementListItem*>& _vecItems) const;
-    int     GetItemCount    () const;
+    size_t  GetItemCount    () const;
 
     void SetAllowSelection      (bool _bAllow);
     void SetMultipleSelection   (bool _bMultiple);
 
-    void SetItemSelected    (int _iIndex, bool selected);
+    void SetItemSelected    (size_t _iIndex, bool selected);
     void SetItemSelected    (ElementListItem* _pNewItem, bool selected);
-    void ToggleItemSelected (int _iIndex);
+    void ToggleItemSelected (size_t _iIndex);
     void ToggleItemSelected (ElementListItem* _pNewItem);
 
-    int                 GetSelectedIndex    () const;
+    size_t              GetSelectedIndex    () const;
     ElementListItem*    GetSelectedItem     () const;
     Element*            GetSelectedElement  () const;
-    void                GetSelectedIndexes  (std::vector<int>& _vecIndexes) const;
+    void                GetSelectedIndexes  (std::vector<size_t>& _vecIndexes) const;
     void                GetSelectedItems    (std::vector<ElementListItem*>& _vecItems) const;
     void                GetSelectedElements (std::vector<Element*>& _vecElements) const;
 
@@ -73,8 +73,8 @@ protected:
     ElementSprite* m_scrollButtonBottom;
 
     std::vector<ElementListItem*> m_items;
-    int m_currentIndexTop;
-    int m_displayedItemCount;
+    size_t m_currentIndexTop;
+    size_t m_displayedItemCount;
 
     bool m_allowSelection;
     bool m_multipleSelection;

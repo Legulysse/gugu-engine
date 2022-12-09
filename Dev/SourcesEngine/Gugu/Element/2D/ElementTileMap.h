@@ -46,7 +46,7 @@ public:
     void UpdateTileColor(int index, const sf::Color& color);
     void UpdateTileColor(int x, int y, int width, const sf::Color& color);
 
-    int GetTileCount() const;
+    size_t GetTileCount() const;
 
 protected:
 

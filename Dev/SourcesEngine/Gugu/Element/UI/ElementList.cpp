@@ -85,7 +85,7 @@ void ElementList::AddItem(ElementListItem* _pNewItem)
     RecomputeItems();
 }
 
-void ElementList::RemoveItem(int _iIndex)
+void ElementList::RemoveItem(size_t _iIndex)
 {
     ElementListItem* pItem = m_items[_iIndex];
     RemoveItem(pItem);
@@ -103,7 +103,7 @@ void ElementList::RemoveItem(ElementListItem* _pItem)
         }
     }
 
-    m_currentIndexTop = Clamp(m_currentIndexTop, 0, (int)m_items.size() - 1);
+    m_currentIndexTop = m_items.size() == 0 ? 0 : Clamp<size_t>(m_currentIndexTop, 0, m_items.size() - 1);
 
     RecomputeItems();
 }
@@ -121,7 +121,7 @@ void ElementList::GetItems(std::vector<ElementListItem*>& _vecItems) const
     _vecItems = m_items;
 }
 
-int ElementList::GetItemCount() const
+size_t ElementList::GetItemCount() const
 {
     return m_items.size();
 }
@@ -136,9 +136,9 @@ void ElementList::SetMultipleSelection(bool _bMultiple)
     m_multipleSelection = _bMultiple;
 }
 
-void ElementList::SetItemSelected(int _iIndex, bool selected)
+void ElementList::SetItemSelected(size_t _iIndex, bool selected)
 {
-    if (_iIndex >= 0 && _iIndex < (int)m_items.size())
+    if (_iIndex >= 0 && _iIndex < m_items.size())
     {
         SetItemSelected(m_items[_iIndex], selected);
     }
@@ -164,9 +164,9 @@ void ElementList::SetItemSelected(ElementListItem* _pNewItem, bool selected)
     }
 }
 
-void ElementList::ToggleItemSelected(int _iIndex)
+void ElementList::ToggleItemSelected(size_t _iIndex)
 {
-    if (_iIndex >= 0 && _iIndex < (int)m_items.size())
+    if (_iIndex >= 0 && _iIndex < m_items.size())
     {
         ToggleItemSelected(m_items[_iIndex]);
     }
@@ -192,15 +192,15 @@ void ElementList::ToggleItemSelected(ElementListItem* _pNewItem)
     }
 }
 
-int ElementList::GetSelectedIndex() const
+size_t ElementList::GetSelectedIndex() const
 {
     for (size_t i = 0; i < m_items.size(); ++i)
     {
         if (m_items[i]->IsSelected())
-            return (int)i;
+            return i;
     }
 
-    return -1;
+    return 0;
 }
 
 ElementListItem* ElementList::GetSelectedItem() const
@@ -222,14 +222,14 @@ Element* ElementList::GetSelectedElement() const
     return nullptr;
 }
 
-void ElementList::GetSelectedIndexes(std::vector<int>& _vecIndexes) const
+void ElementList::GetSelectedIndexes(std::vector<size_t>& _vecIndexes) const
 {
     _vecIndexes.clear();
     
     for (size_t i = 0; i < m_items.size(); ++i)
     {
         if (m_items[i]->IsSelected())
-            _vecIndexes.push_back((int)i);
+            _vecIndexes.push_back(i);
     }
 }
 
@@ -261,7 +261,7 @@ void ElementList::OnMousePressed(const InteractionInfos& interactionInfos)
 {
     Vector2f localPickedCoords = interactionInfos.localPickingPosition;
 
-    for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
+    for (size_t i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
     {
         Vector2f itemLocalPickedCoords = m_items[i]->TransformToLocal(localPickedCoords, this);
         if (m_items[i]->IsPickedLocal(itemLocalPickedCoords))
@@ -287,7 +287,7 @@ void ElementList::OnSliderDragMoved(const InteractionInfos& interactionInfos)
         float fGap = Clamp(m_scrollSlider->GetPosition().y - m_scrollButtonTop->GetSize().y, 0.f, fScrollAreaSize);
         
         int iDesiredIndex = (int)(fGap / (fScrollAreaSize / (float)m_items.size()));
-        ScrollItems(iDesiredIndex - m_currentIndexTop);
+        ScrollItems(iDesiredIndex - (int)m_currentIndexTop);
     }
     else
     {
@@ -302,12 +302,12 @@ int ElementList::ScrollItems(int _iDelta)
 
     if (m_items.size() > 0)
     {
-        int iOldIndexTop    = m_currentIndexTop;
-        m_currentIndexTop  = Clamp(m_currentIndexTop + _iDelta, 0, (int)m_items.size() - 1);
+        size_t iOldIndexTop = m_currentIndexTop;
+        m_currentIndexTop = m_items.size() == 0 ? 0 : Clamp<size_t>(m_currentIndexTop + _iDelta, 0, m_items.size() - 1);
 
         RecomputeItems();   //This may change m_iCurrentIndexTop
 
-        iComputedDelta = m_currentIndexTop - iOldIndexTop;
+        iComputedDelta = (int)m_currentIndexTop - (int)iOldIndexTop;
     }
 
     return iComputedDelta;
@@ -337,7 +337,7 @@ void ElementList::RecomputeItems()
     else
     {
         //Compute the number of items displayable from current top
-        for (int i = m_currentIndexTop; i < (int)m_items.size(); ++i)
+        for (size_t i = m_currentIndexTop; i < m_items.size(); ++i)
         {
             pElement = m_items[i];
             fSizeItems += pElement->GetSize().y;
@@ -349,7 +349,7 @@ void ElementList::RecomputeItems()
         }
 
         //Compute additional number of items by moving the top
-        for (int i = m_currentIndexTop - 1; i >= 0; --i)
+        for (size_t i = m_currentIndexTop - 1; i >= 0; --i)
         {
             pElement = m_items[i];
             fSizeItems += pElement->GetSize().y;
@@ -371,7 +371,7 @@ void ElementList::RecomputeItems()
         float x = 0.f;
         float y = 0.f;
 
-        for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
+        for (size_t i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
         {
             pElement = m_items[i];
 
@@ -384,7 +384,7 @@ void ElementList::RecomputeItems()
     //Compute scroll size/position
     m_scrollSlider->SetPosition(GetSize().x - m_scrollSlider->GetSize().x, m_scrollSlider->GetPosition().y);
 
-    if (m_displayedItemCount < (int)m_items.size())
+    if (m_displayedItemCount < m_items.size())
     {
         float fItemSize = (GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y) / m_items.size();
 
@@ -404,7 +404,7 @@ void ElementList::OnSizeChanged()
 
     Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
     
-    for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
+    for (size_t i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
     {
         m_items[i]->OnListResized(kListSize);
     }
@@ -414,7 +414,7 @@ void ElementList::OnSizeChanged()
 
 void ElementList::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    for (int i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
+    for (size_t i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
     {
         m_items[i]->Render(_kRenderPass, _kTransformSelf);
     }

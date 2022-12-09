@@ -289,7 +289,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                 {
                     VirtualDatasheetObject::DataValue* childDataValue = dataValue->value_children[childIndex];
 
-                    ImGui::PushID(childIndex);
+                    ImGui::PushID((int)childIndex);
 
                     ImGui::TableNextRow();
 

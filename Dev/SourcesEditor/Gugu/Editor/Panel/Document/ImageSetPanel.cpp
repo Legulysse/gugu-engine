@@ -191,7 +191,7 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
         // TODO: handle sort (ImGuiTableSortSpecs).
         ImGuiListClipper clipper;
-        clipper.Begin(subImages.size());
+        clipper.Begin((int)subImages.size());
         while (clipper.Step())
         {
             for (int rowIndex = clipper.DisplayStart; rowIndex < clipper.DisplayEnd; ++rowIndex)
@@ -453,7 +453,7 @@ void ImageSetPanel::UpdateGizmo()
         {
             if (subImages[rowIndex]->GetRect().contains(Vector2i(pickedGlobalPosition)))
             {
-                m_selectedIndex = rowIndex;
+                m_selectedIndex = (int)rowIndex;
                 break;
             }
         }
@@ -524,7 +524,7 @@ void ImageSetPanel::OnAddSubImage()
         newSubImage->SetRect(lastSubImage->GetRect());
     }
 
-    m_selectedIndex = m_imageSet->GetSubImageCount() - 1;
+    m_selectedIndex = (int)m_imageSet->GetSubImageCount() - 1;
 
     RaiseDirty();
 }
@@ -546,7 +546,7 @@ void ImageSetPanel::OnRemoveSubImage()
     }
 
     m_imageSet->DeleteSubImage(subImage);
-    m_selectedIndex = Clamp<int>(m_selectedIndex, -1, m_imageSet->GetSubImageCount() - 1);
+    m_selectedIndex = Clamp<int>(m_selectedIndex, -1, (int)m_imageSet->GetSubImageCount() - 1);
 
     RaiseDirty();
 }

@@ -243,7 +243,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         const std::vector<Animation*>& animations = m_animSet->GetAnimations();
         for (size_t animationIndex = 0; animationIndex < animations.size(); ++animationIndex)
         {
-            ImGui::PushID(animationIndex);
+            ImGui::PushID((int)animationIndex);
 
             float row_min_height = ImGui::GetFrameHeight();
             ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
@@ -318,7 +318,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                 const std::vector<AnimationFrame*>& animationFrames = animation->GetFrames();
                 for (size_t frameIndex = 0; frameIndex < animationFrames.size(); ++frameIndex)
                 {
-                    ImGui::PushID(frameIndex);
+                    ImGui::PushID((int)frameIndex);
 
                     float frame_row_min_height = ImGui::GetFrameHeight();
                     ImGui::TableNextRow(ImGuiTableRowFlags_None, frame_row_min_height);

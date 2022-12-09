@@ -156,14 +156,14 @@ void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
             ImGui::TableHeadersRow();
 
             ImGuiListClipper clipper;
-            clipper.Begin(m_visibleLogIndices.size());
+            clipper.Begin((int)m_visibleLogIndices.size());
             while (clipper.Step())
             {
                 for (int rowIndex = clipper.DisplayStart; rowIndex < clipper.DisplayEnd; ++rowIndex)
                 {
                     size_t logIndex = m_visibleLogIndices[rowIndex];
 
-                    ImGui::PushID(logIndex);
+                    ImGui::PushID((int)logIndex);
 
                     float row_min_height = 0.f;
                     ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);

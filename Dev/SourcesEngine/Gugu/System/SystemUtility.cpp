@@ -13,7 +13,7 @@
 #include <ctime>
 #include <locale>
 
-#if defined(GUGU_OS_WIN32)
+#if defined(GUGU_OS_WINDOWS)
     #include <windows.h>
     #include <shellapi.h>
 #elif defined(GUGU_OS_LINUX)
@@ -39,7 +39,7 @@ void WriteInConsole(const std::string& _strLine, bool printInIDE)
 {
     std::cout << _strLine;
 
-#if defined(GUGU_OS_WIN32) && defined(GUGU_ENV_VISUAL)
+#if defined(GUGU_OS_WINDOWS) && defined(GUGU_ENV_VISUAL)
     if (printInIDE)
     {
         OutputDebugStringA(_strLine.c_str());
@@ -479,7 +479,7 @@ bool PathStartsWith(const std::string& path, const std::string& subPath)
 
 void OpenFileExplorer(const std::string& path)
 {
-#if defined(GUGU_OS_WIN32)
+#if defined(GUGU_OS_WINDOWS)
     std::string normalizedPath = path;
     StdStringReplaceSelf(normalizedPath, System::PathSeparator, '\\');
 
@@ -489,14 +489,14 @@ void OpenFileExplorer(const std::string& path)
 
 void OpenWebBrowser(const std::string& _strURL)
 {
-#if defined(GUGU_OS_WIN32)
+#if defined(GUGU_OS_WINDOWS)
     ShellExecuteA(nullptr, "open", _strURL.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 #endif
 }
 
 void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool recursive)
 {
-#if defined(GUGU_OS_WIN32)
+#if defined(GUGU_OS_WINDOWS)
 
     std::string normalizedPath;
     NormalizePath(rootPath, normalizedPath);
@@ -574,7 +574,7 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
 
 void GetDirectories(const std::string& rootPath, std::vector<std::string>& directories, bool recursive)
 {
-#if defined(GUGU_OS_WIN32)
+#if defined(GUGU_OS_WINDOWS)
 
     std::string normalizedPath;
     NormalizePath(rootPath, normalizedPath);
@@ -621,7 +621,7 @@ bool DirectoryExists(const std::string& _strPath)
     if (_strPath.empty())
         return true;
 
-#if defined(GUGU_OS_WIN32)
+#if defined(GUGU_OS_WINDOWS)
 
     DWORD dwAttrib = GetFileAttributesA(_strPath.c_str());
     return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
@@ -638,7 +638,7 @@ bool EnsureDirectoryExists(const std::string& _strPath)
     if (_strPath.empty())
         return true;
 
-#if defined(GUGU_OS_WIN32)
+#if defined(GUGU_OS_WINDOWS)
 
     std::vector<std::string> vecDirectories;
     StdStringSplit(_strPath, System::PathSeparator, vecDirectories);
@@ -667,7 +667,7 @@ bool EnsureDirectoryExists(const std::string& _strPath)
 
 bool RemoveFile(const std::string& _strPathName)
 {
-#if defined(GUGU_OS_WIN32)
+#if defined(GUGU_OS_WINDOWS)
     return std::remove(_strPathName.c_str()) == 0;
 #else
     return false;

@@ -1,4 +1,4 @@
-# gugu::Engine 0.7
+# gugu::Engine 0.7.1
 [![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
 
 A minimalist 2D game engine, written in C++, mainly based on SFML, ImGui, and PugiXml.
@@ -8,9 +8,9 @@ Contributors : Diccy, Amitsouko
 
 ## Dependencies
 
-- SFML 2.5.1 : used by the Engine.  
+- SFML 2.6.x : used by the Engine.  
 - PugiXml 1.11.4 : used by the Engine.  
-- ImGui 1.84.1 (docking) : used by the Editor.  
+- ImGui 1.85 (docking) : used by the Editor.  
 - ImGui-SFML 2.3 : used for the ImGui integration.  
 - Python 3.x : used for build and utility scripts.  
 - Premake 5 alpha 16 : used by build scripts.  

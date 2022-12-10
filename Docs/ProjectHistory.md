@@ -1,5 +1,14 @@
 # Project History
 
+## 10/12/2022 - Version 0.7.1
+- Clean du build 64bits, retrait du build 32bits.
+- Mise à jour du build de C++14 vers C++17.
+- Fix du build pour vs2022 (non testé).
+- Simplification des scripts de build (encapsulation des appels redondants entre chaque projet).
+- Retrait des sources de SFML, ImGui, ImGui-SFML et PugiXml, au profit de submodules (rangés dans /Externals/*).
+- Mise à jour SFML 2.6.x.
+- Mise à jour ImGui 1.85 (docking).
+
 ## 06/11/2022 - Version 0.7
 - Editor: ajout du undo/redo, d'un fichier ProjectSettings, d'un fichier EditorConfig, et d'une popup de sauvegarde à la fermeture.
 - Editor: Ajout du ParticleEffect editor, de l'AnimSet editor, d'un viewer pour les textures, et de l'OutputLog.

@@ -27,7 +27,7 @@ def CountLinesInDirectory(directory, verbose=False):
     # language.
     commentSymbol = "//"
 
-    acceptableFileExtensions = ['.h', '.cpp', '.tpp'] #sys.argv[1:]
+    acceptableFileExtensions = ['.h', '.hpp', '.cpp', '.tpp'] #sys.argv[1:]
     if not acceptableFileExtensions:
         print ('Please pass at least one file extension as an argument.')
         return
@@ -101,9 +101,11 @@ CountLinesInDirectory('../Dev/SourcesEngine')
 CountLinesInDirectory('../Dev/SourcesEditor')
 CountLinesInDirectory('../Dev/SourcesEditorApp')
 CountLinesInDirectory('../Dev/SourcesDemos')
-CountLinesInDirectory('../Dev/SourcesSFML')
-CountLinesInDirectory('../Dev/SourcesPugiXml')
-CountLinesInDirectory('../Dev/SourcesImGui')
+#CountLinesInDirectory('../Externals/SFML/include')
+#CountLinesInDirectory('../Externals/SFML/src')
+#CountLinesInDirectory('../Externals/PugiXml/src')
+#CountLinesInDirectory('../Externals/ImGui')
+#CountLinesInDirectory('../Externals/ImGuiSFML')
 
 
 print('')

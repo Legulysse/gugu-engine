@@ -2,8 +2,8 @@
 -- Template for a default project
 function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID)
     
-	DirSources = EnsureSlash(DirSources)
-	
+    DirSources = EnsureSlash(DirSources)
+    
     project (ProjectName)
 
         -- Base Definition
@@ -42,8 +42,8 @@ end
 -- Template for a default SFML project
 function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID)
     
-	DirSources = EnsureSlash(DirSources)
-	
+    DirSources = EnsureSlash(DirSources)
+    
     project (ProjectName)
     
         -- Base Definition
@@ -143,7 +143,7 @@ function ProjectLibGuguEditor(BuildCfg)
         includedirs {
             BuildCfg.DirSourcesEditor,
         }
-		
+        
         -- Options
         IncludeExtraWarnings()
         
@@ -250,35 +250,35 @@ function ProjectLibSFML(BuildCfg)
         }
 
         filter { "system:windows" }
-			excludes { 
+            excludes { 
                 DirSfmlSources.."SFML/Main/SFMLActivity.cpp",
                 DirSfmlSources.."SFML/Main/MainAndroid.cpp",
-				DirSfmlSources.."SFML/Network/Unix/**",
-				DirSfmlSources.."SFML/System/Android/**",
-				DirSfmlSources.."SFML/System/Unix/**",
+                DirSfmlSources.."SFML/Network/Unix/**",
+                DirSfmlSources.."SFML/System/Android/**",
+                DirSfmlSources.."SFML/System/Unix/**",
                 DirSfmlSources.."SFML/Window/Android/**",
-				DirSfmlSources.."SFML/Window/DRM/**",
-				DirSfmlSources.."SFML/Window/FreeBSD/**",
+                DirSfmlSources.."SFML/Window/DRM/**",
+                DirSfmlSources.."SFML/Window/FreeBSD/**",
                 DirSfmlSources.."SFML/Window/iOS/**",
-				DirSfmlSources.."SFML/Window/NetBSD/**",
-				DirSfmlSources.."SFML/Window/OpenBSD/**",
-				DirSfmlSources.."SFML/Window/OSX/**",
+                DirSfmlSources.."SFML/Window/NetBSD/**",
+                DirSfmlSources.."SFML/Window/OpenBSD/**",
+                DirSfmlSources.."SFML/Window/OSX/**",
                 DirSfmlSources.."SFML/Window/Unix/**",
             }
-		
+        
         filter { "system:linux" }
-			excludes { 
+            excludes { 
                 DirSfmlSources.."SFML/Main/**",
-				DirSfmlSources.."SFML/Network/Win32/**",
-				DirSfmlSources.."SFML/System/Android/**",
-				DirSfmlSources.."SFML/System/Win32/**",
+                DirSfmlSources.."SFML/Network/Win32/**",
+                DirSfmlSources.."SFML/System/Android/**",
+                DirSfmlSources.."SFML/System/Win32/**",
                 DirSfmlSources.."SFML/Window/Android/**",
-				DirSfmlSources.."SFML/Window/DRM/**",
-				DirSfmlSources.."SFML/Window/FreeBSD/**",
+                DirSfmlSources.."SFML/Window/DRM/**",
+                DirSfmlSources.."SFML/Window/FreeBSD/**",
                 DirSfmlSources.."SFML/Window/iOS/**",
-				DirSfmlSources.."SFML/Window/NetBSD/**",
-				DirSfmlSources.."SFML/Window/OpenBSD/**",
-				DirSfmlSources.."SFML/Window/OSX/**",
+                DirSfmlSources.."SFML/Window/NetBSD/**",
+                DirSfmlSources.."SFML/Window/OpenBSD/**",
+                DirSfmlSources.."SFML/Window/OSX/**",
                 DirSfmlSources.."SFML/Window/Win32/**",
             }
             
@@ -355,7 +355,7 @@ end
 -- Default Solution
 function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
 
-	DirSolution = EnsureSlash(DirSolution)
+    DirSolution = EnsureSlash(DirSolution)
     
     -- Base Definition
     location (DirSolution.._ACTION)
@@ -368,7 +368,7 @@ end
 -- Default App Project
 function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirVersion)
 
-	DirVersion = EnsureSlash(DirVersion)
+    DirVersion = EnsureSlash(DirVersion)
     SubDirBinaries  = EnsureSlash("Build_%{cfg.platform}_".._ACTION)
     
     -- Base Definition
@@ -542,8 +542,8 @@ end
 
 -- Path Utility
 function EnsureSlash(path)
-	if string.len(path) > 0 and string.sub(path, -1) ~= "/" then
-		return path.."/"
-	end
-	return path
+    if string.len(path) > 0 and string.sub(path, -1) ~= "/" then
+        return path.."/"
+    end
+    return path
 end

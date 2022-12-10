@@ -350,7 +350,7 @@ def Premake(dirEngineBuildScripts, file, compiler):
     elif sys.platform.startswith('darwin'):
         premakeExeName = 'premake5_mac'
 
-	#ShellExecute('"' + dirEngineBuildScripts + '/Premake/' + premakeExeName + '" --help')
+    #ShellExecute('"' + dirEngineBuildScripts + '/Premake/' + premakeExeName + '" --help')
     ShellExecute('"' + dirEngineBuildScripts + '/Premake/' + premakeExeName + '" --version')
     print('')
     ShellExecute('"' + dirEngineBuildScripts + '/Premake/' + premakeExeName + '" --file="' + file + '" ' + compiler)

@@ -373,7 +373,7 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirVersion)
     
     -- Base Definition
     language "C++"
-    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"", "IMGUI_DISABLE_INCLUDE_IMCONFIG_H" }
+    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"", "IMGUI_DISABLE_INCLUDE_IMCONFIG_H", "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
     defines { "SFML_STATIC" }
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
     systemversion "latest"
@@ -417,7 +417,7 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     -- Base Definition
     kind "StaticLib"
     language "C++"
-    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"", "IMGUI_DISABLE_INCLUDE_IMCONFIG_H" }
+    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"", "IMGUI_DISABLE_INCLUDE_IMCONFIG_H", "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
     defines { "SFML_STATIC" }
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
     systemversion "latest"

@@ -10,6 +10,11 @@
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
+namespace gugu
+{
+    class Datasheet;
+}
+
 namespace pugi
 {
     class xml_node;
@@ -37,7 +42,10 @@ public:
     DatasheetObject();
     virtual ~DatasheetObject();
 
-    bool LoadFromXml(const std::string& _strPathName, std::vector<class Datasheet*>& ancestors);
+    bool LoadFromXml(const std::string& _strPathName, Datasheet* ownerDatasheet, std::vector<class Datasheet*>& ancestors);
+
+    // Return the owning datasheet (only if this object is a root object, return nullptr otherwise).
+    Datasheet* GetDatasheet() const;
 
 protected:
 
@@ -153,6 +161,10 @@ private:
     bool ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues);
 
     pugi::xml_node FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName);
+
+private:
+
+    Datasheet* m_datasheet;
 };
 
 

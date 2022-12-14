@@ -22,6 +22,7 @@
 namespace gugu {
 
 DatasheetObject::DatasheetObject()
+    : m_datasheet(nullptr)
 {
 }
 
@@ -29,8 +30,13 @@ DatasheetObject::~DatasheetObject()
 {
 }
 
-bool DatasheetObject::LoadFromXml(const std::string& _strPathName, std::vector<Datasheet*>& ancestors)
+bool DatasheetObject::LoadFromXml(const std::string& _strPathName, Datasheet* ownerDatasheet, std::vector<Datasheet*>& ancestors)
 {
+    if (ownerDatasheet != nullptr)
+    {
+        m_datasheet = ownerDatasheet;
+    }
+
     pugi::xml_document oDoc;
     pugi::xml_parse_result result = oDoc.load_file(_strPathName.c_str());
     if (!result)
@@ -63,7 +69,7 @@ bool DatasheetObject::LoadFromXml(const std::string& _strPathName, std::vector<D
             else
             {
                 ancestors.push_back(parentSheet);
-                LoadFromXml(parentSheet->GetFileInfo().GetFilePath(), ancestors);
+                LoadFromXml(parentSheet->GetFileInfo().GetFilePath(), nullptr, ancestors);
             }
         }
     }
@@ -73,6 +79,11 @@ bool DatasheetObject::LoadFromXml(const std::string& _strPathName, std::vector<D
     ParseMembers(kContext);
 
     return true;
+}
+
+Datasheet* DatasheetObject::GetDatasheet() const
+{
+    return m_datasheet;
 }
 
 pugi::xml_node DatasheetObject::FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName)
@@ -434,7 +445,7 @@ bool Datasheet::LoadFromFile()
 
     std::vector<Datasheet*> ancestors;
     ancestors.push_back(this);
-    return m_rootObject->LoadFromXml(GetFileInfo().GetFilePath(), ancestors);
+    return m_rootObject->LoadFromXml(GetFileInfo().GetFilePath(), this, ancestors);
 }
 
 const DatasheetObject* Datasheet::GetRootObject() const

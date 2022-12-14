@@ -1,7 +1,9 @@
+#### Engine Ignores ####
+
 ## Build Directories
 
-**/*__pycache__/
-**/*Dev/Build/
+**/__pycache__/
+**/Dev/Build/
 **/[Bb]uild_*/
 
 

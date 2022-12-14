@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
 
     RunUnitTests_Math(&results);
     RunUnitTests_System(&results);
+    RunUnitTests_Xml(&results);
     RunUnitTests_Element(&results);
 
     results.PrintResults();

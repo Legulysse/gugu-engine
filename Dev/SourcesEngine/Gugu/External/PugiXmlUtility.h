@@ -39,6 +39,7 @@ private:
 bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, bool& value);
 bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, int& value);
 bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, unsigned int& value);
+bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, size_t& value);
 bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, float& value);
 bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, double& value);
 bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, std::string& value);

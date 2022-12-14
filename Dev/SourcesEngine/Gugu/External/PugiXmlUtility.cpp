@@ -63,6 +63,19 @@ bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeNa
     return true;
 }
 
+bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, size_t& value)
+{
+    if (!node)
+        return false;
+
+    pugi::xml_attribute attribute = node.attribute(attributeName.c_str());
+    if (!attribute)
+        return false;
+
+    value = attribute.as_ullong(value);
+    return true;
+}
+
 bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, float& value)
 {
     if (!node)

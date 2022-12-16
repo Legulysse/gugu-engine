@@ -72,6 +72,7 @@ public:
         m_totalTestCount = 0;
         m_totalSuccessCount = 0;
 
+        m_runningSection = false;
         m_runningSubSection = false;
         m_subSectionTestCount = 0;
         m_subSectionSuccessCount = 0;
@@ -86,7 +87,7 @@ public:
 
     void Finalize()
     {
-        FinalizeSubSection();
+        FinalizeSection();
 
         PrintResults();
 
@@ -124,19 +125,24 @@ public:
 
     void BeginSection(const std::string& title)
     {
-        FinalizeSubSection();
+        FinalizeSection();
+
+        m_runningSection = true;
 
         m_logger.Print("Section : " + title);
     }
 
     void BeginSubSection(const std::string& title)
     {
+        if (!m_runningSubSection && m_subSectionTestCount > 0)
+        {
+            m_logger.Print(StringFormat("WARNING: Mixing tests outside of a subsection followed by a subsection will mess results"));
+        }
+
         FinalizeSubSection();
 
         m_runningSubSection = true;
         m_pendingSubSectionTitle = title;
-        m_subSectionTestCount = 0;
-        m_subSectionSuccessCount = 0;
     }
 
     bool LogTestResult(bool result, const std::string& expression, const std::string& file, size_t line)
@@ -159,15 +165,33 @@ public:
 
 private:
 
+    void FinalizeSection()
+    {
+        FinalizeSubSection();
+
+        if (m_runningSection && m_subSectionTestCount > 0)
+        {
+            m_logger.Print(StringFormat("Sub Section : {0} ({1}/{2})", "<Default>", m_subSectionSuccessCount, m_subSectionTestCount));
+
+            m_subSectionTestCount = 0;
+            m_subSectionSuccessCount = 0;
+        }
+
+        m_runningSection = false;
+    }
+
     void FinalizeSubSection()
     {
-        if (m_runningSubSection)
+        if (m_runningSubSection && m_subSectionTestCount > 0)
         {
             m_logger.Print(StringFormat("Sub Section : {0} ({1}/{2})", m_pendingSubSectionTitle, m_subSectionSuccessCount, m_subSectionTestCount));
             m_pendingSubSectionTitle = "";
 
-            m_runningSubSection = false;
+            m_subSectionTestCount = 0;
+            m_subSectionSuccessCount = 0;
         }
+
+        m_runningSubSection = false;
     }
 
 private:
@@ -179,6 +203,7 @@ private:
     size_t m_totalTestCount;
     size_t m_totalSuccessCount;
 
+    bool m_runningSection;
     bool m_runningSubSection;
     std::string m_pendingSubSectionTitle;
     size_t m_subSectionTestCount;

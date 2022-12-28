@@ -26,6 +26,7 @@ namespace gugu {
 namespace System
 {
     const char PathSeparator = '/';
+    const char ExtensionSeparator = '.';
 }
 
 //----------------------------------------------

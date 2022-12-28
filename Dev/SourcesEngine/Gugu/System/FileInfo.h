@@ -18,13 +18,13 @@ public:
     FileInfo(const std::string& directoryPath, const std::string& fileName);
     FileInfo(const std::string& path);
 
-    std::string GetDirectoryPath() const;
+    std::string_view GetDirectoryPath() const;
     const std::string& GetFileName() const;
     const std::string& GetFilePath() const;
 
-    std::string GetPrettyName() const;
-    std::string GetExtension() const;
-    std::string GetAllExtensions() const;
+    std::string_view GetPrettyName() const;
+    std::string_view GetExtension() const;
+    std::string_view GetAllExtensions() const;
     bool HasExtension(const std::string& extension) const;
 
     bool operator < (const FileInfo& other) const;    //Used by std sorts

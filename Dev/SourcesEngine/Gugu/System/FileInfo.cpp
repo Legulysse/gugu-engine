@@ -45,10 +45,9 @@ void FileInfo::UpdateFromPath()
     }
 }
 
-std::string FileInfo::GetDirectoryPath() const
+std::string_view FileInfo::GetDirectoryPath() const
 {
-    //TODO: optimize this (wait for string_view ?).
-    return m_indexSeparator == std::string::npos ? std::string() : m_path.substr(0, m_indexSeparator);
+    return m_indexSeparator == std::string::npos ? std::string_view() : std::string_view(m_path).substr(0, m_indexSeparator);
 }
 
 const std::string& FileInfo::GetFileName() const
@@ -61,37 +60,37 @@ const std::string& FileInfo::GetFilePath() const
     return m_path;
 }
 
-std::string FileInfo::GetPrettyName() const
+std::string_view FileInfo::GetPrettyName() const
 {
     size_t pos = m_fileName.find_first_of(".");
     if (pos != std::string::npos)
     {
-        return m_fileName.substr(0, pos);
+        return std::string_view(m_fileName).substr(0, pos);
     }
 
-    return m_fileName;
+    return std::string_view(m_fileName);
 }
 
-std::string FileInfo::GetExtension() const
+std::string_view FileInfo::GetExtension() const
 {
     size_t pos = m_fileName.find_last_of(".");
     if (pos != std::string::npos)
     {
-        return m_fileName.substr(pos + 1);
+        return std::string_view(m_fileName).substr(pos + 1);
     }
 
-    return "";
+    return std::string_view();
 }
 
-std::string FileInfo::GetAllExtensions() const
+std::string_view FileInfo::GetAllExtensions() const
 {
     size_t pos = m_fileName.find_first_of(".");
     if (pos != std::string::npos)
     {
-        return m_fileName.substr(pos + 1);
+        return std::string_view(m_fileName).substr(pos + 1);
     }
 
-    return "";
+    return std::string_view();
 }
 
 bool FileInfo::HasExtension(const std::string& extension) const
@@ -103,9 +102,8 @@ bool FileInfo::HasExtension(const std::string& extension) const
 
 bool FileInfo::operator < (const FileInfo& other) const
 {
-    //TODO: optimize this (wait for string_view ?).
-    std::string path = GetDirectoryPath();
-    std::string otherPath = other.GetDirectoryPath();
+    std::string_view path = GetDirectoryPath();
+    std::string_view otherPath = other.GetDirectoryPath();
     return path < otherPath || (path == otherPath && m_fileName < other.m_fileName);
 }
 

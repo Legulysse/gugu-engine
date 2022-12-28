@@ -401,7 +401,7 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     fileHeader.write('\n')
     
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
-    fileHeader.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType);\n')
+    fileHeader.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType);\n')
     
     # Namespace
     if definitionBinding.namespace != '':
@@ -459,7 +459,7 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     
     fileSource.write('\n')
     fileSource.write('////////////////////////////////////////////////////////////////\n')
-    fileSource.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType)\n')
+    fileSource.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType)\n')
     fileSource.write('{\n')
     for newClass in definitionBinding.classes:
         newClass.SaveInstanciationCpp(fileSource)

@@ -742,7 +742,7 @@ void ManagerResources::RegisterDatasheetObjectFactory(const DelegateDatasheetObj
     m_datasheetObjectFactories.push_back(delegateDatasheetObjectFactory);
 }
 
-DatasheetObject* ManagerResources::InstanciateDatasheetObject(const std::string& _strType)
+DatasheetObject* ManagerResources::InstanciateDatasheetObject(std::string_view _strType)
 {
     if (m_datasheetObjectFactories.empty())
     {

@@ -245,6 +245,6 @@ protected:
 void DatasheetBinding_Register();
 
 ////////////////////////////////////////////////////////////////
-gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(const std::string& classType);
+gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType);
 
 } // namespace demoproject

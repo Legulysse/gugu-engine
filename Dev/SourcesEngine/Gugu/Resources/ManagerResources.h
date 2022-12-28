@@ -51,7 +51,7 @@ class ManagerResources
 {
 public:
 
-    using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (const std::string&)>;
+    using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (std::string_view)>;
     using DelegateResourceEvent = std::function<void(const Resource* resource, EResourceEvent event, const Resource* dependency)>;    // TODO: Is dependency reference necessary ?
 
     struct ResourceListener
@@ -146,7 +146,7 @@ public:
     Font*           GetDebugFont();
     
     void                RegisterDatasheetObjectFactory    (const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory);
-    DatasheetObject*    InstanciateDatasheetObject        (const std::string& _strType);
+    DatasheetObject*    InstanciateDatasheetObject        (std::string_view _strType);
 
     void RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum);
     const DatasheetEnum* GetDatasheetEnum(const std::string& _strName);

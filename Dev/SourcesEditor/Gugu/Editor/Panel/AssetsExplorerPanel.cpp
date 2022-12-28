@@ -124,7 +124,7 @@ void AssetsExplorerPanel::RefreshContent()
     {
         TreeNode* currentDirectory = m_rootNode;
 
-        std::string resourcePath = resourceInfo->fileInfo.GetDirectoryPath();
+        std::string_view resourcePath = resourceInfo->fileInfo.GetDirectoryPath();
 
         // Ignore Editor assets.
         if (PathStartsWith(resourcePath, editorAssetsPath))
@@ -133,7 +133,7 @@ void AssetsExplorerPanel::RefreshContent()
         }
 
         // Hide the project path from the hierarchy.
-        resourcePath.erase(0, projectAssetsPath.size());
+        resourcePath.remove_prefix(projectAssetsPath.size());
 
         StdStringSplit(resourcePath, System::PathSeparator, tokens);
 

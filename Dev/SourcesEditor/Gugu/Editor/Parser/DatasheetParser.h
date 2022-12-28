@@ -89,8 +89,8 @@ public:
     void ClearBinding();
 
     bool IsDatasheet(const FileInfo& fileInfo) const;
-    bool GetEnumDefinition(const std::string& name, EnumDefinition*& enumDefinition) const;
-    bool GetClassDefinition(const std::string& name, ClassDefinition*& classDefinition) const;
+    bool GetEnumDefinition(std::string_view name, EnumDefinition*& enumDefinition) const;
+    bool GetClassDefinition(std::string_view name, ClassDefinition*& classDefinition) const;
 
     const std::vector<ClassDefinition*>& GetAllClassDefinitions() const;
 

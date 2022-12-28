@@ -119,7 +119,12 @@ void RunUnitTests_System(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("PathStartsWith");
         {
-            GUGU_UTEST_CHECK(PathStartsWith("", ""));
+            GUGU_UTEST_CHECK(!PathStartsWith("", ""));
+            GUGU_UTEST_CHECK(!PathStartsWith("Assets", ""));
+            GUGU_UTEST_CHECK(!PathStartsWith("", "Assets"));
+            GUGU_UTEST_CHECK(!PathStartsWith("/", "/"));
+            GUGU_UTEST_CHECK(!PathStartsWith("/Assets", "/"));
+            GUGU_UTEST_CHECK(!PathStartsWith("/", "/Assets"));
             GUGU_UTEST_CHECK(PathStartsWith("./", "."));
             GUGU_UTEST_CHECK(PathStartsWith(".", "./"));
             GUGU_UTEST_CHECK(!PathStartsWith("", "."));

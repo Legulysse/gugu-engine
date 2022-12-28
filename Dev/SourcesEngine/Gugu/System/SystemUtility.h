@@ -63,8 +63,8 @@ std::string StdStringReplace(const std::string& value, const char& from, const c
 void StdStringReplace(const std::string& value, const char& from, const char& to, std::string& result);
 void StdStringReplaceSelf(std::string& value, const char& from, const char& to);
 
-void StdStringSplit(const std::string& _strValue, const std::string& _strDelimiter, std::vector<std::string>& _vecTokens);
-void StdStringSplit(const std::string& _strValue, const char& _strDelimiter, std::vector<std::string>& _vecTokens);
+void StdStringSplit(std::string_view _strValue, std::string_view _strDelimiter, std::vector<std::string>& _vecTokens);
+void StdStringSplit(std::string_view _strValue, char _strDelimiter, std::vector<std::string>& _vecTokens);
 
 std::string StdStringToLower(const std::string& _strValue);
 void StdStringToLower(const std::string& _strValue, std::string& _strResult);
@@ -74,8 +74,8 @@ std::string StdStringToUpper(const std::string& _strValue);
 void StdStringToUpper(const std::string& _strValue, std::string& _strResult);
 void StdStringToUpperSelf(std::string& _strValue);
 
-bool StdStringStartsWith(const std::string& _strValue, const std::string& _strSub);
-bool StdStringEndsWith(const std::string& _strValue, const std::string& _strSub);
+bool StdStringStartsWith(std::string_view _strValue, std::string_view _strSub);
+bool StdStringEndsWith(std::string_view _strValue, std::string_view _strSub);
 
 std::string StringFormat(const std::string& _tValue);
 template<typename T1>
@@ -134,7 +134,7 @@ void NamePartFromPath(const std::string& pathFile, std::string& file);
 void NamePartFromPathSelf(std::string& pathFile);
 
 // Check if a given path starts with a given subPath. Both paths are considered as complete and normalized.
-bool PathStartsWith(const std::string& path, const std::string& subPath);
+bool PathStartsWith(std::string_view path, std::string_view subPath);
 
 //----------------------------------------------
 // Containers

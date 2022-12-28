@@ -108,7 +108,7 @@ void StdStringReplaceSelf(std::string& _strValue, const char& from, const char& 
     std::replace(_strValue.begin(), _strValue.end(), from, to);
 }
 
-void StdStringSplit(const std::string& _strValue, const std::string& _strDelimiter, std::vector<std::string>& _vecTokens)
+void StdStringSplit(std::string_view _strValue, std::string_view _strDelimiter, std::vector<std::string>& _vecTokens)
 {
     _vecTokens.clear();
 
@@ -121,9 +121,9 @@ void StdStringSplit(const std::string& _strValue, const std::string& _strDelimit
     size_t iPosTokenStart = iPos;
     while ((iPos = _strValue.find(_strDelimiter, iPos)) != std::string::npos)
     {
-        std::string strToken = _strValue.substr(iPosTokenStart, iPos - iPosTokenStart);
+        std::string_view strToken = _strValue.substr(iPosTokenStart, iPos - iPosTokenStart);
         if (!strToken.empty())
-            _vecTokens.push_back(strToken);
+            _vecTokens.push_back(std::string(strToken));
 
         iPos += iStrLengthDelimiter;
         iPosTokenStart = iPos;
@@ -132,13 +132,13 @@ void StdStringSplit(const std::string& _strValue, const std::string& _strDelimit
     size_t iPosEnd = _strValue.length()-1;
     if (iPosTokenStart <= iPosEnd)
     {
-        std::string strToken = _strValue.substr(iPosTokenStart);
+        std::string_view strToken = _strValue.substr(iPosTokenStart);
         if (!strToken.empty())
-            _vecTokens.push_back(strToken);
+            _vecTokens.push_back(std::string(strToken));
     }
 }
 
-void StdStringSplit(const std::string& _strValue, const char& _strDelimiter, std::vector<std::string>& _vecTokens)
+void StdStringSplit(std::string_view _strValue, char _strDelimiter, std::vector<std::string>& _vecTokens)
 {
     _vecTokens.clear();
 
@@ -151,9 +151,9 @@ void StdStringSplit(const std::string& _strValue, const char& _strDelimiter, std
     size_t iPosTokenStart = iPos;
     while ((iPos = _strValue.find(_strDelimiter, iPos)) != std::string::npos)
     {
-        std::string strToken = _strValue.substr(iPosTokenStart, iPos - iPosTokenStart);
+        std::string_view strToken = _strValue.substr(iPosTokenStart, iPos - iPosTokenStart);
         if (!strToken.empty())
-            _vecTokens.push_back(strToken);
+            _vecTokens.push_back(std::string(strToken));
 
         iPos += iStrLengthDelimiter;
         iPosTokenStart = iPos;
@@ -162,9 +162,9 @@ void StdStringSplit(const std::string& _strValue, const char& _strDelimiter, std
     size_t iPosEnd = _strValue.length() - 1;
     if (iPosTokenStart <= iPosEnd)
     {
-        std::string strToken = _strValue.substr(iPosTokenStart);
+        std::string_view strToken = _strValue.substr(iPosTokenStart);
         if (!strToken.empty())
-            _vecTokens.push_back(strToken);
+            _vecTokens.push_back(std::string(strToken));
     }
 }
 
@@ -208,13 +208,13 @@ void StdStringToUpperSelf(std::string& _strValue)
         [&loc](const unsigned char c) { return std::toupper(c, loc); });
 }
 
-bool StdStringStartsWith(const std::string& _strValue, const std::string& _strSub)
+bool StdStringStartsWith(std::string_view _strValue, std::string_view _strSub)
 {
     return _strValue.size() >= _strSub.size()
         && _strValue.compare(0, _strSub.size(), _strSub) == 0;
 }
 
-bool StdStringEndsWith(const std::string& _strValue, const std::string& _strSub)
+bool StdStringEndsWith(std::string_view _strValue, std::string_view _strSub)
 {
     return _strValue.size() >= _strSub.size()
         && _strValue.compare(_strValue.size() - _strSub.size(), _strSub.size(), _strSub) == 0;
@@ -471,10 +471,23 @@ void NamePartFromPathSelf(std::string& pathFile)
     }
 }
 
-bool PathStartsWith(const std::string& path, const std::string& subPath)
+bool PathStartsWith(std::string_view path, std::string_view subPath)
 {
-    //TODO: I can probably avoid creating strings here and directly compare paths.
-    return StdStringStartsWith(EnsureTrailingPathSeparator(path), EnsureTrailingPathSeparator(subPath));
+    if (!path.empty() && path.back() == System::PathSeparator)
+    {
+        path.remove_suffix(1);
+    }
+
+    if (!subPath.empty() && subPath.back() == System::PathSeparator)
+    {
+        subPath.remove_suffix(1);
+    }
+
+    if (path.empty() || subPath.empty() || path.size() < subPath.size())
+        return false;
+
+    // SubPath must represent a non-truncated part of Path, meaning it is either equal to path, or match the position of a separator.
+    return (path.size() == subPath.size() || path.at(subPath.size()) == System::PathSeparator) && StdStringStartsWith(path, subPath);
 }
 
 void OpenFileExplorer(const std::string& path)

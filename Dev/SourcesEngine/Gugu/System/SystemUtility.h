@@ -41,6 +41,8 @@ void SafeDeleteArray(T*& _aObjects);
 //----------------------------------------------
 // Strings
 
+bool StringEquals(std::string_view left, std::string_view right);
+
 template<typename T>
 std::string ToString(const T& _tValue);
 

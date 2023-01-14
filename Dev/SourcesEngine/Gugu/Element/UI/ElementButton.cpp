@@ -228,7 +228,7 @@ bool ElementButton::LoadFromFile(const std::string& path)
         return false;
 
     pugi::xml_attribute nodeRootType = nodeRoot.attribute("type");
-    if (!nodeRootType || std::strcmp(nodeRootType.value(), "ElementButton") != 0)
+    if (!nodeRootType || !StringEquals(nodeRootType.value(), "ElementButton"))
         return false;
 
     return LoadFromXml(nodeRoot);
@@ -245,19 +245,19 @@ bool ElementButton::LoadFromXml(const pugi::xml_node& nodeSelf)
         for (pugi::xml_node nodeComponentElement = nodeComponents.child("Element"); nodeComponentElement; nodeComponentElement = nodeComponentElement.next_sibling("Element"))
         {
             pugi::xml_attribute nodeElementName = nodeComponentElement.attribute("name");
-            if (nodeElementName && std::strcmp(nodeElementName.value(), "Idle") == 0 && !m_spriteIdle)
+            if (nodeElementName && StringEquals(nodeElementName.value(), "Idle") && !m_spriteIdle)
             {
                 m_spriteIdle = new ElementSpriteGroup;
                 m_spriteIdle->LoadFromXml(nodeComponentElement);
                 m_spriteIdle->SetParent(this, true);
             }
-            else if (nodeElementName && std::strcmp(nodeElementName.value(), "Focused") == 0 && !m_spriteFocused)
+            else if (nodeElementName && StringEquals(nodeElementName.value(), "Focused") && !m_spriteFocused)
             {
                 m_spriteFocused = new ElementSpriteGroup;
                 m_spriteFocused->LoadFromXml(nodeComponentElement);
                 m_spriteFocused->SetParent(this, true);
             }
-            else if (nodeElementName && std::strcmp(nodeElementName.value(), "Disabled") == 0 && !m_spriteDisabled)
+            else if (nodeElementName && StringEquals(nodeElementName.value(), "Disabled") && !m_spriteDisabled)
             {
                 m_spriteDisabled = new ElementSpriteGroup;
                 m_spriteDisabled->LoadFromXml(nodeComponentElement);

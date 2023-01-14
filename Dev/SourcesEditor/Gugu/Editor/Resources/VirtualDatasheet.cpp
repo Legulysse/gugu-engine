@@ -225,7 +225,7 @@ void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeDa
     DatasheetParser::ClassDefinition* instanceDefinition = nullptr;
 
     pugi::xml_attribute attributeType = nodeData.attribute("type");
-    if (!attributeType.empty() && std::strcmp(attributeType.value(), "") == 0)
+    if (!attributeType.empty() && StringEquals(attributeType.value(), ""))
     {
         // If an empty type is explicitly declared, the instance is forced as null (should already be null).
         dataValue->value_objectInstanceDefinition = nullptr;

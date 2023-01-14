@@ -257,7 +257,7 @@ bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
         return false;
 
     pugi::xml_attribute nodeRootType = nodeRoot.attribute("type");
-    if (!nodeRootType || std::strcmp(nodeRootType.value(), "ElementSpriteGroup") != 0)
+    if (!nodeRootType || !StringEquals(nodeRootType.value(), "ElementSpriteGroup"))
         return false;
 
     return LoadFromXml(nodeRoot);

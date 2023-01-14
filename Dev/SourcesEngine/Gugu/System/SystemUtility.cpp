@@ -25,6 +25,11 @@
 
 namespace gugu {
 
+bool StringEquals(std::string_view left, std::string_view right)
+{
+    return left == right;
+}
+
 std::string ToString(int _iValue)
 {
     return std::to_string(_iValue);

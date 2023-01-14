@@ -265,6 +265,30 @@ void RunUnitTests_System(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("String");
     {
+        GUGU_UTEST_SUBSECTION("StringEquals");
+        {
+            const char* testCharA = "";
+            const char* testCharB = "";
+            GUGU_UTEST_CHECK(StringEquals(testCharA, ""));
+            GUGU_UTEST_CHECK(StringEquals(testCharB, ""));
+            GUGU_UTEST_CHECK(StringEquals(testCharA, testCharB));
+            GUGU_UTEST_CHECK(StringEquals(testCharA, std::string(testCharB)));
+            GUGU_UTEST_CHECK(StringEquals(testCharA, std::string_view(testCharB)));
+            GUGU_UTEST_CHECK(StringEquals(std::string_view(testCharA), std::string(testCharB)));
+            GUGU_UTEST_CHECK(StringEquals(std::string(testCharA), std::string(testCharB)));
+            GUGU_UTEST_CHECK(StringEquals(std::string_view(testCharA), std::string_view(testCharB)));
+
+            GUGU_UTEST_CHECK(StringEquals("hello", "hello"));
+            GUGU_UTEST_CHECK(StringEquals(std::string("hello"), "hello"));
+            GUGU_UTEST_CHECK(StringEquals(std::string_view("hello"), "hello"));
+            GUGU_UTEST_CHECK(!StringEquals("hello", "world"));
+            GUGU_UTEST_CHECK(!StringEquals(std::string("hello"), "world"));
+            GUGU_UTEST_CHECK(!StringEquals(std::string_view("hello"), "world"));
+            GUGU_UTEST_CHECK(!StringEquals("hello", "hello world"));
+            GUGU_UTEST_CHECK(!StringEquals(std::string("hello"), "hello world"));
+            GUGU_UTEST_CHECK(!StringEquals(std::string_view("hello"), "hello world"));
+        }
+
         GUGU_UTEST_SUBSECTION("StringNumberFormat");
         {
             GUGU_UTEST_CHECK(StringNumberFormat(1) == "1");

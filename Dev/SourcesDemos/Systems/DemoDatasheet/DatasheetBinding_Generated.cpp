@@ -97,20 +97,17 @@ DS_General::DS_General()
     m_speed = 0.f;
     m_isMonarch = false;
     m_faction = nullptr;
-    m_sprite = nullptr;
-    m_sprite2 = nullptr;
     m_weapon = EWeaponType::Sword;
-    playableCondition = nullptr;
 }
 
 DS_General::~DS_General()
 {
     m_faction = nullptr;
-    SafeDelete(m_sprite);
-    SafeDelete(m_sprite2);
+    DeleteInstance(m_sprite);
+    DeleteInstance(m_sprite2);
     m_factions.clear();
-    ClearStdVector(m_sprites);
-    SafeDelete(playableCondition);
+    ClearInstanceArray(m_sprites);
+    DeleteInstance(playableCondition);
 }
 
 void DS_General::ParseMembers(gugu::DatasheetParserContext& context)
@@ -120,15 +117,33 @@ void DS_General::ParseMembers(gugu::DatasheetParserContext& context)
     ReadFloat(context, "speed", m_speed);
     ReadBool(context, "is monarch", m_isMonarch);
     ReadReference(context, "faction", m_faction);
-    ReadInstance(context, "sprite", "spriteInfo", m_sprite);
-    ReadInstance(context, "sprite 2", "spriteInfo", m_sprite2);
+
+    DS_SpriteInfo* sprite = &*m_sprite;
+    ReadInstance(context, "sprite", "spriteInfo", sprite);
+    m_sprite = gugu::InstancePtr(sprite);
+
+    DS_SpriteInfo* sprite2 = &*m_sprite2;
+    ReadInstance(context, "sprite 2", "spriteInfo", sprite2);
+    m_sprite2 = gugu::InstancePtr(sprite2);
+
     ReadArrayString(context, "names list", m_names);
     ReadArrayInt(context, "stats list", m_stats);
     ReadArrayReference(context, "factions list", m_factions);
-    ReadArrayInstance(context, "more sprites", "spriteInfo", m_sprites);
+
+    std::vector<DS_SpriteInfo*> sprites;
+    ReadArrayInstance(context, "more sprites", "spriteInfo", sprites);
+    ClearInstanceArray(m_sprites);
+    for (DS_SpriteInfo* spriteptr : sprites)
+    {
+        m_sprites.push_back(gugu::InstancePtr(spriteptr));
+    }
+
     ReadEnum(context, "weapon", "weaponType", m_weapon);
     ReadArrayEnum(context, "available weapons", "weaponType", m_availableWeapons);
-    ReadInstance(context, "playableCondition", "condition", playableCondition);
+
+    DS_Condition* condition = &*playableCondition;
+    ReadInstance(context, "playableCondition", "condition", condition);
+    playableCondition = gugu::InstancePtr(condition);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -267,6 +282,20 @@ void DS_Condition::ParseMembers(gugu::DatasheetParserContext& context)
     ReadBool(context, "intendedResult", intendedResult);
 }
 
+//DS_Condition* DS_Condition::DeepCopy() const
+//{
+//    DS_Condition* newCopy = new DS_Condition;
+//    newCopy->DeepCopyImpl(this);
+//    return newCopy;
+//}
+
+void DS_Condition::DeepCopyImpl(const DS_Condition* from)
+{
+    //gugu::DatasheetObject::DeepCopyImpl(from);
+
+    intendedResult = from->intendedResult;
+}
+
 ////////////////////////////////////////////////////////////////
 DS_ConditionAnd::DS_ConditionAnd()
 {
@@ -282,6 +311,20 @@ void DS_ConditionAnd::ParseMembers(gugu::DatasheetParserContext& context)
     DS_Condition::ParseMembers(context);
 
     ReadArrayInstance(context, "conditions", "condition", conditions);
+}
+
+gugu::DatasheetObject* DS_ConditionAnd::DeepCopy() const
+{
+    DS_ConditionAnd* newCopy = new DS_ConditionAnd;
+    newCopy->DeepCopyImpl(this);
+    return newCopy;
+}
+
+void DS_ConditionAnd::DeepCopyImpl(const DS_ConditionAnd* from)
+{
+    DS_Condition::DeepCopyImpl(from);
+
+    //TODO: copy array
 }
 
 ////////////////////////////////////////////////////////////////
@@ -301,6 +344,21 @@ void DS_ConditionPlayerLevel::ParseMembers(gugu::DatasheetParserContext& context
 
     ReadInt(context, "minLevel", minLevel);
     ReadInt(context, "maxLevel", maxLevel);
+}
+
+gugu::DatasheetObject* DS_ConditionPlayerLevel::DeepCopy() const
+{
+    DS_ConditionPlayerLevel* newCopy = new DS_ConditionPlayerLevel;
+    newCopy->DeepCopyImpl(this);
+    return newCopy;
+}
+
+void DS_ConditionPlayerLevel::DeepCopyImpl(const DS_ConditionPlayerLevel* from)
+{
+    DS_Condition::DeepCopyImpl(from);
+
+    minLevel = from->minLevel;
+    maxLevel = from->maxLevel;
 }
 
 ////////////////////////////////////////////////////////////////

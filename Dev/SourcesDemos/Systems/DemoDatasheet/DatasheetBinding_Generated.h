@@ -90,18 +90,19 @@ public:
 
 public:
 
+    gugu::InstancePtr<DS_SpriteInfo> m_sprite;
+    gugu::InstancePtr<DS_SpriteInfo> m_sprite2;
+    std::vector<gugu::InstancePtr<DS_SpriteInfo>> m_sprites;
+    gugu::InstancePtr<DS_Condition> playableCondition;
+
     float m_speed;
     bool m_isMonarch;
     const DS_Faction* m_faction;
-    const DS_SpriteInfo* m_sprite;
-    const DS_SpriteInfo* m_sprite2;
     std::vector< std::string > m_names;
     std::vector< int > m_stats;
     std::vector< const DS_Faction* > m_factions;
-    std::vector< const DS_SpriteInfo* > m_sprites;
     EWeaponType::Type m_weapon;
     std::vector< EWeaponType::Type > m_availableWeapons;
-    const DS_Condition* playableCondition;
 
 protected:
 
@@ -223,7 +224,7 @@ public:
 public:
 
     bool IsValid(const struct ConditionContext& context) const;
-    virtual bool IsValidImpl(const struct ConditionContext& context) const = 0;
+    virtual gugu::DatasheetObject* DeepCopy() const = 0;  //disable because class is declared as abstract in binding
 
 public:
 
@@ -231,7 +232,9 @@ public:
 
 protected:
 
+    virtual bool IsValidImpl(const struct ConditionContext& context) const = 0;
     virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    void DeepCopyImpl(const DS_Condition* from);
 };
 
 ////////////////////////////////////////////////////////////////
@@ -244,7 +247,7 @@ public:
 
 public:
 
-    virtual bool IsValidImpl(const struct ConditionContext& context) const override;
+    virtual gugu::DatasheetObject* DeepCopy() const override;
 
 public:
 
@@ -252,7 +255,9 @@ public:
 
 protected:
 
+    virtual bool IsValidImpl(const struct ConditionContext& context) const override;
     virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    void DeepCopyImpl(const DS_ConditionAnd* from);
 };
 
 ////////////////////////////////////////////////////////////////
@@ -265,7 +270,7 @@ public:
 
 public:
 
-    virtual bool IsValidImpl(const struct ConditionContext& context) const override;
+    virtual gugu::DatasheetObject* DeepCopy() const override;
 
 public:
 
@@ -274,7 +279,9 @@ public:
 
 protected:
 
+    virtual bool IsValidImpl(const struct ConditionContext& context) const override;
     virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    void DeepCopyImpl(const DS_ConditionPlayerLevel* from);
 };
 
 ////////////////////////////////////////////////////////////////

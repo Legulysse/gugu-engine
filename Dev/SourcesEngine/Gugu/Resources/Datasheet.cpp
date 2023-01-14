@@ -207,7 +207,7 @@ void DatasheetObject::ReadArrayBool(DatasheetParserContext& _kContext, const std
     }
 }
 
-const DatasheetObject* DatasheetObject::InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType)
+DatasheetObject* DatasheetObject::InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType)
 {
     DatasheetObject* instance = GetResources()->InstanciateDatasheetObject(_strType);
     if (instance)
@@ -223,7 +223,7 @@ const DatasheetObject* DatasheetObject::InstanciateDatasheetObject(DatasheetPars
     return nullptr;
 }
 
-bool DatasheetObject::InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, const DatasheetObject*& _pInstance)
+bool DatasheetObject::InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DatasheetObject*& _pInstance)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -248,7 +248,7 @@ bool DatasheetObject::InstanciateDatasheetObject(DatasheetParserContext& _kConte
     return false;
 }
 
-bool DatasheetObject::InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<const DatasheetObject*>& _vecInstances)
+bool DatasheetObject::InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DatasheetObject*>& _vecInstances)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -265,7 +265,7 @@ bool DatasheetObject::InstanciateDatasheetObjects(DatasheetParserContext& _kCont
             if (strType != "")
             {
                 _kContext.currentNode = &pNodeChild;
-                const DatasheetObject* pInstance = InstanciateDatasheetObject(_kContext, strType);
+                DatasheetObject* pInstance = InstanciateDatasheetObject(_kContext, strType);
                 if (pInstance)
                 {
                     _vecInstances.push_back(pInstance);

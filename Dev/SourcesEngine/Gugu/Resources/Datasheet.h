@@ -24,7 +24,77 @@ namespace pugi
 // File Declarations
 
 namespace gugu {
-    
+
+//----- TEST BEGIN
+
+template <typename T>
+class InstancePtr
+{
+public:
+
+    InstancePtr() noexcept : m_data{ nullptr } {}
+    explicit InstancePtr(T* _data) noexcept : m_data{ _data } {}
+    InstancePtr(InstancePtr<T>&&) noexcept = default;
+    InstancePtr& operator = (InstancePtr<T>&&) noexcept = default;
+    ~InstancePtr() noexcept = default;
+
+    void DeleteData()
+    {
+        if (m_data != nullptr)
+            delete m_data;
+        m_data = nullptr;
+    }
+
+    T* DeepCopy() const
+    {
+        // TODO: propagate deep copy to datasheet object.
+        if (m_data)
+            return dynamic_cast<T*>(m_data->DeepCopy());
+        return nullptr;
+    }
+
+private:
+
+    // Disable copy from const to non-const
+    InstancePtr(const InstancePtr<T>&) noexcept = default;
+    InstancePtr& operator = (const InstancePtr<T>&) noexcept = default;
+
+public:
+
+    InstancePtr& operator = (T* _data) noexcept { m_data = _data; return *this; }
+
+    operator const T* () const noexcept { return m_data; }
+    const T& operator * () const noexcept { return *m_data; }
+    const T* operator -> () const noexcept { return m_data; }
+
+    operator T* () noexcept { return m_data; }
+    T& operator * () noexcept { return *m_data; }
+    T* operator -> () noexcept { return m_data; }
+
+private:
+
+    T* m_data;
+};
+
+template<typename T>
+void DeleteInstance(gugu::InstancePtr<T>& ptr)
+{
+    ptr.DeleteData();
+}
+
+template<typename T>
+void ClearInstanceArray(std::vector<gugu::InstancePtr<T>>& arrayptr)
+{
+    for (gugu::InstancePtr<T>& ptr : arrayptr)
+    {
+        ptr.DeleteData();
+    }
+
+    arrayptr.clear();
+}
+
+//----- TEST END
+
 struct DatasheetParserContext
 {
     pugi::xml_node* currentNode;
@@ -65,13 +135,13 @@ protected:
 
     //Read instance (instanced datasheet structure)
     template<typename T>
-    void ReadInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember)
+    void ReadInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T*& _pMember)
     {
-        const DatasheetObject* pInstance = nullptr;
+        DatasheetObject* pInstance = nullptr;
         if (InstanciateDatasheetObject(_kContext, _strName, _strType, pInstance))
         {
             SafeDelete(_pMember);
-            _pMember = dynamic_cast<const T*>(pInstance);
+            _pMember = dynamic_cast<T*>(pInstance);
         }
     }
 
@@ -97,9 +167,9 @@ protected:
 
     //Read instance array (instanced datasheet structures)
     template<typename T>
-    void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
+    void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T*>& _vecMember)
     {
-        std::vector<const DatasheetObject*> vecInstances;
+        std::vector<DatasheetObject*> vecInstances;
         if (InstanciateDatasheetObjects(_kContext, _strName, _strType, vecInstances))
         {
             ClearStdVector(_vecMember);
@@ -107,7 +177,7 @@ protected:
             for (size_t i = 0; i < vecInstances.size(); ++i)
             {
                 // Fill the actual member values (may contain null values).
-                const T* pInstance = dynamic_cast<const T*>(vecInstances[i]);
+                T* pInstance = dynamic_cast<T*>(vecInstances[i]);
                 _vecMember.push_back(pInstance);
             }
         }
@@ -149,9 +219,9 @@ protected:
 
 private:
 
-    const DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType);
-    bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, const DatasheetObject*& _pInstance);
-    bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<const DatasheetObject*>& _vecInstances);
+    DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType);
+    bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DatasheetObject*& _pInstance);
+    bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DatasheetObject*>& _vecInstances);
 
     const DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
     bool ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);

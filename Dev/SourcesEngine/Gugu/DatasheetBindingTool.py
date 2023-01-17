@@ -136,6 +136,7 @@ class DefinitionClass():
     def __init__(self):
         self.name = ''
         self.code = ''
+        self.type = 'datasheet'
         self.baseClassName = ''
         self.isAbstract = False
         self.members = []
@@ -155,6 +156,9 @@ class DefinitionClass():
         _file.write('////////////////////////////////////////////////////////////////\n')
         
         parentClassName = 'gugu::DatasheetObject'
+        if self.type == 'datasave':
+            parentClassName = 'gugu::DatasaveObject'
+        
         if self.baseClassName != '' and self.baseClassName in _definitionBinding.dictClassNames:
             parentClassName = _definitionBinding.dictClassNames[self.baseClassName]
             
@@ -219,7 +223,11 @@ class DefinitionClass():
         _file.write('protected:\n')
         _file.write('\n')
         _file.write('    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;\n')
-            
+
+        # Serializer
+        if self.type == 'datasave':
+            _file.write('    virtual void SerializeMembers (gugu::DataSaveContext& context) override;\n')
+
         # Finalize
         _file.write('};\n')
         _file.write('\n')
@@ -294,7 +302,7 @@ class DefinitionClass():
                     
         _file.write('}\n')
         
-        # Loader
+        # Parser
         _file.write('\n')
         _file.write('void '+ self.code +'::ParseMembers(gugu::DatasheetParserContext& context)\n')
         _file.write('{\n')
@@ -324,7 +332,7 @@ class DefinitionClass():
                     else:
                         _file.write('    ReadArrayEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                 else:
-                    strMethod = 'Read'
+                    strMethod = 'gugu::DataBinding::Read'
                     if member.isArray:
                         strMethod += 'Array'
                     
@@ -345,6 +353,59 @@ class DefinitionClass():
                 
         _file.write('}\n')
         
+        # Serializer
+        if self.type == 'datasave':
+            _file.write('\n')
+            _file.write('void '+ self.code +'::SerializeMembers(gugu::DataSaveContext& context)\n')
+            _file.write('{\n')
+            
+            if hasConcreteParentClass:
+                _file.write('    '+ parentClassName +'::SerializeMembers(context);\n')
+                _file.write('\n')
+            else:
+                _file.write('    //'+ parentClassName +'::SerializeMembers(context);\n')
+                _file.write('\n')
+                
+            for member in self.members:
+                if member.type != '' and member.name != '' and member.code != '':
+                    if member.isReference:
+                        if not member.isArray:
+                            _file.write('    WriteReference(context, "'+member.name +'", '+ member.code +');\n')
+                        else:
+                            _file.write('    WriteArrayReference(context, "'+member.name +'", '+ member.code +');\n')
+                    elif member.isInstance:
+                        if not member.isArray:
+                            _file.write('    WriteInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        else:
+                            _file.write('    WriteArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                    elif member.type in _definitionBinding.dictEnums:
+                        if not member.isArray:
+                            _file.write('    WriteEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        else:
+                            _file.write('    WriteArrayEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                    else:
+                        strMethod = 'gugu::DataBinding::Write'
+                        if member.isArray:
+                            strMethod += 'Array'
+                        
+                        if member.type == 'string':
+                            strMethod += 'String'
+                        elif member.type == 'int':
+                            strMethod += 'Int'
+                        elif member.type == 'float':
+                            strMethod += 'Float'
+                        elif member.type == 'bool':
+                            strMethod += 'Bool'
+                            
+                        else:
+                            #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping parsing method declaration.')
+                            continue
+                                
+                        _file.write('    '+ strMethod +'(context, "'+member.name +'", '+ member.code +');\n')
+                    
+            _file.write('}\n')
+        
+        # Finalize
         _file.write('\n')
 
 
@@ -368,9 +429,19 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
     fileHeader.write('// Includes\n')
     fileHeader.write('\n')
-    fileHeader.write('#include "Gugu/Resources/Datasheet.h"\n')
+    fileHeader.write('#include "Gugu/Data/DataBindingUtility.h"\n')
+    fileHeader.write('#include "Gugu/Data/DatasheetObject.h"\n')
+    fileHeader.write('#include "Gugu/Data/DatasaveObject.h"\n')
     fileHeader.write('\n')
-    fileHeader.write('#include <vector>\n')
+    fileHeader.write('////////////////////////////////////////////////////////////////\n')
+    fileHeader.write('// Forward Declarations\n')
+    fileHeader.write('\n')
+    fileHeader.write('namespace gugu\n')
+    fileHeader.write('{\n')
+    fileHeader.write('    struct DatasheetParserContext;\n')
+    fileHeader.write('    struct DataSaveContext;\n')
+    fileHeader.write('    struct DatasheetEnum;\n')
+    fileHeader.write('}\n')
     fileHeader.write('\n')
 
     # Namespace
@@ -462,7 +533,8 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     fileSource.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType)\n')
     fileSource.write('{\n')
     for newClass in definitionBinding.classes:
-        newClass.SaveInstanciationCpp(fileSource)
+        if newClass.type == 'datasheet':
+            newClass.SaveInstanciationCpp(fileSource)
     fileSource.write('    return nullptr;\n')
     fileSource.write('}\n')
     
@@ -544,6 +616,9 @@ def ParseXmlEnum(_xmlEnum):
 def ParseXmlClass(_xmlClass):
     newClass = DefinitionClass()
     
+    if 'type' in _xmlClass.attributes:
+        newClass.type = _xmlClass.attributes['type'].value
+        
     if 'name' in _xmlClass.attributes:
         newClass.name = _xmlClass.attributes['name'].value
         

@@ -105,7 +105,7 @@ public:
     template<typename T>
     const T* GetDatasheetObject(const std::string& _strName)
     {
-        return dynamic_cast<const T*>(GetDatasheet(_strName)->GetRootObject());
+        return dynamic_cast<const T*>(GetDatasheetRootObject(_strName));
     }
 
     Resource* GetResource(const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
@@ -161,6 +161,8 @@ public:
 private:
 
     Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
+
+    const DatasheetObject* GetDatasheetRootObject(const std::string& _strName);
 
     void RegisterResourceDependencies(Resource* resource);
     void UnregisterResourceDependencies(Resource* resource);

@@ -22,6 +22,7 @@
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/Datasheet.h"
 
+#include "Gugu/Data/DataBindingUtility.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include "Gugu/Core/Application.h"
@@ -266,6 +267,11 @@ ParticleEffect* ManagerResources::GetParticleEffect(const std::string& _strName)
 Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)
 {
     return dynamic_cast<Datasheet*>(GetResource(_strName, EResourceType::Datasheet));
+}
+
+const DatasheetObject* ManagerResources::GetDatasheetRootObject(const std::string& _strName)
+{
+    return GetDatasheet(_strName)->GetRootObject();
 }
 
 Resource* ManagerResources::GetResource(const std::string& _strName, EResourceType::Type _eExplicitType)

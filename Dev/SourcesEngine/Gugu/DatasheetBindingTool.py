@@ -328,9 +328,9 @@ class DefinitionClass():
                         _file.write('    ReadArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                 elif member.type in _definitionBinding.dictEnums:
                     if not member.isArray:
-                        _file.write('    ReadEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
-                        _file.write('    ReadArrayEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadArrayEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                 else:
                     strMethod = 'gugu::DataBinding::Read'
                     if member.isArray:
@@ -380,9 +380,9 @@ class DefinitionClass():
                             _file.write('    WriteArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     elif member.type in _definitionBinding.dictEnums:
                         if not member.isArray:
-                            _file.write('    WriteEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                         else:
-                            _file.write('    WriteArrayEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteArrayEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
                         strMethod = 'gugu::DataBinding::Write'
                         if member.isArray:

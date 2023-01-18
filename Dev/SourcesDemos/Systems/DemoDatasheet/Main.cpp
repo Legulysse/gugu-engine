@@ -81,6 +81,8 @@ int main(int argc, char* argv[])
     gameSave->name = "hello world";
     gameSave->names.push_back(StringFormat("hello {0}", gameSave->names.size()));
     gameSave->stats.push_back((int)gameSave->stats.size());
+    gameSave->weapon = EWeaponType::Axe;
+    gameSave->weapons.push_back((EWeaponType::Type)(gameSave->weapons.size() % EWeaponType::GetSize()));
 
     EnsureDirectoryExists("User");
     gameSave->SaveToXml("User/gamesave.xml");

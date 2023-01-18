@@ -104,6 +104,8 @@
         <Data type="string" name="name" />
         <Data type="array:int" name="stats" />
         <Data type="array:string" name="names" />
+        <Data type="weaponType" name="weapon" />
+        <Data type="array:weaponType" name="weapons" />
     </Class>
     
 </Binding>

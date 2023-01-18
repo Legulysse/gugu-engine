@@ -64,15 +64,6 @@ protected:
         }
     }
 
-    //Read Enum value
-    template<typename T>
-    void ReadEnum(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T& _eMember)
-    {
-        int iValue = 0;
-        if (ReadEnumValue(_kContext, _strName, _strType, iValue))
-            _eMember = (T)iValue;
-    }
-
     //Read instance array (instanced datasheet structures)
     template<typename T>
     void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
@@ -109,22 +100,6 @@ protected:
         }
     }
 
-    //Read Enum value array
-    template<typename T>
-    void ReadArrayEnum(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T>& _vecMember)
-    {
-        std::vector<int> vecValues;
-        if (ReadEnumValues(_kContext, _strName, _strType, vecValues))
-        {
-            _vecMember.clear();
-
-            for (size_t i = 0; i < vecValues.size(); ++i)
-            {
-                _vecMember.push_back((T)(vecValues[i]));
-            }
-        }
-    }
-
 private:
 
     const DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType);
@@ -134,9 +109,6 @@ private:
     const DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
     bool ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
     bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
-
-    bool ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue);
-    bool ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues);
 
     pugi::xml_node FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName);
 

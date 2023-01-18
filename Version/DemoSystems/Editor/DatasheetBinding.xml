@@ -101,6 +101,9 @@
     
     <Class type="datasave" name="GameSave" code="DS_GameSave">
         <Data type="int" name="experience" />
+        <Data type="string" name="name" />
+        <Data type="array:int" name="stats" />
+        <Data type="array:string" name="names" />
     </Class>
     
 </Binding>

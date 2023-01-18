@@ -7,7 +7,7 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Audio/ManagerAudio.h"
+#include "Gugu/System/SystemUtility.h"
 
 #if defined(GUGU_ENV_VISUAL )
 
@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
 
     DatasheetBinding_Register();
 
+    // Datasheets
     const DS_General* pGeneralA = GetResources()->GetDatasheetObject<DS_General>("Robert.general");
     const DS_General* pGeneralB = GetResources()->GetDatasheetObject<DS_General>("Joffrey.general");
     const DS_Faction* pFaction = GetResources()->GetDatasheetObject<DS_Faction>("Yumeda.faction");
@@ -71,6 +72,20 @@ int main(int argc, char* argv[])
     size_t iSizeWeaponTypesC = vecWeaponTypes.size();
 
     //TODO: Get all datasheets by type
+
+    // Datasaves
+    DS_GameSave* gameSave = new DS_GameSave;
+    gameSave->LoadFromXml("User/gamesave.xml");
+
+    gameSave->experience += 1;
+    gameSave->name = "hello world";
+    gameSave->names.push_back(StringFormat("hello {0}", gameSave->names.size()));
+    gameSave->stats.push_back((int)gameSave->stats.size());
+
+    EnsureDirectoryExists("User");
+    gameSave->SaveToXml("User/gamesave.xml");
+
+    SafeDelete(gameSave);
 
     //----------------------------------------------
 

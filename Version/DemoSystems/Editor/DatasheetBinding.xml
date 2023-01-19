@@ -106,6 +106,8 @@
         <Data type="array:string" name="names" />
         <Data type="weaponType" name="weapon" />
         <Data type="array:weaponType" name="weapons" />
+        <Data type="reference:general" name="general" />
+        <Data type="array:reference:general" name="generals" />
     </Class>
     
 </Binding>

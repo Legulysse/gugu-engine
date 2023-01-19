@@ -7,7 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Data/DatasheetObject.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/Datasheet.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -118,6 +120,68 @@ void WriteEnumValues(DataSaveContext& _kContext, const std::string& _strName, co
             }
         }
     }
+}
+
+const DatasheetObject* ResolveDatasheetLink(const std::string& _strName)
+{
+    Datasheet* datasheet = GetResources()->GetDatasheet(_strName);
+    return datasheet ? datasheet->GetRootObject() : nullptr;
+}
+
+bool ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, const DatasheetObject*& _pNewDatasheet)
+{
+    pugi::xml_node pNode = FindNodeData(_kContext, _strName);
+    if (pNode)
+    {
+        pugi::xml_attribute pAttributeValue = pNode.attribute("value");
+        if (pAttributeValue)
+        {
+            // Reference can be null.
+            std::string datasheetID = pAttributeValue.as_string();
+            if (datasheetID != "")
+            {
+                std::string strSheetName = pAttributeValue.as_string();
+                _pNewDatasheet = ResolveDatasheetLink(strSheetName);
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecReferences)
+{
+    pugi::xml_node pNode = FindNodeData(_kContext, _strName);
+    if (pNode)
+    {
+        pugi::xml_node pNodeChild = pNode.child("Child");
+        while (pNodeChild)
+        {
+            pugi::xml_attribute pAttributeValue = pNodeChild.attribute("value");
+            if (pAttributeValue)
+            {
+                // Reference can be null.
+                std::string datasheetID = pAttributeValue.as_string();
+                if (datasheetID != "")
+                {
+                    const DatasheetObject* reference = ResolveDatasheetLink(datasheetID);
+                    _vecReferences.push_back(reference);
+                }
+                else
+                {
+                    _vecReferences.push_back(nullptr);
+                }
+            }
+
+            pNodeChild = pNodeChild.next_sibling("Child");
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 }   // namespace Impl
@@ -299,6 +363,34 @@ void WriteArrayBool(DataSaveContext& _kContext, const std::string& _strName, con
     for (size_t i = 0; i < _vecMember.size(); ++i)
     {
         pNode.append_child("Child").append_attribute("value").set_value(_vecMember[i]);
+    }
+}
+
+void WriteReference(DataSaveContext& _kContext, const std::string& _strName, const DatasheetObject* _pMember)
+{
+    const Datasheet* datasheet = _pMember->GetDatasheet();
+    if (datasheet)
+    {
+        pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
+        pNode.append_attribute("value").set_value(datasheet->GetID().c_str());
+    }
+}
+
+void WriteArrayReference(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember)
+{
+    pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
+
+    for (size_t i = 0; i < _pMember.size(); ++i)
+    {
+        const Datasheet* datasheet = _pMember[i] == nullptr ? nullptr : _pMember[i]->GetDatasheet();
+        if (datasheet)
+        {
+            pNode.append_child("Child").append_attribute("value").set_value(datasheet->GetID().c_str());
+        }
+        else
+        {
+            pNode.append_child("Child").append_attribute("value");
+        }
     }
 }
 

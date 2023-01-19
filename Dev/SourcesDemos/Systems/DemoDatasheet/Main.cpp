@@ -83,6 +83,9 @@ int main(int argc, char* argv[])
     gameSave->stats.push_back((int)gameSave->stats.size());
     gameSave->weapon = EWeaponType::Axe;
     gameSave->weapons.push_back((EWeaponType::Type)(gameSave->weapons.size() % EWeaponType::GetSize()));
+    gameSave->general = GetResources()->GetDatasheetObject<DS_General>("Robert.general");
+    gameSave->generals.push_back(GetResources()->GetDatasheetObject<DS_General>("Joffrey.general"));
+    gameSave->generals.push_back(nullptr);
 
     EnsureDirectoryExists("User");
     gameSave->SaveToXml("User/gamesave.xml");

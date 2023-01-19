@@ -318,9 +318,9 @@ class DefinitionClass():
             if member.type != '' and member.name != '' and member.code != '':
                 if member.isReference:
                     if not member.isArray:
-                        _file.write('    ReadReference(context, "'+member.name +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadReference(context, "'+member.name +'", '+ member.code +');\n')
                     else:
-                        _file.write('    ReadArrayReference(context, "'+member.name +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadArrayReference(context, "'+member.name +'", '+ member.code +');\n')
                 elif member.isInstance:
                     if not member.isArray:
                         _file.write('    ReadInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
@@ -370,9 +370,9 @@ class DefinitionClass():
                 if member.type != '' and member.name != '' and member.code != '':
                     if member.isReference:
                         if not member.isArray:
-                            _file.write('    WriteReference(context, "'+member.name +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteReference(context, "'+member.name +'", '+ member.code +');\n')
                         else:
-                            _file.write('    WriteArrayReference(context, "'+member.name +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteArrayReference(context, "'+member.name +'", '+ member.code +');\n')
                     elif member.isInstance:
                         if not member.isArray:
                             _file.write('    WriteInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')

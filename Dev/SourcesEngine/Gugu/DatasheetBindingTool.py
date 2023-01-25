@@ -226,7 +226,9 @@ class DefinitionClass():
 
         # Serializer
         if self.type == 'datasave':
-            _file.write('    virtual void SerializeMembers (gugu::DataSaveContext& context) override;\n')
+            _file.write('    virtual void SerializeMembers (gugu::DataSaveContext& context) const override;\n')
+            _file.write('\n')
+            _file.write('    virtual const std::string& GetDataInstanceType() const override;\n')
 
         # Finalize
         _file.write('};\n')
@@ -323,9 +325,9 @@ class DefinitionClass():
                         _file.write('    gugu::DataBinding::ReadArrayReference(context, "'+member.name +'", '+ member.code +');\n')
                 elif member.isInstance:
                     if not member.isArray:
-                        _file.write('    ReadInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
-                        _file.write('    ReadArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                 elif member.type in _definitionBinding.dictEnums:
                     if not member.isArray:
                         _file.write('    gugu::DataBinding::ReadEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
@@ -356,7 +358,7 @@ class DefinitionClass():
         # Serializer
         if self.type == 'datasave':
             _file.write('\n')
-            _file.write('void '+ self.code +'::SerializeMembers(gugu::DataSaveContext& context)\n')
+            _file.write('void '+ self.code +'::SerializeMembers(gugu::DataSaveContext& context) const\n')
             _file.write('{\n')
             
             if hasConcreteParentClass:
@@ -375,9 +377,9 @@ class DefinitionClass():
                             _file.write('    gugu::DataBinding::WriteArrayReference(context, "'+member.name +'", '+ member.code +');\n')
                     elif member.isInstance:
                         if not member.isArray:
-                            _file.write('    WriteInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                         else:
-                            _file.write('    WriteArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     elif member.type in _definitionBinding.dictEnums:
                         if not member.isArray:
                             _file.write('    gugu::DataBinding::WriteEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
@@ -403,6 +405,13 @@ class DefinitionClass():
                                 
                         _file.write('    '+ strMethod +'(context, "'+member.name +'", '+ member.code +');\n')
                     
+            _file.write('}\n')
+            
+            _file.write('\n')
+            _file.write('const std::string& '+ self.code +'::GetDataInstanceType() const\n')
+            _file.write('{\n')
+            _file.write('    static std::string dataInstanceType = "'+ self.name +'";\n')
+            _file.write('    return dataInstanceType;\n')
             _file.write('}\n')
         
         # Finalize

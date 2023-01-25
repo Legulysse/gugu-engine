@@ -12,6 +12,7 @@
 namespace gugu
 {
     class DatasheetObject;
+    class DatasaveObject;
 }
 
 namespace pugi
@@ -91,7 +92,7 @@ void WriteEnum(DataSaveContext& _kContext, const std::string& _strName, const st
 }
 
 template<typename T>
-void WriteArrayEnum(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T>& _vecMember)
+void WriteArrayEnum(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<T>& _vecMember)
 {
     std::vector<int> vecValues;
     vecValues.reserve(_vecMember.size());
@@ -151,6 +152,38 @@ void WriteArrayReference(DataSaveContext& _kContext, const std::string& _strName
 
 void WriteArrayReference(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember);
 
+//Read instance (instanced datasheet structure)
+template<typename T>
+void ReadInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember)
+{
+    const DatasheetObject* pInstance = nullptr;
+    if (Impl::InstanciateDatasheetObject(_kContext, _strName, _strType, pInstance))
+    {
+        SafeDelete(_pMember);
+        _pMember = dynamic_cast<const T*>(pInstance);
+    }
+}
+
+//Read instance array (instanced datasheet structures)
+template<typename T>
+void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
+{
+    std::vector<const DatasheetObject*> vecInstances;
+    if (Impl::InstanciateDatasheetObjects(_kContext, _strName, _strType, vecInstances))
+    {
+        ClearStdVector(_vecMember);
+
+        for (size_t i = 0; i < vecInstances.size(); ++i)
+        {
+            // Fill the actual member values (may contain null values).
+            const T* pInstance = dynamic_cast<const T*>(vecInstances[i]);
+            _vecMember.push_back(pInstance);
+        }
+    }
+}
+
+void WriteInstance(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const DatasaveObject* _pMember);
+
 namespace Impl {
 
 pugi::xml_node FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName);
@@ -165,6 +198,10 @@ void WriteEnumValues(DataSaveContext& _kContext, const std::string& _strName, co
 const DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
 bool ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
 bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
+
+const DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType);
+bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, const DatasheetObject*& _pInstance);
+bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<const DatasheetObject*>& _vecInstances);
 
 }   // namespace Impl
 

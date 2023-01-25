@@ -8,8 +8,10 @@
 // Includes
 
 #include "Gugu/Data/DatasheetObject.h"
+#include "Gugu/Data/DatasaveObject.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Datasheet.h"
+#include "Gugu/Debug/Logger.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -177,6 +179,86 @@ bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string&
 
             pNodeChild = pNodeChild.next_sibling("Child");
         }
+
+        return true;
+    }
+
+    return false;
+}
+
+const DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType)
+{
+    DatasheetObject* instance = GetResources()->InstanciateDatasheetObject(_strType);
+    if (instance)
+    {
+        instance->ParseMembers(_kContext);
+        return instance;
+    }
+    else
+    {
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasheet : {0}", _strType));
+    }
+
+    return nullptr;
+}
+
+bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, const DatasheetObject*& _pInstance)
+{
+    pugi::xml_node pNode = FindNodeData(_kContext, _strName);
+    if (pNode)
+    {
+        // Check type overload. If serialized type is explicitely empty, we force a null instance (can be used to erase a parent instance through inheritance).
+        pugi::xml_attribute pAttributeType = pNode.attribute("type");
+        std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
+
+        if (strType != "")
+        {
+            pugi::xml_node* pNodeParent = _kContext.currentNode;
+            _kContext.currentNode = &pNode;
+
+            _pInstance = InstanciateDatasheetObject(_kContext, strType);
+
+            _kContext.currentNode = pNodeParent;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<const DatasheetObject*>& _vecInstances)
+{
+    pugi::xml_node pNode = FindNodeData(_kContext, _strName);
+    if (pNode)
+    {
+        pugi::xml_node* pNodeParent = _kContext.currentNode;
+
+        pugi::xml_node pNodeChild = pNode.child("Child");
+        while (pNodeChild)
+        {
+            // Check type overload. If serialized type is explicitely empty, we force a null instance (can be used for explicit empty array entries).
+            pugi::xml_attribute pAttributeType = pNodeChild.attribute("type");
+            std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
+
+            if (strType != "")
+            {
+                _kContext.currentNode = &pNodeChild;
+                const DatasheetObject* pInstance = InstanciateDatasheetObject(_kContext, strType);
+                if (pInstance)
+                {
+                    _vecInstances.push_back(pInstance);
+                }
+            }
+            else
+            {
+                _vecInstances.push_back(nullptr);
+            }
+
+            pNodeChild = pNodeChild.next_sibling("Child");
+        }
+
+        _kContext.currentNode = pNodeParent;
 
         return true;
     }
@@ -368,7 +450,7 @@ void WriteArrayBool(DataSaveContext& _kContext, const std::string& _strName, con
 
 void WriteReference(DataSaveContext& _kContext, const std::string& _strName, const DatasheetObject* _pMember)
 {
-    const Datasheet* datasheet = _pMember->GetDatasheet();
+    const Datasheet* datasheet = _pMember == nullptr ? nullptr : _pMember->GetDatasheet();
     if (datasheet)
     {
         pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
@@ -391,6 +473,22 @@ void WriteArrayReference(DataSaveContext& _kContext, const std::string& _strName
         {
             pNode.append_child("Child").append_attribute("value");
         }
+    }
+}
+
+void WriteInstance(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const DatasaveObject* _pMember)
+{
+    if (_pMember)
+    {
+        pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
+        pNode.append_attribute("type").set_value(_pMember->GetDataInstanceType().c_str());
+
+        pugi::xml_node* pNodeParent = _kContext.currentNode;
+        _kContext.currentNode = &pNode;
+
+        _pMember->SerializeMembers(_kContext);
+
+        _kContext.currentNode = pNodeParent;
     }
 }
 

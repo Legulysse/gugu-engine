@@ -87,6 +87,11 @@ int main(int argc, char* argv[])
     gameSave->generals.push_back(GetResources()->GetDatasheetObject<DS_General>("Joffrey.general"));
     gameSave->generals.push_back(nullptr);
 
+    DS_ItemSave* itemSave = new DS_ItemSave;
+    itemSave->item = nullptr;
+    itemSave->quantity = 10;
+    gameSave->singleItem = itemSave;
+
     EnsureDirectoryExists("User");
     gameSave->SaveToXml("User/gamesave.xml");
 

@@ -29,10 +29,10 @@ public:
     bool LoadFromXml(const std::string& _strPathName);
     bool SaveToXml(const std::string& _strPathName);
 
-protected:
-
     virtual void ParseMembers(DatasheetParserContext& _kContext) = 0;
-    virtual void SerializeMembers(DataSaveContext& _kContext) = 0;
+    virtual void SerializeMembers(DataSaveContext& _kContext) const = 0;
+
+    virtual const std::string& GetDataInstanceType() const = 0;
 };
 
 }   // namespace gugu

@@ -176,6 +176,10 @@ bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string&
                     _vecReferences.push_back(nullptr);
                 }
             }
+            else
+            {
+                _vecReferences.push_back(nullptr);
+            }
 
             pNodeChild = pNodeChild.next_sibling("Child");
         }
@@ -248,6 +252,10 @@ bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::s
                 if (pInstance)
                 {
                     _vecInstances.push_back(pInstance);
+                }
+                else
+                {
+                    _vecInstances.push_back(nullptr);
                 }
             }
             else

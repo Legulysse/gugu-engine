@@ -500,6 +500,31 @@ void WriteInstance(DataSaveContext& _kContext, const std::string& _strName, cons
     }
 }
 
+void WriteInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember)
+{
+    pugi::xml_node* pNodeParent = _kContext.currentNode;
+    pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
+
+    for (size_t i = 0; i < _pMember.size(); ++i)
+    {
+        pugi::xml_node childNode = pNode.append_child("Child");
+
+        if (_pMember[i] != nullptr)
+        {
+            childNode.append_attribute("type").set_value(_pMember[i]->GetDataInstanceType().c_str());
+
+            _kContext.currentNode = &childNode;
+            _pMember[i]->SerializeMembers(_kContext);
+        }
+        else
+        {
+            childNode.append_attribute("type");
+        }
+    }
+
+    _kContext.currentNode = pNodeParent;
+}
+
 }   // namespace DataBinding
 
 }   // namespace gugu

@@ -184,6 +184,24 @@ void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _st
 
 void WriteInstance(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const DatasaveObject* _pMember);
 
+template<typename T>
+void WriteArrayInstance(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<T*>& _pMember)
+{
+    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasaveObject type");
+
+    std::vector<DatasaveObject*> vecInstances;
+    vecInstances.reserve(_pMember.size());
+
+    for (size_t i = 0; i < _pMember.size(); ++i)
+    {
+        vecInstances.push_back((DatasaveObject*)_pMember[i]);
+    }
+
+    WriteInstances(_kContext, _strName, _strType, vecInstances);
+}
+
+void WriteInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember);
+
 namespace Impl {
 
 pugi::xml_node FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName);

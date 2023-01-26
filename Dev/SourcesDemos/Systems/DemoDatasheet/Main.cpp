@@ -92,6 +92,13 @@ int main(int argc, char* argv[])
     itemSave->quantity = 10;
     gameSave->singleItem = itemSave;
 
+    DS_ItemSave* itemSaveB = new DS_ItemSave;
+    itemSaveB->item = nullptr;
+    itemSaveB->quantity = 10;
+    gameSave->multipleItems.push_back(itemSaveB);
+
+    gameSave->multipleItems.push_back(nullptr);
+
     EnsureDirectoryExists("User");
     gameSave->SaveToXml("User/gamesave.xml");
 

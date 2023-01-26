@@ -115,6 +115,7 @@
         <Data type="reference:general" name="general" />
         <Data type="array:reference:general" name="generals" />
         <Data type="instance:itemSave" name="singleItem" />
+        <Data type="array:instance:itemSave" name="multipleItems" />
     </Class>
     
     <Class type="datasave" name="itemSave" code="DS_ItemSave">

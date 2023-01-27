@@ -63,7 +63,7 @@ void ManagerResources::Init(const EngineConfig& config)
 void ManagerResources::Release()
 {
     m_resourceDependencies.clear();
-    m_datasheetObjectFactories.clear();
+    m_dataObjectFactories.clear();
 
     ClearStdMap(m_dataEnumInfos);
     ClearStdMap(m_customTextures);
@@ -743,26 +743,25 @@ void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _ve
 //    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
 //}
 
-void ManagerResources::RegisterDatasheetObjectFactory(const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory)
+void ManagerResources::RegisterDataObjectFactory(const DelegateDataObjectFactory& delegateDataObjectFactory)
 {
-    m_datasheetObjectFactories.push_back(delegateDatasheetObjectFactory);
+    m_dataObjectFactories.push_back(delegateDataObjectFactory);
 }
 
-DataObject* ManagerResources::InstanciateDatasheetObject(std::string_view _strType)
+DataObject* ManagerResources::InstanciateDataObject(std::string_view _strType)
 {
-    if (m_datasheetObjectFactories.empty())
+    if (m_dataObjectFactories.empty())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "No Datasheet Object Factory registered : Parsing Datasheets is ignored");
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "No Data Object Factory registered");
     }
     else
     {
-        DataObject* datasheetObject = nullptr;
-        for (size_t i = 0; i < m_datasheetObjectFactories.size(); ++i)
+        for (size_t i = 0; i < m_dataObjectFactories.size(); ++i)
         {
-            datasheetObject = m_datasheetObjectFactories[i](_strType);
-            if (datasheetObject)
+            DataObject* dataObject = m_dataObjectFactories[i](_strType);
+            if (dataObject)
             {
-                return datasheetObject;
+                return dataObject;
             }
         }
     }

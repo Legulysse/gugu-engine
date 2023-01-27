@@ -193,7 +193,7 @@ bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string&
 
 DataObject* InstanciateDataObject(DatasheetParserContext& _kContext, const std::string& _strType)
 {
-    DataObject* instance = GetResources()->InstanciateDatasheetObject(_strType);
+    DataObject* instance = GetResources()->InstanciateDataObject(_strType);
     if (instance)
     {
         instance->ParseMembers(_kContext);

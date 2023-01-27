@@ -52,7 +52,7 @@ class ManagerResources
 {
 public:
 
-    using DelegateDatasheetObjectFactory = std::function<DataObject* (std::string_view)>;
+    using DelegateDataObjectFactory = std::function<DataObject* (std::string_view)>;
     using DelegateResourceEvent = std::function<void(const Resource* resource, EResourceEvent event, const Resource* dependency)>;    // TODO: Is dependency reference necessary ?
 
     struct ResourceListener
@@ -146,8 +146,8 @@ public:
     Font*           GetDefaultFont();
     Font*           GetDebugFont();
     
-    void            RegisterDatasheetObjectFactory  (const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory);
-    DataObject*     InstanciateDatasheetObject      (std::string_view _strType);
+    void            RegisterDataObjectFactory  (const DelegateDataObjectFactory& delegateDataObjectFactory);
+    DataObject*     InstanciateDataObject      (std::string_view _strType);
 
     void RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum);
     const DataEnumInfos* GetDataEnumInfos(const std::string& _strName);
@@ -185,7 +185,7 @@ private:
     std::map<ResourceMapKey, ResourceInfo*> m_resources;
     std::map<ResourceMapKey, Texture*> m_customTextures;
 
-    std::vector<DelegateDatasheetObjectFactory> m_datasheetObjectFactories;
+    std::vector<DelegateDataObjectFactory> m_dataObjectFactories;
     std::map<ResourceMapKey, const DataEnumInfos*> m_dataEnumInfos;
 
     std::map<const Resource*, ResourceDependencies> m_resourceDependencies;

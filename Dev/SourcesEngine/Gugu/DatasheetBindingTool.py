@@ -6,11 +6,11 @@
 # Generates the C++ binding from the xml binding.
 # > _pathBindingXml : the path to the source xml definition.
 # > _pathBindingCpp : the destination folder for the generated C++ files ('.h' and '.cpp' files).
-# > _generatedFileName : the base name for generated C++ files (If empty, defaults to DatasheetBinding).
+# > _generatedFileName : the base name for generated C++ files (If empty, defaults to DataBinding).
 
 def GenerateBindingCpp(_pathBindingXml, _pathBindingCpp, _generatedFileName):
     if _generatedFileName == '':
-        _generatedFileName = 'DatasheetBinding'
+        _generatedFileName = 'DataBinding'
     GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName)
 
 
@@ -475,11 +475,11 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
         
     # Methods Declarations
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
-    fileHeader.write('void DatasheetBinding_Register();\n')
+    fileHeader.write('void DataBinding_Register();\n')
     fileHeader.write('\n')
     
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
-    fileHeader.write('gugu::DataObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType);\n')
+    fileHeader.write('gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType);\n')
     
     # Namespace
     if definitionBinding.namespace != '':
@@ -524,7 +524,7 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
         
     # Methods Implementations
     fileSource.write('////////////////////////////////////////////////////////////////\n')
-    fileSource.write('void DatasheetBinding_Register()\n')
+    fileSource.write('void DataBinding_Register()\n')
     fileSource.write('{\n')
     
     if len(definitionBinding.dictEnums) > 0:
@@ -532,12 +532,12 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
             newEnum.SaveRegisterMethodCpp(fileSource)
         fileSource.write('\n')
         
-    fileSource.write('    gugu::GetResources()->RegisterDatasheetObjectFactory(DatasheetBinding_InstanciateDatasheetObject);\n')
+    fileSource.write('    gugu::GetResources()->RegisterDataObjectFactory(DataBinding_InstanciateDataObject);\n')
     fileSource.write('}\n')
     
     fileSource.write('\n')
     fileSource.write('////////////////////////////////////////////////////////////////\n')
-    fileSource.write('gugu::DataObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType)\n')
+    fileSource.write('gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType)\n')
     fileSource.write('{\n')
     for newClass in definitionBinding.classes:
         newClass.SaveInstanciationCpp(fileSource)

@@ -215,7 +215,7 @@ class DefinitionClass():
                         continue
                     
                 if member.isArray:
-                    strType = 'std::vector< '+ strType +' >'
+                    strType = 'std::vector<'+ strType +'>'
                     
                 _file.write('    '+ strType +' '+ member.code +';\n')
         
@@ -223,11 +223,11 @@ class DefinitionClass():
         _file.write('\n')
         _file.write('protected:\n')
         _file.write('\n')
-        _file.write('    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;\n')
+        _file.write('    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;\n')
 
         # Serializer
         if self.type == 'datasave':
-            _file.write('    virtual void SerializeMembers (gugu::DataSaveContext& context) const override;\n')
+            _file.write('    virtual void SerializeMembers(gugu::DataSaveContext& context) const override;\n')
             _file.write('\n')
             _file.write('    virtual const std::string& GetDataInstanceType() const override;\n')
 
@@ -321,9 +321,9 @@ class DefinitionClass():
             if member.type != '' and member.name != '' and member.code != '':
                 if member.isReference:
                     if not member.isArray:
-                        _file.write('    gugu::DataBinding::ReadReference(context, "'+member.name +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadDatasheetReference(context, "'+member.name +'", '+ member.code +');\n')
                     else:
-                        _file.write('    gugu::DataBinding::ReadArrayReference(context, "'+member.name +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadDatasheetReferenceArray(context, "'+member.name +'", '+ member.code +');\n')
                 elif member.isInstance:
                     if self.type == 'datasheet':
                         if not member.isArray:
@@ -339,11 +339,9 @@ class DefinitionClass():
                     if not member.isArray:
                         _file.write('    gugu::DataBinding::ReadEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
-                        _file.write('    gugu::DataBinding::ReadArrayEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        _file.write('    gugu::DataBinding::ReadEnumArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                 else:
                     strMethod = 'gugu::DataBinding::Read'
-                    if member.isArray:
-                        strMethod += 'Array'
                     
                     if member.type == 'string':
                         strMethod += 'String'
@@ -353,10 +351,12 @@ class DefinitionClass():
                         strMethod += 'Float'
                     elif member.type == 'bool':
                         strMethod += 'Bool'
-                        
                     else:
                         #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping parsing method declaration.')
                         continue
+                        
+                    if member.isArray:
+                        strMethod += 'Array'
                             
                     _file.write('    '+ strMethod +'(context, "'+member.name +'", '+ member.code +');\n')
                 
@@ -379,23 +379,21 @@ class DefinitionClass():
                 if member.type != '' and member.name != '' and member.code != '':
                     if member.isReference:
                         if not member.isArray:
-                            _file.write('    gugu::DataBinding::WriteReference(context, "'+member.name +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteDatasheetReference(context, "'+member.name +'", '+ member.code +');\n')
                         else:
-                            _file.write('    gugu::DataBinding::WriteArrayReference(context, "'+member.name +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteDatasheetReferenceArray(context, "'+member.name +'", '+ member.code +');\n')
                     elif member.isInstance:
                         if not member.isArray:
-                            _file.write('    gugu::DataBinding::WriteInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteDatasaveInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                         else:
-                            _file.write('    gugu::DataBinding::WriteArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteDatasaveInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     elif member.type in _definitionBinding.dictEnums:
                         if not member.isArray:
                             _file.write('    gugu::DataBinding::WriteEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                         else:
-                            _file.write('    gugu::DataBinding::WriteArrayEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::DataBinding::WriteEnumArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
                         strMethod = 'gugu::DataBinding::Write'
-                        if member.isArray:
-                            strMethod += 'Array'
                         
                         if member.type == 'string':
                             strMethod += 'String'
@@ -405,11 +403,13 @@ class DefinitionClass():
                             strMethod += 'Float'
                         elif member.type == 'bool':
                             strMethod += 'Bool'
-                            
                         else:
                             #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping parsing method declaration.')
                             continue
-                                
+
+                        if member.isArray:
+                            strMethod += 'Array'
+                        
                         _file.write('    '+ strMethod +'(context, "'+member.name +'", '+ member.code +');\n')
                     
             _file.write('}\n')
@@ -445,19 +445,12 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
     fileHeader.write('// Includes\n')
     fileHeader.write('\n')
-    fileHeader.write('#include "Gugu/Data/DataBindingUtility.h"\n')
+    fileHeader.write('#include "Gugu/Data/DataBindingUtility.h"\n') # This could be replaced by forward declarations, but it simplifies user integration.
     fileHeader.write('#include "Gugu/Data/DatasheetObject.h"\n')
     fileHeader.write('#include "Gugu/Data/DatasaveObject.h"\n')
     fileHeader.write('\n')
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
-    fileHeader.write('// Forward Declarations\n')
-    fileHeader.write('\n')
-    fileHeader.write('namespace gugu\n')
-    fileHeader.write('{\n')
-    fileHeader.write('    struct DatasheetParserContext;\n')
-    fileHeader.write('    struct DataSaveContext;\n')
-    fileHeader.write('    struct DatasheetEnum;\n')
-    fileHeader.write('}\n')
+    fileHeader.write('// File Declarations\n')
     fileHeader.write('\n')
 
     # Namespace
@@ -467,8 +460,6 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
         
     # Forward Declarations
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
-    fileHeader.write('// Forward Declarations\n')
-    fileHeader.write('\n')
     for newClass in definitionBinding.classes:
         newClass.SaveForwardDeclarationCpp(fileHeader)
     

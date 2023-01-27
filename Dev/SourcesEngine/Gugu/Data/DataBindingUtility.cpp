@@ -275,6 +275,49 @@ bool InstanciateDataObjects(DatasheetParserContext& _kContext, const std::string
     return false;
 }
 
+void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember)
+{
+    pugi::xml_node pNode = AddNodeData(_kContext, _strName);
+
+    for (size_t i = 0; i < _pMember.size(); ++i)
+    {
+        const Datasheet* datasheet = _pMember[i] == nullptr ? nullptr : _pMember[i]->GetDatasheet();
+        if (datasheet)
+        {
+            pNode.append_child("Child").append_attribute("value").set_value(datasheet->GetID().c_str());
+        }
+        else
+        {
+            pNode.append_child("Child").append_attribute("value");
+        }
+    }
+}
+
+void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember)
+{
+    pugi::xml_node* pNodeParent = _kContext.currentNode;
+    pugi::xml_node pNode = AddNodeData(_kContext, _strName);
+
+    for (size_t i = 0; i < _pMember.size(); ++i)
+    {
+        pugi::xml_node childNode = pNode.append_child("Child");
+
+        if (_pMember[i] != nullptr)
+        {
+            childNode.append_attribute("type").set_value(_pMember[i]->GetDataInstanceType().c_str());
+
+            _kContext.currentNode = &childNode;
+            _pMember[i]->SerializeMembers(_kContext);
+        }
+        else
+        {
+            childNode.append_attribute("type");
+        }
+    }
+
+    _kContext.currentNode = pNodeParent;
+}
+
 }   // namespace Impl
 
 void ReadString(DatasheetParserContext& _kContext, const std::string& _strName, std::string& _strMember)
@@ -321,7 +364,7 @@ void ReadBool(DatasheetParserContext& _kContext, const std::string& _strName, bo
     }
 }
 
-void ReadArrayString(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<std::string>& _vecMember)
+void ReadStringArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<std::string>& _vecMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -339,7 +382,7 @@ void ReadArrayString(DatasheetParserContext& _kContext, const std::string& _strN
     }
 }
 
-void ReadArrayInt(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember)
+void ReadIntArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -357,7 +400,7 @@ void ReadArrayInt(DatasheetParserContext& _kContext, const std::string& _strName
     }
 }
 
-void ReadArrayFloat(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember)
+void ReadFloatArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -375,7 +418,7 @@ void ReadArrayFloat(DatasheetParserContext& _kContext, const std::string& _strNa
     }
 }
 
-void ReadArrayBool(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<bool>& _vecMember)
+void ReadBoolArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<bool>& _vecMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -417,7 +460,7 @@ void WriteBool(DataSaveContext& _kContext, const std::string& _strName, bool _bM
     pNode.append_attribute("value").set_value(_bMember);
 }
 
-void WriteArrayString(DataSaveContext& _kContext, const std::string& _strName, const std::vector<std::string>& _vecMember)
+void WriteStringArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<std::string>& _vecMember)
 {
     pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
 
@@ -427,7 +470,7 @@ void WriteArrayString(DataSaveContext& _kContext, const std::string& _strName, c
     }
 }
 
-void WriteArrayInt(DataSaveContext& _kContext, const std::string& _strName, const std::vector<int>& _vecMember)
+void WriteIntArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<int>& _vecMember)
 {
     pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
 
@@ -437,7 +480,7 @@ void WriteArrayInt(DataSaveContext& _kContext, const std::string& _strName, cons
     }
 }
 
-void WriteArrayFloat(DataSaveContext& _kContext, const std::string& _strName, const std::vector<float>& _vecMember)
+void WriteFloatArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<float>& _vecMember)
 {
     pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
 
@@ -447,7 +490,7 @@ void WriteArrayFloat(DataSaveContext& _kContext, const std::string& _strName, co
     }
 }
 
-void WriteArrayBool(DataSaveContext& _kContext, const std::string& _strName, const std::vector<bool>& _vecMember)
+void WriteBoolArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<bool>& _vecMember)
 {
     pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
 
@@ -457,7 +500,7 @@ void WriteArrayBool(DataSaveContext& _kContext, const std::string& _strName, con
     }
 }
 
-void WriteReference(DataSaveContext& _kContext, const std::string& _strName, const DatasheetObject* _pMember)
+void WriteDatasheetReference(DataSaveContext& _kContext, const std::string& _strName, const DatasheetObject* _pMember)
 {
     const Datasheet* datasheet = _pMember == nullptr ? nullptr : _pMember->GetDatasheet();
     if (datasheet)
@@ -467,25 +510,7 @@ void WriteReference(DataSaveContext& _kContext, const std::string& _strName, con
     }
 }
 
-void WriteArrayReference(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember)
-{
-    pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
-
-    for (size_t i = 0; i < _pMember.size(); ++i)
-    {
-        const Datasheet* datasheet = _pMember[i] == nullptr ? nullptr : _pMember[i]->GetDatasheet();
-        if (datasheet)
-        {
-            pNode.append_child("Child").append_attribute("value").set_value(datasheet->GetID().c_str());
-        }
-        else
-        {
-            pNode.append_child("Child").append_attribute("value");
-        }
-    }
-}
-
-void WriteInstance(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const DatasaveObject* _pMember)
+void WriteDatasaveInstance(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const DatasaveObject* _pMember)
 {
     if (_pMember)
     {
@@ -499,31 +524,6 @@ void WriteInstance(DataSaveContext& _kContext, const std::string& _strName, cons
 
         _kContext.currentNode = pNodeParent;
     }
-}
-
-void WriteInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember)
-{
-    pugi::xml_node* pNodeParent = _kContext.currentNode;
-    pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
-
-    for (size_t i = 0; i < _pMember.size(); ++i)
-    {
-        pugi::xml_node childNode = pNode.append_child("Child");
-
-        if (_pMember[i] != nullptr)
-        {
-            childNode.append_attribute("type").set_value(_pMember[i]->GetDataInstanceType().c_str());
-
-            _kContext.currentNode = &childNode;
-            _pMember[i]->SerializeMembers(_kContext);
-        }
-        else
-        {
-            childNode.append_attribute("type");
-        }
-    }
-
-    _kContext.currentNode = pNodeParent;
 }
 
 }   // namespace DataBinding

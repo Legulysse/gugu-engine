@@ -748,7 +748,7 @@ void ManagerResources::RegisterDatasheetObjectFactory(const DelegateDatasheetObj
     m_datasheetObjectFactories.push_back(delegateDatasheetObjectFactory);
 }
 
-DatasheetObject* ManagerResources::InstanciateDatasheetObject(std::string_view _strType)
+DataObject* ManagerResources::InstanciateDatasheetObject(std::string_view _strType)
 {
     if (m_datasheetObjectFactories.empty())
     {
@@ -756,7 +756,7 @@ DatasheetObject* ManagerResources::InstanciateDatasheetObject(std::string_view _
     }
     else
     {
-        DatasheetObject* datasheetObject = nullptr;
+        DataObject* datasheetObject = nullptr;
         for (size_t i = 0; i < m_datasheetObjectFactories.size(); ++i)
         {
             datasheetObject = m_datasheetObjectFactories[i](_strType);

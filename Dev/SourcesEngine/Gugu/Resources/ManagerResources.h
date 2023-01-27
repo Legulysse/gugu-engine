@@ -29,6 +29,7 @@ namespace gugu
     class AnimSet;
     class ParticleEffect;
     class Datasheet;
+    class DataObject;
     class DatasheetObject;
     struct DatasheetEnum;
     struct EngineConfig;
@@ -51,7 +52,7 @@ class ManagerResources
 {
 public:
 
-    using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (std::string_view)>;
+    using DelegateDatasheetObjectFactory = std::function<DataObject* (std::string_view)>;
     using DelegateResourceEvent = std::function<void(const Resource* resource, EResourceEvent event, const Resource* dependency)>;    // TODO: Is dependency reference necessary ?
 
     struct ResourceListener
@@ -145,8 +146,8 @@ public:
     Font*           GetDefaultFont();
     Font*           GetDebugFont();
     
-    void                RegisterDatasheetObjectFactory    (const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory);
-    DatasheetObject*    InstanciateDatasheetObject        (std::string_view _strType);
+    void            RegisterDatasheetObjectFactory  (const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory);
+    DataObject*     InstanciateDatasheetObject      (std::string_view _strType);
 
     void RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum);
     const DatasheetEnum* GetDatasheetEnum(const std::string& _strName);

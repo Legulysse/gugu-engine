@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Data/DataObject.h"
+
 #include <string>
 #include <vector>
 
@@ -15,17 +17,12 @@ namespace gugu
     class Datasheet;
 }
 
-namespace pugi
-{
-    class xml_node;
-}
-
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
-    
-class DatasheetObject
+
+class DatasheetObject : public DataObject
 {
 public:
 

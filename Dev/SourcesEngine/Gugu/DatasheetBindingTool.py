@@ -193,7 +193,8 @@ class DefinitionClass():
                     strType += _definitionBinding.dictClassNames[member.type]
                     strType += '*'
                 elif member.isInstance:
-                    strType = 'const '
+                    if self.type == 'datasheet':
+                        strType = 'const '
                     strType += _definitionBinding.dictClassNames[member.type]
                     strType += '*'
                 elif member.type in _definitionBinding.dictEnums:
@@ -324,10 +325,16 @@ class DefinitionClass():
                     else:
                         _file.write('    gugu::DataBinding::ReadArrayReference(context, "'+member.name +'", '+ member.code +');\n')
                 elif member.isInstance:
-                    if not member.isArray:
-                        _file.write('    gugu::DataBinding::ReadInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                    if self.type == 'datasheet':
+                        if not member.isArray:
+                            _file.write('    gugu::DataBinding::ReadDatasheetInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        else:
+                            _file.write('    gugu::DataBinding::ReadDatasheetInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
-                        _file.write('    gugu::DataBinding::ReadArrayInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        if not member.isArray:
+                            _file.write('    gugu::DataBinding::ReadDatasaveInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        else:
+                            _file.write('    gugu::DataBinding::ReadDatasaveInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                 elif member.type in _definitionBinding.dictEnums:
                     if not member.isArray:
                         _file.write('    gugu::DataBinding::ReadEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
@@ -481,7 +488,7 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     fileHeader.write('\n')
     
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
-    fileHeader.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType);\n')
+    fileHeader.write('gugu::DataObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType);\n')
     
     # Namespace
     if definitionBinding.namespace != '':
@@ -539,11 +546,10 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     
     fileSource.write('\n')
     fileSource.write('////////////////////////////////////////////////////////////////\n')
-    fileSource.write('gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType)\n')
+    fileSource.write('gugu::DataObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType)\n')
     fileSource.write('{\n')
     for newClass in definitionBinding.classes:
-        if newClass.type == 'datasheet':
-            newClass.SaveInstanciationCpp(fileSource)
+        newClass.SaveInstanciationCpp(fileSource)
     fileSource.write('    return nullptr;\n')
     fileSource.write('}\n')
     

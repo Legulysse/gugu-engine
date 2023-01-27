@@ -87,10 +87,15 @@ int main(int argc, char* argv[])
     gameSave->generals.push_back(GetResources()->GetDatasheetObject<DS_General>("Joffrey.general"));
     gameSave->generals.push_back(nullptr);
 
-    DS_ItemSave* itemSave = new DS_ItemSave;
-    itemSave->item = nullptr;
-    itemSave->quantity = 10;
-    gameSave->singleItem = itemSave;
+    if (gameSave->singleItem == nullptr)
+    {
+        DS_ItemSave* itemSave = new DS_ItemSave;
+        itemSave->item = nullptr;
+        itemSave->quantity = 10;
+        gameSave->singleItem = itemSave;
+    }
+
+    gameSave->singleItem->quantity += 1;
 
     DS_ItemSave* itemSaveB = new DS_ItemSave;
     itemSaveB->item = nullptr;

@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Data/DataObject.h"
 #include "Gugu/Data/DatasheetObject.h"
 #include "Gugu/Data/DatasaveObject.h"
 #include "Gugu/Resources/ManagerResources.h"
@@ -190,9 +191,9 @@ bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string&
     return false;
 }
 
-const DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType)
+DataObject* InstanciateDataObject(DatasheetParserContext& _kContext, const std::string& _strType)
 {
-    DatasheetObject* instance = GetResources()->InstanciateDatasheetObject(_strType);
+    DataObject* instance = GetResources()->InstanciateDatasheetObject(_strType);
     if (instance)
     {
         instance->ParseMembers(_kContext);
@@ -206,7 +207,7 @@ const DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kCont
     return nullptr;
 }
 
-bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, const DatasheetObject*& _pInstance)
+bool InstanciateDataObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -220,7 +221,7 @@ bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::st
             pugi::xml_node* pNodeParent = _kContext.currentNode;
             _kContext.currentNode = &pNode;
 
-            _pInstance = InstanciateDatasheetObject(_kContext, strType);
+            _pInstance = InstanciateDataObject(_kContext, strType);
 
             _kContext.currentNode = pNodeParent;
         }
@@ -231,7 +232,7 @@ bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::st
     return false;
 }
 
-bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<const DatasheetObject*>& _vecInstances)
+bool InstanciateDataObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -248,7 +249,7 @@ bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::s
             if (strType != "")
             {
                 _kContext.currentNode = &pNodeChild;
-                const DatasheetObject* pInstance = InstanciateDatasheetObject(_kContext, strType);
+                DataObject* pInstance = InstanciateDataObject(_kContext, strType);
                 if (pInstance)
                 {
                     _vecInstances.push_back(pInstance);

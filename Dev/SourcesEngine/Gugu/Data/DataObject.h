@@ -3,17 +3,12 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Data/DataObject.h"
-
-#include <string>
-
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
 namespace gugu
 {
     struct DatasheetParserContext;
-    struct DataSaveContext;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -21,20 +16,14 @@ namespace gugu
 
 namespace gugu {
 
-class DatasaveObject : public DataObject
+class DataObject
 {
 public:
 
-    DatasaveObject();
-    virtual ~DatasaveObject();
-
-    bool LoadFromXml(const std::string& _strPathName);
-    bool SaveToXml(const std::string& _strPathName);
+    DataObject();
+    virtual ~DataObject();
 
     virtual void ParseMembers(DatasheetParserContext& _kContext) = 0;
-    virtual void SerializeMembers(DataSaveContext& _kContext) const = 0;
-
-    virtual const std::string& GetDataInstanceType() const = 0;
 };
 
 }   // namespace gugu

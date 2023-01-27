@@ -11,6 +11,7 @@
 
 namespace gugu
 {
+    class DataObject;
     class DatasheetObject;
     class DatasaveObject;
 }
@@ -109,6 +110,8 @@ void WriteArrayEnum(DataSaveContext& _kContext, const std::string& _strName, con
 template<typename T>
 void ReadReference(DatasheetParserContext& _kContext, const std::string& _strName, const T*& _pMember)
 {
+    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+
     const DatasheetObject* pReference = nullptr;
     if (Impl::ResolveDatasheetLink(_kContext, _strName, pReference))
     {
@@ -120,6 +123,8 @@ void ReadReference(DatasheetParserContext& _kContext, const std::string& _strNam
 template<typename T>
 void ReadArrayReference(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const T*>& _vecMember)
 {
+    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+
     std::vector<const DatasheetObject*> vecReferences;
     if (Impl::ResolveDatasheetLinks(_kContext, _strName, vecReferences))
     {
@@ -139,6 +144,8 @@ void WriteReference(DataSaveContext& _kContext, const std::string& _strName, con
 template<typename T>
 void WriteArrayReference(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const T*>& _pMember)
 {
+    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+
     std::vector<const DatasheetObject*> vecReferences;
     vecReferences.reserve(_pMember.size());
 
@@ -152,24 +159,26 @@ void WriteArrayReference(DataSaveContext& _kContext, const std::string& _strName
 
 void WriteArrayReference(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember);
 
-//Read instance (instanced datasheet structure)
 template<typename T>
-void ReadInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember)
+void ReadDatasheetInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember)
 {
-    const DatasheetObject* pInstance = nullptr;
-    if (Impl::InstanciateDatasheetObject(_kContext, _strName, _strType, pInstance))
+    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+
+    DataObject* pInstance = nullptr;
+    if (Impl::InstanciateDataObject(_kContext, _strName, _strType, pInstance))
     {
         SafeDelete(_pMember);
         _pMember = dynamic_cast<const T*>(pInstance);
     }
 }
 
-//Read instance array (instanced datasheet structures)
 template<typename T>
-void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
+void ReadDatasheetInstanceArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
 {
-    std::vector<const DatasheetObject*> vecInstances;
-    if (Impl::InstanciateDatasheetObjects(_kContext, _strName, _strType, vecInstances))
+    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+
+    std::vector<DataObject*> vecInstances;
+    if (Impl::InstanciateDataObjects(_kContext, _strName, _strType, vecInstances))
     {
         ClearStdVector(_vecMember);
 
@@ -177,6 +186,38 @@ void ReadArrayInstance(DatasheetParserContext& _kContext, const std::string& _st
         {
             // Fill the actual member values (may contain null values).
             const T* pInstance = dynamic_cast<const T*>(vecInstances[i]);
+            _vecMember.push_back(pInstance);
+        }
+    }
+}
+
+template<typename T>
+void ReadDatasaveInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T*& _pMember)
+{
+    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasheetObject type");
+
+    DataObject* pInstance = nullptr;
+    if (Impl::InstanciateDataObject(_kContext, _strName, _strType, pInstance))
+    {
+        SafeDelete(_pMember);
+        _pMember = dynamic_cast<T*>(pInstance);
+    }
+}
+
+template<typename T>
+void ReadDatasaveInstanceArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T*>& _vecMember)
+{
+    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasheetObject type");
+
+    std::vector<DataObject*> vecInstances;
+    if (Impl::InstanciateDataObjects(_kContext, _strName, _strType, vecInstances))
+    {
+        ClearStdVector(_vecMember);
+
+        for (size_t i = 0; i < vecInstances.size(); ++i)
+        {
+            // Fill the actual member values (may contain null values).
+            T* pInstance = dynamic_cast<T*>(vecInstances[i]);
             _vecMember.push_back(pInstance);
         }
     }
@@ -217,9 +258,9 @@ const DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
 bool ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
 bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
 
-const DatasheetObject* InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strType);
-bool InstanciateDatasheetObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, const DatasheetObject*& _pInstance);
-bool InstanciateDatasheetObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<const DatasheetObject*>& _vecInstances);
+DataObject* InstanciateDataObject(DatasheetParserContext& _kContext, const std::string& _strType);
+bool InstanciateDataObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
+bool InstanciateDataObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
 
 }   // namespace Impl
 

@@ -94,12 +94,12 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
     GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Finished Parsing Resources (Found {0})", iCount));
 }
 
-std::string ManagerResources::GetPathAssets() const
+const std::string& ManagerResources::GetPathAssets() const
 {
     return m_pathAssets;
 }
 
-std::string ManagerResources::GetPathScreenshots() const
+const std::string& ManagerResources::GetPathScreenshots() const
 {
     return m_pathScreenshots;
 }
@@ -126,6 +126,7 @@ bool ManagerResources::GetResourceFileInfo(const std::string& _strName, FileInfo
     auto iteElement = m_resources.find(_strName);
     if (iteElement != m_resources.end())
     {
+        // Return a copy.
         fileInfo = (*iteElement).second->fileInfo;
         return true;
     }
@@ -138,6 +139,7 @@ bool ManagerResources::GetResourceFilePath(const std::string& _strName, std::str
     auto iteElement = m_resources.find(_strName);
     if (iteElement != m_resources.end())
     {
+        // Return a copy.
         pathName = (*iteElement).second->fileInfo.GetFilePath();
         return true;
     }
@@ -145,18 +147,28 @@ bool ManagerResources::GetResourceFilePath(const std::string& _strName, std::str
     return false;
 }
 
-FileInfo ManagerResources::GetResourceFileInfo(const std::string& _strName) const
+const FileInfo& ManagerResources::GetResourceFileInfo(const std::string& _strName) const
 {
-    FileInfo fileInfo;
-    GetResourceFileInfo(_strName, fileInfo);
-    return fileInfo;
+    auto iteElement = m_resources.find(_strName);
+    if (iteElement != m_resources.end())
+    {
+        return (*iteElement).second->fileInfo;
+    }
+
+    static const FileInfo defaultValue;
+    return defaultValue;
 }
 
-std::string ManagerResources::GetResourceFilePath(const std::string& _strName) const
+const std::string& ManagerResources::GetResourceFilePath(const std::string& _strName) const
 {
-    std::string pathName;
-    GetResourceFilePath(_strName, pathName);
-    return pathName;
+    auto iteElement = m_resources.find(_strName);
+    if (iteElement != m_resources.end())
+    {
+        return (*iteElement).second->fileInfo.GetFilePath();
+    }
+
+    static const std::string defaultValue;
+    return defaultValue;
 }
 
 void ManagerResources::PreloadAll()
@@ -421,23 +433,24 @@ bool ManagerResources::InjectResource(const std::string& _strResourceID, Resourc
     return false;
 }
 
-std::string ManagerResources::GetResourceID(const Resource* _pResource) const
+const std::string& ManagerResources::GetResourceID(const Resource* _pResource) const
 {
-    if (!_pResource)
-        return "";
-
-    auto iteCurrent = m_resources.begin();
-    while (iteCurrent != m_resources.end())
+    if (_pResource)
     {
-        if (iteCurrent->second->resource == _pResource)
-            return iteCurrent->second->resourceID;
-        ++iteCurrent;
+        auto iteCurrent = m_resources.begin();
+        while (iteCurrent != m_resources.end())
+        {
+            if (iteCurrent->second->resource == _pResource)
+                return iteCurrent->second->resourceID;
+            ++iteCurrent;
+        }
     }
 
-    return "";
+    static const std::string defaultValue;
+    return defaultValue;
 }
 
-std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
+const std::string& ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
 {
     // TODO: I should be able to deduce an ID from a FileInfo.
     auto iteCurrent = m_resources.begin();
@@ -448,7 +461,8 @@ std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
         ++iteCurrent;
     }
 
-    return "";
+    static const std::string defaultValue;
+    return defaultValue;
 }
 
 bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos)

@@ -29,10 +29,8 @@ ElementUILayout::~ElementUILayout()
 
 bool ElementUILayout::LoadFromFile(const std::string& _strPath)
 {
-    std::string strResourcePath = GetResources()->GetResourceFilePath(_strPath);
-
     pugi::xml_document oDoc;
-    pugi::xml_parse_result result = oDoc.load_file(strResourcePath.c_str());
+    pugi::xml_parse_result result = oDoc.load_file(GetResources()->GetResourceFilePath(_strPath).c_str());
     if (!result)
         return false;
 

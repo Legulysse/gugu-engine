@@ -417,7 +417,7 @@ class DefinitionClass():
             _file.write('\n')
             _file.write('const std::string& '+ self.code +'::GetDataInstanceType() const\n')
             _file.write('{\n')
-            _file.write('    static std::string dataInstanceType = "'+ self.name +'";\n')
+            _file.write('    static const std::string dataInstanceType = "'+ self.name +'";\n')
             _file.write('    return dataInstanceType;\n')
             _file.write('}\n')
         

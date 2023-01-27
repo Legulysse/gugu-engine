@@ -76,16 +76,16 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-    std::string GetPathAssets       () const;
-    std::string GetPathScreenshots  () const;
+    const std::string& GetPathAssets() const;
+    const std::string& GetPathScreenshots() const;
     
     bool HasResource(const std::string& _strName) const;
     bool IsResourceLoaded(const std::string& _strName) const;
 
     bool GetResourceFileInfo(const std::string& _strName, FileInfo& fileInfo) const;
     bool GetResourceFilePath(const std::string& _strName, std::string& pathName) const;
-    FileInfo GetResourceFileInfo(const std::string& _strName) const;
-    std::string GetResourceFilePath(const std::string& _strName) const;
+    const FileInfo& GetResourceFileInfo(const std::string& _strName) const;
+    const std::string& GetResourceFilePath(const std::string& _strName) const;
 
     void        ParseDirectory  (const std::string& _strPath);
     void        PreloadAll      ();
@@ -114,8 +114,8 @@ public:
     bool InjectResource(const std::string& _strName, Resource* _pResource);
 
     // TODO: Obsolete editor getters ?
-    std::string GetResourceID   (const Resource* _pResource) const;
-    std::string GetResourceID   (const FileInfo& _oFileInfo) const;
+    const std::string& GetResourceID(const Resource* _pResource) const;
+    const std::string& GetResourceID(const FileInfo& _oFileInfo) const;
 
     bool        RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos);
     bool        AddResource     (Resource* _pNewResource, const FileInfo& _oFileInfo);

@@ -484,7 +484,7 @@ void AnimSetPanel::GenerateAnimationFramesFromDirectory(const std::string& path)
 
     for (size_t i = 0; i < directoryFiles.size(); ++i)
     {
-        std::string resourceID = GetResources()->GetResourceID(directoryFiles[i]);
+        const std::string& resourceID = GetResources()->GetResourceID(directoryFiles[i]);
         if (GetResources()->HasResource(resourceID))
         {
             Texture* texture = GetResources()->GetTexture(resourceID);

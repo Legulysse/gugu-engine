@@ -3,20 +3,22 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Resources/Datasheet.h"
+#include "Gugu/Data/DataBindingUtility.h"
+#include "Gugu/Data/DatasheetObject.h"
+#include "Gugu/Data/DatasaveObject.h"
 
-#include <vector>
+////////////////////////////////////////////////////////////////
+// File Declarations
 
 namespace demoproject {
 
 ////////////////////////////////////////////////////////////////
-// Forward Declarations
-
 class DS_SpriteInfo;
 class DS_Entity;
 class DS_General;
 class DS_Faction;
 class DS_Troop;
+class DS_Item;
 class DS_Restriction;
 class DS_RestrictionFaction;
 class DS_RestrictionTroop;
@@ -24,6 +26,8 @@ class DS_Skill;
 class DS_Condition;
 class DS_ConditionAnd;
 class DS_ConditionPlayerLevel;
+class DS_GameSave;
+class DS_ItemSave;
 
 ////////////////////////////////////////////////////////////////
 namespace EWeaponType {
@@ -36,7 +40,7 @@ namespace EWeaponType {
         Crossbow,
     };
 
-    const gugu::DatasheetEnum* GetDatasheetEnum();
+    const gugu::DataEnumInfos* GetDataEnumInfos();
     void GetEnumValues(std::vector<EWeaponType::Type>& enumValues);
     size_t GetSize();
 
@@ -58,7 +62,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -77,7 +81,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -95,17 +99,17 @@ public:
     const DS_Faction* m_faction;
     const DS_SpriteInfo* m_sprite;
     const DS_SpriteInfo* m_sprite2;
-    std::vector< std::string > m_names;
-    std::vector< int > m_stats;
-    std::vector< const DS_Faction* > m_factions;
-    std::vector< const DS_SpriteInfo* > m_sprites;
+    std::vector<std::string> m_names;
+    std::vector<int> m_stats;
+    std::vector<const DS_Faction*> m_factions;
+    std::vector<const DS_SpriteInfo*> m_sprites;
     EWeaponType::Type m_weapon;
-    std::vector< EWeaponType::Type > m_availableWeapons;
+    std::vector<EWeaponType::Type> m_availableWeapons;
     const DS_Condition* playableCondition;
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -123,7 +127,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -140,7 +144,24 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_Item : public gugu::DatasheetObject
+{
+public:
+
+    DS_Item();
+    virtual ~DS_Item();
+
+public:
+
+    std::string name;
+
+protected:
+
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -153,7 +174,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -170,7 +191,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -187,7 +208,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -205,11 +226,11 @@ public:
     const DS_Restriction* m_nullRestriction;
     const DS_Restriction* m_singleRestrictionBase;
     const DS_Restriction* m_singleRestrictionFaction;
-    std::vector< const DS_Restriction* > m_restrictions;
+    std::vector<const DS_Restriction*> m_restrictions;
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -231,7 +252,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -248,11 +269,11 @@ public:
 
 public:
 
-    std::vector< const DS_Condition* > conditions;
+    std::vector<const DS_Condition*> conditions;
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -274,13 +295,63 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
-void DatasheetBinding_Register();
+class DS_GameSave : public gugu::DatasaveObject
+{
+public:
+
+    DS_GameSave();
+    virtual ~DS_GameSave();
+
+public:
+
+    int experience;
+    std::string name;
+    std::vector<int> stats;
+    std::vector<std::string> names;
+    EWeaponType::Type weapon;
+    std::vector<EWeaponType::Type> weapons;
+    const DS_General* general;
+    std::vector<const DS_General*> generals;
+    DS_ItemSave* singleItem;
+    std::vector<DS_ItemSave*> multipleItems;
+
+protected:
+
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void SerializeMembers(gugu::DataSaveContext& context) const override;
+
+    virtual const std::string& GetDataInstanceType() const override;
+};
 
 ////////////////////////////////////////////////////////////////
-gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType);
+class DS_ItemSave : public gugu::DatasaveObject
+{
+public:
+
+    DS_ItemSave();
+    virtual ~DS_ItemSave();
+
+public:
+
+    const DS_Item* item;
+    int quantity;
+
+protected:
+
+    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void SerializeMembers(gugu::DataSaveContext& context) const override;
+
+    virtual const std::string& GetDataInstanceType() const override;
+};
+
+////////////////////////////////////////////////////////////////
+void DataBinding_Register();
+
+////////////////////////////////////////////////////////////////
+gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType);
 
 } // namespace demoproject

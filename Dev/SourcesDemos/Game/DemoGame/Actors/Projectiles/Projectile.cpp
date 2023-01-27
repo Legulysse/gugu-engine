@@ -9,7 +9,7 @@
 
 #include "Game/Game.h"
 
-#include "DatasheetBinding.h"
+#include "DataBinding.h"
 
 #include "Gugu/Scene/Scene.h"
 #include "Gugu/Element/2D/ElementSprite.h"

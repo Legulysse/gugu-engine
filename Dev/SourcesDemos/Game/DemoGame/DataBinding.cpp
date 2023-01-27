@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 // Header
 
-#include "DatasheetBinding.h"
+#include "DataBinding.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
@@ -16,18 +16,18 @@ namespace EEffectCenter
 {
     void Register()
     {
-        gugu::DatasheetEnum* datasheetEnum = new gugu::DatasheetEnum;
-        datasheetEnum->values.reserve(3);
-        datasheetEnum->values.push_back("Caster");
-        datasheetEnum->values.push_back("Target");
-        datasheetEnum->values.push_back("Affected");
+        gugu::DataEnumInfos* enumInfos = new gugu::DataEnumInfos;
+        enumInfos->values.reserve(3);
+        enumInfos->values.push_back("Caster");
+        enumInfos->values.push_back("Target");
+        enumInfos->values.push_back("Affected");
 
-        gugu::GetResources()->RegisterDatasheetEnum("effectCenter", datasheetEnum);
+        gugu::GetResources()->RegisterDataEnumInfos("effectCenter", enumInfos);
     }
 
-    const gugu::DatasheetEnum* GetDatasheetEnum()
+    const gugu::DataEnumInfos* GetDataEnumInfos()
     {
-        return gugu::GetResources()->GetDatasheetEnum("effectCenter");
+        return gugu::GetResources()->GetDataEnumInfos("effectCenter");
     }
 
     void GetEnumValues(std::vector<EEffectCenter::Type>& enumValues)
@@ -40,9 +40,9 @@ namespace EEffectCenter
 
     size_t GetSize()
     {
-        const gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("effectCenter");
-        if (datasheetEnum)
-            return datasheetEnum->values.size();
+        const gugu::DataEnumInfos* enumInfos = gugu::GetResources()->GetDataEnumInfos("effectCenter");
+        if (enumInfos)
+            return enumInfos->values.size();
         return 0;
     }
 }
@@ -51,17 +51,17 @@ namespace EProjectileAim
 {
     void Register()
     {
-        gugu::DatasheetEnum* datasheetEnum = new gugu::DatasheetEnum;
-        datasheetEnum->values.reserve(2);
-        datasheetEnum->values.push_back("Direction");
-        datasheetEnum->values.push_back("Cursor");
+        gugu::DataEnumInfos* enumInfos = new gugu::DataEnumInfos;
+        enumInfos->values.reserve(2);
+        enumInfos->values.push_back("Direction");
+        enumInfos->values.push_back("Cursor");
 
-        gugu::GetResources()->RegisterDatasheetEnum("projectileAim", datasheetEnum);
+        gugu::GetResources()->RegisterDataEnumInfos("projectileAim", enumInfos);
     }
 
-    const gugu::DatasheetEnum* GetDatasheetEnum()
+    const gugu::DataEnumInfos* GetDataEnumInfos()
     {
-        return gugu::GetResources()->GetDatasheetEnum("projectileAim");
+        return gugu::GetResources()->GetDataEnumInfos("projectileAim");
     }
 
     void GetEnumValues(std::vector<EProjectileAim::Type>& enumValues)
@@ -73,9 +73,9 @@ namespace EProjectileAim
 
     size_t GetSize()
     {
-        const gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("projectileAim");
-        if (datasheetEnum)
-            return datasheetEnum->values.size();
+        const gugu::DataEnumInfos* enumInfos = gugu::GetResources()->GetDataEnumInfos("projectileAim");
+        if (enumInfos)
+            return enumInfos->values.size();
         return 0;
     }
 }
@@ -95,8 +95,8 @@ void DS_SpriteInfo::ParseMembers(gugu::DatasheetParserContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    ReadString(context, "imageset", imageSet);
-    ReadString(context, "animset", animSet);
+    gugu::DataBinding::ReadString(context, "imageset", imageSet);
+    gugu::DataBinding::ReadString(context, "animset", animSet);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -117,10 +117,10 @@ void DS_Character::ParseMembers(gugu::DatasheetParserContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    ReadString(context, "name", name);
-    ReadFloat(context, "health", health);
-    ReadFloat(context, "speed", speed);
-    ReadInstance(context, "sprite", "spriteInfo", sprite);
+    gugu::DataBinding::ReadString(context, "name", name);
+    gugu::DataBinding::ReadFloat(context, "health", health);
+    gugu::DataBinding::ReadFloat(context, "speed", speed);
+    gugu::DataBinding::ReadDatasheetInstance(context, "sprite", "spriteInfo", sprite);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -141,11 +141,11 @@ void DS_Hero::ParseMembers(gugu::DatasheetParserContext& context)
 {
     DS_Character::ParseMembers(context);
 
-    ReadFloat(context, "stamina", stamina);
-    ReadFloat(context, "staminaRecovery", staminaRecovery);
-    ReadFloat(context, "staminaRecoveryDelay", staminaRecoveryDelay);
-    ReadFloat(context, "mana", mana);
-    ReadFloat(context, "manaRecovery", manaRecovery);
+    gugu::DataBinding::ReadFloat(context, "stamina", stamina);
+    gugu::DataBinding::ReadFloat(context, "staminaRecovery", staminaRecovery);
+    gugu::DataBinding::ReadFloat(context, "staminaRecoveryDelay", staminaRecoveryDelay);
+    gugu::DataBinding::ReadFloat(context, "mana", mana);
+    gugu::DataBinding::ReadFloat(context, "manaRecovery", manaRecovery);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -182,12 +182,12 @@ void DS_Skill::ParseMembers(gugu::DatasheetParserContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    ReadString(context, "name", name);
-    ReadFloat(context, "staminaCost", staminaCost);
-    ReadFloat(context, "manaCost", manaCost);
-    ReadBool(context, "useAttackSpeed", useAttackSpeed);
-    ReadFloat(context, "cooldown", cooldown);
-    ReadArrayInstance(context, "effects", "effect", effects);
+    gugu::DataBinding::ReadString(context, "name", name);
+    gugu::DataBinding::ReadFloat(context, "staminaCost", staminaCost);
+    gugu::DataBinding::ReadFloat(context, "manaCost", manaCost);
+    gugu::DataBinding::ReadBool(context, "useAttackSpeed", useAttackSpeed);
+    gugu::DataBinding::ReadFloat(context, "cooldown", cooldown);
+    gugu::DataBinding::ReadDatasheetInstanceArray(context, "effects", "effect", effects);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -204,7 +204,7 @@ void DS_Effect::ParseMembers(gugu::DatasheetParserContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    ReadEnum(context, "center", "effectCenter", center);
+    gugu::DataBinding::ReadEnum(context, "center", "effectCenter", center);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -225,11 +225,11 @@ void DS_EffectArea::ParseMembers(gugu::DatasheetParserContext& context)
 {
     DS_Effect::ParseMembers(context);
 
-    ReadBool(context, "excludeCaster", excludeCaster);
-    ReadBool(context, "excludeTarget", excludeTarget);
-    ReadFloat(context, "maxRadius", maxRadius);
-    ReadFloat(context, "maxAngleFromDirection", maxAngleFromDirection);
-    ReadArrayInstance(context, "effectsOnHit", "effect", effectsOnHit);
+    gugu::DataBinding::ReadBool(context, "excludeCaster", excludeCaster);
+    gugu::DataBinding::ReadBool(context, "excludeTarget", excludeTarget);
+    gugu::DataBinding::ReadFloat(context, "maxRadius", maxRadius);
+    gugu::DataBinding::ReadFloat(context, "maxAngleFromDirection", maxAngleFromDirection);
+    gugu::DataBinding::ReadDatasheetInstanceArray(context, "effectsOnHit", "effect", effectsOnHit);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -251,12 +251,12 @@ void DS_EffectProjectile::ParseMembers(gugu::DatasheetParserContext& context)
 {
     DS_Effect::ParseMembers(context);
 
-    ReadEnum(context, "aim", "projectileAim", aim);
-    ReadFloat(context, "speed", speed);
-    ReadFloat(context, "lifetime", lifetime);
-    ReadInt(context, "maximumHits", maximumHits);
-    ReadArrayInstance(context, "effectsOnHit", "effect", effectsOnHit);
-    ReadArrayInstance(context, "effectsOnDestination", "effect", effectsOnDestination);
+    gugu::DataBinding::ReadEnum(context, "aim", "projectileAim", aim);
+    gugu::DataBinding::ReadFloat(context, "speed", speed);
+    gugu::DataBinding::ReadFloat(context, "lifetime", lifetime);
+    gugu::DataBinding::ReadInt(context, "maximumHits", maximumHits);
+    gugu::DataBinding::ReadDatasheetInstanceArray(context, "effectsOnHit", "effect", effectsOnHit);
+    gugu::DataBinding::ReadDatasheetInstanceArray(context, "effectsOnDestination", "effect", effectsOnDestination);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -273,7 +273,7 @@ void DS_EffectDamage::ParseMembers(gugu::DatasheetParserContext& context)
 {
     DS_Effect::ParseMembers(context);
 
-    ReadFloat(context, "damage", damage);
+    gugu::DataBinding::ReadFloat(context, "damage", damage);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -290,20 +290,20 @@ void DS_EffectHeal::ParseMembers(gugu::DatasheetParserContext& context)
 {
     DS_Effect::ParseMembers(context);
 
-    ReadFloat(context, "heal", heal);
+    gugu::DataBinding::ReadFloat(context, "heal", heal);
 }
 
 ////////////////////////////////////////////////////////////////
-void DatasheetBinding_Register()
+void DataBinding_Register()
 {
     EEffectCenter::Register();
     EProjectileAim::Register();
 
-    gugu::GetResources()->RegisterDatasheetObjectFactory(DatasheetBinding_InstanciateDatasheetObject);
+    gugu::GetResources()->RegisterDataObjectFactory(DataBinding_InstanciateDataObject);
 }
 
 ////////////////////////////////////////////////////////////////
-gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType)
+gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType)
 {
     if (classType == "spriteInfo")
     {

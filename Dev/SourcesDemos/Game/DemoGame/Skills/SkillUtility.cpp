@@ -12,7 +12,7 @@
 #include "Actors/Characters/CharacterHero.h"
 #include "Actors/Projectiles/Projectile.h"
 
-#include "DatasheetBinding.h"
+#include "DataBinding.h"
 
 #include "Gugu/Scene/Scene.h"
 #include "Gugu/System/SystemUtility.h"

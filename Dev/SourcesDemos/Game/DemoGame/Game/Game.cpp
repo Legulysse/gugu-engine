@@ -16,7 +16,7 @@
 #include "Actors/Projectiles/Projectile.h"
 #include "Scene/Grid.h"
 
-#include "DatasheetBinding.h"
+#include "DataBinding.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"

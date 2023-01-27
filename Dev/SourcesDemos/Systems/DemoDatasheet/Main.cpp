@@ -3,7 +3,7 @@
 
 #include "Gugu/Common.h"
 
-#include "DatasheetBinding.h"
+#include "DataBinding.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
-    DatasheetBinding_Register();
+    DataBinding_Register();
 
     // Datasheets
     const DS_General* pGeneralA = GetResources()->GetDatasheetObject<DS_General>("Robert.general");

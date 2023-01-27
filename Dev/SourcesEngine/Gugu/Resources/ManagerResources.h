@@ -31,7 +31,7 @@ namespace gugu
     class Datasheet;
     class DataObject;
     class DatasheetObject;
-    struct DatasheetEnum;
+    struct DataEnumInfos;
     struct EngineConfig;
 }
 
@@ -149,8 +149,8 @@ public:
     void            RegisterDatasheetObjectFactory  (const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory);
     DataObject*     InstanciateDatasheetObject      (std::string_view _strType);
 
-    void RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum);
-    const DatasheetEnum* GetDatasheetEnum(const std::string& _strName);
+    void RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum);
+    const DataEnumInfos* GetDataEnumInfos(const std::string& _strName);
 
     bool RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceEvent& delegateResourceEvent);
     void UnregisterResourceListeners(const Resource* resource, const void* handle);
@@ -186,7 +186,7 @@ private:
     std::map<ResourceMapKey, Texture*> m_customTextures;
 
     std::vector<DelegateDatasheetObjectFactory> m_datasheetObjectFactories;
-    std::map<ResourceMapKey, const DatasheetEnum*> m_datasheetEnums;
+    std::map<ResourceMapKey, const DataEnumInfos*> m_dataEnumInfos;
 
     std::map<const Resource*, ResourceDependencies> m_resourceDependencies;
 };

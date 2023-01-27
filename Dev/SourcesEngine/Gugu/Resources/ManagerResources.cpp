@@ -65,7 +65,7 @@ void ManagerResources::Release()
     m_resourceDependencies.clear();
     m_datasheetObjectFactories.clear();
 
-    ClearStdMap(m_datasheetEnums);
+    ClearStdMap(m_dataEnumInfos);
     ClearStdMap(m_customTextures);
     ClearStdMap(m_resources);
 }
@@ -770,24 +770,24 @@ DataObject* ManagerResources::InstanciateDatasheetObject(std::string_view _strTy
     return nullptr;
 }
 
-void ManagerResources::RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum)
+void ManagerResources::RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum)
 {
-    auto iteElement = m_datasheetEnums.find(_strName);
-    if (iteElement != m_datasheetEnums.end())
+    auto iteElement = m_dataEnumInfos.find(_strName);
+    if (iteElement != m_dataEnumInfos.end())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Datasheet Enum already registered");
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Data Enum already registered");
         SafeDelete(_pEnum);
     }
     else
     {
-        m_datasheetEnums[_strName] = _pEnum;
+        m_dataEnumInfos[_strName] = _pEnum;
     }
 }
 
-const DatasheetEnum* ManagerResources::GetDatasheetEnum(const std::string& _strName)
+const DataEnumInfos* ManagerResources::GetDataEnumInfos(const std::string& _strName)
 {
-    auto iteElement = m_datasheetEnums.find(_strName);
-    if (iteElement != m_datasheetEnums.end())
+    auto iteElement = m_dataEnumInfos.find(_strName);
+    if (iteElement != m_dataEnumInfos.end())
     {
         return (iteElement->second);
     }

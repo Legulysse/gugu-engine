@@ -38,7 +38,7 @@ pugi::xml_node AddNodeData(DataSaveContext& _kContext, const std::string& _strNa
 
 bool ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue)
 {
-    const DatasheetEnum* pEnum = GetResources()->GetDatasheetEnum(_strType);
+    const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
     if (pEnum)
     {
         pugi::xml_node pNode = FindNodeData(_kContext, _strName);
@@ -65,7 +65,7 @@ bool ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strNam
 
 bool ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues)
 {
-    const DatasheetEnum* pEnum = GetResources()->GetDatasheetEnum(_strType);
+    const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
     if (pEnum)
     {
         pugi::xml_node pNode = FindNodeData(_kContext, _strName);
@@ -99,7 +99,7 @@ bool ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strNa
 
 void WriteEnumValue(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, int _iValue)
 {
-    const DatasheetEnum* pEnum = GetResources()->GetDatasheetEnum(_strType);
+    const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
     if (pEnum && _iValue >= 0 && _iValue < pEnum->values.size())
     {
         pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);
@@ -109,7 +109,7 @@ void WriteEnumValue(DataSaveContext& _kContext, const std::string& _strName, con
 
 void WriteEnumValues(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<int>& _vecValues)
 {
-    const DatasheetEnum* pEnum = GetResources()->GetDatasheetEnum(_strType);
+    const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
     if (pEnum)
     {
         pugi::xml_node pNode = Impl::AddNodeData(_kContext, _strName);

@@ -36,7 +36,7 @@ struct DataSaveContext
     pugi::xml_node* currentNode;
 };
 
-struct DatasheetEnum
+struct DataEnumInfos
 {
     std::vector<std::string> values;    //TODO: Store both string and enum values
 };

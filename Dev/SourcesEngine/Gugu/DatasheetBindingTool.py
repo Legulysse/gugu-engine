@@ -58,7 +58,7 @@ class DefinitionEnum():
         _file.write('    };\n')
         
         _file.write('\n')
-        _file.write('    const gugu::DatasheetEnum* GetDatasheetEnum();\n')
+        _file.write('    const gugu::DataEnumInfos* GetDataEnumInfos();\n')
         _file.write('    void GetEnumValues(std::vector<'+ self.code +'::Type>& enumValues);\n')
         _file.write('    size_t GetSize();\n')
         _file.write('\n')
@@ -74,18 +74,18 @@ class DefinitionEnum():
         
         _file.write('    void Register()\n')
         _file.write('    {\n')
-        _file.write('        gugu::DatasheetEnum* datasheetEnum = new gugu::DatasheetEnum;\n')
-        _file.write('        datasheetEnum->values.reserve('+ str(len(self.values)) +');\n')
+        _file.write('        gugu::DataEnumInfos* enumInfos = new gugu::DataEnumInfos;\n')
+        _file.write('        enumInfos->values.reserve('+ str(len(self.values)) +');\n')
         for enumValue in self.values:
-            _file.write('        datasheetEnum->values.push_back("'+ enumValue.name +'");\n')
+            _file.write('        enumInfos->values.push_back("'+ enumValue.name +'");\n')
         _file.write('\n')
-        _file.write('        gugu::GetResources()->RegisterDatasheetEnum("'+ self.name +'", datasheetEnum);\n')
+        _file.write('        gugu::GetResources()->RegisterDataEnumInfos("'+ self.name +'", enumInfos);\n')
         _file.write('    }\n')
         
         _file.write('\n')
-        _file.write('    const gugu::DatasheetEnum* GetDatasheetEnum()\n')
+        _file.write('    const gugu::DataEnumInfos* GetDataEnumInfos()\n')
         _file.write('    {\n')
-        _file.write('        return gugu::GetResources()->GetDatasheetEnum("'+ self.name +'");\n')
+        _file.write('        return gugu::GetResources()->GetDataEnumInfos("'+ self.name +'");\n')
         _file.write('    }\n')
         
         _file.write('\n')
@@ -99,9 +99,9 @@ class DefinitionEnum():
         _file.write('\n')
         _file.write('    size_t GetSize()\n')
         _file.write('    {\n')
-        _file.write('        const gugu::DatasheetEnum* datasheetEnum = gugu::GetResources()->GetDatasheetEnum("'+ self.name +'");\n')
-        _file.write('        if (datasheetEnum)\n')
-        _file.write('            return datasheetEnum->values.size();\n')
+        _file.write('        const gugu::DataEnumInfos* enumInfos = gugu::GetResources()->GetDataEnumInfos("'+ self.name +'");\n')
+        _file.write('        if (enumInfos)\n')
+        _file.write('            return enumInfos->values.size();\n')
         _file.write('        return 0;\n')
         _file.write('    }\n')
             

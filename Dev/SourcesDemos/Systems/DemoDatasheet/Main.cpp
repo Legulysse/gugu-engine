@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     // Enums methods
     size_t iSizeWeaponTypesA = EWeaponType::GetSize();
     size_t iSizeWeaponTypesB = 0;
-    const DatasheetEnum* pEnum = EWeaponType::GetDatasheetEnum();
+    const DataEnumInfos* pEnum = EWeaponType::GetDataEnumInfos();
     if (pEnum)
     {
         iSizeWeaponTypesB = pEnum->values.size();

@@ -13,7 +13,7 @@
 
 namespace gugu
 {
-    struct DatasheetParserContext;
+    struct DataParseContext;
     class Datasheet;
 }
 
@@ -31,7 +31,7 @@ public:
 
     bool LoadFromXml(const std::string& _strPathName, Datasheet* ownerDatasheet, std::vector<class Datasheet*>& ancestors);
 
-    virtual void ParseMembers(DatasheetParserContext& _kContext) = 0;
+    virtual void ParseMembers(DataParseContext& _kContext) = 0;
 
     // Return the owning datasheet (only if this object is a root object, return nullptr otherwise).
     Datasheet* GetDatasheet() const;

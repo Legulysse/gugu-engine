@@ -62,7 +62,7 @@ DS_SpriteInfo::~DS_SpriteInfo()
 {
 }
 
-void DS_SpriteInfo::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_SpriteInfo::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -82,7 +82,7 @@ DS_Entity::~DS_Entity()
 {
 }
 
-void DS_Entity::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Entity::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -113,7 +113,7 @@ DS_General::~DS_General()
     SafeDelete(playableCondition);
 }
 
-void DS_General::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_General::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Entity::ParseMembers(context);
 
@@ -143,7 +143,7 @@ DS_Faction::~DS_Faction()
     m_leader = nullptr;
 }
 
-void DS_Faction::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Faction::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -161,7 +161,7 @@ DS_Troop::~DS_Troop()
 {
 }
 
-void DS_Troop::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Troop::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -178,7 +178,7 @@ DS_Item::~DS_Item()
 {
 }
 
-void DS_Item::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Item::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -194,7 +194,7 @@ DS_Restriction::~DS_Restriction()
 {
 }
 
-void DS_Restriction::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Restriction::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -211,7 +211,7 @@ DS_RestrictionFaction::~DS_RestrictionFaction()
     m_faction = nullptr;
 }
 
-void DS_RestrictionFaction::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_RestrictionFaction::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Restriction::ParseMembers(context);
 
@@ -229,7 +229,7 @@ DS_RestrictionTroop::~DS_RestrictionTroop()
     m_troop = nullptr;
 }
 
-void DS_RestrictionTroop::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_RestrictionTroop::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Restriction::ParseMembers(context);
 
@@ -255,7 +255,7 @@ DS_Skill::~DS_Skill()
     ClearStdVector(m_restrictions);
 }
 
-void DS_Skill::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Skill::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -277,7 +277,7 @@ DS_Condition::~DS_Condition()
 {
 }
 
-void DS_Condition::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Condition::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -294,7 +294,7 @@ DS_ConditionAnd::~DS_ConditionAnd()
     ClearStdVector(conditions);
 }
 
-void DS_ConditionAnd::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_ConditionAnd::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Condition::ParseMembers(context);
 
@@ -312,7 +312,7 @@ DS_ConditionPlayerLevel::~DS_ConditionPlayerLevel()
 {
 }
 
-void DS_ConditionPlayerLevel::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_ConditionPlayerLevel::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Condition::ParseMembers(context);
 
@@ -338,7 +338,7 @@ DS_GameSave::~DS_GameSave()
     ClearStdVector(multipleItems);
 }
 
-void DS_GameSave::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_GameSave::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -388,7 +388,7 @@ DS_ItemSave::~DS_ItemSave()
     item = nullptr;
 }
 
-void DS_ItemSave::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_ItemSave::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 

@@ -34,7 +34,7 @@ bool DatasaveObject::LoadFromXml(const std::string& _strPathName)
     if (rootNode.empty())
         return false;
 
-    DatasheetParserContext context;
+    DataParseContext context;
     context.currentNode = &rootNode;
     ParseMembers(context);
 

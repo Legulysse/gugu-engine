@@ -24,7 +24,7 @@ namespace DataBinding {
 
 namespace Impl {
 
-pugi::xml_node FindNodeData(DatasheetParserContext& _kContext, const std::string& _strName)
+pugi::xml_node FindNodeData(DataParseContext& _kContext, const std::string& _strName)
 {
     return _kContext.currentNode->find_child_by_attribute("Data", "name", _strName.c_str());
 }
@@ -36,7 +36,7 @@ pugi::xml_node AddNodeData(DataSaveContext& _kContext, const std::string& _strNa
     return nodeData;
 }
 
-bool ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue)
+bool ReadEnumValue(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue)
 {
     const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
     if (pEnum)
@@ -63,7 +63,7 @@ bool ReadEnumValue(DatasheetParserContext& _kContext, const std::string& _strNam
     return false;
 }
 
-bool ReadEnumValues(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues)
+bool ReadEnumValues(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues)
 {
     const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
     if (pEnum)
@@ -131,7 +131,7 @@ const DatasheetObject* ResolveDatasheetLink(const std::string& _strName)
     return datasheet ? datasheet->GetRootObject() : nullptr;
 }
 
-bool ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& _strName, const DatasheetObject*& _pNewDatasheet)
+bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pNewDatasheet)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -154,7 +154,7 @@ bool ResolveDatasheetLink(DatasheetParserContext& _kContext, const std::string& 
     return false;
 }
 
-bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecReferences)
+bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecReferences)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -191,7 +191,7 @@ bool ResolveDatasheetLinks(DatasheetParserContext& _kContext, const std::string&
     return false;
 }
 
-DataObject* InstanciateDataObject(DatasheetParserContext& _kContext, const std::string& _strType)
+DataObject* InstanciateDataObject(DataParseContext& _kContext, const std::string& _strType)
 {
     DataObject* instance = GetResources()->InstanciateDataObject(_strType);
     if (instance)
@@ -207,7 +207,7 @@ DataObject* InstanciateDataObject(DatasheetParserContext& _kContext, const std::
     return nullptr;
 }
 
-bool InstanciateDataObject(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
+bool InstanciateDataObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -232,7 +232,7 @@ bool InstanciateDataObject(DatasheetParserContext& _kContext, const std::string&
     return false;
 }
 
-bool InstanciateDataObjects(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
+bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
 {
     pugi::xml_node pNode = FindNodeData(_kContext, _strName);
     if (pNode)
@@ -320,7 +320,7 @@ void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strN
 
 }   // namespace Impl
 
-void ReadString(DatasheetParserContext& _kContext, const std::string& _strName, std::string& _strMember)
+void ReadString(DataParseContext& _kContext, const std::string& _strName, std::string& _strMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -331,7 +331,7 @@ void ReadString(DatasheetParserContext& _kContext, const std::string& _strName, 
     }
 }
 
-void ReadInt(DatasheetParserContext& _kContext, const std::string& _strName, int& _iMember)
+void ReadInt(DataParseContext& _kContext, const std::string& _strName, int& _iMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -342,7 +342,7 @@ void ReadInt(DatasheetParserContext& _kContext, const std::string& _strName, int
     }
 }
 
-void ReadFloat(DatasheetParserContext& _kContext, const std::string& _strName, float& _fMember)
+void ReadFloat(DataParseContext& _kContext, const std::string& _strName, float& _fMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -353,7 +353,7 @@ void ReadFloat(DatasheetParserContext& _kContext, const std::string& _strName, f
     }
 }
 
-void ReadBool(DatasheetParserContext& _kContext, const std::string& _strName, bool& _bMember)
+void ReadBool(DataParseContext& _kContext, const std::string& _strName, bool& _bMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -364,7 +364,7 @@ void ReadBool(DatasheetParserContext& _kContext, const std::string& _strName, bo
     }
 }
 
-void ReadStringArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<std::string>& _vecMember)
+void ReadStringArray(DataParseContext& _kContext, const std::string& _strName, std::vector<std::string>& _vecMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -382,7 +382,7 @@ void ReadStringArray(DatasheetParserContext& _kContext, const std::string& _strN
     }
 }
 
-void ReadIntArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember)
+void ReadIntArray(DataParseContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -400,7 +400,7 @@ void ReadIntArray(DatasheetParserContext& _kContext, const std::string& _strName
     }
 }
 
-void ReadFloatArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember)
+void ReadFloatArray(DataParseContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)
@@ -418,7 +418,7 @@ void ReadFloatArray(DatasheetParserContext& _kContext, const std::string& _strNa
     }
 }
 
-void ReadBoolArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<bool>& _vecMember)
+void ReadBoolArray(DataParseContext& _kContext, const std::string& _strName, std::vector<bool>& _vecMember)
 {
     pugi::xml_node pNode = Impl::FindNodeData(_kContext, _strName);
     if (pNode)

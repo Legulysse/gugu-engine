@@ -8,7 +8,7 @@
 
 namespace gugu
 {
-    struct DatasheetParserContext;
+    struct DataParseContext;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ public:
     DataObject();
     virtual ~DataObject();
 
-    virtual void ParseMembers(DatasheetParserContext& _kContext) = 0;
+    virtual void ParseMembers(DataParseContext& _kContext) = 0;
 };
 
 }   // namespace gugu

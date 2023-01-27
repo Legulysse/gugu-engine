@@ -71,7 +71,7 @@ bool DatasheetObject::LoadFromXml(const std::string& _strPathName, Datasheet* ow
         }
     }
 
-    DatasheetParserContext kContext;
+    DataParseContext kContext;
     kContext.currentNode = &oNodeRoot;
     ParseMembers(kContext);
 

@@ -69,7 +69,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -162,7 +162,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -183,7 +183,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -222,7 +222,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -239,7 +239,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////

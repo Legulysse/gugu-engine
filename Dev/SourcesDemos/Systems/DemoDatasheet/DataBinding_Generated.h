@@ -62,7 +62,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -127,7 +127,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -161,7 +161,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -208,7 +208,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -230,7 +230,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -252,7 +252,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -273,7 +273,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -295,7 +295,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -321,7 +321,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
     virtual void SerializeMembers(gugu::DataSaveContext& context) const override;
 
     virtual const std::string& GetDataInstanceType() const override;
@@ -342,7 +342,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
     virtual void SerializeMembers(gugu::DataSaveContext& context) const override;
 
     virtual const std::string& GetDataInstanceType() const override;

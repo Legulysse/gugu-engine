@@ -91,7 +91,7 @@ DS_SpriteInfo::~DS_SpriteInfo()
 {
 }
 
-void DS_SpriteInfo::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_SpriteInfo::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -113,7 +113,7 @@ DS_Character::~DS_Character()
     SafeDelete(sprite);
 }
 
-void DS_Character::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Character::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -137,7 +137,7 @@ DS_Hero::~DS_Hero()
 {
 }
 
-void DS_Hero::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Hero::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Character::ParseMembers(context);
 
@@ -157,7 +157,7 @@ DS_Enemy::~DS_Enemy()
 {
 }
 
-void DS_Enemy::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Enemy::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Character::ParseMembers(context);
 
@@ -178,7 +178,7 @@ DS_Skill::~DS_Skill()
     ClearStdVector(effects);
 }
 
-void DS_Skill::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Skill::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -200,7 +200,7 @@ DS_Effect::~DS_Effect()
 {
 }
 
-void DS_Effect::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_Effect::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
@@ -221,7 +221,7 @@ DS_EffectArea::~DS_EffectArea()
     ClearStdVector(effectsOnHit);
 }
 
-void DS_EffectArea::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_EffectArea::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Effect::ParseMembers(context);
 
@@ -247,7 +247,7 @@ DS_EffectProjectile::~DS_EffectProjectile()
     ClearStdVector(effectsOnDestination);
 }
 
-void DS_EffectProjectile::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_EffectProjectile::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Effect::ParseMembers(context);
 
@@ -269,7 +269,7 @@ DS_EffectDamage::~DS_EffectDamage()
 {
 }
 
-void DS_EffectDamage::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_EffectDamage::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Effect::ParseMembers(context);
 
@@ -286,7 +286,7 @@ DS_EffectHeal::~DS_EffectHeal()
 {
 }
 
-void DS_EffectHeal::ParseMembers(gugu::DatasheetParserContext& context)
+void DS_EffectHeal::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Effect::ParseMembers(context);
 

@@ -223,7 +223,7 @@ class DefinitionClass():
         _file.write('\n')
         _file.write('protected:\n')
         _file.write('\n')
-        _file.write('    virtual void ParseMembers(gugu::DatasheetParserContext& context) override;\n')
+        _file.write('    virtual void ParseMembers(gugu::DataParseContext& context) override;\n')
 
         # Serializer
         if self.type == 'datasave':
@@ -307,7 +307,7 @@ class DefinitionClass():
         
         # Parser
         _file.write('\n')
-        _file.write('void '+ self.code +'::ParseMembers(gugu::DatasheetParserContext& context)\n')
+        _file.write('void '+ self.code +'::ParseMembers(gugu::DataParseContext& context)\n')
         _file.write('{\n')
         
         if hasConcreteParentClass:

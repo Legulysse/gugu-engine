@@ -8,7 +8,7 @@ namespace gugu {
 namespace DataBinding {
 
 template<typename T>
-void ReadEnum(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T& _eMember)
+void ReadEnum(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, T& _eMember)
 {
     int iValue = 0;
     if (Impl::ReadEnumValue(_kContext, _strName, _strType, iValue))
@@ -16,7 +16,7 @@ void ReadEnum(DatasheetParserContext& _kContext, const std::string& _strName, co
 }
 
 template<typename T>
-void ReadEnumArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T>& _vecMember)
+void ReadEnumArray(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T>& _vecMember)
 {
     std::vector<int> vecValues;
     if (Impl::ReadEnumValues(_kContext, _strName, _strType, vecValues))
@@ -51,7 +51,7 @@ void WriteEnumArray(DataSaveContext& _kContext, const std::string& _strName, con
 }
 
 template<typename T>
-void ReadDatasheetReference(DatasheetParserContext& _kContext, const std::string& _strName, const T*& _pMember)
+void ReadDatasheetReference(DataParseContext& _kContext, const std::string& _strName, const T*& _pMember)
 {
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
@@ -63,7 +63,7 @@ void ReadDatasheetReference(DatasheetParserContext& _kContext, const std::string
 }
 
 template<typename T>
-void ReadDatasheetReferenceArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const T*>& _vecMember)
+void ReadDatasheetReferenceArray(DataParseContext& _kContext, const std::string& _strName, std::vector<const T*>& _vecMember)
 {
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
@@ -98,7 +98,7 @@ void WriteDatasheetReferenceArray(DataSaveContext& _kContext, const std::string&
 }
 
 template<typename T>
-void ReadDatasheetInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember)
+void ReadDatasheetInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember)
 {
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
@@ -111,7 +111,7 @@ void ReadDatasheetInstance(DatasheetParserContext& _kContext, const std::string&
 }
 
 template<typename T>
-void ReadDatasheetInstanceArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
+void ReadDatasheetInstanceArray(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
 {
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
@@ -130,9 +130,9 @@ void ReadDatasheetInstanceArray(DatasheetParserContext& _kContext, const std::st
 }
 
 template<typename T>
-void ReadDatasaveInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T*& _pMember)
+void ReadDatasaveInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, T*& _pMember)
 {
-    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasheetObject type");
+    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasaveObject type");
 
     DataObject* pInstance = nullptr;
     if (Impl::InstanciateDataObject(_kContext, _strName, _strType, pInstance))
@@ -143,9 +143,9 @@ void ReadDatasaveInstance(DatasheetParserContext& _kContext, const std::string& 
 }
 
 template<typename T>
-void ReadDatasaveInstanceArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T*>& _vecMember)
+void ReadDatasaveInstanceArray(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T*>& _vecMember)
 {
-    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasheetObject type");
+    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasaveObject type");
 
     std::vector<DataObject*> vecInstances;
     if (Impl::InstanciateDataObjects(_kContext, _strName, _strType, vecInstances))

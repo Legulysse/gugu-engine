@@ -43,6 +43,9 @@ struct DatasheetEnum
 
 namespace DataBinding {
 
+//----------------------------------------------
+// Read base types
+
 void ReadString(DatasheetParserContext& _kContext, const std::string& _strName, std::string& _strMember);
 void ReadInt(DatasheetParserContext& _kContext, const std::string& _strName, int& _iMember);
 void ReadFloat(DatasheetParserContext& _kContext, const std::string& _strName, float& _fMember);
@@ -52,6 +55,9 @@ void ReadStringArray(DatasheetParserContext& _kContext, const std::string& _strN
 void ReadIntArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember);
 void ReadFloatArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember);
 void ReadBoolArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<bool>& _vecMember);
+
+//----------------------------------------------
+// Write base types
 
 void WriteString(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strMember);
 void WriteInt(DataSaveContext& _kContext, const std::string& _strName, int _iMember);
@@ -63,179 +69,69 @@ void WriteIntArray(DataSaveContext& _kContext, const std::string& _strName, cons
 void WriteFloatArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<float>& _vecMember);
 void WriteBoolArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<bool>& _vecMember);
 
-template<typename T>
-void ReadEnum(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T& _eMember)
-{
-    int iValue = 0;
-    if (Impl::ReadEnumValue(_kContext, _strName, _strType, iValue))
-        _eMember = (T)iValue;
-}
+//----------------------------------------------
+// Read enums
 
 template<typename T>
-void ReadEnumArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T>& _vecMember)
-{
-    std::vector<int> vecValues;
-    if (Impl::ReadEnumValues(_kContext, _strName, _strType, vecValues))
-    {
-        _vecMember.clear();
-
-        for (size_t i = 0; i < vecValues.size(); ++i)
-        {
-            _vecMember.push_back((T)(vecValues[i]));
-        }
-    }
-}
+void ReadEnum(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T& _eMember);
 
 template<typename T>
-void WriteEnum(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, T _eMember)
-{
-    Impl::WriteEnumValue(_kContext, _strName, _strType, (int)_eMember);
-}
+void ReadEnumArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T>& _vecMember);
+
+//----------------------------------------------
+// Write enums
 
 template<typename T>
-void WriteEnumArray(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<T>& _vecMember)
-{
-    std::vector<int> vecValues;
-    vecValues.reserve(_vecMember.size());
-
-    for (size_t i = 0; i < _vecMember.size(); ++i)
-    {
-        vecValues.push_back((int)_vecMember[i]);
-    }
-
-    Impl::WriteEnumValues(_kContext, _strName, _strType, vecValues);
-}
+void WriteEnum(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, T _eMember);
 
 template<typename T>
-void ReadDatasheetReference(DatasheetParserContext& _kContext, const std::string& _strName, const T*& _pMember)
-{
-    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+void WriteEnumArray(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<T>& _vecMember);
 
-    const DatasheetObject* pReference = nullptr;
-    if (Impl::ResolveDatasheetLink(_kContext, _strName, pReference))
-    {
-        _pMember = dynamic_cast<const T*>(pReference);
-    }
-}
+//----------------------------------------------
+// Read datasheet references
 
 template<typename T>
-void ReadDatasheetReferenceArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const T*>& _vecMember)
-{
-    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+void ReadDatasheetReference(DatasheetParserContext& _kContext, const std::string& _strName, const T*& _pMember);
 
-    std::vector<const DatasheetObject*> vecReferences;
-    if (Impl::ResolveDatasheetLinks(_kContext, _strName, vecReferences))
-    {
-        _vecMember.clear();
+template<typename T>
+void ReadDatasheetReferenceArray(DatasheetParserContext& _kContext, const std::string& _strName, std::vector<const T*>& _vecMember);
 
-        for (size_t i = 0; i < vecReferences.size(); ++i)
-        {
-            // Fill the actual member values (may contain null values).
-            const T* pReference = dynamic_cast<const T*>(vecReferences[i]);
-            _vecMember.push_back(pReference);
-        }
-    }
-}
+//----------------------------------------------
+// Write datasheet references
 
 void WriteDatasheetReference(DataSaveContext& _kContext, const std::string& _strName, const DatasheetObject* _pMember);
 
 template<typename T>
-void WriteDatasheetReferenceArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const T*>& _pMember)
-{
-    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+void WriteDatasheetReferenceArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const T*>& _pMember);
 
-    std::vector<const DatasheetObject*> vecReferences;
-    vecReferences.reserve(_pMember.size());
-
-    for (size_t i = 0; i < _pMember.size(); ++i)
-    {
-        vecReferences.push_back(_pMember[i]);
-    }
-
-    Impl::WriteDatasheetReferences(_kContext, _strName, vecReferences);
-}
+//----------------------------------------------
+// Read datasheet instances
 
 template<typename T>
-void ReadDatasheetInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember)
-{
-    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
-
-    DataObject* pInstance = nullptr;
-    if (Impl::InstanciateDataObject(_kContext, _strName, _strType, pInstance))
-    {
-        SafeDelete(_pMember);
-        _pMember = dynamic_cast<const T*>(pInstance);
-    }
-}
+void ReadDatasheetInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, const T*& _pMember);
 
 template<typename T>
-void ReadDatasheetInstanceArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember)
-{
-    static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
+void ReadDatasheetInstanceArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<const T*>& _vecMember);
 
-    std::vector<DataObject*> vecInstances;
-    if (Impl::InstanciateDataObjects(_kContext, _strName, _strType, vecInstances))
-    {
-        ClearStdVector(_vecMember);
-
-        for (size_t i = 0; i < vecInstances.size(); ++i)
-        {
-            // Fill the actual member values (may contain null values).
-            const T* pInstance = dynamic_cast<const T*>(vecInstances[i]);
-            _vecMember.push_back(pInstance);
-        }
-    }
-}
+//----------------------------------------------
+// Read datasave instances
 
 template<typename T>
-void ReadDatasaveInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T*& _pMember)
-{
-    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasheetObject type");
-
-    DataObject* pInstance = nullptr;
-    if (Impl::InstanciateDataObject(_kContext, _strName, _strType, pInstance))
-    {
-        SafeDelete(_pMember);
-        _pMember = dynamic_cast<T*>(pInstance);
-    }
-}
+void ReadDatasaveInstance(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, T*& _pMember);
 
 template<typename T>
-void ReadDatasaveInstanceArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T*>& _vecMember)
-{
-    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasheetObject type");
+void ReadDatasaveInstanceArray(DatasheetParserContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<T*>& _vecMember);
 
-    std::vector<DataObject*> vecInstances;
-    if (Impl::InstanciateDataObjects(_kContext, _strName, _strType, vecInstances))
-    {
-        ClearStdVector(_vecMember);
-
-        for (size_t i = 0; i < vecInstances.size(); ++i)
-        {
-            // Fill the actual member values (may contain null values).
-            T* pInstance = dynamic_cast<T*>(vecInstances[i]);
-            _vecMember.push_back(pInstance);
-        }
-    }
-}
+//----------------------------------------------
+// Write datasave instances
 
 void WriteDatasaveInstance(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const DatasaveObject* _pMember);
 
 template<typename T>
-void WriteDatasaveInstanceArray(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<T*>& _pMember)
-{
-    static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasaveObject type");
+void WriteDatasaveInstanceArray(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<T*>& _pMember);
 
-    std::vector<DatasaveObject*> vecInstances;
-    vecInstances.reserve(_pMember.size());
-
-    for (size_t i = 0; i < _pMember.size(); ++i)
-    {
-        vecInstances.push_back((DatasaveObject*)_pMember[i]);
-    }
-
-    Impl::WriteDatasaveInstances(_kContext, _strName, _strType, vecInstances);
-}
+//----------------------------------------------
+// Impl methods
 
 namespace Impl {
 
@@ -264,3 +160,8 @@ void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strN
 }   // namespace DataBinding
 
 }   // namespace gugu
+
+////////////////////////////////////////////////////////////////
+// Template Implementation
+
+#include "Gugu/Data/DataBindingUtility.tpp"

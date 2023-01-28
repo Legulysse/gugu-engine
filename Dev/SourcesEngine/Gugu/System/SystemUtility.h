@@ -23,7 +23,7 @@ namespace gugu {
 //----------------------------------------------
 // Constants
 
-namespace System
+namespace system
 {
     const char PathSeparator = '/';
     const char ExtensionSeparator = '.';

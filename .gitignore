@@ -7,6 +7,11 @@
 **/[Bb]uild_*/
 
 
+## User Directories
+
+**/User/
+
+
 ## User Files
 
 *.pro.user

@@ -66,8 +66,8 @@ void DS_SpriteInfo::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "imageset", m_imageSet);
-    gugu::DataBinding::ReadString(context, "animset", m_animSet);
+    gugu::binding::ReadString(context, "imageset", m_imageSet);
+    gugu::binding::ReadString(context, "animset", m_animSet);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -86,9 +86,9 @@ void DS_Entity::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "name", m_name);
-    gugu::DataBinding::ReadInt(context, "life", m_life);
-    gugu::DataBinding::ReadInt(context, "stamina", m_stamina);
+    gugu::binding::ReadString(context, "name", m_name);
+    gugu::binding::ReadInt(context, "life", m_life);
+    gugu::binding::ReadInt(context, "stamina", m_stamina);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -117,18 +117,18 @@ void DS_General::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Entity::ParseMembers(context);
 
-    gugu::DataBinding::ReadFloat(context, "speed", m_speed);
-    gugu::DataBinding::ReadBool(context, "is monarch", m_isMonarch);
-    gugu::DataBinding::ReadDatasheetReference(context, "faction", m_faction);
-    gugu::DataBinding::ReadDatasheetInstance(context, "sprite", "spriteInfo", m_sprite);
-    gugu::DataBinding::ReadDatasheetInstance(context, "sprite 2", "spriteInfo", m_sprite2);
-    gugu::DataBinding::ReadStringArray(context, "names list", m_names);
-    gugu::DataBinding::ReadIntArray(context, "stats list", m_stats);
-    gugu::DataBinding::ReadDatasheetReferenceArray(context, "factions list", m_factions);
-    gugu::DataBinding::ReadDatasheetInstanceArray(context, "more sprites", "spriteInfo", m_sprites);
-    gugu::DataBinding::ReadEnum(context, "weapon", "weaponType", m_weapon);
-    gugu::DataBinding::ReadEnumArray(context, "available weapons", "weaponType", m_availableWeapons);
-    gugu::DataBinding::ReadDatasheetInstance(context, "playableCondition", "condition", playableCondition);
+    gugu::binding::ReadFloat(context, "speed", m_speed);
+    gugu::binding::ReadBool(context, "is monarch", m_isMonarch);
+    gugu::binding::ReadDatasheetReference(context, "faction", m_faction);
+    gugu::binding::ReadDatasheetInstance(context, "sprite", "spriteInfo", m_sprite);
+    gugu::binding::ReadDatasheetInstance(context, "sprite 2", "spriteInfo", m_sprite2);
+    gugu::binding::ReadStringArray(context, "names list", m_names);
+    gugu::binding::ReadIntArray(context, "stats list", m_stats);
+    gugu::binding::ReadDatasheetReferenceArray(context, "factions list", m_factions);
+    gugu::binding::ReadDatasheetInstanceArray(context, "more sprites", "spriteInfo", m_sprites);
+    gugu::binding::ReadEnum(context, "weapon", "weaponType", m_weapon);
+    gugu::binding::ReadEnumArray(context, "available weapons", "weaponType", m_availableWeapons);
+    gugu::binding::ReadDatasheetInstance(context, "playableCondition", "condition", playableCondition);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -147,8 +147,8 @@ void DS_Faction::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "name", m_name);
-    gugu::DataBinding::ReadDatasheetReference(context, "leader", m_leader);
+    gugu::binding::ReadString(context, "name", m_name);
+    gugu::binding::ReadDatasheetReference(context, "leader", m_leader);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -165,7 +165,7 @@ void DS_Troop::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "name", m_name);
+    gugu::binding::ReadString(context, "name", m_name);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -182,7 +182,7 @@ void DS_Item::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "name", name);
+    gugu::binding::ReadString(context, "name", name);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ void DS_RestrictionFaction::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Restriction::ParseMembers(context);
 
-    gugu::DataBinding::ReadDatasheetReference(context, "faction", m_faction);
+    gugu::binding::ReadDatasheetReference(context, "faction", m_faction);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -233,7 +233,7 @@ void DS_RestrictionTroop::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Restriction::ParseMembers(context);
 
-    gugu::DataBinding::ReadDatasheetReference(context, "troop", m_troop);
+    gugu::binding::ReadDatasheetReference(context, "troop", m_troop);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -259,12 +259,12 @@ void DS_Skill::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "name", m_name);
-    gugu::DataBinding::ReadDatasheetInstance(context, "empty restriction", "restriction", m_emptyRestriction);
-    gugu::DataBinding::ReadDatasheetInstance(context, "null restriction", "restriction", m_nullRestriction);
-    gugu::DataBinding::ReadDatasheetInstance(context, "single restriction base", "restriction", m_singleRestrictionBase);
-    gugu::DataBinding::ReadDatasheetInstance(context, "single restriction faction", "restriction", m_singleRestrictionFaction);
-    gugu::DataBinding::ReadDatasheetInstanceArray(context, "restrictions", "restriction", m_restrictions);
+    gugu::binding::ReadString(context, "name", m_name);
+    gugu::binding::ReadDatasheetInstance(context, "empty restriction", "restriction", m_emptyRestriction);
+    gugu::binding::ReadDatasheetInstance(context, "null restriction", "restriction", m_nullRestriction);
+    gugu::binding::ReadDatasheetInstance(context, "single restriction base", "restriction", m_singleRestrictionBase);
+    gugu::binding::ReadDatasheetInstance(context, "single restriction faction", "restriction", m_singleRestrictionFaction);
+    gugu::binding::ReadDatasheetInstanceArray(context, "restrictions", "restriction", m_restrictions);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -281,7 +281,7 @@ void DS_Condition::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadBool(context, "intendedResult", intendedResult);
+    gugu::binding::ReadBool(context, "intendedResult", intendedResult);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -298,7 +298,7 @@ void DS_ConditionAnd::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Condition::ParseMembers(context);
 
-    gugu::DataBinding::ReadDatasheetInstanceArray(context, "conditions", "condition", conditions);
+    gugu::binding::ReadDatasheetInstanceArray(context, "conditions", "condition", conditions);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -316,8 +316,8 @@ void DS_ConditionPlayerLevel::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Condition::ParseMembers(context);
 
-    gugu::DataBinding::ReadInt(context, "minLevel", minLevel);
-    gugu::DataBinding::ReadInt(context, "maxLevel", maxLevel);
+    gugu::binding::ReadInt(context, "minLevel", minLevel);
+    gugu::binding::ReadInt(context, "maxLevel", maxLevel);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -342,32 +342,32 @@ void DS_GameSave::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadInt(context, "experience", experience);
-    gugu::DataBinding::ReadString(context, "name", name);
-    gugu::DataBinding::ReadIntArray(context, "stats", stats);
-    gugu::DataBinding::ReadStringArray(context, "names", names);
-    gugu::DataBinding::ReadEnum(context, "weapon", "weaponType", weapon);
-    gugu::DataBinding::ReadEnumArray(context, "weapons", "weaponType", weapons);
-    gugu::DataBinding::ReadDatasheetReference(context, "general", general);
-    gugu::DataBinding::ReadDatasheetReferenceArray(context, "generals", generals);
-    gugu::DataBinding::ReadDatasaveInstance(context, "singleItem", "itemSave", singleItem);
-    gugu::DataBinding::ReadDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
+    gugu::binding::ReadInt(context, "experience", experience);
+    gugu::binding::ReadString(context, "name", name);
+    gugu::binding::ReadIntArray(context, "stats", stats);
+    gugu::binding::ReadStringArray(context, "names", names);
+    gugu::binding::ReadEnum(context, "weapon", "weaponType", weapon);
+    gugu::binding::ReadEnumArray(context, "weapons", "weaponType", weapons);
+    gugu::binding::ReadDatasheetReference(context, "general", general);
+    gugu::binding::ReadDatasheetReferenceArray(context, "generals", generals);
+    gugu::binding::ReadDatasaveInstance(context, "singleItem", "itemSave", singleItem);
+    gugu::binding::ReadDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
 }
 
 void DS_GameSave::SerializeMembers(gugu::DataSaveContext& context) const
 {
     //gugu::DatasheetObject::SerializeMembers(context);
 
-    gugu::DataBinding::WriteInt(context, "experience", experience);
-    gugu::DataBinding::WriteString(context, "name", name);
-    gugu::DataBinding::WriteIntArray(context, "stats", stats);
-    gugu::DataBinding::WriteStringArray(context, "names", names);
-    gugu::DataBinding::WriteEnum(context, "weapon", "weaponType", weapon);
-    gugu::DataBinding::WriteEnumArray(context, "weapons", "weaponType", weapons);
-    gugu::DataBinding::WriteDatasheetReference(context, "general", general);
-    gugu::DataBinding::WriteDatasheetReferenceArray(context, "generals", generals);
-    gugu::DataBinding::WriteDatasaveInstance(context, "singleItem", "itemSave", singleItem);
-    gugu::DataBinding::WriteDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
+    gugu::binding::WriteInt(context, "experience", experience);
+    gugu::binding::WriteString(context, "name", name);
+    gugu::binding::WriteIntArray(context, "stats", stats);
+    gugu::binding::WriteStringArray(context, "names", names);
+    gugu::binding::WriteEnum(context, "weapon", "weaponType", weapon);
+    gugu::binding::WriteEnumArray(context, "weapons", "weaponType", weapons);
+    gugu::binding::WriteDatasheetReference(context, "general", general);
+    gugu::binding::WriteDatasheetReferenceArray(context, "generals", generals);
+    gugu::binding::WriteDatasaveInstance(context, "singleItem", "itemSave", singleItem);
+    gugu::binding::WriteDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
 }
 
 const std::string& DS_GameSave::GetDataInstanceType() const
@@ -392,16 +392,16 @@ void DS_ItemSave::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadDatasheetReference(context, "item", item);
-    gugu::DataBinding::ReadInt(context, "quantity", quantity);
+    gugu::binding::ReadDatasheetReference(context, "item", item);
+    gugu::binding::ReadInt(context, "quantity", quantity);
 }
 
 void DS_ItemSave::SerializeMembers(gugu::DataSaveContext& context) const
 {
     //gugu::DatasheetObject::SerializeMembers(context);
 
-    gugu::DataBinding::WriteDatasheetReference(context, "item", item);
-    gugu::DataBinding::WriteInt(context, "quantity", quantity);
+    gugu::binding::WriteDatasheetReference(context, "item", item);
+    gugu::binding::WriteInt(context, "quantity", quantity);
 }
 
 const std::string& DS_ItemSave::GetDataInstanceType() const

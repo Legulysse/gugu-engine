@@ -95,8 +95,8 @@ void DS_SpriteInfo::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "imageset", imageSet);
-    gugu::DataBinding::ReadString(context, "animset", animSet);
+    gugu::binding::ReadString(context, "imageset", imageSet);
+    gugu::binding::ReadString(context, "animset", animSet);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -117,10 +117,10 @@ void DS_Character::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "name", name);
-    gugu::DataBinding::ReadFloat(context, "health", health);
-    gugu::DataBinding::ReadFloat(context, "speed", speed);
-    gugu::DataBinding::ReadDatasheetInstance(context, "sprite", "spriteInfo", sprite);
+    gugu::binding::ReadString(context, "name", name);
+    gugu::binding::ReadFloat(context, "health", health);
+    gugu::binding::ReadFloat(context, "speed", speed);
+    gugu::binding::ReadDatasheetInstance(context, "sprite", "spriteInfo", sprite);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -141,11 +141,11 @@ void DS_Hero::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Character::ParseMembers(context);
 
-    gugu::DataBinding::ReadFloat(context, "stamina", stamina);
-    gugu::DataBinding::ReadFloat(context, "staminaRecovery", staminaRecovery);
-    gugu::DataBinding::ReadFloat(context, "staminaRecoveryDelay", staminaRecoveryDelay);
-    gugu::DataBinding::ReadFloat(context, "mana", mana);
-    gugu::DataBinding::ReadFloat(context, "manaRecovery", manaRecovery);
+    gugu::binding::ReadFloat(context, "stamina", stamina);
+    gugu::binding::ReadFloat(context, "staminaRecovery", staminaRecovery);
+    gugu::binding::ReadFloat(context, "staminaRecoveryDelay", staminaRecoveryDelay);
+    gugu::binding::ReadFloat(context, "mana", mana);
+    gugu::binding::ReadFloat(context, "manaRecovery", manaRecovery);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -182,12 +182,12 @@ void DS_Skill::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadString(context, "name", name);
-    gugu::DataBinding::ReadFloat(context, "staminaCost", staminaCost);
-    gugu::DataBinding::ReadFloat(context, "manaCost", manaCost);
-    gugu::DataBinding::ReadBool(context, "useAttackSpeed", useAttackSpeed);
-    gugu::DataBinding::ReadFloat(context, "cooldown", cooldown);
-    gugu::DataBinding::ReadDatasheetInstanceArray(context, "effects", "effect", effects);
+    gugu::binding::ReadString(context, "name", name);
+    gugu::binding::ReadFloat(context, "staminaCost", staminaCost);
+    gugu::binding::ReadFloat(context, "manaCost", manaCost);
+    gugu::binding::ReadBool(context, "useAttackSpeed", useAttackSpeed);
+    gugu::binding::ReadFloat(context, "cooldown", cooldown);
+    gugu::binding::ReadDatasheetInstanceArray(context, "effects", "effect", effects);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -204,7 +204,7 @@ void DS_Effect::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::DataBinding::ReadEnum(context, "center", "effectCenter", center);
+    gugu::binding::ReadEnum(context, "center", "effectCenter", center);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -225,11 +225,11 @@ void DS_EffectArea::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Effect::ParseMembers(context);
 
-    gugu::DataBinding::ReadBool(context, "excludeCaster", excludeCaster);
-    gugu::DataBinding::ReadBool(context, "excludeTarget", excludeTarget);
-    gugu::DataBinding::ReadFloat(context, "maxRadius", maxRadius);
-    gugu::DataBinding::ReadFloat(context, "maxAngleFromDirection", maxAngleFromDirection);
-    gugu::DataBinding::ReadDatasheetInstanceArray(context, "effectsOnHit", "effect", effectsOnHit);
+    gugu::binding::ReadBool(context, "excludeCaster", excludeCaster);
+    gugu::binding::ReadBool(context, "excludeTarget", excludeTarget);
+    gugu::binding::ReadFloat(context, "maxRadius", maxRadius);
+    gugu::binding::ReadFloat(context, "maxAngleFromDirection", maxAngleFromDirection);
+    gugu::binding::ReadDatasheetInstanceArray(context, "effectsOnHit", "effect", effectsOnHit);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -251,12 +251,12 @@ void DS_EffectProjectile::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Effect::ParseMembers(context);
 
-    gugu::DataBinding::ReadEnum(context, "aim", "projectileAim", aim);
-    gugu::DataBinding::ReadFloat(context, "speed", speed);
-    gugu::DataBinding::ReadFloat(context, "lifetime", lifetime);
-    gugu::DataBinding::ReadInt(context, "maximumHits", maximumHits);
-    gugu::DataBinding::ReadDatasheetInstanceArray(context, "effectsOnHit", "effect", effectsOnHit);
-    gugu::DataBinding::ReadDatasheetInstanceArray(context, "effectsOnDestination", "effect", effectsOnDestination);
+    gugu::binding::ReadEnum(context, "aim", "projectileAim", aim);
+    gugu::binding::ReadFloat(context, "speed", speed);
+    gugu::binding::ReadFloat(context, "lifetime", lifetime);
+    gugu::binding::ReadInt(context, "maximumHits", maximumHits);
+    gugu::binding::ReadDatasheetInstanceArray(context, "effectsOnHit", "effect", effectsOnHit);
+    gugu::binding::ReadDatasheetInstanceArray(context, "effectsOnDestination", "effect", effectsOnDestination);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -273,7 +273,7 @@ void DS_EffectDamage::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Effect::ParseMembers(context);
 
-    gugu::DataBinding::ReadFloat(context, "damage", damage);
+    gugu::binding::ReadFloat(context, "damage", damage);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -290,7 +290,7 @@ void DS_EffectHeal::ParseMembers(gugu::DataParseContext& context)
 {
     DS_Effect::ParseMembers(context);
 
-    gugu::DataBinding::ReadFloat(context, "heal", heal);
+    gugu::binding::ReadFloat(context, "heal", heal);
 }
 
 ////////////////////////////////////////////////////////////////

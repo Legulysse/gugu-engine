@@ -51,7 +51,7 @@ Vector2f GetRandomPointInCircle(const Vector2f& center, float radius)
 {
     // Inspired by : https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly
     float r = radius * std::sqrtf(GetRandf());
-    float theta = GetRandf() * 2.f * Math::Pi;
+    float theta = GetRandf() * 2.f * math::Pi;
 
     return Vector2f(center.x + r * std::cos(theta),
                     center.y + r * std::sin(theta));
@@ -61,7 +61,7 @@ Vector2f GetRandomPointInAnnulus(const Vector2f& center, float minRadius, float 
 {
     // Inspired by : https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly
     float r = std::sqrtf(GetRandf() * (maxRadius * maxRadius - minRadius * minRadius) + minRadius * minRadius);
-    float theta = GetRandf() * 2.f * Math::Pi;
+    float theta = GetRandf() * 2.f * math::Pi;
 
     return Vector2f(center.x + r * std::cos(theta),
                     center.y + r * std::sin(theta));

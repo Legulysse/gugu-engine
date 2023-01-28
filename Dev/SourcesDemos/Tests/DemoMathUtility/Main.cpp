@@ -29,9 +29,9 @@ int main(int argc, char* argv[])
     //----------------------------------------------
     
     // Common
-    double fDegreesA = ToDegrees(Math::Pi);
+    double fDegreesA = ToDegrees(math::Pi);
     double fRadianA = ToRadians(180.f);
-    float fDegreesB = ToDegreesf(Math::Pi);
+    float fDegreesB = ToDegreesf(math::Pi);
     float fRadiansB = ToRadiansf(180.f);
 
     int iPowerA = Power(5, 3);
@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
     kVectorNormalized = Normalize(kVectorNormalized);
 
     Vector2f kVectorRotated(10.f, 20.f);
-    kVectorRotated = Rotate(kVectorRotated, Math::PiDivTwo);
+    kVectorRotated = Rotate(kVectorRotated, math::PiDivTwo);
 
     float fLengthA = Length(kVectorNormalized);
     float fLengthB = Length(kVectorRotated);

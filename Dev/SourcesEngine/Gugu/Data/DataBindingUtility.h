@@ -41,7 +41,7 @@ struct DataEnumInfos
     std::vector<std::string> values;    //TODO: Store both string and enum values
 };
 
-namespace DataBinding {
+namespace binding {
 
 //----------------------------------------------
 // Read base types
@@ -131,9 +131,9 @@ template<typename T>
 void WriteDatasaveInstanceArray(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<T*>& _pMember);
 
 //----------------------------------------------
-// Impl methods
+// impl methods
 
-namespace Impl {
+namespace impl {
 
 pugi::xml_node FindNodeData(DataParseContext& _kContext, const std::string& _strName);
 pugi::xml_node AddNodeData(DataSaveContext& _kContext, const std::string& _strName);
@@ -155,9 +155,9 @@ bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _str
 void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember);
 void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember);
 
-}   // namespace Impl
+}   // namespace impl
 
-}   // namespace DataBinding
+}   // namespace binding
 
 }   // namespace gugu
 

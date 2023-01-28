@@ -321,27 +321,27 @@ class DefinitionClass():
             if member.type != '' and member.name != '' and member.code != '':
                 if member.isReference:
                     if not member.isArray:
-                        _file.write('    gugu::DataBinding::ReadDatasheetReference(context, "'+member.name +'", '+ member.code +');\n')
+                        _file.write('    gugu::binding::ReadDatasheetReference(context, "'+member.name +'", '+ member.code +');\n')
                     else:
-                        _file.write('    gugu::DataBinding::ReadDatasheetReferenceArray(context, "'+member.name +'", '+ member.code +');\n')
+                        _file.write('    gugu::binding::ReadDatasheetReferenceArray(context, "'+member.name +'", '+ member.code +');\n')
                 elif member.isInstance:
                     if self.type == 'datasheet':
                         if not member.isArray:
-                            _file.write('    gugu::DataBinding::ReadDatasheetInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::ReadDatasheetInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                         else:
-                            _file.write('    gugu::DataBinding::ReadDatasheetInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::ReadDatasheetInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
                         if not member.isArray:
-                            _file.write('    gugu::DataBinding::ReadDatasaveInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::ReadDatasaveInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                         else:
-                            _file.write('    gugu::DataBinding::ReadDatasaveInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::ReadDatasaveInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                 elif member.type in _definitionBinding.dictEnums:
                     if not member.isArray:
-                        _file.write('    gugu::DataBinding::ReadEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        _file.write('    gugu::binding::ReadEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
-                        _file.write('    gugu::DataBinding::ReadEnumArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                        _file.write('    gugu::binding::ReadEnumArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                 else:
-                    strMethod = 'gugu::DataBinding::Read'
+                    strMethod = 'gugu::binding::Read'
                     
                     if member.type == 'string':
                         strMethod += 'String'
@@ -379,21 +379,21 @@ class DefinitionClass():
                 if member.type != '' and member.name != '' and member.code != '':
                     if member.isReference:
                         if not member.isArray:
-                            _file.write('    gugu::DataBinding::WriteDatasheetReference(context, "'+member.name +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::WriteDatasheetReference(context, "'+member.name +'", '+ member.code +');\n')
                         else:
-                            _file.write('    gugu::DataBinding::WriteDatasheetReferenceArray(context, "'+member.name +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::WriteDatasheetReferenceArray(context, "'+member.name +'", '+ member.code +');\n')
                     elif member.isInstance:
                         if not member.isArray:
-                            _file.write('    gugu::DataBinding::WriteDatasaveInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::WriteDatasaveInstance(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                         else:
-                            _file.write('    gugu::DataBinding::WriteDatasaveInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::WriteDatasaveInstanceArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     elif member.type in _definitionBinding.dictEnums:
                         if not member.isArray:
-                            _file.write('    gugu::DataBinding::WriteEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::WriteEnum(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                         else:
-                            _file.write('    gugu::DataBinding::WriteEnumArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
+                            _file.write('    gugu::binding::WriteEnumArray(context, "'+member.name +'", "'+ member.type +'", '+ member.code +');\n')
                     else:
-                        strMethod = 'gugu::DataBinding::Write'
+                        strMethod = 'gugu::binding::Write'
                         
                         if member.type == 'string':
                             strMethod += 'String'

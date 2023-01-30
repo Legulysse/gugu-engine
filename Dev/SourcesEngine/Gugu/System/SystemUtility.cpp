@@ -12,6 +12,7 @@
 #include <chrono>
 #include <ctime>
 #include <locale>
+#include <filesystem>
 
 #if defined(GUGU_OS_WINDOWS)
     #include <windows.h>
@@ -521,6 +522,11 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
 
     //Win32 path conversion and filter
     std::string filterPath = normalizedPath;
+    if (filterPath.empty())
+    {
+        filterPath = ".";
+    }
+
     StdStringReplaceSelf(filterPath, system::PathSeparator, '\\');
     filterPath += "\\*";
 
@@ -539,8 +545,10 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
             {
                 if (recursive)
                 {
-                    // TODO: Should I provide some kind of CombinePathsUnsafe() ?
-                    GetFiles(normalizedPath + system::PathSeparator + fileName, files, recursive);
+                    std::string directoryFullPath;
+                    CombinePaths(normalizedPath, fileName, directoryFullPath);
+
+                    GetFiles(directoryFullPath, files, recursive);
                 }
             }
             else
@@ -599,6 +607,11 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
 
     //Win32 path conversion and filter
     std::string filterPath = normalizedPath;
+    if (filterPath.empty())
+    {
+        filterPath = ".";
+    }
+
     StdStringReplaceSelf(filterPath, system::PathSeparator, '\\');
     filterPath += "\\*";
 
@@ -615,7 +628,8 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
         {
             if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                std::string directoryFullPath = normalizedPath + system::PathSeparator + fileName;
+                std::string directoryFullPath;
+                CombinePaths(normalizedPath, fileName, directoryFullPath);
 
                 directories.push_back(directoryFullPath);
 
@@ -634,21 +648,14 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
 #endif
 }
 
-bool DirectoryExists(const std::string& _strPath)
+bool DirectoryExists(const std::string& path)
 {
-    if (_strPath.empty())
-        return true;
+    return std::filesystem::is_directory(path);
+}
 
-#if defined(GUGU_OS_WINDOWS)
-
-    DWORD dwAttrib = GetFileAttributesA(_strPath.c_str());
-    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
-
-#else
-
-    return false;
-
-#endif
+bool FileExists(const std::string& path)
+{
+    return std::filesystem::is_regular_file(path);
 }
 
 bool EnsureDirectoryExists(const std::string& _strPath)
@@ -683,13 +690,37 @@ bool EnsureDirectoryExists(const std::string& _strPath)
 #endif
 }
 
-bool RemoveFile(const std::string& _strPathName)
+bool RemoveFile(const std::string& path)
 {
-#if defined(GUGU_OS_WINDOWS)
-    return std::remove(_strPathName.c_str()) == 0;
-#else
+    if (std::filesystem::is_regular_file(path))
+    {
+        std::error_code errorCode;
+        return std::filesystem::remove(path, errorCode);
+    }
+
     return false;
-#endif
+}
+
+bool RemoveTargetDirectory(const std::string& path)
+{
+    if (std::filesystem::is_directory(path))
+    {
+        std::error_code errorCode;
+        return std::filesystem::remove(path, errorCode);
+    }
+
+    return false;
+}
+
+bool RemoveDirectoryTree(const std::string& path)
+{
+    if (std::filesystem::is_directory(path))
+    {
+        std::error_code errorCode;
+        return std::filesystem::remove_all(path, errorCode) > 0;
+    }
+
+    return false;
 }
 
 int64 GetTimestamp()

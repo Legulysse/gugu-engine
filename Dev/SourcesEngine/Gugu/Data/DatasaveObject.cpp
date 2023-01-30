@@ -23,10 +23,10 @@ DatasaveObject::~DatasaveObject()
 {
 }
 
-bool DatasaveObject::LoadFromXml(const std::string& _strPathName)
+bool DatasaveObject::LoadFromFile(const std::string& path)
 {
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(_strPathName.c_str());
+    pugi::xml_parse_result result = document.load_file(path.c_str());
     if (!result)
         return false;
 
@@ -41,10 +41,30 @@ bool DatasaveObject::LoadFromXml(const std::string& _strPathName)
     return true;
 }
 
-bool DatasaveObject::SaveToXml(const std::string& _strPathName)
+bool DatasaveObject::SaveToFile(const std::string& path) const
 {
     pugi::xml_document document;
 
+    if (!SaveToXml(document))
+        return false;
+
+    return document.save_file(path.c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+}
+
+bool DatasaveObject::SaveToString(std::string& result) const
+{
+    pugi::xml_document document;
+
+    if (!SaveToXml(document))
+        return false;
+
+    xml_string_writer buffer(result);
+    document.save(buffer, "", pugi::format_no_declaration | pugi::format_raw, pugi::encoding_utf8);
+    return true;
+}
+
+bool DatasaveObject::SaveToXml(pugi::xml_document& document) const
+{
     pugi::xml_node rootNode = document.append_child("Datasave");
     rootNode.append_attribute("serializationVersion").set_value(1);
     rootNode.append_attribute("bindingVersion").set_value(1);
@@ -53,7 +73,7 @@ bool DatasaveObject::SaveToXml(const std::string& _strPathName)
     context.currentNode = &rootNode;
     SerializeMembers(context);
 
-    return document.save_file(_strPathName.c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+    return true;
 }
 
 }   // namespace gugu

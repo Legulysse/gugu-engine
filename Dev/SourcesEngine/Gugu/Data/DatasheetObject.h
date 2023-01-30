@@ -29,7 +29,7 @@ public:
     DatasheetObject();
     virtual ~DatasheetObject();
 
-    bool LoadFromXml(const std::string& _strPathName, Datasheet* ownerDatasheet, std::vector<class Datasheet*>& ancestors);
+    bool LoadFromFile(const std::string& path, Datasheet* ownerDatasheet, std::vector<class Datasheet*>& ancestors);
 
     virtual void ParseMembers(DataParseContext& _kContext) = 0;
 

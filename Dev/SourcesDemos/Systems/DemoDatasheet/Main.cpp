@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 
     // Datasaves
     DS_GameSave* gameSave = new DS_GameSave;
-    gameSave->LoadFromXml("User/gamesave.xml");
+    gameSave->LoadFromFile("User/gamesave.xml");
 
     gameSave->experience += 1;
     gameSave->name = "hello world";
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
     gameSave->multipleItems.push_back(nullptr);
 
     EnsureDirectoryExists("User");
-    gameSave->SaveToXml("User/gamesave.xml");
+    gameSave->SaveToFile("User/gamesave.xml");
 
     SafeDelete(gameSave);
 

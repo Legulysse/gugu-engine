@@ -27,7 +27,7 @@ DatasheetObject::~DatasheetObject()
 {
 }
 
-bool DatasheetObject::LoadFromXml(const std::string& _strPathName, Datasheet* ownerDatasheet, std::vector<Datasheet*>& ancestors)
+bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerDatasheet, std::vector<Datasheet*>& ancestors)
 {
     if (ownerDatasheet != nullptr)
     {
@@ -35,7 +35,7 @@ bool DatasheetObject::LoadFromXml(const std::string& _strPathName, Datasheet* ow
     }
 
     pugi::xml_document oDoc;
-    pugi::xml_parse_result result = oDoc.load_file(_strPathName.c_str());
+    pugi::xml_parse_result result = oDoc.load_file(path.c_str());
     if (!result)
         return false;
 
@@ -66,7 +66,7 @@ bool DatasheetObject::LoadFromXml(const std::string& _strPathName, Datasheet* ow
             else
             {
                 ancestors.push_back(parentSheet);
-                LoadFromXml(parentSheet->GetFileInfo().GetFilePath(), nullptr, ancestors);
+                LoadFromFile(parentSheet->GetFileInfo().GetFilePath(), nullptr, ancestors);
             }
         }
     }

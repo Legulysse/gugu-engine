@@ -52,7 +52,7 @@ bool Datasheet::LoadFromFile()
 
     std::vector<Datasheet*> ancestors;
     ancestors.push_back(this);
-    return m_rootObject->LoadFromXml(GetFileInfo().GetFilePath(), this, ancestors);
+    return m_rootObject->LoadFromFile(GetFileInfo().GetFilePath(), this, ancestors);
 }
 
 const DatasheetObject* Datasheet::GetRootObject() const

@@ -163,6 +163,18 @@ public:
         return result;
     }
 
+    bool SilentTestResult(bool result, const std::string& expression, const std::string& file, size_t line)
+    {
+        if (!result)
+        {
+            ++m_totalTestCount;
+
+            m_logger.Print(StringFormat("Test Failed: {1}({2}) -> {0}", expression, file, line));
+        }
+
+        return result;
+    }
+
 private:
 
     void FinalizeSection()
@@ -226,6 +238,12 @@ private:
     unitTestHandler.LogTestResult((bool)(EXPRESSION),           \
         GUGU_STRINGIZE(EXPRESSION),                             \
         __FILE__,                                               \
-        __LINE__)                              
+        __LINE__)
+
+#define GUGU_UTEST_SILENT_CHECK(EXPRESSION)                     \
+    unitTestHandler.SilentTestResult((bool)(EXPRESSION),        \
+        GUGU_STRINGIZE(EXPRESSION),                             \
+        __FILE__,                                               \
+        __LINE__)
 
 }   // namespace gugu

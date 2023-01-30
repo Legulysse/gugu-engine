@@ -14,6 +14,8 @@ using namespace gugu;
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
+namespace tests {
+
 void RunUnitTests_System(UnitTestResults* results)
 {
     GUGU_UTEST_INIT("System", "UnitTests_System.log", results);
@@ -478,3 +480,5 @@ void RunUnitTests_System(UnitTestResults* results)
 
     GUGU_UTEST_FINALIZE();
 }
+
+}   // namespace tests

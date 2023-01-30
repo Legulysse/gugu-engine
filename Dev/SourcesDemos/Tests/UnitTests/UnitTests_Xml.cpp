@@ -15,6 +15,8 @@ using namespace gugu;
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
+namespace tests {
+
 pugi::xml_document ParseStringDocument(const std::string& xmlSource)
 {
     pugi::xml_document document;
@@ -131,3 +133,5 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
     GUGU_UTEST_FINALIZE();
 }
+
+}   // namespace tests

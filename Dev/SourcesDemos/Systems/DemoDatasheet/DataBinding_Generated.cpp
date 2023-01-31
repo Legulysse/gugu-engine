@@ -9,6 +9,9 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
 
+////////////////////////////////////////////////////////////////
+// File Implementation
+
 namespace demoproject {
 
 ////////////////////////////////////////////////////////////////
@@ -326,14 +329,18 @@ DS_GameSave::DS_GameSave()
     experience = 0;
     name = "";
     weapon = EWeaponType::Unknown;
+    emptyGeneral = nullptr;
     general = nullptr;
+    emptyItem = nullptr;
     singleItem = nullptr;
 }
 
 DS_GameSave::~DS_GameSave()
 {
+    emptyGeneral = nullptr;
     general = nullptr;
     generals.clear();
+    SafeDelete(emptyItem);
     SafeDelete(singleItem);
     ClearStdVector(multipleItems);
 }
@@ -348,8 +355,10 @@ void DS_GameSave::ParseMembers(gugu::DataParseContext& context)
     gugu::binding::ReadStringArray(context, "names", names);
     gugu::binding::ReadEnum(context, "weapon", "weaponType", weapon);
     gugu::binding::ReadEnumArray(context, "weapons", "weaponType", weapons);
+    gugu::binding::ReadDatasheetReference(context, "emptyGeneral", emptyGeneral);
     gugu::binding::ReadDatasheetReference(context, "general", general);
     gugu::binding::ReadDatasheetReferenceArray(context, "generals", generals);
+    gugu::binding::ReadDatasaveInstance(context, "emptyItem", "itemSave", emptyItem);
     gugu::binding::ReadDatasaveInstance(context, "singleItem", "itemSave", singleItem);
     gugu::binding::ReadDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
 }
@@ -364,8 +373,10 @@ void DS_GameSave::SerializeMembers(gugu::DataSaveContext& context) const
     gugu::binding::WriteStringArray(context, "names", names);
     gugu::binding::WriteEnum(context, "weapon", "weaponType", weapon);
     gugu::binding::WriteEnumArray(context, "weapons", "weaponType", weapons);
+    gugu::binding::WriteDatasheetReference(context, "emptyGeneral", emptyGeneral);
     gugu::binding::WriteDatasheetReference(context, "general", general);
     gugu::binding::WriteDatasheetReferenceArray(context, "generals", generals);
+    gugu::binding::WriteDatasaveInstance(context, "emptyItem", "itemSave", emptyItem);
     gugu::binding::WriteDatasaveInstance(context, "singleItem", "itemSave", singleItem);
     gugu::binding::WriteDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
 }

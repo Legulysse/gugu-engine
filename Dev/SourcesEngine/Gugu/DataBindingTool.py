@@ -47,8 +47,8 @@ class DefinitionEnum():
         return self.code +'::'+ _strDefault
         
     def SaveDeclarationCpp(self, _file):
+        _file.write('\n')
         _file.write('////////////////////////////////////////////////////////////////\n')
-        
         _file.write('namespace '+ self.code +' {\n')
         
         _file.write('    enum Type\n')
@@ -67,8 +67,8 @@ class DefinitionEnum():
         _file.write('}\n')
         
     def SaveImplementationCpp(self, _file):
+        _file.write('\n')
         _file.write('////////////////////////////////////////////////////////////////\n')
-    
         _file.write('namespace '+ self.code +'\n')
         _file.write('{\n')
         
@@ -153,6 +153,7 @@ class DefinitionClass():
             _file.write('    }\n')
 
     def SaveDeclarationCpp(self, _file, _definitionBinding):
+        _file.write('\n')
         _file.write('////////////////////////////////////////////////////////////////\n')
         
         parentClassName = 'gugu::DatasheetObject'
@@ -233,9 +234,9 @@ class DefinitionClass():
 
         # Finalize
         _file.write('};\n')
-        _file.write('\n')
 
     def SaveImplementationCpp(self, _file, _definitionBinding):
+        _file.write('\n')
         _file.write('////////////////////////////////////////////////////////////////\n')
         
         parentClassName = 'gugu::DatasheetObject'
@@ -420,9 +421,6 @@ class DefinitionClass():
             _file.write('    static const std::string dataInstanceType = "'+ self.name +'";\n')
             _file.write('    return dataInstanceType;\n')
             _file.write('}\n')
-        
-        # Finalize
-        _file.write('\n')
 
 
 #------------------------------------------------------
@@ -451,33 +449,32 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     fileHeader.write('\n')
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
     fileHeader.write('// File Declarations\n')
-    fileHeader.write('\n')
 
     # Namespace
     if definitionBinding.namespace != '':
-        fileHeader.write('namespace '+ definitionBinding.namespace +' {\n')
         fileHeader.write('\n')
+        fileHeader.write('namespace '+ definitionBinding.namespace +' {\n')
         
     # Forward Declarations
+    fileHeader.write('\n')
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
     for newClass in definitionBinding.classes:
         newClass.SaveForwardDeclarationCpp(fileHeader)
     
     # Enum Declarations
-    fileHeader.write('\n')
     for newEnum in definitionBinding.dictEnums.values():
         newEnum.SaveDeclarationCpp(fileHeader)
         
     # Class Declarations
-    fileHeader.write('\n')
     for newClass in definitionBinding.classes:
         newClass.SaveDeclarationCpp(fileHeader, definitionBinding)
         
     # Methods Declarations
+    fileHeader.write('\n')
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
     fileHeader.write('void DataBinding_Register();\n')
-    fileHeader.write('\n')
     
+    fileHeader.write('\n')
     fileHeader.write('////////////////////////////////////////////////////////////////\n')
     fileHeader.write('gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType);\n')
     
@@ -507,22 +504,24 @@ def GenerateBindingCpp_Impl(_pathBindingXml, _pathBindingCpp, _generatedFileName
     fileSource.write('#include "Gugu/Resources/ManagerResources.h"\n')
     fileSource.write('#include "Gugu/System/SystemUtility.h"\n')
     fileSource.write('\n')
+    fileSource.write('////////////////////////////////////////////////////////////////\n')
+    fileSource.write('// File Implementation\n')
     
     # Namespace
     if definitionBinding.namespace != '':
-        fileSource.write('namespace '+ definitionBinding.namespace +' {\n')
         fileSource.write('\n')
+        fileSource.write('namespace '+ definitionBinding.namespace +' {\n')
         
     # Enum Implementations
     for newEnum in definitionBinding.dictEnums.values():
         newEnum.SaveImplementationCpp(fileSource)
     
     # Class Implementations
-    fileSource.write('\n')
     for newClass in definitionBinding.classes:
         newClass.SaveImplementationCpp(fileSource, definitionBinding)
         
     # Methods Implementations
+    fileSource.write('\n')
     fileSource.write('////////////////////////////////////////////////////////////////\n')
     fileSource.write('void DataBinding_Register()\n')
     fileSource.write('{\n')

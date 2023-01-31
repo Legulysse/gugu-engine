@@ -24,7 +24,6 @@ class DS_GameSave;
 class DS_ItemSave;
 
 ////////////////////////////////////////////////////////////////
-
 namespace EWeaponType {
     enum Type
     {

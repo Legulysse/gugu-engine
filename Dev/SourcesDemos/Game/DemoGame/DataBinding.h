@@ -39,6 +39,7 @@ namespace EEffectCenter {
 
     void Register();
 }
+
 ////////////////////////////////////////////////////////////////
 namespace EProjectileAim {
     enum Type

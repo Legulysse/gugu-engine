@@ -314,8 +314,10 @@ public:
     std::vector<std::string> names;
     EWeaponType::Type weapon;
     std::vector<EWeaponType::Type> weapons;
+    const DS_General* emptyGeneral;
     const DS_General* general;
     std::vector<const DS_General*> generals;
+    DS_ItemSave* emptyItem;
     DS_ItemSave* singleItem;
     std::vector<DS_ItemSave*> multipleItems;
 

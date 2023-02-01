@@ -55,15 +55,15 @@
     <Class type="datasave" name="gameSave" code="DS_GameSave">
         <Data type="int" name="score" default="-1" />
         <Data type="string" name="name" default="DEFAULT" />
-        <Data type="array:int" name="multipleScores" />
-        <Data type="array:string" name="multipleNames" />
         <Data type="weaponType" name="singleWeapon" />
-        <Data type="array:weaponType" name="multipleWeapons" />
         <Data type="reference:character" name="emptyCharacter" />
         <Data type="reference:character" name="singleCharacter" />
-        <Data type="array:reference:character" name="multipleCharacters" />
         <Data type="instance:itemSave" name="emptyItem" />
         <Data type="instance:itemSave" name="singleItem" />
+        <Data type="array:int" name="multipleScores" />
+        <Data type="array:string" name="multipleNames" />
+        <Data type="array:weaponType" name="multipleWeapons" />
+        <Data type="array:reference:character" name="multipleCharacters" />
         <Data type="array:instance:itemSave" name="multipleItems" />
     </Class>
     

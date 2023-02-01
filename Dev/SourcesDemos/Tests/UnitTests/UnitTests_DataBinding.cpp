@@ -65,47 +65,133 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
         GUGU_UTEST_SILENT_CHECK(!DirectoryExists("User"));
         GUGU_UTEST_SILENT_CHECK(EnsureDirectoryExists("User"));
 
+        static const std::string emptySaveExpectedResultString = {
+            "<Datasave serializationVersion=\"1\" bindingVersion=\"1\">"
+                "<Data name=\"score\" value=\"-1\"/>"
+                "<Data name=\"name\" value=\"DEFAULT\"/>"
+                "<Data name=\"singleWeapon\" value=\"Unknown\"/>"
+                "<Data name=\"multipleScores\"/>"
+                "<Data name=\"multipleNames\"/>"
+                "<Data name=\"multipleWeapons\"/>"
+                "<Data name=\"multipleCharacters\"/>"
+                "<Data name=\"multipleItems\"/>"
+            "</Datasave>"
+        };
+
+        static const std::string filledSaveExpectedResultString = {
+            "<Datasave serializationVersion=\"1\" bindingVersion=\"1\">"
+                "<Data name=\"score\" value=\"99\"/>"
+                "<Data name=\"name\" value=\"Hello World\"/>"
+                "<Data name=\"singleWeapon\" value=\"Axe\"/>"
+                "<Data name=\"multipleScores\">"
+                    "<Child value=\"1\"/>"
+                    "<Child value=\"2\"/>"
+                    "<Child value=\"3\"/>"
+                    "<Child value=\"4\"/>"
+                "</Data>"
+                "<Data name=\"multipleNames\">"
+                    "<Child value=\"One\"/>"
+                    "<Child value=\"Two\"/>"
+                    "<Child value=\"Three\"/>"
+                    "<Child value=\"Four\"/>"
+                "</Data>"
+                "<Data name=\"multipleWeapons\">"
+                    "<Child value=\"Crossbow\"/>"
+                    "<Child value=\"Axe\"/>"
+                    "<Child value=\"Mace\"/>"
+                    "<Child value=\"Sword\"/>"
+                "</Data>"
+                "<Data name=\"multipleCharacters\"/>"
+                "<Data name=\"multipleItems\"/>"
+            "</Datasave>"
+        };
+
         GUGU_UTEST_SUBSECTION("Write");
         {
             DS_GameSave emptyGameSave;
+            GUGU_UTEST_CHECK(emptyGameSave.SaveToFile("User/EmptyTestSave.xml"));
 
-            std::string resultString;
-            GUGU_UTEST_CHECK(emptyGameSave.SaveToString(resultString));
-            GUGU_UTEST_CHECK(emptyGameSave.SaveToFile("User/TestSave.xml"));
+            std::string emptySaveResultString;
+            GUGU_UTEST_CHECK(emptyGameSave.SaveToString(emptySaveResultString));
+            GUGU_UTEST_CHECK(emptySaveResultString == emptySaveExpectedResultString);
 
-            static const std::string expectedResultString = {
-                    "<Datasave serializationVersion=\"1\" bindingVersion=\"1\">"
-                        "<Data name=\"score\" value=\"-1\"/>"
-                        "<Data name=\"name\" value=\"DEFAULT\"/>"
-                        "<Data name=\"multipleScores\"/>"
-                        "<Data name=\"multipleNames\"/>"
-                        "<Data name=\"singleWeapon\" value=\"Unknown\"/>"
-                        "<Data name=\"multipleWeapons\"/>"
-                        "<Data name=\"multipleCharacters\"/>"
-                        "<Data name=\"multipleItems\"/>"
-                    "</Datasave>"
-                };
+            DS_GameSave filledGameSave;
+            filledGameSave.score = 99;
+            filledGameSave.name = "Hello World";
+            filledGameSave.singleWeapon = EWeaponType::Axe;
+            filledGameSave.multipleScores = { 1, 2, 3, 4 };
+            filledGameSave.multipleNames = { "One", "Two", "Three", "Four" };
+            filledGameSave.multipleWeapons = { EWeaponType::Crossbow, EWeaponType::Axe, EWeaponType::Mace, EWeaponType::Sword };
+            GUGU_UTEST_CHECK(filledGameSave.SaveToFile("User/FilledTestSave.xml"));
 
-            GUGU_UTEST_CHECK(resultString == expectedResultString);
+            std::string filledSaveResultString;
+            GUGU_UTEST_CHECK(filledGameSave.SaveToString(filledSaveResultString));
+            GUGU_UTEST_CHECK(filledSaveResultString == filledSaveExpectedResultString);
         }
 
         GUGU_UTEST_SUBSECTION("Read");
         {
             DS_GameSave emptyGameSave;
-            GUGU_UTEST_CHECK(emptyGameSave.LoadFromFile("User/TestSave.xml"));
+            GUGU_UTEST_CHECK(emptyGameSave.LoadFromFile("User/EmptyTestSave.xml"));
+
+            std::string resultString;
+            GUGU_UTEST_CHECK(emptyGameSave.SaveToString(resultString));
+            GUGU_UTEST_CHECK(resultString == emptySaveExpectedResultString);
 
             GUGU_UTEST_CHECK(emptyGameSave.score == -1);
             GUGU_UTEST_CHECK(emptyGameSave.name == "DEFAULT");
-            GUGU_UTEST_CHECK(emptyGameSave.multipleScores.empty());
-            GUGU_UTEST_CHECK(emptyGameSave.multipleNames.empty());
             GUGU_UTEST_CHECK(emptyGameSave.singleWeapon == EWeaponType::Unknown);
-            GUGU_UTEST_CHECK(emptyGameSave.multipleWeapons.empty());
             GUGU_UTEST_CHECK(emptyGameSave.emptyCharacter == nullptr);
             GUGU_UTEST_CHECK(emptyGameSave.singleCharacter == nullptr);
-            GUGU_UTEST_CHECK(emptyGameSave.multipleCharacters.empty());
             GUGU_UTEST_CHECK(emptyGameSave.emptyItem == nullptr);
             GUGU_UTEST_CHECK(emptyGameSave.singleItem == nullptr);
+            GUGU_UTEST_CHECK(emptyGameSave.multipleScores.empty());
+            GUGU_UTEST_CHECK(emptyGameSave.multipleNames.empty());
+            GUGU_UTEST_CHECK(emptyGameSave.multipleWeapons.empty());
+            GUGU_UTEST_CHECK(emptyGameSave.multipleCharacters.empty());
             GUGU_UTEST_CHECK(emptyGameSave.multipleItems.empty());
+
+            DS_GameSave filledGameSave;
+            GUGU_UTEST_CHECK(filledGameSave.LoadFromFile("User/FilledTestSave.xml"));
+
+            std::string filledSaveResultString;
+            GUGU_UTEST_CHECK(filledGameSave.SaveToString(filledSaveResultString));
+            GUGU_UTEST_CHECK(filledSaveResultString == filledSaveExpectedResultString);
+
+            GUGU_UTEST_CHECK(filledGameSave.score == 99);
+            GUGU_UTEST_CHECK(filledGameSave.name == "Hello World");
+            GUGU_UTEST_CHECK(filledGameSave.singleWeapon == EWeaponType::Axe);
+            GUGU_UTEST_CHECK(filledGameSave.emptyCharacter == nullptr);
+            GUGU_UTEST_CHECK(filledGameSave.singleCharacter == nullptr);
+            GUGU_UTEST_CHECK(filledGameSave.emptyItem == nullptr);
+            GUGU_UTEST_CHECK(filledGameSave.singleItem == nullptr);
+
+            if (GUGU_UTEST_CHECK(filledGameSave.multipleScores.size() == 4))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multipleScores[0] == 1);
+                GUGU_UTEST_CHECK(filledGameSave.multipleScores[1] == 2);
+                GUGU_UTEST_CHECK(filledGameSave.multipleScores[2] == 3);
+                GUGU_UTEST_CHECK(filledGameSave.multipleScores[3] == 4);
+            }
+
+            if (GUGU_UTEST_CHECK(filledGameSave.multipleNames.size() == 4))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multipleNames[0] == "One");
+                GUGU_UTEST_CHECK(filledGameSave.multipleNames[1] == "Two");
+                GUGU_UTEST_CHECK(filledGameSave.multipleNames[2] == "Three");
+                GUGU_UTEST_CHECK(filledGameSave.multipleNames[3] == "Four");
+            }
+            
+            if (GUGU_UTEST_CHECK(filledGameSave.multipleWeapons.size() == 4))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multipleWeapons[0] == EWeaponType::Crossbow);
+                GUGU_UTEST_CHECK(filledGameSave.multipleWeapons[1] == EWeaponType::Axe);
+                GUGU_UTEST_CHECK(filledGameSave.multipleWeapons[2] == EWeaponType::Mace);
+                GUGU_UTEST_CHECK(filledGameSave.multipleWeapons[3] == EWeaponType::Sword);
+            }
+
+            GUGU_UTEST_CHECK(filledGameSave.multipleCharacters.empty());
+            GUGU_UTEST_CHECK(filledGameSave.multipleItems.empty());
         }
 
         // Reset

@@ -200,9 +200,9 @@ DS_GameSave::~DS_GameSave()
 {
     emptyCharacter = nullptr;
     singleCharacter = nullptr;
-    multipleCharacters.clear();
     SafeDelete(emptyItem);
     SafeDelete(singleItem);
+    multipleCharacters.clear();
     ClearStdVector(multipleItems);
 }
 
@@ -212,15 +212,15 @@ void DS_GameSave::ParseMembers(gugu::DataParseContext& context)
 
     gugu::binding::ReadInt(context, "score", score);
     gugu::binding::ReadString(context, "name", name);
-    gugu::binding::ReadIntArray(context, "multipleScores", multipleScores);
-    gugu::binding::ReadStringArray(context, "multipleNames", multipleNames);
     gugu::binding::ReadEnum(context, "singleWeapon", "weaponType", singleWeapon);
-    gugu::binding::ReadEnumArray(context, "multipleWeapons", "weaponType", multipleWeapons);
     gugu::binding::ReadDatasheetReference(context, "emptyCharacter", emptyCharacter);
     gugu::binding::ReadDatasheetReference(context, "singleCharacter", singleCharacter);
-    gugu::binding::ReadDatasheetReferenceArray(context, "multipleCharacters", multipleCharacters);
     gugu::binding::ReadDatasaveInstance(context, "emptyItem", "itemSave", emptyItem);
     gugu::binding::ReadDatasaveInstance(context, "singleItem", "itemSave", singleItem);
+    gugu::binding::ReadIntArray(context, "multipleScores", multipleScores);
+    gugu::binding::ReadStringArray(context, "multipleNames", multipleNames);
+    gugu::binding::ReadEnumArray(context, "multipleWeapons", "weaponType", multipleWeapons);
+    gugu::binding::ReadDatasheetReferenceArray(context, "multipleCharacters", multipleCharacters);
     gugu::binding::ReadDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
 }
 
@@ -230,15 +230,15 @@ void DS_GameSave::SerializeMembers(gugu::DataSaveContext& context) const
 
     gugu::binding::WriteInt(context, "score", score);
     gugu::binding::WriteString(context, "name", name);
-    gugu::binding::WriteIntArray(context, "multipleScores", multipleScores);
-    gugu::binding::WriteStringArray(context, "multipleNames", multipleNames);
     gugu::binding::WriteEnum(context, "singleWeapon", "weaponType", singleWeapon);
-    gugu::binding::WriteEnumArray(context, "multipleWeapons", "weaponType", multipleWeapons);
     gugu::binding::WriteDatasheetReference(context, "emptyCharacter", emptyCharacter);
     gugu::binding::WriteDatasheetReference(context, "singleCharacter", singleCharacter);
-    gugu::binding::WriteDatasheetReferenceArray(context, "multipleCharacters", multipleCharacters);
     gugu::binding::WriteDatasaveInstance(context, "emptyItem", "itemSave", emptyItem);
     gugu::binding::WriteDatasaveInstance(context, "singleItem", "itemSave", singleItem);
+    gugu::binding::WriteIntArray(context, "multipleScores", multipleScores);
+    gugu::binding::WriteStringArray(context, "multipleNames", multipleNames);
+    gugu::binding::WriteEnumArray(context, "multipleWeapons", "weaponType", multipleWeapons);
+    gugu::binding::WriteDatasheetReferenceArray(context, "multipleCharacters", multipleCharacters);
     gugu::binding::WriteDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
 }
 

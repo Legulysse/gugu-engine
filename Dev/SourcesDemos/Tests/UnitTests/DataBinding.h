@@ -190,15 +190,15 @@ public:
 
     int score;
     std::string name;
-    std::vector<int> multipleScores;
-    std::vector<std::string> multipleNames;
     EWeaponType::Type singleWeapon;
-    std::vector<EWeaponType::Type> multipleWeapons;
     const DS_Character* emptyCharacter;
     const DS_Character* singleCharacter;
-    std::vector<const DS_Character*> multipleCharacters;
     DS_ItemSave* emptyItem;
     DS_ItemSave* singleItem;
+    std::vector<int> multipleScores;
+    std::vector<std::string> multipleNames;
+    std::vector<EWeaponType::Type> multipleWeapons;
+    std::vector<const DS_Character*> multipleCharacters;
     std::vector<DS_ItemSave*> multipleItems;
 
 protected:

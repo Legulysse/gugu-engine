@@ -55,7 +55,37 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("Classes");
         {
-            // TODO
+            const DS_Character* billySheet = GetResources()->GetDatasheetObject<DS_Character>("Billy.character");
+            if (GUGU_UTEST_CHECK(billySheet != nullptr))
+            {
+                GUGU_UTEST_CHECK(billySheet->name == "Billy");
+                GUGU_UTEST_CHECK(billySheet->health == 250);
+                GUGU_UTEST_CHECK(billySheet->stamina == 200);
+                GUGU_UTEST_CHECK(billySheet->speed == 100);
+                GUGU_UTEST_CHECK(billySheet->weapon == EWeaponType::Crossbow);
+            }
+
+            const DS_Character* paulaSheet = GetResources()->GetDatasheetObject<DS_Character>("Paula.character");
+            if (GUGU_UTEST_CHECK(paulaSheet != nullptr))
+            {
+                GUGU_UTEST_CHECK(paulaSheet->name == "Paula");
+                GUGU_UTEST_CHECK(paulaSheet->health == 200);
+                GUGU_UTEST_CHECK(paulaSheet->stamina == 250);
+                GUGU_UTEST_CHECK(paulaSheet->speed == 125);
+                GUGU_UTEST_CHECK(paulaSheet->weapon == EWeaponType::Mace);
+            }
+
+            const DS_Item* appleSheet = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
+            if (GUGU_UTEST_CHECK(appleSheet != nullptr))
+            {
+                GUGU_UTEST_CHECK(appleSheet->name == "Apple");
+            }
+
+            const DS_Item* bananaSheet = GetResources()->GetDatasheetObject<DS_Item>("Banana.item");
+            if (GUGU_UTEST_CHECK(bananaSheet != nullptr))
+            {
+                GUGU_UTEST_CHECK(bananaSheet->name == "Banana");
+            }
         }
     }
 
@@ -101,8 +131,20 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                     "<Child value=\"Mace\"/>"
                     "<Child value=\"Sword\"/>"
                 "</Data>"
-                "<Data name=\"multipleCharacters\"/>"
-                "<Data name=\"multipleItems\"/>"
+                "<Data name=\"multipleCharacters\">"
+                    "<Child value=\"Billy.character\"/>"
+                    "<Child value=\"Paula.character\"/>"
+                "</Data>"
+                "<Data name=\"multipleItems\">"
+                    "<Child type=\"itemSave\">"
+                        "<Data name=\"item\" value=\"Apple.item\"/>"
+                        "<Data name=\"quantity\" value=\"15\"/>"
+                    "</Child>"
+                    "<Child type=\"itemSave\">"
+                        "<Data name=\"item\" value=\"Banana.item\"/>"
+                        "<Data name=\"quantity\" value=\"7\"/>"
+                    "</Child>"
+                "</Data>"
             "</Datasave>"
         };
 
@@ -122,6 +164,18 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             filledGameSave.multipleScores = { 1, 2, 3, 4 };
             filledGameSave.multipleNames = { "One", "Two", "Three", "Four" };
             filledGameSave.multipleWeapons = { EWeaponType::Crossbow, EWeaponType::Axe, EWeaponType::Mace, EWeaponType::Sword };
+            filledGameSave.multipleCharacters = {
+                GetResources()->GetDatasheetObject<DS_Character>("Billy.character"),
+                GetResources()->GetDatasheetObject<DS_Character>("Paula.character"),
+            };
+            DS_ItemSave* appleItemSave = new DS_ItemSave();
+            appleItemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
+            appleItemSave->quantity = 15;
+            filledGameSave.multipleItems.push_back(appleItemSave);
+            DS_ItemSave* bananaItemSave = new DS_ItemSave();
+            bananaItemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Banana.item");
+            bananaItemSave->quantity = 7;
+            filledGameSave.multipleItems.push_back(bananaItemSave);
             GUGU_UTEST_CHECK(filledGameSave.SaveToFile("User/FilledTestSave.xml"));
 
             std::string filledSaveResultString;
@@ -190,8 +244,19 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 GUGU_UTEST_CHECK(filledGameSave.multipleWeapons[3] == EWeaponType::Sword);
             }
 
-            GUGU_UTEST_CHECK(filledGameSave.multipleCharacters.empty());
-            GUGU_UTEST_CHECK(filledGameSave.multipleItems.empty());
+            if (GUGU_UTEST_CHECK(filledGameSave.multipleCharacters.size() == 2))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multipleCharacters[0] == GetResources()->GetDatasheetObject<DS_Character>("Billy.character"));
+                GUGU_UTEST_CHECK(filledGameSave.multipleCharacters[1] == GetResources()->GetDatasheetObject<DS_Character>("Paula.character"));
+            }
+
+            if (GUGU_UTEST_CHECK(filledGameSave.multipleItems.size() == 2))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multipleItems[0]->item == GetResources()->GetDatasheetObject<DS_Item>("Apple.item"));
+                GUGU_UTEST_CHECK(filledGameSave.multipleItems[0]->quantity == 15);
+                GUGU_UTEST_CHECK(filledGameSave.multipleItems[1]->item == GetResources()->GetDatasheetObject<DS_Item>("Banana.item"));
+                GUGU_UTEST_CHECK(filledGameSave.multipleItems[1]->quantity == 7);
+            }
         }
 
         // Reset

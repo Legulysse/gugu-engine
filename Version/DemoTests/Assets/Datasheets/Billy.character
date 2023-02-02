@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<Datasheet serializationVersion="1" bindingVersion="1" parent="BaseCharacter.character">
+	<Data name="weapon" value="Crossbow" />
+	<Data name="name" value="Billy" />
+	<Data name="health" value="250" />
+</Datasheet>

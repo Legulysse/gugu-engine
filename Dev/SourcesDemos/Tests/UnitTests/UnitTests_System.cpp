@@ -157,7 +157,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(FileInfo("world.txt") == FileInfo("", "world.txt"));
 
             {
-                const FileInfo fileInfo("hello", "world.txt");
+                const FileInfo fileInfo("hello/world.txt");
 
                 GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "hello");
                 GUGU_UTEST_CHECK(fileInfo.GetFileName() == "world.txt");

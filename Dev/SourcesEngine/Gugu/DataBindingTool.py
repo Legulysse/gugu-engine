@@ -131,6 +131,35 @@ class DefinitionMember():
             self.isReference    = 'reference' in aFlags
             self.isInstance     = 'instance' in aFlags
             self.type           = aFlags[-1]
+            
+    def GetDefaultValue(self, _definitionBinding):
+        strDefault = self.default
+        
+        if not self.isArray:
+            if strDefault == '':
+                if self.isReference:
+                    strDefault = 'nullptr'
+                elif self.isInstance:
+                    strDefault = 'nullptr'
+                elif self.type in _definitionBinding.dictEnums:
+                    strDefault = _definitionBinding.dictEnums[self.type].GetDefaultCpp(self.default)
+                else:
+                    if self.type == 'string':
+                        strDefault = '""'
+                    elif self.type == 'int':
+                        strDefault = '0'
+                    elif self.type == 'float':
+                        strDefault = '0.f'
+                    elif self.type == 'bool':
+                        strDefault = 'false'
+            else:
+                if self.type in _definitionBinding.dictEnums:
+                    strDefault = _definitionBinding.dictEnums[self.type].GetDefaultCpp(strDefault)
+                else:
+                    if self.type == 'string':
+                        strDefault = '"'+ strDefault +'"'
+                
+        return strDefault
         
 class DefinitionClass():
     def __init__(self):
@@ -252,36 +281,8 @@ class DefinitionClass():
         for member in self.members:
             if member.type != '' and member.name != '' and member.code != '':
                 if not member.isArray:
-                    if member.isReference:
-                        _file.write('    '+ member.code +' = nullptr;\n')
-                    elif member.isInstance:
-                        _file.write('    '+ member.code +' = nullptr;\n')
-                    elif member.type in _definitionBinding.dictEnums:
-                        strDefault = _definitionBinding.dictEnums[member.type].GetDefaultCpp(member.default)
-                        _file.write('    '+ member.code +' = '+ strDefault +';\n')
-                    else:
-                        strDefault = member.default
-                        
-                        if member.type == 'string':
-                            if strDefault == '':
-                                strDefault = '""'
-                            else:
-                                strDefault = '"'+ strDefault +'"'
-                        elif member.type == 'int':
-                            if strDefault == '':
-                                strDefault = '0'
-                        elif member.type == 'float':
-                            if strDefault == '':
-                                strDefault = '0.f'
-                        elif member.type == 'bool':
-                            if strDefault == '':
-                                strDefault = 'false'
-                                
-                        else:
-                            #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping member implementation.')
-                            continue
-                                
-                        _file.write('    '+ member.code +' = '+ strDefault +';\n')
+                    strDefault = member.GetDefaultValue(_definitionBinding)
+                    _file.write('    '+ member.code +' = '+ strDefault +';\n')
                     
         _file.write('}\n')
         

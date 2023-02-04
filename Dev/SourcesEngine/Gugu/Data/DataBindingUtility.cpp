@@ -102,8 +102,7 @@ void WriteEnumValue(DataSaveContext& _kContext, const std::string& _strName, con
     const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
     if (pEnum && _iValue >= 0 && _iValue < pEnum->values.size())
     {
-        pugi::xml_node pNode = impl::AddNodeData(_kContext, _strName);
-        pNode.append_attribute("value").set_value(pEnum->values[_iValue].c_str());
+        impl::AddNodeData(_kContext, _strName).append_attribute("value").set_value(pEnum->values[_iValue].c_str());
     }
 }
 
@@ -438,26 +437,22 @@ void ReadBoolArray(DataParseContext& _kContext, const std::string& _strName, std
 
 void WriteString(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strMember)
 {
-    pugi::xml_node pNode = impl::AddNodeData(_kContext, _strName);
-    pNode.append_attribute("value").set_value(_strMember.c_str());
+    impl::AddNodeData(_kContext, _strName).append_attribute("value").set_value(_strMember.c_str());
 }
 
 void WriteInt(DataSaveContext& _kContext, const std::string& _strName, int _iMember)
 {
-    pugi::xml_node pNode = impl::AddNodeData(_kContext, _strName);
-    pNode.append_attribute("value").set_value(_iMember);
+    impl::AddNodeData(_kContext, _strName).append_attribute("value").set_value(_iMember);
 }
 
 void WriteFloat(DataSaveContext& _kContext, const std::string& _strName, float _fMember)
 {
-    pugi::xml_node pNode = impl::AddNodeData(_kContext, _strName);
-    pNode.append_attribute("value").set_value(_fMember);
+    impl::AddNodeData(_kContext, _strName).append_attribute("value").set_value(_fMember);
 }
 
 void WriteBool(DataSaveContext& _kContext, const std::string& _strName, bool _bMember)
 {
-    pugi::xml_node pNode = impl::AddNodeData(_kContext, _strName);
-    pNode.append_attribute("value").set_value(_bMember);
+    impl::AddNodeData(_kContext, _strName).append_attribute("value").set_value(_bMember);
 }
 
 void WriteStringArray(DataSaveContext& _kContext, const std::string& _strName, const std::vector<std::string>& _vecMember)

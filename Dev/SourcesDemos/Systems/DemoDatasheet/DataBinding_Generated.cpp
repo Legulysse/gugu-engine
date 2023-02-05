@@ -367,11 +367,11 @@ void DS_GameSave::SerializeMembers(gugu::DataSaveContext& context) const
 {
     //gugu::DatasheetObject::SerializeMembers(context);
 
-    gugu::binding::WriteInt(context, "experience", experience, 0);
-    gugu::binding::WriteString(context, "name", name, "");
+    gugu::binding::WriteInt(context, "experience", experience);
+    gugu::binding::WriteString(context, "name", name);
     gugu::binding::WriteIntArray(context, "stats", stats);
     gugu::binding::WriteStringArray(context, "names", names);
-    gugu::binding::WriteEnum(context, "weapon", "weaponType", weapon, EWeaponType::Unknown);
+    gugu::binding::WriteEnum(context, "weapon", "weaponType", weapon);
     gugu::binding::WriteEnumArray(context, "weapons", "weaponType", weapons);
     gugu::binding::WriteDatasheetReference(context, "emptyGeneral", emptyGeneral);
     gugu::binding::WriteDatasheetReference(context, "general", general);
@@ -412,7 +412,7 @@ void DS_ItemSave::SerializeMembers(gugu::DataSaveContext& context) const
     //gugu::DatasheetObject::SerializeMembers(context);
 
     gugu::binding::WriteDatasheetReference(context, "item", item);
-    gugu::binding::WriteInt(context, "quantity", quantity, 0);
+    gugu::binding::WriteInt(context, "quantity", quantity);
 }
 
 const std::string& DS_ItemSave::GetDataInstanceType() const

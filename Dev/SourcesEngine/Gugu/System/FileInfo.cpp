@@ -33,7 +33,7 @@ FileInfo::FileInfo(const std::string& path)
 
 void FileInfo::UpdateFromPath()
 {
-    m_indexSeparator = m_path.find_last_of(System::PathSeparator);
+    m_indexSeparator = m_path.find_last_of(system::PathSeparator);
 
     if (m_indexSeparator != std::string::npos)
     {
@@ -62,7 +62,7 @@ const std::string& FileInfo::GetFilePath() const
 
 std::string_view FileInfo::GetPrettyName() const
 {
-    size_t pos = m_fileName.find_first_of(System::ExtensionSeparator);
+    size_t pos = m_fileName.find_first_of(system::ExtensionSeparator);
     if (pos != std::string::npos)
     {
         return std::string_view(m_fileName).substr(0, pos);
@@ -73,7 +73,7 @@ std::string_view FileInfo::GetPrettyName() const
 
 std::string_view FileInfo::GetExtension() const
 {
-    size_t pos = m_fileName.find_last_of(System::ExtensionSeparator);
+    size_t pos = m_fileName.find_last_of(system::ExtensionSeparator);
     if (pos != std::string::npos)
     {
         return std::string_view(m_fileName).substr(pos + 1);
@@ -84,7 +84,7 @@ std::string_view FileInfo::GetExtension() const
 
 std::string_view FileInfo::GetAllExtensions() const
 {
-    size_t pos = m_fileName.find_first_of(System::ExtensionSeparator);
+    size_t pos = m_fileName.find_first_of(system::ExtensionSeparator);
     if (pos != std::string::npos)
     {
         return std::string_view(m_fileName).substr(pos + 1);
@@ -96,7 +96,7 @@ std::string_view FileInfo::GetAllExtensions() const
 bool FileInfo::HasExtension(const std::string& extension) const
 {
     return m_fileName.size() >= extension.size() + 1
-        && m_fileName[m_fileName.size() - extension.size() - 1] == System::ExtensionSeparator
+        && m_fileName[m_fileName.size() - extension.size() - 1] == system::ExtensionSeparator
         && StdStringEndsWith(m_fileName, extension);
 }
 

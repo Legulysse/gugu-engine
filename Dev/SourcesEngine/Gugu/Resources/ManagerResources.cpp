@@ -22,6 +22,7 @@
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/Datasheet.h"
 
+#include "Gugu/Data/DataBindingUtility.h"
 #include "Gugu/System/SystemUtility.h"
 
 #include "Gugu/Core/Application.h"
@@ -62,9 +63,9 @@ void ManagerResources::Init(const EngineConfig& config)
 void ManagerResources::Release()
 {
     m_resourceDependencies.clear();
-    m_datasheetObjectFactories.clear();
+    m_dataObjectFactories.clear();
 
-    ClearStdMap(m_datasheetEnums);
+    ClearStdMap(m_dataEnumInfos);
     ClearStdMap(m_customTextures);
     ClearStdMap(m_resources);
 }
@@ -93,12 +94,12 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
     GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Finished Parsing Resources (Found {0})", iCount));
 }
 
-std::string ManagerResources::GetPathAssets() const
+const std::string& ManagerResources::GetPathAssets() const
 {
     return m_pathAssets;
 }
 
-std::string ManagerResources::GetPathScreenshots() const
+const std::string& ManagerResources::GetPathScreenshots() const
 {
     return m_pathScreenshots;
 }
@@ -125,6 +126,7 @@ bool ManagerResources::GetResourceFileInfo(const std::string& _strName, FileInfo
     auto iteElement = m_resources.find(_strName);
     if (iteElement != m_resources.end())
     {
+        // Return a copy.
         fileInfo = (*iteElement).second->fileInfo;
         return true;
     }
@@ -137,6 +139,7 @@ bool ManagerResources::GetResourceFilePath(const std::string& _strName, std::str
     auto iteElement = m_resources.find(_strName);
     if (iteElement != m_resources.end())
     {
+        // Return a copy.
         pathName = (*iteElement).second->fileInfo.GetFilePath();
         return true;
     }
@@ -144,18 +147,28 @@ bool ManagerResources::GetResourceFilePath(const std::string& _strName, std::str
     return false;
 }
 
-FileInfo ManagerResources::GetResourceFileInfo(const std::string& _strName) const
+const FileInfo& ManagerResources::GetResourceFileInfo(const std::string& _strName) const
 {
-    FileInfo fileInfo;
-    GetResourceFileInfo(_strName, fileInfo);
-    return fileInfo;
+    auto iteElement = m_resources.find(_strName);
+    if (iteElement != m_resources.end())
+    {
+        return (*iteElement).second->fileInfo;
+    }
+
+    static const FileInfo defaultValue;
+    return defaultValue;
 }
 
-std::string ManagerResources::GetResourceFilePath(const std::string& _strName) const
+const std::string& ManagerResources::GetResourceFilePath(const std::string& _strName) const
 {
-    std::string pathName;
-    GetResourceFilePath(_strName, pathName);
-    return pathName;
+    auto iteElement = m_resources.find(_strName);
+    if (iteElement != m_resources.end())
+    {
+        return (*iteElement).second->fileInfo.GetFilePath();
+    }
+
+    static const std::string defaultValue;
+    return defaultValue;
 }
 
 void ManagerResources::PreloadAll()
@@ -266,6 +279,11 @@ ParticleEffect* ManagerResources::GetParticleEffect(const std::string& _strName)
 Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)
 {
     return dynamic_cast<Datasheet*>(GetResource(_strName, EResourceType::Datasheet));
+}
+
+const DatasheetObject* ManagerResources::GetDatasheetRootObject(const std::string& _strName)
+{
+    return GetDatasheet(_strName)->GetRootObject();
 }
 
 Resource* ManagerResources::GetResource(const std::string& _strName, EResourceType::Type _eExplicitType)
@@ -415,23 +433,24 @@ bool ManagerResources::InjectResource(const std::string& _strResourceID, Resourc
     return false;
 }
 
-std::string ManagerResources::GetResourceID(const Resource* _pResource) const
+const std::string& ManagerResources::GetResourceID(const Resource* _pResource) const
 {
-    if (!_pResource)
-        return "";
-
-    auto iteCurrent = m_resources.begin();
-    while (iteCurrent != m_resources.end())
+    if (_pResource)
     {
-        if (iteCurrent->second->resource == _pResource)
-            return iteCurrent->second->resourceID;
-        ++iteCurrent;
+        auto iteCurrent = m_resources.begin();
+        while (iteCurrent != m_resources.end())
+        {
+            if (iteCurrent->second->resource == _pResource)
+                return iteCurrent->second->resourceID;
+            ++iteCurrent;
+        }
     }
 
-    return "";
+    static const std::string defaultValue;
+    return defaultValue;
 }
 
-std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
+const std::string& ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
 {
     // TODO: I should be able to deduce an ID from a FileInfo.
     auto iteCurrent = m_resources.begin();
@@ -442,7 +461,8 @@ std::string ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
         ++iteCurrent;
     }
 
-    return "";
+    static const std::string defaultValue;
+    return defaultValue;
 }
 
 bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos)
@@ -737,26 +757,25 @@ void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _ve
 //    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
 //}
 
-void ManagerResources::RegisterDatasheetObjectFactory(const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory)
+void ManagerResources::RegisterDataObjectFactory(const DelegateDataObjectFactory& delegateDataObjectFactory)
 {
-    m_datasheetObjectFactories.push_back(delegateDatasheetObjectFactory);
+    m_dataObjectFactories.push_back(delegateDataObjectFactory);
 }
 
-DatasheetObject* ManagerResources::InstanciateDatasheetObject(std::string_view _strType)
+DataObject* ManagerResources::InstanciateDataObject(std::string_view _strType)
 {
-    if (m_datasheetObjectFactories.empty())
+    if (m_dataObjectFactories.empty())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "No Datasheet Object Factory registered : Parsing Datasheets is ignored");
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "No Data Object Factory registered");
     }
     else
     {
-        DatasheetObject* datasheetObject = nullptr;
-        for (size_t i = 0; i < m_datasheetObjectFactories.size(); ++i)
+        for (size_t i = 0; i < m_dataObjectFactories.size(); ++i)
         {
-            datasheetObject = m_datasheetObjectFactories[i](_strType);
-            if (datasheetObject)
+            DataObject* dataObject = m_dataObjectFactories[i](_strType);
+            if (dataObject)
             {
-                return datasheetObject;
+                return dataObject;
             }
         }
     }
@@ -764,24 +783,24 @@ DatasheetObject* ManagerResources::InstanciateDatasheetObject(std::string_view _
     return nullptr;
 }
 
-void ManagerResources::RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum)
+void ManagerResources::RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum)
 {
-    auto iteElement = m_datasheetEnums.find(_strName);
-    if (iteElement != m_datasheetEnums.end())
+    auto iteElement = m_dataEnumInfos.find(_strName);
+    if (iteElement != m_dataEnumInfos.end())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Datasheet Enum already registered");
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Data Enum already registered");
         SafeDelete(_pEnum);
     }
     else
     {
-        m_datasheetEnums[_strName] = _pEnum;
+        m_dataEnumInfos[_strName] = _pEnum;
     }
 }
 
-const DatasheetEnum* ManagerResources::GetDatasheetEnum(const std::string& _strName)
+const DataEnumInfos* ManagerResources::GetDataEnumInfos(const std::string& _strName)
 {
-    auto iteElement = m_datasheetEnums.find(_strName);
-    if (iteElement != m_datasheetEnums.end())
+    auto iteElement = m_dataEnumInfos.find(_strName);
+    if (iteElement != m_dataEnumInfos.end())
     {
         return (iteElement->second);
     }

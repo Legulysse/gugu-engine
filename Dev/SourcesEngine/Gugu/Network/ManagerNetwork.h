@@ -116,7 +116,7 @@ private:
     sf::Uint32          m_nbTurnsOffset;              //Nb turns used as an offset for sync-games
 
     std::list<ClientInfo*>  m_clients;
-    std::map<uint32, std::list<NetPacketGame*> >    m_gamePackets;  //map <turn, packets>
+    std::map<uint32, std::list<NetPacketGame*>>    m_gamePackets;  //map <turn, packets>
     
     LoggerEngine*       m_logNetwork;
 

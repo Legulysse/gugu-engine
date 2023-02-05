@@ -14,6 +14,8 @@ using namespace gugu;
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
+namespace tests {
+
 void RunUnitTests_Math(UnitTestResults* results)
 {
     GUGU_UTEST_INIT("Math", "UnitTests_Math.log", results);
@@ -24,64 +26,64 @@ void RunUnitTests_Math(UnitTestResults* results)
     {
         GUGU_UTEST_SUBSECTION("Float Comparison");
         {
-            GUGU_UTEST_CHECK(!ApproxEqual(1000000.f, 1000001.f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(!ApproxEqual(1000001.f, 1000000.f, Math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxEqual(1000000.f, 1000001.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxEqual(1000001.f, 1000000.f, math::Epsilon6));
 
-            GUGU_UTEST_CHECK(ApproxEqual(1.001f, 1.002f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(1.002f, 1.001f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxEqual(1.001f, 1.003f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxEqual(1.003f, 1.001f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxEqual(1.001f, 1.002f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(!ApproxEqual(1.002f, 1.001f, Math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(1.001f, 1.002f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(1.002f, 1.001f, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxEqual(1.001f, 1.003f, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxEqual(1.003f, 1.001f, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxEqual(1.001f, 1.002f, math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxEqual(1.002f, 1.001f, math::Epsilon6));
 
-            GUGU_UTEST_CHECK(ApproxEqual(1.0001f, 1.0002f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(1.0002f, 1.0001f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxEqual(1.0001f, 1.0002f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(!ApproxEqual(1.0002f, 1.0001f, Math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(1.0001f, 1.0002f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(1.0002f, 1.0001f, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxEqual(1.0001f, 1.0002f, math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxEqual(1.0002f, 1.0001f, math::Epsilon6));
 
-            GUGU_UTEST_CHECK(ApproxEqual(1.0000001f, 1.0000002f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(1.0000002f, 1.0000001f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(1.0000001f, 1.0000002f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxEqual(1.0000002f, 1.0000001f, Math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(1.0000001f, 1.0000002f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(1.0000002f, 1.0000001f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(1.0000001f, 1.0000002f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(1.0000002f, 1.0000001f, math::Epsilon6));
 
-            GUGU_UTEST_CHECK(ApproxEqual(0.3f, 0.300003f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(-0.3f, -0.300003f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxEqual(0.3f, 0.300003f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(!ApproxEqual(-0.3f, -0.300003f, Math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(0.3f, 0.300003f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(-0.3f, -0.300003f, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxEqual(0.3f, 0.300003f, math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxEqual(-0.3f, -0.300003f, math::Epsilon6));
 
-            GUGU_UTEST_CHECK(ApproxEqual(200.04f, 100.02f + 100.02f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(200.04f, 100.02f + 100.02f, Math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(200.04f, 100.02f + 100.02f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(200.04f, 100.02f + 100.02f, math::Epsilon6));
 
             const float ratio = (100.f - 0.1f) / 100.f;
-            GUGU_UTEST_CHECK(ApproxEqual(ratio, 1.f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxEqual(ratio, 1.f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(!ApproxInferior(ratio, 1.f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxInferior(ratio, 1.f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(!ApproxSuperior(ratio, 1.f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxSuperior(ratio, 1.f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxInferiorOrEqual(ratio, 1.f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxInferiorOrEqual(ratio, 1.f, Math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(ratio, 1.f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxSuperiorOrEqual(ratio, 1.f, Math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(ratio, 1.f, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxEqual(ratio, 1.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxInferior(ratio, 1.f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxInferior(ratio, 1.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxSuperior(ratio, 1.f, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxSuperior(ratio, 1.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxInferiorOrEqual(ratio, 1.f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxInferiorOrEqual(ratio, 1.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(ratio, 1.f, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxSuperiorOrEqual(ratio, 1.f, math::Epsilon6));
 
-            GUGU_UTEST_CHECK(ApproxEqual(1.f, ratio, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxEqual(1.f, ratio, Math::Epsilon6));
-            GUGU_UTEST_CHECK(!ApproxInferior(1.f, ratio, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxInferior(1.f, ratio, Math::Epsilon6));
-            GUGU_UTEST_CHECK(!ApproxSuperior(1.f, ratio, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxSuperior(1.f, ratio, Math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxInferiorOrEqual(1.f, ratio, Math::Epsilon3));
-            GUGU_UTEST_CHECK(!ApproxInferiorOrEqual(1.f, ratio, Math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(1.f, ratio, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(1.f, ratio, Math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(1.f, ratio, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxEqual(1.f, ratio, math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxInferior(1.f, ratio, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxInferior(1.f, ratio, math::Epsilon6));
+            GUGU_UTEST_CHECK(!ApproxSuperior(1.f, ratio, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxSuperior(1.f, ratio, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxInferiorOrEqual(1.f, ratio, math::Epsilon3));
+            GUGU_UTEST_CHECK(!ApproxInferiorOrEqual(1.f, ratio, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(1.f, ratio, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(1.f, ratio, math::Epsilon6));
         }
 
         GUGU_UTEST_SUBSECTION("Angles");
         {
-            GUGU_UTEST_CHECK(ApproxEqual((float)ToDegrees(Math::Pi), 180.f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual((float)ToRadians(180.f), Math::Pi, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(ToDegreesf(Math::Pi), 180.f, Math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(ToRadiansf(180.f), Math::Pi, Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual((float)ToDegrees(math::Pi), 180.f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual((float)ToRadians(180.f), math::Pi, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(ToDegreesf(math::Pi), 180.f, math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(ToRadiansf(180.f), math::Pi, math::Epsilon3));
         }
 
         GUGU_UTEST_SUBSECTION("Power");
@@ -89,7 +91,7 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK(Power(5, 3) == 125);
             GUGU_UTEST_CHECK(Power(5, 1) == 5);
             GUGU_UTEST_CHECK(Power(5, 0) == 1);
-            GUGU_UTEST_CHECK(ApproxEqual(Power(2.f, -2), 0.25f, Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(Power(2.f, -2), 0.25f, math::Epsilon3));
         }
 
         GUGU_UTEST_SUBSECTION("Clamp");
@@ -107,3 +109,5 @@ void RunUnitTests_Math(UnitTestResults* results)
 
     GUGU_UTEST_FINALIZE();
 }
+
+}   // namespace tests

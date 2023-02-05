@@ -14,6 +14,7 @@
 #endif
 
 using namespace gugu;
+using namespace tests;
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -49,6 +50,7 @@ int main(int argc, char* argv[])
     RunUnitTests_System(&results);
     RunUnitTests_Xml(&results);
     RunUnitTests_Element(&results);
+    RunUnitTests_DataBinding(&results);
 
     results.PrintResults();
 

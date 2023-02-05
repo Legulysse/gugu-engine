@@ -12,6 +12,7 @@
 #include <chrono>
 #include <ctime>
 #include <locale>
+#include <filesystem>
 
 #if defined(GUGU_OS_WINDOWS)
     #include <windows.h>
@@ -309,27 +310,27 @@ void NormalizePath(const std::string& path, std::string& resultPath)
 void NormalizePathSelf(std::string& path)
 {
     // Normalize separator.
-    StdStringReplaceSelf(path, '\\', System::PathSeparator);
+    StdStringReplaceSelf(path, '\\', system::PathSeparator);
 
     if (!path.empty())
     {
         size_t currentSlashOrZero = 0;
         while (currentSlashOrZero != std::string::npos && !path.empty())
         {
-            size_t currentSegment = path[currentSlashOrZero] == System::PathSeparator ? currentSlashOrZero + 1 : currentSlashOrZero;
+            size_t currentSegment = path[currentSlashOrZero] == system::PathSeparator ? currentSlashOrZero + 1 : currentSlashOrZero;
             bool parseNextSlash = true;
 
             // Strip leading '/'.
-            if (currentSlashOrZero == 0 && path[currentSlashOrZero] == System::PathSeparator)
+            if (currentSlashOrZero == 0 && path[currentSlashOrZero] == system::PathSeparator)
             {
                 path.erase(currentSlashOrZero, 1);
                 parseNextSlash = false;
             }
             // Strip "/xxx/../" parts.
             else if (path.size() > currentSegment + 1 && path[currentSegment] == '.' && path[currentSegment + 1] == '.'
-                && (path.size() <= currentSegment + 2 || path[currentSegment + 2] == System::PathSeparator))
+                && (path.size() <= currentSegment + 2 || path[currentSegment + 2] == system::PathSeparator))
             {
-                size_t previousSlash = currentSlashOrZero > 0 ? path.rfind(System::PathSeparator, currentSlashOrZero - 1) : std::string::npos;
+                size_t previousSlash = currentSlashOrZero > 0 ? path.rfind(system::PathSeparator, currentSlashOrZero - 1) : std::string::npos;
                 size_t previousSlashOrZero = previousSlash != std::string::npos ? previousSlash : 0;
                 size_t previousSegment = previousSlash != std::string::npos ? previousSlash + 1 : 0;
 
@@ -337,7 +338,7 @@ void NormalizePathSelf(std::string& path)
                 {
                     bool isPreviousSegmentUpperDirectory = path.size() > previousSegment + 1
                         && path[previousSegment] == '.' && path[previousSegment + 1] == '.'
-                        && (path.size() <= previousSegment + 2 || path[previousSegment + 2] == System::PathSeparator);
+                        && (path.size() <= previousSegment + 2 || path[previousSegment + 2] == system::PathSeparator);
                     
                     if (!isPreviousSegmentUpperDirectory)
                     {
@@ -349,13 +350,13 @@ void NormalizePathSelf(std::string& path)
             }
             // Strip '/./'.
             else if (path.size() > currentSegment && path[currentSegment] == '.'
-                && (path.size() <= currentSegment + 1 || path[currentSegment + 1] == System::PathSeparator))
+                && (path.size() <= currentSegment + 1 || path[currentSegment + 1] == system::PathSeparator))
             {
                 path.erase(currentSegment, 2);
                 parseNextSlash = false;
             }
             // Strip '//'.
-            else if (path.size() > currentSegment && path[currentSegment] == System::PathSeparator)
+            else if (path.size() > currentSegment && path[currentSegment] == system::PathSeparator)
             {
                 path.erase(currentSegment, 1);
                 parseNextSlash = false;
@@ -363,13 +364,13 @@ void NormalizePathSelf(std::string& path)
 
             if (parseNextSlash)
             {
-                currentSlashOrZero = path.find(System::PathSeparator, currentSlashOrZero + 1);
+                currentSlashOrZero = path.find(system::PathSeparator, currentSlashOrZero + 1);
             }
         }
     }
 
     // Handle trailing separator.
-    if (!path.empty() && path.back() == System::PathSeparator)
+    if (!path.empty() && path.back() == system::PathSeparator)
     {
         path.pop_back();
     }
@@ -400,7 +401,7 @@ void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std
     }
     else
     {
-        resultPath = pathLeft + System::PathSeparator + pathRight;
+        resultPath = pathLeft + system::PathSeparator + pathRight;
         NormalizePathSelf(resultPath);
     }
 }
@@ -420,9 +421,9 @@ void EnsureTrailingPathSeparator(const std::string& path, std::string& resultPat
 
 void EnsureTrailingPathSeparatorSelf(std::string& path)
 {
-    if (path.empty() || path.back() != System::PathSeparator)
+    if (path.empty() || path.back() != system::PathSeparator)
     {
-        path.push_back(System::PathSeparator);
+        path.push_back(system::PathSeparator);
     }
 }
 
@@ -441,7 +442,7 @@ void DirectoryPartFromPath(const std::string& pathFile, std::string& path)
 
 void DirectoryPartFromPathSelf(std::string& pathFile)
 {
-    size_t indexSlash = pathFile.rfind(System::PathSeparator);
+    size_t indexSlash = pathFile.rfind(system::PathSeparator);
 
     if (indexSlash != std::string::npos)
     {
@@ -468,7 +469,7 @@ void NamePartFromPath(const std::string& pathFile, std::string& file)
 
 void NamePartFromPathSelf(std::string& pathFile)
 {
-    size_t indexSlash = pathFile.rfind(System::PathSeparator);
+    size_t indexSlash = pathFile.rfind(system::PathSeparator);
 
     if (indexSlash != std::string::npos)
     {
@@ -478,12 +479,12 @@ void NamePartFromPathSelf(std::string& pathFile)
 
 bool PathStartsWith(std::string_view path, std::string_view subPath)
 {
-    if (!path.empty() && path.back() == System::PathSeparator)
+    if (!path.empty() && path.back() == system::PathSeparator)
     {
         path.remove_suffix(1);
     }
 
-    if (!subPath.empty() && subPath.back() == System::PathSeparator)
+    if (!subPath.empty() && subPath.back() == system::PathSeparator)
     {
         subPath.remove_suffix(1);
     }
@@ -492,14 +493,14 @@ bool PathStartsWith(std::string_view path, std::string_view subPath)
         return false;
 
     // SubPath must represent a non-truncated part of Path, meaning it is either equal to path, or match the position of a separator.
-    return (path.size() == subPath.size() || path.at(subPath.size()) == System::PathSeparator) && StdStringStartsWith(path, subPath);
+    return (path.size() == subPath.size() || path.at(subPath.size()) == system::PathSeparator) && StdStringStartsWith(path, subPath);
 }
 
 void OpenFileExplorer(const std::string& path)
 {
 #if defined(GUGU_OS_WINDOWS)
     std::string normalizedPath = path;
-    StdStringReplaceSelf(normalizedPath, System::PathSeparator, '\\');
+    StdStringReplaceSelf(normalizedPath, system::PathSeparator, '\\');
 
     ShellExecuteA(nullptr, "open", normalizedPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 #endif
@@ -521,7 +522,12 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
 
     //Win32 path conversion and filter
     std::string filterPath = normalizedPath;
-    StdStringReplaceSelf(filterPath, System::PathSeparator, '\\');
+    if (filterPath.empty())
+    {
+        filterPath = ".";
+    }
+
+    StdStringReplaceSelf(filterPath, system::PathSeparator, '\\');
     filterPath += "\\*";
 
     WIN32_FIND_DATAA FindFileData;
@@ -539,8 +545,10 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
             {
                 if (recursive)
                 {
-                    // TODO: Should I provide some kind of CombinePathsUnsafe() ?
-                    GetFiles(normalizedPath + System::PathSeparator + fileName, files, recursive);
+                    std::string directoryFullPath;
+                    CombinePaths(normalizedPath, fileName, directoryFullPath);
+
+                    GetFiles(directoryFullPath, files, recursive);
                 }
             }
             else
@@ -574,7 +582,7 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
                 {
                     if (recursive)
                     {
-                        GetFiles(normalizedPath + System::PathSeparator + fileName, files, recursive);
+                        GetFiles(normalizedPath + system::PathSeparator + fileName, files, recursive);
                     }
                 }
                 else
@@ -599,7 +607,12 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
 
     //Win32 path conversion and filter
     std::string filterPath = normalizedPath;
-    StdStringReplaceSelf(filterPath, System::PathSeparator, '\\');
+    if (filterPath.empty())
+    {
+        filterPath = ".";
+    }
+
+    StdStringReplaceSelf(filterPath, system::PathSeparator, '\\');
     filterPath += "\\*";
 
     WIN32_FIND_DATAA FindFileData;
@@ -615,7 +628,8 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
         {
             if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                std::string directoryFullPath = normalizedPath + System::PathSeparator + fileName;
+                std::string directoryFullPath;
+                CombinePaths(normalizedPath, fileName, directoryFullPath);
 
                 directories.push_back(directoryFullPath);
 
@@ -634,21 +648,14 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
 #endif
 }
 
-bool DirectoryExists(const std::string& _strPath)
+bool DirectoryExists(const std::string& path)
 {
-    if (_strPath.empty())
-        return true;
+    return std::filesystem::is_directory(path);
+}
 
-#if defined(GUGU_OS_WINDOWS)
-
-    DWORD dwAttrib = GetFileAttributesA(_strPath.c_str());
-    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
-
-#else
-
-    return false;
-
-#endif
+bool FileExists(const std::string& path)
+{
+    return std::filesystem::is_regular_file(path);
 }
 
 bool EnsureDirectoryExists(const std::string& _strPath)
@@ -659,7 +666,7 @@ bool EnsureDirectoryExists(const std::string& _strPath)
 #if defined(GUGU_OS_WINDOWS)
 
     std::vector<std::string> vecDirectories;
-    StdStringSplit(_strPath, System::PathSeparator, vecDirectories);
+    StdStringSplit(_strPath, system::PathSeparator, vecDirectories);
 
     std::string strCombinedPath = "";
     for (auto strSubDirectory : vecDirectories)
@@ -671,7 +678,7 @@ bool EnsureDirectoryExists(const std::string& _strPath)
             return false;
         }
 
-        strCombinedPath.push_back(System::PathSeparator);
+        strCombinedPath.push_back(system::PathSeparator);
     }
 
     return true;
@@ -683,13 +690,37 @@ bool EnsureDirectoryExists(const std::string& _strPath)
 #endif
 }
 
-bool RemoveFile(const std::string& _strPathName)
+bool RemoveFile(const std::string& path)
 {
-#if defined(GUGU_OS_WINDOWS)
-    return std::remove(_strPathName.c_str()) == 0;
-#else
+    if (std::filesystem::is_regular_file(path))
+    {
+        std::error_code errorCode;
+        return std::filesystem::remove(path, errorCode);
+    }
+
     return false;
-#endif
+}
+
+bool RemoveTargetDirectory(const std::string& path)
+{
+    if (std::filesystem::is_directory(path))
+    {
+        std::error_code errorCode;
+        return std::filesystem::remove(path, errorCode);
+    }
+
+    return false;
+}
+
+bool RemoveDirectoryTree(const std::string& path)
+{
+    if (std::filesystem::is_directory(path))
+    {
+        std::error_code errorCode;
+        return std::filesystem::remove_all(path, errorCode) > 0;
+    }
+
+    return false;
 }
 
 int64 GetTimestamp()

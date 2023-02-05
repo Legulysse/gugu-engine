@@ -50,7 +50,7 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
     settings.duration = Max(settings.duration, 0);
     settings.maxParticleCount = Clamp(settings.maxParticleCount, 1, 100000);
 
-    settings.minSpawnPerSecond = Max(settings.minSpawnPerSecond, Math::Epsilon3);
+    settings.minSpawnPerSecond = Max(settings.minSpawnPerSecond, math::Epsilon3);
     settings.minParticlesPerSpawn = Max(settings.minParticlesPerSpawn, 0);
 
     settings.emissionAngle = Clamp(settings.emissionAngle, 0.f, 360.f);
@@ -167,7 +167,7 @@ void ParticleSystem::Start()
     m_currentSpawnDelay = 0;
 
     float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-    m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon3, randValue));
+    m_nextSpawnDelay = (int)(1000.f / Max(math::Epsilon3, randValue));
 }
 
 void ParticleSystem::Stop()
@@ -343,7 +343,7 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     if (m_settings.emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::RandomDirection)
     {
         Vector2f velocityVector = Vector2f(GetRandomf(m_settings.minVelocity, m_settings.maxVelocity), 0.f);
-        velocityVector = Rotate(velocityVector, GetRandomf(Math::Pi * 2.f));
+        velocityVector = Rotate(velocityVector, GetRandomf(math::Pi * 2.f));
         m_dataVelocity[particleIndex] = velocityVector;
     }
     else if (m_settings.emissionBehaviour == ParticleSystemSettings::EEmissionBehaviour::AngleDirection)
@@ -520,7 +520,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
             m_currentSpawnDelay += dt.ms() - m_nextSpawnDelay;
 
             float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-            m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon3, randValue));
+            m_nextSpawnDelay = (int)(1000.f / Max(math::Epsilon3, randValue));
         }
         else
         {
@@ -532,7 +532,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
                 m_currentSpawnDelay -= m_nextSpawnDelay;
 
                 float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-                m_nextSpawnDelay = (int)(1000.f / Max(Math::Epsilon3, randValue));
+                m_nextSpawnDelay = (int)(1000.f / Max(math::Epsilon3, randValue));
             }
         }
 

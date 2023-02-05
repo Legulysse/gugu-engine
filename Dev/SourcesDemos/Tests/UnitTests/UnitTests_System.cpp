@@ -7,10 +7,14 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/SystemUtility.h"
+
 using namespace gugu;
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
+
+namespace tests {
 
 void RunUnitTests_System(UnitTestResults* results)
 {
@@ -29,6 +33,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(NormalizePath("hello/world/../..") == "");
             GUGU_UTEST_CHECK(NormalizePath("hello/world/../../../..") == "../..");
             GUGU_UTEST_CHECK(NormalizePath("../../hello/my/../world/../") == "../../hello");
+            GUGU_UTEST_CHECK(NormalizePath(".") == "");
             GUGU_UTEST_CHECK(NormalizePath("./") == "");
             GUGU_UTEST_CHECK(NormalizePath("../") == "..");
             GUGU_UTEST_CHECK(NormalizePath("/..") == "..");
@@ -152,7 +157,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(FileInfo("world.txt") == FileInfo("", "world.txt"));
 
             {
-                const FileInfo fileInfo("hello", "world.txt");
+                const FileInfo fileInfo("hello/world.txt");
 
                 GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "hello");
                 GUGU_UTEST_CHECK(fileInfo.GetFileName() == "world.txt");
@@ -409,5 +414,71 @@ void RunUnitTests_System(UnitTestResults* results)
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("File System");
+    {
+        GUGU_UTEST_SUBSECTION("Directories");
+        {
+            GUGU_UTEST_CHECK(DirectoryExists("Assets/TestDirectory"));
+            GUGU_UTEST_CHECK(!DirectoryExists("Assets/TestDirectory_NONE"));
+            GUGU_UTEST_CHECK(FileExists("Assets/TestDirectory/TestEmptyFile.txt"));
+            GUGU_UTEST_CHECK(!FileExists("Assets/TestDirectory/TestEmptyFile_NONE.txt"));
+            GUGU_UTEST_CHECK(!FileExists("Assets/TestDirectory"));
+            GUGU_UTEST_CHECK(!DirectoryExists("Assets/TestDirectory/TestEmptyFile.txt"));
+
+            GUGU_UTEST_CHECK(!DirectoryExists("User"));
+            GUGU_UTEST_CHECK(!DirectoryExists("User/TestDirectory"));
+
+            GUGU_UTEST_CHECK(!RemoveTargetDirectory("User"));
+            GUGU_UTEST_CHECK(!RemoveDirectoryTree("User"));
+
+            GUGU_UTEST_CHECK(EnsureDirectoryExists("User/TestDirectory"));
+            GUGU_UTEST_CHECK(EnsureDirectoryExists("User/TestDirectory"));
+            GUGU_UTEST_CHECK(EnsureDirectoryExists("User"));
+
+            GUGU_UTEST_CHECK(DirectoryExists("User"));
+            GUGU_UTEST_CHECK(DirectoryExists("User/TestDirectory"));
+
+            GUGU_UTEST_CHECK(!RemoveTargetDirectory("User"));
+            GUGU_UTEST_CHECK(RemoveTargetDirectory("User/TestDirectory"));
+            GUGU_UTEST_CHECK(RemoveTargetDirectory("User"));
+
+            GUGU_UTEST_CHECK(!DirectoryExists("User"));
+            GUGU_UTEST_CHECK(!DirectoryExists("User/TestDirectory"));
+
+            GUGU_UTEST_CHECK(EnsureDirectoryExists("User/TestDirectory"));
+            GUGU_UTEST_CHECK(RemoveDirectoryTree("User"));
+
+            GUGU_UTEST_CHECK(!DirectoryExists("User"));
+            GUGU_UTEST_CHECK(!DirectoryExists("User/TestDirectory"));
+        }
+
+        GUGU_UTEST_SUBSECTION("Parsing");
+        {
+            std::vector<std::string> directories;
+            GetDirectories("", directories, true);
+
+            GUGU_UTEST_CHECK(StdVectorContains<std::string>(directories, "Assets/TestDirectory"));
+
+            directories.clear();
+            GetDirectories("Assets", directories, true);
+
+            GUGU_UTEST_CHECK(StdVectorContains<std::string>(directories, "Assets/TestDirectory"));
+
+            std::vector<FileInfo> filePaths;
+            GetFiles("", filePaths, true);
+
+            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo("Assets/TestDirectory/TestEmptyFile.txt")));
+
+            filePaths.clear();
+            GetFiles("Assets", filePaths, true);
+
+            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo("Assets/TestDirectory/TestEmptyFile.txt")));
+        }
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_FINALIZE();
 }
+
+}   // namespace tests

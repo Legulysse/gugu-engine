@@ -67,22 +67,22 @@ bool ApproxSuperiorOrEqualToZero(float left, float epsilon)
 
 double ToRadians(double _fDegrees)
 {
-    return _fDegrees * Math::DegreesToRadians;
+    return _fDegrees * math::DegreesToRadians;
 }
 
 double ToDegrees(double _fRadians)
 {
-    return _fRadians * Math::RadiansToDegrees;
+    return _fRadians * math::RadiansToDegrees;
 }
 
 float ToRadiansf(float _fDegrees)
 {
-    return _fDegrees * Math::DegreesToRadians;
+    return _fDegrees * math::DegreesToRadians;
 }
 
 float ToDegreesf(float _fRadians)
 {
-    return _fRadians * Math::RadiansToDegrees;
+    return _fRadians * math::RadiansToDegrees;
 }
 
 //----------------------------------------------
@@ -93,8 +93,8 @@ namespace impl
     const float c1 = 1.70158f;
     const float c2 = c1 * 1.525f;
     const float c3 = c1 + 1;
-    const float c4 = (2 * Math::Pi) / 3;
-    const float c5 = (2 * Math::Pi) / 4.5f;
+    const float c4 = (2 * math::Pi) / 3;
+    const float c5 = (2 * math::Pi) / 4.5f;
 
     float EaseBounceOut(float ratio)
     {
@@ -182,17 +182,17 @@ float EaseInOutQuint(float ratio)
 
 float EaseInSine(float ratio)
 {
-    return 1 - std::cos(ratio * Math::Pi / 2);
+    return 1 - std::cos(ratio * math::Pi / 2);
 }
 
 float EaseOutSine(float ratio)
 {
-    return std::sin(ratio * Math::Pi / 2);
+    return std::sin(ratio * math::Pi / 2);
 }
 
 float EaseInOutSine(float ratio)
 {
-    return -(std::cos(Math::Pi * ratio) - 1) / 2;
+    return -(std::cos(math::Pi * ratio) - 1) / 2;
 }
 
 float EaseInExpo(float ratio)

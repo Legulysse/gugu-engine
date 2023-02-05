@@ -16,7 +16,7 @@ namespace gugu {
 //----------------------------------------------
 // Constants
 
-namespace Math
+namespace math
 {
     const float Pi          = 3.14159265358979323846f;      // Pi
     const float PiDivTwo    = 1.57079632679489661923f;      // Pi / 2

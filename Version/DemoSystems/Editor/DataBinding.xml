@@ -20,7 +20,7 @@
     
     <!-- Entity -->
     
-    <Class name="entity" code="DS_Entity" abstract="True">
+    <Class name="entity" code="DS_Entity" abstract="true">
         <Data type="string"                     name="name"             code="m_name"       default="Plop" />
         <Data type="int"                        name="life"             code="m_life"       default="0" />
         <Data type="int"                        name="stamina"          code="m_stamina"    default="10" />
@@ -54,9 +54,15 @@
         <Data type="string"                     name="name"             code="m_name" />
     </Class>
     
+    <!-- Item -->
+    
+    <Class name="item" code="DS_Item">
+        <Data type="string" name="name" />
+    </Class>
+    
     <!-- Restriction -->
     
-    <Class name="restriction" code="DS_Restriction" abstract="True">
+    <Class name="restriction" code="DS_Restriction" abstract="true">
     </Class>
     
     <Class name="restrictionFaction" code="DS_RestrictionFaction" base="restriction">
@@ -80,7 +86,7 @@
     
     <!-- Condition -->
     
-    <Class name="condition" code="DS_Condition" abstract="True">
+    <Class name="condition" code="DS_Condition" abstract="true">
         <Data type="bool" name="intendedResult" code="intendedResult" default="true" />
         <Method declaration="bool IsValid(const struct ConditionContext&amp; context) const;" />
         <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const = 0;" />
@@ -95,6 +101,28 @@
         <Data type="int" name="minLevel" code="minLevel" default="-1" />
         <Data type="int" name="maxLevel" code="maxLevel" default="-1" />
         <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const override;" />
+    </Class>
+    
+    <!-- GameSave -->
+    
+    <Class type="datasave" name="gameSave" code="DS_GameSave">
+        <Data type="int" name="experience" />
+        <Data type="string" name="name" />
+        <Data type="array:int" name="stats" />
+        <Data type="array:string" name="names" />
+        <Data type="weaponType" name="weapon" />
+        <Data type="array:weaponType" name="weapons" />
+        <Data type="reference:general" name="emptyGeneral" />
+        <Data type="reference:general" name="general" />
+        <Data type="array:reference:general" name="generals" />
+        <Data type="instance:itemSave" name="emptyItem" />
+        <Data type="instance:itemSave" name="singleItem" />
+        <Data type="array:instance:itemSave" name="multipleItems" />
+    </Class>
+    
+    <Class type="datasave" name="itemSave" code="DS_ItemSave">
+        <Data type="reference:item" name="item" />
+        <Data type="int" name="quantity" />
     </Class>
     
 </Binding>

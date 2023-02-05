@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<Binding namespace="tests">
+
+    <!-- Enums -->
+    
+    <Enum name="weaponType" code="EWeaponType">
+        <Value name="Unknown" />
+        <Value name="Sword" />
+        <Value name="Mace" />
+        <Value name="Axe" />
+        <Value name="Crossbow" />
+    </Enum>
+    
+    <!-- Datasheets -->
+    
+    <Class name="entity" code="DS_Entity" abstract="true">
+        <Data type="string" name="name" default="Entity Name" />
+        <Data type="int" name="health" default="100" />
+    </Class>
+    
+    <Class name="character" code="DS_Character" base="entity">
+        <Data type="int" name="stamina" default="100" />
+        <Data type="float" name="speed" default="100" />
+        <Data type="weaponType" name="weapon" default="Sword" />
+    </Class>
+    
+    <Class name="faction" code="DS_Faction">
+        <Data type="string" name="name" />
+        <Data type="reference:character" name="leader" />
+    </Class>
+    
+    <Class name="item" code="DS_Item">
+        <Data type="string" name="name" />
+    </Class>
+    
+    <Class name="condition" code="DS_Condition" abstract="true">
+        <Data type="bool" name="intendedResult" default="true" />
+        <Method declaration="bool IsValid(const struct ConditionContext&amp; context) const;" />
+        <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const = 0;" />
+    </Class>
+    
+    <Class name="conditionAnd" code="DS_ConditionAnd" base="condition">
+        <Data type="array:instance:condition" name="conditions" />
+        <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const override;" />
+    </Class>
+    
+    <Class name="conditionPlayerLevel" code="DS_ConditionPlayerLevel" base="condition">
+        <Data type="int" name="minLevel" default="-1" />
+        <Data type="int" name="maxLevel" default="-1" />
+        <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const override;" />
+    </Class>
+    
+    <!-- Datasaves -->
+    
+    <Class type="datasave" name="gameSave" code="DS_GameSave">
+        <Data type="bool" name="readTutorial" />
+        <Data type="int" name="score" default="-1" />
+        <Data type="float" name="walkedDistance" />
+        <Data type="string" name="name" default="DEFAULT" />
+        <Data type="weaponType" name="singleWeapon" />
+        <Data type="reference:character" name="emptyCharacter" />
+        <Data type="reference:character" name="singleCharacter" />
+        <Data type="instance:itemSave" name="emptyItem" />
+        <Data type="instance:itemSave" name="singleItem" />
+        <Data type="array:bool" name="multipleBools" />
+        <Data type="array:int" name="multipleScores" />
+        <Data type="array:float" name="multipleFloats" />
+        <Data type="array:string" name="multipleNames" />
+        <Data type="array:weaponType" name="multipleWeapons" />
+        <Data type="array:reference:character" name="multipleCharacters" />
+        <Data type="array:instance:itemSave" name="multipleItems" />
+    </Class>
+    
+    <Class type="datasave" name="itemSave" code="DS_ItemSave">
+        <Data type="reference:item" name="item" />
+        <Data type="int" name="quantity" />
+    </Class>
+    
+</Binding>

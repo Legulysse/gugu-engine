@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<Datasheet serializationVersion="1" bindingVersion="1" parent="BaseConsumable.item">
+	<Data name="name" value="Banana" />
+</Datasheet>

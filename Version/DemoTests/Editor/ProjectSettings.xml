@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<ProjectSettings>
+    <Name value="Demo Tests" />
+    <AssetsPath value="../Assets" />
+    <BindingFilePath value="DataBinding.xml" />
+</ProjectSettings>

@@ -2,5 +2,5 @@
 <ProjectSettings>
     <Name value="Demo Game" />
     <AssetsPath value="../Assets" />
-    <BindingFilePath value="DatasheetBinding.xml" />
+    <BindingFilePath value="DataBinding.xml" />
 </ProjectSettings>

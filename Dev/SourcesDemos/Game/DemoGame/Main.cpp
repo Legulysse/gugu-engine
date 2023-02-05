@@ -4,7 +4,7 @@
 #include "Gugu/Common.h"
 
 #include "Game/Game.h"
-#include "DatasheetBinding.h"
+#include "DataBinding.h"
 
 #include "Gugu/Engine.h"
 
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
-    DatasheetBinding_Register();
+    DataBinding_Register();
 
     GetEngine()->RunApplication(new Game);
 

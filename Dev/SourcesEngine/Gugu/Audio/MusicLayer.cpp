@@ -215,7 +215,7 @@ void MusicLayer::Update(const DeltaTime& dt)
             {
                 float fFadeCoeff = m_nextInstance->GetFadeCoeff();
                 fFadeCoeff += (dt.s() / m_fadeIn);
-                if (fFadeCoeff - 1.f < Math::Epsilon3)
+                if (fFadeCoeff - 1.f < math::Epsilon3)
                 {
                     m_nextInstance->SetFadeCoeff(fFadeCoeff);
                     bFadeInFinished = false;

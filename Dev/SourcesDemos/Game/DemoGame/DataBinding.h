@@ -3,15 +3,16 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Resources/Datasheet.h"
+#include "Gugu/Data/DataBindingUtility.h"
+#include "Gugu/Data/DatasheetObject.h"
+#include "Gugu/Data/DatasaveObject.h"
 
-#include <vector>
+////////////////////////////////////////////////////////////////
+// File Declarations
 
 namespace demoproject {
 
 ////////////////////////////////////////////////////////////////
-// Forward Declarations
-
 class DS_SpriteInfo;
 class DS_Character;
 class DS_Hero;
@@ -32,12 +33,13 @@ namespace EEffectCenter {
         Affected,
     };
 
-    const gugu::DatasheetEnum* GetDatasheetEnum();
+    const gugu::DataEnumInfos* GetDataEnumInfos();
     void GetEnumValues(std::vector<EEffectCenter::Type>& enumValues);
     size_t GetSize();
 
     void Register();
 }
+
 ////////////////////////////////////////////////////////////////
 namespace EProjectileAim {
     enum Type
@@ -46,7 +48,7 @@ namespace EProjectileAim {
         Cursor,
     };
 
-    const gugu::DatasheetEnum* GetDatasheetEnum();
+    const gugu::DataEnumInfos* GetDataEnumInfos();
     void GetEnumValues(std::vector<EProjectileAim::Type>& enumValues);
     size_t GetSize();
 
@@ -68,7 +70,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -88,7 +90,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -109,7 +111,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -122,7 +124,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -140,11 +142,11 @@ public:
     float manaCost;
     bool useAttackSpeed;
     float cooldown;
-    std::vector< const DS_Effect* > effects;
+    std::vector<const DS_Effect*> effects;
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -161,7 +163,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -178,11 +180,11 @@ public:
     bool excludeTarget;
     float maxRadius;
     float maxAngleFromDirection;
-    std::vector< const DS_Effect* > effectsOnHit;
+    std::vector<const DS_Effect*> effectsOnHit;
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -199,12 +201,12 @@ public:
     float speed;
     float lifetime;
     int maximumHits;
-    std::vector< const DS_Effect* > effectsOnHit;
-    std::vector< const DS_Effect* > effectsOnDestination;
+    std::vector<const DS_Effect*> effectsOnHit;
+    std::vector<const DS_Effect*> effectsOnDestination;
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -221,7 +223,7 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
@@ -238,13 +240,13 @@ public:
 
 protected:
 
-    virtual void ParseMembers (gugu::DatasheetParserContext& context) override;
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
 };
 
 ////////////////////////////////////////////////////////////////
-void DatasheetBinding_Register();
+void DataBinding_Register();
 
 ////////////////////////////////////////////////////////////////
-gugu::DatasheetObject* DatasheetBinding_InstanciateDatasheetObject(std::string_view classType);
+gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType);
 
 } // namespace demoproject

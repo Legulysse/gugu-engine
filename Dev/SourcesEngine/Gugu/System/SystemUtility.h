@@ -23,7 +23,7 @@ namespace gugu {
 //----------------------------------------------
 // Constants
 
-namespace System
+namespace system
 {
     const char PathSeparator = '/';
     const char ExtensionSeparator = '.';
@@ -200,10 +200,14 @@ void OpenWebBrowser(const std::string& _strURL);
 void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool recursive);
 void GetDirectories(const std::string& rootPath, std::vector<std::string>& directories, bool recursive);
 
-bool DirectoryExists(const std::string& _strPath);
+bool DirectoryExists(const std::string& path);
+bool FileExists(const std::string& path);
 
 bool EnsureDirectoryExists(const std::string& _strPath);
-bool RemoveFile(const std::string& _strPathName);
+
+bool RemoveFile(const std::string& path);
+bool RemoveTargetDirectory(const std::string& path);
+bool RemoveDirectoryTree(const std::string& path);
 
 // Get the current timestamp as milliseconds
 int64 GetTimestamp();

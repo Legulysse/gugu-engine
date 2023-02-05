@@ -9,7 +9,7 @@
 
 #include "Game/Game.h"
 
-#include "DatasheetBinding.h"
+#include "DataBinding.h"
 
 #include "Gugu/Scene/Scene.h"
 #include "Gugu/Element/2D/ElementSprite.h"
@@ -191,7 +191,7 @@ void Projectile::Step(const DeltaTime& dt)
 
         if (m_hasDestination)
         {
-            if (ApproxInferiorOrEqual(LengthSquare(m_sprite->GetPosition() - m_destination), LengthSquare(moveStep), Math::Epsilon3))
+            if (ApproxInferiorOrEqual(LengthSquare(m_sprite->GetPosition() - m_destination), LengthSquare(moveStep), math::Epsilon3))
             {
                 reachedDestination = true;
             }

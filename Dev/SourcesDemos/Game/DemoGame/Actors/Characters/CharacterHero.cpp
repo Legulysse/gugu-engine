@@ -12,7 +12,7 @@
 #include "Scene/Grid.h"
 #include "Skills/SkillUtility.h"
 
-#include "DatasheetBinding.h"
+#include "DataBinding.h"
 
 #include "Gugu/Scene/Scene.h"
 #include "Gugu/Animation/ManagerAnimations.h"
@@ -109,7 +109,7 @@ void CharacterHero::UseSkill(const DS_Skill* skill, const Vector2f& _kCoords, co
             if (skill->staminaCost > 0.f)
             {
                 int nbUseStamina = (int)(m_currentStamina / skill->staminaCost);
-                if (ApproxInferior(nbUseStamina * skill->staminaCost, m_currentStamina, Math::Epsilon3))
+                if (ApproxInferior(nbUseStamina * skill->staminaCost, m_currentStamina, math::Epsilon3))
                 {
                     // Allow action when we have at least 1 stamina point (allow negative values).
                     nbUseStamina += 1;
@@ -189,7 +189,7 @@ bool CharacterHero::CanUseSkill(const DS_Skill* skill) const
             return false;
         }
 
-        if (skill->manaCost > 0.f && ApproxInferior(m_currentMana, skill->manaCost, Math::Epsilon3))
+        if (skill->manaCost > 0.f && ApproxInferior(m_currentMana, skill->manaCost, math::Epsilon3))
         {
             return false;
         }

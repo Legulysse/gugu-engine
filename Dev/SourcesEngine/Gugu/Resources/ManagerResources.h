@@ -29,8 +29,9 @@ namespace gugu
     class AnimSet;
     class ParticleEffect;
     class Datasheet;
+    class DataObject;
     class DatasheetObject;
-    struct DatasheetEnum;
+    struct DataEnumInfos;
     struct EngineConfig;
 }
 
@@ -51,7 +52,7 @@ class ManagerResources
 {
 public:
 
-    using DelegateDatasheetObjectFactory = std::function<DatasheetObject* (std::string_view)>;
+    using DelegateDataObjectFactory = std::function<DataObject* (std::string_view)>;
     using DelegateResourceEvent = std::function<void(const Resource* resource, EResourceEvent event, const Resource* dependency)>;    // TODO: Is dependency reference necessary ?
 
     struct ResourceListener
@@ -75,16 +76,16 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-    std::string GetPathAssets       () const;
-    std::string GetPathScreenshots  () const;
+    const std::string& GetPathAssets() const;
+    const std::string& GetPathScreenshots() const;
     
     bool HasResource(const std::string& _strName) const;
     bool IsResourceLoaded(const std::string& _strName) const;
 
     bool GetResourceFileInfo(const std::string& _strName, FileInfo& fileInfo) const;
     bool GetResourceFilePath(const std::string& _strName, std::string& pathName) const;
-    FileInfo GetResourceFileInfo(const std::string& _strName) const;
-    std::string GetResourceFilePath(const std::string& _strName) const;
+    const FileInfo& GetResourceFileInfo(const std::string& _strName) const;
+    const std::string& GetResourceFilePath(const std::string& _strName) const;
 
     void        ParseDirectory  (const std::string& _strPath);
     void        PreloadAll      ();
@@ -105,7 +106,7 @@ public:
     template<typename T>
     const T* GetDatasheetObject(const std::string& _strName)
     {
-        return dynamic_cast<const T*>(GetDatasheet(_strName)->GetRootObject());
+        return dynamic_cast<const T*>(GetDatasheetRootObject(_strName));
     }
 
     Resource* GetResource(const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
@@ -113,8 +114,8 @@ public:
     bool InjectResource(const std::string& _strName, Resource* _pResource);
 
     // TODO: Obsolete editor getters ?
-    std::string GetResourceID   (const Resource* _pResource) const;
-    std::string GetResourceID   (const FileInfo& _oFileInfo) const;
+    const std::string& GetResourceID(const Resource* _pResource) const;
+    const std::string& GetResourceID(const FileInfo& _oFileInfo) const;
 
     bool        RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos);
     bool        AddResource     (Resource* _pNewResource, const FileInfo& _oFileInfo);
@@ -145,11 +146,11 @@ public:
     Font*           GetDefaultFont();
     Font*           GetDebugFont();
     
-    void                RegisterDatasheetObjectFactory    (const DelegateDatasheetObjectFactory& delegateDatasheetObjectFactory);
-    DatasheetObject*    InstanciateDatasheetObject        (std::string_view _strType);
+    void            RegisterDataObjectFactory  (const DelegateDataObjectFactory& delegateDataObjectFactory);
+    DataObject*     InstanciateDataObject      (std::string_view _strType);
 
-    void RegisterDatasheetEnum(const std::string& _strName, const DatasheetEnum* _pEnum);
-    const DatasheetEnum* GetDatasheetEnum(const std::string& _strName);
+    void RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum);
+    const DataEnumInfos* GetDataEnumInfos(const std::string& _strName);
 
     bool RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceEvent& delegateResourceEvent);
     void UnregisterResourceListeners(const Resource* resource, const void* handle);
@@ -161,6 +162,8 @@ public:
 private:
 
     Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
+
+    const DatasheetObject* GetDatasheetRootObject(const std::string& _strName);
 
     void RegisterResourceDependencies(Resource* resource);
     void UnregisterResourceDependencies(Resource* resource);
@@ -182,8 +185,8 @@ private:
     std::map<ResourceMapKey, ResourceInfo*> m_resources;
     std::map<ResourceMapKey, Texture*> m_customTextures;
 
-    std::vector<DelegateDatasheetObjectFactory> m_datasheetObjectFactories;
-    std::map<ResourceMapKey, const DatasheetEnum*> m_datasheetEnums;
+    std::vector<DelegateDataObjectFactory> m_dataObjectFactories;
+    std::map<ResourceMapKey, const DataEnumInfos*> m_dataEnumInfos;
 
     std::map<const Resource*, ResourceDependencies> m_resourceDependencies;
 };

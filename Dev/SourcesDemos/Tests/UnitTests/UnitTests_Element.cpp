@@ -18,10 +18,12 @@ using namespace gugu;
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
+namespace tests {
+
 // TODO: move this elsewhere (need a Vector2.cpp ?).
 bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon)
 {
-    return ApproxEqual(left.x, right.x, epsilon) && ApproxEqual(left.y, right.y, epsilon);
+    return gugu::ApproxEqual(left.x, right.x, epsilon) && gugu::ApproxEqual(left.y, right.y, epsilon);
 }
 
 void RunUnitTests_Element(UnitTestResults* results)
@@ -45,7 +47,7 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(-.5f, -.5f)));
             GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f)));
             GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(5.f, 5.f), picked));
-            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
 
             elementA->SetPosition(10.f, 10.f);
 
@@ -55,7 +57,7 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(9.5f, 9.5f)));
             GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(20.f, 20.f)));
             GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(15.f, 15.f), picked));
-            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
 
             // TODO: Rotate.
             // TODO: Scale.
@@ -96,7 +98,7 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(-1, -1), elementA));
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(10, 10), elementA));
             GUGU_UTEST_CHECK(camera->IsMouseOverElement(Vector2i(5, 5), elementA, picked));
-            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
 
             camera->SetCenterOnTarget(false);
             camera->SetTarget(0.f, 0.f);
@@ -107,7 +109,7 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(-1, -1), elementA));
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(5, 5), elementA));
             GUGU_UTEST_CHECK(camera->IsMouseOverElement(Vector2i(2, 2), elementA, picked));
-            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(4.f, 4.f), Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(4.f, 4.f), math::Epsilon3));
 
             camera->SetCenterOnTarget(false);
             camera->SetTarget(-100.f, 0.f);
@@ -118,7 +120,7 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(99, -1), elementA));
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(110, 10), elementA));
             GUGU_UTEST_CHECK(camera->IsMouseOverElement(Vector2i(105, 5), elementA, picked));
-            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
 
             camera->SetCenterOnTarget(false);
             camera->SetTarget(-100.f, 0.f);
@@ -129,7 +131,7 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(49, -1), elementA));
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(55, 5), elementA));
             GUGU_UTEST_CHECK(camera->IsMouseOverElement(Vector2i(52, 2), elementA, picked));
-            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(4.f, 4.f), Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(4.f, 4.f), math::Epsilon3));
 
             // TODO: Here I only check the last case for centerOnTarget=true (modified target+zoom), I could check intermediate cases too.
             camera->SetCenterOnTarget(true);
@@ -141,7 +143,7 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(49, 99), elementA));
             GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(55, 105), elementA));
             GUGU_UTEST_CHECK(camera->IsMouseOverElement(Vector2i(52, 102), elementA, picked));
-            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(4.f, 4.f), Math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(4.f, 4.f), math::Epsilon3));
 
             SafeDelete(root);
             GetGameWindow()->DeleteCamera(camera);
@@ -152,3 +154,5 @@ void RunUnitTests_Element(UnitTestResults* results)
 
     GUGU_UTEST_FINALIZE();
 }
+
+}   // namespace tests

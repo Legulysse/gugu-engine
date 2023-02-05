@@ -94,6 +94,9 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
     // Parse all classes.
     for (pugi::xml_node nodeClass = nodeBinding.child("Class"); nodeClass; nodeClass = nodeClass.next_sibling("Class"))
     {
+        if (StringEquals(nodeClass.attribute("type").value(), "datasave"))
+            continue;
+
         ClassDefinition* classDefinition = new ClassDefinition;
         classDefinition->m_name = nodeClass.attribute("name").value();
         classDefinition->baseName = nodeClass.attribute("base").value();
@@ -129,6 +132,9 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
     // Parse all classes data.
     for (pugi::xml_node nodeClass = nodeBinding.child("Class"); nodeClass; nodeClass = nodeClass.next_sibling("Class"))
     {
+        if (StringEquals(nodeClass.attribute("type").value(), "datasave"))
+            continue;
+
         // TODO: Add a LOT of error messages and checks.
         ClassDefinition* classDefinition;
         if (GetClassDefinition(nodeClass.attribute("name").value(), classDefinition))

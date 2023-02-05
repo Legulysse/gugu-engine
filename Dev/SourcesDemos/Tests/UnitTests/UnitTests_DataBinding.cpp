@@ -97,10 +97,14 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
 
         static const std::string emptySaveExpectedResultString = {
             "<Datasave serializationVersion=\"1\" bindingVersion=\"1\">"
+                "<Data name=\"readTutorial\" value=\"false\"/>"
                 "<Data name=\"score\" value=\"-1\"/>"
+                "<Data name=\"walkedDistance\" value=\"0\"/>"
                 "<Data name=\"name\" value=\"DEFAULT\"/>"
                 "<Data name=\"singleWeapon\" value=\"Unknown\"/>"
+                "<Data name=\"multipleBools\"/>"
                 "<Data name=\"multipleScores\"/>"
+                "<Data name=\"multipleFloats\"/>"
                 "<Data name=\"multipleNames\"/>"
                 "<Data name=\"multipleWeapons\"/>"
                 "<Data name=\"multipleCharacters\"/>"
@@ -110,14 +114,26 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
 
         static const std::string filledSaveExpectedResultString = {
             "<Datasave serializationVersion=\"1\" bindingVersion=\"1\">"
+                "<Data name=\"readTutorial\" value=\"true\"/>"
                 "<Data name=\"score\" value=\"99\"/>"
+                "<Data name=\"walkedDistance\" value=\"12500\"/>"
                 "<Data name=\"name\" value=\"Hello World\"/>"
                 "<Data name=\"singleWeapon\" value=\"Axe\"/>"
+                "<Data name=\"multipleBools\">"
+                    "<Child value=\"true\"/>"
+                    "<Child value=\"false\"/>"
+                    "<Child value=\"true\"/>"
+                "</Data>"
                 "<Data name=\"multipleScores\">"
                     "<Child value=\"1\"/>"
                     "<Child value=\"2\"/>"
                     "<Child value=\"3\"/>"
                     "<Child value=\"4\"/>"
+                "</Data>"
+                "<Data name=\"multipleFloats\">"
+                    "<Child value=\"100\"/>"
+                    "<Child value=\"200\"/>"
+                    "<Child value=\"300\"/>"
                 "</Data>"
                 "<Data name=\"multipleNames\">"
                     "<Child value=\"One\"/>"
@@ -158,10 +174,14 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             GUGU_UTEST_CHECK(emptySaveResultString == emptySaveExpectedResultString);
 
             DS_GameSave filledGameSave;
+            filledGameSave.readTutorial = true;
             filledGameSave.score = 99;
+            filledGameSave.walkedDistance = 12500.f;
             filledGameSave.name = "Hello World";
             filledGameSave.singleWeapon = EWeaponType::Axe;
+            filledGameSave.multipleBools = { true, false, true };
             filledGameSave.multipleScores = { 1, 2, 3, 4 };
+            filledGameSave.multipleFloats = { 100.f, 200.f, 300.f };
             filledGameSave.multipleNames = { "One", "Two", "Three", "Four" };
             filledGameSave.multipleWeapons = { EWeaponType::Crossbow, EWeaponType::Axe, EWeaponType::Mace, EWeaponType::Sword };
             filledGameSave.multipleCharacters = {
@@ -212,7 +232,9 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             GUGU_UTEST_CHECK(filledGameSave.SaveToString(filledSaveResultString));
             GUGU_UTEST_CHECK(filledSaveResultString == filledSaveExpectedResultString);
 
+            GUGU_UTEST_CHECK(filledGameSave.readTutorial == true);
             GUGU_UTEST_CHECK(filledGameSave.score == 99);
+            GUGU_UTEST_CHECK(filledGameSave.walkedDistance == 12500.f);
             GUGU_UTEST_CHECK(filledGameSave.name == "Hello World");
             GUGU_UTEST_CHECK(filledGameSave.singleWeapon == EWeaponType::Axe);
             GUGU_UTEST_CHECK(filledGameSave.emptyCharacter == nullptr);
@@ -220,12 +242,26 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             GUGU_UTEST_CHECK(filledGameSave.emptyItem == nullptr);
             GUGU_UTEST_CHECK(filledGameSave.singleItem == nullptr);
 
+            if (GUGU_UTEST_CHECK(filledGameSave.multipleBools.size() == 3))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multipleBools[0] == true);
+                GUGU_UTEST_CHECK(filledGameSave.multipleBools[1] == false);
+                GUGU_UTEST_CHECK(filledGameSave.multipleBools[2] == true);
+            }
+
             if (GUGU_UTEST_CHECK(filledGameSave.multipleScores.size() == 4))
             {
                 GUGU_UTEST_CHECK(filledGameSave.multipleScores[0] == 1);
                 GUGU_UTEST_CHECK(filledGameSave.multipleScores[1] == 2);
                 GUGU_UTEST_CHECK(filledGameSave.multipleScores[2] == 3);
                 GUGU_UTEST_CHECK(filledGameSave.multipleScores[3] == 4);
+            }
+
+            if (GUGU_UTEST_CHECK(filledGameSave.multipleFloats.size() == 3))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multipleFloats[0] == 100.f);
+                GUGU_UTEST_CHECK(filledGameSave.multipleFloats[1] == 200.f);
+                GUGU_UTEST_CHECK(filledGameSave.multipleFloats[2] == 300.f);
             }
 
             if (GUGU_UTEST_CHECK(filledGameSave.multipleNames.size() == 4))

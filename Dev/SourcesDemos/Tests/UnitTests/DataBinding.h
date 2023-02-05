@@ -188,14 +188,18 @@ public:
 
 public:
 
+    bool readTutorial;
     int score;
+    float walkedDistance;
     std::string name;
     EWeaponType::Type singleWeapon;
     const DS_Character* emptyCharacter;
     const DS_Character* singleCharacter;
     DS_ItemSave* emptyItem;
     DS_ItemSave* singleItem;
+    std::vector<bool> multipleBools;
     std::vector<int> multipleScores;
+    std::vector<float> multipleFloats;
     std::vector<std::string> multipleNames;
     std::vector<EWeaponType::Type> multipleWeapons;
     std::vector<const DS_Character*> multipleCharacters;

@@ -7,7 +7,7 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
     project (ProjectName)
 
         -- Base Definition
-        IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirVersion)
+        IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirSources, DirVersion)
 
         uuid(ProjectID)
         
@@ -47,7 +47,7 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
     project (ProjectName)
     
         -- Base Definition
-        IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirVersion)
+        IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirSources, DirVersion)
         
         uuid(ProjectID)
         
@@ -84,7 +84,7 @@ function ProjectAppGuguEditor(BuildCfg)
     project ("GuguEditorApp")
     
         -- Base Definition
-        IncludeDefaultAppDefinition(BuildCfg, "GuguEditor", BuildCfg.DirEditorVersion)
+        IncludeDefaultAppDefinition(BuildCfg, "GuguEditor", BuildCfg.DirSourcesEditorApp, BuildCfg.DirEditorVersion)
     
         uuid "E4D3697E-E0B5-4343-B000-E895BACF446A"
         
@@ -366,9 +366,10 @@ function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
 end
 
 -- Default App Project
-function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirVersion)
+function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersion)
 
     DirVersion = EnsureSlash(DirVersion)
+    DirSources = EnsureSlash(DirSources)
     SubDirBinaries  = EnsureSlash("Build_%{cfg.platform}_".._ACTION)
     
     -- Base Definition
@@ -405,7 +406,16 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirVersion)
         architecture "x86"
     filter { "platforms:x64" }
         architecture "x86_64"
-        
+
+
+    -- Resources (Icon)
+    filter { 'system:windows' }
+        files {
+            DirSources.."**.rc",
+            DirSources.."**.ico",
+        }
+        vpaths { ["Resources/*"] = { "**.rc", "**.ico" } }
+
     -- Finalize
     filter {}
     

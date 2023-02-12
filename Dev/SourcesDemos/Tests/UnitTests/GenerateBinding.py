@@ -8,7 +8,7 @@ from DataBindingTool import *
 # > _pathBindingXml : the path to the source xml definition.
 # > _pathBindingCpp : the destination folder for the generated C++ files ('.h' and '.cpp' files).
 # > _generatedFileName : the base name for generated C++ files (If empty, defaults to DataBinding).
-GenerateBindingCpp('../../../../Version/DemoTests/Editor/DataBinding.xml', '', '')
+GenerateBindingCpp('../../../../Version/DemoTests/Editor/DataBinding.xml', 'DataBinding', '')
 
 
 input('Press Enter to close.')

@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "DataBindingImpl.h"
+#include "DataBinding/DataBindingImpl.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes

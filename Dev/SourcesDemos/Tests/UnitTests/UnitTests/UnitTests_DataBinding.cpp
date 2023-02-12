@@ -7,8 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "DataBinding.h"
-#include "DataBindingImpl.h"
+#include "DataBinding/DataBinding.h"
+#include "DataBinding/DataBindingImpl.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"

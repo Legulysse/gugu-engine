@@ -42,8 +42,8 @@ Vector2f GetRandomPointInAnnulus(const Vector2f& center, float minRadius, float 
 int GetWeightedRandomIndex(const std::vector<int>& weights);
 
 // Return a weighted random index from a list of items.
-// Weights of -1 will be considered as a special case and converted to 1.
-// Weights of 0 will be kept as such and ignored by the roll.
+// Weights <= 0 will be ignored by the roll.
+// Return -1 if the list does not contain any weight > 0.
 // Predicate may look like this : auto predicate = [](const ItemType& item) -> int { return item.weight; };
 template <typename T, typename P>
 int GetWeightedRandomIndex(const std::vector<T>& items, P weightPredicate)
@@ -52,8 +52,7 @@ int GetWeightedRandomIndex(const std::vector<T>& items, P weightPredicate)
     weights.reserve(items.size());
     for (const T& item : items)
     {
-        int weight = weightPredicate(item);
-        weights.push_back((weight < 0) ? 1 : weight);
+        weights.push_back(weightPredicate(item));
     }
 
     return GetWeightedRandomIndex(weights);

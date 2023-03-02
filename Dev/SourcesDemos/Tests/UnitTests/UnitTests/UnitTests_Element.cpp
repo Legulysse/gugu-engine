@@ -20,12 +20,6 @@ using namespace gugu;
 
 namespace tests {
 
-// TODO: move this elsewhere (need a Vector2.cpp ?).
-bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon)
-{
-    return gugu::ApproxEqual(left.x, right.x, epsilon) && gugu::ApproxEqual(left.y, right.y, epsilon);
-}
-
 void RunUnitTests_Element(UnitTestResults* results)
 {
     GUGU_UTEST_INIT("Element", "UnitTests_Element.log", results);

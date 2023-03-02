@@ -24,6 +24,8 @@ namespace Vector2
     const Vector2f Zero_f = Vector2f();
 }
 
+bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon);
+
 template <typename T>
 float LengthSquare(const sf::Vector2<T>& _kVector);
 

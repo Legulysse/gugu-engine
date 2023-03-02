@@ -45,14 +45,26 @@ bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeNa
 bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, std::string& value);
 
 // Read a data structure from a node's attributes.
-bool XmlReadVector2(const pugi::xml_node& node, Vector2f& value);
-bool XmlReadRect(const pugi::xml_node& node, sf::IntRect& value);
-bool XmlReadUDim2(const pugi::xml_node& node, UDim2& value);
+Vector2i XmlReadVector2i(const pugi::xml_node& node, const Vector2i& defaultValue = Vector2::Zero_i);
+Vector2f XmlReadVector2f(const pugi::xml_node& node, const Vector2f& defaultValue = Vector2::Zero_f);
+sf::IntRect XmlReadRect(const pugi::xml_node& node);
+
+// Parse a data structure from a node's attributes (value will always be modified).
+void XmlParseVector2i(const pugi::xml_node& node, Vector2i& value, const Vector2i& defaultValue = Vector2::Zero_i);
+void XmlParseVector2f(const pugi::xml_node& node, Vector2f& value, const Vector2f& defaultValue = Vector2::Zero_f);
+void XmlParseRect(const pugi::xml_node& node, sf::IntRect& value);
+void XmlParseUDim2(const pugi::xml_node& node, UDim2& value);
+
+// Try to Parse a data structure from a node's attributes (value will only be modified if the node exists).
+bool XmlTryParseVector2i(const pugi::xml_node& node, Vector2i& value);
+bool XmlTryParseVector2f(const pugi::xml_node& node, Vector2f& value);
+bool XmlTryParseRect(const pugi::xml_node& node, sf::IntRect& value);
+bool XmlTryParseUDim2(const pugi::xml_node& node, UDim2& value);
 
 // Write a data structure in a node's attributes.
-bool XmlWriteVector2(pugi::xml_node node, const Vector2f& value);
-bool XmlWriteRect(pugi::xml_node node, const sf::IntRect& value);
-bool XmlWriteUDim2(pugi::xml_node node, const UDim2& value);
+void XmlWriteVector2f(pugi::xml_node node, const Vector2f& value);
+void XmlWriteRect(pugi::xml_node node, const sf::IntRect& value);
+void XmlWriteUDim2(pugi::xml_node node, const UDim2& value);
 
 // Read a value inside a node
 bool XmlReadValue(const pugi::xml_node& node, std::string& value);

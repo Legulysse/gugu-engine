@@ -384,11 +384,11 @@ bool AnimSet::LoadFromXml(const pugi::xml_document& document)
                     pNewFrame->RegisterEvents(oAttributeEvents.as_string());
 
                 Vector2f kOrigin;
-                if (XmlReadVector2(oNodeFrame.child("Origin"), kOrigin))
+                if (XmlTryParseVector2f(oNodeFrame.child("Origin"), kOrigin))
                     pNewFrame->SetOrigin(kOrigin);
 
                 Vector2f kMove;
-                if (XmlReadVector2(oNodeFrame.child("Move"), kMove))
+                if (XmlTryParseVector2f(oNodeFrame.child("Move"), kMove))
                     pNewFrame->SetMoveOffset(kMove);
             }
         }
@@ -435,12 +435,12 @@ bool AnimSet::SaveToXml(pugi::xml_document& document) const
 
             if (frame->GetOrigin() != Vector2::Zero_f)
             {
-                XmlWriteVector2(nodeFrame.append_child("Origin"), frame->GetOrigin());
+                XmlWriteVector2f(nodeFrame.append_child("Origin"), frame->GetOrigin());
             }
 
             if (frame->GetMoveOffset() != Vector2::Zero_f)
             {
-                XmlWriteVector2(nodeFrame.append_child("Move"), frame->GetMoveOffset());
+                XmlWriteVector2f(nodeFrame.append_child("Move"), frame->GetMoveOffset());
             }
         }
     }

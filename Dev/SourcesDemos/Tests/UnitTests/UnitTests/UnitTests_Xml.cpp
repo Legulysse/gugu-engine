@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Math/UDim.h"
+#include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
 using namespace gugu;
@@ -56,15 +57,98 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("Read Attribute");
     {
-        GUGU_UTEST_SUBSECTION("Vector2");
+        GUGU_UTEST_SUBSECTION("Vector2i");
         {
             pugi::xml_document document = ParseStringDocument("<Data x=\"10\" y=\"20\"/>");
+            pugi::xml_node nodeData = document.child("Data");
+            pugi::xml_node nodeNoData = document.child("NoData");
 
-            Vector2f result;
-            if (GUGU_UTEST_CHECK(XmlReadVector2(document.child("Data"), result)))
+            const Vector2i defaultData(30, 40);
+            const Vector2i defaultNoData(30, 40);
+
+            // Read (no default)
+            GUGU_UTEST_CHECK(XmlReadVector2i(nodeData) == Vector2i(10, 20));
+            GUGU_UTEST_CHECK(XmlReadVector2i(nodeNoData) == Vector2i(0, 0));
+
+            // Read (default)
+            GUGU_UTEST_CHECK(XmlReadVector2i(nodeData, defaultData) == Vector2i(10, 20));
+            GUGU_UTEST_CHECK(XmlReadVector2i(nodeNoData, defaultNoData) == Vector2i(30, 40));
+
+            // Parse (no default)
+            Vector2i resultDataSelf(10, 10);
+            XmlParseVector2i(nodeData, resultDataSelf);
+            GUGU_UTEST_CHECK(resultDataSelf == Vector2i(10, 20));
+
+            Vector2i resultNoDataSelf(10, 10);
+            XmlParseVector2i(nodeNoData, resultNoDataSelf);
+            GUGU_UTEST_CHECK(resultNoDataSelf == Vector2i(0, 0));
+
+            // Parse (default)
+            Vector2i resultDataRefWithDefault(10, 10);
+            XmlParseVector2i(nodeData, resultDataRefWithDefault, defaultData);
+            GUGU_UTEST_CHECK(resultDataRefWithDefault == Vector2i(10, 20));
+
+            Vector2i resultNoDataRefWithDefault(10, 10);
+            XmlParseVector2i(nodeNoData, resultNoDataRefWithDefault, defaultNoData);
+            GUGU_UTEST_CHECK(resultNoDataRefWithDefault == Vector2i(30, 40));
+
+            // TryParse
+            Vector2i resultData(10, 10);
+            if (GUGU_UTEST_CHECK(XmlTryParseVector2i(nodeData, resultData)))
             {
-                GUGU_UTEST_CHECK(result == Vector2f(10.f, 20.f));
+                GUGU_UTEST_CHECK(resultData == Vector2i(10, 20));
             }
+
+            Vector2i resultNoData(10, 10);
+            GUGU_UTEST_CHECK(!XmlTryParseVector2i(nodeNoData, resultNoData));
+            GUGU_UTEST_CHECK(resultNoData == Vector2i(10, 10));
+        }
+
+        GUGU_UTEST_SUBSECTION("Vector2f");
+        {
+            pugi::xml_document document = ParseStringDocument("<Data x=\"10\" y=\"20\"/>");
+            pugi::xml_node nodeData = document.child("Data");
+            pugi::xml_node nodeNoData = document.child("NoData");
+
+            const Vector2f defaultData(30.f, 40.f);
+            const Vector2f defaultNoData(30.f, 40.f);
+
+            // Read (no default)
+            GUGU_UTEST_CHECK(ApproxEqual(XmlReadVector2f(nodeData), Vector2f(10.f, 20.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(XmlReadVector2f(nodeNoData), Vector2f(0.f, 0.f), math::Epsilon3));
+
+            // Read (default)
+            GUGU_UTEST_CHECK(ApproxEqual(XmlReadVector2f(nodeData, defaultData), Vector2f(10.f, 20.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(XmlReadVector2f(nodeNoData, defaultNoData), Vector2f(30.f, 40.f), math::Epsilon3));
+
+            // Parse (no default)
+            Vector2f resultDataSelf(10.f, 10.f);
+            XmlParseVector2f(nodeData, resultDataSelf);
+            GUGU_UTEST_CHECK(ApproxEqual(resultDataSelf, Vector2f(10.f, 20.f), math::Epsilon3));
+
+            Vector2f resultNoDataSelf(10.f, 10.f);
+            XmlParseVector2f(nodeNoData, resultNoDataSelf);
+            GUGU_UTEST_CHECK(ApproxEqual(resultNoDataSelf, Vector2f(0.f, 0.f), math::Epsilon3));
+
+            // Parse (default)
+            Vector2f resultDataRefWithDefault(10.f, 10.f);
+            XmlParseVector2f(nodeData, resultDataRefWithDefault, defaultData);
+            GUGU_UTEST_CHECK(ApproxEqual(resultDataRefWithDefault, Vector2f(10.f, 20.f), math::Epsilon3));
+
+            Vector2f resultNoDataRefWithDefault(10.f, 10.f);
+            XmlParseVector2f(nodeNoData, resultNoDataRefWithDefault, defaultNoData);
+            GUGU_UTEST_CHECK(ApproxEqual(resultNoDataRefWithDefault, Vector2f(30.f, 40.f), math::Epsilon3));
+
+            // TryParse
+            Vector2f resultData(10.f, 10.f);
+            if (GUGU_UTEST_CHECK(XmlTryParseVector2f(nodeData, resultData)))
+            {
+                GUGU_UTEST_CHECK(ApproxEqual(resultData, Vector2f(10.f, 20.f), math::Epsilon3));
+            }
+
+            Vector2f resultNoData(10.f, 10.f);
+            GUGU_UTEST_CHECK(!XmlTryParseVector2f(nodeNoData, resultNoData));
+            GUGU_UTEST_CHECK(ApproxEqual(resultNoData, Vector2f(10.f, 10.f), math::Epsilon3));
         }
 
         GUGU_UTEST_SUBSECTION("UDim2");
@@ -72,7 +156,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_document document = ParseStringDocument("<Data xRel=\"10\" yRel=\"20\" xAbs=\"100\" yAbs=\"200\"/>");
 
             UDim2 result;
-            if (GUGU_UTEST_CHECK(XmlReadUDim2(document.child("Data"), result)))
+            if (GUGU_UTEST_CHECK(XmlTryParseUDim2(document.child("Data"), result)))
             {
                 GUGU_UTEST_CHECK(result.x.relative == 10
                                 && result.y.relative == 20
@@ -86,7 +170,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_document document = ParseStringDocument("<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
 
             sf::IntRect result;
-            if (GUGU_UTEST_CHECK(XmlReadRect(document.child("Data"), result)))
+            if (GUGU_UTEST_CHECK(XmlTryParseRect(document.child("Data"), result)))
             {
                 GUGU_UTEST_CHECK(result == sf::IntRect(10, 20, 100, 200));
             }
@@ -95,37 +179,31 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("Write Attribute");
     {
-        GUGU_UTEST_SUBSECTION("Vector2");
+        GUGU_UTEST_SUBSECTION("Vector2f");
         {
             pugi::xml_document document;
             pugi::xml_node node = document.append_child("Data");
+            XmlWriteVector2f(node, Vector2f(10.f, 20.f));
 
-            if (GUGU_UTEST_CHECK(XmlWriteVector2(node, Vector2f(10.f, 20.f))))
-            {
-                GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\"/>");
-            }
+            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\"/>");
         }
 
         GUGU_UTEST_SUBSECTION("UDim2");
         {
             pugi::xml_document document;
             pugi::xml_node node = document.append_child("Data");
+            XmlWriteUDim2(node, UDim2(10, 100, 20, 200));
 
-            if (GUGU_UTEST_CHECK(XmlWriteUDim2(node, UDim2(10, 100, 20, 200))))
-            {
-                GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data xRel=\"10\" yRel=\"20\" xAbs=\"100\" yAbs=\"200\"/>");
-            }
+            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data xRel=\"10\" yRel=\"20\" xAbs=\"100\" yAbs=\"200\"/>");
         }
 
         GUGU_UTEST_SUBSECTION("Rect");
         {
             pugi::xml_document document;
             pugi::xml_node node = document.append_child("Data");
+            XmlWriteRect(node, sf::IntRect(10, 20, 100, 200));
 
-            if (GUGU_UTEST_CHECK(XmlWriteRect(node, sf::IntRect(10, 20, 100, 200))))
-            {
-                GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
-            }
+            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
         }
     }
 

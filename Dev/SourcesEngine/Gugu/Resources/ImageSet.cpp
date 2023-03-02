@@ -185,9 +185,7 @@ bool ImageSet::LoadFromXml(const pugi::xml_document& document)
         std::string strNameSubImage = oNodeSubImage.attribute("name").as_string();
         if (!strNameSubImage.empty())
         {
-            sf::IntRect rect;
-            XmlReadRect(oNodeSubImage, rect);
-            m_subImages.push_back(new SubImage(this, strNameSubImage, rect));
+            m_subImages.push_back(new SubImage(this, strNameSubImage, XmlReadRect(oNodeSubImage)));
         }
     }
 

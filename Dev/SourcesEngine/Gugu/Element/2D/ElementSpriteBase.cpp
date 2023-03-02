@@ -344,7 +344,7 @@ bool ElementSpriteBase::LoadFromXml(const pugi::xml_node& _oNodeElement)
         return false;
 
     sf::IntRect rect;
-    if (XmlReadRect(_oNodeElement.child("TextureRect"), rect))
+    if (XmlTryParseRect(_oNodeElement.child("TextureRect"), rect))
     {
         SetSubRect(rect);
     }

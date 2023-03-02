@@ -102,6 +102,10 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 "<Data name=\"walkedDistance\" value=\"0\"/>"
                 "<Data name=\"name\" value=\"DEFAULT\"/>"
                 "<Data name=\"singleWeapon\" value=\"Unknown\"/>"
+                "<Data name=\"emptyCharacter\" value=\"\"/>"
+                "<Data name=\"singleCharacter\" value=\"\"/>"
+                "<Data name=\"emptyItem\" type=\"\"/>"
+                "<Data name=\"singleItem\" type=\"\"/>"
                 "<Data name=\"multipleBools\"/>"
                 "<Data name=\"multipleScores\"/>"
                 "<Data name=\"multipleFloats\"/>"
@@ -119,6 +123,13 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 "<Data name=\"walkedDistance\" value=\"12500\"/>"
                 "<Data name=\"name\" value=\"Hello World\"/>"
                 "<Data name=\"singleWeapon\" value=\"Axe\"/>"
+                "<Data name=\"emptyCharacter\" value=\"\"/>"
+                "<Data name=\"singleCharacter\" value=\"Billy.character\"/>"
+                "<Data name=\"emptyItem\" type=\"\"/>"
+                "<Data name=\"singleItem\" type=\"itemSave\">"
+                    "<Data name=\"item\" value=\"Apple.item\"/>"
+                    "<Data name=\"quantity\" value=\"10\"/>"
+                "</Data>"
                 "<Data name=\"multipleBools\">"
                     "<Child value=\"true\"/>"
                     "<Child value=\"false\"/>"
@@ -173,12 +184,28 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             GUGU_UTEST_CHECK(emptyGameSave.SaveToString(emptySaveResultString));
             GUGU_UTEST_CHECK(emptySaveResultString == emptySaveExpectedResultString);
 
+            DS_ItemSave* singleItemSave = new DS_ItemSave();
+            singleItemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
+            singleItemSave->quantity = 10;
+
+            DS_ItemSave* appleItemSave = new DS_ItemSave();
+            appleItemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
+            appleItemSave->quantity = 15;
+
+            DS_ItemSave* bananaItemSave = new DS_ItemSave();
+            bananaItemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Banana.item");
+            bananaItemSave->quantity = 7;
+
             DS_GameSave filledGameSave;
             filledGameSave.readTutorial = true;
             filledGameSave.score = 99;
             filledGameSave.walkedDistance = 12500.f;
             filledGameSave.name = "Hello World";
             filledGameSave.singleWeapon = EWeaponType::Axe;
+            filledGameSave.emptyCharacter = nullptr;
+            filledGameSave.singleCharacter = GetResources()->GetDatasheetObject<DS_Character>("Billy.character");
+            filledGameSave.emptyItem = nullptr;
+            filledGameSave.singleItem = singleItemSave;
             filledGameSave.multipleBools = { true, false, true };
             filledGameSave.multipleScores = { 1, 2, 3, 4 };
             filledGameSave.multipleFloats = { 100.f, 200.f, 300.f };
@@ -188,14 +215,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 GetResources()->GetDatasheetObject<DS_Character>("Billy.character"),
                 GetResources()->GetDatasheetObject<DS_Character>("Paula.character"),
             };
-            DS_ItemSave* appleItemSave = new DS_ItemSave();
-            appleItemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
-            appleItemSave->quantity = 15;
-            filledGameSave.multipleItems.push_back(appleItemSave);
-            DS_ItemSave* bananaItemSave = new DS_ItemSave();
-            bananaItemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Banana.item");
-            bananaItemSave->quantity = 7;
-            filledGameSave.multipleItems.push_back(bananaItemSave);
+            filledGameSave.multipleItems = { appleItemSave, bananaItemSave };
+
             GUGU_UTEST_CHECK(filledGameSave.SaveToFile("User/FilledTestSave.xml"));
 
             std::string filledSaveResultString;
@@ -238,9 +259,14 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             GUGU_UTEST_CHECK(filledGameSave.name == "Hello World");
             GUGU_UTEST_CHECK(filledGameSave.singleWeapon == EWeaponType::Axe);
             GUGU_UTEST_CHECK(filledGameSave.emptyCharacter == nullptr);
-            GUGU_UTEST_CHECK(filledGameSave.singleCharacter == nullptr);
+            GUGU_UTEST_CHECK(filledGameSave.singleCharacter == GetResources()->GetDatasheetObject<DS_Character>("Billy.character"));
             GUGU_UTEST_CHECK(filledGameSave.emptyItem == nullptr);
-            GUGU_UTEST_CHECK(filledGameSave.singleItem == nullptr);
+            
+            if (GUGU_UTEST_CHECK(filledGameSave.singleItem != nullptr))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.singleItem->item == GetResources()->GetDatasheetObject<DS_Item>("Apple.item"));
+                GUGU_UTEST_CHECK(filledGameSave.singleItem->quantity == 10);
+            }
 
             if (GUGU_UTEST_CHECK(filledGameSave.multipleBools.size() == 3))
             {

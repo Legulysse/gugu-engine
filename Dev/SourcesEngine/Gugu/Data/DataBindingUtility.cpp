@@ -499,6 +499,78 @@ void WriteBoolArray(DataSaveContext& _kContext, const std::string& _strName, con
     }
 }
 
+void ReadVector2(DataParseContext& context, const std::string& name, Vector2i& value)
+{
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
+    {
+        XmlParseVector2i(node, value, Vector2::Zero_i);
+    }
+}
+
+void ReadVector2(DataParseContext& context, const std::string& name, Vector2f& value)
+{
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
+    {
+        XmlParseVector2f(node, value, Vector2::Zero_f);
+    }
+}
+
+void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<sf::Vector2i>& values)
+{
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
+    {
+        values.clear();
+
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
+        {
+            values.push_back(XmlReadVector2i(child, Vector2::Zero_i));
+        }
+    }
+}
+
+void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<sf::Vector2f>& values)
+{
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
+    {
+        values.clear();
+
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
+        {
+            values.push_back(XmlReadVector2f(child, Vector2::Zero_f));
+        }
+    }
+}
+
+void WriteVector2(DataSaveContext& context, const std::string& name, Vector2i& value)
+{
+    XmlWriteVector2i(impl::AddNodeData(context, name), value);
+}
+
+void WriteVector2(DataSaveContext& context, const std::string& name, Vector2f& value)
+{
+    XmlWriteVector2f(impl::AddNodeData(context, name), value);
+}
+
+void WriteVector2Array(DataSaveContext& context, const std::string& name, const std::vector<Vector2i>& values)
+{
+    pugi::xml_node node = impl::AddNodeData(context, name);
+
+    for (size_t i = 0; i < values.size(); ++i)
+    {
+        XmlWriteVector2i(node.append_child("Child"), values[i]);
+    }
+}
+
+void WriteVector2Array(DataSaveContext& context, const std::string& name, const std::vector<Vector2f>& values)
+{
+    pugi::xml_node node = impl::AddNodeData(context, name);
+
+    for (size_t i = 0; i < values.size(); ++i)
+    {
+        XmlWriteVector2f(node.append_child("Child"), values[i]);
+    }
+}
+
 void WriteDatasheetReference(DataSaveContext& _kContext, const std::string& _strName, const DatasheetObject* _pMember)
 {
     pugi::xml_node pNode = impl::AddNodeData(_kContext, _strName);

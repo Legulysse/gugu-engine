@@ -179,6 +179,15 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("Write Attribute");
     {
+        GUGU_UTEST_SUBSECTION("Vector2i");
+        {
+            pugi::xml_document document;
+            pugi::xml_node node = document.append_child("Data");
+            XmlWriteVector2i(node, Vector2i(10, 20));
+
+            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\"/>");
+        }
+
         GUGU_UTEST_SUBSECTION("Vector2f");
         {
             pugi::xml_document document;

@@ -62,6 +62,7 @@ bool XmlTryParseRect(const pugi::xml_node& node, sf::IntRect& value);
 bool XmlTryParseUDim2(const pugi::xml_node& node, UDim2& value);
 
 // Write a data structure in a node's attributes.
+void XmlWriteVector2i(pugi::xml_node node, const Vector2i& value);
 void XmlWriteVector2f(pugi::xml_node node, const Vector2f& value);
 void XmlWriteRect(pugi::xml_node node, const sf::IntRect& value);
 void XmlWriteUDim2(pugi::xml_node node, const UDim2& value);

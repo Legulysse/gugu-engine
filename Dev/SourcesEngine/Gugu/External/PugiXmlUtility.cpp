@@ -197,6 +197,12 @@ bool XmlTryParseUDim2(const pugi::xml_node& node, UDim2& value)
     return true;
 }
 
+void XmlWriteVector2i(pugi::xml_node node, const Vector2i& value)
+{
+    node.append_attribute("x").set_value(value.x);
+    node.append_attribute("y").set_value(value.y);
+}
+
 void XmlWriteVector2f(pugi::xml_node node, const Vector2f& value)
 {
     node.append_attribute("x").set_value(value.x);

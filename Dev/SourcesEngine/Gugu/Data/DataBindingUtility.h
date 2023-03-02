@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Math/Vector2.h"
+
 #include <string>
 #include <vector>
 
@@ -86,6 +88,24 @@ void WriteEnum(DataSaveContext& _kContext, const std::string& _strName, const st
 
 template<typename T>
 void WriteEnumArray(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<T>& _vecMember);
+
+//----------------------------------------------
+// Read Vector2
+
+void ReadVector2(DataParseContext& context, const std::string& name, Vector2i& value);
+void ReadVector2(DataParseContext& context, const std::string& name, Vector2f& value);
+
+void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<sf::Vector2i>& values);
+void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<sf::Vector2f>& values);
+
+//----------------------------------------------
+// Write Vector2
+
+void WriteVector2(DataSaveContext& context, const std::string& name, Vector2i& value);
+void WriteVector2(DataSaveContext& context, const std::string& name, Vector2f& value);
+
+void WriteVector2Array(DataSaveContext& context, const std::string& name, const std::vector<Vector2i>& values);
+void WriteVector2Array(DataSaveContext& context, const std::string& name, const std::vector<Vector2f>& values);
 
 //----------------------------------------------
 // Read datasheet references

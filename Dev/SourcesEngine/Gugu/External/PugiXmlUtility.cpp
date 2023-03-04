@@ -24,95 +24,81 @@ void xml_string_writer::write(const void* data, size_t size)
     m_target->append(static_cast<const char*>(data), size);
 }
 
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, bool& value)
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, bool& value)
 {
-    if (!node)
-        return false;
+    if (pugi::xml_attribute attribute = node.attribute(attributeName.c_str()))
+    {
+        value = attribute.as_bool(value);
+        return true;
+    }
 
-    pugi::xml_attribute attribute = node.attribute(attributeName.c_str());
-    if (!attribute)
-        return false;
-
-    value = attribute.as_bool(value);
-    return true;
+    return false;
 }
 
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, int& value)
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, int& value)
 {
-    if (!node)
-        return false;
+    if (pugi::xml_attribute attribute = node.attribute(attributeName.c_str()))
+    {
+        value = attribute.as_int(value);
+        return true;
+    }
 
-    pugi::xml_attribute attribute = node.attribute(attributeName.c_str());
-    if (!attribute)
-        return false;
-
-    value = attribute.as_int(value);
-    return true;
+    return false;
 }
 
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, unsigned int& value)
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, unsigned int& value)
 {
-    if (!node)
-        return false;
+    if (pugi::xml_attribute attribute = node.attribute(attributeName.c_str()))
+    {
+        value = attribute.as_uint(value);
+        return true;
+    }
 
-    pugi::xml_attribute attribute = node.attribute(attributeName.c_str());
-    if (!attribute)
-        return false;
-
-    value = attribute.as_uint(value);
-    return true;
+    return false;
 }
 
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, size_t& value)
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, size_t& value)
 {
-    if (!node)
-        return false;
+    if (pugi::xml_attribute attribute = node.attribute(attributeName.c_str()))
+    {
+        value = attribute.as_ullong(value);
+        return true;
+    }
 
-    pugi::xml_attribute attribute = node.attribute(attributeName.c_str());
-    if (!attribute)
-        return false;
-
-    value = attribute.as_ullong(value);
-    return true;
+    return false;
 }
 
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, float& value)
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, float& value)
 {
-    if (!node)
-        return false;
+    if (pugi::xml_attribute attribute = node.attribute(attributeName.c_str()))
+    {
+        value = attribute.as_float(value);
+        return true;
+    }
 
-    pugi::xml_attribute attribute = node.attribute(attributeName.c_str());
-    if (!attribute)
-        return false;
-
-    value = attribute.as_float(value);
-    return true;
+    return false;
 }
 
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, double& value)
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, double& value)
 {
-    if (!node)
-        return false;
+    if (pugi::xml_attribute attribute = node.attribute(attributeName.c_str()))
+    {
+        value = attribute.as_double(value);
+        return true;
+    }
 
-    pugi::xml_attribute attribute = node.attribute(attributeName.c_str());
-    if (!attribute)
-        return false;
-
-    value = attribute.as_double(value);
-    return true;
+    return false;
 }
 
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, std::string& value)
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, std::string& value)
 {
-    if (!node)
-        return false;
+    if (pugi::xml_attribute attribute = node.attribute(attributeName.c_str()))
+    {
+        value = attribute.as_string(value.c_str());
+        return true;
+    }
 
-    pugi::xml_attribute attribute = node.attribute(attributeName.c_str());
-    if (!attribute)
-        return false;
-
-    value = attribute.as_string(value.c_str());
-    return true;
+    return false;
 }
 
 Vector2i XmlReadVector2i(const pugi::xml_node& node, const Vector2i& defaultValue)
@@ -142,7 +128,7 @@ bool XmlTryParseVector2i(const pugi::xml_node& node, Vector2i& value)
     if (!node)
         return false;
 
-    XmlParseVector2i(node, value);
+    XmlParseVector2i(node, value, value);
     return true;
 }
 
@@ -151,7 +137,7 @@ bool XmlTryParseVector2f(const pugi::xml_node& node, Vector2f& value)
     if (!node)
         return false;
 
-    XmlParseVector2f(node, value);
+    XmlParseVector2f(node, value, value);
     return true;
 }
 
@@ -223,15 +209,6 @@ void XmlWriteUDim2(pugi::xml_node node, const UDim2& value)
     node.append_attribute("yRel").set_value(value.y.relative);
     node.append_attribute("xAbs").set_value(value.x.absolute);
     node.append_attribute("yAbs").set_value(value.y.absolute);
-}
-
-bool XmlReadValue(const pugi::xml_node& node, std::string& value)
-{
-    if (!node)
-        return false;
-
-    value = node.child_value();
-    return true;
 }
 
 }   // namespace gugu

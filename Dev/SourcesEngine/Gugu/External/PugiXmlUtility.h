@@ -35,14 +35,14 @@ private:
     std::string* m_target = nullptr;
 };
 
-// Read a single attribute from a node.
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, bool& value);
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, int& value);
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, unsigned int& value);
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, size_t& value);
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, float& value);
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, double& value);
-bool XmlReadAttribute(const pugi::xml_node& node, const std::string& attributeName, std::string& value);
+// Try to Parse a single value from a node's attribute (value will only be modified if the node and attribute exist).
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, bool& value);
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, int& value);
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, unsigned int& value);
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, size_t& value);
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, float& value);
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, double& value);
+bool XmlTryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, std::string& value);
 
 // Read a data structure from a node's attributes.
 Vector2i XmlReadVector2i(const pugi::xml_node& node, const Vector2i& defaultValue = Vector2::Zero_i);
@@ -66,17 +66,5 @@ void XmlWriteVector2i(pugi::xml_node node, const Vector2i& value);
 void XmlWriteVector2f(pugi::xml_node node, const Vector2f& value);
 void XmlWriteRect(pugi::xml_node node, const sf::IntRect& value);
 void XmlWriteUDim2(pugi::xml_node node, const UDim2& value);
-
-// Read a value inside a node
-bool XmlReadValue(const pugi::xml_node& node, std::string& value);
-
-template<typename T>
-bool XmlReadValue(const pugi::xml_node& node, T& value)
-{
-    if (!node)
-        return false;
-    
-    return FromString(node.child_value(), value);
-}
 
 }   // namespace gugu

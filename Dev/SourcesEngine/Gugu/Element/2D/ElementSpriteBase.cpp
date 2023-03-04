@@ -350,7 +350,7 @@ bool ElementSpriteBase::LoadFromXml(const pugi::xml_node& _oNodeElement)
     }
 
     bool repeatTexture = false;
-    if (XmlReadAttribute(_oNodeElement.child("RepeatTexture"), "value", repeatTexture))
+    if (XmlTryParseAttribute(_oNodeElement.child("RepeatTexture"), "value", repeatTexture))
     {
         SetRepeatTexture(repeatTexture);
     }

@@ -36,25 +36,19 @@ pugi::xml_node AddNodeData(DataSaveContext& _kContext, const std::string& _strNa
     return nodeData;
 }
 
-bool ReadEnumValue(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, int& _iValue)
+bool ReadEnumValue(DataParseContext& context, const std::string& name, const std::string& enumTypeName, int& value)
 {
-    const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
-    if (pEnum)
+    if (const DataEnumInfos* enumInfos = GetResources()->GetDataEnumInfos(enumTypeName))
     {
-        pugi::xml_node pNode = FindNodeData(_kContext, _strName);
-        if (pNode)
+        if (pugi::xml_node node = FindNodeData(context, name))
         {
-            pugi::xml_attribute pAttributeValue = pNode.attribute("value");
-            if (pAttributeValue)
+            std::string enumValue = node.attribute("value").as_string("");
+            for (size_t i = 0; i < enumInfos->values.size(); ++i)
             {
-                std::string strEnumValue = pAttributeValue.as_string("");
-                for (size_t i = 0; i < pEnum->values.size(); ++i)
+                if (enumInfos->values[i] == enumValue)
                 {
-                    if (pEnum->values[i] == strEnumValue)
-                    {
-                        _iValue = (int)i;
-                        return true;
-                    }
+                    value = (int)i;
+                    return true;
                 }
             }
         }
@@ -63,31 +57,22 @@ bool ReadEnumValue(DataParseContext& _kContext, const std::string& _strName, con
     return false;
 }
 
-bool ReadEnumValues(DataParseContext& _kContext, const std::string& _strName, const std::string& _strType, std::vector<int>& _vecValues)
+bool ReadEnumValues(DataParseContext& context, const std::string& name, const std::string& enumTypeName, std::vector<int>& values)
 {
-    const DataEnumInfos* pEnum = GetResources()->GetDataEnumInfos(_strType);
-    if (pEnum)
+    if (const DataEnumInfos* enumInfos = GetResources()->GetDataEnumInfos(enumTypeName))
     {
-        pugi::xml_node pNode = FindNodeData(_kContext, _strName);
-        if (pNode)
+        if (pugi::xml_node node = FindNodeData(context, name))
         {
-            pugi::xml_node pNodeChild = pNode.child("Child");
-            while (pNodeChild)
+            for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
             {
-                pugi::xml_attribute pAttributeValue = pNodeChild.attribute("value");
-                if (pAttributeValue)
+                std::string enumValue = child.attribute("value").as_string("");
+                for (size_t i = 0; i < enumInfos->values.size(); ++i)
                 {
-                    std::string strEnumValue = pAttributeValue.as_string("");
-                    for (size_t i = 0; i < pEnum->values.size(); ++i)
+                    if (enumInfos->values[i] == enumValue)
                     {
-                        if (pEnum->values[i] == strEnumValue)
-                        {
-                            _vecValues.push_back((int)i);
-                        }
+                        values.push_back((int)i);
                     }
                 }
-
-                pNodeChild = pNodeChild.next_sibling("Child");
             }
 
             return true;
@@ -132,19 +117,14 @@ const DatasheetObject* ResolveDatasheetLink(const std::string& _strName)
 
 bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pNewDatasheet)
 {
-    pugi::xml_node pNode = FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node pNode = FindNodeData(_kContext, _strName))
     {
-        pugi::xml_attribute pAttributeValue = pNode.attribute("value");
-        if (pAttributeValue)
+        // Reference can be null.
+        std::string datasheetID = pNode.attribute("value").as_string();
+        if (datasheetID != "")
         {
-            // Reference can be null.
-            std::string datasheetID = pAttributeValue.as_string();
-            if (datasheetID != "")
-            {
-                std::string strSheetName = pAttributeValue.as_string();
-                _pNewDatasheet = ResolveDatasheetLink(strSheetName);
-            }
+            std::string strSheetName = datasheetID;
+            _pNewDatasheet = ResolveDatasheetLink(strSheetName);
         }
 
         return true;
@@ -155,33 +135,21 @@ bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strNa
 
 bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecReferences)
 {
-    pugi::xml_node pNode = FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
     {
-        pugi::xml_node pNodeChild = pNode.child("Child");
-        while (pNodeChild)
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
         {
-            pugi::xml_attribute pAttributeValue = pNodeChild.attribute("value");
-            if (pAttributeValue)
+            // Reference can be null.
+            std::string datasheetID = child.attribute("value").as_string();
+            if (datasheetID != "")
             {
-                // Reference can be null.
-                std::string datasheetID = pAttributeValue.as_string();
-                if (datasheetID != "")
-                {
-                    const DatasheetObject* reference = ResolveDatasheetLink(datasheetID);
-                    _vecReferences.push_back(reference);
-                }
-                else
-                {
-                    _vecReferences.push_back(nullptr);
-                }
+                const DatasheetObject* reference = ResolveDatasheetLink(datasheetID);
+                _vecReferences.push_back(reference);
             }
             else
             {
                 _vecReferences.push_back(nullptr);
             }
-
-            pNodeChild = pNodeChild.next_sibling("Child");
         }
 
         return true;
@@ -208,8 +176,7 @@ DataObject* InstanciateDataObject(DataParseContext& _kContext, const std::string
 
 bool InstanciateDataObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
 {
-    pugi::xml_node pNode = FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node pNode = FindNodeData(_kContext, _strName))
     {
         // Check type overload.
         // If serialized type is explicitely empty, we force a null instance (can be used to erase a parent instance through inheritance).
@@ -235,39 +202,30 @@ bool InstanciateDataObject(DataParseContext& _kContext, const std::string& _strN
 
 bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
 {
-    pugi::xml_node pNode = FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
     {
         pugi::xml_node* pNodeParent = _kContext.currentNode;
 
-        pugi::xml_node pNodeChild = pNode.child("Child");
-        while (pNodeChild)
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
         {
             // Check type overload.
             // If serialized type is explicitely empty, we force a null instance (can be used for explicit empty array entries).
             // If type is missing, we will also force a null instance (this may evolve later if I handle inherited arrays override per entry).
-            pugi::xml_attribute pAttributeType = pNodeChild.attribute("type");
+            pugi::xml_attribute pAttributeType = child.attribute("type");
             std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
 
             if (strType != "")
             {
-                _kContext.currentNode = &pNodeChild;
+                // Instance can be null.
+                _kContext.currentNode = &child;
                 DataObject* pInstance = InstanciateDataObject(_kContext, strType);
-                if (pInstance)
-                {
-                    _vecInstances.push_back(pInstance);
-                }
-                else
-                {
-                    _vecInstances.push_back(nullptr);
-                }
+
+                _vecInstances.push_back(pInstance);
             }
             else
             {
                 _vecInstances.push_back(nullptr);
             }
-
-            pNodeChild = pNodeChild.next_sibling("Child");
         }
 
         _kContext.currentNode = pNodeParent;
@@ -323,118 +281,86 @@ void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strN
 
 }   // namespace impl
 
-void ReadString(DataParseContext& _kContext, const std::string& _strName, std::string& _strMember)
+void ReadString(DataParseContext& context, const std::string& name, std::string& value)
 {
-    pugi::xml_node pNode = impl::FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        pugi::xml_attribute pAttribute = pNode.attribute("value");
-        if (pAttribute)
-            _strMember = pAttribute.as_string(_strMember.c_str());
+        value = node.attribute("value").as_string(value.c_str());
     }
 }
 
-void ReadInt(DataParseContext& _kContext, const std::string& _strName, int& _iMember)
+void ReadInt(DataParseContext& context, const std::string& name, int& value)
 {
-    pugi::xml_node pNode = impl::FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        pugi::xml_attribute pAttribute = pNode.attribute("value");
-        if (pAttribute)
-            _iMember = pAttribute.as_int(_iMember);
+        value = node.attribute("value").as_int(value);
     }
 }
 
-void ReadFloat(DataParseContext& _kContext, const std::string& _strName, float& _fMember)
+void ReadFloat(DataParseContext& context, const std::string& name, float& value)
 {
-    pugi::xml_node pNode = impl::FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        pugi::xml_attribute pAttribute = pNode.attribute("value");
-        if (pAttribute)
-            _fMember = pAttribute.as_float(_fMember);
+        value = node.attribute("value").as_float(value);
     }
 }
 
-void ReadBool(DataParseContext& _kContext, const std::string& _strName, bool& _bMember)
+void ReadBool(DataParseContext& context, const std::string& name, bool& value)
 {
-    pugi::xml_node pNode = impl::FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        pugi::xml_attribute pAttribute = pNode.attribute("value");
-        if (pAttribute)
-            _bMember = pAttribute.as_bool(_bMember);
+        value = node.attribute("value").as_bool(value);
     }
 }
 
-void ReadStringArray(DataParseContext& _kContext, const std::string& _strName, std::vector<std::string>& _vecMember)
+void ReadStringArray(DataParseContext& context, const std::string& name, std::vector<std::string>& values)
 {
-    pugi::xml_node pNode = impl::FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        _vecMember.clear();     //TODO: find a way to allow append instead of clear on arrays inheritance
+        values.clear();     //TODO: find a way to allow append instead of clear on arrays inheritance
 
-        pugi::xml_node pNodeChild = pNode.child("Child");
-        while (pNodeChild)
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
         {
-            pugi::xml_attribute pAttribute = pNodeChild.attribute("value");
-            if (pAttribute)
-                _vecMember.push_back(pAttribute.as_string());
-            pNodeChild = pNodeChild.next_sibling("Child");
+            values.push_back(child.attribute("value").as_string(""));
         }
     }
 }
 
-void ReadIntArray(DataParseContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember)
+void ReadIntArray(DataParseContext& context, const std::string& name, std::vector<int>& values)
 {
-    pugi::xml_node pNode = impl::FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        _vecMember.clear();
+        values.clear();
 
-        pugi::xml_node pNodeChild = pNode.child("Child");
-        while (pNodeChild)
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
         {
-            pugi::xml_attribute pAttribute = pNodeChild.attribute("value");
-            if (pAttribute)
-                _vecMember.push_back(pAttribute.as_int());
-            pNodeChild = pNodeChild.next_sibling("Child");
+            values.push_back(child.attribute("value").as_int(0));
         }
     }
 }
 
-void ReadFloatArray(DataParseContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember)
+void ReadFloatArray(DataParseContext& context, const std::string& name, std::vector<float>& values)
 {
-    pugi::xml_node pNode = impl::FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        _vecMember.clear();
+        values.clear();
 
-        pugi::xml_node pNodeChild = pNode.child("Child");
-        while (pNodeChild)
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
         {
-            pugi::xml_attribute pAttribute = pNodeChild.attribute("value");
-            if (pAttribute)
-                _vecMember.push_back(pAttribute.as_float());
-            pNodeChild = pNodeChild.next_sibling("Child");
+            values.push_back(child.attribute("value").as_float(0.f));
         }
     }
 }
 
-void ReadBoolArray(DataParseContext& _kContext, const std::string& _strName, std::vector<bool>& _vecMember)
+void ReadBoolArray(DataParseContext& context, const std::string& name, std::vector<bool>& values)
 {
-    pugi::xml_node pNode = impl::FindNodeData(_kContext, _strName);
-    if (pNode)
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        _vecMember.clear();
+        values.clear();
 
-        pugi::xml_node pNodeChild = pNode.child("Child");
-        while (pNodeChild)
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
         {
-            pugi::xml_attribute pAttribute = pNodeChild.attribute("value");
-            if (pAttribute)
-                _vecMember.push_back(pAttribute.as_bool());
-            pNodeChild = pNodeChild.next_sibling("Child");
+            values.push_back(child.attribute("value").as_bool(false));
         }
     }
 }
@@ -503,7 +429,7 @@ void ReadVector2(DataParseContext& context, const std::string& name, Vector2i& v
 {
     if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        XmlParseVector2i(node, value, Vector2::Zero_i);
+        XmlParseVector2i(node, value, value);
     }
 }
 
@@ -511,7 +437,7 @@ void ReadVector2(DataParseContext& context, const std::string& name, Vector2f& v
 {
     if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        XmlParseVector2f(node, value, Vector2::Zero_f);
+        XmlParseVector2f(node, value, value);
     }
 }
 

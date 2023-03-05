@@ -12,6 +12,7 @@
 #include "Gugu/Data/DatasaveObject.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Datasheet.h"
+#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Logger.h"
 #include "Gugu/External/PugiXmlUtility.h"
 

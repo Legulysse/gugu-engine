@@ -10,6 +10,7 @@
 #include "Gugu/Data/DataBindingUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Datasheet.h"
+#include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
 #include "Gugu/Debug/Logger.h"
 

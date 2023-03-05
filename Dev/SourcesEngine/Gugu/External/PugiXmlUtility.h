@@ -3,19 +3,12 @@
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/Vector2.h"
+#include "Gugu/Math/UDim.h"
 
 #include <SFML/Graphics/Rect.hpp>
+
 #include <pugixml.hpp>
-
-////////////////////////////////////////////////////////////////
-// Forward Declarations
-
-namespace gugu
-{
-    class UDim2;
-}
 
 ////////////////////////////////////////////////////////////////
 // File Declarations

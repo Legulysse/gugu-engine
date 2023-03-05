@@ -138,20 +138,20 @@ bool TryParseVector2f(const pugi::xml_node& node, Vector2f& value)
     return true;
 }
 
-sf::IntRect ReadRect(const pugi::xml_node& node)
+sf::IntRect ReadRect(const pugi::xml_node& node, const sf::IntRect& defaultValue)
 {
-    return sf::Rect(node.attribute("x").as_int(0)
-                    , node.attribute("y").as_int(0)
-                    , node.attribute("w").as_int(0)
-                    , node.attribute("h").as_int(0));
+    return sf::Rect(node.attribute("x").as_int(defaultValue.left)
+                    , node.attribute("y").as_int(defaultValue.top)
+                    , node.attribute("w").as_int(defaultValue.width)
+                    , node.attribute("h").as_int(defaultValue.height));
 }
 
-void ParseRect(const pugi::xml_node& node, sf::IntRect& value)
+void ParseRect(const pugi::xml_node& node, sf::IntRect& value, const sf::IntRect& defaultValue)
 {
-    value.left = node.attribute("x").as_int(value.left);
-    value.top = node.attribute("y").as_int(value.top);
-    value.width = node.attribute("w").as_int(value.width);
-    value.height = node.attribute("h").as_int(value.height);
+    value.left = node.attribute("x").as_int(defaultValue.left);
+    value.top = node.attribute("y").as_int(defaultValue.top);
+    value.width = node.attribute("w").as_int(defaultValue.width);
+    value.height = node.attribute("h").as_int(defaultValue.height);
 }
 
 bool TryParseRect(const pugi::xml_node& node, sf::IntRect& value)
@@ -159,16 +159,16 @@ bool TryParseRect(const pugi::xml_node& node, sf::IntRect& value)
     if (!node)
         return false;
 
-    ParseRect(node, value);
+    ParseRect(node, value, value);
     return true;
 }
 
-void ParseUDim2(const pugi::xml_node& node, UDim2& value)
+void ParseUDim2(const pugi::xml_node& node, UDim2& value, const UDim2& defaultValue)
 {
-    value.x.relative = node.attribute("xRel").as_float(value.x.relative);
-    value.y.relative = node.attribute("yRel").as_float(value.y.relative);
-    value.x.absolute = node.attribute("xAbs").as_float(value.x.absolute);
-    value.y.absolute = node.attribute("yAbs").as_float(value.y.absolute);
+    value.x.relative = node.attribute("xRel").as_float(defaultValue.x.relative);
+    value.y.relative = node.attribute("yRel").as_float(defaultValue.y.relative);
+    value.x.absolute = node.attribute("xAbs").as_float(defaultValue.x.absolute);
+    value.y.absolute = node.attribute("yAbs").as_float(defaultValue.y.absolute);
 }
 
 bool TryParseUDim2(const pugi::xml_node& node, UDim2& value)
@@ -176,7 +176,7 @@ bool TryParseUDim2(const pugi::xml_node& node, UDim2& value)
     if (!node)
         return false;
 
-    ParseUDim2(node, value);
+    ParseUDim2(node, value, value);
     return true;
 }
 

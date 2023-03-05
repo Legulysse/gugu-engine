@@ -76,6 +76,14 @@ UDim2::UDim2(float _fRelX, float _fAbsX, float _fRelY, float _fAbsY)
     y = UDim(_fRelY, _fAbsY);
 }
 
+bool UDim2::operator==(const UDim2& right)
+{
+    return x.relative == right.x.relative
+            && x.absolute == right.x.absolute
+            && y.relative == right.y.relative
+            && y.absolute == right.y.absolute;
+}
+
 UDim2& UDim2::operator+=(const Vector2f& _kAbs)
 {
     x.absolute += _kAbs.x;
@@ -128,6 +136,6 @@ const UDim2 UDim2::SIZE_HORIZONTAL_HALF = UDim2(1.f, 0.f, 0.5f, 0.f);
 const UDim2 UDim2::SIZE_VERTICAL_HALF = UDim2(0.5f, 0.f, 1.f, 0.f);
 const UDim2 UDim2::SIZE_FULL = UDim2(1.f, 0.f, 1.f, 0.f);
 
-const UDim2 UDim2::RESET = UDim2(0.f, 0.f, 0.f, 0.f);
+const UDim2 UDim2::ZERO = UDim2(0.f, 0.f, 0.f, 0.f);
 
 }   // namespace gugu

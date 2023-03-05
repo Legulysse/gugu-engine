@@ -42,7 +42,9 @@ public:
     UDim2(const UDim2& _kRight);
     UDim2(const UDim& _X, const UDim& _Y);
     UDim2(float _fRelX, float _fRelY);
-    UDim2(float _fRelX, float _fAbsX, float _fRelY, float _fAbsY);  //TODO: I would prefer to use xrel/yrel/xabs/yabs, but I would probably break a lot of use cases.
+    UDim2(float _fRelX, float _fAbsX, float _fRelY, float _fAbsY);  //TODO: I would prefer to use xrel/yrel/xabs/yabs, but I would probably break a lot of use cases (I could force a ctor with (vector2, vector2) ?).
+
+    bool operator==(const UDim2& right);
 
     UDim2& operator+=(const Vector2f& _kAbs);
     const UDim2 operator+(const Vector2f& _kAbs) const;
@@ -68,7 +70,7 @@ public:
     static const UDim2 SIZE_VERTICAL_HALF;
     static const UDim2 SIZE_FULL;
 
-    static const UDim2 RESET;
+    static const UDim2 ZERO;
 };
 
 }   // namespace gugu

@@ -207,19 +207,19 @@ UDim2 Element::GetUnifiedSize() const
 void Element::ResetUnifiedOrigin()
 {
     m_useDimOrigin = false;
-    m_dimOrigin = UDim2::RESET;
+    m_dimOrigin = UDim2::ZERO;
 }
 
 void Element::ResetUnifiedPosition()
 {
     m_useDimPosition = false;
-    m_dimPosition = UDim2::RESET;
+    m_dimPosition = UDim2::ZERO;
 }
 
 void Element::ResetUnifiedSize()
 {
     m_useDimSize = false;
-    m_dimSize = UDim2::RESET;
+    m_dimSize = UDim2::ZERO;
 }
 
 void Element::SetPositionX(float _fPosX)

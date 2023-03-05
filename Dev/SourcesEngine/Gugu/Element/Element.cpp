@@ -594,19 +594,19 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
 bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
 {
     Vector2f size;
-    if (XmlTryParseVector2f(_oNodeElement.child("Size"), size))
+    if (xml::TryParseVector2f(_oNodeElement.child("Size"), size))
     {
         SetSize(size);
     }
 
     UDim2 dimPosition;
-    if (XmlTryParseUDim2(_oNodeElement.child("UPosition"), dimPosition))
+    if (xml::TryParseUDim2(_oNodeElement.child("UPosition"), dimPosition))
     {
         SetUnifiedPosition(dimPosition);
     }
 
     UDim2 dimSize;
-    if (XmlTryParseUDim2(_oNodeElement.child("USize"), dimSize))
+    if (xml::TryParseUDim2(_oNodeElement.child("USize"), dimSize))
     {
         SetUnifiedSize(dimSize);
     }

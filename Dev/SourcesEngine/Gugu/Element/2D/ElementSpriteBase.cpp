@@ -344,13 +344,13 @@ bool ElementSpriteBase::LoadFromXml(const pugi::xml_node& _oNodeElement)
         return false;
 
     sf::IntRect rect;
-    if (XmlTryParseRect(_oNodeElement.child("TextureRect"), rect))
+    if (xml::TryParseRect(_oNodeElement.child("TextureRect"), rect))
     {
         SetSubRect(rect);
     }
 
     bool repeatTexture = false;
-    if (XmlTryParseAttribute(_oNodeElement.child("RepeatTexture"), "value", repeatTexture))
+    if (xml::TryParseAttribute(_oNodeElement.child("RepeatTexture"), "value", repeatTexture))
     {
         SetRepeatTexture(repeatTexture);
     }

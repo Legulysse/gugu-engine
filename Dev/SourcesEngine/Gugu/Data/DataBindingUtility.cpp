@@ -429,7 +429,7 @@ void ReadVector2(DataParseContext& context, const std::string& name, Vector2i& v
 {
     if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        XmlParseVector2i(node, value, value);
+        xml::ParseVector2i(node, value, value);
     }
 }
 
@@ -437,7 +437,7 @@ void ReadVector2(DataParseContext& context, const std::string& name, Vector2f& v
 {
     if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
-        XmlParseVector2f(node, value, value);
+        xml::ParseVector2f(node, value, value);
     }
 }
 
@@ -449,7 +449,7 @@ void ReadVector2Array(DataParseContext& context, const std::string& name, std::v
 
         for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
         {
-            values.push_back(XmlReadVector2i(child, Vector2::Zero_i));
+            values.push_back(xml::ReadVector2i(child, Vector2::Zero_i));
         }
     }
 }
@@ -462,19 +462,19 @@ void ReadVector2Array(DataParseContext& context, const std::string& name, std::v
 
         for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
         {
-            values.push_back(XmlReadVector2f(child, Vector2::Zero_f));
+            values.push_back(xml::ReadVector2f(child, Vector2::Zero_f));
         }
     }
 }
 
 void WriteVector2(DataSaveContext& context, const std::string& name, Vector2i& value)
 {
-    XmlWriteVector2i(impl::AddNodeData(context, name), value);
+    xml::WriteVector2i(impl::AddNodeData(context, name), value);
 }
 
 void WriteVector2(DataSaveContext& context, const std::string& name, Vector2f& value)
 {
-    XmlWriteVector2f(impl::AddNodeData(context, name), value);
+    xml::WriteVector2f(impl::AddNodeData(context, name), value);
 }
 
 void WriteVector2Array(DataSaveContext& context, const std::string& name, const std::vector<Vector2i>& values)
@@ -483,7 +483,7 @@ void WriteVector2Array(DataSaveContext& context, const std::string& name, const 
 
     for (size_t i = 0; i < values.size(); ++i)
     {
-        XmlWriteVector2i(node.append_child("Child"), values[i]);
+        xml::WriteVector2i(node.append_child("Child"), values[i]);
     }
 }
 
@@ -493,7 +493,7 @@ void WriteVector2Array(DataSaveContext& context, const std::string& name, const 
 
     for (size_t i = 0; i < values.size(); ++i)
     {
-        XmlWriteVector2f(node.append_child("Child"), values[i]);
+        xml::WriteVector2f(node.append_child("Child"), values[i]);
     }
 }
 

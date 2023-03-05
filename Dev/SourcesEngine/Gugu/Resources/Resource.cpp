@@ -105,7 +105,7 @@ bool Resource::SaveToXmlString(std::string& result) const
     if (!SaveToXml(doc))
         return false;
 
-    xml_string_writer buffer(result);
+    xml::StringWriter buffer(&result);
     doc.save(buffer, "", pugi::format_no_declaration | pugi::format_raw, pugi::encoding_utf8);
     return true;
 }

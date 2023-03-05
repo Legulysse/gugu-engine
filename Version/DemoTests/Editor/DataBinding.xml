@@ -58,6 +58,8 @@
         <Data type="float" name="walkedDistance" />
         <Data type="string" name="name" default="DEFAULT" />
         <Data type="weaponType" name="singleWeapon" />
+        <Data type="vector2i" name="gridPosition" />
+        <Data type="vector2f" name="position" />
         <Data type="reference:character" name="emptyCharacter" />
         <Data type="reference:character" name="singleCharacter" />
         <Data type="instance:itemSave" name="emptyItem" />
@@ -67,6 +69,8 @@
         <Data type="array:float" name="multipleFloats" />
         <Data type="array:string" name="multipleNames" />
         <Data type="array:weaponType" name="multipleWeapons" />
+        <Data type="array:vector2i" name="multipleGridPositions" />
+        <Data type="array:vector2f" name="multiplePositions" />
         <Data type="array:reference:character" name="multipleCharacters" />
         <Data type="array:instance:itemSave" name="multipleItems" />
     </Class>

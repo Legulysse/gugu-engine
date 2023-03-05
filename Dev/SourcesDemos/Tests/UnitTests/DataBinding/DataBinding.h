@@ -193,6 +193,8 @@ public:
     float walkedDistance;
     std::string name;
     EWeaponType::Type singleWeapon;
+    gugu::Vector2i gridPosition;
+    gugu::Vector2f position;
     const DS_Character* emptyCharacter;
     const DS_Character* singleCharacter;
     DS_ItemSave* emptyItem;
@@ -202,6 +204,8 @@ public:
     std::vector<float> multipleFloats;
     std::vector<std::string> multipleNames;
     std::vector<EWeaponType::Type> multipleWeapons;
+    std::vector<gugu::Vector2i> multipleGridPositions;
+    std::vector<gugu::Vector2f> multiplePositions;
     std::vector<const DS_Character*> multipleCharacters;
     std::vector<DS_ItemSave*> multipleItems;
 

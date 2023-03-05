@@ -192,6 +192,8 @@ DS_GameSave::DS_GameSave()
     walkedDistance = 0.f;
     name = "DEFAULT";
     singleWeapon = EWeaponType::Unknown;
+    gridPosition = gugu::Vector2::Zero_i;
+    position = gugu::Vector2::Zero_f;
     emptyCharacter = nullptr;
     singleCharacter = nullptr;
     emptyItem = nullptr;
@@ -217,6 +219,8 @@ void DS_GameSave::ParseMembers(gugu::DataParseContext& context)
     gugu::binding::ReadFloat(context, "walkedDistance", walkedDistance);
     gugu::binding::ReadString(context, "name", name);
     gugu::binding::ReadEnum(context, "singleWeapon", "weaponType", singleWeapon);
+    gugu::binding::ReadVector2(context, "gridPosition", gridPosition);
+    gugu::binding::ReadVector2(context, "position", position);
     gugu::binding::ReadDatasheetReference(context, "emptyCharacter", emptyCharacter);
     gugu::binding::ReadDatasheetReference(context, "singleCharacter", singleCharacter);
     gugu::binding::ReadDatasaveInstance(context, "emptyItem", "itemSave", emptyItem);
@@ -226,6 +230,8 @@ void DS_GameSave::ParseMembers(gugu::DataParseContext& context)
     gugu::binding::ReadFloatArray(context, "multipleFloats", multipleFloats);
     gugu::binding::ReadStringArray(context, "multipleNames", multipleNames);
     gugu::binding::ReadEnumArray(context, "multipleWeapons", "weaponType", multipleWeapons);
+    gugu::binding::ReadVector2Array(context, "multipleGridPositions", multipleGridPositions);
+    gugu::binding::ReadVector2Array(context, "multiplePositions", multiplePositions);
     gugu::binding::ReadDatasheetReferenceArray(context, "multipleCharacters", multipleCharacters);
     gugu::binding::ReadDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
 }
@@ -239,6 +245,8 @@ void DS_GameSave::SerializeMembers(gugu::DataSaveContext& context) const
     gugu::binding::WriteFloat(context, "walkedDistance", walkedDistance);
     gugu::binding::WriteString(context, "name", name);
     gugu::binding::WriteEnum(context, "singleWeapon", "weaponType", singleWeapon);
+    gugu::binding::WriteVector2(context, "gridPosition", gridPosition);
+    gugu::binding::WriteVector2(context, "position", position);
     gugu::binding::WriteDatasheetReference(context, "emptyCharacter", emptyCharacter);
     gugu::binding::WriteDatasheetReference(context, "singleCharacter", singleCharacter);
     gugu::binding::WriteDatasaveInstance(context, "emptyItem", "itemSave", emptyItem);
@@ -248,6 +256,8 @@ void DS_GameSave::SerializeMembers(gugu::DataSaveContext& context) const
     gugu::binding::WriteFloatArray(context, "multipleFloats", multipleFloats);
     gugu::binding::WriteStringArray(context, "multipleNames", multipleNames);
     gugu::binding::WriteEnumArray(context, "multipleWeapons", "weaponType", multipleWeapons);
+    gugu::binding::WriteVector2Array(context, "multipleGridPositions", multipleGridPositions);
+    gugu::binding::WriteVector2Array(context, "multiplePositions", multiplePositions);
     gugu::binding::WriteDatasheetReferenceArray(context, "multipleCharacters", multipleCharacters);
     gugu::binding::WriteDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
 }

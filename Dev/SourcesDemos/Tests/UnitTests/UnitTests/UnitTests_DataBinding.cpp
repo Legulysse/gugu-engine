@@ -102,6 +102,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 "<Data name=\"walkedDistance\" value=\"0\"/>"
                 "<Data name=\"name\" value=\"DEFAULT\"/>"
                 "<Data name=\"singleWeapon\" value=\"Unknown\"/>"
+                "<Data name=\"gridPosition\" x=\"0\" y=\"0\"/>"
+                "<Data name=\"position\" x=\"0\" y=\"0\"/>"
                 "<Data name=\"emptyCharacter\" value=\"\"/>"
                 "<Data name=\"singleCharacter\" value=\"\"/>"
                 "<Data name=\"emptyItem\" type=\"\"/>"
@@ -111,6 +113,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 "<Data name=\"multipleFloats\"/>"
                 "<Data name=\"multipleNames\"/>"
                 "<Data name=\"multipleWeapons\"/>"
+                "<Data name=\"multipleGridPositions\"/>"
+                "<Data name=\"multiplePositions\"/>"
                 "<Data name=\"multipleCharacters\"/>"
                 "<Data name=\"multipleItems\"/>"
             "</Datasave>"
@@ -123,6 +127,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 "<Data name=\"walkedDistance\" value=\"12500\"/>"
                 "<Data name=\"name\" value=\"Hello World\"/>"
                 "<Data name=\"singleWeapon\" value=\"Axe\"/>"
+                "<Data name=\"gridPosition\" x=\"15\" y=\"30\"/>"
+                "<Data name=\"position\" x=\"45\" y=\"60\"/>"
                 "<Data name=\"emptyCharacter\" value=\"\"/>"
                 "<Data name=\"singleCharacter\" value=\"Billy.character\"/>"
                 "<Data name=\"emptyItem\" type=\"\"/>"
@@ -157,6 +163,14 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                     "<Child value=\"Axe\"/>"
                     "<Child value=\"Mace\"/>"
                     "<Child value=\"Sword\"/>"
+                "</Data>"
+                "<Data name=\"multipleGridPositions\">"
+                    "<Child x=\"1000\" y=\"1500\"/>"
+                    "<Child x=\"2000\" y=\"2500\"/>"
+                "</Data>"
+                "<Data name=\"multiplePositions\">"
+                    "<Child x=\"100\" y=\"150\"/>"
+                    "<Child x=\"200\" y=\"250\"/>"
                 "</Data>"
                 "<Data name=\"multipleCharacters\">"
                     "<Child value=\"Billy.character\"/>"
@@ -202,6 +216,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             filledGameSave.walkedDistance = 12500.f;
             filledGameSave.name = "Hello World";
             filledGameSave.singleWeapon = EWeaponType::Axe;
+            filledGameSave.gridPosition = Vector2i(15, 30);
+            filledGameSave.position = Vector2f(45.f, 60.f);
             filledGameSave.emptyCharacter = nullptr;
             filledGameSave.singleCharacter = GetResources()->GetDatasheetObject<DS_Character>("Billy.character");
             filledGameSave.emptyItem = nullptr;
@@ -211,6 +227,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             filledGameSave.multipleFloats = { 100.f, 200.f, 300.f };
             filledGameSave.multipleNames = { "One", "Two", "Three", "Four" };
             filledGameSave.multipleWeapons = { EWeaponType::Crossbow, EWeaponType::Axe, EWeaponType::Mace, EWeaponType::Sword };
+            filledGameSave.multipleGridPositions = { Vector2i(1000, 1500), Vector2i(2000, 2500) };
+            filledGameSave.multiplePositions = { Vector2f(100.f, 150.f), Vector2f(200.f, 250.f) };
             filledGameSave.multipleCharacters = {
                 GetResources()->GetDatasheetObject<DS_Character>("Billy.character"),
                 GetResources()->GetDatasheetObject<DS_Character>("Paula.character"),
@@ -236,6 +254,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             GUGU_UTEST_CHECK(emptyGameSave.score == -1);
             GUGU_UTEST_CHECK(emptyGameSave.name == "DEFAULT");
             GUGU_UTEST_CHECK(emptyGameSave.singleWeapon == EWeaponType::Unknown);
+            GUGU_UTEST_CHECK(emptyGameSave.gridPosition == Vector2i(0, 0));
+            GUGU_UTEST_CHECK(emptyGameSave.position == Vector2f(0.f, 0.f));
             GUGU_UTEST_CHECK(emptyGameSave.emptyCharacter == nullptr);
             GUGU_UTEST_CHECK(emptyGameSave.singleCharacter == nullptr);
             GUGU_UTEST_CHECK(emptyGameSave.emptyItem == nullptr);
@@ -243,6 +263,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             GUGU_UTEST_CHECK(emptyGameSave.multipleScores.empty());
             GUGU_UTEST_CHECK(emptyGameSave.multipleNames.empty());
             GUGU_UTEST_CHECK(emptyGameSave.multipleWeapons.empty());
+            GUGU_UTEST_CHECK(emptyGameSave.multipleGridPositions.empty());
+            GUGU_UTEST_CHECK(emptyGameSave.multiplePositions.empty());
             GUGU_UTEST_CHECK(emptyGameSave.multipleCharacters.empty());
             GUGU_UTEST_CHECK(emptyGameSave.multipleItems.empty());
 
@@ -258,6 +280,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             GUGU_UTEST_CHECK(filledGameSave.walkedDistance == 12500.f);
             GUGU_UTEST_CHECK(filledGameSave.name == "Hello World");
             GUGU_UTEST_CHECK(filledGameSave.singleWeapon == EWeaponType::Axe);
+            GUGU_UTEST_CHECK(filledGameSave.gridPosition == Vector2i(15, 30));
+            GUGU_UTEST_CHECK(filledGameSave.position == Vector2f(45.f, 60.f));
             GUGU_UTEST_CHECK(filledGameSave.emptyCharacter == nullptr);
             GUGU_UTEST_CHECK(filledGameSave.singleCharacter == GetResources()->GetDatasheetObject<DS_Character>("Billy.character"));
             GUGU_UTEST_CHECK(filledGameSave.emptyItem == nullptr);
@@ -304,6 +328,18 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 GUGU_UTEST_CHECK(filledGameSave.multipleWeapons[1] == EWeaponType::Axe);
                 GUGU_UTEST_CHECK(filledGameSave.multipleWeapons[2] == EWeaponType::Mace);
                 GUGU_UTEST_CHECK(filledGameSave.multipleWeapons[3] == EWeaponType::Sword);
+            }
+
+            if (GUGU_UTEST_CHECK(filledGameSave.multipleGridPositions.size() == 2))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multipleGridPositions[0] == Vector2i(1000, 1500));
+                GUGU_UTEST_CHECK(filledGameSave.multipleGridPositions[1] == Vector2i(2000, 2500));
+            }
+
+            if (GUGU_UTEST_CHECK(filledGameSave.multiplePositions.size() == 2))
+            {
+                GUGU_UTEST_CHECK(filledGameSave.multiplePositions[0] == Vector2f(100.f, 150.f));
+                GUGU_UTEST_CHECK(filledGameSave.multiplePositions[1] == Vector2f(200.f, 250.f));
             }
 
             if (GUGU_UTEST_CHECK(filledGameSave.multipleCharacters.size() == 2))

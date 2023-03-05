@@ -101,8 +101,8 @@ void ReadVector2Array(DataParseContext& context, const std::string& name, std::v
 //----------------------------------------------
 // Write Vector2
 
-void WriteVector2(DataSaveContext& context, const std::string& name, Vector2i& value);
-void WriteVector2(DataSaveContext& context, const std::string& name, Vector2f& value);
+void WriteVector2(DataSaveContext& context, const std::string& name, const Vector2i& value);
+void WriteVector2(DataSaveContext& context, const std::string& name, const Vector2f& value);
 
 void WriteVector2Array(DataSaveContext& context, const std::string& name, const std::vector<Vector2i>& values);
 void WriteVector2Array(DataSaveContext& context, const std::string& name, const std::vector<Vector2f>& values);

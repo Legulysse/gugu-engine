@@ -468,12 +468,12 @@ void ReadVector2Array(DataParseContext& context, const std::string& name, std::v
     }
 }
 
-void WriteVector2(DataSaveContext& context, const std::string& name, Vector2i& value)
+void WriteVector2(DataSaveContext& context, const std::string& name, const Vector2i& value)
 {
     xml::WriteVector2i(impl::AddNodeData(context, name), value);
 }
 
-void WriteVector2(DataSaveContext& context, const std::string& name, Vector2f& value)
+void WriteVector2(DataSaveContext& context, const std::string& name, const Vector2f& value)
 {
     xml::WriteVector2f(impl::AddNodeData(context, name), value);
 }

@@ -152,6 +152,10 @@ class DefinitionMember():
                         strDefault = '0.f'
                     elif self.type == 'bool':
                         strDefault = 'false'
+                    elif self.type == 'vector2i':
+                        strDefault += 'gugu::Vector2::Zero_i'
+                    elif self.type == 'vector2f':
+                        strDefault += 'gugu::Vector2::Zero_f'
             else:
                 if self.type in _definitionBinding.dictEnums:
                     strDefault = _definitionBinding.dictEnums[self.type].GetDefaultCpp(strDefault)
@@ -239,6 +243,10 @@ class DefinitionClass():
                         strType = 'float'
                     elif member.type == 'bool':
                         strType = 'bool'
+                    elif member.type == 'vector2i':
+                        strType += 'gugu::Vector2i'
+                    elif member.type == 'vector2f':
+                        strType += 'gugu::Vector2f'
                         
                     else:
                         print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping member declaration.')
@@ -353,6 +361,10 @@ class DefinitionClass():
                         strMethod += 'Float'
                     elif member.type == 'bool':
                         strMethod += 'Bool'
+                    elif member.type == 'vector2i':
+                        strMethod += 'Vector2'
+                    elif member.type == 'vector2f':
+                        strMethod += 'Vector2'
                     else:
                         #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping parsing method declaration.')
                         continue
@@ -405,6 +417,10 @@ class DefinitionClass():
                             strMethod += 'Float'
                         elif member.type == 'bool':
                             strMethod += 'Bool'
+                        elif member.type == 'vector2i':
+                            strMethod += 'Vector2'
+                        elif member.type == 'vector2f':
+                            strMethod += 'Vector2'
                         else:
                             #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping parsing method declaration.')
                             continue

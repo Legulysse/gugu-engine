@@ -18,13 +18,14 @@ public:
     float absolute;
 
     UDim();
-    UDim(const UDim& _kRight);
-    UDim(float _fRel, float _fAbs);
+    UDim(const UDim& right);
+    UDim(float rel);
+    UDim(float rel, float abs);
 
-    UDim& operator+=(float _fAbs);
-    const UDim operator+(float _fAbs) const;
+    UDim& operator+=(float abs);
+    const UDim operator+(float abs) const;
 
-    float GetComputedDimension(float _fReference) const;
+    float GetComputedDimension(float reference) const;
 
     static const UDim ZERO;
     static const UDim HALF;
@@ -35,24 +36,28 @@ class UDim2
 {
 public:
 
-    UDim x;
-    UDim y;
+    Vector2f relative;
+    Vector2f absolute;
 
     UDim2();
-    UDim2(const UDim2& _kRight);
-    UDim2(const UDim& _X, const UDim& _Y);
-    UDim2(float _fRelX, float _fRelY);
-    UDim2(float _fRelX, float _fAbsX, float _fRelY, float _fAbsY);  //TODO: I would prefer to use xrel/yrel/xabs/yabs, but I would probably break a lot of use cases (I could force a ctor with (vector2, vector2) ?).
-
+    UDim2(const UDim2& right);
+    UDim2(float xRel, float yRel);
+    UDim2(const Vector2f& rel);
+    UDim2(const Vector2f& rel, const Vector2f& abs);
+    
     bool operator==(const UDim2& right);
 
-    UDim2& operator+=(const Vector2f& _kAbs);
-    const UDim2 operator+(const Vector2f& _kAbs) const;
+    UDim2& operator+=(const Vector2f& abs);
+    const UDim2 operator+(const Vector2f& abs) const;
 
-    Vector2f GetComputedDimension(float _fReferenceX, float _fReferenceY) const;
-    Vector2f GetComputedDimension(const Vector2f& _kReferenceSize) const;
-    Vector2f GetPixelAlignedComputedDimension(float _fReferenceX, float _fReferenceY) const;
-    Vector2f GetPixelAlignedComputedDimension(const Vector2f& _kReferenceSize) const;
+    Vector2f GetComputedDimension(float referenceX, float referenceY) const;
+    Vector2f GetComputedDimension(const Vector2f& reference) const;
+
+    // TODO: Remove this and properly handle pixel alignment in render pipeline
+    Vector2f GetPixelAlignedComputedDimension(float referenceX, float referenceY) const;
+    Vector2f GetPixelAlignedComputedDimension(const Vector2f& reference) const;
+
+    static const UDim2 ZERO;
 
     static const UDim2 POSITION_TOP_LEFT;
     static const UDim2 POSITION_TOP_CENTER;
@@ -69,8 +74,6 @@ public:
     static const UDim2 SIZE_HORIZONTAL_HALF;
     static const UDim2 SIZE_VERTICAL_HALF;
     static const UDim2 SIZE_FULL;
-
-    static const UDim2 ZERO;
 };
 
 }   // namespace gugu

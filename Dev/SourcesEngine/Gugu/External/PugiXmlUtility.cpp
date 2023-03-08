@@ -165,10 +165,10 @@ bool TryParseRect(const pugi::xml_node& node, sf::IntRect& value)
 
 void ParseUDim2(const pugi::xml_node& node, UDim2& value, const UDim2& defaultValue)
 {
-    value.x.relative = node.attribute("xRel").as_float(defaultValue.x.relative);
-    value.y.relative = node.attribute("yRel").as_float(defaultValue.y.relative);
-    value.x.absolute = node.attribute("xAbs").as_float(defaultValue.x.absolute);
-    value.y.absolute = node.attribute("yAbs").as_float(defaultValue.y.absolute);
+    value.relative.x = node.attribute("xRel").as_float(defaultValue.relative.x);
+    value.relative.y = node.attribute("yRel").as_float(defaultValue.relative.y);
+    value.absolute.x = node.attribute("xAbs").as_float(defaultValue.absolute.x);
+    value.absolute.y = node.attribute("yAbs").as_float(defaultValue.absolute.y);
 }
 
 bool TryParseUDim2(const pugi::xml_node& node, UDim2& value)
@@ -202,10 +202,10 @@ void WriteRect(pugi::xml_node node, const sf::IntRect& value)
 
 void WriteUDim2(pugi::xml_node node, const UDim2& value)
 {
-    node.append_attribute("xRel").set_value(value.x.relative);
-    node.append_attribute("yRel").set_value(value.y.relative);
-    node.append_attribute("xAbs").set_value(value.x.absolute);
-    node.append_attribute("yAbs").set_value(value.y.absolute);
+    node.append_attribute("xRel").set_value(value.relative.x);
+    node.append_attribute("yRel").set_value(value.relative.y);
+    node.append_attribute("xAbs").set_value(value.absolute.x);
+    node.append_attribute("yAbs").set_value(value.absolute.y);
 }
 
 }   // namespace xml

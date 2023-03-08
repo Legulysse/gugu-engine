@@ -84,13 +84,13 @@ void Demo::CreateScenario()
 {
     //Root UI
     m_menu = GetGameWindow()->GetUINode()->AddChild<Element>();
-    m_menu->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_menu->SetUnifiedSize(UDim2::SIZE_FULL);
 
     ElementSprite* pSeparator = m_menu->AddChild<ElementSprite>();
     pSeparator->SetTexture("Separator.png");
     pSeparator->SetUnifiedOrigin(UDim2::POSITION_CENTER);
     pSeparator->SetUnifiedPosition(UDim2::POSITION_CENTER);
-    pSeparator->SetUnifiedSize(UDim2(UDim(0.f, 6.f), UDim(1.f, 0.f)));
+    pSeparator->SetUnifiedSize(UDim2(Vector2f(0.f, 1.f), Vector2f(6.f, 0.f)));
 
     //Init Scene and Cameras
     Camera* pCameraA = new Camera;     //TODO: Simplify (auto AddCamera)

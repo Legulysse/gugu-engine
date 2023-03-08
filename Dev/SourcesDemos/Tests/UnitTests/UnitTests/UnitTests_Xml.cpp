@@ -189,36 +189,36 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_node nodeData = document.child("Data");
             pugi::xml_node nodeNoData = document.child("NoData");
 
-            const UDim2 defaultData(30, 300, 40, 400);
+            const UDim2 defaultData(Vector2f(30, 40), Vector2f(300, 400));
 
             // Parse (no default)
-            UDim2 resultParseData(5, 5, 5, 5);
+            UDim2 resultParseData(Vector2f(5, 5), Vector2f(5, 5));
             xml::ParseUDim2(nodeData, resultParseData);
-            GUGU_UTEST_CHECK(resultParseData == UDim2(10, 100, 20, 200));
+            GUGU_UTEST_CHECK(resultParseData == UDim2(Vector2f(10, 20), Vector2f(100, 200)));
 
-            UDim2 resultParseNoData(5, 5, 5, 5);
+            UDim2 resultParseNoData(Vector2f(5, 5), Vector2f(5, 5));
             xml::ParseUDim2(nodeNoData, resultParseNoData);
-            GUGU_UTEST_CHECK(resultParseNoData == UDim2(0, 0, 0, 0));
+            GUGU_UTEST_CHECK(resultParseNoData == UDim2::ZERO);
 
             // Parse (default)
-            UDim2 resultParseDataWithDefault(5, 5, 5, 5);
+            UDim2 resultParseDataWithDefault(Vector2f(5, 5), Vector2f(5, 5));
             xml::ParseUDim2(nodeData, resultParseDataWithDefault, defaultData);
-            GUGU_UTEST_CHECK(resultParseDataWithDefault == UDim2(10, 100, 20, 200));
+            GUGU_UTEST_CHECK(resultParseDataWithDefault == UDim2(Vector2f(10, 20), Vector2f(100, 200)));
 
-            UDim2 resultParseNoDataWithDefault(5, 5, 5, 5);
+            UDim2 resultParseNoDataWithDefault(Vector2f(5, 5), Vector2f(5, 5));
             xml::ParseUDim2(nodeNoData, resultParseNoDataWithDefault, defaultData);
-            GUGU_UTEST_CHECK(resultParseNoDataWithDefault == UDim2(30, 300, 40, 400));
+            GUGU_UTEST_CHECK(resultParseNoDataWithDefault == UDim2(Vector2f(30, 40), Vector2f(300, 400)));
 
             // TryParse
-            UDim2 resultTryParseData(5, 5, 5, 5);
+            UDim2 resultTryParseData(Vector2f(5, 5), Vector2f(5, 5));
             if (GUGU_UTEST_CHECK(xml::TryParseUDim2(nodeData, resultTryParseData)))
             {
-                GUGU_UTEST_CHECK(resultTryParseData == UDim2(10, 100, 20, 200));
+                GUGU_UTEST_CHECK(resultTryParseData == UDim2(Vector2f(10, 20), Vector2f(100, 200)));
             }
 
-            UDim2 resultTryParseNoData(5, 5, 5, 5);
+            UDim2 resultTryParseNoData(Vector2f(5, 5), Vector2f(5, 5));
             GUGU_UTEST_CHECK(!xml::TryParseUDim2(nodeNoData, resultTryParseNoData));
-            GUGU_UTEST_CHECK(resultTryParseNoData == UDim2(5, 5, 5, 5));
+            GUGU_UTEST_CHECK(resultTryParseNoData == UDim2(Vector2f(5, 5), Vector2f(5, 5)));
         }
 
         GUGU_UTEST_SUBSECTION("Rect");
@@ -292,7 +292,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
         {
             pugi::xml_document document;
             pugi::xml_node node = document.append_child("Data");
-            xml::WriteUDim2(node, UDim2(10, 100, 20, 200));
+            xml::WriteUDim2(node, UDim2(Vector2f(10, 20), Vector2f(100, 200)));
 
             GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data xRel=\"10\" yRel=\"20\" xAbs=\"100\" yAbs=\"200\"/>");
         }

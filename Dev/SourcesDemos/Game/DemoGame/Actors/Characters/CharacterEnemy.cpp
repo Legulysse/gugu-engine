@@ -59,7 +59,7 @@ void CharacterEnemy::InitEnemy(const DS_Enemy* sheetEnemy, const Vector2f& posit
     m_lifeBar = m_sprite->AddChild<ElementBar>();
     m_lifeBar->InitBar(ElementBar::BarColor::Red, 2.f);
     m_lifeBar->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
-    m_lifeBar->SetUnifiedPosition(UDim2(0.5f, 0.f, 0.f, -5.f));
+    m_lifeBar->SetUnifiedPosition(UDim2(Vector2f(0.5f, 0.f), Vector2f(0.f, -5.f)));
     m_lifeBar->SetSize(32.f, 4.f);
 
     m_lifeBar->SetVisible(false);

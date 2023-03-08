@@ -37,12 +37,12 @@ void StateMenuMain::Init()
 
     //Root UI
     m_menu = GetGameWindow()->GetUINode()->AddChild<Element>();
-    m_menu->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_menu->SetUnifiedSize(UDim2::SIZE_FULL);
 
     //Box Menu
     ElementSpriteGroup* pBox = m_menu->AddChild<ElementSpriteGroup>();
     pBox->LoadFromFile("Box9_02.xml");
-    pBox->SetUnifiedPosition(UDim2(0.f, 50.f, 0.f, 50.f));
+    pBox->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(50.f, 50.f));
 
     ElementButton* pButton;
     float padding = 20.f;

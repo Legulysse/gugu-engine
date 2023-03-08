@@ -40,13 +40,13 @@ void StateMenuMain::Init()
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
-    m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
     //Background
     ElementSprite* pTile = m_root->AddChild<ElementSprite>();
     pTile->SetTexture("Background.jpg");
     pTile->SetRepeatTexture(true);
-    pTile->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    pTile->SetUnifiedSize(UDim2::SIZE_FULL);
 
     //Logo
     ElementSprite* pLogoSfml = m_root->AddChild<ElementSprite>();
@@ -57,7 +57,7 @@ void StateMenuMain::Init()
     //Box Menu
     ElementSpriteGroup* pBox = m_root->AddChild<ElementSpriteGroup>();
     pBox->LoadFromFile("Box9_02.xml");
-    pBox->SetUnifiedPosition(UDim2(0.f, 50.f, 0.f, 50.f));
+    pBox->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(50.f, 50.f));
 
     m_menu = pBox;
     m_menu->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, [](const InteractionInfos&) {});

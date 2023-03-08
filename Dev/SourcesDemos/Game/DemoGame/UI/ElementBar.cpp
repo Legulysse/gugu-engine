@@ -57,27 +57,27 @@ void ElementBar::InitBar(BarColor _eColor, float _fBarBorderSizeX)
 
     pSpriteBackLeft->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
     pSpriteBackLeft->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT);
-    pSpriteBackLeft->SetUnifiedSize(UDim2(0.f, fBarBorderSizeX, 1.f, 0.f));
+    pSpriteBackLeft->SetUnifiedSize(UDim2(Vector2f(0.f, 1.f), Vector2f(fBarBorderSizeX, 0.f)));
 
     pSpriteBackMid->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
-    pSpriteBackMid->SetUnifiedPosition(UDim2(0.f, fBarBorderSizeX, 0.f, 0.f));
-    pSpriteBackMid->SetUnifiedSize(UDim2(1.f, -2.f * fBarBorderSizeX, 1.f, 0.f));
+    pSpriteBackMid->SetUnifiedPosition(UDim2(Vector2f(0.f, 0.f), Vector2f(fBarBorderSizeX, 0.f)));
+    pSpriteBackMid->SetUnifiedSize(UDim2(Vector2f(1.f, 1.f), Vector2f(-2.f * fBarBorderSizeX, 0.f)));
 
     pSpriteBackRight->SetUnifiedOrigin(UDim2::POSITION_TOP_RIGHT);
     pSpriteBackRight->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT);
-    pSpriteBackRight->SetUnifiedSize(UDim2(0.f, fBarBorderSizeX, 1.f, 0.f));
+    pSpriteBackRight->SetUnifiedSize(UDim2(Vector2f(0.f, 1.f), Vector2f(fBarBorderSizeX, 0.f)));
 
     pSpriteLeft->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
     pSpriteLeft->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT);
-    pSpriteLeft->SetUnifiedSize(UDim2(0.f, fBarBorderSizeX, 1.f, 0.f));
+    pSpriteLeft->SetUnifiedSize(UDim2(Vector2f(0.f, 1.f), Vector2f(fBarBorderSizeX, 0.f)));
 
     pSpriteMid->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
-    pSpriteMid->SetUnifiedPosition(UDim2(0.f, fBarBorderSizeX, 0.f, 0.f));
-    pSpriteMid->SetUnifiedSize(UDim2(1.f, -2.f * fBarBorderSizeX, 1.f, 0.f));
+    pSpriteMid->SetUnifiedPosition(UDim2(Vector2f(0.f, 0.f), Vector2f(fBarBorderSizeX, 0.f)));
+    pSpriteMid->SetUnifiedSize(UDim2(Vector2f(1.f, 1.f), Vector2f(-2.f * fBarBorderSizeX, 0.f)));
 
     pSpriteRight->SetUnifiedOrigin(UDim2::POSITION_TOP_RIGHT);
     pSpriteRight->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT);
-    pSpriteRight->SetUnifiedSize(UDim2(0.f, fBarBorderSizeX, 1.f, 0.f));
+    pSpriteRight->SetUnifiedSize(UDim2(Vector2f(0.f, 1.f), Vector2f(fBarBorderSizeX, 0.f)));
 }
 
 void ElementBar::SetValue(float _fCurrent, float _fMax)
@@ -99,7 +99,7 @@ void ElementBar::SetValue(float _fCurrent, float _fMax)
         float fSizeX = (GetSize().x - (2.f * pSpriteLeft->GetSize().x));
         fSizeX *= fValue;
         fSizeX = Max(0.f, fSizeX);
-        pSpriteMid->SetUnifiedSize(UDim2(0.f, fSizeX, 1.f, 0.f));
+        pSpriteMid->SetUnifiedSize(UDim2(Vector2f(0.f, 1.f), Vector2f(fSizeX, 0.f)));
 
         bool leftVisible = ApproxSuperiorToZero(fValue, gugu::math::Epsilon6);
         bool rightVisible = ApproxEqual(fValue, 1.f, gugu::math::Epsilon6);

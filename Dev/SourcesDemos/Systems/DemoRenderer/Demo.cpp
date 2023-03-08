@@ -49,17 +49,17 @@ void Demo::AppStart()
     m_twirl->SetTexture("Twirl.png");
     m_twirl->SetSize(160.0f, 160.0f);
     m_twirl->SetRenderPass(DEMO_RENDERPASS_REFRACTION);
-    m_twirl->SetUnifiedOrigin(UDim2(0.5, 0.0, 0.5, 0.0));
+    m_twirl->SetUnifiedOrigin(UDim2::POSITION_CENTER);
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
-    m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
     //Background
     ElementSprite* pTile = m_root->AddChild<ElementSprite>();
     pTile->SetRepeatTexture(true);
     pTile->SetTexture("BraidBackground.jpg");
-    pTile->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    pTile->SetUnifiedSize(UDim2::SIZE_FULL);
 }
 
 void Demo::AppStop()

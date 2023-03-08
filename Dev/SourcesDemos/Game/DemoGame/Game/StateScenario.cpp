@@ -43,7 +43,7 @@ void StateScenario::Init()
 
     //Root UI
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
-    m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
     // Character skills
     {
@@ -90,7 +90,7 @@ void StateScenario::Init()
         m_healthBar = panelCharacterBars->AddChild<ElementBar>();
         m_healthBar->InitBar(ElementBar::BarColor::Red, 8.f);
         m_healthBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-        m_healthBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
+        m_healthBar->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + Vector2f(fPositionX, fPositionY));
         m_healthBar->SetSize(fSizeX, fSizeY);
 
         fPositionX += fOffsetX;
@@ -99,7 +99,7 @@ void StateScenario::Init()
         m_staminaBar = panelCharacterBars->AddChild<ElementBar>();
         m_staminaBar->InitBar(ElementBar::BarColor::Green, 8.f);
         m_staminaBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-        m_staminaBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
+        m_staminaBar->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + Vector2f(fPositionX, fPositionY));
         m_staminaBar->SetSize(fSizeX, fSizeY);
 
         fPositionX += fOffsetX;
@@ -108,7 +108,7 @@ void StateScenario::Init()
         m_manaBar = panelCharacterBars->AddChild<ElementBar>();
         m_manaBar->InitBar(ElementBar::BarColor::Blue, 8.f);
         m_manaBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-        m_manaBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
+        m_manaBar->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + Vector2f(fPositionX, fPositionY));
         m_manaBar->SetSize(fSizeX, fSizeY);
 
         fPositionX += fOffsetX;
@@ -117,7 +117,7 @@ void StateScenario::Init()
         ElementBar* pFaithBar = panelCharacterBars->AddChild<ElementBar>();
         pFaithBar->InitBar(ElementBar::BarColor::Yellow, 8.f);
         pFaithBar->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-        pFaithBar->SetUnifiedPosition(UDim2(0.f, fPositionX, 1.f, fPositionY));
+        pFaithBar->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + Vector2f(fPositionX, fPositionY));
         pFaithBar->SetSize(fSizeX, fSizeY);
     }
 

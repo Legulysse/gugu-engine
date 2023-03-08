@@ -44,13 +44,13 @@ void StateGuiTest::Init()
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
-    m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
     //Background
     ElementSprite* pTile = m_root->AddChild<ElementSprite>();
     pTile->SetTexture("Background.jpg");
     pTile->SetRepeatTexture(true);
-    pTile->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    pTile->SetUnifiedSize(UDim2::SIZE_FULL);
 
     //Test EditLine
     ElementEditableText* pEditLine = m_root->AddChild<ElementEditableText>();

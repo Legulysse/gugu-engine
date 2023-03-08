@@ -52,7 +52,7 @@ void Demo::AppStart()
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
-    m_root->SetUnifiedSize(UDim2(UDim(1.f, 0.f), UDim(1.f, 0.f)));
+    m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
     Element* gridsLayer = m_root->AddChild<Element>();
 

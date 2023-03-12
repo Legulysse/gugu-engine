@@ -32,7 +32,6 @@ int main(int argc, char* argv[])
 
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
-    config.applicationIcon = "Icon.png";
     config.pathAssets = "Assets";
     config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";

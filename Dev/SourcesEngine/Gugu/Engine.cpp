@@ -48,7 +48,7 @@ Engine::Engine()
     , m_traceLifetime(0)
     , m_application(nullptr)
     , m_gameWindow(nullptr)
-    , m_renderer(nullptr)
+    , m_defaultRenderer(nullptr)
     , m_stopLoop(false)
     , m_timeSinceLastStep(sf::Time::Zero)
     , m_useSpeedMultiplier(false)
@@ -109,7 +109,7 @@ void Engine::Init(const EngineConfig& config)
     m_managerScenes->Init(m_engineConfig);
 
     //-- Init Default Renderer --//
-    m_renderer = new DefaultRenderer;
+    m_defaultRenderer = new DefaultRenderer;
 
     //-- Init Window --//
     if (m_engineConfig.gameWindow == EGameWindow::Sfml)
@@ -120,7 +120,7 @@ void Engine::Init(const EngineConfig& config)
     if (m_gameWindow)
     {
         m_gameWindow->Create(m_engineConfig, true);
-        m_gameWindow->SetRenderer(m_renderer);
+        m_gameWindow->SetRenderer(m_defaultRenderer);
 
         AddWindow(m_gameWindow);
 
@@ -145,7 +145,7 @@ void Engine::Release()
     ClearStdVector(m_windows);
     //SafeDelete(m_gameWindow);
 
-    SafeDelete(m_renderer);
+    SafeDelete(m_defaultRenderer);
 
     m_managerScenes->Release();
     m_managerInputs->Release();
@@ -715,7 +715,7 @@ void Engine::OnSceneReleased(Scene* scene)
 
 Renderer* Engine::GetDefaultRenderer() const
 {
-    return m_renderer;
+    return m_defaultRenderer;
 }
 
 ManagerInputs* Engine::GetManagerInputs() const

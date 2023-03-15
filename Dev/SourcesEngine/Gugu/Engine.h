@@ -105,7 +105,7 @@ private:
     
     EngineConfig m_engineConfig;
 
-    Renderer*               m_renderer;
+    Renderer*               m_defaultRenderer;
     Window*                 m_gameWindow;
     std::vector<Window*>    m_windows;
 

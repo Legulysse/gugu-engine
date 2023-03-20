@@ -67,6 +67,8 @@ public:
     void        BindScene       (Scene* scene, Camera* _pCamera);
     void        BindScene       (Scene* scene, Renderer* _pRenderer);
     void        BindScene       (Scene* scene, Camera* _pCamera, Renderer* _pRenderer);
+    void        UnbindScene     (Scene* scene);
+
     void        OnSceneReleased (Scene* scene);
 
     void        Render          (const sf::Time& loopTime, const EngineStats& engineStats);

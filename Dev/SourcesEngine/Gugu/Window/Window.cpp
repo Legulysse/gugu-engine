@@ -290,7 +290,7 @@ void Window::BindScene(Scene* scene, Camera* _pCamera, Renderer* _pRenderer)
     m_sceneBindings.push_back(kBinding);
 }
 
-void Window::OnSceneReleased(Scene* scene)
+void Window::UnbindScene(Scene* scene)
 {
     auto iteBinding = m_sceneBindings.begin();
     while (iteBinding != m_sceneBindings.end())
@@ -298,7 +298,8 @@ void Window::OnSceneReleased(Scene* scene)
         if (iteBinding->scene == scene)
         {
             //TODO: flag auto-delete on Camera ?
-            // I cant delete cameras like that, I have to check if they are in used and if its not the MainCamera
+            // - I cant delete cameras like that, I have to check if they are in use and if its not the MainCamera.
+            // - There are also cases where it is legit to regularly bind/unbind scenes/cameras on a window.
             //Camera* pCamera = iteBinding->m_pCamera;
             //StdVectorRemove(m_vecCameras, pCamera);
             //SafeDelete(pCamera);
@@ -310,6 +311,11 @@ void Window::OnSceneReleased(Scene* scene)
             ++iteBinding;
         }
     }
+}
+
+void Window::OnSceneReleased(Scene* scene)
+{
+    UnbindScene(scene);
 }
 
 void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)

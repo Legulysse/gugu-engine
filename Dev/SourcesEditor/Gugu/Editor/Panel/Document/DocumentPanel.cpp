@@ -29,7 +29,7 @@ DocumentPanel::DocumentPanel(Resource* resource)
     , m_closed(false)
     , m_currentUndoStateIndex(0)
 {
-    m_resourceID = resource->GetID();
+    m_resourceID = m_resource->GetID();
     m_title = m_resourceID;
 
     SaveState();

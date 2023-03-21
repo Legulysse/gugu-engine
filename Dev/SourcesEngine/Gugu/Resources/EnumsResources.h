@@ -25,6 +25,7 @@ namespace EResourceType
         AnimSet,
         ParticleEffect,
         Datasheet,
+        ElementWidget,
 
         Custom,
     };

@@ -21,6 +21,7 @@
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/Datasheet.h"
+#include "Gugu/Resources/ElementWidget.h"
 
 #include "Gugu/Data/DataBindingUtility.h"
 #include "Gugu/System/SystemUtility.h"
@@ -230,6 +231,10 @@ EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) 
     //{
     //    //TODO: check if the extension is a datasheet
     //}
+    else if (fileInfo.HasExtension("widget.xml") || fileInfo.HasExtension("widget"))
+    {
+        return EResourceType::ElementWidget;
+    }
     else
     {
         return EResourceType::Unknown;
@@ -284,6 +289,11 @@ Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)
 const DatasheetObject* ManagerResources::GetDatasheetRootObject(const std::string& _strName)
 {
     return GetDatasheet(_strName)->GetRootObject();
+}
+
+ElementWidget* ManagerResources::GetElementWidget(const std::string& _strName)
+{
+    return dynamic_cast<ElementWidget*>(GetResource(_strName, EResourceType::ElementWidget));
 }
 
 Resource* ManagerResources::GetResource(const std::string& _strName, EResourceType::Type _eExplicitType)
@@ -375,6 +385,10 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     else if (_eExplicitType == EResourceType::Datasheet)
     {
         pResource = new Datasheet;
+    }
+    else if (_eExplicitType == EResourceType::ElementWidget)
+    {
+        pResource = new ElementWidget;
     }
     else
     {

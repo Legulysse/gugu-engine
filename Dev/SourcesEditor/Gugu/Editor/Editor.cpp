@@ -21,11 +21,13 @@
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ParticleEffectPanel.h"
 #include "Gugu/Editor/Panel/Document/TexturePanel.h"
+#include "Gugu/Editor/Panel/Document/ElementWidgetPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Inputs/ManagerInputs.h"
+#include "Gugu/Window/Window.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/System/SystemUtility.h"
@@ -586,6 +588,10 @@ bool Editor::OpenDocument(const std::string& resourceID)
     else if (resourceType == EResourceType::Texture)
     {
         newDocument = new TexturePanel(GetResources()->GetTexture(resourceID));
+    }
+    else if (resourceType == EResourceType::ElementWidget)
+    {
+        newDocument = new ElementWidgetPanel(GetResources()->GetElementWidget(resourceID));
     }
     else if (resourceType == EResourceType::Unknown)
     {

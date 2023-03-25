@@ -10,8 +10,10 @@
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
 #include "Gugu/Resources/ElementWidget.h"
+#include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
@@ -24,6 +26,7 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     : DocumentPanel(resource)
     , m_renderViewport(nullptr)
     , m_zoomFactor(1.f)
+    , m_selectedElement(nullptr)
 {
     // Setup RenderViewport and Sprite.
     m_renderViewport = new RenderViewport(true);
@@ -57,7 +60,9 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
     static ImGuiTreeNodeFlags itemFlags =/* ImGuiTreeNodeFlags_Leaf*/ /*| ImGuiTreeNodeFlags_NoTreePushOnOpen |*/
         ImGuiTreeNodeFlags_SpanAvailWidth
         | ImGuiTreeNodeFlags_SpanFullWidth
-        | ImGuiTreeNodeFlags_DefaultOpen;
+        | ImGuiTreeNodeFlags_DefaultOpen
+        | ImGuiTreeNodeFlags_OpenOnDoubleClick
+        | ImGuiTreeNodeFlags_OpenOnArrow;
 
     ImGui::PushID("_HIERARCHY_TREE");
     DisplayTreeNode(m_renderViewport->GetRoot(), itemFlags);
@@ -66,6 +71,59 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
 
 void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 {
+    if (!m_selectedElement)
+        return;
+
+    ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
+
+    Element* element = m_selectedElement;
+    if (ImGui::CollapsingHeader("Element", headerFlags))
+    {
+        Vector2f origin = element->GetOrigin();
+        if (ImGui::InputFloat2("Origin", &origin))
+        {
+            element->SetOrigin(origin);
+            RaiseDirty();
+        }
+
+        Vector2f position = element->GetPosition();
+        if (ImGui::InputFloat2("Position", &position))
+        {
+            element->SetPosition(position);
+            RaiseDirty();
+        }
+
+        Vector2f size = element->GetSize();
+        if (ImGui::InputFloat2("Size", &size))
+        {
+            element->SetSize(size);
+            RaiseDirty();
+        }
+    }
+
+    ElementSprite* elementSprite = dynamic_cast<ElementSprite*>(m_selectedElement);
+    if (elementSprite && ImGui::CollapsingHeader("Element Sprite", headerFlags))
+    {
+        Texture* texture = elementSprite->GetTexture();
+        std::string textureId = !texture ? "" : texture->GetID();
+        if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            elementSprite->SetTexture(textureId);
+            RaiseDirty();
+        }
+
+        sf::IntRect subRect = elementSprite->GetSubRect();
+        if (ImGui::InputInt4("TextureRect", &subRect))
+        {
+            elementSprite->SetSubRect(subRect);
+            RaiseDirty();
+        }
+    }
+
+    ElementSpriteGroup* elementSpriteGroup = dynamic_cast<ElementSpriteGroup*>(m_selectedElement);
+    if (elementSpriteGroup && ImGui::CollapsingHeader("Element Sprite Group", headerFlags))
+    {
+    }
 }
 
 void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
@@ -79,8 +137,7 @@ void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
         nodeFlags |= ImGuiTreeNodeFlags_Leaf;
     }
 
-    bool is_selected = false; // TODO: handle selection.
-    if (is_selected)
+    if (node == m_selectedElement)
     {
         nodeFlags |= ImGuiTreeNodeFlags_Selected;
     }
@@ -89,7 +146,7 @@ void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
 
     if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
     {
-        // TODO: handle selection.
+        m_selectedElement = node;
     }
 
     // Context menu.
@@ -117,11 +174,19 @@ void ElementWidgetPanel::HandleContextMenu(Element* node)
             if (ImGui::MenuItem("Element"))
             {
                 node->AddChild<Element>();
+                RaiseDirty();
             }
 
             if (ImGui::MenuItem("Element Sprite"))
             {
                 node->AddChild<ElementSprite>();
+                RaiseDirty();
+            }
+
+            if (ImGui::MenuItem("Element Sprite Group"))
+            {
+                node->AddChild<ElementSpriteGroup>();
+                RaiseDirty();
             }
 
             ImGui::EndMenu();

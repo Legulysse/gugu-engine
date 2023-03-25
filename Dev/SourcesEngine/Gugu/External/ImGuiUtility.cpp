@@ -42,6 +42,22 @@ bool InputInt2(const char* label, gugu::Vector2i* v, ImGuiInputTextFlags flags)
     return updated;
 }
 
+bool InputInt4(const char* label, sf::IntRect* v, ImGuiInputTextFlags flags)
+{
+    int temp[4] = { v->left, v->top, v->width, v->height };
+
+    bool updated = ImGui::InputInt4(label, temp, flags);
+    if (updated)
+    {
+        v->left = temp[0];
+        v->top = temp[1];
+        v->width = temp[2];
+        v->height = temp[3];
+    }
+
+    return updated;
+}
+
 bool InputFloat2(const char* label, float* v1, float* v2, const char* format, ImGuiInputTextFlags flags)
 {
     float temp[2] = { *v1, *v2 };

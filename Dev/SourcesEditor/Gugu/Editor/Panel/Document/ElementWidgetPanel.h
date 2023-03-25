@@ -41,6 +41,8 @@ private:
 
     RenderViewport* m_renderViewport;
     float m_zoomFactor;
+
+    Element* m_selectedElement;
 };
 
 }   //namespace gugu

@@ -10,7 +10,8 @@
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
 #include "Gugu/Resources/ElementWidget.h"
-//#include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Element/Element.h"
+#include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
@@ -49,6 +50,85 @@ void ElementWidgetPanel::UpdatePanelImpl(const DeltaTime& dt)
     // Viewport.
     m_renderViewport->ImGuiBegin();
     m_renderViewport->ImGuiEnd();
+}
+
+void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
+{
+    static ImGuiTreeNodeFlags itemFlags =/* ImGuiTreeNodeFlags_Leaf*/ /*| ImGuiTreeNodeFlags_NoTreePushOnOpen |*/
+        ImGuiTreeNodeFlags_SpanAvailWidth
+        | ImGuiTreeNodeFlags_SpanFullWidth
+        | ImGuiTreeNodeFlags_DefaultOpen;
+
+    ImGui::PushID("_HIERARCHY_TREE");
+    DisplayTreeNode(m_renderViewport->GetRoot(), itemFlags);
+    ImGui::PopID();
+}
+
+void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
+{
+}
+
+void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
+{
+    ImGuiTreeNodeFlags nodeFlags = itemFlags;
+
+    const std::vector<Element*>& children = node->GetChildren();
+
+    if (children.empty())
+    {
+        nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+    }
+
+    bool is_selected = false; // TODO: handle selection.
+    if (is_selected)
+    {
+        nodeFlags |= ImGuiTreeNodeFlags_Selected;
+    }
+
+    bool isOpen = ImGui::TreeNodeEx(node->GetSerializedType().c_str(), nodeFlags);
+
+    if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
+    {
+        // TODO: handle selection.
+    }
+
+    // Context menu.
+    HandleContextMenu(node);
+
+    if (isOpen)
+    {
+        for (size_t i = 0; i < children.size(); ++i)
+        {
+            ImGui::PushID((int)i);
+            DisplayTreeNode(children[i], itemFlags);
+            ImGui::PopID();
+        }
+
+        ImGui::TreePop();
+    }
+}
+
+void ElementWidgetPanel::HandleContextMenu(Element* node)
+{
+    if (ImGui::BeginPopupContextItem())
+    {
+        if (ImGui::BeginMenu("Add..."))
+        {
+            if (ImGui::MenuItem("Element"))
+            {
+                node->AddChild<Element>();
+            }
+
+            if (ImGui::MenuItem("Element Sprite"))
+            {
+                node->AddChild<ElementSprite>();
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndPopup();
+    }
 }
 
 }   //namespace gugu

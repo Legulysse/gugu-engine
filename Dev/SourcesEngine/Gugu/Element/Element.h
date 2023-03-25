@@ -199,9 +199,10 @@ public:
     ElementEventHandler* GetEvents();
 
     //----------------------------------------------
-    // Loading
+    // Serialization
 
     virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement);
+    virtual const std::string& GetSerializedType() const;
 
 protected:
 

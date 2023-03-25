@@ -453,6 +453,7 @@ void Editor::Update(const DeltaTime& dt)
 
         ImGui::DockBuilderDockWindow("Assets Explorer", dock_id_left);
         ImGui::DockBuilderDockWindow("Dependencies", dock_id_left);
+        ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
         ImGui::DockBuilderDockWindow("Output Log", dock_id_down);
         ImGui::DockBuilderDockWindow("Search Results", dock_id_down);
         ImGui::DockBuilderDockWindow("Properties", dock_id_right);
@@ -525,6 +526,16 @@ void Editor::Update(const DeltaTime& dt)
     }
 
     StdVectorRemove<DocumentPanel*>(m_documentPanels, nullptr);
+
+    // Update Hierarchy panel.
+    if (ImGui::Begin("Hierarchy", false))
+    {
+        if (m_lastActiveDocument)
+        {
+            m_lastActiveDocument->UpdateHierarchy(dt);
+        }
+    }
+    ImGui::End();
 
     // Update Properties panel.
     if (ImGui::Begin("Properties", false))

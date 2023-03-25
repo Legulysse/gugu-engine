@@ -47,10 +47,7 @@ void AssetsExplorerPanel::ClearContent()
 {
     m_dirtyContent = false;
 
-    if (m_rootNode)
-    {
-        SafeDelete(m_rootNode);
-    }
+    SafeDelete(m_rootNode);
 }
 
 void AssetsExplorerPanel::RaiseDirtyContent()
@@ -252,13 +249,13 @@ void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
 
             if (!testTable)
             {
-                ImGui::PushID("AssetsTable");
+                ImGui::PushID("_ASSETS_TABLE");
                 DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0);
                 ImGui::PopID();
             }
             else
             {
-                if (ImGui::BeginTable("AssetsTable", 3, tableFlags))
+                if (ImGui::BeginTable("_ASSETS_TABLE", 3, tableFlags))
                 {
                     // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
                     ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoHide);

@@ -33,6 +33,7 @@ public:
     Texture* GetTexture() const;
 
     virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement) override;
+    virtual const std::string& GetSerializedType() const override;
 
 protected:
 

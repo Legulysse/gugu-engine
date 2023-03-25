@@ -615,4 +615,10 @@ bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
     return true;
 }
 
+const std::string& Element::GetSerializedType() const
+{
+    static const std::string serializedType = "Element";
+    return serializedType;
+}
+
 }   // namespace gugu

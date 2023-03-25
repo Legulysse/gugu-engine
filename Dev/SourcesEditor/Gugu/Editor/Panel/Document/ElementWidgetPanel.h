@@ -13,6 +13,7 @@ namespace gugu
     class DeltaTime;
     class RenderViewport;
     class ElementWidget;
+    class Element;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -27,9 +28,14 @@ public:
     ElementWidgetPanel(ElementWidget* ressource);
     virtual ~ElementWidgetPanel();
 
-protected:
+private:
 
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
+    virtual void UpdateHierarchyImpl(const DeltaTime& dt) override;
+    virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
+
+    void DisplayTreeNode(Element* node, int itemFlags);
+    void HandleContextMenu(Element* node);
 
 private:
 

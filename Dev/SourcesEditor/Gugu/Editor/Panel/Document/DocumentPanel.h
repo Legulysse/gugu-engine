@@ -29,6 +29,7 @@ public:
     virtual ~DocumentPanel();
 
     virtual void UpdatePanel(const DeltaTime& dt) final;
+    virtual void UpdateHierarchy(const DeltaTime& dt) final;
     virtual void UpdateProperties(const DeltaTime& dt) final;
 
     bool Save();
@@ -63,6 +64,7 @@ protected:
     virtual void OnVisibilityChanged(bool visible) {}
 
     virtual void UpdatePanelImpl(const DeltaTime& dt) = 0;
+    virtual void UpdateHierarchyImpl(const DeltaTime& dt) {}
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) {}
 
 protected:

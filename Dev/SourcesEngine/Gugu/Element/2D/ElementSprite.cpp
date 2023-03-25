@@ -144,4 +144,10 @@ bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
     return true;
 }
 
+const std::string& ElementSprite::GetSerializedType() const
+{
+    static const std::string serializedType = "ElementSprite";
+    return serializedType;
+}
+
 }   // namespace gugu

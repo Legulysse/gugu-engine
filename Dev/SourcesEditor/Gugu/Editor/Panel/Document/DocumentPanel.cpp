@@ -86,6 +86,11 @@ void DocumentPanel::UpdateProperties(const DeltaTime& dt)
     UpdatePropertiesImpl(dt);
 }
 
+void DocumentPanel::UpdateHierarchy(const DeltaTime& dt)
+{
+    UpdateHierarchyImpl(dt);
+}
+
 bool DocumentPanel::Save()
 {
     if (m_resource && m_resource->SaveToFile())

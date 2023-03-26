@@ -618,21 +618,24 @@ bool Element::LoadFromXml(ElementParseContext& context)
     return result;
 }
 
-bool Element::SaveToXml(pugi::xml_node& node) const
+bool Element::SaveToXml(ElementSaveContext& context) const
 {
-    node.append_attribute("type").set_value(GetSerializedType().c_str());
+    context.node.append_attribute("type").set_value(GetSerializedType().c_str());
 
-    bool result = SaveToXmlImpl(node);
+    bool result = SaveToXmlImpl(context);
 
     if (!m_children.empty())
     {
-        pugi::xml_node childrenNode = node.append_child("Children");
+        pugi::xml_node childrenNode = context.node.append_child("Children");
+        pugi::xml_node backupNode = context.node;
 
         for (size_t i = 0; i < m_children.size(); ++i)
         {
-            pugi::xml_node childNode = childrenNode.append_child("Element");
-            result &= m_children[i]->SaveToXml(childNode);
+            context.node = childrenNode.append_child("Element");
+            result &= m_children[i]->SaveToXml(context);
         }
+
+        context.node = backupNode;
     }
 
     return result;
@@ -661,21 +664,21 @@ bool Element::LoadFromXmlImpl(ElementParseContext& context)
     return true;
 }
 
-bool Element::SaveToXmlImpl(pugi::xml_node& node) const
+bool Element::SaveToXmlImpl(ElementSaveContext& context) const
 {
     if (!m_useDimSize && m_size != Vector2::Zero_f)
     {
-        xml::WriteVector2f(node.append_child("Size"), m_size);
+        xml::WriteVector2f(context.node.append_child("Size"), m_size);
     }
 
     if (m_useDimPosition)
     {
-        xml::WriteUDim2(node.append_child("UPosition"), m_dimPosition);
+        xml::WriteUDim2(context.node.append_child("UPosition"), m_dimPosition);
     }
 
     if (m_useDimSize)
     {
-        xml::WriteUDim2(node.append_child("USize"), m_dimSize);
+        xml::WriteUDim2(context.node.append_child("USize"), m_dimSize);
     }
 
     return true;

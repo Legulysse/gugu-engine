@@ -23,6 +23,11 @@ struct ElementParseContext
     pugi::xml_node node;
 };
 
+struct ElementSaveContext
+{
+    pugi::xml_node node;
+};
+
 Element* InstanciateElement(const pugi::xml_node& node);
 Element* InstanciateElement(std::string_view elementType);
 

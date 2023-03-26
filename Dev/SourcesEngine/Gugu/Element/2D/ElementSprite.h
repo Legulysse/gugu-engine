@@ -42,6 +42,7 @@ protected:
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
 
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const;
 
 protected:
 

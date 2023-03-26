@@ -20,6 +20,7 @@ namespace gugu
     struct RenderPass;
     struct InteractionInfos;
     struct ElementParseContext;
+    struct ElementSaveContext;
     class ElementEventHandler;
 }
 
@@ -204,7 +205,7 @@ public:
     // Serialization
 
     bool LoadFromXml(ElementParseContext& context);
-    bool SaveToXml(pugi::xml_node& node) const;
+    bool SaveToXml(ElementSaveContext& context) const;
 
     virtual const std::string& GetSerializedType() const;
 
@@ -219,7 +220,7 @@ protected:
     // Serialization
 
     virtual bool LoadFromXmlImpl(ElementParseContext& context);
-    virtual bool SaveToXmlImpl(pugi::xml_node& node) const;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const;
 
     //----------------------------------------------
     // Internal Events

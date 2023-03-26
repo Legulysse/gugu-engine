@@ -135,11 +135,22 @@ bool ElementSprite::LoadFromXmlImpl(ElementParseContext& context)
     if (!ElementSpriteBase::LoadFromXmlImpl(context))
         return false;
 
-    pugi::xml_node oNodeTexture = context.node.child("Texture");
-    if (!oNodeTexture.empty())
+    if (pugi::xml_node textureNode = context.node.child("Texture"))
     {
-        std::string strTexturePath = oNodeTexture.attribute("source").as_string("");
-        SetTexture(strTexturePath);
+        SetTexture(textureNode.attribute("source").as_string(""));
+    }
+
+    return true;
+}
+
+bool ElementSprite::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!ElementSpriteBase::SaveToXmlImpl(context))
+        return false;
+
+    if (m_texture)
+    {
+        context.node.append_child("Texture").append_attribute("source").set_value(m_texture->GetID().c_str());
     }
 
     return true;

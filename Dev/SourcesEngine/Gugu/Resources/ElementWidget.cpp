@@ -56,7 +56,9 @@ bool ElementWidget::SaveInstanceToFile(const Element* instance) const
 
     pugi::xml_node nodeRootElement = nodeRoot.append_child("Element");
 
-    if (!instance->SaveToXml(nodeRootElement))
+    ElementSaveContext context;
+    context.node = nodeRootElement;
+    if (!instance->SaveToXml(context))
         return false;
 
     return document.save_file(GetFileInfo().GetFilePath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);

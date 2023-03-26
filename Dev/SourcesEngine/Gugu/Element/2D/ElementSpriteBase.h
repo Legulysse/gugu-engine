@@ -39,8 +39,6 @@ public:
     void SetColor(const sf::Color& _oColor);
     sf::Color GetColor() const;
 
-    virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement) override;
-
 protected:
 
     size_t GetRequiredVertexCount() const;
@@ -50,6 +48,8 @@ protected:
     virtual void RaiseDirtyVertices();
 
     virtual void OnSizeChanged() override;
+
+    virtual bool LoadFromXmlImpl(const pugi::xml_node& node) override;
 
 protected:
 

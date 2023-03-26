@@ -32,7 +32,6 @@ public:
 
     Texture* GetTexture() const;
 
-    virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement) override;
     virtual const std::string& GetSerializedType() const override;
 
 protected:
@@ -41,6 +40,8 @@ protected:
     void RecomputeVerticesColor();
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
+
+    virtual bool LoadFromXmlImpl(const pugi::xml_node& node) override;
 
 protected:
 

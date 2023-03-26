@@ -264,9 +264,9 @@ bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
     return LoadFromXml(nodeRoot);
 }
 
-bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
+bool ElementSpriteGroup::LoadFromXmlImpl(const pugi::xml_node& node)
 {
-    if (!Element::LoadFromXml(nodeSelf))
+    if (!Element::LoadFromXmlImpl(node))
         return false;
 
     // Internal function for parsing components, either from a template file or from the root file.
@@ -315,7 +315,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
     ImageSet* imageSet = nullptr;
     Texture* texture = nullptr;
 
-    pugi::xml_node nodeImageSet = nodeSelf.child("ImageSet");
+    pugi::xml_node nodeImageSet = node.child("ImageSet");
     if (!nodeImageSet.empty())
     {
         std::string imageSetID = nodeImageSet.attribute("source").as_string("");
@@ -324,7 +324,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
 
     if (!imageSet)
     {
-        pugi::xml_node nodeTexture = nodeSelf.child("Texture");
+        pugi::xml_node nodeTexture = node.child("Texture");
         if (!nodeTexture.empty())
         {
             std::string textureID = nodeTexture.attribute("source").as_string("");
@@ -346,7 +346,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
     }
 
     // Parse components from the template.
-    pugi::xml_node nodeTemplate = nodeSelf.child("Template");
+    pugi::xml_node nodeTemplate = node.child("Template");
     if (nodeTemplate)
     {
         pugi::xml_attribute nodeTemplateSource = nodeTemplate.attribute("source");
@@ -372,7 +372,7 @@ bool ElementSpriteGroup::LoadFromXml(const pugi::xml_node& nodeSelf)
     }
 
     // Parse components from the file.
-    loadComponentsFromXml(nodeSelf, imageSet, nullptr);
+    loadComponentsFromXml(node, imageSet, nullptr);
 
     m_needRecompute = true;
     return true;

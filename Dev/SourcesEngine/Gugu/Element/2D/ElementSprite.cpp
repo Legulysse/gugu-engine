@@ -129,12 +129,12 @@ void ElementSprite::RecomputeVerticesColor()
     ElementSpriteBase::RecomputeVerticesColor(&m_vertices[0], m_vertices.getVertexCount());
 }
 
-bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
+bool ElementSprite::LoadFromXmlImpl(const pugi::xml_node& node)
 {
-    if (!ElementSpriteBase::LoadFromXml(_oNodeElement))
+    if (!ElementSpriteBase::LoadFromXmlImpl(node))
         return false;
 
-    pugi::xml_node oNodeTexture = _oNodeElement.child("Texture");
+    pugi::xml_node oNodeTexture = node.child("Texture");
     if (!oNodeTexture.empty())
     {
         std::string strTexturePath = oNodeTexture.attribute("source").as_string("");

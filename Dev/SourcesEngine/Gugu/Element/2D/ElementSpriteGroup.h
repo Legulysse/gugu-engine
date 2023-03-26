@@ -68,12 +68,13 @@ public:
     void RaiseNeedRecompute();
 
     bool LoadFromFile(const std::string& _strPath);
-    virtual bool LoadFromXml(const pugi::xml_node& nodeSelf) override;
 
 protected:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
+
+    virtual bool LoadFromXmlImpl(const pugi::xml_node& node) override;
 
 protected:
 

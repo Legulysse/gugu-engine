@@ -235,16 +235,17 @@ bool ElementButton::LoadFromFile(const std::string& path)
     return LoadFromXml(nodeRoot);
 }
 
-bool ElementButton::LoadFromXml(const pugi::xml_node& nodeSelf)
+bool ElementButton::LoadFromXmlImpl(const pugi::xml_node& node)
 {
-    if (!Element::LoadFromXml(nodeSelf))
+    if (!Element::LoadFromXmlImpl(node))
         return false;
 
-    pugi::xml_node nodeComponents = nodeSelf.child("Components");
+    pugi::xml_node nodeComponents = node.child("Components");
     if (nodeComponents)
     {
         for (pugi::xml_node nodeComponentElement = nodeComponents.child("Element"); nodeComponentElement; nodeComponentElement = nodeComponentElement.next_sibling("Element"))
         {
+            // TODO: I will need checks on actual element types serialized, to force the usage of elementspritegroups
             pugi::xml_attribute nodeElementName = nodeComponentElement.attribute("name");
             if (nodeElementName && StringEquals(nodeElementName.value(), "Idle") && !m_spriteIdle)
             {

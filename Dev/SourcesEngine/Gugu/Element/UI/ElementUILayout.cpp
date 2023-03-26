@@ -72,9 +72,9 @@ void ElementUILayout::LoadElement(const pugi::xml_node& _oNodeElement, Element* 
     }
 }
 
-bool ElementUILayout::LoadFromXml(const pugi::xml_node& _oNodeElement)
+bool ElementUILayout::LoadFromXmlImpl(const pugi::xml_node& _oNodeElement)
 {
-    if (!Element::LoadFromXml(_oNodeElement))
+    if (!Element::LoadFromXmlImpl(_oNodeElement))
         return false;
 
     return true;

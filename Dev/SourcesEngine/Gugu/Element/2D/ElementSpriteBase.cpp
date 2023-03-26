@@ -338,19 +338,19 @@ void ElementSpriteBase::RecomputeVerticesColor(sf::Vertex* vertices, size_t coun
     }
 }
 
-bool ElementSpriteBase::LoadFromXml(const pugi::xml_node& _oNodeElement)
+bool ElementSpriteBase::LoadFromXmlImpl(const pugi::xml_node& node)
 {
-    if (!Element::LoadFromXml(_oNodeElement))
+    if (!Element::LoadFromXmlImpl(node))
         return false;
 
     sf::IntRect rect;
-    if (xml::TryParseRect(_oNodeElement.child("TextureRect"), rect))
+    if (xml::TryParseRect(node.child("TextureRect"), rect))
     {
         SetSubRect(rect);
     }
 
     bool repeatTexture = false;
-    if (xml::TryParseAttribute(_oNodeElement.child("RepeatTexture"), "value", repeatTexture))
+    if (xml::TryParseAttribute(node.child("RepeatTexture"), "value", repeatTexture))
     {
         SetRepeatTexture(repeatTexture);
     }

@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
@@ -338,19 +339,19 @@ void ElementSpriteBase::RecomputeVerticesColor(sf::Vertex* vertices, size_t coun
     }
 }
 
-bool ElementSpriteBase::LoadFromXmlImpl(const pugi::xml_node& node)
+bool ElementSpriteBase::LoadFromXmlImpl(ElementParseContext& context)
 {
-    if (!Element::LoadFromXmlImpl(node))
+    if (!Element::LoadFromXmlImpl(context))
         return false;
 
     sf::IntRect rect;
-    if (xml::TryParseRect(node.child("TextureRect"), rect))
+    if (xml::TryParseRect(context.node.child("TextureRect"), rect))
     {
         SetSubRect(rect);
     }
 
     bool repeatTexture = false;
-    if (xml::TryParseAttribute(node.child("RepeatTexture"), "value", repeatTexture))
+    if (xml::TryParseAttribute(context.node.child("RepeatTexture"), "value", repeatTexture))
     {
         SetRepeatTexture(repeatTexture);
     }

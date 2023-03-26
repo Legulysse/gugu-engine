@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
@@ -25,7 +26,25 @@ ElementWidget::~ElementWidget()
 
 Element* ElementWidget::InstanciateWidget() const
 {
-    return nullptr;
+    pugi::xml_document document;
+    pugi::xml_parse_result result = document.load_file(GetFileInfo().GetFilePath().c_str());
+    if (!result)
+        return false;
+
+    pugi::xml_node rootNode = document.child("ElementWidget").child("Element");
+    if (!rootNode)
+        return false;
+
+    Element* root = InstanciateElement(rootNode);
+
+    if (root)
+    {
+        ElementParseContext context;
+        context.node = rootNode;
+        root->LoadFromXml(context);
+    }
+
+    return root;
 }
 
 bool ElementWidget::SaveInstanceToFile(const Element* instance) const

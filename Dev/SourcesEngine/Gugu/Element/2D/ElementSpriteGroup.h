@@ -74,7 +74,7 @@ protected:
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
 
-    virtual bool LoadFromXmlImpl(const pugi::xml_node& node) override;
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
 
 protected:
 

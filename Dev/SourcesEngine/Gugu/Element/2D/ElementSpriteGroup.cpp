@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Resources/Texture.h"
@@ -261,26 +262,31 @@ bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
     if (!nodeRootType || !StringEquals(nodeRootType.value(), "ElementSpriteGroup"))
         return false;
 
-    return LoadFromXml(nodeRoot);
+    ElementParseContext context;
+    context.node = nodeRoot;
+    return LoadFromXml(context);
 }
 
-bool ElementSpriteGroup::LoadFromXmlImpl(const pugi::xml_node& node)
+bool ElementSpriteGroup::LoadFromXmlImpl(ElementParseContext& context)
 {
-    if (!Element::LoadFromXmlImpl(node))
+    if (!Element::LoadFromXmlImpl(context))
         return false;
 
     // Internal function for parsing components, either from a template file or from the root file.
-    auto loadComponentsFromXml = [this](const pugi::xml_node& nodeSelf, ImageSet* imageSet, const FormatParameters* templateAliases)
+    auto loadComponentsFromXml = [this](ElementParseContext& context, ImageSet* imageSet, const FormatParameters* templateAliases)
     {
-        pugi::xml_node nodeComponents = nodeSelf.child("Components");
+        pugi::xml_node nodeComponents = context.node.child("Components");
         if (nodeComponents)
         {
+            pugi::xml_node backupNode = context.node;
+
             for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
             {
                 ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
 
                 // Parse default ElementSpriteBase data.
-                component->LoadFromXml(nodeComponent);
+                context.node = nodeComponent;
+                component->LoadFromXml(context);
 
                 // Read additional SubImage data (TextureRect is handled in the ElementSpriteBase parser).
                 if (imageSet)
@@ -308,6 +314,8 @@ bool ElementSpriteGroup::LoadFromXmlImpl(const pugi::xml_node& node)
                 // Finalize.
                 AddItem(component);
             }
+
+            context.node = backupNode;
         }
     };
 
@@ -315,7 +323,7 @@ bool ElementSpriteGroup::LoadFromXmlImpl(const pugi::xml_node& node)
     ImageSet* imageSet = nullptr;
     Texture* texture = nullptr;
 
-    pugi::xml_node nodeImageSet = node.child("ImageSet");
+    pugi::xml_node nodeImageSet = context.node.child("ImageSet");
     if (!nodeImageSet.empty())
     {
         std::string imageSetID = nodeImageSet.attribute("source").as_string("");
@@ -324,7 +332,7 @@ bool ElementSpriteGroup::LoadFromXmlImpl(const pugi::xml_node& node)
 
     if (!imageSet)
     {
-        pugi::xml_node nodeTexture = node.child("Texture");
+        pugi::xml_node nodeTexture = context.node.child("Texture");
         if (!nodeTexture.empty())
         {
             std::string textureID = nodeTexture.attribute("source").as_string("");
@@ -346,7 +354,7 @@ bool ElementSpriteGroup::LoadFromXmlImpl(const pugi::xml_node& node)
     }
 
     // Parse components from the template.
-    pugi::xml_node nodeTemplate = node.child("Template");
+    pugi::xml_node nodeTemplate = context.node.child("Template");
     if (nodeTemplate)
     {
         pugi::xml_attribute nodeTemplateSource = nodeTemplate.attribute("source");
@@ -365,14 +373,19 @@ bool ElementSpriteGroup::LoadFromXmlImpl(const pugi::xml_node& node)
                 pugi::xml_node nodeTemplateRoot = document.child("Template");
                 if (nodeTemplateRoot)
                 {
-                    loadComponentsFromXml(nodeTemplateRoot, imageSet, &templateAliases);
+                    pugi::xml_node backupNode = context.node;
+
+                    context.node = nodeTemplateRoot;
+                    loadComponentsFromXml(context, imageSet, &templateAliases);
+
+                    context.node = backupNode;
                 }
             }
         }
     }
 
     // Parse components from the file.
-    loadComponentsFromXml(node, imageSet, nullptr);
+    loadComponentsFromXml(context, imageSet, nullptr);
 
     m_needRecompute = true;
     return true;

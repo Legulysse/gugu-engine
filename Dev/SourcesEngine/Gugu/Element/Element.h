@@ -19,11 +19,13 @@ namespace gugu
 {
     struct RenderPass;
     struct InteractionInfos;
+    struct ElementParseContext;
     class ElementEventHandler;
 }
 
 namespace pugi
 {
+    // TODO: remove
     class xml_node;
 }
 
@@ -31,7 +33,7 @@ namespace pugi
 // File Declarations
 
 namespace gugu {
-    
+
 class Element
 {
 public:
@@ -201,7 +203,7 @@ public:
     //----------------------------------------------
     // Serialization
 
-    bool LoadFromXml(const pugi::xml_node& node);
+    bool LoadFromXml(ElementParseContext& context);
     bool SaveToXml(pugi::xml_node& node) const;
 
     virtual const std::string& GetSerializedType() const;
@@ -216,7 +218,7 @@ protected:
     //----------------------------------------------
     // Serialization
 
-    virtual bool LoadFromXmlImpl(const pugi::xml_node& node);
+    virtual bool LoadFromXmlImpl(ElementParseContext& context);
     virtual bool SaveToXmlImpl(pugi::xml_node& node) const;
 
     //----------------------------------------------

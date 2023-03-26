@@ -34,7 +34,9 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     m_renderViewport = new RenderViewport(true);
 
     // Instanciate Widget
-    m_widgetRoot = m_renderViewport->GetRoot();
+    m_widgetRoot = m_elementWidget->InstanciateWidget();
+
+    m_renderViewport->GetRoot()->AddChild(m_widgetRoot);
     m_selectedElement = m_widgetRoot;
 
     //ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();

@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Math/MathUtility.h"
@@ -592,12 +593,27 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
     }
 }
 
-bool Element::LoadFromXml(const pugi::xml_node& node)
+bool Element::LoadFromXml(ElementParseContext& context)
 {
-    bool result = LoadFromXmlImpl(node);
+    bool result = LoadFromXmlImpl(context);
 
-    //TODO: children (check type, instantiate, loadimpl)
-    //- could use a provided factory
+    if (pugi::xml_node childrenNode = context.node.child("Children"))
+    {
+        pugi::xml_node backupNode = context.node;
+
+        for (pugi::xml_node childNode = childrenNode.child("Element"); childNode; childNode = childNode.next_sibling("Element"))
+        {
+            if (Element* child = InstanciateElement(childNode))
+            {
+                AddChild(child);
+
+                context.node = childNode;
+                result &= child->LoadFromXml(context);
+            }
+        }
+
+        context.node = backupNode;
+    }
 
     return result;
 }
@@ -608,27 +624,36 @@ bool Element::SaveToXml(pugi::xml_node& node) const
 
     bool result = SaveToXmlImpl(node);
 
-    //TODO: children
+    if (!m_children.empty())
+    {
+        pugi::xml_node childrenNode = node.append_child("Children");
+
+        for (size_t i = 0; i < m_children.size(); ++i)
+        {
+            pugi::xml_node childNode = childrenNode.append_child("Element");
+            result &= m_children[i]->SaveToXml(childNode);
+        }
+    }
 
     return result;
 }
 
-bool Element::LoadFromXmlImpl(const pugi::xml_node& node)
+bool Element::LoadFromXmlImpl(ElementParseContext& context)
 {
     Vector2f size;
-    if (xml::TryParseVector2f(node.child("Size"), size))
+    if (xml::TryParseVector2f(context.node.child("Size"), size))
     {
         SetSize(size);
     }
 
     UDim2 dimPosition;
-    if (xml::TryParseUDim2(node.child("UPosition"), dimPosition))
+    if (xml::TryParseUDim2(context.node.child("UPosition"), dimPosition))
     {
         SetUnifiedPosition(dimPosition);
     }
 
     UDim2 dimSize;
-    if (xml::TryParseUDim2(node.child("USize"), dimSize))
+    if (xml::TryParseUDim2(context.node.child("USize"), dimSize))
     {
         SetUnifiedSize(dimSize);
     }

@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
@@ -129,12 +130,12 @@ void ElementSprite::RecomputeVerticesColor()
     ElementSpriteBase::RecomputeVerticesColor(&m_vertices[0], m_vertices.getVertexCount());
 }
 
-bool ElementSprite::LoadFromXmlImpl(const pugi::xml_node& node)
+bool ElementSprite::LoadFromXmlImpl(ElementParseContext& context)
 {
-    if (!ElementSpriteBase::LoadFromXmlImpl(node))
+    if (!ElementSpriteBase::LoadFromXmlImpl(context))
         return false;
 
-    pugi::xml_node oNodeTexture = node.child("Texture");
+    pugi::xml_node oNodeTexture = context.node.child("Texture");
     if (!oNodeTexture.empty())
     {
         std::string strTexturePath = oNodeTexture.attribute("source").as_string("");

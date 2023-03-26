@@ -7,6 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/Element.h"
+#include "Gugu/External/PugiXmlUtility.h"
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -18,6 +21,36 @@ ElementWidget::ElementWidget()
 
 ElementWidget::~ElementWidget()
 {
+}
+
+Element* ElementWidget::InstanciateWidget() const
+{
+    return nullptr;
+}
+
+bool ElementWidget::SaveInstanceToFile(const Element* instance) const
+{
+    pugi::xml_document document;
+
+    pugi::xml_node nodeRoot = document.append_child("ElementWidget");
+    nodeRoot.append_attribute("serializationVersion") = 1;
+
+    pugi::xml_node nodeRootElement = nodeRoot.append_child("Element");
+
+    if (!instance->SaveToXml(nodeRootElement))
+        return false;
+
+    return document.save_file(GetFileInfo().GetFilePath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+}
+
+bool ElementWidget::LoadInstanceFromString(const std::string& source, Element*& instance)
+{
+    return false;
+}
+
+bool ElementWidget::SaveInstanceToString(const Element* instance, std::string& result) const
+{
+    return false;
 }
 
 EResourceType::Type ElementWidget::GetResourceType() const

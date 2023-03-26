@@ -24,12 +24,18 @@ namespace gugu {
 
 ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     : DocumentPanel(resource)
+    , m_elementWidget(resource)
     , m_renderViewport(nullptr)
     , m_zoomFactor(1.f)
+    , m_widgetRoot(nullptr)
     , m_selectedElement(nullptr)
 {
     // Setup RenderViewport and Sprite.
     m_renderViewport = new RenderViewport(true);
+
+    // Instanciate Widget
+    m_widgetRoot = m_renderViewport->GetRoot();
+    m_selectedElement = m_widgetRoot;
 
     //ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
     //sprite->SetTexture(m_texture);
@@ -39,6 +45,8 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
 
 ElementWidgetPanel::~ElementWidgetPanel()
 {
+    m_selectedElement = nullptr;
+    m_widgetRoot = nullptr;
     SafeDelete(m_renderViewport);
 }
 
@@ -65,7 +73,7 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
         | ImGuiTreeNodeFlags_OpenOnArrow;
 
     ImGui::PushID("_HIERARCHY_TREE");
-    DisplayTreeNode(m_renderViewport->GetRoot(), itemFlags);
+    DisplayTreeNode(m_widgetRoot, itemFlags);
     ImGui::PopID();
 }
 
@@ -194,6 +202,23 @@ void ElementWidgetPanel::HandleContextMenu(Element* node)
 
         ImGui::EndPopup();
     }
+}
+
+bool ElementWidgetPanel::SaveToFileImpl()
+{
+    return m_elementWidget->SaveInstanceToFile(m_widgetRoot);
+}
+
+bool ElementWidgetPanel::LoadFromStringImpl(const std::string& value)
+{
+    bool result = m_elementWidget->LoadInstanceFromString(value, m_widgetRoot);
+    m_selectedElement = m_widgetRoot;
+    return result;
+}
+
+bool ElementWidgetPanel::SaveToStringImpl(std::string& result)
+{
+    return m_elementWidget->SaveInstanceToString(m_widgetRoot, result);
 }
 
 }   //namespace gugu

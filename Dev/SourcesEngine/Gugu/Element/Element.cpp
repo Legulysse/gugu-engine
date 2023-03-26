@@ -592,24 +592,65 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
     }
 }
 
-bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
+bool Element::LoadFromXml(const pugi::xml_node& node)
+{
+    bool result = LoadFromXmlImpl(node);
+
+    //TODO: children (check type, instantiate, loadimpl)
+    //- could use a provided factory
+
+    return result;
+}
+
+bool Element::SaveToXml(pugi::xml_node& node) const
+{
+    node.append_attribute("type").set_value(GetSerializedType().c_str());
+
+    bool result = SaveToXmlImpl(node);
+
+    //TODO: children
+
+    return result;
+}
+
+bool Element::LoadFromXmlImpl(const pugi::xml_node& node)
 {
     Vector2f size;
-    if (xml::TryParseVector2f(_oNodeElement.child("Size"), size))
+    if (xml::TryParseVector2f(node.child("Size"), size))
     {
         SetSize(size);
     }
 
     UDim2 dimPosition;
-    if (xml::TryParseUDim2(_oNodeElement.child("UPosition"), dimPosition))
+    if (xml::TryParseUDim2(node.child("UPosition"), dimPosition))
     {
         SetUnifiedPosition(dimPosition);
     }
 
     UDim2 dimSize;
-    if (xml::TryParseUDim2(_oNodeElement.child("USize"), dimSize))
+    if (xml::TryParseUDim2(node.child("USize"), dimSize))
     {
         SetUnifiedSize(dimSize);
+    }
+
+    return true;
+}
+
+bool Element::SaveToXmlImpl(pugi::xml_node& node) const
+{
+    if (!m_useDimSize && m_size != Vector2::Zero_f)
+    {
+        xml::WriteVector2f(node.append_child("Size"), m_size);
+    }
+
+    if (m_useDimPosition)
+    {
+        xml::WriteUDim2(node.append_child("UPosition"), m_dimPosition);
+    }
+
+    if (m_useDimSize)
+    {
+        xml::WriteUDim2(node.append_child("USize"), m_dimSize);
     }
 
     return true;

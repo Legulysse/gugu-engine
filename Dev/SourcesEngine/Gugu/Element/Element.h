@@ -201,7 +201,9 @@ public:
     //----------------------------------------------
     // Serialization
 
-    virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement);
+    bool LoadFromXml(const pugi::xml_node& node);
+    bool SaveToXml(pugi::xml_node& node) const;
+
     virtual const std::string& GetSerializedType() const;
 
 protected:
@@ -210,6 +212,12 @@ protected:
     // Render
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
+
+    //----------------------------------------------
+    // Serialization
+
+    virtual bool LoadFromXmlImpl(const pugi::xml_node& node);
+    virtual bool SaveToXmlImpl(pugi::xml_node& node) const;
 
     //----------------------------------------------
     // Internal Events

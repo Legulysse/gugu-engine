@@ -118,14 +118,42 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         std::string textureId = !texture ? "" : texture->GetID();
         if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            elementSprite->SetTexture(textureId);
+            elementSprite->SetTexture(textureId, texture == nullptr);   // Only update rect if texture was null.
             RaiseDirty();
         }
 
         sf::IntRect subRect = elementSprite->GetSubRect();
         if (ImGui::InputInt4("TextureRect", &subRect))
         {
-            elementSprite->SetSubRect(subRect);
+            elementSprite->SetSubRect(subRect, false);
+            RaiseDirty();
+        }
+
+        bool repeatTexture = elementSprite->GetRepeatTexture();
+        if (ImGui::Checkbox("Repeat Texture", &repeatTexture))
+        {
+            elementSprite->SetRepeatTexture(repeatTexture);
+            RaiseDirty();
+        }
+
+        bool flipTextureV = elementSprite->GetFlipTextureV();
+        if (ImGui::Checkbox("Flip Texture V", &flipTextureV))
+        {
+            elementSprite->SetFlipTextureV(flipTextureV);
+            RaiseDirty();
+        }
+
+        bool flipTextureH = elementSprite->GetFlipTextureH();
+        if (ImGui::Checkbox("Flip Texture H", &flipTextureH))
+        {
+            elementSprite->SetFlipTextureH(flipTextureH);
+            RaiseDirty();
+        }
+
+        sf::Color color = elementSprite->GetColor();
+        if (ImGui::ColorEdit4("Color", &color))
+        {
+            elementSprite->SetColor(color);
             RaiseDirty();
         }
     }

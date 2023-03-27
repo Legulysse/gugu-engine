@@ -25,8 +25,8 @@ public:
     ElementSprite();
     virtual ~ElementSprite();
 
-    void SetTexture(const std::string& _strTexturePath);  //TODO: Rename as textureID
-    void SetTexture(Texture* _pTexture);
+    void SetTexture(const std::string& _strTexturePath, bool updateTextureRect = true);  //TODO: Rename as textureID
+    void SetTexture(Texture* _pTexture, bool updateTextureRect = true);
     void SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName);
     void SetSubImage(SubImage* _pSubImage);
 

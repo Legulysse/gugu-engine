@@ -27,14 +27,17 @@ public:
     ElementSpriteBase();
     virtual ~ElementSpriteBase();
 
-    void SetSubRect(const sf::IntRect& _oRect);
+    void SetSubRect(const sf::IntRect& _oRect, bool updateSize = true);
     sf::IntRect GetSubRect() const;
 
     void SetRepeatTexture(bool repeatTexture);
+    bool GetRepeatTexture() const;
 
     void SetFlipTextureV(bool _bFlipTextureV);  // Flip Top-Bottom
     void SetFlipTextureH(bool _bFlipTextureH);  // Flip Left-Right
     void SetFlipTexture(bool _bFlipTextureV, bool _bFlipTextureH);  // Flip Top-Bottom and Left-Right
+    bool GetFlipTextureV() const;
+    bool GetFlipTextureH() const;
 
     void SetColor(const sf::Color& _oColor);
     sf::Color GetColor() const;
@@ -50,6 +53,7 @@ protected:
     virtual void OnSizeChanged() override;
 
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
 protected:
 

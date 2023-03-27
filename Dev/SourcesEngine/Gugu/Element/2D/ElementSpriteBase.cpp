@@ -35,7 +35,7 @@ ElementSpriteBase::~ElementSpriteBase()
 {
 }
 
-void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect)
+void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect, bool updateSize)
 {
     sf::IntRect kOldRect = m_subRect;
     m_subRect = _oRect;
@@ -52,7 +52,7 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect)
         m_subRect.width = -m_subRect.width;
     }
 
-    if (m_subRect.width != kOldRect.width || m_subRect.height != kOldRect.height)
+    if (updateSize && (m_subRect.width != kOldRect.width || m_subRect.height != kOldRect.height))
     {
         SetSize(Vector2f((float)Absolute(m_subRect.width), (float)Absolute(m_subRect.height)));
     }
@@ -88,6 +88,11 @@ void ElementSpriteBase::SetRepeatTexture(bool repeatTexture)
     }
 }
 
+bool ElementSpriteBase::GetRepeatTexture() const
+{
+    return m_repeatTexture;
+}
+
 void ElementSpriteBase::SetFlipTextureV(bool _bFlipTextureV)
 {
     SetFlipTexture(_bFlipTextureV, m_flipTextureH);
@@ -119,6 +124,16 @@ void ElementSpriteBase::SetFlipTexture(bool _bFlipTextureV, bool _bFlipTextureH)
 
         RaiseDirtyVertices();
     }
+}
+
+bool ElementSpriteBase::GetFlipTextureV() const
+{
+    return m_flipTextureV;
+}
+
+bool ElementSpriteBase::GetFlipTextureH() const
+{
+    return m_flipTextureH;
 }
 
 void ElementSpriteBase::SetColor(const sf::Color& _oColor)
@@ -347,13 +362,66 @@ bool ElementSpriteBase::LoadFromXmlImpl(ElementParseContext& context)
     sf::IntRect rect;
     if (xml::TryParseRect(context.node.child("TextureRect"), rect))
     {
-        SetSubRect(rect);
+        SetSubRect(rect, false);
     }
 
     bool repeatTexture = false;
     if (xml::TryParseAttribute(context.node.child("RepeatTexture"), "value", repeatTexture))
     {
         SetRepeatTexture(repeatTexture);
+    }
+
+    bool flipTextureV = false;
+    if (xml::TryParseAttribute(context.node.child("FlipTextureV"), "value", flipTextureV))
+    {
+        SetFlipTextureV(flipTextureV);
+    }
+
+    bool flipTextureH = false;
+    if (xml::TryParseAttribute(context.node.child("FlipTextureH"), "value", flipTextureH))
+    {
+        SetFlipTextureH(flipTextureH);
+    }
+
+    sf::Color color;
+    if (xml::TryParseColor(context.node.child("Color"), color))
+    {
+        SetColor(color);
+    }
+
+    return true;
+}
+
+bool ElementSpriteBase::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!Element::SaveToXmlImpl(context))
+        return false;
+
+    // TODO: Move flip computations inside vertices computation, clean flip tricks.
+    sf::IntRect textureRect = GetSubRect();
+    if (textureRect != sf::IntRect())
+    {
+        xml::WriteRect(context.node.append_child("TextureRect"), textureRect);
+    }
+
+    if (m_repeatTexture)
+    {
+        context.node.append_child("RepeatTexture").append_attribute("value").set_value(m_repeatTexture);
+    }
+
+    if (m_flipTextureV)
+    {
+        context.node.append_child("FlipTextureV").append_attribute("value").set_value(m_flipTextureV);
+    }
+
+    if (m_flipTextureH)
+    {
+        context.node.append_child("FlipTextureH").append_attribute("value").set_value(m_flipTextureH);
+    }
+
+    if (m_color != sf::Color::Black)
+    {
+        xml::WriteColor(context.node.append_child("Color"), m_color);
     }
 
     return true;

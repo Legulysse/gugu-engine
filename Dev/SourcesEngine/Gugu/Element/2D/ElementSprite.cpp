@@ -31,22 +31,25 @@ ElementSprite::~ElementSprite()
 {
 }
 
-void ElementSprite::SetTexture(const std::string& _strTexturePath)
+void ElementSprite::SetTexture(const std::string& _strTexturePath, bool updateTextureRect)
 {
-    SetTexture(GetResources()->GetTexture(_strTexturePath));
+    SetTexture(GetResources()->GetTexture(_strTexturePath), updateTextureRect);
 }
 
-void ElementSprite::SetTexture(Texture* _pTexture)
+void ElementSprite::SetTexture(Texture* _pTexture, bool updateTextureRect)
 {
     m_texture = _pTexture;
 
-    if (m_texture)
+    if (updateTextureRect)
     {
-        SetSubRect(m_texture->GetRect());
-    }
-    else
-    {
-        SetSubRect(sf::IntRect());
+        if (m_texture)
+        {
+            SetSubRect(m_texture->GetRect());
+        }
+        else
+        {
+            SetSubRect(sf::IntRect());
+        }
     }
 }
 
@@ -137,7 +140,7 @@ bool ElementSprite::LoadFromXmlImpl(ElementParseContext& context)
 
     if (pugi::xml_node textureNode = context.node.child("Texture"))
     {
-        SetTexture(textureNode.attribute("source").as_string(""));
+        SetTexture(textureNode.attribute("source").as_string(""), false);
     }
 
     return true;

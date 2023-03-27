@@ -68,7 +68,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
             // Read (no default)
             GUGU_UTEST_CHECK(xml::ReadVector2i(nodeData) == Vector2i(10, 20));
-            GUGU_UTEST_CHECK(xml::ReadVector2i(nodeNoData) == Vector2i(0, 0));
+            GUGU_UTEST_CHECK(xml::ReadVector2i(nodeNoData) == Vector2::Zero_i);
             GUGU_UTEST_CHECK(xml::ReadVector2i(nodeIllData) == Vector2i(10, 0));
 
             // Read (default)
@@ -83,7 +83,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
             Vector2i resultParseNoData(5, 5);
             xml::ParseVector2i(nodeNoData, resultParseNoData);
-            GUGU_UTEST_CHECK(resultParseNoData == Vector2i(0, 0));
+            GUGU_UTEST_CHECK(resultParseNoData == Vector2::Zero_i);
 
             Vector2i resultParseIllData(5, 5);
             xml::ParseVector2i(nodeIllData, resultParseIllData);
@@ -131,7 +131,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
             // Read (no default)
             GUGU_UTEST_CHECK(ApproxEqual(xml::ReadVector2f(nodeData), Vector2f(10.f, 20.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(xml::ReadVector2f(nodeNoData), Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(xml::ReadVector2f(nodeNoData), Vector2::Zero_f, math::Epsilon3));
             GUGU_UTEST_CHECK(ApproxEqual(xml::ReadVector2f(nodeIllData), Vector2f(10.f, 0.f), math::Epsilon3));
 
             // Read (default)
@@ -146,7 +146,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
             Vector2f resultParseNoData(5.f, 5.f);
             xml::ParseVector2f(nodeNoData, resultParseNoData);
-            GUGU_UTEST_CHECK(ApproxEqual(resultParseNoData, Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(resultParseNoData, Vector2::Zero_f, math::Epsilon3));
 
             Vector2f resultParseIllData(5.f, 5.f);
             xml::ParseVector2f(nodeIllData, resultParseIllData);
@@ -231,7 +231,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
             // Read (no default)
             GUGU_UTEST_CHECK(xml::ReadRect(nodeData) == sf::IntRect(10, 20, 100, 200));
-            GUGU_UTEST_CHECK(xml::ReadRect(nodeNoData) == sf::IntRect(0, 0, 0, 0));
+            GUGU_UTEST_CHECK(xml::ReadRect(nodeNoData) == sf::IntRect());
 
             // Read (default)
             GUGU_UTEST_CHECK(xml::ReadRect(nodeData, defaultData) == sf::IntRect(10, 20, 100, 200));
@@ -244,7 +244,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
             sf::IntRect resultParseNoData(5, 5, 5, 5);
             xml::ParseRect(nodeNoData, resultParseNoData);
-            GUGU_UTEST_CHECK(resultParseNoData == sf::IntRect(0, 0, 0, 0));
+            GUGU_UTEST_CHECK(resultParseNoData == sf::IntRect());
 
             // Parse (default)
             sf::IntRect resultParseDataWithDefault(5, 5, 5, 5);
@@ -265,6 +265,46 @@ void RunUnitTests_Xml(UnitTestResults* results)
             sf::IntRect resultTryParseNoData(5, 5, 5, 5);
             GUGU_UTEST_CHECK(!xml::TryParseRect(nodeNoData, resultTryParseNoData));
             GUGU_UTEST_CHECK(resultTryParseNoData == sf::IntRect(5, 5, 5, 5));
+        }
+
+        GUGU_UTEST_SUBSECTION("Color");
+        {
+            GUGU_UTEST_CHECK(sf::Color(0, 0, 0, 255) == sf::Color::Black);
+
+            pugi::xml_document document = ParseStringDocument("<Data r=\"10\" g=\"20\" b=\"30\" a=\"128\"/>");
+            pugi::xml_node nodeData = document.child("Data");
+            pugi::xml_node nodeNoData = document.child("NoData");
+
+            const sf::Color defaultData(16, 32, 64, 200);
+
+            // Parse (no default)
+            sf::Color resultParseData(5, 5, 5, 5);
+            xml::ParseColor(nodeData, resultParseData);
+            GUGU_UTEST_CHECK(resultParseData == sf::Color(10, 20, 30, 128));
+
+            sf::Color resultParseNoData(5, 5, 5, 5);
+            xml::ParseColor(nodeNoData, resultParseNoData);
+            GUGU_UTEST_CHECK(resultParseNoData == sf::Color::Black);
+
+            // Parse (default)
+            sf::Color resultParseDataWithDefault(5, 5, 5, 5);
+            xml::ParseColor(nodeData, resultParseDataWithDefault, defaultData);
+            GUGU_UTEST_CHECK(resultParseDataWithDefault == sf::Color(10, 20, 30, 128));
+
+            sf::Color resultParseNoDataWithDefault(5, 5, 5, 5);
+            xml::ParseColor(nodeNoData, resultParseNoDataWithDefault, defaultData);
+            GUGU_UTEST_CHECK(resultParseNoDataWithDefault == sf::Color(16, 32, 64, 200));
+
+            // TryParse
+            sf::Color resultTryParseData(5, 5, 5, 5);
+            if (GUGU_UTEST_CHECK(xml::TryParseColor(nodeData, resultTryParseData)))
+            {
+                GUGU_UTEST_CHECK(resultTryParseData == sf::Color(10, 20, 30, 128));
+            }
+
+            sf::Color resultTryParseNoData(5, 5, 5, 5);
+            GUGU_UTEST_CHECK(!xml::TryParseColor(nodeNoData, resultTryParseNoData));
+            GUGU_UTEST_CHECK(resultTryParseNoData == sf::Color(5, 5, 5, 5));
         }
     }
 
@@ -304,6 +344,15 @@ void RunUnitTests_Xml(UnitTestResults* results)
             xml::WriteRect(node, sf::IntRect(10, 20, 100, 200));
 
             GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
+        }
+
+        GUGU_UTEST_SUBSECTION("Color");
+        {
+            pugi::xml_document document;
+            pugi::xml_node node = document.append_child("Data");
+            xml::WriteColor(node, sf::Color(10, 20, 30, 128));
+
+            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data r=\"10\" g=\"20\" b=\"30\" a=\"128\"/>");
         }
     }
 

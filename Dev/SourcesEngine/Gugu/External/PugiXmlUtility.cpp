@@ -180,6 +180,23 @@ bool TryParseUDim2(const pugi::xml_node& node, UDim2& value)
     return true;
 }
 
+void ParseColor(const pugi::xml_node& node, sf::Color& value, const sf::Color& defaultValue)
+{
+    value.r = (sf::Uint8)node.attribute("r").as_uint(defaultValue.r);
+    value.g = (sf::Uint8)node.attribute("g").as_uint(defaultValue.g);
+    value.b = (sf::Uint8)node.attribute("b").as_uint(defaultValue.b);
+    value.a = (sf::Uint8)node.attribute("a").as_uint(defaultValue.a);
+}
+
+bool TryParseColor(const pugi::xml_node& node, sf::Color& value)
+{
+    if (!node)
+        return false;
+
+    ParseColor(node, value, value);
+    return true;
+}
+
 void WriteVector2i(pugi::xml_node node, const Vector2i& value)
 {
     node.append_attribute("x").set_value(value.x);
@@ -206,6 +223,14 @@ void WriteUDim2(pugi::xml_node node, const UDim2& value)
     node.append_attribute("yRel").set_value(value.relative.y);
     node.append_attribute("xAbs").set_value(value.absolute.x);
     node.append_attribute("yAbs").set_value(value.absolute.y);
+}
+
+void WriteColor(pugi::xml_node node, const sf::Color& value)
+{
+    node.append_attribute("r").set_value(value.r);
+    node.append_attribute("g").set_value(value.g);
+    node.append_attribute("b").set_value(value.b);
+    node.append_attribute("a").set_value(value.a);
 }
 
 }   // namespace xml

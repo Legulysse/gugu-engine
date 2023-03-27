@@ -84,7 +84,7 @@ void AnimSetPanel::OnVisibilityChanged(bool visible)
 void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.
-    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 0.f, 16.f))
     {
         m_renderViewport->SetZoom(m_zoomFactor);
     }

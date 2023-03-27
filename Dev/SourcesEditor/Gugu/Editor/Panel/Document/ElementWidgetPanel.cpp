@@ -42,7 +42,7 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     //ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
     //sprite->SetTexture(m_texture);
 
-    //m_renderViewport->SetSize(Vector2u(sprite->GetSize()));
+    m_renderViewport->SetSize(Vector2u(1280, 720));
 }
 
 ElementWidgetPanel::~ElementWidgetPanel()
@@ -55,7 +55,7 @@ ElementWidgetPanel::~ElementWidgetPanel()
 void ElementWidgetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.
-    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 0.f, 16.f))
     {
         m_renderViewport->SetZoom(m_zoomFactor);
     }

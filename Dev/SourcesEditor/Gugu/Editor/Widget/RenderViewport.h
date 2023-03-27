@@ -38,6 +38,7 @@ public:
     void SetSize(Vector2u size);
     void SetZoom(float zoomMultiplier);
 
+    Vector2f GetMousePickedPosition() const;
     Vector2f GetPickedPosition(const Vector2i& pixelCoords) const;
 
     Element* GetRoot() const;
@@ -49,6 +50,7 @@ private:
     Element* m_root;
 
     Vector2u m_size;
+    Vector2f m_renderSize;
     float m_zoomMultiplier;
     bool m_fillAvailableArea;
 };

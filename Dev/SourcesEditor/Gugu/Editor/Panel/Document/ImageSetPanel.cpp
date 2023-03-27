@@ -68,7 +68,7 @@ ImageSetPanel::~ImageSetPanel()
 void ImageSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.
-    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 0.f, 16.f))
     {
         m_renderViewport->SetZoom(m_zoomFactor);
     }
@@ -351,11 +351,7 @@ void ImageSetPanel::CreateGizmo()
 
 void ImageSetPanel::UpdateGizmo()
 {
-    // Handle picking (should be used inside a viewport begin/end block).
-    ImGuiIO& io = ImGui::GetIO();
-    const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
-    const Vector2f mouse_pos_in_canvas(io.MousePos.x - canvas_p0.x, io.MousePos.y - canvas_p0.y);
-    Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
+    Vector2f pickedGlobalPosition = m_renderViewport->GetMousePickedPosition();
 
     const bool is_hovered = ImGui::IsItemHovered();
     const bool is_active = ImGui::IsItemActive();

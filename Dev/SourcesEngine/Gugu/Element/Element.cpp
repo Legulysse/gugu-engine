@@ -191,17 +191,32 @@ void Element::SetUnifiedSize(const UDim2& _oNewDimSize)
     ComputeUnifiedDimensions();
 }
 
-UDim2 Element::GetUnifiedOrigin() const
+bool Element::GetUseUnifiedOrigin() const
+{
+    return m_useDimOrigin;
+}
+
+bool Element::GetUseUnifiedPosition() const
+{
+    return m_useDimPosition;
+}
+
+bool Element::GetUseUnifiedSize() const
+{
+    return m_useDimSize;
+}
+
+const UDim2& Element::GetUnifiedOrigin() const
 {
     return m_dimOrigin;
 }
 
-UDim2 Element::GetUnifiedPosition() const
+const UDim2& Element::GetUnifiedPosition() const
 {
     return m_dimPosition;
 }
 
-UDim2 Element::GetUnifiedSize() const
+const UDim2& Element::GetUnifiedSize() const
 {
     return m_dimSize;
 }
@@ -643,22 +658,52 @@ bool Element::SaveToXml(ElementSaveContext& context) const
 
 bool Element::LoadFromXmlImpl(ElementParseContext& context)
 {
-    Vector2f size;
-    if (xml::TryParseVector2f(context.node.child("Size"), size))
+    UDim2 dimOrigin; Vector2f origin;
+    if (xml::TryParseUDim2(context.node.child("UOrigin"), dimOrigin))
     {
-        SetSize(size);
+        SetUnifiedOrigin(dimOrigin);
+    }
+    else if (xml::TryParseVector2f(context.node.child("Origin"), origin))
+    {
+        SetOrigin(origin);
     }
 
-    UDim2 dimPosition;
+    UDim2 dimPosition; Vector2f position;
     if (xml::TryParseUDim2(context.node.child("UPosition"), dimPosition))
     {
         SetUnifiedPosition(dimPosition);
     }
+    else if (xml::TryParseVector2f(context.node.child("Position"), position))
+    {
+        SetPosition(position);
+    }
 
-    UDim2 dimSize;
+    UDim2 dimSize; Vector2f size;
     if (xml::TryParseUDim2(context.node.child("USize"), dimSize))
     {
         SetUnifiedSize(dimSize);
+    }
+    else if (xml::TryParseVector2f(context.node.child("Size"), size))
+    {
+        SetSize(size);
+    }
+
+    float rotation;
+    if (xml::TryParseAttribute(context.node.child("Rotation"), "value", rotation))
+    {
+        SetRotation(rotation);
+    }
+
+    bool flipV = false;
+    if (xml::TryParseAttribute(context.node.child("FlipV"), "value", flipV))
+    {
+        SetFlipV(flipV);
+    }
+
+    bool flipH = false;
+    if (xml::TryParseAttribute(context.node.child("FlipH"), "value", flipH))
+    {
+        SetFlipH(flipH);
     }
 
     return true;
@@ -666,19 +711,47 @@ bool Element::LoadFromXmlImpl(ElementParseContext& context)
 
 bool Element::SaveToXmlImpl(ElementSaveContext& context) const
 {
-    if (!m_useDimSize && m_size != Vector2::Zero_f)
+    if (m_useDimOrigin)
     {
-        xml::WriteVector2f(context.node.append_child("Size"), m_size);
+        xml::WriteUDim2(context.node.append_child("UOrigin"), m_dimOrigin);
+    }
+    else if (GetOrigin() != Vector2::Zero_f)
+    {
+        xml::WriteVector2f(context.node.append_child("Origin"), GetOrigin());
     }
 
     if (m_useDimPosition)
     {
         xml::WriteUDim2(context.node.append_child("UPosition"), m_dimPosition);
     }
+    else if (GetPosition() != Vector2::Zero_f)
+    {
+        xml::WriteVector2f(context.node.append_child("Position"), GetPosition());
+    }
 
     if (m_useDimSize)
     {
         xml::WriteUDim2(context.node.append_child("USize"), m_dimSize);
+    }
+    else if (m_size != Vector2::Zero_f)
+    {
+        xml::WriteVector2f(context.node.append_child("Size"), m_size);
+    }
+
+    float rotation = GetRotation();
+    if (!ApproxEqualToZero(rotation, math::Epsilon3))
+    {
+        context.node.append_child("Rotation").append_attribute("value").set_value(rotation);
+    }
+
+    if (m_flipV)
+    {
+        context.node.append_child("FlipV").append_attribute("value").set_value(m_flipV);
+    }
+
+    if (m_flipH)
+    {
+        context.node.append_child("FlipH").append_attribute("value").set_value(m_flipH);
     }
 
     return true;

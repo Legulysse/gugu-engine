@@ -102,6 +102,12 @@ bool InputFloat4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, cons
     return updated;
 }
 
+bool InputFloat4(const char* label, gugu::UDim2* v, const char* format, ImGuiInputTextFlags flags)
+{
+    bool updated = InputFloat4(label, &v->relative, &v->absolute, format, flags);
+    return updated;
+}
+
 bool ColorEdit4(const char* label, sf::Color* color, ImGuiColorEditFlags flags)
 {
     ImVec4 temp = ImGui::ColorConvertSfmlToFloat4(*color);

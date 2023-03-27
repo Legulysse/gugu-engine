@@ -184,9 +184,12 @@ public:
     void SetUnifiedPosition(const UDim2& _oNewDimPos);
     void SetUnifiedSize(const UDim2& _oNewDimSize);
 
-    UDim2 GetUnifiedOrigin() const;
-    UDim2 GetUnifiedPosition() const;
-    UDim2 GetUnifiedSize() const;
+    bool GetUseUnifiedOrigin() const;
+    bool GetUseUnifiedPosition() const;
+    bool GetUseUnifiedSize() const;
+    const UDim2& GetUnifiedOrigin() const;
+    const UDim2& GetUnifiedPosition() const;
+    const UDim2& GetUnifiedSize() const;
 
     void ResetUnifiedOrigin();
     void ResetUnifiedPosition();

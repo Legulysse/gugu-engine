@@ -89,24 +89,134 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     Element* element = m_selectedElement;
     if (ImGui::CollapsingHeader("Element", headerFlags))
     {
+        // Origin
+        bool useUnifiedOrigin = element->GetUseUnifiedOrigin();
+
+        ImGui::BeginDisabled(useUnifiedOrigin);
         Vector2f origin = element->GetOrigin();
         if (ImGui::InputFloat2("Origin", &origin))
         {
             element->SetOrigin(origin);
             RaiseDirty();
         }
+        ImGui::EndDisabled();
 
+        if (ImGui::Checkbox("Use Unified Origin", &useUnifiedOrigin))
+        {
+            if (useUnifiedOrigin)
+            {
+                element->SetUnifiedOrigin(UDim2(Vector2::Zero_f, origin));
+                RaiseDirty();
+            }
+            else
+            {
+                element->ResetUnifiedOrigin();
+            }
+        }
+
+        ImGui::BeginDisabled(!useUnifiedOrigin);
+        UDim2 unifiedOrigin = element->GetUnifiedOrigin();
+        if (ImGui::InputFloat4("Unified Origin", &unifiedOrigin))
+        {
+            element->SetUnifiedOrigin(unifiedOrigin);
+            RaiseDirty();
+        }
+        ImGui::EndDisabled();
+
+        ImGui::Spacing();
+
+        // Position
+        bool useUnifiedPosition = element->GetUseUnifiedPosition();
+
+        ImGui::BeginDisabled(useUnifiedPosition);
         Vector2f position = element->GetPosition();
         if (ImGui::InputFloat2("Position", &position))
         {
             element->SetPosition(position);
             RaiseDirty();
         }
+        ImGui::EndDisabled();
 
+        if (ImGui::Checkbox("Use Unified Position", &useUnifiedPosition))
+        {
+            if (useUnifiedPosition)
+            {
+                element->SetUnifiedPosition(UDim2(Vector2::Zero_f, position));
+                RaiseDirty();
+            }
+            else
+            {
+                element->ResetUnifiedPosition();
+            }
+        }
+
+        ImGui::BeginDisabled(!useUnifiedPosition);
+        UDim2 unifiedPosition = element->GetUnifiedPosition();
+        if (ImGui::InputFloat4("Unified Position", &unifiedPosition))
+        {
+            element->SetUnifiedPosition(unifiedPosition);
+            RaiseDirty();
+        }
+        ImGui::EndDisabled();
+
+        ImGui::Spacing();
+
+        // Size
+        bool useUnifiedSize = element->GetUseUnifiedSize();
+
+        ImGui::BeginDisabled(useUnifiedSize);
         Vector2f size = element->GetSize();
         if (ImGui::InputFloat2("Size", &size))
         {
             element->SetSize(size);
+            RaiseDirty();
+        }
+        ImGui::EndDisabled();
+
+        if (ImGui::Checkbox("Use Unified Size", &useUnifiedSize))
+        {
+            if (useUnifiedSize)
+            {
+                element->SetUnifiedSize(UDim2(Vector2::Zero_f, size));
+                RaiseDirty();
+            }
+            else
+            {
+                element->ResetUnifiedSize();
+            }
+        }
+
+        ImGui::BeginDisabled(!useUnifiedSize);
+        UDim2 unifiedSize = element->GetUnifiedSize();
+        if (ImGui::InputFloat4("Unified Size", &unifiedSize))
+        {
+            element->SetUnifiedSize(unifiedSize);
+            RaiseDirty();
+        }
+        ImGui::EndDisabled();
+
+        ImGui::Spacing();
+
+        // Rotation
+        float rotation = element->GetRotation();
+        if (ImGui::InputFloat("Rotation", &rotation))
+        {
+            element->SetRotation(rotation);
+            RaiseDirty();
+        }
+
+        // Flip
+        bool flipV = element->GetFlipV();
+        if (ImGui::Checkbox("Flip V", &flipV))
+        {
+            element->SetFlipV(flipV);
+            RaiseDirty();
+        }
+
+        bool flipH = element->GetFlipH();
+        if (ImGui::Checkbox("Flip H", &flipH))
+        {
+            element->SetFlipH(flipH);
             RaiseDirty();
         }
     }

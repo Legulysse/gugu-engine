@@ -160,6 +160,8 @@ bool DocumentPanel::UndoState()
         size_t newIndex = m_currentUndoStateIndex - 1;
         if (LoadFromStringImpl(m_undoStates[newIndex]))
         {
+            GetResources()->UpdateResourceDependencies(m_resource);
+
             m_currentUndoStateIndex = newIndex;
             m_dirty = true;
             return true;
@@ -176,6 +178,8 @@ bool DocumentPanel::RedoState()
         size_t newIndex = m_currentUndoStateIndex + 1;
         if (LoadFromStringImpl(m_undoStates[newIndex]))
         {
+            GetResources()->UpdateResourceDependencies(m_resource);
+
             m_currentUndoStateIndex = newIndex;
             m_dirty = true;
             return true;

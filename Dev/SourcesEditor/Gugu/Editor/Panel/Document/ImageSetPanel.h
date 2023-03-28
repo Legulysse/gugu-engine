@@ -38,6 +38,8 @@ protected:
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
+    virtual void OnUndoRedo() override;
+
     void CreateGizmo();
     void UpdateGizmo();
 

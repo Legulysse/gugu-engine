@@ -65,6 +65,20 @@ ImageSetPanel::~ImageSetPanel()
     SafeDelete(m_renderViewport);
 }
 
+void ImageSetPanel::OnUndoRedo()
+{
+    RefreshSpriteTexture();
+
+    if (m_selectedIndex >= 0 && m_imageSet->GetSubImageCount() > 0)
+    {
+        m_selectedIndex = Min(m_selectedIndex, (int)m_imageSet->GetSubImageCount() - 1);
+    }
+    else
+    {
+        m_selectedIndex = -1;
+    }
+}
+
 void ImageSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.

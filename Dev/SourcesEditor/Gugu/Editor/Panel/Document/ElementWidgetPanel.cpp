@@ -93,7 +93,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
 
     Element* element = m_selectedElement;
-    if (ImGui::CollapsingHeader("Element", headerFlags))
+    if (ImGui::CollapsingHeader("Common", headerFlags))
     {
         // Origin
         bool useUnifiedOrigin = element->GetUseUnifiedOrigin();
@@ -227,56 +227,68 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         }
     }
 
-    ElementSprite* elementSprite = dynamic_cast<ElementSprite*>(m_selectedElement);
-    if (elementSprite && ImGui::CollapsingHeader("Element Sprite", headerFlags))
+    ElementSpriteGroup* elementSpriteGroup = dynamic_cast<ElementSpriteGroup*>(m_selectedElement);
+    if (elementSpriteGroup && ImGui::CollapsingHeader("Sprite Group", headerFlags))
     {
-        Texture* texture = elementSprite->GetTexture();
+        Texture* texture = elementSpriteGroup->GetTexture();
         std::string textureId = !texture ? "" : texture->GetID();
         if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            elementSprite->SetTexture(textureId, texture == nullptr);   // Only update rect if texture was null.
-            RaiseDirty();
-        }
-
-        sf::IntRect subRect = elementSprite->GetSubRect();
-        if (ImGui::InputInt4("TextureRect", &subRect))
-        {
-            elementSprite->SetSubRect(subRect, false);
-            RaiseDirty();
-        }
-
-        bool repeatTexture = elementSprite->GetRepeatTexture();
-        if (ImGui::Checkbox("Repeat Texture", &repeatTexture))
-        {
-            elementSprite->SetRepeatTexture(repeatTexture);
-            RaiseDirty();
-        }
-
-        bool flipTextureV = elementSprite->GetFlipTextureV();
-        if (ImGui::Checkbox("Flip Texture V", &flipTextureV))
-        {
-            elementSprite->SetFlipTextureV(flipTextureV);
-            RaiseDirty();
-        }
-
-        bool flipTextureH = elementSprite->GetFlipTextureH();
-        if (ImGui::Checkbox("Flip Texture H", &flipTextureH))
-        {
-            elementSprite->SetFlipTextureH(flipTextureH);
-            RaiseDirty();
-        }
-
-        sf::Color color = elementSprite->GetColor();
-        if (ImGui::ColorEdit4("Color", &color))
-        {
-            elementSprite->SetColor(color);
+            elementSpriteGroup->SetTexture(textureId);
             RaiseDirty();
         }
     }
 
-    ElementSpriteGroup* elementSpriteGroup = dynamic_cast<ElementSpriteGroup*>(m_selectedElement);
-    if (elementSpriteGroup && ImGui::CollapsingHeader("Element Sprite Group", headerFlags))
+    ElementSpriteBase* elementSpriteBase = dynamic_cast<ElementSpriteBase*>(m_selectedElement);
+    if (elementSpriteBase && ImGui::CollapsingHeader("Sprite", headerFlags))
     {
+        ElementSprite* elementSprite = dynamic_cast<ElementSprite*>(m_selectedElement);
+
+        if (elementSprite)
+        {
+            Texture* texture = elementSprite->GetTexture();
+            std::string textureId = !texture ? "" : texture->GetID();
+            if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                elementSprite->SetTexture(textureId, texture == nullptr);   // Only update rect if texture was null.
+                RaiseDirty();
+            }
+        }
+
+        sf::IntRect subRect = elementSpriteBase->GetSubRect();
+        if (ImGui::InputInt4("TextureRect", &subRect))
+        {
+            elementSpriteBase->SetSubRect(subRect, false);
+            RaiseDirty();
+        }
+
+        bool repeatTexture = elementSpriteBase->GetRepeatTexture();
+        if (ImGui::Checkbox("Repeat Texture", &repeatTexture))
+        {
+            elementSpriteBase->SetRepeatTexture(repeatTexture);
+            RaiseDirty();
+        }
+
+        bool flipTextureV = elementSpriteBase->GetFlipTextureV();
+        if (ImGui::Checkbox("Flip Texture V", &flipTextureV))
+        {
+            elementSpriteBase->SetFlipTextureV(flipTextureV);
+            RaiseDirty();
+        }
+
+        bool flipTextureH = elementSpriteBase->GetFlipTextureH();
+        if (ImGui::Checkbox("Flip Texture H", &flipTextureH))
+        {
+            elementSpriteBase->SetFlipTextureH(flipTextureH);
+            RaiseDirty();
+        }
+
+        sf::Color color = elementSpriteBase->GetColor();
+        if (ImGui::ColorEdit4("Color", &color))
+        {
+            elementSpriteBase->SetColor(color);
+            RaiseDirty();
+        }
     }
 }
 
@@ -308,6 +320,23 @@ void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
 
     if (isOpen)
     {
+        if (ElementSpriteGroup* nodeSpriteGroup = dynamic_cast<ElementSpriteGroup*>(node))
+        {
+            const std::vector<ElementSpriteGroupItem*>& components = nodeSpriteGroup->GetItems();
+
+            ImGuiTreeNodeFlags componentFlags = ImGuiTreeNodeFlags_Leaf;
+            ImGui::TreeNodeEx("<Components>", componentFlags);
+
+            for (size_t i = 0; i < components.size(); ++i)
+            {
+                ImGui::PushID((int)i);
+                DisplayTreeNode(components[i], itemFlags);
+                ImGui::PopID();
+            }
+
+            ImGui::TreePop();
+        }
+
         for (size_t i = 0; i < children.size(); ++i)
         {
             ImGui::PushID((int)i);
@@ -341,6 +370,17 @@ void ElementWidgetPanel::HandleContextMenu(Element* node)
             {
                 node->AddChild<ElementSpriteGroup>();
                 RaiseDirty();
+            }
+
+            if (ElementSpriteGroup* nodeSpriteGroup = dynamic_cast<ElementSpriteGroup*>(node))
+            {
+                ImGui::Separator();
+
+                if (ImGui::MenuItem("Element Sprite Group Item"))
+                {
+                    nodeSpriteGroup->AddItem(new ElementSpriteGroupItem);
+                    RaiseDirty();
+                }
             }
 
             ImGui::EndMenu();

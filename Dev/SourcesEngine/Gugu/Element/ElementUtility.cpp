@@ -9,6 +9,7 @@
 
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -32,6 +33,10 @@ Element* InstanciateElement(std::string_view elementType)
     else if (StringEquals(elementType, "ElementSprite"))
     {
         result = new ElementSprite;
+    }
+    else if (StringEquals(elementType, "ElementSpriteGroup"))
+    {
+        result = new ElementSpriteGroup;
     }
 
     return result;

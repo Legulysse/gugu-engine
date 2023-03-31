@@ -95,6 +95,28 @@ size_t ElementSpriteGroupItem::RecomputeItemVertices(sf::VertexArray& vertices, 
     return m_cachedVertexCount;
 }
 
+bool ElementSpriteGroupItem::LoadFromXmlImpl(ElementParseContext& context)
+{
+    if (!ElementSpriteBase::LoadFromXmlImpl(context))
+        return false;
+
+    return true;
+}
+
+bool ElementSpriteGroupItem::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!ElementSpriteBase::SaveToXmlImpl(context))
+        return false;
+
+    return true;
+}
+
+const std::string& ElementSpriteGroupItem::GetSerializedType() const
+{
+    static const std::string serializedType = "ElementSpriteGroupItem";
+    return serializedType;
+}
+
 
 ElementSpriteGroup::ElementSpriteGroup()
     : m_texture(nullptr)
@@ -225,6 +247,11 @@ ElementSpriteGroupItem* ElementSpriteGroup::GetItem(size_t _iIndex) const
     if (_iIndex < 0 || _iIndex >= m_items.size())
         return nullptr;
     return m_items[_iIndex];
+}
+
+const std::vector<ElementSpriteGroupItem*>& ElementSpriteGroup::GetItems() const
+{
+    return m_items;
 }
 
 bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
@@ -369,6 +396,41 @@ bool ElementSpriteGroup::LoadFromXmlImpl(ElementParseContext& context)
 
     m_needRecompute = true;
     return true;
+}
+
+bool ElementSpriteGroup::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!Element::SaveToXmlImpl(context))
+        return false;
+
+    bool result = true;
+
+    if (m_texture)
+    {
+        context.node.append_child("Texture").append_attribute("source").set_value(m_texture->GetID().c_str());
+    }
+
+    if (!m_items.empty())
+    {
+        pugi::xml_node componentsNode = context.node.append_child("Components");
+        pugi::xml_node backupNode = context.node;
+
+        for (size_t i = 0; i < m_items.size(); ++i)
+        {
+            context.node = componentsNode.append_child("Component");
+            result &= m_items[i]->SaveToXml(context);
+        }
+
+        context.node = backupNode;
+    }
+
+    return result;
+}
+
+const std::string& ElementSpriteGroup::GetSerializedType() const
+{
+    static const std::string serializedType = "ElementSpriteGroup";
+    return serializedType;
 }
 
 }   // namespace gugu

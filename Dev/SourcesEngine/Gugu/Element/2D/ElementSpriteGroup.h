@@ -36,12 +36,17 @@ public:
     size_t GetCachedVertexCount() const;
     size_t RecomputeItemVertices(sf::VertexArray& vertices, size_t indexFirstVertex);
 
+    virtual const std::string& GetSerializedType() const override;
+
 protected:
 
     virtual void RaiseDirtyVertices() override;
 
     virtual void OnTransformChanged() override;
     virtual void OnVisibleChanged() override;
+
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
 protected:
 
@@ -62,10 +67,12 @@ public:
 
     size_t AddItem(ElementSpriteGroupItem* _pNewItem);
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
+    const std::vector<ElementSpriteGroupItem*>& GetItems() const;
 
     void RaiseNeedRecompute();
 
     bool LoadFromFile(const std::string& _strPath);
+    virtual const std::string& GetSerializedType() const override;
 
 protected:
 
@@ -73,6 +80,7 @@ protected:
     virtual void OnSizeChanged() override;
 
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
 protected:
 

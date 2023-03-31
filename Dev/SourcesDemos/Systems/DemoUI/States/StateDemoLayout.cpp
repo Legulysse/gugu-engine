@@ -10,8 +10,10 @@
 
 #include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ElementWidget.h"
+#include "Gugu/Element/Element.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/Element/UI/ElementUILayout.h"
 
 using namespace gugu;
 
@@ -37,8 +39,7 @@ void StateDemoLayout::Init()
     m_root->SetUnifiedSize(UDim2::SIZE_FULL);
     
     //Layout
-    ElementUILayout* pLayout = m_root->AddChild<ElementUILayout>();
-    pLayout->LoadFromFile("LayoutDemo.xml");
+    m_root->AddChild(GetResources()->GetElementWidget("WidgetTest.widget.xml")->InstanciateWidget());
 }
 
 void StateDemoLayout::Release()

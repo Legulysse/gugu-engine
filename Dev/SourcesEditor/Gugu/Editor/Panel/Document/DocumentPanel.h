@@ -28,6 +28,8 @@ public:
     DocumentPanel(Resource* resource);
     virtual ~DocumentPanel();
 
+    void InitializePanel();
+
     virtual void UpdatePanel(const DeltaTime& dt) final;
     virtual void UpdateHierarchy(const DeltaTime& dt) final;
     virtual void UpdateProperties(const DeltaTime& dt) final;

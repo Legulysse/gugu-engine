@@ -471,6 +471,11 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node, bool* colla
                 GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::ParticleEffect));
             }
 
+            if (ImGui::MenuItem("ElementWidget"))
+            {
+                GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::ElementWidget));
+            }
+
             ImGui::EndMenu();
         }
 

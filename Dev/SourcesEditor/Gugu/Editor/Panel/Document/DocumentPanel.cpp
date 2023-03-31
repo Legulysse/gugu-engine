@@ -31,12 +31,15 @@ DocumentPanel::DocumentPanel(Resource* resource)
 {
     m_resourceID = m_resource->GetID();
     m_title = m_resourceID;
-
-    SaveState();
 }
 
 DocumentPanel::~DocumentPanel()
 {
+}
+
+void DocumentPanel::InitializePanel()
+{
+    SaveState();
 }
 
 void DocumentPanel::UpdatePanel(const DeltaTime& dt)

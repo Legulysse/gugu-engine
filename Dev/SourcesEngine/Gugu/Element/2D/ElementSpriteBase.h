@@ -40,7 +40,7 @@ public:
     bool GetFlipTextureH() const;
 
     void SetColor(const sf::Color& _oColor);
-    sf::Color GetColor() const;
+    const sf::Color& GetColor() const;
 
 protected:
 

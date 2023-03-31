@@ -142,7 +142,7 @@ void ElementSpriteBase::SetColor(const sf::Color& _oColor)
     RaiseDirtyVertices();
 }
 
-sf::Color ElementSpriteBase::GetColor() const
+const sf::Color& ElementSpriteBase::GetColor() const
 {
     return m_color;
 }
@@ -419,7 +419,7 @@ bool ElementSpriteBase::SaveToXmlImpl(ElementSaveContext& context) const
         context.node.append_child("FlipTextureH").append_attribute("value").set_value(m_flipTextureH);
     }
 
-    if (m_color != sf::Color::Black)
+    if (m_color != sf::Color::White)
     {
         xml::WriteColor(context.node.append_child("Color"), m_color);
     }

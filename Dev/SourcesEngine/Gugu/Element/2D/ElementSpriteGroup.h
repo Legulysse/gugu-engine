@@ -60,8 +60,6 @@ public:
     void SetTexture(Texture* _pTexture);
     Texture* GetTexture() const;
 
-    void SetColor(const sf::Color& color);
-
     size_t AddItem(ElementSpriteGroupItem* _pNewItem);
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
 
@@ -79,8 +77,6 @@ protected:
 protected:
 
     Texture* m_texture;
-    sf::Color m_color;
-    bool m_applyColor;
 
     sf::VertexArray m_vertices;
     bool m_needRecompute;

@@ -98,8 +98,6 @@ size_t ElementSpriteGroupItem::RecomputeItemVertices(sf::VertexArray& vertices, 
 
 ElementSpriteGroup::ElementSpriteGroup()
     : m_texture(nullptr)
-    , m_color(sf::Color::White)
-    , m_applyColor(false)
     , m_needRecompute(true)
 {
 }
@@ -122,19 +120,6 @@ void ElementSpriteGroup::SetTexture(Texture* _pTexture)
 Texture* ElementSpriteGroup::GetTexture() const
 {
     return m_texture;
-}
-
-void ElementSpriteGroup::SetColor(const sf::Color& color)
-{
-    m_applyColor = true;
-    m_color = color;
-
-    for (size_t i = 0; i < m_items.size(); ++i)
-    {
-        m_items[i]->SetColor(m_color);
-    }
-
-    m_needRecompute = true;
 }
 
 void ElementSpriteGroup::OnSizeChanged()
@@ -230,11 +215,6 @@ size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
 {
     _pNewItem->SetSpriteGroup(this);
     m_items.push_back(_pNewItem);
-
-    if (m_applyColor)
-    {
-        _pNewItem->SetColor(m_color);
-    }
 
     m_needRecompute = true;
     return m_items.size() - 1;

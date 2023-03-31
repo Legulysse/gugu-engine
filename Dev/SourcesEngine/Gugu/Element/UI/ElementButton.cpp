@@ -258,19 +258,19 @@ bool ElementButton::LoadFromXmlImpl(ElementParseContext& context)
             {
                 m_spriteIdle = new ElementSpriteGroup;
                 m_spriteIdle->LoadFromXml(context);
-                m_spriteIdle->SetParent(this, true);
+                m_spriteIdle->SetParent(this);
             }
             else if (nodeElementName && StringEquals(nodeElementName.value(), "Focused") && !m_spriteFocused)
             {
                 m_spriteFocused = new ElementSpriteGroup;
                 m_spriteFocused->LoadFromXml(context);
-                m_spriteFocused->SetParent(this, true);
+                m_spriteFocused->SetParent(this);
             }
             else if (nodeElementName && StringEquals(nodeElementName.value(), "Disabled") && !m_spriteDisabled)
             {
                 m_spriteDisabled = new ElementSpriteGroup;
                 m_spriteDisabled->LoadFromXml(context);
-                m_spriteDisabled->SetParent(this, true);
+                m_spriteDisabled->SetParent(this);
             }
         }
 

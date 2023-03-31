@@ -58,7 +58,7 @@ public:
     void DeleteAllChildren();
 
     // Set the Element's parent, without registering it in the parent's children list.
-    void SetParent(Element* parent, bool recomputeDimensions = false);
+    void SetParent(Element* parent, bool recomputeDimensions = true);
 
     Element* GetParent() const;
     Element* GetTopParent() const;

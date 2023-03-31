@@ -36,7 +36,10 @@ public:
     void ImGuiEnd();
 
     void SetSize(Vector2u size);
+    const Vector2u& GetSize() const;
+
     void SetZoom(float zoomMultiplier);
+    float GetZoom() const;
 
     Vector2f GetMousePickedPosition() const;
     Vector2f GetPickedPosition(const Vector2i& pixelCoords) const;

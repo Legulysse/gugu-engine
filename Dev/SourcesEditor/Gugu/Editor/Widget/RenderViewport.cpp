@@ -124,9 +124,19 @@ void RenderViewport::SetSize(Vector2u size)
     m_root->SetSize(Vector2f(m_size));
 }
 
+const Vector2u& RenderViewport::GetSize() const
+{
+    return m_size;
+}
+
 void RenderViewport::SetZoom(float zoomMultiplier)
 {
     m_zoomMultiplier = zoomMultiplier;
+}
+
+float RenderViewport::GetZoom() const
+{
+    return m_zoomMultiplier;
 }
 
 Vector2f RenderViewport::GetMousePickedPosition() const

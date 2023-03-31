@@ -60,6 +60,12 @@ void ElementWidgetPanel::UpdatePanelImpl(const DeltaTime& dt)
         m_renderViewport->SetZoom(m_zoomFactor);
     }
 
+    Vector2u size = m_renderViewport->GetSize();
+    if (ImGui::InputInt2("Viewport Size", &size))
+    {
+        m_renderViewport->SetSize(size);
+    }
+
     // Viewport.
     m_renderViewport->ImGuiBegin();
     m_renderViewport->ImGuiEnd();

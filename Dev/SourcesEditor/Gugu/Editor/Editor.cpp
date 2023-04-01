@@ -630,6 +630,7 @@ bool Editor::OpenDocument(const std::string& resourceID)
 
     if (newDocument)
     {
+        newDocument->InitializePanel();
         m_documentPanels.push_back(newDocument);
     }
 

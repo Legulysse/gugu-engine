@@ -56,10 +56,11 @@ void ElementWidgetPanel::RebuildWidgetHierarchy()
     m_selectedElement = nullptr;
     SafeDelete(m_widgetRoot);
 
-    m_widgetRoot = m_elementWidget->InstanciateWidget();
-
-    m_renderViewport->GetRoot()->AddChild(m_widgetRoot);
-    m_selectedElement = m_widgetRoot;
+    if (m_widgetRoot = m_elementWidget->InstanciateWidget())
+    {
+        m_renderViewport->GetRoot()->AddChild(m_widgetRoot);
+        m_selectedElement = m_widgetRoot;
+    }
 }
 
 void ElementWidgetPanel::UpdatePanelImpl(const DeltaTime& dt)
@@ -90,9 +91,12 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
         | ImGuiTreeNodeFlags_OpenOnDoubleClick
         | ImGuiTreeNodeFlags_OpenOnArrow;
 
-    ImGui::PushID("_HIERARCHY_TREE");
-    DisplayTreeNode(m_widgetRoot, itemFlags);
-    ImGui::PopID();
+    if (m_widgetRoot)
+    {
+        ImGui::PushID("_HIERARCHY_TREE");
+        DisplayTreeNode(m_widgetRoot, itemFlags);
+        ImGui::PopID();
+    }
 }
 
 void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)

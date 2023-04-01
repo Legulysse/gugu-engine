@@ -51,6 +51,9 @@ Element* ElementWidget::InstanciateWidget() const
 
 bool ElementWidget::UpdateFromInstance(const Element* instance)
 {
+    if (!instance)
+        return nullptr;
+
     Unload();
 
     pugi::xml_document* document = new pugi::xml_document;

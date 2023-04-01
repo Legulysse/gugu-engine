@@ -52,4 +52,10 @@ void TexturePanel::UpdatePanelImpl(const DeltaTime& dt)
     m_renderViewport->ImGuiEnd();
 }
 
+bool TexturePanel::SaveStateImpl(std::string& result)
+{
+    // Currently texture edition is not handled.
+    return false;
+}
+
 }   //namespace gugu

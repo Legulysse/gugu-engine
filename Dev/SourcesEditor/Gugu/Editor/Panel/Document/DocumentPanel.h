@@ -61,8 +61,8 @@ protected:
     bool RedoState();
 
     virtual bool SaveToFileImpl();
-    virtual bool LoadFromStringImpl(const std::string& value);
-    virtual bool SaveToStringImpl(std::string& result);
+    virtual bool SaveStateImpl(std::string& result);
+    virtual bool LoadStateImpl(const std::string& value);
 
     virtual void OnSaved() {}
     virtual void OnUndoRedo() {}

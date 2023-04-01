@@ -132,7 +132,7 @@ bool DocumentPanel::Redo()
 void DocumentPanel::SaveState()
 {
     std::string state;
-    if (SaveToStringImpl(state))
+    if (SaveStateImpl(state))
     {
         // Erase history past the current index.
         if (m_currentUndoStateIndex + 1 < m_undoStates.size())
@@ -161,7 +161,7 @@ bool DocumentPanel::UndoState()
     if (!m_undoStates.empty() && m_currentUndoStateIndex > 0)
     {
         size_t newIndex = m_currentUndoStateIndex - 1;
-        if (LoadFromStringImpl(m_undoStates[newIndex]))
+        if (LoadStateImpl(m_undoStates[newIndex]))
         {
             GetResources()->UpdateResourceDependencies(m_resource);
 
@@ -179,7 +179,7 @@ bool DocumentPanel::RedoState()
     if (!m_undoStates.empty() && m_currentUndoStateIndex + 1 < m_undoStates.size())
     {
         size_t newIndex = m_currentUndoStateIndex + 1;
-        if (LoadFromStringImpl(m_undoStates[newIndex]))
+        if (LoadStateImpl(m_undoStates[newIndex]))
         {
             GetResources()->UpdateResourceDependencies(m_resource);
 
@@ -197,12 +197,12 @@ bool DocumentPanel::SaveToFileImpl()
     return m_resource->SaveToFile();
 }
 
-bool DocumentPanel::LoadFromStringImpl(const std::string& value)
+bool DocumentPanel::LoadStateImpl(const std::string& value)
 {
     return m_resource->LoadFromString(value);
 }
 
-bool DocumentPanel::SaveToStringImpl(std::string& result)
+bool DocumentPanel::SaveStateImpl(std::string& result)
 {
     return m_resource->SaveToString(result);
 }

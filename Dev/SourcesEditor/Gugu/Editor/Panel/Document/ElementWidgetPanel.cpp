@@ -400,11 +400,11 @@ void ElementWidgetPanel::HandleContextMenu(Element* node)
     }
 }
 
-bool ElementWidgetPanel::SaveToStringImpl(std::string& result)
+bool ElementWidgetPanel::SaveStateImpl(std::string& result)
 {
     m_elementWidget->UpdateFromInstance(m_widgetRoot);
 
-    return DocumentPanel::SaveToStringImpl(result);
+    return DocumentPanel::SaveStateImpl(result);
 }
 
 }   //namespace gugu

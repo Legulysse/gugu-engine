@@ -41,7 +41,7 @@ private:
 
     void RebuildWidgetHierarchy();
 
-    virtual bool SaveToStringImpl(std::string& result) override;
+    virtual bool SaveStateImpl(std::string& result) override;
 
 private:
 

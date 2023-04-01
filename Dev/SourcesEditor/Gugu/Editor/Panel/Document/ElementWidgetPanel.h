@@ -30,6 +30,8 @@ public:
 
 private:
 
+    virtual void OnUndoRedo() override;
+
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
     virtual void UpdateHierarchyImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
@@ -37,8 +39,8 @@ private:
     void DisplayTreeNode(Element* node, int itemFlags);
     void HandleContextMenu(Element* node);
 
-    virtual bool SaveToFileImpl() override;
-    virtual bool LoadFromStringImpl(const std::string& value) override;
+    void RebuildWidgetHierarchy();
+
     virtual bool SaveToStringImpl(std::string& result) override;
 
 private:

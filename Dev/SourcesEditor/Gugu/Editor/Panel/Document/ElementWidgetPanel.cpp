@@ -30,19 +30,13 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     , m_widgetRoot(nullptr)
     , m_selectedElement(nullptr)
 {
-    // Setup RenderViewport and Sprite.
+    // Setup RenderViewport.
     m_renderViewport = new RenderViewport(true);
 
-    // Instanciate Widget
-    m_widgetRoot = m_elementWidget->InstanciateWidget();
-
-    m_renderViewport->GetRoot()->AddChild(m_widgetRoot);
-    m_selectedElement = m_widgetRoot;
-
-    //ElementSprite* sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
-    //sprite->SetTexture(m_texture);
-
     m_renderViewport->SetSize(Vector2u(1280, 720));
+
+    // Instanciate Widget
+    RebuildWidgetHierarchy();
 }
 
 ElementWidgetPanel::~ElementWidgetPanel()
@@ -50,6 +44,22 @@ ElementWidgetPanel::~ElementWidgetPanel()
     m_selectedElement = nullptr;
     m_widgetRoot = nullptr;
     SafeDelete(m_renderViewport);
+}
+
+void ElementWidgetPanel::OnUndoRedo()
+{
+    RebuildWidgetHierarchy();
+}
+
+void ElementWidgetPanel::RebuildWidgetHierarchy()
+{
+    m_selectedElement = nullptr;
+    SafeDelete(m_widgetRoot);
+
+    m_widgetRoot = m_elementWidget->InstanciateWidget();
+
+    m_renderViewport->GetRoot()->AddChild(m_widgetRoot);
+    m_selectedElement = m_widgetRoot;
 }
 
 void ElementWidgetPanel::UpdatePanelImpl(const DeltaTime& dt)
@@ -390,21 +400,11 @@ void ElementWidgetPanel::HandleContextMenu(Element* node)
     }
 }
 
-bool ElementWidgetPanel::SaveToFileImpl()
-{
-    return m_elementWidget->SaveInstanceToFile(m_widgetRoot);
-}
-
-bool ElementWidgetPanel::LoadFromStringImpl(const std::string& value)
-{
-    bool result = m_elementWidget->LoadInstanceFromString(value, m_widgetRoot);
-    m_selectedElement = m_widgetRoot;
-    return result;
-}
-
 bool ElementWidgetPanel::SaveToStringImpl(std::string& result)
 {
-    return m_elementWidget->SaveInstanceToString(m_widgetRoot, result);
+    m_elementWidget->UpdateFromInstance(m_widgetRoot);
+
+    return DocumentPanel::SaveToStringImpl(result);
 }
 
 }   //namespace gugu

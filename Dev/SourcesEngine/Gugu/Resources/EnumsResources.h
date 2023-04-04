@@ -33,7 +33,9 @@ namespace EResourceType
 
 enum class EResourceEvent : uint8
 {
+    ResourceUpdated,
     ResourceRemoved,
+    DependencyUpdated,
     DependencyRemoved,
 };
 

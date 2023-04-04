@@ -996,6 +996,36 @@ void ManagerResources::UnregisterResourceListeners(const void* handle)
     }
 }
 
+void ManagerResources::NotifyResourceUpdated(const Resource* resource)
+{
+    auto it = m_resourceDependencies.find(resource);
+    if (it != m_resourceDependencies.end())
+    {
+        // Notify referencers that a dependency has been updated.
+        std::set<Resource*> referencers = it->second.referencers;
+
+        for (const auto& referencer : referencers)
+        {
+            auto itReferencer = m_resourceDependencies.find(referencer);
+            if (itReferencer != m_resourceDependencies.end())
+            {
+                std::vector<ResourceListener> listeners = itReferencer->second.listeners;
+                for (const auto& resourceListener : listeners)
+                {
+                    resourceListener.delegateResourceEvent(referencer, EResourceEvent::DependencyUpdated, resource);
+                }
+            }
+        }
+
+        // Notify the resource itself being updated.
+        std::vector<ResourceListener> listeners = it->second.listeners;
+        for (const auto& resourceListener : listeners)
+        {
+            resourceListener.delegateResourceEvent(resource, EResourceEvent::ResourceUpdated, nullptr);
+        }
+    }
+}
+
 void ManagerResources::NotifyResourceRemoved(const Resource* resource)
 {
     auto it = m_resourceDependencies.find(resource);

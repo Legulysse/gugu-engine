@@ -161,6 +161,8 @@ public:
     void UpdateResourceDependencies(Resource* resource);
     const std::map<const Resource*, ResourceDependencies>& GetResourceDependencies() const;
 
+    void NotifyResourceUpdated(const Resource* resource);
+
 private:
 
     Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);

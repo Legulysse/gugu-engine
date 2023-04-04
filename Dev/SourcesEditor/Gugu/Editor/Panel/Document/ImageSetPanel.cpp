@@ -546,15 +546,6 @@ void ImageSetPanel::OnRemoveSubImage()
 
     SubImage* subImage = m_imageSet->GetSubImage(m_selectedIndex);
 
-    for (auto& document : GetEditor()->GetDocuments())
-    {
-        AnimSetPanel* animSetPanel = dynamic_cast<AnimSetPanel*>(document);
-        if (animSetPanel)
-        {
-            animSetPanel->OnSubImageRemoved(subImage);
-        }
-    }
-
     m_imageSet->DeleteSubImage(subImage);
     m_selectedIndex = Clamp<int>(m_selectedIndex, -1, (int)m_imageSet->GetSubImageCount() - 1);
 
@@ -563,15 +554,6 @@ void ImageSetPanel::OnRemoveSubImage()
 
 void ImageSetPanel::OnRemoveAllSubImages()
 {
-    for (auto& document : GetEditor()->GetDocuments())
-    {
-        AnimSetPanel* animSetPanel = dynamic_cast<AnimSetPanel*>(document);
-        if (animSetPanel)
-        {
-            animSetPanel->OnAllSubImagesRemoved(m_imageSet);
-        }
-    }
-
     m_imageSet->DeleteAllSubImages();
     m_selectedIndex = -1;
 
@@ -656,11 +638,10 @@ void ImageSetPanel::GenerateSubImagesFromSize(const Vector2i& itemSize, const Ve
 
 void ImageSetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    if (event == EResourceEvent::DependencyRemoved)
+    if (event == EResourceEvent::DependencyRemoved
+        || event == EResourceEvent::DependencyUpdated)
     {
         RefreshSpriteTexture();
-
-        RaiseDirty();
     }
 }
 

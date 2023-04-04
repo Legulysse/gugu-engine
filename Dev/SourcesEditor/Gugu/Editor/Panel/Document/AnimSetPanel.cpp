@@ -569,66 +569,14 @@ void AnimSetPanel::CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* 
     }
 }
 
-void AnimSetPanel::OnSubImageRemoved(SubImage* subImage)
-{
-    // TODO: This could be removed when I stop using direct references between resources.
-    bool updated = false;
-
-    const std::vector<Animation*>& animations = m_animSet->GetAnimations();
-    for (size_t i = 0; i < animations.size(); ++i)
-    {
-        const std::vector<AnimationFrame*>& frames = animations[i]->GetFrames();
-        for (size_t ii = 0; ii < frames.size(); ++ii)
-        {
-            if (frames[ii]->GetSubImage() == subImage)
-            {
-                frames[ii]->SetSubImage(nullptr);
-                updated = true;
-            }
-        }
-    }
-
-    if (updated)
-    {
-        RaiseDirty();
-    }
-}
-
-void AnimSetPanel::OnAllSubImagesRemoved(ImageSet* imageSet)
-{
-    // TODO: This could be removed when I stop using direct references between resources.
-    bool updated = false;
-
-    if (m_animSet->GetImageSet() == imageSet)
-    {
-        const std::vector<Animation*>& animations = m_animSet->GetAnimations();
-        for (size_t i = 0; i < animations.size(); ++i)
-        {
-            const std::vector<AnimationFrame*>& frames = animations[i]->GetFrames();
-            for (size_t ii = 0; ii < frames.size(); ++ii)
-            {
-                if (frames[ii]->GetSubImage() != nullptr)
-                {
-                    frames[ii]->SetSubImage(nullptr);
-                    updated = true;
-                }
-            }
-        }
-    }
-
-    if (updated)
-    {
-        RaiseDirty();
-    }
-}
-
 void AnimSetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    if (event == EResourceEvent::DependencyRemoved)
+    if (event == EResourceEvent::DependencyRemoved
+        || event == EResourceEvent::DependencyUpdated)
     {
-        m_spriteAnimation->RestartAnimation();
-
-        RaiseDirty();
+        // TODO: If I keep subimage names in animation frames, I could directly handle retargeting in a OnDependencyUpdated method on the resource itself, and call a Restart here.
+        ReloadCurrentState();
+        SelectAnimation(nullptr);
     }
 }
 

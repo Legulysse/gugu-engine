@@ -57,6 +57,7 @@ public:
 protected:
 
     void SaveState();
+    void ReloadCurrentState();
     bool UndoState();
     bool RedoState();
 

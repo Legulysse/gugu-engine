@@ -156,6 +156,15 @@ void DocumentPanel::SaveState()
     }
 }
 
+void DocumentPanel::ReloadCurrentState()
+{
+    if (!m_undoStates.empty() && LoadStateImpl(m_undoStates[m_currentUndoStateIndex]))
+    {
+        GetResources()->NotifyResourceUpdated(m_resource);
+        GetResources()->UpdateResourceDependencies(m_resource);
+    }
+}
+
 bool DocumentPanel::UndoState()
 {
     if (!m_undoStates.empty() && m_currentUndoStateIndex > 0)
@@ -163,6 +172,7 @@ bool DocumentPanel::UndoState()
         size_t newIndex = m_currentUndoStateIndex - 1;
         if (LoadStateImpl(m_undoStates[newIndex]))
         {
+            GetResources()->NotifyResourceUpdated(m_resource);
             GetResources()->UpdateResourceDependencies(m_resource);
 
             m_currentUndoStateIndex = newIndex;
@@ -181,6 +191,7 @@ bool DocumentPanel::RedoState()
         size_t newIndex = m_currentUndoStateIndex + 1;
         if (LoadStateImpl(m_undoStates[newIndex]))
         {
+            GetResources()->NotifyResourceUpdated(m_resource);
             GetResources()->UpdateResourceDependencies(m_resource);
 
             m_currentUndoStateIndex = newIndex;
@@ -234,6 +245,7 @@ void DocumentPanel::ForceFocus()
 
 void DocumentPanel::RaiseDirty()
 {
+    GetResources()->NotifyResourceUpdated(m_resource);
     GetResources()->UpdateResourceDependencies(m_resource);
 
     SaveState();

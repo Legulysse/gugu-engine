@@ -350,13 +350,12 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
 void ParticleEffectPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    if (event == EResourceEvent::DependencyRemoved)
+    if (event == EResourceEvent::DependencyRemoved
+        || event == EResourceEvent::DependencyUpdated)
     {
         m_particleSystem->Init(m_particleEffect);
         m_particleSystem->Restart();
         m_maxParticleCount = 0;
-
-        RaiseDirty();
     }
 }
 

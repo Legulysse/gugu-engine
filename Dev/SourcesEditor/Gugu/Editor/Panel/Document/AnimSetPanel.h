@@ -36,9 +36,6 @@ public:
     AnimSetPanel(AnimSet* resource);
     virtual ~AnimSetPanel();
 
-    void OnSubImageRemoved(SubImage* subImage);
-    void OnAllSubImagesRemoved(ImageSet* imageSet);
-
 protected:
 
     virtual void OnUndoRedo() override;

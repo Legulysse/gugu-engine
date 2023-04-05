@@ -365,24 +365,39 @@ ElementWidget::~ElementWidget()
 
 Element* ElementWidget::InstanciateWidget() const
 {
-    if (!m_cache)
+    if (!m_data)
         return nullptr;
 
-    pugi::xml_node rootNode = m_cache->child("ElementWidget").child("Element");
-    if (!rootNode)
-        return nullptr;
-
-    if (Element* root = InstanciateElement(rootNode))
+    if (Element* root = InstanciateElement(m_data))
     {
-        ElementParseContext context;
-        context.node = rootNode;
-        root->LoadFromXml(context);
+        ElementDataContext context;
+        context.data = m_data;
+        root->LoadFromData(context);
         return root;
     }
     else
     {
         return nullptr;
     }
+
+    //if (!m_cache)
+    //    return nullptr;
+
+    //pugi::xml_node rootNode = m_cache->child("ElementWidget").child("Element");
+    //if (!rootNode)
+    //    return nullptr;
+
+    //if (Element* root = InstanciateElement(rootNode))
+    //{
+    //    ElementParseContext context;
+    //    context.node = rootNode;
+    //    root->LoadFromXml(context);
+    //    return root;
+    //}
+    //else
+    //{
+    //    return nullptr;
+    //}
 }
 
 bool ElementWidget::UpdateFromInstance(const Element* instance)
@@ -427,15 +442,12 @@ bool ElementWidget::LoadFromFile()
 {
     Unload();
 
-    pugi::xml_document* document = new pugi::xml_document;
-    pugi::xml_parse_result result = document->load_file(GetFileInfo().GetFilePath().c_str());
+    pugi::xml_document document;
+    pugi::xml_parse_result result = document.load_file(GetFileInfo().GetFilePath().c_str());
     if (!result)
-    {
-        SafeDelete(document);
         return false;
-    }
 
-    pugi::xml_node rootNode = document->child("ElementWidget").child("Element");
+    pugi::xml_node rootNode = document.child("ElementWidget").child("Element");
     if (!rootNode)
         return false;
 
@@ -451,8 +463,10 @@ bool ElementWidget::LoadFromFile()
         return false;
     }
 
-    m_cache = document;
     return true;
+
+    //m_cache = document;
+    //return true;
 }
 
 bool ElementWidget::LoadFromString(const std::string& source)
@@ -473,10 +487,28 @@ bool ElementWidget::LoadFromString(const std::string& source)
 
 bool ElementWidget::SaveToFile() const
 {
-    if (!m_cache)
+    if (!m_data)
         return false;
 
-    return m_cache->save_file(GetFileInfo().GetFilePath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+    pugi::xml_document document;
+    pugi::xml_node nodeRoot = document.append_child("ElementWidget");
+    nodeRoot.append_attribute("serializationVersion") = 1;
+
+    pugi::xml_node nodeRootElement = nodeRoot.append_child("Element");
+
+    ElementSaveContext context;
+    context.node = nodeRootElement;
+    if (!m_data->SaveToXml(context))
+    {
+        return false;
+    }
+
+    return document.save_file(GetFileInfo().GetFilePath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+
+    //if (!m_cache)
+    //    return false;
+
+    //return m_cache->save_file(GetFileInfo().GetFilePath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
 }
 
 bool ElementWidget::SaveToString(std::string& result) const

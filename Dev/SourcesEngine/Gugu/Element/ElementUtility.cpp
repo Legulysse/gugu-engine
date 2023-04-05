@@ -64,4 +64,27 @@ ElementData* InstanciateElementData(const pugi::xml_node& node)
     return result;
 }
 
+Element* InstanciateElement(ElementData* data)
+{
+    if (!data)
+        return nullptr;
+
+    Element* result = nullptr;
+
+    if (StringEquals(data->GetSerializedType(), "Element"))
+    {
+        result = new Element;
+    }
+    else if (StringEquals(data->GetSerializedType(), "ElementSprite"))
+    {
+        result = new ElementSprite;
+    }
+    else if (StringEquals(data->GetSerializedType(), "ElementSpriteGroup"))
+    {
+        result = new ElementSpriteGroup;
+    }
+
+    return result;
+}
+
 }   // namespace gugu

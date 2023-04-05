@@ -407,7 +407,7 @@ void ElementWidgetPanel::HandleContextMenu(Element* node)
 
 bool ElementWidgetPanel::SaveStateImpl(std::string& result)
 {
-    m_elementWidget->UpdateFromInstance(m_widgetRoot);
+    //m_elementWidget->UpdateFromInstance(m_widgetRoot);
 
     return DocumentPanel::SaveStateImpl(result);
 }

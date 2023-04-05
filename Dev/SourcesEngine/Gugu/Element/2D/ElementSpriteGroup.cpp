@@ -9,6 +9,7 @@
 
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
@@ -107,6 +108,16 @@ bool ElementSpriteGroupItem::SaveToXmlImpl(ElementSaveContext& context) const
 {
     if (!ElementSpriteBase::SaveToXmlImpl(context))
         return false;
+
+    return true;
+}
+
+bool ElementSpriteGroupItem::LoadFromDataImpl(ElementDataContext& context)
+{
+    if (!ElementSpriteBase::LoadFromDataImpl(context))
+        return false;
+
+    ElementSpriteGroupItemData* spriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(context.data);
 
     return true;
 }
@@ -424,6 +435,50 @@ bool ElementSpriteGroup::SaveToXmlImpl(ElementSaveContext& context) const
         context.node = backupNode;
     }
 
+    return result;
+}
+
+bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
+{
+    if (!Element::LoadFromDataImpl(context))
+        return false;
+
+    ElementSpriteGroupData* spriteGroupData = dynamic_cast<ElementSpriteGroupData*>(context.data);
+    bool result = true;
+
+    if (spriteGroupData->imageSet)
+    {
+        SetTexture(spriteGroupData->imageSet->GetTexture());
+    }
+    else if (spriteGroupData->texture)
+    {
+        SetTexture(spriteGroupData->texture);
+    }
+    else
+    {
+        return false;
+    }
+
+    size_t componentCount = spriteGroupData->components.size();
+    if (componentCount > 0)
+    {
+        ElementData* backupData = context.data;
+
+        for (size_t i = 0; i < componentCount; ++i)
+        {
+            ElementData* componentData = spriteGroupData->components[i];
+            ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
+
+            AddItem(component);
+
+            context.data = componentData;
+            result &= component->LoadFromData(context);
+        }
+
+        context.data = backupData;
+    }
+
+    m_needRecompute = true;
     return result;
 }
 

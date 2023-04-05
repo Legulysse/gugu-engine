@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Element/ElementUtility.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Math/MathUtility.h"
@@ -656,6 +657,35 @@ bool Element::SaveToXml(ElementSaveContext& context) const
     return result;
 }
 
+bool Element::LoadFromData(ElementDataContext& context)
+{
+    bool result = LoadFromDataImpl(context);
+
+    ElementData* elementData = context.data;
+
+    size_t childCount = elementData->children.size();
+    if (childCount > 0)
+    {
+        ElementData* backupData = elementData;
+
+        for (size_t i = 0; i < childCount; ++i)
+        {
+            ElementData* childData = elementData->children[i];
+            if (Element* child = InstanciateElement(childData))
+            {
+                AddChild(child);
+
+                context.data = childData;
+                result &= child->LoadFromData(context);
+            }
+        }
+
+        context.data = backupData;
+    }
+
+    return result;
+}
+
 bool Element::LoadFromXmlImpl(ElementParseContext& context)
 {
     UDim2 dimOrigin; Vector2f origin;
@@ -752,6 +782,53 @@ bool Element::SaveToXmlImpl(ElementSaveContext& context) const
     if (m_flipH)
     {
         context.node.append_child("FlipH").append_attribute("value").set_value(m_flipH);
+    }
+
+    return true;
+}
+
+bool Element::LoadFromDataImpl(ElementDataContext& context)
+{
+    if (context.data->useDimOrigin)
+    {
+        SetUnifiedOrigin(context.data->dimOrigin);
+    }
+    else if (context.data->origin != Vector2::Zero_f)
+    {
+        SetOrigin(context.data->origin);
+    }
+
+    if (context.data->useDimPosition)
+    {
+        SetUnifiedPosition(context.data->dimPosition);
+    }
+    else if (context.data->position != Vector2::Zero_f)
+    {
+        SetPosition(context.data->position);
+    }
+
+    if (context.data->useDimSize)
+    {
+        SetUnifiedSize(context.data->dimSize);
+    }
+    else if (context.data->size != Vector2::Zero_f)
+    {
+        SetSize(context.data->size);
+    }
+
+    if (context.data->rotation != 0.f)
+    {
+        SetRotation(context.data->rotation);
+    }
+
+    if (context.data->flipV)
+    {
+        SetFlipV(context.data->flipV);
+    }
+
+    if (context.data->flipH)
+    {
+        SetFlipH(context.data->flipH);
     }
 
     return true;

@@ -9,6 +9,7 @@
 
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Window/Renderer.h"
@@ -154,6 +155,21 @@ bool ElementSprite::SaveToXmlImpl(ElementSaveContext& context) const
     if (m_texture)
     {
         context.node.append_child("Texture").append_attribute("source").set_value(m_texture->GetID().c_str());
+    }
+
+    return true;
+}
+
+bool ElementSprite::LoadFromDataImpl(ElementDataContext& context)
+{
+    if (!ElementSpriteBase::LoadFromDataImpl(context))
+        return false;
+
+    ElementSpriteData* spriteData = dynamic_cast<ElementSpriteData*>(context.data);
+
+    if (spriteData->texture)
+    {
+        SetTexture(spriteData->texture, false);
     }
 
     return true;

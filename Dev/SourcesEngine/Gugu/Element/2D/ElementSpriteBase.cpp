@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Element/ElementUtility.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
@@ -422,6 +423,41 @@ bool ElementSpriteBase::SaveToXmlImpl(ElementSaveContext& context) const
     if (m_color != sf::Color::White)
     {
         xml::WriteColor(context.node.append_child("Color"), m_color);
+    }
+
+    return true;
+}
+
+bool ElementSpriteBase::LoadFromDataImpl(ElementDataContext& context)
+{
+    if (!Element::LoadFromDataImpl(context))
+        return false;
+
+    ElementSpriteBaseData* spriteData = dynamic_cast<ElementSpriteBaseData*>(context.data);
+
+    if (spriteData->textureRect != sf::IntRect())
+    {
+        SetSubRect(spriteData->textureRect, false);
+    }
+
+    if (spriteData->repeatTexture)
+    {
+        SetRepeatTexture(spriteData->repeatTexture);
+    }
+
+    if (spriteData->flipTextureV)
+    {
+        SetFlipTextureV(spriteData->flipTextureV);
+    }
+
+    if (spriteData->flipTextureH)
+    {
+        SetFlipTextureH(spriteData->flipTextureH);
+    }
+
+    if (spriteData->color != sf::Color::White)
+    {
+        SetColor(spriteData->color);
     }
 
     return true;

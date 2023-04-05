@@ -21,6 +21,7 @@ namespace gugu
     struct InteractionInfos;
     struct ElementParseContext;
     struct ElementSaveContext;
+    struct ElementDataContext;
     class ElementEventHandler;
 }
 
@@ -212,6 +213,8 @@ public:
 
     virtual const std::string& GetSerializedType() const;
 
+    bool LoadFromData(ElementDataContext& context);
+
 protected:
 
     //----------------------------------------------
@@ -224,6 +227,8 @@ protected:
 
     virtual bool LoadFromXmlImpl(ElementParseContext& context);
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const;
+
+    virtual bool LoadFromDataImpl(ElementDataContext& context);
 
     //----------------------------------------------
     // Internal Events

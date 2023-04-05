@@ -44,6 +44,8 @@ protected:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const;
 
+    virtual bool LoadFromDataImpl(ElementDataContext& context) override;
+
 protected:
 
     Texture* m_texture;

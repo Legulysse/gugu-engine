@@ -55,6 +55,8 @@ protected:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
+    virtual bool LoadFromDataImpl(ElementDataContext& context) override;
+
 protected:
 
     // TODO: Rename as TextureRect ? or TextureCoords ? (sfml uses textureRect for sprites and texCoords for vertices).

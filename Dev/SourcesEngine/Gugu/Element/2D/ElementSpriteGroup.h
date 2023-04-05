@@ -36,17 +36,12 @@ public:
     size_t GetCachedVertexCount() const;
     size_t RecomputeItemVertices(sf::VertexArray& vertices, size_t indexFirstVertex);
 
-    virtual const std::string& GetSerializedType() const override;
-
 protected:
 
     virtual void RaiseDirtyVertices() override;
 
     virtual void OnTransformChanged() override;
     virtual void OnVisibleChanged() override;
-
-    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
-    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
     virtual bool LoadFromDataImpl(ElementDataContext& context) override;
 
@@ -73,16 +68,10 @@ public:
 
     void RaiseNeedRecompute();
 
-    bool LoadFromFile(const std::string& _strPath);
-    virtual const std::string& GetSerializedType() const override;
-
 protected:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
-
-    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
-    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
     virtual bool LoadFromDataImpl(ElementDataContext& context) override;
 

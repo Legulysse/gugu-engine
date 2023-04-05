@@ -32,17 +32,12 @@ public:
 
     Texture* GetTexture() const;
 
-    virtual const std::string& GetSerializedType() const override;
-
 protected:
 
     void RecomputeVerticesPositionAndTextureCoords();
     void RecomputeVerticesColor();
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
-
-    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
-    virtual bool SaveToXmlImpl(ElementSaveContext& context) const;
 
     virtual bool LoadFromDataImpl(ElementDataContext& context) override;
 

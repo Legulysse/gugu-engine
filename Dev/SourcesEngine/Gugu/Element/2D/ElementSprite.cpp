@@ -134,32 +134,6 @@ void ElementSprite::RecomputeVerticesColor()
     ElementSpriteBase::RecomputeVerticesColor(&m_vertices[0], m_vertices.getVertexCount());
 }
 
-bool ElementSprite::LoadFromXmlImpl(ElementParseContext& context)
-{
-    if (!ElementSpriteBase::LoadFromXmlImpl(context))
-        return false;
-
-    if (pugi::xml_node textureNode = context.node.child("Texture"))
-    {
-        SetTexture(textureNode.attribute("source").as_string(""), false);
-    }
-
-    return true;
-}
-
-bool ElementSprite::SaveToXmlImpl(ElementSaveContext& context) const
-{
-    if (!ElementSpriteBase::SaveToXmlImpl(context))
-        return false;
-
-    if (m_texture)
-    {
-        context.node.append_child("Texture").append_attribute("source").set_value(m_texture->GetID().c_str());
-    }
-
-    return true;
-}
-
 bool ElementSprite::LoadFromDataImpl(ElementDataContext& context)
 {
     if (!ElementSpriteBase::LoadFromDataImpl(context))
@@ -173,12 +147,6 @@ bool ElementSprite::LoadFromDataImpl(ElementDataContext& context)
     }
 
     return true;
-}
-
-const std::string& ElementSprite::GetSerializedType() const
-{
-    static const std::string serializedType = "ElementSprite";
-    return serializedType;
 }
 
 }   // namespace gugu

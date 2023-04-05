@@ -609,54 +609,6 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
     }
 }
 
-bool Element::LoadFromXml(ElementParseContext& context)
-{
-    bool result = LoadFromXmlImpl(context);
-
-    if (pugi::xml_node childrenNode = context.node.child("Children"))
-    {
-        pugi::xml_node backupNode = context.node;
-
-        for (pugi::xml_node childNode = childrenNode.child("Element"); childNode; childNode = childNode.next_sibling("Element"))
-        {
-            if (Element* child = InstanciateElement(childNode))
-            {
-                AddChild(child);
-
-                context.node = childNode;
-                result &= child->LoadFromXml(context);
-            }
-        }
-
-        context.node = backupNode;
-    }
-
-    return result;
-}
-
-bool Element::SaveToXml(ElementSaveContext& context) const
-{
-    context.node.append_attribute("type").set_value(GetSerializedType().c_str());
-
-    bool result = SaveToXmlImpl(context);
-
-    if (!m_children.empty())
-    {
-        pugi::xml_node childrenNode = context.node.append_child("Children");
-        pugi::xml_node backupNode = context.node;
-
-        for (size_t i = 0; i < m_children.size(); ++i)
-        {
-            context.node = childrenNode.append_child("Element");
-            result &= m_children[i]->SaveToXml(context);
-        }
-
-        context.node = backupNode;
-    }
-
-    return result;
-}
-
 bool Element::LoadFromData(ElementDataContext& context)
 {
     bool result = LoadFromDataImpl(context);
@@ -684,107 +636,6 @@ bool Element::LoadFromData(ElementDataContext& context)
     }
 
     return result;
-}
-
-bool Element::LoadFromXmlImpl(ElementParseContext& context)
-{
-    UDim2 dimOrigin; Vector2f origin;
-    if (xml::TryParseUDim2(context.node.child("UOrigin"), dimOrigin))
-    {
-        SetUnifiedOrigin(dimOrigin);
-    }
-    else if (xml::TryParseVector2f(context.node.child("Origin"), origin))
-    {
-        SetOrigin(origin);
-    }
-
-    UDim2 dimPosition; Vector2f position;
-    if (xml::TryParseUDim2(context.node.child("UPosition"), dimPosition))
-    {
-        SetUnifiedPosition(dimPosition);
-    }
-    else if (xml::TryParseVector2f(context.node.child("Position"), position))
-    {
-        SetPosition(position);
-    }
-
-    UDim2 dimSize; Vector2f size;
-    if (xml::TryParseUDim2(context.node.child("USize"), dimSize))
-    {
-        SetUnifiedSize(dimSize);
-    }
-    else if (xml::TryParseVector2f(context.node.child("Size"), size))
-    {
-        SetSize(size);
-    }
-
-    float rotation;
-    if (xml::TryParseAttribute(context.node.child("Rotation"), "value", rotation))
-    {
-        SetRotation(rotation);
-    }
-
-    bool flipV = false;
-    if (xml::TryParseAttribute(context.node.child("FlipV"), "value", flipV))
-    {
-        SetFlipV(flipV);
-    }
-
-    bool flipH = false;
-    if (xml::TryParseAttribute(context.node.child("FlipH"), "value", flipH))
-    {
-        SetFlipH(flipH);
-    }
-
-    return true;
-}
-
-bool Element::SaveToXmlImpl(ElementSaveContext& context) const
-{
-    if (m_useDimOrigin)
-    {
-        xml::WriteUDim2(context.node.append_child("UOrigin"), m_dimOrigin);
-    }
-    else if (GetOrigin() != Vector2::Zero_f)
-    {
-        xml::WriteVector2f(context.node.append_child("Origin"), GetOrigin());
-    }
-
-    if (m_useDimPosition)
-    {
-        xml::WriteUDim2(context.node.append_child("UPosition"), m_dimPosition);
-    }
-    else if (GetPosition() != Vector2::Zero_f)
-    {
-        xml::WriteVector2f(context.node.append_child("Position"), GetPosition());
-    }
-
-    if (m_useDimSize)
-    {
-        xml::WriteUDim2(context.node.append_child("USize"), m_dimSize);
-    }
-    else if (m_size != Vector2::Zero_f)
-    {
-        xml::WriteVector2f(context.node.append_child("Size"), m_size);
-    }
-
-    float rotation = GetRotation();
-    if (!ApproxEqualToZero(rotation, math::Epsilon3))
-    {
-        context.node.append_child("Rotation").append_attribute("value").set_value(rotation);
-    }
-
-    if (m_flipV)
-    {
-        context.node.append_child("FlipV").append_attribute("value").set_value(m_flipV);
-    }
-
-    if (m_flipH)
-    {
-        context.node.append_child("FlipH").append_attribute("value").set_value(m_flipH);
-    }
-
-    return true;
 }
 
 bool Element::LoadFromDataImpl(ElementDataContext& context)
@@ -832,12 +683,6 @@ bool Element::LoadFromDataImpl(ElementDataContext& context)
     }
 
     return true;
-}
-
-const std::string& Element::GetSerializedType() const
-{
-    static const std::string serializedType = "Element";
-    return serializedType;
 }
 
 }   // namespace gugu

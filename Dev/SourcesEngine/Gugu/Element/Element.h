@@ -208,11 +208,6 @@ public:
     //----------------------------------------------
     // Serialization
 
-    bool LoadFromXml(ElementParseContext& context);
-    bool SaveToXml(ElementSaveContext& context) const;
-
-    virtual const std::string& GetSerializedType() const;
-
     bool LoadFromData(ElementDataContext& context);
 
 protected:
@@ -224,9 +219,6 @@ protected:
 
     //----------------------------------------------
     // Serialization
-
-    virtual bool LoadFromXmlImpl(ElementParseContext& context);
-    virtual bool SaveToXmlImpl(ElementSaveContext& context) const;
 
     virtual bool LoadFromDataImpl(ElementDataContext& context);
 

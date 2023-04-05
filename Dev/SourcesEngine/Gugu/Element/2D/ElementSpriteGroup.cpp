@@ -96,22 +96,6 @@ size_t ElementSpriteGroupItem::RecomputeItemVertices(sf::VertexArray& vertices, 
     return m_cachedVertexCount;
 }
 
-bool ElementSpriteGroupItem::LoadFromXmlImpl(ElementParseContext& context)
-{
-    if (!ElementSpriteBase::LoadFromXmlImpl(context))
-        return false;
-
-    return true;
-}
-
-bool ElementSpriteGroupItem::SaveToXmlImpl(ElementSaveContext& context) const
-{
-    if (!ElementSpriteBase::SaveToXmlImpl(context))
-        return false;
-
-    return true;
-}
-
 bool ElementSpriteGroupItem::LoadFromDataImpl(ElementDataContext& context)
 {
     if (!ElementSpriteBase::LoadFromDataImpl(context))
@@ -120,12 +104,6 @@ bool ElementSpriteGroupItem::LoadFromDataImpl(ElementDataContext& context)
     ElementSpriteGroupItemData* spriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(context.data);
 
     return true;
-}
-
-const std::string& ElementSpriteGroupItem::GetSerializedType() const
-{
-    static const std::string serializedType = "ElementSpriteGroupItem";
-    return serializedType;
 }
 
 
@@ -265,179 +243,6 @@ const std::vector<ElementSpriteGroupItem*>& ElementSpriteGroup::GetItems() const
     return m_items;
 }
 
-bool ElementSpriteGroup::LoadFromFile(const std::string& _strPath)
-{
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(GetResources()->GetResourceFilePath(_strPath).c_str());
-    if (!result)
-        return false;
-
-    pugi::xml_node nodeRoot = document.child("Element");
-    if (!nodeRoot)
-        return false;
-
-    pugi::xml_attribute nodeRootType = nodeRoot.attribute("type");
-    if (!nodeRootType || !StringEquals(nodeRootType.value(), "ElementSpriteGroup"))
-        return false;
-
-    ElementParseContext context;
-    context.node = nodeRoot;
-    return LoadFromXml(context);
-}
-
-bool ElementSpriteGroup::LoadFromXmlImpl(ElementParseContext& context)
-{
-    if (!Element::LoadFromXmlImpl(context))
-        return false;
-
-    // Internal function for parsing components, either from a template file or from the root file.
-    auto loadComponentsFromXml = [this](ElementParseContext& context, ImageSet* imageSet, const FormatParameters* templateAliases)
-    {
-        pugi::xml_node nodeComponents = context.node.child("Components");
-        if (nodeComponents)
-        {
-            pugi::xml_node backupNode = context.node;
-
-            for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
-            {
-                ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
-
-                // Parse default ElementSpriteBase data.
-                context.node = nodeComponent;
-                component->LoadFromXml(context);
-
-                // Read additional SubImage data (TextureRect is handled in the ElementSpriteBase parser).
-                if (imageSet)
-                {
-                    pugi::xml_attribute attrSubImage = nodeComponent.attribute("subImage");
-                    if (attrSubImage)
-                    {
-                        SubImage* subImage = nullptr;
-                        if (templateAliases)
-                        {
-                            subImage = imageSet->GetSubImage(StringFormat(attrSubImage.as_string(), *templateAliases));
-                        }
-                        else
-                        {
-                            subImage = imageSet->GetSubImage(attrSubImage.as_string());
-                        }
-
-                        if (subImage)
-                        {
-                            component->SetSubRect(subImage->GetRect());
-                        }
-                    }
-                }
-
-                // Finalize.
-                AddItem(component);
-            }
-
-            context.node = backupNode;
-        }
-    };
-
-    // Either use an ImageSet + SubImages, or a Texture + Rects
-    ImageSet* imageSet = nullptr;
-    Texture* texture = nullptr;
-
-    pugi::xml_node nodeImageSet = context.node.child("ImageSet");
-    if (!nodeImageSet.empty())
-    {
-        std::string imageSetID = nodeImageSet.attribute("source").as_string("");
-        imageSet = GetResources()->GetImageSet(imageSetID);
-    }
-
-    if (!imageSet)
-    {
-        pugi::xml_node nodeTexture = context.node.child("Texture");
-        if (!nodeTexture.empty())
-        {
-            std::string textureID = nodeTexture.attribute("source").as_string("");
-            texture = GetResources()->GetTexture(textureID);
-        }
-    }
-
-    if (imageSet)
-    {
-        SetTexture(imageSet->GetTexture());
-    }
-    else if (texture)
-    {
-        SetTexture(texture);
-    }
-    else
-    {
-        return false;
-    }
-
-    // Parse components from the template.
-    pugi::xml_node nodeTemplate = context.node.child("Template");
-    if (nodeTemplate)
-    {
-        pugi::xml_attribute nodeTemplateSource = nodeTemplate.attribute("source");
-        if (nodeTemplateSource)
-        {
-            FormatParameters templateAliases;
-            for (pugi::xml_node nodeAlias = nodeTemplate.child("Alias"); nodeAlias; nodeAlias = nodeAlias.next_sibling("Alias"))
-            {
-                templateAliases.Add(nodeAlias.attribute("name").as_string(), nodeAlias.attribute("value").as_string());
-            }
-
-            pugi::xml_document document;
-            pugi::xml_parse_result result = document.load_file(GetResources()->GetResourceFilePath(nodeTemplateSource.as_string()).c_str());
-            if (result)
-            {
-                pugi::xml_node nodeTemplateRoot = document.child("Template");
-                if (nodeTemplateRoot)
-                {
-                    pugi::xml_node backupNode = context.node;
-
-                    context.node = nodeTemplateRoot;
-                    loadComponentsFromXml(context, imageSet, &templateAliases);
-
-                    context.node = backupNode;
-                }
-            }
-        }
-    }
-
-    // Parse components from the file.
-    loadComponentsFromXml(context, imageSet, nullptr);
-
-    m_needRecompute = true;
-    return true;
-}
-
-bool ElementSpriteGroup::SaveToXmlImpl(ElementSaveContext& context) const
-{
-    if (!Element::SaveToXmlImpl(context))
-        return false;
-
-    bool result = true;
-
-    if (m_texture)
-    {
-        context.node.append_child("Texture").append_attribute("source").set_value(m_texture->GetID().c_str());
-    }
-
-    if (!m_items.empty())
-    {
-        pugi::xml_node componentsNode = context.node.append_child("Components");
-        pugi::xml_node backupNode = context.node;
-
-        for (size_t i = 0; i < m_items.size(); ++i)
-        {
-            context.node = componentsNode.append_child("Component");
-            result &= m_items[i]->SaveToXml(context);
-        }
-
-        context.node = backupNode;
-    }
-
-    return result;
-}
-
 bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
 {
     if (!Element::LoadFromDataImpl(context))
@@ -480,12 +285,6 @@ bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
 
     m_needRecompute = true;
     return result;
-}
-
-const std::string& ElementSpriteGroup::GetSerializedType() const
-{
-    static const std::string serializedType = "ElementSpriteGroup";
-    return serializedType;
 }
 
 }   // namespace gugu

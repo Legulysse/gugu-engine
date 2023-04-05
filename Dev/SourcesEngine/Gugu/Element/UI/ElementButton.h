@@ -55,8 +55,6 @@ public:
 
     ElementText* GetElementText() const;
 
-    bool LoadFromFile(const std::string& path);
-
 protected:
 
     void OnMousePressed(const InteractionInfos& interactionInfos);
@@ -69,7 +67,7 @@ protected:
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
     
-    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    //virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
 
 protected:
 

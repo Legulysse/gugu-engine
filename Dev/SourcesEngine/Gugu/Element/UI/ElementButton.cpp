@@ -218,26 +218,7 @@ ElementText* ElementButton::GetElementText() const
     return m_text;
 }
 
-bool ElementButton::LoadFromFile(const std::string& path)
-{
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(GetResources()->GetResourceFilePath(path).c_str());
-    if (!result)
-        return false;
-
-    pugi::xml_node nodeRoot = document.child("Element");
-    if (!nodeRoot)
-        return false;
-
-    pugi::xml_attribute nodeRootType = nodeRoot.attribute("type");
-    if (!nodeRootType || !StringEquals(nodeRootType.value(), "ElementButton"))
-        return false;
-
-    ElementParseContext context;
-    context.node = nodeRoot;
-    return LoadFromXml(context);
-}
-
+/*
 bool ElementButton::LoadFromXmlImpl(ElementParseContext& context)
 {
     if (!Element::LoadFromXmlImpl(context))
@@ -280,6 +261,6 @@ bool ElementButton::LoadFromXmlImpl(ElementParseContext& context)
     m_currentSprite = m_spriteIdle;
 
     return m_currentSprite != nullptr;
-}
+}*/
 
 }   // namespace gugu

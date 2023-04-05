@@ -13,6 +13,7 @@ namespace gugu
     class DeltaTime;
     class RenderViewport;
     class ElementWidget;
+    class ElementData;
     class Element;
 }
 
@@ -36,8 +37,8 @@ private:
     virtual void UpdateHierarchyImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
-    void DisplayTreeNode(Element* node, int itemFlags);
-    void HandleContextMenu(Element* node);
+    void DisplayTreeNode(ElementData* node, int itemFlags);
+    void HandleContextMenu(ElementData* node);
 
     void RebuildWidgetHierarchy();
 
@@ -47,7 +48,9 @@ private:
     float m_zoomFactor;
 
     ElementWidget* m_elementWidget;
-    Element* m_widgetRoot;
+    ElementData* m_widgetRootData;
+    Element* m_widgetRootElement;
+    ElementData* m_selectedElementData;
     Element* m_selectedElement;
 };
 

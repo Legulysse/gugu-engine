@@ -27,22 +27,28 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     , m_elementWidget(resource)
     , m_renderViewport(nullptr)
     , m_zoomFactor(1.f)
-    , m_widgetRoot(nullptr)
+    , m_widgetRootData(nullptr)
+    , m_widgetRootElement(nullptr)
+    , m_selectedElementData(nullptr)
     , m_selectedElement(nullptr)
 {
     // Setup RenderViewport.
     m_renderViewport = new RenderViewport(true);
-
     m_renderViewport->SetSize(Vector2u(1280, 720));
 
     // Instanciate Widget
+    m_widgetRootData = m_elementWidget->GetData();
+
     RebuildWidgetHierarchy();
 }
 
 ElementWidgetPanel::~ElementWidgetPanel()
 {
+    m_widgetRootData = nullptr;
+    m_widgetRootElement = nullptr;
+    m_selectedElementData = nullptr;
     m_selectedElement = nullptr;
-    m_widgetRoot = nullptr;
+
     SafeDelete(m_renderViewport);
 }
 
@@ -53,14 +59,16 @@ void ElementWidgetPanel::OnUndoRedo()
 
 void ElementWidgetPanel::RebuildWidgetHierarchy()
 {
+    m_selectedElementData = nullptr;
     m_selectedElement = nullptr;
-    SafeDelete(m_widgetRoot);
+    SafeDelete(m_widgetRootElement);
 
-    m_widgetRoot = m_elementWidget->InstanciateWidget();
-    if (m_widgetRoot)
+    m_widgetRootElement = m_elementWidget->InstanciateWidget();
+    if (m_widgetRootElement)
     {
-        m_renderViewport->GetRoot()->AddChild(m_widgetRoot);
-        m_selectedElement = m_widgetRoot;
+        m_renderViewport->GetRoot()->AddChild(m_widgetRootElement);
+        m_selectedElementData = m_widgetRootData;
+        m_selectedElement = m_widgetRootElement;
     }
 }
 
@@ -92,54 +100,56 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
         | ImGuiTreeNodeFlags_OpenOnDoubleClick
         | ImGuiTreeNodeFlags_OpenOnArrow;
 
-    if (m_widgetRoot)
+    if (m_widgetRootData)
     {
         ImGui::PushID("_HIERARCHY_TREE");
-        DisplayTreeNode(m_widgetRoot, itemFlags);
+        DisplayTreeNode(m_widgetRootData, itemFlags);
         ImGui::PopID();
     }
 }
 
 void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 {
-    if (!m_selectedElement)
+    if (!m_selectedElementData)
         return;
 
     ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
 
+    ElementData* elementData = m_selectedElementData;
     Element* element = m_selectedElement;
     if (ImGui::CollapsingHeader("Common", headerFlags))
     {
         // Origin
-        bool useUnifiedOrigin = element->GetUseUnifiedOrigin();
-
-        ImGui::BeginDisabled(useUnifiedOrigin);
-        Vector2f origin = element->GetOrigin();
-        if (ImGui::InputFloat2("Origin", &origin))
+        ImGui::BeginDisabled(elementData->useDimOrigin);
+        if (ImGui::InputFloat2("Origin", &elementData->origin))
         {
-            element->SetOrigin(origin);
+            element->SetOrigin(elementData->origin);
             RaiseDirty();
         }
         ImGui::EndDisabled();
 
-        if (ImGui::Checkbox("Use Unified Origin", &useUnifiedOrigin))
+        if (ImGui::Checkbox("Use Unified Origin", &elementData->useDimOrigin))
         {
-            if (useUnifiedOrigin)
+            if (elementData->useDimOrigin)
             {
-                element->SetUnifiedOrigin(UDim2(Vector2::Zero_f, origin));
+                elementData->dimOrigin = UDim2(Vector2::Zero_f, elementData->origin);
+                elementData->origin = Vector2::Zero_f;
+                element->SetUnifiedOrigin(elementData->dimOrigin);
                 RaiseDirty();
             }
             else
             {
+                elementData->origin = elementData->dimOrigin.absolute;
+                elementData->dimOrigin = UDim2::ZERO;
                 element->ResetUnifiedOrigin();
+                RaiseDirty();
             }
         }
 
-        ImGui::BeginDisabled(!useUnifiedOrigin);
-        UDim2 unifiedOrigin = element->GetUnifiedOrigin();
-        if (ImGui::InputFloat4("Unified Origin", &unifiedOrigin))
+        ImGui::BeginDisabled(!elementData->useDimOrigin);
+        if (ImGui::InputFloat4("Unified Origin", &elementData->dimOrigin))
         {
-            element->SetUnifiedOrigin(unifiedOrigin);
+            element->SetUnifiedOrigin(elementData->dimOrigin);
             RaiseDirty();
         }
         ImGui::EndDisabled();
@@ -147,35 +157,36 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         ImGui::Spacing();
 
         // Position
-        bool useUnifiedPosition = element->GetUseUnifiedPosition();
-
-        ImGui::BeginDisabled(useUnifiedPosition);
-        Vector2f position = element->GetPosition();
-        if (ImGui::InputFloat2("Position", &position))
+        ImGui::BeginDisabled(elementData->useDimPosition);
+        if (ImGui::InputFloat2("Position", &elementData->position))
         {
-            element->SetPosition(position);
+            element->SetPosition(elementData->position);
             RaiseDirty();
         }
         ImGui::EndDisabled();
 
-        if (ImGui::Checkbox("Use Unified Position", &useUnifiedPosition))
+        if (ImGui::Checkbox("Use Unified Position", &elementData->useDimPosition))
         {
-            if (useUnifiedPosition)
+            if (elementData->useDimPosition)
             {
-                element->SetUnifiedPosition(UDim2(Vector2::Zero_f, position));
+                elementData->dimPosition = UDim2(Vector2::Zero_f, elementData->position);
+                elementData->position = Vector2::Zero_f;
+                element->SetUnifiedPosition(elementData->dimPosition);
                 RaiseDirty();
             }
             else
             {
+                elementData->position = elementData->dimPosition.absolute;
+                elementData->dimPosition = UDim2::ZERO;
                 element->ResetUnifiedPosition();
+                RaiseDirty();
             }
         }
 
-        ImGui::BeginDisabled(!useUnifiedPosition);
-        UDim2 unifiedPosition = element->GetUnifiedPosition();
-        if (ImGui::InputFloat4("Unified Position", &unifiedPosition))
+        ImGui::BeginDisabled(!elementData->useDimPosition);
+        if (ImGui::InputFloat4("Unified Position", &elementData->dimPosition))
         {
-            element->SetUnifiedPosition(unifiedPosition);
+            element->SetUnifiedPosition(elementData->dimPosition);
             RaiseDirty();
         }
         ImGui::EndDisabled();
@@ -183,35 +194,36 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         ImGui::Spacing();
 
         // Size
-        bool useUnifiedSize = element->GetUseUnifiedSize();
-
-        ImGui::BeginDisabled(useUnifiedSize);
-        Vector2f size = element->GetSize();
-        if (ImGui::InputFloat2("Size", &size))
+        ImGui::BeginDisabled(elementData->useDimSize);
+        if (ImGui::InputFloat2("Size", &elementData->size))
         {
-            element->SetSize(size);
+            element->SetSize(elementData->size);
             RaiseDirty();
         }
         ImGui::EndDisabled();
 
-        if (ImGui::Checkbox("Use Unified Size", &useUnifiedSize))
+        if (ImGui::Checkbox("Use Unified Size", &elementData->useDimSize))
         {
-            if (useUnifiedSize)
+            if (elementData->useDimSize)
             {
-                element->SetUnifiedSize(UDim2(Vector2::Zero_f, size));
+                elementData->dimSize = UDim2(Vector2::Zero_f, elementData->size);
+                elementData->size = Vector2::Zero_f;
+                element->SetUnifiedSize(elementData->dimSize);
                 RaiseDirty();
             }
             else
             {
+                elementData->size = elementData->dimSize.absolute;
+                elementData->dimSize = UDim2::ZERO;
                 element->ResetUnifiedSize();
+                RaiseDirty();
             }
         }
 
-        ImGui::BeginDisabled(!useUnifiedSize);
-        UDim2 unifiedSize = element->GetUnifiedSize();
-        if (ImGui::InputFloat4("Unified Size", &unifiedSize))
+        ImGui::BeginDisabled(!elementData->useDimSize);
+        if (ImGui::InputFloat4("Unified Size", &elementData->dimSize))
         {
-            element->SetUnifiedSize(unifiedSize);
+            element->SetUnifiedSize(elementData->dimSize);
             RaiseDirty();
         }
         ImGui::EndDisabled();
@@ -219,25 +231,22 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         ImGui::Spacing();
 
         // Rotation
-        float rotation = element->GetRotation();
-        if (ImGui::InputFloat("Rotation", &rotation))
+        if (ImGui::InputFloat("Rotation", &elementData->rotation))
         {
-            element->SetRotation(rotation);
+            element->SetRotation(elementData->rotation);
             RaiseDirty();
         }
 
         // Flip
-        bool flipV = element->GetFlipV();
-        if (ImGui::Checkbox("Flip V", &flipV))
+        if (ImGui::Checkbox("Flip V", &elementData->flipV))
         {
-            element->SetFlipV(flipV);
+            element->SetFlipV(elementData->flipV);
             RaiseDirty();
         }
 
-        bool flipH = element->GetFlipH();
-        if (ImGui::Checkbox("Flip H", &flipH))
+        if (ImGui::Checkbox("Flip H", &elementData->flipH))
         {
-            element->SetFlipH(flipH);
+            element->SetFlipH(elementData->flipH);
             RaiseDirty();
         }
     }
@@ -307,18 +316,18 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     }
 }
 
-void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
+void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
 {
     ImGuiTreeNodeFlags nodeFlags = itemFlags;
 
-    const std::vector<Element*>& children = node->GetChildren();
+    const std::vector<ElementData*>& children = node->children;
 
     if (children.empty())
     {
         nodeFlags |= ImGuiTreeNodeFlags_Leaf;
     }
 
-    if (node == m_selectedElement)
+    if (node == m_selectedElementData)
     {
         nodeFlags |= ImGuiTreeNodeFlags_Selected;
     }
@@ -327,7 +336,8 @@ void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
 
     if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
     {
-        m_selectedElement = node;
+        m_selectedElementData = node;
+        m_selectedElement = nullptr;
     }
 
     // Context menu.
@@ -335,9 +345,9 @@ void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
 
     if (isOpen)
     {
-        if (ElementSpriteGroup* nodeSpriteGroup = dynamic_cast<ElementSpriteGroup*>(node))
+        if (ElementSpriteGroupData* nodeSpriteGroup = dynamic_cast<ElementSpriteGroupData*>(node))
         {
-            const std::vector<ElementSpriteGroupItem*>& components = nodeSpriteGroup->GetItems();
+            const std::vector<ElementSpriteGroupItemData*>& components = nodeSpriteGroup->components;
 
             ImGuiTreeNodeFlags componentFlags = ImGuiTreeNodeFlags_Leaf;
             ImGui::TreeNodeEx("<Components>", componentFlags);
@@ -363,7 +373,7 @@ void ElementWidgetPanel::DisplayTreeNode(Element* node, int itemFlags)
     }
 }
 
-void ElementWidgetPanel::HandleContextMenu(Element* node)
+void ElementWidgetPanel::HandleContextMenu(ElementData* node)
 {
     if (ImGui::BeginPopupContextItem())
     {
@@ -371,29 +381,29 @@ void ElementWidgetPanel::HandleContextMenu(Element* node)
         {
             if (ImGui::MenuItem("Element"))
             {
-                node->AddChild<Element>();
+                node->children.push_back(new ElementData);
                 RaiseDirty();
             }
 
             if (ImGui::MenuItem("Element Sprite"))
             {
-                node->AddChild<ElementSprite>();
+                node->children.push_back(new ElementSpriteData);
                 RaiseDirty();
             }
 
             if (ImGui::MenuItem("Element Sprite Group"))
             {
-                node->AddChild<ElementSpriteGroup>();
+                node->children.push_back(new ElementSpriteGroupData);
                 RaiseDirty();
             }
 
-            if (ElementSpriteGroup* nodeSpriteGroup = dynamic_cast<ElementSpriteGroup*>(node))
+            if (ElementSpriteGroupData* nodeSpriteGroup = dynamic_cast<ElementSpriteGroupData*>(node))
             {
                 ImGui::Separator();
 
                 if (ImGui::MenuItem("Element Sprite Group Item"))
                 {
-                    nodeSpriteGroup->AddItem(new ElementSpriteGroupItem);
+                    nodeSpriteGroup->components.push_back(new ElementSpriteGroupItemData);
                     RaiseDirty();
                 }
             }

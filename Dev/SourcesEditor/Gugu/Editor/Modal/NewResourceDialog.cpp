@@ -129,10 +129,7 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
         }
         else if (m_resourceType == EResourceType::ElementWidget)
         {
-            ElementWidget* elementWidget = new ElementWidget;
-            elementWidget->ResetWidget();
-
-            newResource = elementWidget;
+            newResource = new ElementWidget;
         }
         else if (m_resourceType == EResourceType::Datasheet)
         {

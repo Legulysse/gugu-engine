@@ -123,16 +123,9 @@ public:
     virtual ~ElementWidget();
     
     Element* InstanciateWidget() const;
-    bool UpdateFromInstance(const Element* instance);
-    void ResetWidget();
+    ElementData* GetData() const;
 
     virtual EResourceType::Type GetResourceType() const override;
-
-    virtual bool LoadFromFile() override;
-    virtual bool LoadFromString(const std::string& source) override;
-
-    virtual bool SaveToFile() const override;
-    virtual bool SaveToString(std::string& result) const override;
 
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
     virtual void OnDependencyRemoved(const Resource* removedDependency) override;
@@ -140,11 +133,11 @@ public:
 protected:
 
     virtual void Unload() override;
+    virtual bool LoadFromXml(const pugi::xml_document& document) override;
+    virtual bool SaveToXml(pugi::xml_document& document) const override;
 
 protected:
 
-    // TODO: I could provide an option to avoid caching xml trees (its mostly useful for editor).
-    pugi::xml_document* m_cache;
     ElementData* m_data;
 };
 

@@ -41,8 +41,6 @@ private:
 
     void RebuildWidgetHierarchy();
 
-    virtual bool SaveStateImpl(std::string& result) override;
-
 private:
 
     RenderViewport* m_renderViewport;

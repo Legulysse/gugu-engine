@@ -11,6 +11,7 @@
 namespace gugu
 {
     class Element;
+    class ElementData;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -30,5 +31,6 @@ struct ElementSaveContext
 
 Element* InstanciateElement(const pugi::xml_node& node);
 Element* InstanciateElement(std::string_view elementType);
+ElementData* InstanciateElementData(const pugi::xml_node& node);
 
 }   // namespace gugu

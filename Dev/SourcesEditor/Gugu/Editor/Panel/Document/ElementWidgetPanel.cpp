@@ -56,7 +56,8 @@ void ElementWidgetPanel::RebuildWidgetHierarchy()
     m_selectedElement = nullptr;
     SafeDelete(m_widgetRoot);
 
-    if (m_widgetRoot = m_elementWidget->InstanciateWidget())
+    m_widgetRoot = m_elementWidget->InstanciateWidget();
+    if (m_widgetRoot)
     {
         m_renderViewport->GetRoot()->AddChild(m_widgetRoot);
         m_selectedElement = m_widgetRoot;

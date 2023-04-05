@@ -10,6 +10,7 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -37,6 +38,27 @@ Element* InstanciateElement(std::string_view elementType)
     else if (StringEquals(elementType, "ElementSpriteGroup"))
     {
         result = new ElementSpriteGroup;
+    }
+
+    return result;
+}
+
+ElementData* InstanciateElementData(const pugi::xml_node& node)
+{
+    std::string_view elementType = node.attribute("type").value();
+    ElementData* result = nullptr;
+
+    if (StringEquals(elementType, "Element"))
+    {
+        result = new ElementData;
+    }
+    else if (StringEquals(elementType, "ElementSprite"))
+    {
+        result = new ElementSpriteData;
+    }
+    else if (StringEquals(elementType, "ElementSpriteGroup"))
+    {
+        result = new ElementSpriteGroupData;
     }
 
     return result;

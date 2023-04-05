@@ -494,6 +494,7 @@ bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, c
         pInfo->fileInfo = _kFileInfos;
         pInfo->resource = nullptr;
 
+        // TODO: investigate the use of hint iterator here, seems like a bad usage.
         m_resources.insert(iteAsset, std::make_pair(mapKey, pInfo));
         
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Registered Resource : ID = {0}, Path = {1}"

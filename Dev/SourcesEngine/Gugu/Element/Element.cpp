@@ -13,6 +13,7 @@
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Logger.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -614,6 +615,20 @@ bool Element::LoadFromData(ElementDataContext& context)
     bool result = LoadFromDataImpl(context);
 
     ElementData* elementData = context.data;
+    context.elementFromData.insert(std::make_pair(elementData, this));
+
+    if (!elementData->name.empty())
+    {
+        auto it = context.elementFromName.find(elementData->name);
+        if (it == context.elementFromName.end())
+        {
+            context.elementFromName.insert(std::make_pair(elementData->name, this));
+        }
+        else
+        {
+            GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementData->name));
+        }
+    }
 
     size_t childCount = elementData->children.size();
     if (childCount > 0)

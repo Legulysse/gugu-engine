@@ -14,6 +14,7 @@ namespace gugu
     class RenderViewport;
     class ElementWidget;
     class ElementData;
+    struct ElementDataContext;
     class Element;
 }
 
@@ -48,6 +49,7 @@ private:
     float m_zoomFactor;
 
     ElementWidget* m_elementWidget;
+    ElementDataContext* m_dataContext;
     ElementData* m_widgetRootData;
     Element* m_widgetRootElement;
     ElementData* m_selectedElementData;

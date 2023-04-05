@@ -27,6 +27,7 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     , m_elementWidget(resource)
     , m_renderViewport(nullptr)
     , m_zoomFactor(1.f)
+    , m_dataContext(nullptr)
     , m_widgetRootData(nullptr)
     , m_widgetRootElement(nullptr)
     , m_selectedElementData(nullptr)
@@ -49,6 +50,7 @@ ElementWidgetPanel::~ElementWidgetPanel()
     m_selectedElementData = nullptr;
     m_selectedElement = nullptr;
 
+    SafeDelete(m_dataContext);
     SafeDelete(m_renderViewport);
 }
 
@@ -62,8 +64,10 @@ void ElementWidgetPanel::RebuildWidgetHierarchy()
     m_selectedElementData = nullptr;
     m_selectedElement = nullptr;
     SafeDelete(m_widgetRootElement);
+    SafeDelete(m_dataContext);
 
-    m_widgetRootElement = m_elementWidget->InstanciateWidget();
+    m_dataContext = new ElementDataContext;
+    m_widgetRootElement = m_elementWidget->InstanciateWidget(*m_dataContext);
     if (m_widgetRootElement)
     {
         m_renderViewport->GetRoot()->AddChild(m_widgetRootElement);
@@ -337,7 +341,7 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
     if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
     {
         m_selectedElementData = node;
-        m_selectedElement = nullptr;
+        m_selectedElement = m_dataContext->elementFromData[node];
     }
 
     // Context menu.

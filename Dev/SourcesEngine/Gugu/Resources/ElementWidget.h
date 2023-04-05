@@ -38,6 +38,7 @@ class ElementData
 {
 public:
 
+    std::string name;
     std::vector<ElementData*> children;
 
     Vector2f origin;
@@ -123,6 +124,7 @@ public:
     virtual ~ElementWidget();
     
     Element* InstanciateWidget() const;
+    Element* InstanciateWidget(ElementDataContext& context) const;
     ElementData* GetData() const;
 
     virtual EResourceType::Type GetResourceType() const override;

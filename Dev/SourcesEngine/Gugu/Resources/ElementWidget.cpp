@@ -364,14 +364,21 @@ ElementWidget::~ElementWidget()
 
 Element* ElementWidget::InstanciateWidget() const
 {
+    ElementDataContext context;
+    return InstanciateWidget(context);
+}
+
+Element* ElementWidget::InstanciateWidget(ElementDataContext& context) const
+{
     if (!m_data)
         return nullptr;
 
     if (Element* root = InstanciateElement(m_data))
     {
-        ElementDataContext context;
         context.data = m_data;
         root->LoadFromData(context);
+
+        context.data = m_data;
         return root;
     }
     else

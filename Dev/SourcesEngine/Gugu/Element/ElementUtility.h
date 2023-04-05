@@ -5,6 +5,8 @@
 
 #include <pugixml.hpp>
 
+#include <map>
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -32,6 +34,9 @@ struct ElementSaveContext
 struct ElementDataContext
 {
     ElementData* data;
+
+    std::map<ElementData*, Element*> elementFromData;
+    std::map<std::string, Element*> elementFromName;
 };
 
 Element* InstanciateElement(const pugi::xml_node& node);

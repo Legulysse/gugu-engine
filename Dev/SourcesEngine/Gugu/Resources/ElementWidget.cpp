@@ -221,7 +221,16 @@ bool ElementSpriteData::LoadFromXmlImpl(ElementParseContext& context)
     if (!ElementSpriteBaseData::LoadFromXmlImpl(context))
         return false;
 
-    if (pugi::xml_node textureNode = context.node.child("Texture"))
+    if (pugi::xml_node nodeImageSet = context.node.child("ImageSet"))
+    {
+        imageSet = GetResources()->GetImageSet(nodeImageSet.attribute("source").as_string(""));
+
+        if (pugi::xml_node subImageNode = context.node.child("SubImage"))
+        {
+            subImageName = subImageNode.attribute("name").as_string("");
+        }
+    }
+    else if (pugi::xml_node textureNode = context.node.child("Texture"))
     {
         texture = GetResources()->GetTexture(textureNode.attribute("source").as_string(""));
     }
@@ -234,7 +243,16 @@ bool ElementSpriteData::SaveToXmlImpl(ElementSaveContext& context) const
     if (!ElementSpriteBaseData::SaveToXmlImpl(context))
         return false;
 
-    if (texture)
+    if (imageSet)
+    {
+        context.node.append_child("ImageSet").append_attribute("source").set_value(imageSet->GetID().c_str());
+
+        if (!subImageName.empty())
+        {
+            context.node.append_child("SubImage").append_attribute("name").set_value(subImageName.c_str());
+        }
+    }
+    else if (texture)
     {
         context.node.append_child("Texture").append_attribute("source").set_value(texture->GetID().c_str());
     }
@@ -253,6 +271,11 @@ bool ElementSpriteGroupItemData::LoadFromXmlImpl(ElementParseContext& context)
     if (!ElementSpriteBaseData::LoadFromXmlImpl(context))
         return false;
 
+    if (pugi::xml_node subImageNode = context.node.child("SubImage"))
+    {
+        subImageName = subImageNode.attribute("name").as_string("");
+    }
+
     return true;
 }
 
@@ -260,6 +283,11 @@ bool ElementSpriteGroupItemData::SaveToXmlImpl(ElementSaveContext& context) cons
 {
     if (!ElementSpriteBaseData::SaveToXmlImpl(context))
         return false;
+
+    if (!subImageName.empty())
+    {
+        context.node.append_child("SubImage").append_attribute("name").set_value(subImageName.c_str());
+    }
 
     return true;
 }
@@ -305,7 +333,7 @@ bool ElementSpriteGroupData::LoadFromXmlImpl(ElementParseContext& context)
             if (imageSet)
             {
                 // TODO: Actual node (SubImage value=""), probably need to pass ImageSet in parse context.
-                component->subImage = imageSet->GetSubImage(nodeComponent.attribute("SubImage").as_string());
+                component->subImageName = nodeComponent.child("SubImage").attribute("name").as_string();
             }
 
             // Finalize.

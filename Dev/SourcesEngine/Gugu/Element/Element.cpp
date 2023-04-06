@@ -616,6 +616,7 @@ bool Element::LoadFromData(ElementDataContext& context)
 
     ElementData* elementData = context.data;
     context.elementFromData.insert(std::make_pair(elementData, this));
+    context.dataFromElement.insert(std::make_pair(this, elementData));
 
     if (!elementData->name.empty())
     {

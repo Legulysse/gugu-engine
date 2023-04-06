@@ -35,6 +35,7 @@ struct ElementDataContext
 {
     ElementData* data;
 
+    std::map<Element*, ElementData*> dataFromElement;
     std::map<ElementData*, Element*> elementFromData;
     std::map<std::string, Element*> elementFromName;
 };

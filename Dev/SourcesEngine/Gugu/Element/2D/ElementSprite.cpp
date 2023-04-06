@@ -32,12 +32,12 @@ ElementSprite::~ElementSprite()
 {
 }
 
-void ElementSprite::SetTexture(const std::string& _strTexturePath, bool updateTextureRect)
+void ElementSprite::SetTexture(const std::string& _strTexturePath, bool updateTextureRect, bool updateSize)
 {
-    SetTexture(GetResources()->GetTexture(_strTexturePath), updateTextureRect);
+    SetTexture(GetResources()->GetTexture(_strTexturePath), updateTextureRect, updateSize);
 }
 
-void ElementSprite::SetTexture(Texture* _pTexture, bool updateTextureRect)
+void ElementSprite::SetTexture(Texture* _pTexture, bool updateTextureRect, bool updateSize)
 {
     m_texture = _pTexture;
 
@@ -45,21 +45,21 @@ void ElementSprite::SetTexture(Texture* _pTexture, bool updateTextureRect)
     {
         if (m_texture)
         {
-            SetSubRect(m_texture->GetRect());
+            SetSubRect(m_texture->GetRect(), updateSize);
         }
         else
         {
-            SetSubRect(sf::IntRect());
+            SetSubRect(sf::IntRect(), updateSize);
         }
     }
 }
 
-void ElementSprite::SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName)
+void ElementSprite::SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName, bool updateSize)
 {
     ImageSet* pImageSet = GetResources()->GetImageSet(_strImageSetName);
     if (pImageSet)
     {
-        SetSubImage(pImageSet->GetSubImage(_strSubImageName));
+        SetSubImage(pImageSet->GetSubImage(_strSubImageName), updateSize);
     }
     else
     {
@@ -67,12 +67,12 @@ void ElementSprite::SetSubImage(const std::string& _strImageSetName, const std::
     }
 }
 
-void ElementSprite::SetSubImage(SubImage* _pSubImage)
+void ElementSprite::SetSubImage(SubImage* _pSubImage, bool updateSize)
 {
     if (_pSubImage && _pSubImage->GetImageSet() && _pSubImage->GetImageSet()->GetTexture())
     {
         m_texture = _pSubImage->GetImageSet()->GetTexture();
-        SetSubRect(_pSubImage->GetRect());
+        SetSubRect(_pSubImage->GetRect(), updateSize);
     }
     else
     {
@@ -141,7 +141,18 @@ bool ElementSprite::LoadFromDataImpl(ElementDataContext& context)
 
     ElementSpriteData* spriteData = dynamic_cast<ElementSpriteData*>(context.data);
 
-    if (spriteData->texture)
+    if (spriteData->imageSet)
+    {
+        if (!spriteData->subImageName.empty())
+        {
+            SetSubImage(spriteData->imageSet->GetSubImage(spriteData->subImageName), false);
+        }
+        else
+        {
+            SetTexture(spriteData->imageSet->GetTexture(), false);
+        }
+    }
+    else if (spriteData->texture)
     {
         SetTexture(spriteData->texture, false);
     }

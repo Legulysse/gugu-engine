@@ -25,10 +25,10 @@ public:
     ElementSprite();
     virtual ~ElementSprite();
 
-    void SetTexture(const std::string& _strTexturePath, bool updateTextureRect = true);  //TODO: Rename as textureID
-    void SetTexture(Texture* _pTexture, bool updateTextureRect = true);
-    void SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName);
-    void SetSubImage(SubImage* _pSubImage);
+    void SetTexture(const std::string& _strTexturePath, bool updateTextureRect = true, bool updateSize = true);  //TODO: Rename as textureID
+    void SetTexture(Texture* _pTexture, bool updateTextureRect = true, bool updateSize = true);
+    void SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName, bool updateSize = true);
+    void SetSubImage(SubImage* _pSubImage, bool updateSize = true);
 
     Texture* GetTexture() const;
 

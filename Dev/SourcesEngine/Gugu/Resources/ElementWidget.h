@@ -83,6 +83,8 @@ class ElementSpriteData : public ElementSpriteBaseData
 {
 public:
 
+    ImageSet* imageSet = nullptr;
+    std::string subImageName;
     Texture* texture = nullptr;
 
     virtual const std::string& GetSerializedType() const;
@@ -94,7 +96,7 @@ class ElementSpriteGroupItemData : public ElementSpriteBaseData
 {
 public:
 
-    SubImage* subImage = nullptr;
+    std::string subImageName;
 
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;

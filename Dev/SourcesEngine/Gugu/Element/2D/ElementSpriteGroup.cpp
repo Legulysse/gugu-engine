@@ -271,10 +271,16 @@ bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
 
         for (size_t i = 0; i < componentCount; ++i)
         {
-            ElementData* componentData = spriteGroupData->components[i];
+            ElementSpriteGroupItemData* componentData = spriteGroupData->components[i];
             ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
 
             AddItem(component);
+
+            if (spriteGroupData->imageSet)
+            {
+                SubImage* subImage = spriteGroupData->imageSet->GetSubImage(componentData->subImageName);
+                component->SetSubRect(!subImage ? sf::IntRect() : subImage->GetRect(), false);
+            }
 
             context.data = componentData;
             result &= component->LoadFromData(context);

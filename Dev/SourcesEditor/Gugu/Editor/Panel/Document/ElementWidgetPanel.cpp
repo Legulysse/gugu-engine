@@ -15,6 +15,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ImageSet.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
@@ -265,7 +266,18 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
         {
             elementSpriteGroupData->texture = GetResources()->GetTexture(textureId);
+            elementSpriteGroupData->imageSet = nullptr;
             elementSpriteGroup->SetTexture(elementSpriteGroupData->texture);
+            RaiseDirty();
+        }
+
+        ImageSet* imageSet = elementSpriteGroupData->imageSet;
+        std::string imageSetId = !imageSet ? "" : imageSet->GetID();
+        if (ImGui::InputText("ImageSet", &imageSetId, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            elementSpriteGroupData->imageSet = GetResources()->GetImageSet(imageSetId);
+            elementSpriteGroupData->texture = nullptr;
+            elementSpriteGroup->SetTexture(!elementSpriteGroupData->imageSet ? nullptr : elementSpriteGroupData->imageSet->GetTexture());
             RaiseDirty();
         }
     }
@@ -276,6 +288,8 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     {
         ElementSpriteData* elementSpriteData = dynamic_cast<ElementSpriteData*>(elementData);
         ElementSprite* elementSprite = dynamic_cast<ElementSprite*>(element);
+        ElementSpriteGroupItemData* elementSpriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(elementData);
+        ElementSpriteGroupItem* elementSpriteGroupItem = dynamic_cast<ElementSpriteGroupItem*>(element);
 
         if (elementSpriteData)
         {
@@ -284,17 +298,63 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 elementSpriteData->texture = GetResources()->GetTexture(textureId);
-                elementSprite->SetTexture(elementSpriteData->texture, texture == nullptr);   // Only update rect/size if texture was null.
+                elementSpriteData->imageSet = nullptr;
+                elementSpriteData->subImageName = "";
+                elementSprite->SetTexture(elementSpriteData->texture
+                    , texture == nullptr || elementSpriteData->texture == nullptr   // Only update rect if texture was null, or set to null.
+                    , texture == nullptr);                                          // Only update size if texture was null.
                 elementSpriteData->textureRect = elementSprite->GetSubRect();
                 elementSpriteData->size = elementSprite->GetSize();
                 RaiseDirty();
             }
-        }
 
-        if (ImGui::InputInt4("TextureRect", &elementSpriteBaseData->textureRect))
+            ImageSet* imageSet = elementSpriteData->imageSet;
+            std::string imageSetId = !imageSet ? "" : imageSet->GetID();
+            if (ImGui::InputText("ImageSet", &imageSetId, ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                elementSpriteData->imageSet = GetResources()->GetImageSet(imageSetId);
+                elementSpriteData->texture = nullptr;
+                elementSpriteData->subImageName = "";
+                elementSprite->SetTexture(!elementSpriteData->imageSet ? nullptr : elementSpriteData->imageSet->GetTexture(), false);
+                elementSpriteData->textureRect = elementSprite->GetSubRect();
+                elementSpriteData->size = elementSprite->GetSize();
+                RaiseDirty();
+            }
+
+            if (ImGui::InputText("SubImage", &elementSpriteData->subImageName, ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                SubImage* subImage = elementSpriteData->imageSet->GetSubImage(elementSpriteData->subImageName);
+                elementSpriteGroupItem->SetSubRect(!subImage ? sf::IntRect() : subImage->GetRect(), false);
+                elementSpriteData->textureRect = sf::IntRect();
+                RaiseDirty();
+            }
+
+            if (ImGui::InputInt4("TextureRect", &elementSpriteData->textureRect))
+            {
+                elementSpriteBase->SetSubRect(elementSpriteData->textureRect, false);
+                elementSpriteData->subImageName = "";
+                RaiseDirty();
+            }
+        }
+        else if (elementSpriteGroupItemData)
         {
-            elementSpriteBase->SetSubRect(elementSpriteBaseData->textureRect, false);
-            RaiseDirty();
+            ElementSpriteGroup* ownerGroup = dynamic_cast<ElementSpriteGroup*>(elementSpriteGroupItem->GetParent());
+            ElementSpriteGroupData* ownerGroupData = dynamic_cast<ElementSpriteGroupData*>(m_dataContext->dataFromElement.at(ownerGroup));
+
+            if (ImGui::InputText("SubImage", &elementSpriteGroupItemData->subImageName, ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                SubImage* subImage = ownerGroupData->imageSet->GetSubImage(elementSpriteGroupItemData->subImageName);
+                elementSpriteGroupItem->SetSubRect(!subImage ? sf::IntRect() : subImage->GetRect(), false);
+                elementSpriteGroupItemData->textureRect = sf::IntRect();
+                RaiseDirty();
+            }
+
+            if (ImGui::InputInt4("TextureRect", &elementSpriteGroupItemData->textureRect))
+            {
+                elementSpriteGroupItem->SetSubRect(elementSpriteGroupItemData->textureRect, false);
+                elementSpriteGroupItemData->subImageName = "";
+                RaiseDirty();
+            }
         }
 
         if (ImGui::Checkbox("Repeat Texture", &elementSpriteBaseData->repeatTexture))
@@ -430,6 +490,7 @@ void ElementWidgetPanel::AppendNewElement(ElementData* parentData, ElementData* 
     parentData->children.push_back(elementData);
     parent->AddChild(element);
     m_dataContext->elementFromData.insert(std::make_pair(elementData, element));
+    m_dataContext->dataFromElement.insert(std::make_pair(element, elementData));
 }
 
 void ElementWidgetPanel::AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData)
@@ -440,6 +501,7 @@ void ElementWidgetPanel::AppendNewComponent(ElementSpriteGroupData* groupData, E
     groupData->components.push_back(componentData);
     group->AddItem(component);
     m_dataContext->elementFromData.insert(std::make_pair(componentData, component));
+    m_dataContext->dataFromElement.insert(std::make_pair(component, componentData));
 }
 
 }   //namespace gugu

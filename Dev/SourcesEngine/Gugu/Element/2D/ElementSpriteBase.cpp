@@ -53,7 +53,7 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect, bool updateSize)
         m_subRect.width = -m_subRect.width;
     }
 
-    if (updateSize && (m_subRect.width != kOldRect.width || m_subRect.height != kOldRect.height))
+    if (updateSize)
     {
         SetSize(Vector2f((float)Absolute(m_subRect.width), (float)Absolute(m_subRect.height)));
     }

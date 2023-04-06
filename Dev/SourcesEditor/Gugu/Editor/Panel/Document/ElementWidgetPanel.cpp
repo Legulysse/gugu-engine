@@ -341,7 +341,7 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
     if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
     {
         m_selectedElementData = node;
-        m_selectedElement = m_dataContext->elementFromData[node];
+        m_selectedElement = m_dataContext->elementFromData.at(node);
     }
 
     // Context menu.
@@ -385,19 +385,19 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node)
         {
             if (ImGui::MenuItem("Element"))
             {
-                node->children.push_back(new ElementData);
+                AppendNewElement(node, new ElementData);
                 RaiseDirty();
             }
 
             if (ImGui::MenuItem("Element Sprite"))
             {
-                node->children.push_back(new ElementSpriteData);
+                AppendNewElement(node, new ElementSpriteData);
                 RaiseDirty();
             }
 
             if (ImGui::MenuItem("Element Sprite Group"))
             {
-                node->children.push_back(new ElementSpriteGroupData);
+                AppendNewElement(node, new ElementSpriteGroupData);
                 RaiseDirty();
             }
 
@@ -407,7 +407,7 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node)
 
                 if (ImGui::MenuItem("Element Sprite Group Item"))
                 {
-                    nodeSpriteGroup->components.push_back(new ElementSpriteGroupItemData);
+                    AppendNewComponent(nodeSpriteGroup, new ElementSpriteGroupItemData);
                     RaiseDirty();
                 }
             }
@@ -417,6 +417,26 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node)
 
         ImGui::EndPopup();
     }
+}
+
+void ElementWidgetPanel::AppendNewElement(ElementData* parentData, ElementData* elementData)
+{
+    Element* parent = m_dataContext->elementFromData.at(parentData);
+    Element* element = InstanciateElement(elementData);
+
+    parentData->children.push_back(elementData);
+    parent->AddChild(element);
+    m_dataContext->elementFromData.insert(std::make_pair(elementData, element));
+}
+
+void ElementWidgetPanel::AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData)
+{
+    ElementSpriteGroup* group = dynamic_cast<ElementSpriteGroup*>(m_dataContext->elementFromData.at(groupData));
+    ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
+
+    groupData->components.push_back(componentData);
+    group->AddItem(component);
+    m_dataContext->elementFromData.insert(std::make_pair(componentData, component));
 }
 
 }   //namespace gugu

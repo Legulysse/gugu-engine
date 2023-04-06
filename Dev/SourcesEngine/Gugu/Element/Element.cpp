@@ -619,6 +619,7 @@ bool Element::LoadFromData(ElementDataContext& context)
 
     if (!elementData->name.empty())
     {
+        // TODO: handle multiple elements with same name.
         auto it = context.elementFromName.find(elementData->name);
         if (it == context.elementFromName.end())
         {

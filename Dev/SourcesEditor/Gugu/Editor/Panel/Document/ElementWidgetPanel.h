@@ -14,6 +14,8 @@ namespace gugu
     class RenderViewport;
     class ElementWidget;
     class ElementData;
+    class ElementSpriteGroupData;
+    class ElementSpriteGroupItemData;
     struct ElementDataContext;
     class Element;
 }
@@ -42,6 +44,8 @@ private:
     void HandleContextMenu(ElementData* node);
 
     void RebuildWidgetHierarchy();
+    void AppendNewElement(ElementData* parentData, ElementData* elementData);
+    void AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
 
 private:
 

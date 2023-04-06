@@ -14,6 +14,7 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
@@ -121,7 +122,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     ElementData* elementData = m_selectedElementData;
     Element* element = m_selectedElement;
-    if (ImGui::CollapsingHeader("Common", headerFlags))
+    if (elementData && ImGui::CollapsingHeader("Common", headerFlags))
     {
         // Origin
         ImGui::BeginDisabled(elementData->useDimOrigin);
@@ -255,66 +256,68 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         }
     }
 
-    ElementSpriteGroup* elementSpriteGroup = dynamic_cast<ElementSpriteGroup*>(m_selectedElement);
-    if (elementSpriteGroup && ImGui::CollapsingHeader("Sprite Group", headerFlags))
+    ElementSpriteGroupData* elementSpriteGroupData = dynamic_cast<ElementSpriteGroupData*>(elementData);
+    ElementSpriteGroup* elementSpriteGroup = dynamic_cast<ElementSpriteGroup*>(element);
+    if (elementSpriteGroupData && ImGui::CollapsingHeader("Sprite Group", headerFlags))
     {
-        Texture* texture = elementSpriteGroup->GetTexture();
+        Texture* texture = elementSpriteGroupData->texture;
         std::string textureId = !texture ? "" : texture->GetID();
         if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            elementSpriteGroup->SetTexture(textureId);
+            elementSpriteGroupData->texture = GetResources()->GetTexture(textureId);
+            elementSpriteGroup->SetTexture(elementSpriteGroupData->texture);
             RaiseDirty();
         }
     }
 
-    ElementSpriteBase* elementSpriteBase = dynamic_cast<ElementSpriteBase*>(m_selectedElement);
-    if (elementSpriteBase && ImGui::CollapsingHeader("Sprite", headerFlags))
+    ElementSpriteBaseData* elementSpriteBaseData = dynamic_cast<ElementSpriteBaseData*>(elementData);
+    ElementSpriteBase* elementSpriteBase = dynamic_cast<ElementSpriteBase*>(element);
+    if (elementSpriteBaseData && ImGui::CollapsingHeader("Sprite", headerFlags))
     {
-        ElementSprite* elementSprite = dynamic_cast<ElementSprite*>(m_selectedElement);
+        ElementSpriteData* elementSpriteData = dynamic_cast<ElementSpriteData*>(elementData);
+        ElementSprite* elementSprite = dynamic_cast<ElementSprite*>(element);
 
-        if (elementSprite)
+        if (elementSpriteData)
         {
-            Texture* texture = elementSprite->GetTexture();
+            Texture* texture = elementSpriteData->texture;
             std::string textureId = !texture ? "" : texture->GetID();
             if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                elementSprite->SetTexture(textureId, texture == nullptr);   // Only update rect if texture was null.
+                elementSpriteData->texture = GetResources()->GetTexture(textureId);
+                elementSprite->SetTexture(elementSpriteData->texture, texture == nullptr);   // Only update rect/size if texture was null.
+                elementSpriteData->textureRect = elementSprite->GetSubRect();
+                elementSpriteData->size = elementSprite->GetSize();
                 RaiseDirty();
             }
         }
 
-        sf::IntRect subRect = elementSpriteBase->GetSubRect();
-        if (ImGui::InputInt4("TextureRect", &subRect))
+        if (ImGui::InputInt4("TextureRect", &elementSpriteBaseData->textureRect))
         {
-            elementSpriteBase->SetSubRect(subRect, false);
+            elementSpriteBase->SetSubRect(elementSpriteBaseData->textureRect, false);
             RaiseDirty();
         }
 
-        bool repeatTexture = elementSpriteBase->GetRepeatTexture();
-        if (ImGui::Checkbox("Repeat Texture", &repeatTexture))
+        if (ImGui::Checkbox("Repeat Texture", &elementSpriteBaseData->repeatTexture))
         {
-            elementSpriteBase->SetRepeatTexture(repeatTexture);
+            elementSpriteBase->SetRepeatTexture(elementSpriteBaseData->repeatTexture);
             RaiseDirty();
         }
 
-        bool flipTextureV = elementSpriteBase->GetFlipTextureV();
-        if (ImGui::Checkbox("Flip Texture V", &flipTextureV))
+        if (ImGui::Checkbox("Flip Texture V", &elementSpriteBaseData->flipTextureV))
         {
-            elementSpriteBase->SetFlipTextureV(flipTextureV);
+            elementSpriteBase->SetFlipTextureV(elementSpriteBaseData->flipTextureV);
             RaiseDirty();
         }
 
-        bool flipTextureH = elementSpriteBase->GetFlipTextureH();
-        if (ImGui::Checkbox("Flip Texture H", &flipTextureH))
+        if (ImGui::Checkbox("Flip Texture H", &elementSpriteBaseData->flipTextureH))
         {
-            elementSpriteBase->SetFlipTextureH(flipTextureH);
+            elementSpriteBase->SetFlipTextureH(elementSpriteBaseData->flipTextureH);
             RaiseDirty();
         }
 
-        sf::Color color = elementSpriteBase->GetColor();
-        if (ImGui::ColorEdit4("Color", &color))
+        if (ImGui::ColorEdit4("Color", &elementSpriteBaseData->color))
         {
-            elementSpriteBase->SetColor(color);
+            elementSpriteBase->SetColor(elementSpriteBaseData->color);
             RaiseDirty();
         }
     }

@@ -288,207 +288,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             RaiseDirty();
         }
 
-        ImGui::Spacing();
-
-        static const std::vector<std::string> generators = { "...", "Box9 - SubImages", "Box9 - Texture Rects" };
-        ImGui::Combo("Generator", generators, &m_generatorIndex);
-
-        ImGui::Spacing();
-
-        bool generateDimensions = false;
-
-        if (m_generatorIndex == 1)
-        {
-            if (!imageSet)
-            {
-                ImGui::Text("Please select an ImageSet");
-            }
-            else
-            {
-                // Generator : SubImages.
-                ImGui::PushID("_SUBIMAGE_NAMES");
-
-                ImGui::InputText("topLeftName", &m_topLeftName);
-                ImGui::InputText("topName", &m_topName);
-                ImGui::InputText("topRightName", &m_topRightName);
-
-                ImGui::InputText("leftName", &m_leftName);
-                ImGui::InputText("centerName", &m_centerName);
-                ImGui::InputText("rightName", &m_rightName);
-
-                ImGui::InputText("bottomLeftName", &m_bottomLeftName);
-                ImGui::InputText("bottomname", &m_bottomName);
-                ImGui::InputText("bottomRightName", &m_bottomRightName);
-
-                ImGui::Spacing();
-
-                ImGui::Checkbox("Tile Top", &m_tileTopSegment);
-                ImGui::Checkbox("Tile Left", &m_tileLeftSegment);
-                ImGui::Checkbox("Tile Right", &m_tileRightSegment);
-                ImGui::Checkbox("Tile Bottom", &m_tileBottomSegment);
-
-                ImGui::Spacing();
-
-                if (ImGui::Button("Generate"))
-                {
-                    std::vector<std::string> generatorSubImageNames = { m_topLeftName, m_topName, m_topRightName, m_leftName, m_centerName, m_rightName, m_bottomLeftName, m_bottomName, m_bottomRightName };
-                    std::vector<SubImage*> generatorSubImages;
-
-                    for (size_t i = 0; i < generatorSubImageNames.size(); ++i)
-                    {
-                        generatorSubImages.push_back(imageSet->GetSubImage(generatorSubImageNames[i]));
-                    }
-
-                    if (generatorSubImages.size() == generatorSubImageNames.size())
-                    {
-                        for (size_t i = 0; i < generatorSubImageNames.size(); ++i)
-                        {
-                            ElementSpriteGroupItemData* componentData = new ElementSpriteGroupItemData;
-                            ElementSpriteGroupItem* component = AppendNewComponent(elementSpriteGroupData, componentData);
-
-                            componentData->subImageName = generatorSubImageNames[i];
-                            componentData->textureRect = sf::IntRect();
-                            component->SetSubRect(generatorSubImages[i]->GetRect(), true);
-                            componentData->size = component->GetSize();
-                        }
-
-                        generateDimensions = true;
-                    }
-                }
-
-                ImGui::PopID();
-            }
-        }
-        else if (m_generatorIndex == 2)
-        {
-            if (!texture)
-            {
-                ImGui::Text("Please select a Texture");
-            }
-            else
-            {
-                // Generator : Texture Rects.
-                ImGui::PushID("_TEXTURE_RECTS");
-
-                ImGui::InputInt4("Top Left", &m_topLeftRect);
-                ImGui::InputInt4("Top", &m_topRect);
-                ImGui::InputInt4("Top Right", &m_topRightRect);
-
-                ImGui::InputInt4("Left", &m_leftRect);
-                ImGui::InputInt4("Center", &m_centerRect);
-                ImGui::InputInt4("Right", &m_rightRect);
-
-                ImGui::InputInt4("Bottom Left", &m_bottomLeftRect);
-                ImGui::InputInt4("Bottom", &m_bottomRect);
-                ImGui::InputInt4("Bottom Right", &m_bottomRightRect);
-
-                ImGui::Spacing();
-
-                ImGui::Checkbox("Tile Top", &m_tileTopSegment);
-                ImGui::Checkbox("Tile Left", &m_tileLeftSegment);
-                ImGui::Checkbox("Tile Right", &m_tileRightSegment);
-                ImGui::Checkbox("Tile Bottom", &m_tileBottomSegment);
-
-                ImGui::Spacing();
-
-                if (ImGui::Button("Generate"))
-                {
-                    std::vector<sf::IntRect> generatorTextureRects = { m_topLeftRect, m_topRect, m_topRightRect, m_leftRect, m_centerRect, m_rightRect, m_bottomLeftRect, m_bottomRect, m_bottomRightRect };
-
-                    for (size_t i = 0; i < generatorTextureRects.size(); ++i)
-                    {
-                        ElementSpriteGroupItemData* componentData = new ElementSpriteGroupItemData;
-                        ElementSpriteGroupItem* component = AppendNewComponent(elementSpriteGroupData, componentData);
-
-                        componentData->subImageName = "";
-                        componentData->textureRect = generatorTextureRects[i];
-                        component->SetSubRect(generatorTextureRects[i], true);
-                        componentData->size = component->GetSize();
-                    }
-
-                    generateDimensions = true;
-                }
-
-                ImGui::PopID();
-            }
-        }
-
-        if (generateDimensions)
-        {
-            auto unifiedDimensionsGenerator = [](ElementSpriteGroupItem* component, ElementSpriteGroupItemData* componentData, UDim2 position, UDim2 size)
-            {
-                componentData->useDimPosition = true;
-                componentData->dimPosition = position;
-                component->SetUnifiedPosition(position);
-
-                componentData->useDimSize = true;
-                componentData->dimSize = size;
-                component->SetUnifiedSize(size);
-            };
-
-            const std::vector<ElementSpriteGroupItem*>& componentElements = elementSpriteGroup->GetItems();
-
-            // Top left.
-            unifiedDimensionsGenerator(componentElements[0], elementSpriteGroupData->components[0]
-                , UDim2::POSITION_TOP_LEFT
-                , UDim2::SIZE_ZERO + elementSpriteGroupData->components[0]->size);
-
-            // Top center.
-            unifiedDimensionsGenerator(componentElements[1], elementSpriteGroupData->components[1]
-                , UDim2::POSITION_TOP_LEFT + Vector2f(elementSpriteGroupData->components[0]->size.x, 0.f)
-                , UDim2(1.f, 0.f) + Vector2f(-elementSpriteGroupData->components[0]->size.x - elementSpriteGroupData->components[2]->size.x, elementSpriteGroupData->components[1]->size.y));
-
-            // Top right.
-            unifiedDimensionsGenerator(componentElements[2], elementSpriteGroupData->components[2]
-                , UDim2::POSITION_TOP_RIGHT + Vector2f(-elementSpriteGroupData->components[2]->size.x, 0.f)
-                , UDim2::SIZE_ZERO + elementSpriteGroupData->components[2]->size);
-
-            // Center left.
-            unifiedDimensionsGenerator(componentElements[3], elementSpriteGroupData->components[3]
-                , UDim2::POSITION_TOP_LEFT + Vector2f(0.f, elementSpriteGroupData->components[0]->size.y)
-                , UDim2(0.f, 1.f) + Vector2f(elementSpriteGroupData->components[3]->size.x, -elementSpriteGroupData->components[0]->size.y - elementSpriteGroupData->components[6]->size.y));
-
-            // Center.
-            unifiedDimensionsGenerator(componentElements[4], elementSpriteGroupData->components[4]
-                , UDim2::POSITION_TOP_LEFT + Vector2f(elementSpriteGroupData->components[3]->size.x, elementSpriteGroupData->components[1]->size.y)
-                , UDim2::SIZE_FULL + Vector2f(-elementSpriteGroupData->components[3]->size.x - elementSpriteGroupData->components[5]->size.x, -elementSpriteGroupData->components[1]->size.y - elementSpriteGroupData->components[7]->size.y));
-
-            // Center right.
-            unifiedDimensionsGenerator(componentElements[5], elementSpriteGroupData->components[5]
-                , UDim2::POSITION_TOP_RIGHT + Vector2f(-elementSpriteGroupData->components[5]->size.x, elementSpriteGroupData->components[2]->size.y)
-                , UDim2(0.f, 1.f) + Vector2f(elementSpriteGroupData->components[5]->size.x, -elementSpriteGroupData->components[2]->size.y - elementSpriteGroupData->components[8]->size.y));
-
-            // Bottom left.
-            unifiedDimensionsGenerator(componentElements[6], elementSpriteGroupData->components[6]
-                , UDim2::POSITION_BOTTOM_LEFT + Vector2f(0.f, -elementSpriteGroupData->components[6]->size.y)
-                , UDim2::SIZE_ZERO + elementSpriteGroupData->components[6]->size);
-
-            // Bottom center.
-            unifiedDimensionsGenerator(componentElements[7], elementSpriteGroupData->components[7]
-                , UDim2::POSITION_BOTTOM_LEFT + Vector2f(elementSpriteGroupData->components[6]->size.x, -elementSpriteGroupData->components[7]->size.y)
-                , UDim2(1.f, 0.f) + Vector2f(-elementSpriteGroupData->components[6]->size.x - elementSpriteGroupData->components[8]->size.x, elementSpriteGroupData->components[7]->size.y));
-
-            // Bottom right.
-            unifiedDimensionsGenerator(componentElements[8], elementSpriteGroupData->components[8]
-                , UDim2::POSITION_BOTTOM_RIGHT + -elementSpriteGroupData->components[8]->size
-                , UDim2::SIZE_ZERO + elementSpriteGroupData->components[8]->size);
-
-            // Segments tiling.
-            elementSpriteGroupData->components[1]->repeatTexture = m_tileTopSegment;
-            componentElements[1]->SetRepeatTexture(m_tileTopSegment);
-
-            elementSpriteGroupData->components[3]->repeatTexture = m_tileLeftSegment;
-            componentElements[3]->SetRepeatTexture(m_tileLeftSegment);
-
-            elementSpriteGroupData->components[5]->repeatTexture = m_tileRightSegment;
-            componentElements[5]->SetRepeatTexture(m_tileRightSegment);
-
-            elementSpriteGroupData->components[7]->repeatTexture = m_tileBottomSegment;
-            componentElements[7]->SetRepeatTexture(m_tileBottomSegment);
-
-            // Finalize.
-            RaiseDirty();
-        }
+        DisplayGenerators(elementSpriteGroupData, elementSpriteGroup);
     }
 
     ElementSpriteBaseData* elementSpriteBaseData = dynamic_cast<ElementSpriteBaseData*>(elementData);
@@ -688,6 +488,214 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node)
         }
 
         ImGui::EndPopup();
+    }
+}
+
+void ElementWidgetPanel::DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup)
+{
+    Texture* texture = elementSpriteGroupData->texture;
+    ImageSet* imageSet = elementSpriteGroupData->imageSet;
+
+    ImGui::Spacing();
+
+    static const std::vector<std::string> generators = { "...", "Box9 - SubImages", "Box9 - Texture Rects" };
+    ImGui::Combo("Generator", generators, &m_generatorIndex);
+
+    ImGui::Spacing();
+
+    bool generateDimensions = false;
+
+    if (m_generatorIndex == 1)
+    {
+        if (!imageSet)
+        {
+            ImGui::Text("Please select an ImageSet");
+        }
+        else
+        {
+            // Generator : SubImages.
+            ImGui::PushID("_SUBIMAGE_NAMES");
+
+            ImGui::InputText("Top Left", &m_topLeftName);
+            ImGui::InputText("Top", &m_topName);
+            ImGui::InputText("Top Right", &m_topRightName);
+
+            ImGui::InputText("Left", &m_leftName);
+            ImGui::InputText("Center", &m_centerName);
+            ImGui::InputText("Right", &m_rightName);
+
+            ImGui::InputText("Bottom Left", &m_bottomLeftName);
+            ImGui::InputText("Bottom", &m_bottomName);
+            ImGui::InputText("Bottom Right", &m_bottomRightName);
+
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Tile Top", &m_tileTopSegment);
+            ImGui::Checkbox("Tile Left", &m_tileLeftSegment);
+            ImGui::Checkbox("Tile Right", &m_tileRightSegment);
+            ImGui::Checkbox("Tile Bottom", &m_tileBottomSegment);
+
+            ImGui::Spacing();
+
+            if (ImGui::Button("Generate"))
+            {
+                std::vector<std::string> generatorSubImageNames = { m_topLeftName, m_topName, m_topRightName, m_leftName, m_centerName, m_rightName, m_bottomLeftName, m_bottomName, m_bottomRightName };
+                std::vector<SubImage*> generatorSubImages;
+
+                for (size_t i = 0; i < generatorSubImageNames.size(); ++i)
+                {
+                    generatorSubImages.push_back(imageSet->GetSubImage(generatorSubImageNames[i]));
+                }
+
+                if (generatorSubImages.size() == generatorSubImageNames.size())
+                {
+                    for (size_t i = 0; i < generatorSubImageNames.size(); ++i)
+                    {
+                        ElementSpriteGroupItemData* componentData = new ElementSpriteGroupItemData;
+                        ElementSpriteGroupItem* component = AppendNewComponent(elementSpriteGroupData, componentData);
+
+                        componentData->subImageName = generatorSubImageNames[i];
+                        componentData->textureRect = sf::IntRect();
+                        component->SetSubRect(generatorSubImages[i]->GetRect(), true);
+                        componentData->size = component->GetSize();
+                    }
+
+                    generateDimensions = true;
+                }
+            }
+
+            ImGui::PopID();
+        }
+    }
+    else if (m_generatorIndex == 2)
+    {
+        if (!texture)
+        {
+            ImGui::Text("Please select a Texture");
+        }
+        else
+        {
+            // Generator : Texture Rects.
+            ImGui::PushID("_TEXTURE_RECTS");
+
+            ImGui::InputInt4("Top Left", &m_topLeftRect);
+            ImGui::InputInt4("Top", &m_topRect);
+            ImGui::InputInt4("Top Right", &m_topRightRect);
+
+            ImGui::InputInt4("Left", &m_leftRect);
+            ImGui::InputInt4("Center", &m_centerRect);
+            ImGui::InputInt4("Right", &m_rightRect);
+
+            ImGui::InputInt4("Bottom Left", &m_bottomLeftRect);
+            ImGui::InputInt4("Bottom", &m_bottomRect);
+            ImGui::InputInt4("Bottom Right", &m_bottomRightRect);
+
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Tile Top", &m_tileTopSegment);
+            ImGui::Checkbox("Tile Left", &m_tileLeftSegment);
+            ImGui::Checkbox("Tile Right", &m_tileRightSegment);
+            ImGui::Checkbox("Tile Bottom", &m_tileBottomSegment);
+
+            ImGui::Spacing();
+
+            if (ImGui::Button("Generate"))
+            {
+                std::vector<sf::IntRect> generatorTextureRects = { m_topLeftRect, m_topRect, m_topRightRect, m_leftRect, m_centerRect, m_rightRect, m_bottomLeftRect, m_bottomRect, m_bottomRightRect };
+
+                for (size_t i = 0; i < generatorTextureRects.size(); ++i)
+                {
+                    ElementSpriteGroupItemData* componentData = new ElementSpriteGroupItemData;
+                    ElementSpriteGroupItem* component = AppendNewComponent(elementSpriteGroupData, componentData);
+
+                    componentData->subImageName = "";
+                    componentData->textureRect = generatorTextureRects[i];
+                    component->SetSubRect(generatorTextureRects[i], true);
+                    componentData->size = component->GetSize();
+                }
+
+                generateDimensions = true;
+            }
+
+            ImGui::PopID();
+        }
+    }
+
+    if (generateDimensions)
+    {
+        auto unifiedDimensionsGenerator = [](ElementSpriteGroupItem* component, ElementSpriteGroupItemData* componentData, UDim2 position, UDim2 size)
+        {
+            componentData->useDimPosition = true;
+            componentData->dimPosition = position;
+            component->SetUnifiedPosition(position);
+
+            componentData->useDimSize = true;
+            componentData->dimSize = size;
+            component->SetUnifiedSize(size);
+        };
+
+        const std::vector<ElementSpriteGroupItem*>& componentElements = elementSpriteGroup->GetItems();
+
+        // Top left.
+        unifiedDimensionsGenerator(componentElements[0], elementSpriteGroupData->components[0]
+            , UDim2::POSITION_TOP_LEFT
+            , UDim2::SIZE_ZERO + elementSpriteGroupData->components[0]->size);
+
+        // Top center.
+        unifiedDimensionsGenerator(componentElements[1], elementSpriteGroupData->components[1]
+            , UDim2::POSITION_TOP_LEFT + Vector2f(elementSpriteGroupData->components[0]->size.x, 0.f)
+            , UDim2(1.f, 0.f) + Vector2f(-elementSpriteGroupData->components[0]->size.x - elementSpriteGroupData->components[2]->size.x, elementSpriteGroupData->components[1]->size.y));
+
+        // Top right.
+        unifiedDimensionsGenerator(componentElements[2], elementSpriteGroupData->components[2]
+            , UDim2::POSITION_TOP_RIGHT + Vector2f(-elementSpriteGroupData->components[2]->size.x, 0.f)
+            , UDim2::SIZE_ZERO + elementSpriteGroupData->components[2]->size);
+
+        // Center left.
+        unifiedDimensionsGenerator(componentElements[3], elementSpriteGroupData->components[3]
+            , UDim2::POSITION_TOP_LEFT + Vector2f(0.f, elementSpriteGroupData->components[0]->size.y)
+            , UDim2(0.f, 1.f) + Vector2f(elementSpriteGroupData->components[3]->size.x, -elementSpriteGroupData->components[0]->size.y - elementSpriteGroupData->components[6]->size.y));
+
+        // Center.
+        unifiedDimensionsGenerator(componentElements[4], elementSpriteGroupData->components[4]
+            , UDim2::POSITION_TOP_LEFT + Vector2f(elementSpriteGroupData->components[3]->size.x, elementSpriteGroupData->components[1]->size.y)
+            , UDim2::SIZE_FULL + Vector2f(-elementSpriteGroupData->components[3]->size.x - elementSpriteGroupData->components[5]->size.x, -elementSpriteGroupData->components[1]->size.y - elementSpriteGroupData->components[7]->size.y));
+
+        // Center right.
+        unifiedDimensionsGenerator(componentElements[5], elementSpriteGroupData->components[5]
+            , UDim2::POSITION_TOP_RIGHT + Vector2f(-elementSpriteGroupData->components[5]->size.x, elementSpriteGroupData->components[2]->size.y)
+            , UDim2(0.f, 1.f) + Vector2f(elementSpriteGroupData->components[5]->size.x, -elementSpriteGroupData->components[2]->size.y - elementSpriteGroupData->components[8]->size.y));
+
+        // Bottom left.
+        unifiedDimensionsGenerator(componentElements[6], elementSpriteGroupData->components[6]
+            , UDim2::POSITION_BOTTOM_LEFT + Vector2f(0.f, -elementSpriteGroupData->components[6]->size.y)
+            , UDim2::SIZE_ZERO + elementSpriteGroupData->components[6]->size);
+
+        // Bottom center.
+        unifiedDimensionsGenerator(componentElements[7], elementSpriteGroupData->components[7]
+            , UDim2::POSITION_BOTTOM_LEFT + Vector2f(elementSpriteGroupData->components[6]->size.x, -elementSpriteGroupData->components[7]->size.y)
+            , UDim2(1.f, 0.f) + Vector2f(-elementSpriteGroupData->components[6]->size.x - elementSpriteGroupData->components[8]->size.x, elementSpriteGroupData->components[7]->size.y));
+
+        // Bottom right.
+        unifiedDimensionsGenerator(componentElements[8], elementSpriteGroupData->components[8]
+            , UDim2::POSITION_BOTTOM_RIGHT + -elementSpriteGroupData->components[8]->size
+            , UDim2::SIZE_ZERO + elementSpriteGroupData->components[8]->size);
+
+        // Segments tiling.
+        elementSpriteGroupData->components[1]->repeatTexture = m_tileTopSegment;
+        componentElements[1]->SetRepeatTexture(m_tileTopSegment);
+
+        elementSpriteGroupData->components[3]->repeatTexture = m_tileLeftSegment;
+        componentElements[3]->SetRepeatTexture(m_tileLeftSegment);
+
+        elementSpriteGroupData->components[5]->repeatTexture = m_tileRightSegment;
+        componentElements[5]->SetRepeatTexture(m_tileRightSegment);
+
+        elementSpriteGroupData->components[7]->repeatTexture = m_tileBottomSegment;
+        componentElements[7]->SetRepeatTexture(m_tileBottomSegment);
+
+        // Finalize.
+        RaiseDirty();
     }
 }
 

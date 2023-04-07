@@ -20,6 +20,7 @@ namespace gugu
     class ElementSpriteGroupData;
     class ElementSpriteGroupItemData;
     class Element;
+    class ElementSpriteGroup;
     class ElementSpriteGroupItem;
 }
 
@@ -47,6 +48,8 @@ private:
     void HandleContextMenu(ElementData* node);
 
     void RebuildWidgetHierarchy();
+
+    void DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup);
     void AppendNewElement(ElementData* parentData, ElementData* elementData);
     ElementSpriteGroupItem* AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
 

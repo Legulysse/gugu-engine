@@ -5,6 +5,8 @@
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
+#include <SFML/Graphics/Rect.hpp>
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -18,6 +20,7 @@ namespace gugu
     class ElementSpriteGroupData;
     class ElementSpriteGroupItemData;
     class Element;
+    class ElementSpriteGroupItem;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -45,7 +48,7 @@ private:
 
     void RebuildWidgetHierarchy();
     void AppendNewElement(ElementData* parentData, ElementData* elementData);
-    void AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
+    ElementSpriteGroupItem* AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
 
 private:
 
@@ -58,6 +61,11 @@ private:
     Element* m_widgetRootElement;
     ElementData* m_selectedElementData;
     Element* m_selectedElement;
+
+    size_t m_generatorIndex;
+    std::string m_topLeftName, m_topName, m_topRightName, m_leftName, m_centerName, m_rightName, m_bottomLeftName, m_bottomName, m_bottomRightName;
+    sf::IntRect m_topLeftRect, m_topRect, m_topRightRect, m_leftRect, m_centerRect, m_rightRect, m_bottomLeftRect, m_bottomRect, m_bottomRightRect;
+    bool m_tileTopSegment, m_tileLeftSegment, m_tileRightSegment, m_tileBottomSegment;
 };
 
 }   //namespace gugu

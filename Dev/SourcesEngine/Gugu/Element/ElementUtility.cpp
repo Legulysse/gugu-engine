@@ -7,10 +7,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementData.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
-#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////

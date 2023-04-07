@@ -7,16 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementData.h"
 #include "Gugu/Element/ElementUtility.h"
-#include "Gugu/Resources/ElementWidget.h"
-#include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Resources/Texture.h"
-#include "Gugu/Resources/ImageSet.h"
-#include "Gugu/Window/Renderer.h"
-#include "Gugu/External/PugiXmlUtility.h"
 #include "Gugu/Math/MathUtility.h"
-
-#include <SFML/Graphics/RenderTarget.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

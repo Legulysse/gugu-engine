@@ -7,14 +7,13 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementData.h"
 #include "Gugu/Element/ElementUtility.h"
-#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Logger.h"
-#include "Gugu/External/PugiXmlUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 

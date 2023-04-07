@@ -10,13 +10,13 @@
 
 namespace gugu
 {
+    struct ElementDataContext;
     class DeltaTime;
     class RenderViewport;
     class ElementWidget;
     class ElementData;
     class ElementSpriteGroupData;
     class ElementSpriteGroupItemData;
-    struct ElementDataContext;
     class Element;
 }
 

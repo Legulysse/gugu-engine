@@ -9,12 +9,14 @@
 
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
-#include "Gugu/Resources/ElementWidget.h"
-#include "Gugu/Resources/Texture.h"
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ElementWidget.h"
+#include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"

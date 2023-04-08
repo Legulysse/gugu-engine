@@ -46,9 +46,6 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     m_renderViewport = new RenderViewport(true);
     m_renderViewport->SetSize(Vector2u(1280, 720));
 
-    // Instanciate Widget
-    m_widgetRootData = m_elementWidget->GetData();
-
     RebuildWidgetHierarchy();
 }
 
@@ -74,6 +71,8 @@ void ElementWidgetPanel::RebuildWidgetHierarchy()
     m_selectedElement = nullptr;
     SafeDelete(m_widgetRootElement);
     SafeDelete(m_dataContext);
+
+    m_widgetRootData = m_elementWidget->GetData();
 
     m_dataContext = new ElementDataContext;
     m_widgetRootElement = m_elementWidget->InstanciateWidget(*m_dataContext);

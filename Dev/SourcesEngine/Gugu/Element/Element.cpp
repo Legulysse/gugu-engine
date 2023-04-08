@@ -10,6 +10,8 @@
 #include "Gugu/Element/ElementData.h"
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Events/ElementEventHandler.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/System/SystemUtility.h"
@@ -60,6 +62,25 @@ void Element::AddChild(Element* child)
 {
     child->SetParent(this);
     m_children.push_back(child);
+}
+
+Element* Element::AddChildWidget(const std::string& elementWidgetID)
+{
+    return AddChildWidget(GetResources()->GetElementWidget(elementWidgetID));
+}
+
+Element* Element::AddChildWidget(ElementWidget* elementWidget)
+{
+    if (elementWidget)
+    {
+        if (Element* child = elementWidget->InstanciateWidget())
+        {
+            AddChild(child);
+            return child;
+        }
+    }
+
+    return nullptr;
 }
 
 void Element::SetParent(Element* parent, bool recomputeDimensions)

@@ -23,6 +23,7 @@ namespace gugu
     struct ElementSaveContext;
     struct ElementDataContext;
     class ElementEventHandler;
+    class ElementWidget;
 }
 
 namespace pugi
@@ -55,6 +56,9 @@ public:
     }
 
     void AddChild(Element* child);
+    Element* AddChildWidget(const std::string& elementWidgetID);
+    Element* AddChildWidget(ElementWidget* elementWidget);
+
     void RemoveChild(Element* child);
     void DeleteAllChildren();
 

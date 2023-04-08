@@ -437,6 +437,22 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
 
             ImGui::TreePop();
         }
+        else if (ElementButtonData* nodeButton = dynamic_cast<ElementButtonData*>(node))
+        {
+            const std::vector<ElementData*>& components = nodeButton->components;
+
+            ImGuiTreeNodeFlags componentFlags = ImGuiTreeNodeFlags_Leaf;
+            ImGui::TreeNodeEx("<Components>", componentFlags);
+
+            for (size_t i = 0; i < components.size(); ++i)
+            {
+                ImGui::PushID((int)i);
+                DisplayTreeNode(components[i], itemFlags);
+                ImGui::PopID();
+            }
+
+            ImGui::TreePop();
+        }
 
         for (size_t i = 0; i < children.size(); ++i)
         {
@@ -470,6 +486,12 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node)
             if (ImGui::MenuItem("Element Sprite Group"))
             {
                 AppendNewElement(node, new ElementSpriteGroupData);
+                RaiseDirty();
+            }
+
+            if (ImGui::MenuItem("Element Button"))
+            {
+                AppendNewElement(node, new ElementButtonData);
                 RaiseDirty();
             }
 

@@ -113,4 +113,22 @@ public:
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 };
 
+class ElementButtonData : public ElementData
+{
+public:
+
+    std::vector<ElementData*> components;
+
+    ElementData* commonComponent = nullptr;
+    ElementData* idleStateComponent = nullptr;
+    ElementData* focusedStateComponent = nullptr;
+    ElementData* disabledStateComponent = nullptr;
+
+    virtual ~ElementButtonData();
+
+    virtual const std::string& GetSerializedType() const;
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+};
+
 }   // namespace gugu

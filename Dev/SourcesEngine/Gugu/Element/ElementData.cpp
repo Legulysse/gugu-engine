@@ -81,6 +81,8 @@ bool ElementData::SaveToXml(ElementSaveContext& context) const
 
 bool ElementData::LoadFromXmlImpl(ElementParseContext& context)
 {
+    xml::TryParseAttribute(context.node, "name", name);
+
     if (xml::TryParseUDim2(context.node.child("UOrigin"), dimOrigin))
     {
         useDimOrigin = true;
@@ -117,6 +119,11 @@ bool ElementData::LoadFromXmlImpl(ElementParseContext& context)
 
 bool ElementData::SaveToXmlImpl(ElementSaveContext& context) const
 {
+    if (!name.empty())
+    {
+        context.node.append_attribute("name").set_value(name.c_str());
+    }
+
     if (useDimOrigin)
     {
         xml::WriteUDim2(context.node.append_child("UOrigin"), dimOrigin);
@@ -360,6 +367,89 @@ bool ElementSpriteGroupData::SaveToXmlImpl(ElementSaveContext& context) const
     {
         context.node.append_child("Texture").append_attribute("source").set_value(texture->GetID().c_str());
     }
+
+    if (!components.empty())
+    {
+        pugi::xml_node componentsNode = context.node.append_child("Components");
+        pugi::xml_node backupNode = context.node;
+
+        for (size_t i = 0; i < components.size(); ++i)
+        {
+            context.node = componentsNode.append_child("Component");
+            result &= components[i]->SaveToXml(context);
+        }
+
+        context.node = backupNode;
+    }
+
+    return result;
+}
+
+ElementButtonData::~ElementButtonData()
+{
+    commonComponent = nullptr;
+    idleStateComponent = nullptr;
+    focusedStateComponent = nullptr;
+    disabledStateComponent = nullptr;
+
+    ClearStdVector(components);
+}
+
+const std::string& ElementButtonData::GetSerializedType() const
+{
+    static const std::string serializedType = "ElementButton";
+    return serializedType;
+}
+
+bool ElementButtonData::LoadFromXmlImpl(ElementParseContext& context)
+{
+    if (!ElementData::LoadFromXmlImpl(context))
+        return false;
+
+    if (pugi::xml_node nodeComponents = context.node.child("Components"))
+    {
+        pugi::xml_node backupNode = context.node;
+
+        for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
+        {
+            if (ElementData* component = InstanciateElementData(nodeComponent))
+            {
+                context.node = nodeComponent;
+                component->LoadFromXml(context);
+
+                components.push_back(component);
+
+                if (StringEquals(component->name, "Common"))
+                {
+                    commonComponent = component;
+                }
+                else if (StringEquals(component->name, "Idle"))
+                {
+                    idleStateComponent = component;
+                }
+                else if (StringEquals(component->name, "Focused"))
+                {
+                    focusedStateComponent = component;
+                }
+                else if (StringEquals(component->name, "Disabled"))
+                {
+                    disabledStateComponent = component;
+                }
+            }
+        }
+
+        context.node = backupNode;
+    }
+
+    return true;
+}
+
+bool ElementButtonData::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!ElementData::SaveToXmlImpl(context))
+        return false;
+
+    bool result = true;
 
     if (!components.empty())
     {

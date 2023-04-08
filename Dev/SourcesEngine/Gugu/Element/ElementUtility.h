@@ -40,8 +40,6 @@ struct ElementDataContext
     std::map<std::string, Element*> elementFromName;
 };
 
-Element* InstanciateElement(const pugi::xml_node& node);
-Element* InstanciateElement(std::string_view elementType);
 ElementData* InstanciateElementData(const pugi::xml_node& node);
 Element* InstanciateElement(ElementData* data);
 

@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<ElementWidget serializationVersion="1">
+	<Element type="ElementButton">
+		<Size x="200" y="30" />
+		<Components>
+			<Component type="ElementSpriteGroup" name="Idle">
+				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
+				<ImageSet source="Button01.imageset.xml" />
+				<Components>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Idle_TopLeft" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="0" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Idle_Top" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Idle_TopRight" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Idle_Left" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<USize xRel="1" yRel="1" xAbs="-12" yAbs="-12" />
+						<SubImage name="Idle_Center" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Idle_Right" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Idle_BottomLeft" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="6" yAbs="-6" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Idle_Bottom" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="1" xAbs="-6" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Idle_BottomRight" />
+					</Component>
+				</Components>
+			</Component>
+			<Component type="ElementSpriteGroup" name="Focused">
+				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
+				<ImageSet source="Button01.imageset.xml" />
+				<Components>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Focused_TopLeft" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="0" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Focused_Top" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Focused_TopRight" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Focused_Left" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<USize xRel="1" yRel="1" xAbs="-12" yAbs="-12" />
+						<SubImage name="Focused_Center" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Focused_Right" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Focused_BottomLeft" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="6" yAbs="-6" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Focused_Bottom" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="1" xAbs="-6" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Focused_BottomRight" />
+					</Component>
+				</Components>
+			</Component>
+			<Component type="ElementSpriteGroup" name="Disabled">
+				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
+				<ImageSet source="Button01.imageset.xml" />
+				<Components>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Disabled_TopLeft" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="0" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Disabled_Top" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Disabled_TopRight" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Disabled_Left" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<USize xRel="1" yRel="1" xAbs="-12" yAbs="-12" />
+						<SubImage name="Disabled_Center" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Disabled_Right" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Disabled_BottomLeft" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="6" yAbs="-6" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Disabled_Bottom" />
+					</Component>
+					<Component type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="1" xAbs="-6" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Disabled_BottomRight" />
+					</Component>
+				</Components>
+			</Component>
+			<Component type="Element" name="Common">
+				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
+			</Component>
+		</Components>
+	</Element>
+</ElementWidget>

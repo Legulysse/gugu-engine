@@ -28,10 +28,10 @@ namespace gugu {
 
 ElementButton::ElementButton()
     : m_commonComponent(nullptr)
-    , m_spriteIdle(nullptr)
-    , m_spriteFocused(nullptr)
-    , m_spriteDisabled(nullptr)
-    , m_currentSprite(nullptr)
+    , m_idleStateComponent(nullptr)
+    , m_focusedStateComponent(nullptr)
+    , m_disabledStateComponent(nullptr)
+    , m_currentStateComponent(nullptr)
     , m_actionOnPressed(nullptr)
     , m_actionOnReleased(nullptr)
     , m_isDisabled(false)
@@ -44,11 +44,11 @@ ElementButton::ElementButton()
 
 ElementButton::~ElementButton()
 {
-    m_currentSprite = nullptr;
+    m_currentStateComponent = nullptr;
 
-    SafeDelete(m_spriteIdle);
-    SafeDelete(m_spriteFocused);
-    SafeDelete(m_spriteDisabled);
+    SafeDelete(m_idleStateComponent);
+    SafeDelete(m_focusedStateComponent);
+    SafeDelete(m_disabledStateComponent);
     SafeDelete(m_commonComponent);
 }
 
@@ -91,7 +91,7 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
     spriteIdle->SetUnifiedSize(UDim2::SIZE_FULL);
     spriteIdle->SetParent(this);
 
-    m_spriteIdle = spriteIdle;
+    m_idleStateComponent = spriteIdle;
 
     if (textureFocused)
     {
@@ -100,7 +100,7 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
         spriteFocused->SetUnifiedSize(UDim2::SIZE_FULL);
         spriteFocused->SetParent(this);
 
-        m_spriteFocused = spriteFocused;
+        m_focusedStateComponent = spriteFocused;
     }
 
     if (textureDisabled)
@@ -110,12 +110,12 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
         spriteDisabled->SetUnifiedSize(UDim2::SIZE_FULL);
         spriteDisabled->SetParent(this);
 
-        m_spriteDisabled = spriteDisabled;
+        m_disabledStateComponent = spriteDisabled;
     }
 
     SetSize(Vector2f(textureIdle->GetSize()));
 
-    m_currentSprite = m_spriteIdle;
+    m_currentStateComponent = m_idleStateComponent;
 }
 
 void ElementButton::SetText(const std::string& value, const std::string& fontID)
@@ -156,16 +156,16 @@ void ElementButton::SetDisabled(bool _bDisabled)
 
     if (m_isDisabled)
     {
-        if (m_currentSprite)
+        if (m_currentStateComponent)
         {
-            m_currentSprite = m_spriteDisabled ? m_spriteDisabled : m_spriteIdle;
+            m_currentStateComponent = m_disabledStateComponent ? m_disabledStateComponent : m_idleStateComponent;
         }
     }
     else
     {
-        if (m_currentSprite)
+        if (m_currentStateComponent)
         {
-            m_currentSprite = m_spriteIdle;
+            m_currentStateComponent = m_idleStateComponent;
         }
     }
 }
@@ -198,17 +198,17 @@ void ElementButton::OnMouseReleased(const InteractionInfos& interactionInfos)
 
 void ElementButton::OnMouseEntered(const InteractionInfos& interactionInfos)
 {
-    if (m_currentSprite && !m_isDisabled)
+    if (m_currentStateComponent && !m_isDisabled)
     {
-        m_currentSprite = m_spriteFocused ? m_spriteFocused : m_spriteIdle;
+        m_currentStateComponent = m_focusedStateComponent ? m_focusedStateComponent : m_idleStateComponent;
     }
 }
 
 void ElementButton::OnMouseLeft(const InteractionInfos& interactionInfos)
 {
-    if (m_currentSprite && !m_isDisabled)
+    if (m_currentStateComponent && !m_isDisabled)
     {
-        m_currentSprite = m_spriteIdle;
+        m_currentStateComponent = m_idleStateComponent;
     }
 }
 
@@ -217,9 +217,9 @@ void ElementButton::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
-        if (m_currentSprite)
+        if (m_currentStateComponent)
         {
-            m_currentSprite->Render(_kRenderPass, _kTransformSelf);
+            m_currentStateComponent->Render(_kRenderPass, _kTransformSelf);
         }
 
         if (m_commonComponent)
@@ -231,19 +231,19 @@ void ElementButton::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
 
 void ElementButton::OnSizeChanged()
 {
-    if (m_spriteIdle)
+    if (m_idleStateComponent)
     {
-        m_spriteIdle->ComputeUnifiedDimensions();
+        m_idleStateComponent->ComputeUnifiedDimensions();
     }
 
-    if (m_spriteFocused)
+    if (m_focusedStateComponent)
     {
-        m_spriteFocused->ComputeUnifiedDimensions();
+        m_focusedStateComponent->ComputeUnifiedDimensions();
     }
 
-    if (m_spriteDisabled)
+    if (m_disabledStateComponent)
     {
-        m_spriteDisabled->ComputeUnifiedDimensions();
+        m_disabledStateComponent->ComputeUnifiedDimensions();
     }
 
     if (m_commonComponent)
@@ -275,12 +275,12 @@ bool ElementButton::LoadFromDataImpl(ElementDataContext& context)
     };
 
     loadComponentFromData(buttonData->commonComponent, m_commonComponent);
-    loadComponentFromData(buttonData->idleStateComponent, m_spriteIdle);
-    loadComponentFromData(buttonData->focusedStateComponent, m_spriteFocused);
-    loadComponentFromData(buttonData->disabledStateComponent, m_spriteDisabled);
+    loadComponentFromData(buttonData->idleStateComponent, m_idleStateComponent);
+    loadComponentFromData(buttonData->focusedStateComponent, m_focusedStateComponent);
+    loadComponentFromData(buttonData->disabledStateComponent, m_disabledStateComponent);
 
     // TODO: check null.
-    m_currentSprite = m_spriteIdle;
+    m_currentStateComponent = m_idleStateComponent;
 
     context.data = backupData;
 

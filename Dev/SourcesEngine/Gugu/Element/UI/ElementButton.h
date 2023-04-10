@@ -60,10 +60,10 @@ protected:
 protected:
 
     Element* m_commonComponent;
-    Element* m_spriteIdle;
-    Element* m_spriteFocused;
-    Element* m_spriteDisabled;
-    Element* m_currentSprite;
+    Element* m_idleStateComponent;
+    Element* m_focusedStateComponent;
+    Element* m_disabledStateComponent;
+    Element* m_currentStateComponent;
 
     Callback m_actionOnPressed;
     Callback m_actionOnReleased;

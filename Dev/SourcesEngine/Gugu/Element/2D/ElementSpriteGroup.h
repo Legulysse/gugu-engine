@@ -62,7 +62,8 @@ public:
     void SetTexture(Texture* _pTexture);
     Texture* GetTexture() const;
 
-    size_t AddItem(ElementSpriteGroupItem* _pNewItem);
+    size_t AddItem(ElementSpriteGroupItem* item);
+    //void RemoveItem(ElementSpriteGroupItem* item);
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
     const std::vector<ElementSpriteGroupItem*>& GetItems() const;
 

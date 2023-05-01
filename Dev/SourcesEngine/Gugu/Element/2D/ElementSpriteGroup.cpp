@@ -38,7 +38,13 @@ void ElementSpriteGroupItem::SetSpriteGroup(ElementSpriteGroup* spriteGroup)
 
     if (!m_parent)
     {
+        // TODO: This code implies that we could use a different parent from the SpriteGroup, but it probably breaks if we do.
+        // I should either force a synchronization between parent and group, or refactor sprite group behaviour to allow this kind of situation.
         SetParent(m_spriteGroup);
+    }
+    else if (!m_spriteGroup)
+    {
+        SetParent(nullptr, false);
     }
 }
 
@@ -221,14 +227,23 @@ void ElementSpriteGroup::RaiseNeedRecompute()
     m_needRecompute = true;
 }
 
-size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* _pNewItem)
+size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* item)
 {
-    _pNewItem->SetSpriteGroup(this);
-    m_items.push_back(_pNewItem);
+    item->SetSpriteGroup(this);
+    m_items.push_back(item);
 
     m_needRecompute = true;
     return m_items.size() - 1;
 }
+
+//void ElementSpriteGroup::RemoveItem(ElementSpriteGroupItem* item)
+//{
+//    // TODO: remove item should raise an index to force recomputation from the removed index.
+//    item->SetSpriteGroup(nullptr);
+//    StdVectorRemove(m_items, item);
+//
+//    m_needRecompute = true;
+//}
 
 ElementSpriteGroupItem* ElementSpriteGroup::GetItem(size_t _iIndex) const
 {

@@ -205,6 +205,20 @@ void ClearStdMap(std::map<TKey, TValue*>& _oMap)
 }
 
 template<typename T>
+size_t StdVectorIndexOf(const std::vector<T>& _vecContainer, const T& _tValue)
+{
+    auto it = std::find(_vecContainer.begin(), _vecContainer.end(), _tValue);
+    if (it == _vecContainer.end())
+    {
+        return system::InvalidIndex;
+    }
+    else
+    {
+        return it - _vecContainer.begin();
+    }
+}
+
+template<typename T>
 typename std::vector<T>::const_iterator StdVectorFind(const std::vector<T>& _vecContainer, const T& _tValue)
 {
     return std::find(_vecContainer.cbegin(), _vecContainer.cend(), _tValue);

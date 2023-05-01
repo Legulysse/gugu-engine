@@ -25,6 +25,7 @@ namespace gugu {
 
 namespace system
 {
+    const size_t InvalidIndex = (size_t)-1;
     const char PathSeparator = '/';
     const char ExtensionSeparator = '.';
 }
@@ -150,6 +151,9 @@ void ClearStdList(std::list<T*>& _oList);
 
 template<typename TKey, typename TValue>
 void ClearStdMap(std::map<TKey, TValue*>& _oMap);
+
+template<typename T>
+size_t StdVectorIndexOf(const std::vector<T>& _vecContainer, const T& _tValue);
 
 template<typename T>
 typename std::vector<T>::const_iterator StdVectorFind(const std::vector<T>& _vecContainer, const T& _tValue);

@@ -169,6 +169,35 @@ bool ElementData::SaveToXmlImpl(ElementSaveContext& context) const
     return true;
 }
 
+void ElementData::DeepCopy(const ElementData* copyFrom)
+{
+    name = copyFrom->name;
+
+    origin = copyFrom->origin;
+    position = copyFrom->position;
+    size = copyFrom->size;
+    rotation = copyFrom->rotation;
+    flipV = copyFrom->flipV;
+    flipH = copyFrom->flipH;
+
+    useDimOrigin = copyFrom->useDimOrigin;
+    dimOrigin = copyFrom->dimOrigin;
+    useDimPosition = copyFrom->useDimPosition;
+    dimPosition = copyFrom->dimPosition;
+    useDimSize = copyFrom->useDimSize;
+    dimSize = copyFrom->dimSize;
+
+    ClearStdVector(children);
+
+    for (auto child : copyFrom->children)
+    {
+        ElementData* newChild = InstanciateElementData(child->GetSerializedType());
+        newChild->DeepCopy(child);
+
+        children.push_back(newChild);
+    }
+}
+
 bool ElementSpriteBaseData::LoadFromXmlImpl(ElementParseContext& context)
 {
     if (!ElementData::LoadFromXmlImpl(context))
@@ -214,6 +243,20 @@ bool ElementSpriteBaseData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     return true;
+}
+
+void ElementSpriteBaseData::DeepCopy(const ElementData* copyFrom)
+{
+    ElementData::DeepCopy(copyFrom);
+
+    if (auto CopyFromSameType = dynamic_cast<const ElementSpriteBaseData*>(copyFrom))
+    {
+        textureRect = CopyFromSameType->textureRect;
+        color = CopyFromSameType->color;
+        repeatTexture = CopyFromSameType->repeatTexture;
+        flipTextureV = CopyFromSameType->flipTextureV;
+        flipTextureH = CopyFromSameType->flipTextureH;
+    }
 }
 
 const std::string& ElementSpriteData::GetSerializedType() const
@@ -266,6 +309,18 @@ bool ElementSpriteData::SaveToXmlImpl(ElementSaveContext& context) const
     return true;
 }
 
+void ElementSpriteData::DeepCopy(const ElementData* copyFrom)
+{
+    ElementSpriteBaseData::DeepCopy(copyFrom);
+
+    if (auto CopyFromSameType = dynamic_cast<const ElementSpriteData*>(copyFrom))
+    {
+        imageSet = CopyFromSameType->imageSet;
+        subImageName = CopyFromSameType->subImageName;
+        texture = CopyFromSameType->texture;
+    }
+}
+
 const std::string& ElementSpriteGroupItemData::GetSerializedType() const
 {
     static const std::string serializedType = "ElementSpriteGroupItem";
@@ -296,6 +351,16 @@ bool ElementSpriteGroupItemData::SaveToXmlImpl(ElementSaveContext& context) cons
     }
 
     return true;
+}
+
+void ElementSpriteGroupItemData::DeepCopy(const ElementData* copyFrom)
+{
+    ElementSpriteBaseData::DeepCopy(copyFrom);
+
+    if (auto CopyFromSameType = dynamic_cast<const ElementSpriteGroupItemData*>(copyFrom))
+    {
+        subImageName = CopyFromSameType->subImageName;
+    }
 }
 
 ElementSpriteGroupData::~ElementSpriteGroupData()
@@ -383,6 +448,17 @@ bool ElementSpriteGroupData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     return result;
+}
+
+void ElementSpriteGroupData::DeepCopy(const ElementData* copyFrom)
+{
+    ElementData::DeepCopy(copyFrom);
+
+    if (auto CopyFromSameType = dynamic_cast<const ElementSpriteGroupData*>(copyFrom))
+    {
+        imageSet = CopyFromSameType->imageSet;
+        texture = CopyFromSameType->texture;
+    }
 }
 
 ElementButtonData::~ElementButtonData()
@@ -479,6 +555,15 @@ bool ElementButtonData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     return result;
+}
+
+void ElementButtonData::DeepCopy(const ElementData* copyFrom)
+{
+    ElementData::DeepCopy(copyFrom);
+
+    if (auto CopyFromSameType = dynamic_cast<const ElementButtonData*>(copyFrom))
+    {
+    }
 }
 
 }   // namespace gugu

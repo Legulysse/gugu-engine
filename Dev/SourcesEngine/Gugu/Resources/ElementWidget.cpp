@@ -53,9 +53,19 @@ Element* ElementWidget::InstanciateWidget(ElementDataBindings* bindings) const
     }
 }
 
-ElementData* ElementWidget::GetData() const
+ElementData* ElementWidget::GetRootData() const
 {
     return m_data;
+}
+
+void ElementWidget::SetRootData(ElementData* data, bool deleteData)
+{
+    if (deleteData)
+    {
+        Unload();
+    }
+
+    m_data = data;
 }
 
 void ElementWidget::Unload()

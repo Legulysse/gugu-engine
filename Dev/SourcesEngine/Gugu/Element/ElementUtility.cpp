@@ -22,6 +22,11 @@ namespace gugu {
 ElementData* InstanciateElementData(const pugi::xml_node& node)
 {
     std::string_view elementType = node.attribute("type").value();
+    return InstanciateElementData(elementType);
+}
+
+ElementData* InstanciateElementData(std::string_view elementType)
+{
     ElementData* result = nullptr;
 
     if (StringEquals(elementType, "Element"))

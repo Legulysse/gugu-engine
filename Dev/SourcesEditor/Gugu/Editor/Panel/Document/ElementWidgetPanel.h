@@ -46,6 +46,7 @@ private:
 
     void DisplayTreeNode(ElementData* node, int itemFlags, ElementData*& deleted);
     void HandleContextMenu(ElementData* node, ElementData*& deleted);
+    ElementData* DisplayElementInstanciationContextMenu();
 
     void ClearHierarchy();
     void RebuildHierarchy();
@@ -53,7 +54,9 @@ private:
 
     void DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup);
 
-    void AppendNewElement(ElementData* parentData, ElementData* elementData);
+    void AddChildElement(ElementData* parentData, ElementData* elementData);
+    void AddChildElement(ElementData* parentData, ElementData* elementData, size_t index);
+    void InsertElement(ElementData* referenceData, ElementData* elementData);
     ElementSpriteGroupItem* AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
     void DeleteElement(ElementData* elementData);
 

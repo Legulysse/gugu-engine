@@ -45,6 +45,7 @@ struct ElementDataContext
 };
 
 ElementData* InstanciateElementData(const pugi::xml_node& node);
+ElementData* InstanciateElementData(std::string_view elementType);
 Element* InstanciateElement(ElementData* data);
 
 }   // namespace gugu

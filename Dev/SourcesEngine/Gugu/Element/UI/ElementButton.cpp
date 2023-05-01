@@ -62,7 +62,7 @@ bool ElementButton::LoadFromWidget(ElementWidget* elementWidget)
     if (elementWidget)
     {
         ElementDataContext context;
-        context.data = elementWidget->GetData();
+        context.data = elementWidget->GetRootData();
         return LoadFromData(context);
     }
 

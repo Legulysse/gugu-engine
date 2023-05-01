@@ -58,6 +58,8 @@ public:
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context);
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const;
+
+    virtual void DeepCopy(const ElementData* copyFrom);
 };
 
 class ElementSpriteBaseData : public ElementData
@@ -72,6 +74,8 @@ public:
 
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void DeepCopy(const ElementData* copyFrom) override;
 };
 
 class ElementSpriteData : public ElementSpriteBaseData
@@ -85,6 +89,8 @@ public:
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void DeepCopy(const ElementData* copyFrom) override;
 };
 
 class ElementSpriteGroupItemData : public ElementSpriteBaseData
@@ -96,6 +102,8 @@ public:
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void DeepCopy(const ElementData* copyFrom) override;
 };
 
 class ElementSpriteGroupData : public ElementData
@@ -111,6 +119,8 @@ public:
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void DeepCopy(const ElementData* copyFrom) override;
 };
 
 class ElementButtonData : public ElementData
@@ -130,6 +140,8 @@ public:
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void DeepCopy(const ElementData* copyFrom) override;
 
     void RefreshCache();
 };

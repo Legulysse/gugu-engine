@@ -35,7 +35,7 @@ void ElementWidgetPanel::RebuildHierarchy()
 {
     ClearHierarchy();
 
-    m_widgetRootData = m_elementWidget->GetData();
+    m_widgetRootData = m_elementWidget->GetRootData();
 
     m_dataBindings = new ElementDataBindings;
     m_widgetRootElement = m_elementWidget->InstanciateWidget(m_dataBindings);
@@ -60,6 +60,7 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
         if (deleted)
         {
             DeleteElement(deleted);
+            RaiseDirty();
         }
     }
 }
@@ -68,9 +69,7 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, Eleme
 {
     ImGuiTreeNodeFlags nodeFlags = itemFlags;
 
-    const std::vector<ElementData*>& children = node->children;
-
-    if (children.empty())
+    if (node->children.empty())
     {
         nodeFlags |= ImGuiTreeNodeFlags_Leaf;
     }
@@ -128,6 +127,8 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, Eleme
         }
 
         // Display children.
+        const std::vector<ElementData*>& children = node->children;
+
         for (size_t i = 0; i < children.size(); ++i)
         {
             ImGui::PushID((int)i);
@@ -141,34 +142,16 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, Eleme
 
 void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& deleted)
 {
-    //todo: replace command (or default empty root ?)
     //todo: copy/paste/duplicate
 
     if (ImGui::BeginPopupContextItem())
     {
-        if (ImGui::BeginMenu("Add..."))
+        if (ImGui::BeginMenu("Add Child..."))
         {
-            if (ImGui::MenuItem("Element"))
+            ElementData* elementData = DisplayElementInstanciationContextMenu();
+            if (elementData)
             {
-                AppendNewElement(node, new ElementData);
-                RaiseDirty();
-            }
-
-            if (ImGui::MenuItem("Element Sprite"))
-            {
-                AppendNewElement(node, new ElementSpriteData);
-                RaiseDirty();
-            }
-
-            if (ImGui::MenuItem("Element Sprite Group"))
-            {
-                AppendNewElement(node, new ElementSpriteGroupData);
-                RaiseDirty();
-            }
-
-            if (ImGui::MenuItem("Element Button"))
-            {
-                AppendNewElement(node, new ElementButtonData);
+                AddChildElement(node, elementData);
                 RaiseDirty();
             }
 
@@ -186,6 +169,50 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& dele
             ImGui::EndMenu();
         }
 
+        if (!dynamic_cast<ElementSpriteGroupItemData*>(node))
+        {
+            if (node != m_widgetRootData)
+            {
+                if (ImGui::BeginMenu("Insert..."))
+                {
+                    ElementData* elementData = DisplayElementInstanciationContextMenu();
+                    if (elementData)
+                    {
+                        InsertElement(node, elementData);
+                        RaiseDirty();
+                    }
+
+                    ImGui::EndMenu();
+                }
+            }
+
+            if (ImGui::BeginMenu("Replace...") && !deleted)
+            {
+                ElementData* elementData = DisplayElementInstanciationContextMenu();
+                if (elementData)
+                {
+                    elementData->DeepCopy(node);
+
+                    if (node == m_widgetRootData)
+                    {
+                        deleted = node;
+                        m_elementWidget->SetRootData(elementData, false);
+                    }
+                    else
+                    {
+                        deleted = node;
+                        InsertElement(node, elementData);
+                    }
+
+                    RaiseDirty();
+                }
+
+                ImGui::EndMenu();
+            }
+        }
+
+        ImGui::Separator();
+
         ImGui::BeginDisabled(node == m_widgetRootData);
         if (ImGui::MenuItem("Delete") && !deleted)
         {
@@ -195,6 +222,33 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& dele
 
         ImGui::EndPopup();
     }
+}
+
+ElementData* ElementWidgetPanel::DisplayElementInstanciationContextMenu()
+{
+    ElementData * elementData = nullptr;
+
+    if (ImGui::MenuItem("Element"))
+    {
+        elementData = new ElementData;
+    }
+
+    if (ImGui::MenuItem("Element Sprite"))
+    {
+        elementData = new ElementSpriteData;
+    }
+
+    if (ImGui::MenuItem("Element Sprite Group"))
+    {
+        elementData = new ElementSpriteGroupData;
+    }
+
+    if (ImGui::MenuItem("Element Button"))
+    {
+        elementData = new ElementButtonData;
+    }
+
+    return elementData;
 }
 
 }   //namespace gugu

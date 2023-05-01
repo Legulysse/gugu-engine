@@ -34,7 +34,9 @@ public:
     
     Element* InstanciateWidget() const;
     Element* InstanciateWidget(ElementDataBindings* bindings) const;
-    ElementData* GetData() const;
+
+    ElementData* GetRootData() const;
+    void SetRootData(ElementData* data, bool deleteData);
 
     virtual EResourceType::Type GetResourceType() const override;
 

@@ -64,6 +64,16 @@ void Element::AddChild(Element* child)
     m_children.push_back(child);
 }
 
+bool Element::InsertChild(Element* child, size_t index)
+{
+    if (index < 0 || index >= m_children.size())
+        return false;
+
+    child->SetParent(this);
+    StdVectorInsertAt(m_children, index, child);
+    return true;
+}
+
 Element* Element::AddChildWidget(const std::string& elementWidgetID)
 {
     return AddChildWidget(GetResources()->GetElementWidget(elementWidgetID));

@@ -56,6 +56,7 @@ public:
     }
 
     void AddChild(Element* child);
+    bool InsertChild(Element* child, size_t index);
     Element* AddChildWidget(const std::string& elementWidgetID);
     Element* AddChildWidget(ElementWidget* elementWidget);
 

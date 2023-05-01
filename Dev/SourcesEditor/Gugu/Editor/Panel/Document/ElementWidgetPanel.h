@@ -12,7 +12,7 @@
 
 namespace gugu
 {
-    struct ElementDataContext;
+    struct ElementDataBindings;
     class DeltaTime;
     class RenderViewport;
     class ElementWidget;
@@ -63,7 +63,7 @@ private:
     float m_zoomFactor;
 
     ElementWidget* m_elementWidget;
-    ElementDataContext* m_dataContext;
+    ElementDataBindings* m_dataBindings;
     ElementData* m_widgetRootData;
     Element* m_widgetRootElement;
     ElementData* m_selectedElementData;

@@ -10,7 +10,7 @@
 
 namespace gugu
 {
-    struct ElementDataContext;
+    struct ElementDataBindings;
     class Element;
     class ElementData;
 }
@@ -33,7 +33,7 @@ public:
     virtual ~ElementWidget();
     
     Element* InstanciateWidget() const;
-    Element* InstanciateWidget(ElementDataContext& context) const;
+    Element* InstanciateWidget(ElementDataBindings* bindings) const;
     ElementData* GetData() const;
 
     virtual EResourceType::Type GetResourceType() const override;

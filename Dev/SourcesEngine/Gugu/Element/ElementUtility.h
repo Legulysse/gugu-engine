@@ -31,13 +31,17 @@ struct ElementSaveContext
     pugi::xml_node node;
 };
 
-struct ElementDataContext
+struct ElementDataBindings
 {
-    ElementData* data;
-
     std::map<Element*, ElementData*> dataFromElement;
     std::map<ElementData*, Element*> elementFromData;
     std::map<std::string, Element*> elementFromName;
+};
+
+struct ElementDataContext
+{
+    ElementData* data;
+    ElementDataBindings* bindings;
 };
 
 ElementData* InstanciateElementData(const pugi::xml_node& node);

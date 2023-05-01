@@ -31,7 +31,7 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     , m_elementWidget(resource)
     , m_renderViewport(nullptr)
     , m_zoomFactor(1.f)
-    , m_dataContext(nullptr)
+    , m_dataBindings(nullptr)
     , m_widgetRootData(nullptr)
     , m_widgetRootElement(nullptr)
     , m_selectedElementData(nullptr)
@@ -57,7 +57,7 @@ ElementWidgetPanel::~ElementWidgetPanel()
     m_selectedElementData = nullptr;
     m_selectedElement = nullptr;
 
-    SafeDelete(m_dataContext);
+    SafeDelete(m_dataBindings);
     SafeDelete(m_renderViewport);
 }
 
@@ -71,7 +71,7 @@ void ElementWidgetPanel::ClearHierarchy()
     m_selectedElementData = nullptr;
     m_selectedElement = nullptr;
     SafeDelete(m_widgetRootElement);
-    SafeDelete(m_dataContext);
+    SafeDelete(m_dataBindings);
 
     m_widgetRootData = nullptr;
 }
@@ -82,8 +82,8 @@ void ElementWidgetPanel::RebuildHierarchy()
 
     m_widgetRootData = m_elementWidget->GetData();
 
-    m_dataContext = new ElementDataContext;
-    m_widgetRootElement = m_elementWidget->InstanciateWidget(*m_dataContext);
+    m_dataBindings = new ElementDataBindings;
+    m_widgetRootElement = m_elementWidget->InstanciateWidget(m_dataBindings);
     if (m_widgetRootElement)
     {
         m_renderViewport->GetRoot()->AddChild(m_widgetRootElement);
@@ -145,6 +145,10 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     Element* element = m_selectedElement;
     if (elementData && ImGui::CollapsingHeader("Common", headerFlags))
     {
+        // Name
+        ImGui::InputText("Name", &elementData->name);
+        ImGui::Spacing();
+
         // Origin
         ImGui::BeginDisabled(elementData->useDimOrigin);
         if (ImGui::InputFloat2("Origin", &elementData->origin))
@@ -361,7 +365,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         else if (elementSpriteGroupItemData)
         {
             ElementSpriteGroup* ownerGroup = dynamic_cast<ElementSpriteGroup*>(elementSpriteGroupItem->GetParent());
-            ElementSpriteGroupData* ownerGroupData = dynamic_cast<ElementSpriteGroupData*>(m_dataContext->dataFromElement.at(ownerGroup));
+            ElementSpriteGroupData* ownerGroupData = dynamic_cast<ElementSpriteGroupData*>(m_dataBindings->dataFromElement.at(ownerGroup));
 
             if (ImGui::InputText("SubImage", &elementSpriteGroupItemData->subImageName, ImGuiInputTextFlags_EnterReturnsTrue))
             {
@@ -426,7 +430,7 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, Eleme
     if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
     {
         m_selectedElementData = node;
-        m_selectedElement = m_dataContext->elementFromData.at(node);
+        m_selectedElement = m_dataBindings->elementFromData.at(node);
     }
 
     // Context menu.
@@ -748,36 +752,36 @@ void ElementWidgetPanel::DisplayGenerators(ElementSpriteGroupData* elementSprite
 
 void ElementWidgetPanel::AppendNewElement(ElementData* parentData, ElementData* elementData)
 {
-    Element* parent = m_dataContext->elementFromData.at(parentData);
+    Element* parent = m_dataBindings->elementFromData.at(parentData);
     Element* element = InstanciateElement(elementData);
 
     parentData->children.push_back(elementData);
     parent->AddChild(element);
-    m_dataContext->elementFromData.insert(std::make_pair(elementData, element));
-    m_dataContext->dataFromElement.insert(std::make_pair(element, elementData));
+    m_dataBindings->elementFromData.insert(std::make_pair(elementData, element));
+    m_dataBindings->dataFromElement.insert(std::make_pair(element, elementData));
 }
 
 ElementSpriteGroupItem* ElementWidgetPanel::AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData)
 {
-    ElementSpriteGroup* group = dynamic_cast<ElementSpriteGroup*>(m_dataContext->elementFromData.at(groupData));
+    ElementSpriteGroup* group = dynamic_cast<ElementSpriteGroup*>(m_dataBindings->elementFromData.at(groupData));
     ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
 
     groupData->components.push_back(componentData);
     group->AddItem(component);
-    m_dataContext->elementFromData.insert(std::make_pair(componentData, component));
-    m_dataContext->dataFromElement.insert(std::make_pair(component, componentData));
+    m_dataBindings->elementFromData.insert(std::make_pair(componentData, component));
+    m_dataBindings->dataFromElement.insert(std::make_pair(component, componentData));
 
     return component;
 }
 
 void ElementWidgetPanel::DeleteElement(ElementData* elementData)
 {
-    Element* element = m_dataContext->elementFromData.at(elementData);
+    Element* element = m_dataBindings->elementFromData.at(elementData);
 
     if (Element* parent = element->GetParent())
     {
         // Remove element from parent children.
-        ElementData* parentData = m_dataContext->dataFromElement.at(parent);
+        ElementData* parentData = m_dataBindings->dataFromElement.at(parent);
         StdVectorRemove(parentData->children, elementData);
 
         // Remove element from owner if it is a SpriteGroup component.

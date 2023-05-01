@@ -635,20 +635,24 @@ bool Element::LoadFromData(ElementDataContext& context)
     bool result = LoadFromDataImpl(context);
 
     ElementData* elementData = context.data;
-    context.elementFromData.insert(std::make_pair(elementData, this));
-    context.dataFromElement.insert(std::make_pair(this, elementData));
 
-    if (!elementData->name.empty())
+    if (context.bindings)
     {
-        // TODO: handle multiple elements with same name.
-        auto it = context.elementFromName.find(elementData->name);
-        if (it == context.elementFromName.end())
+        context.bindings->elementFromData.insert(std::make_pair(elementData, this));
+        context.bindings->dataFromElement.insert(std::make_pair(this, elementData));
+
+        if (!elementData->name.empty())
         {
-            context.elementFromName.insert(std::make_pair(elementData->name, this));
-        }
-        else
-        {
-            GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementData->name));
+            // TODO: handle multiple elements with same name.
+            auto it = context.bindings->elementFromName.find(elementData->name);
+            if (it == context.bindings->elementFromName.end())
+            {
+                context.bindings->elementFromName.insert(std::make_pair(elementData->name, this));
+            }
+            else
+            {
+                GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementData->name));
+            }
         }
     }
 

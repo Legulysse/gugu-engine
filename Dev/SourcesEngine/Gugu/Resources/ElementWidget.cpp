@@ -29,18 +29,19 @@ ElementWidget::~ElementWidget()
 
 Element* ElementWidget::InstanciateWidget() const
 {
-    ElementDataContext context;
-    return InstanciateWidget(context);
+    return InstanciateWidget(nullptr);
 }
 
-Element* ElementWidget::InstanciateWidget(ElementDataContext& context) const
+Element* ElementWidget::InstanciateWidget(ElementDataBindings* bindings) const
 {
     if (!m_data)
         return nullptr;
 
     if (Element* root = InstanciateElement(m_data))
     {
+        ElementDataContext context;
         context.data = m_data;
+        context.bindings = bindings;
         root->LoadFromData(context);
 
         context.data = m_data;

@@ -46,7 +46,8 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     m_renderViewport = new RenderViewport(true);
     m_renderViewport->SetSize(Vector2u(1280, 720));
 
-    RebuildWidgetHierarchy();
+    RebuildHierarchy();
+    SelectRootNode();
 }
 
 ElementWidgetPanel::~ElementWidgetPanel()
@@ -62,15 +63,22 @@ ElementWidgetPanel::~ElementWidgetPanel()
 
 void ElementWidgetPanel::OnUndoRedo()
 {
-    RebuildWidgetHierarchy();
+    RebuildHierarchy();
 }
 
-void ElementWidgetPanel::RebuildWidgetHierarchy()
+void ElementWidgetPanel::ClearHierarchy()
 {
     m_selectedElementData = nullptr;
     m_selectedElement = nullptr;
     SafeDelete(m_widgetRootElement);
     SafeDelete(m_dataContext);
+
+    m_widgetRootData = nullptr;
+}
+
+void ElementWidgetPanel::RebuildHierarchy()
+{
+    ClearHierarchy();
 
     m_widgetRootData = m_elementWidget->GetData();
 
@@ -79,9 +87,13 @@ void ElementWidgetPanel::RebuildWidgetHierarchy()
     if (m_widgetRootElement)
     {
         m_renderViewport->GetRoot()->AddChild(m_widgetRootElement);
-        m_selectedElementData = m_widgetRootData;
-        m_selectedElement = m_widgetRootElement;
     }
+}
+
+void ElementWidgetPanel::SelectRootNode()
+{
+    m_selectedElementData = m_widgetRootData;
+    m_selectedElement = m_widgetRootElement;
 }
 
 void ElementWidgetPanel::UpdatePanelImpl(const DeltaTime& dt)
@@ -105,18 +117,20 @@ void ElementWidgetPanel::UpdatePanelImpl(const DeltaTime& dt)
 
 void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
 {
-    static ImGuiTreeNodeFlags itemFlags =/* ImGuiTreeNodeFlags_Leaf*/ /*| ImGuiTreeNodeFlags_NoTreePushOnOpen |*/
-        ImGuiTreeNodeFlags_SpanAvailWidth
-        | ImGuiTreeNodeFlags_SpanFullWidth
-        | ImGuiTreeNodeFlags_DefaultOpen
-        | ImGuiTreeNodeFlags_OpenOnDoubleClick
-        | ImGuiTreeNodeFlags_OpenOnArrow;
+    static ImGuiTreeNodeFlags itemFlags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth
+        | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
 
     if (m_widgetRootData)
     {
         ImGui::PushID("_HIERARCHY_TREE");
-        DisplayTreeNode(m_widgetRootData, itemFlags);
+        ElementData* deleted = nullptr;
+        DisplayTreeNode(m_widgetRootData, itemFlags, deleted);
         ImGui::PopID();
+
+        if (deleted)
+        {
+            DeleteElement(deleted);
+        }
     }
 }
 
@@ -391,7 +405,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     }
 }
 
-void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
+void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, ElementData*& deleted)
 {
     ImGuiTreeNodeFlags nodeFlags = itemFlags;
 
@@ -416,10 +430,11 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
     }
 
     // Context menu.
-    HandleContextMenu(node);
+    HandleContextMenu(node, deleted);
 
     if (isOpen)
     {
+        // Display components.
         if (ElementSpriteGroupData* nodeSpriteGroup = dynamic_cast<ElementSpriteGroupData*>(node))
         {
             const std::vector<ElementSpriteGroupItemData*>& components = nodeSpriteGroup->components;
@@ -430,7 +445,7 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
             for (size_t i = 0; i < components.size(); ++i)
             {
                 ImGui::PushID((int)i);
-                DisplayTreeNode(components[i], itemFlags);
+                DisplayTreeNode(components[i], itemFlags, deleted);
                 ImGui::PopID();
             }
 
@@ -446,17 +461,18 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
             for (size_t i = 0; i < components.size(); ++i)
             {
                 ImGui::PushID((int)i);
-                DisplayTreeNode(components[i], itemFlags);
+                DisplayTreeNode(components[i], itemFlags, deleted);
                 ImGui::PopID();
             }
 
             ImGui::TreePop();
         }
 
+        // Display children.
         for (size_t i = 0; i < children.size(); ++i)
         {
             ImGui::PushID((int)i);
-            DisplayTreeNode(children[i], itemFlags);
+            DisplayTreeNode(children[i], itemFlags, deleted);
             ImGui::PopID();
         }
 
@@ -464,8 +480,11 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags)
     }
 }
 
-void ElementWidgetPanel::HandleContextMenu(ElementData* node)
+void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& deleted)
 {
+    //todo: replace command (or default empty root ?)
+    //todo: copy/paste/duplicate
+
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::BeginMenu("Add..."))
@@ -507,6 +526,13 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node)
 
             ImGui::EndMenu();
         }
+
+        ImGui::BeginDisabled(node == m_widgetRootData);
+        if (ImGui::MenuItem("Delete") && !deleted)
+        {
+            deleted = node;
+        }
+        ImGui::EndDisabled();
 
         ImGui::EndPopup();
     }
@@ -742,6 +768,80 @@ ElementSpriteGroupItem* ElementWidgetPanel::AppendNewComponent(ElementSpriteGrou
     m_dataContext->dataFromElement.insert(std::make_pair(component, componentData));
 
     return component;
+}
+
+void ElementWidgetPanel::DeleteElement(ElementData* elementData)
+{
+    Element* element = m_dataContext->elementFromData.at(elementData);
+
+    if (Element* parent = element->GetParent())
+    {
+        // Remove element from parent children.
+        ElementData* parentData = m_dataContext->dataFromElement.at(parent);
+        StdVectorRemove(parentData->children, elementData);
+
+        // Remove element from owner if it is a SpriteGroup component.
+        ElementSpriteGroupData* parentSpriteGroupData = dynamic_cast<ElementSpriteGroupData*>(parentData);
+        ElementSpriteGroupItemData* elementSpriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(elementData);
+        if (parentSpriteGroupData && elementSpriteGroupItemData)
+        {
+            StdVectorRemove(parentSpriteGroupData->components, elementSpriteGroupItemData);
+        }
+
+        // Remove element from owner if it is a Button component.
+        ElementButtonData* parentButtonData = dynamic_cast<ElementButtonData*>(parentData);
+        if (parentButtonData)
+        {
+            StdVectorRemove(parentButtonData->components, elementData);
+
+            if (parentButtonData->commonComponent == elementData)
+            {
+                parentButtonData->commonComponent = nullptr;
+            }
+
+            if (parentButtonData->idleStateComponent == elementData)
+            {
+                parentButtonData->idleStateComponent = nullptr;
+            }
+
+            if (parentButtonData->focusedStateComponent == elementData)
+            {
+                parentButtonData->focusedStateComponent = nullptr;
+            }
+
+            if (parentButtonData->disabledStateComponent == elementData)
+            {
+                parentButtonData->disabledStateComponent = nullptr;
+            }
+        }
+    }
+
+    // Check if we are deleting an ancestor of the selected element.
+    bool selectionDeleted = false;
+
+    Element* ancestor = m_selectedElement;
+    while (ancestor)
+    {
+        if (ancestor == element)
+        {
+            selectionDeleted = true;
+            break;
+        }
+
+        ancestor = ancestor->GetParent();
+    }
+
+    if (selectionDeleted)
+    {
+        m_selectedElement = nullptr;
+        m_selectedElementData = nullptr;
+    }
+
+    // Finalize.
+    SafeDelete(elementData);
+
+    RebuildHierarchy();
+    RaiseDirty();
 }
 
 }   //namespace gugu

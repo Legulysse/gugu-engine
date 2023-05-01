@@ -44,14 +44,18 @@ private:
     virtual void UpdateHierarchyImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
-    void DisplayTreeNode(ElementData* node, int itemFlags);
-    void HandleContextMenu(ElementData* node);
+    void DisplayTreeNode(ElementData* node, int itemFlags, ElementData*& deleted);
+    void HandleContextMenu(ElementData* node, ElementData*& deleted);
 
-    void RebuildWidgetHierarchy();
+    void ClearHierarchy();
+    void RebuildHierarchy();
+    void SelectRootNode();
 
     void DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup);
+
     void AppendNewElement(ElementData* parentData, ElementData* elementData);
     ElementSpriteGroupItem* AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
+    void DeleteElement(ElementData* elementData);
 
 private:
 

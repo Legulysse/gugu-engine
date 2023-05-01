@@ -798,25 +798,7 @@ void ElementWidgetPanel::DeleteElement(ElementData* elementData)
         {
             StdVectorRemove(parentButtonData->components, elementData);
 
-            if (parentButtonData->commonComponent == elementData)
-            {
-                parentButtonData->commonComponent = nullptr;
-            }
-
-            if (parentButtonData->idleStateComponent == elementData)
-            {
-                parentButtonData->idleStateComponent = nullptr;
-            }
-
-            if (parentButtonData->focusedStateComponent == elementData)
-            {
-                parentButtonData->focusedStateComponent = nullptr;
-            }
-
-            if (parentButtonData->disabledStateComponent == elementData)
-            {
-                parentButtonData->disabledStateComponent = nullptr;
-            }
+            parentButtonData->RefreshCache();
         }
     }
 

@@ -395,6 +395,34 @@ ElementButtonData::~ElementButtonData()
     ClearStdVector(components);
 }
 
+void ElementButtonData::RefreshCache()
+{
+    commonComponent = nullptr;
+    idleStateComponent = nullptr;
+    focusedStateComponent = nullptr;
+    disabledStateComponent = nullptr;
+
+    for (auto component : components)
+    {
+        if (StringEquals(component->name, "Common"))
+        {
+            commonComponent = component;
+        }
+        else if (StringEquals(component->name, "Idle"))
+        {
+            idleStateComponent = component;
+        }
+        else if (StringEquals(component->name, "Focused"))
+        {
+            focusedStateComponent = component;
+        }
+        else if (StringEquals(component->name, "Disabled"))
+        {
+            disabledStateComponent = component;
+        }
+    }
+}
+
 const std::string& ElementButtonData::GetSerializedType() const
 {
     static const std::string serializedType = "ElementButton";
@@ -418,28 +446,13 @@ bool ElementButtonData::LoadFromXmlImpl(ElementParseContext& context)
                 component->LoadFromXml(context);
 
                 components.push_back(component);
-
-                if (StringEquals(component->name, "Common"))
-                {
-                    commonComponent = component;
-                }
-                else if (StringEquals(component->name, "Idle"))
-                {
-                    idleStateComponent = component;
-                }
-                else if (StringEquals(component->name, "Focused"))
-                {
-                    focusedStateComponent = component;
-                }
-                else if (StringEquals(component->name, "Disabled"))
-                {
-                    disabledStateComponent = component;
-                }
             }
         }
 
         context.node = backupNode;
     }
+
+    RefreshCache();
 
     return true;
 }

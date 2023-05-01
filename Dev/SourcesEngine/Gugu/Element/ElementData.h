@@ -119,6 +119,7 @@ public:
 
     std::vector<ElementData*> components;
 
+    // Cache
     ElementData* commonComponent = nullptr;
     ElementData* idleStateComponent = nullptr;
     ElementData* focusedStateComponent = nullptr;
@@ -129,6 +130,8 @@ public:
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    void RefreshCache();
 };
 
 }   // namespace gugu

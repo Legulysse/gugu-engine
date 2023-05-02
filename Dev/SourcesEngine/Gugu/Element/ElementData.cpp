@@ -458,6 +458,16 @@ void ElementSpriteGroupData::DeepCopy(const ElementData* copyFrom)
     {
         imageSet = CopyFromSameType->imageSet;
         texture = CopyFromSameType->texture;
+
+        ClearStdVector(components);
+
+        for (auto component : CopyFromSameType->components)
+        {
+            ElementSpriteGroupItemData* newComponent = new ElementSpriteGroupItemData;
+            newComponent->DeepCopy(component);
+
+            components.push_back(newComponent);
+        }
     }
 }
 
@@ -563,6 +573,17 @@ void ElementButtonData::DeepCopy(const ElementData* copyFrom)
 
     if (auto CopyFromSameType = dynamic_cast<const ElementButtonData*>(copyFrom))
     {
+        ClearStdVector(components);
+
+        for (auto component : CopyFromSameType->components)
+        {
+            ElementData* newComponent = InstanciateElementData(component->GetSerializedType());
+            newComponent->DeepCopy(component);
+
+            components.push_back(newComponent);
+        }
+
+        RefreshCache();
     }
 }
 

@@ -67,6 +67,11 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
 
 void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, ElementData*& deleted)
 {
+    // Special case : when using the Replace command, a new node will be inserted before the current node, which will then be displayed a second time.
+    // TODO: some kind of proper delayed command system would allow to separate the display from modifications.
+    if (node == deleted)
+        return;
+
     ImGuiTreeNodeFlags nodeFlags = itemFlags;
 
     if (node->children.empty())
@@ -204,7 +209,8 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& dele
                         InsertElement(node, elementData);
                     }
 
-                    RaiseDirty();
+                    // Do not raise dirty here, we need to wait for the delete action to proceed.
+                    //RaiseDirty();
                 }
 
                 ImGui::EndMenu();

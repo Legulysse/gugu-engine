@@ -12,10 +12,12 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
+#include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
+#include "Gugu/Resources/Font.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -32,7 +34,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     ElementData* elementData = m_selectedElementData;
     Element* element = m_selectedElement;
-    if (elementData && ImGui::CollapsingHeader("Common", headerFlags))
+    if (elementData && ImGui::CollapsingHeader("Common##_HEADER", headerFlags))
     {
         // Name
         ImGui::InputText("Name", &elementData->name);
@@ -172,7 +174,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     ElementSpriteGroupData* elementSpriteGroupData = dynamic_cast<ElementSpriteGroupData*>(elementData);
     ElementSpriteGroup* elementSpriteGroup = dynamic_cast<ElementSpriteGroup*>(element);
-    if (elementSpriteGroupData && ImGui::CollapsingHeader("Sprite Group", headerFlags))
+    if (elementSpriteGroupData && ImGui::CollapsingHeader("Sprite Group##_HEADER", headerFlags))
     {
         Texture* texture = elementSpriteGroupData->texture;
         std::string textureId = !texture ? "" : texture->GetID();
@@ -199,7 +201,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     ElementSpriteBaseData* elementSpriteBaseData = dynamic_cast<ElementSpriteBaseData*>(elementData);
     ElementSpriteBase* elementSpriteBase = dynamic_cast<ElementSpriteBase*>(element);
-    if (elementSpriteBaseData && ImGui::CollapsingHeader("Sprite", headerFlags))
+    if (elementSpriteBaseData && ImGui::CollapsingHeader("Sprite##_HEADER", headerFlags))
     {
         ElementSpriteData* elementSpriteData = dynamic_cast<ElementSpriteData*>(elementData);
         ElementSprite* elementSprite = dynamic_cast<ElementSprite*>(element);
@@ -293,6 +295,27 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         if (ImGui::ColorEdit4("Color", &elementSpriteBaseData->color))
         {
             elementSpriteBase->SetColor(elementSpriteBaseData->color);
+            RaiseDirty();
+        }
+    }
+
+    ElementTextData* elementTextData = dynamic_cast<ElementTextData*>(elementData);
+    ElementText* elementText = dynamic_cast<ElementText*>(element);
+    if (elementTextData && ImGui::CollapsingHeader("Text##_HEADER", headerFlags))
+    {
+        if (ImGui::InputText("Text", &elementTextData->text, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            // Assume Utf8 data (same as inside ElementText::LoadFromData).
+            elementText->SetText(sf::String::fromUtf8(elementTextData->text.begin(), elementTextData->text.end()));
+            RaiseDirty();
+        }
+
+        Font* font = elementTextData->font;
+        std::string fontId = !font ? "" : font->GetID();
+        if (ImGui::InputText("Font", &fontId, ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            elementTextData->font = GetResources()->GetFont(fontId);
+            elementText->SetFont(elementTextData->font);
             RaiseDirty();
         }
     }

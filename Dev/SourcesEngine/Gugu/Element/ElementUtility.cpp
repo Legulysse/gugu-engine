@@ -11,6 +11,7 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
+#include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/System/SystemUtility.h"
 
@@ -41,6 +42,10 @@ ElementData* InstanciateElementData(std::string_view elementType)
     {
         result = new ElementSpriteGroupData;
     }
+    else if (StringEquals(elementType, "ElementText"))
+    {
+        result = new ElementTextData;
+    }
     else if (StringEquals(elementType, "ElementButton"))
     {
         result = new ElementButtonData;
@@ -67,6 +72,10 @@ Element* InstanciateElement(ElementData* data)
     else if (StringEquals(data->GetSerializedType(), "ElementSpriteGroup"))
     {
         result = new ElementSpriteGroup;
+    }
+    else if (StringEquals(data->GetSerializedType(), "ElementText"))
+    {
+        result = new ElementText;
     }
     else if (StringEquals(data->GetSerializedType(), "ElementButton"))
     {

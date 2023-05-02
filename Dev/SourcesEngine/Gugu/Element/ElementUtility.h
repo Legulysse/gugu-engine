@@ -40,8 +40,8 @@ struct ElementDataBindings
 
 struct ElementDataContext
 {
-    ElementData* data;
-    ElementDataBindings* bindings;
+    ElementData* data = nullptr;
+    ElementDataBindings* bindings = nullptr;
 };
 
 ElementData* InstanciateElementData(const pugi::xml_node& node);

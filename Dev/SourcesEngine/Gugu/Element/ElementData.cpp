@@ -11,6 +11,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
+#include "Gugu/Resources/Font.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
@@ -468,6 +469,63 @@ void ElementSpriteGroupData::DeepCopy(const ElementData* copyFrom)
 
             components.push_back(newComponent);
         }
+    }
+}
+
+const std::string& ElementTextData::GetSerializedType() const
+{
+    static const std::string serializedType = "ElementText";
+    return serializedType;
+}
+
+bool ElementTextData::LoadFromXmlImpl(ElementParseContext& context)
+{
+    if (!ElementData::LoadFromXmlImpl(context))
+        return false;
+
+    if (pugi::xml_node fontNode = context.node.child("Font"))
+    {
+        font = GetResources()->GetFont(fontNode.attribute("source").as_string(""));
+    }
+
+    xml::TryParseAttribute(context.node.child("Text"), "value", text);
+    xml::TryParseAttribute(context.node.child("Multiline"), "value", multiline);
+
+    return true;
+}
+
+bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!ElementData::SaveToXmlImpl(context))
+        return false;
+
+    if (font)
+    {
+        context.node.append_child("Font").append_attribute("source").set_value(font->GetID().c_str());
+    }
+
+    if (!text.empty())
+    {
+        context.node.append_child("Text").append_attribute("value").set_value(text.c_str());
+    }
+
+    if (multiline)
+    {
+        context.node.append_child("Multiline").append_attribute("value").set_value(multiline);
+    }
+
+    return true;
+}
+
+void ElementTextData::DeepCopy(const ElementData* copyFrom)
+{
+    ElementData::DeepCopy(copyFrom);
+
+    if (auto CopyFromSameType = dynamic_cast<const ElementTextData*>(copyFrom))
+    {
+        font = CopyFromSameType->font;
+        text = CopyFromSameType->text;
+        multiline = CopyFromSameType->multiline;
     }
 }
 

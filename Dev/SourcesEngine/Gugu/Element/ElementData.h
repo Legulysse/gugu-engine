@@ -22,6 +22,7 @@ namespace gugu
     class Texture;
     class ImageSet;
     class SubImage;
+    class Font;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -115,6 +116,22 @@ public:
     std::vector<ElementSpriteGroupItemData*> components;
 
     virtual ~ElementSpriteGroupData();
+
+    virtual const std::string& GetSerializedType() const;
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void DeepCopy(const ElementData* copyFrom) override;
+};
+
+class ElementTextData : public ElementData
+{
+public:
+
+    Font* font = nullptr;
+    std::string text;
+    //ETextResizeRule::Type resizeRule;
+    bool multiline = false;
 
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;

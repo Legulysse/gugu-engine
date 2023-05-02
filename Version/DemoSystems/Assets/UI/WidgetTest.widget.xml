@@ -167,6 +167,10 @@
 					</Component>
 				</Components>
 			</Element>
+			<Element type="ElementText">
+				<Font source="mplus-1p-medium.ttf" />
+				<Text value="れぐーさん" />
+			</Element>
 		</Children>
 	</Element>
 </ElementWidget>

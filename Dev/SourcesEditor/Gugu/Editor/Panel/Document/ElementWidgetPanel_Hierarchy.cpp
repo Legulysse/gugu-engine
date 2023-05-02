@@ -249,6 +249,11 @@ ElementData* ElementWidgetPanel::DisplayElementInstanciationContextMenu()
         elementData = new ElementSpriteGroupData;
     }
 
+    if (ImGui::MenuItem("Element Text"))
+    {
+        elementData = new ElementTextData;
+    }
+
     if (ImGui::MenuItem("Element Button"))
     {
         elementData = new ElementButtonData;

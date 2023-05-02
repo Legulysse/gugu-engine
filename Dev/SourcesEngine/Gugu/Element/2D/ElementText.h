@@ -65,19 +65,20 @@ protected:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
-    
+
+    virtual bool LoadFromDataImpl(ElementDataContext& context) override;
+
     virtual void OnRecompute() {}
     virtual void OnTextRendered(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
 
 protected:
 
     Font* m_font;
-
-    sf::Text* m_sfText;
     sf::String m_textValue;
-
     ETextResizeRule::Type m_resizeRule;
     bool m_isMultiline;
+
+    sf::Text* m_sfText;
     bool m_skipRecomputeOnResize;
 
     //std::vector<sf::Text*> m_components;

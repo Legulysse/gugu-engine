@@ -7,7 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Events/ElementEventHandler.h"
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Font.h"
 #include "Gugu/Window/Renderer.h"
@@ -300,6 +301,27 @@ void ElementText::OnSizeChanged()
     if (!m_skipRecomputeOnResize)
         Recompute();
     m_skipRecomputeOnResize = false;
+}
+
+bool ElementText::LoadFromDataImpl(ElementDataContext& context)
+{
+    if (!Element::LoadFromDataImpl(context))
+        return false;
+
+    ElementTextData* textData = dynamic_cast<ElementTextData*>(context.data);
+
+    if (textData->font)
+    {
+        SetFont(textData->font);
+    }
+
+    SetMultiline(textData->multiline);
+
+    // Assume Utf8 data.
+    SetText(sf::String::fromUtf8(textData->text.begin(), textData->text.end()));
+    sf::String::toUtf8
+
+    return true;
 }
 
 }   // namespace gugu

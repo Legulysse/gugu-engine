@@ -51,17 +51,15 @@ void StateMenuMain::Init()
     float fPosY = padding;
 
     pButton = pBox->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
-    pButton->GetElementText()->SetFont("Spaceranger.ttf");
-    pButton->SetText("New Game");
+    pButton->LoadFromWidget("Button01.widget.xml");
+    pButton->SetText("New Game", "Spaceranger.ttf");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 1));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY + pButton->GetSize().y;
     pButton = pBox->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
-    pButton->GetElementText()->SetFont("Spaceranger.ttf");
-    pButton->SetText("Quit");
+    pButton->LoadFromWidget("Button01.widget.xml");
+    pButton->SetText("Quit", "Spaceranger.ttf");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
     pButton->SetPosition(fPosX, fPosY);
 

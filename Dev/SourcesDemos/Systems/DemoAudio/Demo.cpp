@@ -44,7 +44,7 @@ void Demo::AppStart()
     float fGapY = 64.f;
 
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Bubbles");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles));
     pButton->SetPosition(fPosX, fPosY);
@@ -53,21 +53,21 @@ void Demo::AppStart()
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Track Colors");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackColors));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Track Abyss");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackAbyss));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Stop Music");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::StopAll));
     pButton->SetPosition(fPosX, fPosY);
@@ -76,7 +76,7 @@ void Demo::AppStart()
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Quit");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::Exit));
     pButton->SetPosition(fPosX, fPosY);
@@ -90,28 +90,28 @@ void Demo::AppStart()
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Track Mighty 3310 Fight");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Fight));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Track Mighty 3310 Boss");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Boss));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Track Mighty 3310 Final");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Final));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton->LoadFromWidget("Button01.widget.xml");
     pButton->SetText("Playlist Mighty 3310");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::PlaylistMighty3310));
     pButton->SetPosition(fPosX, fPosY);

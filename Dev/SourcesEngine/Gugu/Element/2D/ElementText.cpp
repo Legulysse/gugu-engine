@@ -319,7 +319,6 @@ bool ElementText::LoadFromDataImpl(ElementDataContext& context)
 
     // Assume Utf8 data.
     SetText(sf::String::fromUtf8(textData->text.begin(), textData->text.end()));
-    sf::String::toUtf8
 
     return true;
 }

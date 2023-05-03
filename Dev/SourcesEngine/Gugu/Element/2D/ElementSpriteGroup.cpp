@@ -169,58 +169,15 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
     if (!m_texture || !m_texture->GetSFTexture())
         return;
 
+    if (m_needRecompute)
+    {
+        Recompute();
+    }
+
     //TODO: maybe need a parameter to bypass this check ?
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
-        if (m_needRecompute)
-        {
-            m_needRecompute = false;
-
-            size_t indexForceRecompute = (size_t)-1;
-
-            size_t totalVertexCount = 0;
-            for (size_t i = 0; i < m_items.size(); ++i)
-            {
-                size_t cachedVertexCount = m_items[i]->GetCachedVertexCount();
-                
-                size_t currentVertexCount = 0;
-                if (m_items[i]->IsVisible())
-                {
-                    currentVertexCount = m_items[i]->RecomputeVertexCount();
-                    totalVertexCount += currentVertexCount;
-                }
-
-                if (indexForceRecompute == (size_t)-1 && cachedVertexCount != currentVertexCount)
-                {
-                    indexForceRecompute = i;
-                }
-            }
-
-            // Reset vertices
-            m_vertices.setPrimitiveType(sf::Triangles);
-            m_vertices.resize(totalVertexCount);
-
-            if (totalVertexCount > 0)
-            {
-                size_t indexItemVertices = 0;
-                for (size_t i = 0; i < m_items.size(); ++i)
-                {
-                    if (m_items[i]->IsVisible())
-                    {
-                        if (i >= indexForceRecompute || m_items[i]->HasDirtyVertices())
-                        {
-                            indexItemVertices += m_items[i]->RecomputeItemVertices(m_vertices, indexItemVertices);
-                        }
-                        else
-                        {
-                            indexItemVertices += m_items[i]->GetCachedVertexCount();
-                        }
-                    }
-                }
-            }
-        }
-
         if (m_vertices.getVertexCount() > 0)
         {
             sf::RenderStates states;
@@ -243,6 +200,54 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
 void ElementSpriteGroup::RaiseNeedRecompute()
 {
     m_needRecompute = true;
+}
+
+void ElementSpriteGroup::Recompute()
+{
+    m_needRecompute = false;
+
+    size_t indexForceRecompute = (size_t)-1;
+
+    size_t totalVertexCount = 0;
+    for (size_t i = 0; i < m_items.size(); ++i)
+    {
+        size_t cachedVertexCount = m_items[i]->GetCachedVertexCount();
+
+        size_t currentVertexCount = 0;
+        if (m_items[i]->IsVisible())
+        {
+            currentVertexCount = m_items[i]->RecomputeVertexCount();
+            totalVertexCount += currentVertexCount;
+        }
+
+        if (indexForceRecompute == (size_t)-1 && cachedVertexCount != currentVertexCount)
+        {
+            indexForceRecompute = i;
+        }
+    }
+
+    // Reset vertices
+    m_vertices.setPrimitiveType(sf::Triangles);
+    m_vertices.resize(totalVertexCount);
+
+    if (totalVertexCount > 0)
+    {
+        size_t indexItemVertices = 0;
+        for (size_t i = 0; i < m_items.size(); ++i)
+        {
+            if (m_items[i]->IsVisible())
+            {
+                if (i >= indexForceRecompute || m_items[i]->HasDirtyVertices())
+                {
+                    indexItemVertices += m_items[i]->RecomputeItemVertices(m_vertices, indexItemVertices);
+                }
+                else
+                {
+                    indexItemVertices += m_items[i]->GetCachedVertexCount();
+                }
+            }
+        }
+    }
 }
 
 size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* item)

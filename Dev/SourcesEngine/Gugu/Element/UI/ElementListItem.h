@@ -34,6 +34,8 @@ public:
     bool        IsSelected  () const;
 
     void        OnListResized   (const Vector2f& _oListSize);
+    bool        IsItemSizedToContent() const;
+    void        ResizeToContent();
     
     void        SetOnSelected   (const Callback& callback);
     void        SetOnDeselected (const Callback& callback);

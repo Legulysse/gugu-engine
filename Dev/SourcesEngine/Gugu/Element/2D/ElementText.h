@@ -61,6 +61,7 @@ public:
 
 protected:
 
+    void RaiseNeedRecompute();
     void Recompute();
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
@@ -79,6 +80,7 @@ protected:
     bool m_isMultiline;
 
     sf::Text* m_sfText;
+    bool m_needRecompute;
     bool m_skipRecomputeOnResize;
 
     //std::vector<sf::Text*> m_components;

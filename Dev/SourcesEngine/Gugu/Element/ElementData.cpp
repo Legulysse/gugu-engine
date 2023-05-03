@@ -491,6 +491,10 @@ bool ElementTextData::LoadFromXmlImpl(ElementParseContext& context)
     xml::TryParseAttribute(context.node.child("Text"), "value", text);
     xml::TryParseAttribute(context.node.child("Multiline"), "value", multiline);
 
+    size_t resizeRuleIndex = (size_t)resizeRule;
+    xml::TryParseAttribute(context.node.child("ResizeRule"), "value", resizeRuleIndex);
+    resizeRule = (ETextResizeRule::Type)resizeRuleIndex;
+
     return true;
 }
 
@@ -514,6 +518,11 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
         context.node.append_child("Multiline").append_attribute("value").set_value(multiline);
     }
 
+    if (resizeRule != ETextResizeRule::FitSize)
+    {
+        context.node.append_child("ResizeRule").append_attribute("value").set_value((size_t)resizeRule);
+    }
+
     return true;
 }
 
@@ -525,6 +534,7 @@ void ElementTextData::DeepCopy(const ElementData* copyFrom)
     {
         font = CopyFromSameType->font;
         text = CopyFromSameType->text;
+        resizeRule = CopyFromSameType->resizeRule;
         multiline = CopyFromSameType->multiline;
     }
 }

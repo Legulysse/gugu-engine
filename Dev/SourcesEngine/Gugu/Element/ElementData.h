@@ -5,6 +5,7 @@
 
 #include "Gugu/Math/Vector2.h"
 #include "Gugu/Math/UDim.h"
+#include "Gugu/Element/2D/ElementText.h"    // TODO: this is only used for an enum declaration, find a better alternative.
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -130,7 +131,7 @@ public:
 
     Font* font = nullptr;
     std::string text;
-    //ETextResizeRule::Type resizeRule;
+    ETextResizeRule::Type resizeRule = ETextResizeRule::FitSize;
     bool multiline = false;
 
     virtual const std::string& GetSerializedType() const;

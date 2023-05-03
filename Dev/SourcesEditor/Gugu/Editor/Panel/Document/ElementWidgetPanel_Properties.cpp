@@ -307,6 +307,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         {
             // Assume Utf8 data (same as inside ElementText::LoadFromData).
             elementText->SetText(sf::String::fromUtf8(elementTextData->text.begin(), elementTextData->text.end()));
+            elementTextData->size = elementText->GetSize();
             RaiseDirty();
         }
 
@@ -316,6 +317,25 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         {
             elementTextData->font = GetResources()->GetFont(fontId);
             elementText->SetFont(elementTextData->font);
+            elementTextData->size = elementText->GetSize();
+            RaiseDirty();
+        }
+
+        if (ImGui::Checkbox("Multiline", &elementTextData->multiline))
+        {
+            elementText->SetMultiline(elementTextData->multiline);
+            elementTextData->size = elementText->GetSize();
+            RaiseDirty();
+        }
+
+        static const std::vector<std::string> resizeRules = { "FixedSize", "FitSize", "FitHeight", "FitScale" };
+
+        size_t resizeRuleIndex = (size_t)elementTextData->resizeRule;
+        if (ImGui::Combo("Resize Rule", resizeRules, &resizeRuleIndex))
+        {
+            elementTextData->resizeRule = (ETextResizeRule::Type)resizeRuleIndex;
+            elementText->SetResizeRule(elementTextData->resizeRule);
+            elementTextData->size = elementText->GetSize();
             RaiseDirty();
         }
     }

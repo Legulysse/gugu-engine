@@ -31,9 +31,9 @@ public:
     bool LoadFromWidget(const std::string& elementWidgetID);
     bool LoadFromWidget(ElementWidget* elementWidget);
 
-    [[deprecated("Deprecated, use LoadFromFile() instead.")]]
+    [[deprecated("Deprecated, use LoadFromWidget() instead.")]]
     void SetTexture(const std::string& textureIdleID, const std::string& textureFocusedID = "", const std::string& textureDisabledID = "");
-    [[deprecated("Deprecated, use LoadFromFile() instead.")]]
+    [[deprecated("Deprecated, use LoadFromWidget() instead.")]]
     void SetTexture(Texture* textureIdle, Texture* textureFocused, Texture* textureDisabled);
 
     void SetText(const std::string& text, const std::string& fontID = "");

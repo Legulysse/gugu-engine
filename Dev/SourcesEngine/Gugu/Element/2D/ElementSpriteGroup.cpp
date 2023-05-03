@@ -10,6 +10,7 @@
 #include "Gugu/Element/ElementData.h"
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
@@ -121,6 +122,23 @@ ElementSpriteGroup::ElementSpriteGroup()
 ElementSpriteGroup::~ElementSpriteGroup()
 {
     ClearStdVector(m_items);
+}
+
+bool ElementSpriteGroup::LoadFromWidget(const std::string& elementWidgetID)
+{
+    return LoadFromWidget(GetResources()->GetElementWidget(elementWidgetID));
+}
+
+bool ElementSpriteGroup::LoadFromWidget(ElementWidget* elementWidget)
+{
+    if (elementWidget)
+    {
+        ElementDataContext context;
+        context.data = elementWidget->GetRootData();
+        return LoadFromData(context);
+    }
+
+    return false;
 }
 
 void ElementSpriteGroup::SetTexture(const std::string& _strTexturePath)

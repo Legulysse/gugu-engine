@@ -12,6 +12,7 @@
 
 namespace gugu
 {
+    class ElementWidget;
     class ElementSpriteGroup;
     class Texture;
 }
@@ -57,6 +58,9 @@ public:
 
     ElementSpriteGroup();
     virtual ~ElementSpriteGroup();
+
+    bool LoadFromWidget(const std::string& elementWidgetID);
+    bool LoadFromWidget(ElementWidget* elementWidget);
 
     void SetTexture(const std::string& _strTexturePath);  //TODO: Rename as textureID
     void SetTexture(Texture* _pTexture);

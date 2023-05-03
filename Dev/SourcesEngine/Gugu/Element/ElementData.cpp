@@ -483,6 +483,20 @@ bool ElementTextData::LoadFromXmlImpl(ElementParseContext& context)
     if (!ElementData::LoadFromXmlImpl(context))
         return false;
 
+    static const std::map<ETextResizeRule::Type, std::string> resizeRuleEnumToString = {
+        { ETextResizeRule::FixedSize, "FixedSize" },
+        { ETextResizeRule::FitSize, "FitSize" },
+        { ETextResizeRule::FitHeight, "FitHeight" },
+        { ETextResizeRule::FitScale, "FitScale" },
+    };
+
+    static const std::map<std::string, ETextResizeRule::Type> resizeRuleStringToEnum = {
+        { "FixedSize", ETextResizeRule::FixedSize },
+        { "FitSize", ETextResizeRule::FitSize },
+        { "FitHeight", ETextResizeRule::FitHeight },
+        { "FitScale", ETextResizeRule::FitScale },
+    };
+
     if (pugi::xml_node fontNode = context.node.child("Font"))
     {
         font = GetResources()->GetFont(fontNode.attribute("source").as_string(""));
@@ -491,9 +505,12 @@ bool ElementTextData::LoadFromXmlImpl(ElementParseContext& context)
     xml::TryParseAttribute(context.node.child("Text"), "value", text);
     xml::TryParseAttribute(context.node.child("Multiline"), "value", multiline);
 
-    size_t resizeRuleIndex = (size_t)resizeRule;
-    xml::TryParseAttribute(context.node.child("ResizeRule"), "value", resizeRuleIndex);
-    resizeRule = (ETextResizeRule::Type)resizeRuleIndex;
+    std::string resizeRuleString = resizeRuleEnumToString.at(resizeRule);
+    xml::TryParseAttribute(context.node.child("ResizeRule"), "value", resizeRuleString);
+    if (resizeRuleStringToEnum.find(resizeRuleString) != resizeRuleStringToEnum.end())
+    {
+        resizeRule = resizeRuleStringToEnum.at(resizeRuleString);
+    }
 
     return true;
 }
@@ -502,6 +519,13 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
 {
     if (!ElementData::SaveToXmlImpl(context))
         return false;
+
+    static const std::map<ETextResizeRule::Type, std::string> resizeRuleEnumToString = {
+        { ETextResizeRule::FixedSize, "FixedSize" },
+        { ETextResizeRule::FitSize, "FitSize" },
+        { ETextResizeRule::FitHeight, "FitHeight" },
+        { ETextResizeRule::FitScale, "FitScale" },
+    };
 
     if (font)
     {
@@ -520,7 +544,7 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
 
     if (resizeRule != ETextResizeRule::FitSize)
     {
-        context.node.append_child("ResizeRule").append_attribute("value").set_value((size_t)resizeRule);
+        context.node.append_child("ResizeRule").append_attribute("value").set_value(resizeRuleEnumToString.at(resizeRule).c_str());
     }
 
     return true;

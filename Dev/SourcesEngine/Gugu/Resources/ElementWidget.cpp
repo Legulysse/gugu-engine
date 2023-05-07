@@ -49,6 +49,19 @@ Element* ElementWidget::InstanciateWidget(ElementDataContext& context) const
     return root;
 }
 
+bool ElementWidget::LoadElementFromWidget(Element* element) const
+{
+    if (!m_data || !element)
+        return false;
+
+    ElementDataContext context;
+    context.ancestorWidgets.push_back(this);
+    context.data = m_data;
+    bool result = element->LoadFromData(context);
+
+    return result;
+}
+
 BaseElementData* ElementWidget::GetRootData() const
 {
     return m_data;

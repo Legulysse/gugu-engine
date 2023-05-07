@@ -100,18 +100,22 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
     if (ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data))
     {
         result = elementWidgetData->widget->InstanciateWidget(context);
+        if (result)
+        {
+            result->SetParent(parent);
 
-        result->SetParent(parent);
-
-        // TODO: Load override data from elementWidgetData.
+            // TODO: Load override data from elementWidgetData.
+        }
     }
     else if (ElementData* elementData = dynamic_cast<ElementData*>(context.data))
     {
         result = InstanciateElement(elementData);
-
-        result->SetParent(parent);
-        /*bool result =*/ result->LoadFromData(context);
-        // TODO: handle bool return.
+        if (result)
+        {
+            result->SetParent(parent);
+            /*bool result =*/ result->LoadFromData(context);
+            // TODO: handle bool return.
+        }
     }
 
     return result;

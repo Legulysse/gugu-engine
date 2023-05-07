@@ -35,6 +35,7 @@ public:
     
     Element* InstanciateWidget() const;
     Element* InstanciateWidget(ElementDataContext& context) const;
+    bool LoadElementFromWidget(Element* element) const;
 
     BaseElementData* GetRootData() const;
     void SetRootData(BaseElementData* data, bool deleteData);

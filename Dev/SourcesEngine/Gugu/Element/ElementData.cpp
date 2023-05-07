@@ -136,7 +136,7 @@ void ElementWidgetData::DeepCopy(const BaseElementData* copyFrom)
 
 void ElementWidgetData::GetDependencies(std::set<Resource*>& dependencies) const
 {
-    if (widget)
+    if (widget && !StdSetContains<Resource*>(dependencies, widget))
     {
         dependencies.insert(widget);
 

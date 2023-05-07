@@ -258,26 +258,21 @@ bool ElementButton::LoadFromDataImpl(ElementDataContext& context)
         return false;
 
     ElementButtonData* buttonData = dynamic_cast<ElementButtonData*>(context.data);
-    ElementData* backupData = context.data;
+    BaseElementData* backupData = context.data;
 
     bool result = true;
 
-    auto loadComponentFromData = [&](ElementData* componentData, Element*& component)
+    auto loadComponentFromData = [&](ElementDataContext& context, BaseElementData* componentData, Element*& component)
     {
-        component = InstanciateElement(componentData);
-        if (component)
-        {
-            component->SetParent(this);
-
-            context.data = componentData;
-            result &= component->LoadFromData(context);
-        }
+        context.data = componentData;
+        component = InstanciateAndLoadElement(context, this);
+        // TODO: bool result
     };
 
-    loadComponentFromData(buttonData->commonComponent, m_commonComponent);
-    loadComponentFromData(buttonData->idleStateComponent, m_idleStateComponent);
-    loadComponentFromData(buttonData->focusedStateComponent, m_focusedStateComponent);
-    loadComponentFromData(buttonData->disabledStateComponent, m_disabledStateComponent);
+    loadComponentFromData(context, buttonData->commonComponent, m_commonComponent);
+    loadComponentFromData(context, buttonData->idleStateComponent, m_idleStateComponent);
+    loadComponentFromData(context, buttonData->focusedStateComponent, m_focusedStateComponent);
+    loadComponentFromData(context, buttonData->disabledStateComponent, m_disabledStateComponent);
 
     // TODO: check null.
     m_currentStateComponent = m_idleStateComponent;

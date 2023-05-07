@@ -32,147 +32,150 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
     ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
 
-    ElementData* elementData = m_selectedElementData;
     Element* element = m_selectedElement;
-    if (elementData && ImGui::CollapsingHeader("Common##_HEADER", headerFlags))
+    if (ImGui::CollapsingHeader("Common##_HEADER", headerFlags))
     {
         // Name
-        ImGui::InputText("Name", &elementData->name);
+        ImGui::InputText("Name", &m_selectedElementData->name);
         ImGui::Spacing();
 
-        // Origin
-        ImGui::BeginDisabled(elementData->useDimOrigin);
-        if (ImGui::InputFloat2("Origin", &elementData->origin))
+        ElementData* elementData = dynamic_cast<ElementData*>(m_selectedElementData);
+        if (elementData)
         {
-            element->SetOrigin(elementData->origin);
-            RaiseDirty();
-        }
-        ImGui::EndDisabled();
-
-        if (ImGui::Checkbox("Use Unified Origin", &elementData->useDimOrigin))
-        {
-            if (elementData->useDimOrigin)
+            // Origin
+            ImGui::BeginDisabled(elementData->useDimOrigin);
+            if (ImGui::InputFloat2("Origin", &elementData->origin))
             {
-                elementData->dimOrigin = UDim2(Vector2::Zero_f, elementData->origin);
-                elementData->origin = Vector2::Zero_f;
+                element->SetOrigin(elementData->origin);
+                RaiseDirty();
+            }
+            ImGui::EndDisabled();
+
+            if (ImGui::Checkbox("Use Unified Origin", &elementData->useDimOrigin))
+            {
+                if (elementData->useDimOrigin)
+                {
+                    elementData->dimOrigin = UDim2(Vector2::Zero_f, elementData->origin);
+                    elementData->origin = Vector2::Zero_f;
+                    element->SetUnifiedOrigin(elementData->dimOrigin);
+                    RaiseDirty();
+                }
+                else
+                {
+                    elementData->origin = elementData->dimOrigin.absolute;
+                    elementData->dimOrigin = UDim2::ZERO;
+                    element->ResetUnifiedOrigin();
+                    RaiseDirty();
+                }
+            }
+
+            ImGui::BeginDisabled(!elementData->useDimOrigin);
+            if (ImGui::InputFloat4("Unified Origin", &elementData->dimOrigin))
+            {
                 element->SetUnifiedOrigin(elementData->dimOrigin);
                 RaiseDirty();
             }
-            else
+            ImGui::EndDisabled();
+
+            ImGui::Spacing();
+
+            // Position
+            ImGui::BeginDisabled(elementData->useDimPosition);
+            if (ImGui::InputFloat2("Position", &elementData->position))
             {
-                elementData->origin = elementData->dimOrigin.absolute;
-                elementData->dimOrigin = UDim2::ZERO;
-                element->ResetUnifiedOrigin();
+                element->SetPosition(elementData->position);
                 RaiseDirty();
             }
-        }
+            ImGui::EndDisabled();
 
-        ImGui::BeginDisabled(!elementData->useDimOrigin);
-        if (ImGui::InputFloat4("Unified Origin", &elementData->dimOrigin))
-        {
-            element->SetUnifiedOrigin(elementData->dimOrigin);
-            RaiseDirty();
-        }
-        ImGui::EndDisabled();
-
-        ImGui::Spacing();
-
-        // Position
-        ImGui::BeginDisabled(elementData->useDimPosition);
-        if (ImGui::InputFloat2("Position", &elementData->position))
-        {
-            element->SetPosition(elementData->position);
-            RaiseDirty();
-        }
-        ImGui::EndDisabled();
-
-        if (ImGui::Checkbox("Use Unified Position", &elementData->useDimPosition))
-        {
-            if (elementData->useDimPosition)
+            if (ImGui::Checkbox("Use Unified Position", &elementData->useDimPosition))
             {
-                elementData->dimPosition = UDim2(Vector2::Zero_f, elementData->position);
-                elementData->position = Vector2::Zero_f;
+                if (elementData->useDimPosition)
+                {
+                    elementData->dimPosition = UDim2(Vector2::Zero_f, elementData->position);
+                    elementData->position = Vector2::Zero_f;
+                    element->SetUnifiedPosition(elementData->dimPosition);
+                    RaiseDirty();
+                }
+                else
+                {
+                    elementData->position = elementData->dimPosition.absolute;
+                    elementData->dimPosition = UDim2::ZERO;
+                    element->ResetUnifiedPosition();
+                    RaiseDirty();
+                }
+            }
+
+            ImGui::BeginDisabled(!elementData->useDimPosition);
+            if (ImGui::InputFloat4("Unified Position", &elementData->dimPosition))
+            {
                 element->SetUnifiedPosition(elementData->dimPosition);
                 RaiseDirty();
             }
-            else
+            ImGui::EndDisabled();
+
+            ImGui::Spacing();
+
+            // Size
+            ImGui::BeginDisabled(elementData->useDimSize);
+            if (ImGui::InputFloat2("Size", &elementData->size))
             {
-                elementData->position = elementData->dimPosition.absolute;
-                elementData->dimPosition = UDim2::ZERO;
-                element->ResetUnifiedPosition();
+                element->SetSize(elementData->size);
                 RaiseDirty();
             }
-        }
+            ImGui::EndDisabled();
 
-        ImGui::BeginDisabled(!elementData->useDimPosition);
-        if (ImGui::InputFloat4("Unified Position", &elementData->dimPosition))
-        {
-            element->SetUnifiedPosition(elementData->dimPosition);
-            RaiseDirty();
-        }
-        ImGui::EndDisabled();
-
-        ImGui::Spacing();
-
-        // Size
-        ImGui::BeginDisabled(elementData->useDimSize);
-        if (ImGui::InputFloat2("Size", &elementData->size))
-        {
-            element->SetSize(elementData->size);
-            RaiseDirty();
-        }
-        ImGui::EndDisabled();
-
-        if (ImGui::Checkbox("Use Unified Size", &elementData->useDimSize))
-        {
-            if (elementData->useDimSize)
+            if (ImGui::Checkbox("Use Unified Size", &elementData->useDimSize))
             {
-                elementData->dimSize = UDim2(Vector2::Zero_f, elementData->size);
-                elementData->size = Vector2::Zero_f;
+                if (elementData->useDimSize)
+                {
+                    elementData->dimSize = UDim2(Vector2::Zero_f, elementData->size);
+                    elementData->size = Vector2::Zero_f;
+                    element->SetUnifiedSize(elementData->dimSize);
+                    RaiseDirty();
+                }
+                else
+                {
+                    elementData->size = elementData->dimSize.absolute;
+                    elementData->dimSize = UDim2::ZERO;
+                    element->ResetUnifiedSize();
+                    RaiseDirty();
+                }
+            }
+
+            ImGui::BeginDisabled(!elementData->useDimSize);
+            if (ImGui::InputFloat4("Unified Size", &elementData->dimSize))
+            {
                 element->SetUnifiedSize(elementData->dimSize);
                 RaiseDirty();
             }
-            else
+            ImGui::EndDisabled();
+
+            ImGui::Spacing();
+
+            // Rotation
+            if (ImGui::InputFloat("Rotation", &elementData->rotation))
             {
-                elementData->size = elementData->dimSize.absolute;
-                elementData->dimSize = UDim2::ZERO;
-                element->ResetUnifiedSize();
+                element->SetRotation(elementData->rotation);
+                RaiseDirty();
+            }
+
+            // Flip
+            if (ImGui::Checkbox("Flip V", &elementData->flipV))
+            {
+                element->SetFlipV(elementData->flipV);
+                RaiseDirty();
+            }
+
+            if (ImGui::Checkbox("Flip H", &elementData->flipH))
+            {
+                element->SetFlipH(elementData->flipH);
                 RaiseDirty();
             }
         }
-
-        ImGui::BeginDisabled(!elementData->useDimSize);
-        if (ImGui::InputFloat4("Unified Size", &elementData->dimSize))
-        {
-            element->SetUnifiedSize(elementData->dimSize);
-            RaiseDirty();
-        }
-        ImGui::EndDisabled();
-
-        ImGui::Spacing();
-
-        // Rotation
-        if (ImGui::InputFloat("Rotation", &elementData->rotation))
-        {
-            element->SetRotation(elementData->rotation);
-            RaiseDirty();
-        }
-
-        // Flip
-        if (ImGui::Checkbox("Flip V", &elementData->flipV))
-        {
-            element->SetFlipV(elementData->flipV);
-            RaiseDirty();
-        }
-
-        if (ImGui::Checkbox("Flip H", &elementData->flipH))
-        {
-            element->SetFlipH(elementData->flipH);
-            RaiseDirty();
-        }
     }
 
-    ElementSpriteGroupData* elementSpriteGroupData = dynamic_cast<ElementSpriteGroupData*>(elementData);
+    ElementSpriteGroupData* elementSpriteGroupData = dynamic_cast<ElementSpriteGroupData*>(m_selectedElementData);
     ElementSpriteGroup* elementSpriteGroup = dynamic_cast<ElementSpriteGroup*>(element);
     if (elementSpriteGroupData && ImGui::CollapsingHeader("Sprite Group##_HEADER", headerFlags))
     {
@@ -199,13 +202,13 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         DisplayGenerators(elementSpriteGroupData, elementSpriteGroup);
     }
 
-    ElementSpriteBaseData* elementSpriteBaseData = dynamic_cast<ElementSpriteBaseData*>(elementData);
+    ElementSpriteBaseData* elementSpriteBaseData = dynamic_cast<ElementSpriteBaseData*>(m_selectedElementData);
     ElementSpriteBase* elementSpriteBase = dynamic_cast<ElementSpriteBase*>(element);
     if (elementSpriteBaseData && ImGui::CollapsingHeader("Sprite##_HEADER", headerFlags))
     {
-        ElementSpriteData* elementSpriteData = dynamic_cast<ElementSpriteData*>(elementData);
+        ElementSpriteData* elementSpriteData = dynamic_cast<ElementSpriteData*>(m_selectedElementData);
         ElementSprite* elementSprite = dynamic_cast<ElementSprite*>(element);
-        ElementSpriteGroupItemData* elementSpriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(elementData);
+        ElementSpriteGroupItemData* elementSpriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(m_selectedElementData);
         ElementSpriteGroupItem* elementSpriteGroupItem = dynamic_cast<ElementSpriteGroupItem*>(element);
 
         if (elementSpriteData)
@@ -299,7 +302,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         }
     }
 
-    ElementTextData* elementTextData = dynamic_cast<ElementTextData*>(elementData);
+    ElementTextData* elementTextData = dynamic_cast<ElementTextData*>(m_selectedElementData);
     ElementText* elementText = dynamic_cast<ElementText*>(element);
     if (elementTextData && ImGui::CollapsingHeader("Text##_HEADER", headerFlags))
     {

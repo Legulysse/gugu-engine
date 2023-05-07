@@ -13,6 +13,7 @@
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/UI/ElementButton.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -20,17 +21,21 @@
 
 namespace gugu {
 
-ElementData* InstanciateElementData(const pugi::xml_node& node)
+BaseElementData* InstanciateElementData(const pugi::xml_node& node)
 {
     std::string_view elementType = node.attribute("type").value();
     return InstanciateElementData(elementType);
 }
 
-ElementData* InstanciateElementData(std::string_view elementType)
+BaseElementData* InstanciateElementData(std::string_view elementType)
 {
-    ElementData* result = nullptr;
+    BaseElementData* result = nullptr;
 
-    if (StringEquals(elementType, "Element"))
+    if (StringEquals(elementType, "ElementWidget"))
+    {
+        result = new ElementWidgetData;
+    }
+    else if (StringEquals(elementType, "Element"))
     {
         result = new ElementData;
     }
@@ -80,6 +85,33 @@ Element* InstanciateElement(ElementData* data)
     else if (StringEquals(data->GetSerializedType(), "ElementButton"))
     {
         result = new ElementButton;
+    }
+
+    return result;
+}
+
+Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
+{
+    if (!context.data)
+        return nullptr;
+
+    Element* result = nullptr;
+
+    if (ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data))
+    {
+        result = elementWidgetData->widget->InstanciateWidget(context);
+
+        result->SetParent(parent);
+
+        // TODO: Load override data from elementWidgetData.
+    }
+    else if (ElementData* elementData = dynamic_cast<ElementData*>(context.data))
+    {
+        result = InstanciateElement(elementData);
+
+        result->SetParent(parent);
+        /*bool result =*/ result->LoadFromData(context);
+        // TODO: handle bool return.
     }
 
     return result;

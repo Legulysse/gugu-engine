@@ -12,6 +12,7 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/Font.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
@@ -21,19 +22,14 @@
 
 namespace gugu {
 
-ElementData::~ElementData()
+BaseElementData::~BaseElementData()
 {
-    ClearStdVector(children);
 }
 
-const std::string& ElementData::GetSerializedType() const
+bool BaseElementData::LoadFromXml(ElementParseContext& context)
 {
-    static const std::string serializedType = "Element";
-    return serializedType;
-}
+    xml::TryParseAttribute(context.node, "name", name);
 
-bool ElementData::LoadFromXml(ElementParseContext& context)
-{
     bool result = LoadFromXmlImpl(context);
 
     if (pugi::xml_node childrenNode = context.node.child("Children"))
@@ -42,7 +38,7 @@ bool ElementData::LoadFromXml(ElementParseContext& context)
 
         for (pugi::xml_node childNode = childrenNode.child("Element"); childNode; childNode = childNode.next_sibling("Element"))
         {
-            if (ElementData* child = InstanciateElementData(childNode))
+            if (BaseElementData* child = InstanciateElementData(childNode))
             {
                 children.push_back(child);
 
@@ -57,11 +53,18 @@ bool ElementData::LoadFromXml(ElementParseContext& context)
     return result;
 }
 
-bool ElementData::SaveToXml(ElementSaveContext& context) const
+bool BaseElementData::SaveToXml(ElementSaveContext& context) const
 {
+    bool result = true;
+
     context.node.append_attribute("type").set_value(GetSerializedType().c_str());
 
-    bool result = SaveToXmlImpl(context);
+    if (!name.empty())
+    {
+        context.node.append_attribute("name").set_value(name.c_str());
+    }
+
+    result = SaveToXmlImpl(context);
 
     if (!children.empty())
     {
@@ -80,9 +83,82 @@ bool ElementData::SaveToXml(ElementSaveContext& context) const
     return result;
 }
 
+void BaseElementData::DeepCopy(const BaseElementData* copyFrom)
+{
+    name = copyFrom->name;
+
+    ClearStdVector(children);
+
+    for (auto child : copyFrom->children)
+    {
+        BaseElementData* newChild = InstanciateElementData(child->GetSerializedType());
+        newChild->DeepCopy(child);
+
+        children.push_back(newChild);
+    }
+}
+
+const std::string& ElementWidgetData::GetSerializedType() const
+{
+    static const std::string serializedType = "ElementWidget";
+    return serializedType;
+}
+
+bool ElementWidgetData::LoadFromXmlImpl(ElementParseContext& context)
+{
+    if (pugi::xml_attribute sourceWidget = context.node.attribute("widget"))
+    {
+        widget = GetResources()->GetElementWidget(sourceWidget.as_string(""));
+    }
+
+    return true;
+}
+
+bool ElementWidgetData::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (widget)
+    {
+        context.node.append_attribute("widget").set_value(widget->GetID().c_str());
+    }
+
+    return true;
+}
+
+void ElementWidgetData::DeepCopy(const BaseElementData* copyFrom)
+{
+    BaseElementData::DeepCopy(copyFrom);
+
+    if (auto CopyFromSameType = dynamic_cast<const ElementWidgetData*>(copyFrom))
+    {
+        widget = CopyFromSameType->widget;
+    }
+}
+
+void ElementWidgetData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    if (widget)
+    {
+        dependencies.insert(widget);
+
+        // TODO: Do I need an option to retrieve or not indirect dependencies ?
+        widget->GetDependencies(dependencies);
+    }
+}
+
+ElementData::~ElementData()
+{
+    ClearStdVector(children);
+}
+
+const std::string& ElementData::GetSerializedType() const
+{
+    static const std::string serializedType = "Element";
+    return serializedType;
+}
+
 bool ElementData::LoadFromXmlImpl(ElementParseContext& context)
 {
-    xml::TryParseAttribute(context.node, "name", name);
+    bool result = true;
 
     if (xml::TryParseUDim2(context.node.child("UOrigin"), dimOrigin))
     {
@@ -115,15 +191,12 @@ bool ElementData::LoadFromXmlImpl(ElementParseContext& context)
     xml::TryParseAttribute(context.node.child("FlipV"), "value", flipV);
     xml::TryParseAttribute(context.node.child("FlipH"), "value", flipH);
 
-    return true;
+    return result;
 }
 
 bool ElementData::SaveToXmlImpl(ElementSaveContext& context) const
 {
-    if (!name.empty())
-    {
-        context.node.append_attribute("name").set_value(name.c_str());
-    }
+    bool result = true;
 
     if (useDimOrigin)
     {
@@ -167,35 +240,36 @@ bool ElementData::SaveToXmlImpl(ElementSaveContext& context) const
         context.node.append_child("FlipH").append_attribute("value").set_value(flipH);
     }
 
-    return true;
+    return result;
 }
 
-void ElementData::DeepCopy(const ElementData* copyFrom)
+void ElementData::DeepCopy(const BaseElementData* copyFrom)
 {
-    name = copyFrom->name;
+    BaseElementData::DeepCopy(copyFrom);
 
-    origin = copyFrom->origin;
-    position = copyFrom->position;
-    size = copyFrom->size;
-    rotation = copyFrom->rotation;
-    flipV = copyFrom->flipV;
-    flipH = copyFrom->flipH;
-
-    useDimOrigin = copyFrom->useDimOrigin;
-    dimOrigin = copyFrom->dimOrigin;
-    useDimPosition = copyFrom->useDimPosition;
-    dimPosition = copyFrom->dimPosition;
-    useDimSize = copyFrom->useDimSize;
-    dimSize = copyFrom->dimSize;
-
-    ClearStdVector(children);
-
-    for (auto child : copyFrom->children)
+    if (auto CopyFromSameType = dynamic_cast<const ElementData*>(copyFrom))
     {
-        ElementData* newChild = InstanciateElementData(child->GetSerializedType());
-        newChild->DeepCopy(child);
+        origin = CopyFromSameType->origin;
+        position = CopyFromSameType->position;
+        size = CopyFromSameType->size;
+        rotation = CopyFromSameType->rotation;
+        flipV = CopyFromSameType->flipV;
+        flipH = CopyFromSameType->flipH;
 
-        children.push_back(newChild);
+        useDimOrigin = CopyFromSameType->useDimOrigin;
+        dimOrigin = CopyFromSameType->dimOrigin;
+        useDimPosition = CopyFromSameType->useDimPosition;
+        dimPosition = CopyFromSameType->dimPosition;
+        useDimSize = CopyFromSameType->useDimSize;
+        dimSize = CopyFromSameType->dimSize;
+    }
+}
+
+void ElementData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    for (auto child : children)
+    {
+        child->GetDependencies(dependencies);
     }
 }
 
@@ -246,7 +320,7 @@ bool ElementSpriteBaseData::SaveToXmlImpl(ElementSaveContext& context) const
     return true;
 }
 
-void ElementSpriteBaseData::DeepCopy(const ElementData* copyFrom)
+void ElementSpriteBaseData::DeepCopy(const BaseElementData* copyFrom)
 {
     ElementData::DeepCopy(copyFrom);
 
@@ -258,6 +332,11 @@ void ElementSpriteBaseData::DeepCopy(const ElementData* copyFrom)
         flipTextureV = CopyFromSameType->flipTextureV;
         flipTextureH = CopyFromSameType->flipTextureH;
     }
+}
+
+void ElementSpriteBaseData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementData::GetDependencies(dependencies);
 }
 
 const std::string& ElementSpriteData::GetSerializedType() const
@@ -310,7 +389,7 @@ bool ElementSpriteData::SaveToXmlImpl(ElementSaveContext& context) const
     return true;
 }
 
-void ElementSpriteData::DeepCopy(const ElementData* copyFrom)
+void ElementSpriteData::DeepCopy(const BaseElementData* copyFrom)
 {
     ElementSpriteBaseData::DeepCopy(copyFrom);
 
@@ -319,6 +398,24 @@ void ElementSpriteData::DeepCopy(const ElementData* copyFrom)
         imageSet = CopyFromSameType->imageSet;
         subImageName = CopyFromSameType->subImageName;
         texture = CopyFromSameType->texture;
+    }
+}
+
+void ElementSpriteData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementSpriteBaseData::GetDependencies(dependencies);
+
+    if (imageSet)
+    {
+        dependencies.insert(imageSet);
+
+        // TODO: Do I need an option to retrieve or not indirect dependencies ?
+        imageSet->GetDependencies(dependencies);
+    }
+
+    if (texture)
+    {
+        dependencies.insert(texture);
     }
 }
 
@@ -354,7 +451,7 @@ bool ElementSpriteGroupItemData::SaveToXmlImpl(ElementSaveContext& context) cons
     return true;
 }
 
-void ElementSpriteGroupItemData::DeepCopy(const ElementData* copyFrom)
+void ElementSpriteGroupItemData::DeepCopy(const BaseElementData* copyFrom)
 {
     ElementSpriteBaseData::DeepCopy(copyFrom);
 
@@ -362,6 +459,11 @@ void ElementSpriteGroupItemData::DeepCopy(const ElementData* copyFrom)
     {
         subImageName = CopyFromSameType->subImageName;
     }
+}
+
+void ElementSpriteGroupItemData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementSpriteBaseData::GetDependencies(dependencies);
 }
 
 ElementSpriteGroupData::~ElementSpriteGroupData()
@@ -393,6 +495,7 @@ bool ElementSpriteGroupData::LoadFromXmlImpl(ElementParseContext& context)
     {
         pugi::xml_node backupNode = context.node;
 
+        // TODO: rename as Element
         for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
         {
             ElementSpriteGroupItemData* component = new ElementSpriteGroupItemData;
@@ -401,6 +504,7 @@ bool ElementSpriteGroupData::LoadFromXmlImpl(ElementParseContext& context)
             context.node = nodeComponent;
             component->LoadFromXml(context);
 
+            // TODO: remove ?
             // Read additional SubImage data (TextureRect is handled in the ElementSpriteBase parser).
             if (imageSet)
             {
@@ -451,7 +555,7 @@ bool ElementSpriteGroupData::SaveToXmlImpl(ElementSaveContext& context) const
     return result;
 }
 
-void ElementSpriteGroupData::DeepCopy(const ElementData* copyFrom)
+void ElementSpriteGroupData::DeepCopy(const BaseElementData* copyFrom)
 {
     ElementData::DeepCopy(copyFrom);
 
@@ -469,6 +573,29 @@ void ElementSpriteGroupData::DeepCopy(const ElementData* copyFrom)
 
             components.push_back(newComponent);
         }
+    }
+}
+
+void ElementSpriteGroupData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementData::GetDependencies(dependencies);
+
+    if (imageSet)
+    {
+        dependencies.insert(imageSet);
+
+        // TODO: Do I need an option to retrieve or not indirect dependencies ?
+        imageSet->GetDependencies(dependencies);
+    }
+
+    if (texture)
+    {
+        dependencies.insert(texture);
+    }
+
+    for (auto component : components)
+    {
+        component->GetDependencies(dependencies);
     }
 }
 
@@ -550,7 +677,7 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
     return true;
 }
 
-void ElementTextData::DeepCopy(const ElementData* copyFrom)
+void ElementTextData::DeepCopy(const BaseElementData* copyFrom)
 {
     ElementData::DeepCopy(copyFrom);
 
@@ -560,6 +687,16 @@ void ElementTextData::DeepCopy(const ElementData* copyFrom)
         text = CopyFromSameType->text;
         resizeRule = CopyFromSameType->resizeRule;
         multiline = CopyFromSameType->multiline;
+    }
+}
+
+void ElementTextData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementData::GetDependencies(dependencies);
+
+    if (font)
+    {
+        dependencies.insert(font);
     }
 }
 
@@ -616,9 +753,10 @@ bool ElementButtonData::LoadFromXmlImpl(ElementParseContext& context)
     {
         pugi::xml_node backupNode = context.node;
 
+        // TODO: rename as Element
         for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
         {
-            if (ElementData* component = InstanciateElementData(nodeComponent))
+            if (BaseElementData* component = InstanciateElementData(nodeComponent))
             {
                 context.node = nodeComponent;
                 component->LoadFromXml(context);
@@ -659,7 +797,7 @@ bool ElementButtonData::SaveToXmlImpl(ElementSaveContext& context) const
     return result;
 }
 
-void ElementButtonData::DeepCopy(const ElementData* copyFrom)
+void ElementButtonData::DeepCopy(const BaseElementData* copyFrom)
 {
     ElementData::DeepCopy(copyFrom);
 
@@ -669,13 +807,23 @@ void ElementButtonData::DeepCopy(const ElementData* copyFrom)
 
         for (auto component : CopyFromSameType->components)
         {
-            ElementData* newComponent = InstanciateElementData(component->GetSerializedType());
+            BaseElementData* newComponent = InstanciateElementData(component->GetSerializedType());
             newComponent->DeepCopy(component);
 
             components.push_back(newComponent);
         }
 
         RefreshCache();
+    }
+}
+
+void ElementButtonData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementData::GetDependencies(dependencies);
+
+    for (auto component : components)
+    {
+        component->GetDependencies(dependencies);
     }
 }
 

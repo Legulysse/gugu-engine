@@ -95,6 +95,10 @@ Element* Element::AddChildWidget(ElementWidget* elementWidget)
 
 void Element::SetParent(Element* parent, bool recomputeDimensions)
 {
+    // Some processes can set the parent before calling AddChild, this test ensures we reduce unnecessary dimensions computation.
+    if (m_parent == parent)
+        return;
+
     if (m_parent)
     {
         // Ensure this Element is not attached anymore to another Element.
@@ -642,9 +646,10 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
 
 bool Element::LoadFromData(ElementDataContext& context)
 {
-    bool result = LoadFromDataImpl(context);
+    bool result = true;
+    BaseElementData* elementData = context.data;
 
-    ElementData* elementData = context.data;
+    result = LoadFromDataImpl(context);
 
     if (context.bindings)
     {
@@ -653,7 +658,7 @@ bool Element::LoadFromData(ElementDataContext& context)
 
         if (!elementData->name.empty())
         {
-            // TODO: handle multiple elements with same name.
+            // TODO: handle multiple elements with same name ?
             auto it = context.bindings->elementFromName.find(elementData->name);
             if (it == context.bindings->elementFromName.end())
             {
@@ -669,17 +674,16 @@ bool Element::LoadFromData(ElementDataContext& context)
     size_t childCount = elementData->children.size();
     if (childCount > 0)
     {
-        ElementData* backupData = elementData;
+        BaseElementData* backupData = elementData;
 
         for (size_t i = 0; i < childCount; ++i)
         {
-            ElementData* childData = elementData->children[i];
-            if (Element* child = InstanciateElement(childData))
+            BaseElementData* childData = elementData->children[i];
+
+            context.data = childData;
+            if (Element* child = InstanciateAndLoadElement(context, this))
             {
                 AddChild(child);
-
-                context.data = childData;
-                result &= child->LoadFromData(context);
             }
         }
 
@@ -691,46 +695,48 @@ bool Element::LoadFromData(ElementDataContext& context)
 
 bool Element::LoadFromDataImpl(ElementDataContext& context)
 {
-    if (context.data->useDimOrigin)
+    ElementData* elementData = dynamic_cast<ElementData*>(context.data);
+
+    if (elementData->useDimOrigin)
     {
-        SetUnifiedOrigin(context.data->dimOrigin);
+        SetUnifiedOrigin(elementData->dimOrigin);
     }
-    else if (context.data->origin != Vector2::Zero_f)
+    else if (elementData->origin != Vector2::Zero_f)
     {
-        SetOrigin(context.data->origin);
+        SetOrigin(elementData->origin);
     }
 
-    if (context.data->useDimPosition)
+    if (elementData->useDimPosition)
     {
-        SetUnifiedPosition(context.data->dimPosition);
+        SetUnifiedPosition(elementData->dimPosition);
     }
-    else if (context.data->position != Vector2::Zero_f)
+    else if (elementData->position != Vector2::Zero_f)
     {
-        SetPosition(context.data->position);
-    }
-
-    if (context.data->useDimSize)
-    {
-        SetUnifiedSize(context.data->dimSize);
-    }
-    else if (context.data->size != Vector2::Zero_f)
-    {
-        SetSize(context.data->size);
+        SetPosition(elementData->position);
     }
 
-    if (context.data->rotation != 0.f)
+    if (elementData->useDimSize)
     {
-        SetRotation(context.data->rotation);
+        SetUnifiedSize(elementData->dimSize);
+    }
+    else if (elementData->size != Vector2::Zero_f)
+    {
+        SetSize(elementData->size);
     }
 
-    if (context.data->flipV)
+    if (elementData->rotation != 0.f)
     {
-        SetFlipV(context.data->flipV);
+        SetRotation(elementData->rotation);
     }
 
-    if (context.data->flipH)
+    if (elementData->flipV)
     {
-        SetFlipH(context.data->flipH);
+        SetFlipV(elementData->flipV);
+    }
+
+    if (elementData->flipH)
+    {
+        SetFlipH(elementData->flipH);
     }
 
     return true;

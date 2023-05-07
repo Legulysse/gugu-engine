@@ -29,36 +29,32 @@ ElementWidget::~ElementWidget()
 
 Element* ElementWidget::InstanciateWidget() const
 {
-    return InstanciateWidget(nullptr);
+    ElementDataContext context;
+    return InstanciateWidget(context);
 }
 
-Element* ElementWidget::InstanciateWidget(ElementDataBindings* bindings) const
+Element* ElementWidget::InstanciateWidget(ElementDataContext& context) const
 {
-    if (!m_data)
+    if (!m_data || StdVectorContains(context.ancestorWidgets, this))
         return nullptr;
 
-    if (Element* root = InstanciateElement(m_data))
-    {
-        ElementDataContext context;
-        context.data = m_data;
-        context.bindings = bindings;
-        root->LoadFromData(context);
+    context.ancestorWidgets.push_back(this);
 
-        context.data = m_data;
-        return root;
-    }
-    else
-    {
-        return nullptr;
-    }
+    BaseElementData* backupData = context.data;
+
+    context.data = m_data;
+    Element* root = InstanciateAndLoadElement(context, nullptr);
+
+    context.data = backupData;
+    return root;
 }
 
-ElementData* ElementWidget::GetRootData() const
+BaseElementData* ElementWidget::GetRootData() const
 {
     return m_data;
 }
 
-void ElementWidget::SetRootData(ElementData* data, bool deleteData)
+void ElementWidget::SetRootData(BaseElementData* data, bool deleteData)
 {
     if (deleteData)
     {
@@ -81,7 +77,7 @@ bool ElementWidget::LoadFromXml(const pugi::xml_document& document)
     if (!rootNode)
         return false;
 
-    if (ElementData* root = InstanciateElementData(rootNode))
+    if (BaseElementData* root = InstanciateElementData(rootNode))
     {
         ElementParseContext context;
         context.node = rootNode;
@@ -121,6 +117,7 @@ EResourceType::Type ElementWidget::GetResourceType() const
 
 void ElementWidget::GetDependencies(std::set<Resource*>& dependencies) const
 {
+    m_data->GetDependencies(dependencies);
 }
 
 void ElementWidget::OnDependencyRemoved(const Resource* removedDependency)

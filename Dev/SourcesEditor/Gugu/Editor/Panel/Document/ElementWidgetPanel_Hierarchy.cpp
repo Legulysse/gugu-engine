@@ -38,7 +38,11 @@ void ElementWidgetPanel::RebuildHierarchy()
     m_widgetRootData = m_elementWidget->GetRootData();
 
     m_dataBindings = new ElementDataBindings;
-    m_widgetRootElement = m_elementWidget->InstanciateWidget(m_dataBindings);
+
+    ElementDataContext context;
+    context.bindings = m_dataBindings;
+    m_widgetRootElement = m_elementWidget->InstanciateWidget(context);
+
     if (m_widgetRootElement)
     {
         m_renderViewport->GetRoot()->AddChild(m_widgetRootElement);
@@ -53,7 +57,7 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
     if (m_widgetRootData)
     {
         ImGui::PushID("_HIERARCHY_TREE");
-        ElementData* deleted = nullptr;
+        BaseElementData* deleted = nullptr;
         DisplayTreeNode(m_widgetRootData, itemFlags, deleted);
         ImGui::PopID();
 
@@ -65,7 +69,7 @@ void ElementWidgetPanel::UpdateHierarchyImpl(const DeltaTime& dt)
     }
 }
 
-void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, ElementData*& deleted)
+void ElementWidgetPanel::DisplayTreeNode(BaseElementData* node, int itemFlags, BaseElementData*& deleted)
 {
     // Special case : when using the Replace command, a new node will be inserted before the current node, which will then be displayed a second time.
     // TODO: some kind of proper delayed command system would allow to separate the display from modifications.
@@ -89,7 +93,12 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, Eleme
     if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
     {
         m_selectedElementData = node;
-        m_selectedElement = m_dataBindings->elementFromData.at(node);
+        m_selectedElement = nullptr;
+
+        if (ElementData* elementData = dynamic_cast<ElementData*>(node))
+        {
+            m_selectedElement = m_dataBindings->elementFromData.at(node);
+        }
     }
 
     // Context menu.
@@ -116,7 +125,7 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, Eleme
         }
         else if (ElementButtonData* nodeButton = dynamic_cast<ElementButtonData*>(node))
         {
-            const std::vector<ElementData*>& components = nodeButton->components;
+            const std::vector<BaseElementData*>& components = nodeButton->components;
 
             ImGuiTreeNodeFlags componentFlags = ImGuiTreeNodeFlags_Leaf;
             ImGui::TreeNodeEx("<Components>", componentFlags);
@@ -132,7 +141,7 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, Eleme
         }
 
         // Display children.
-        const std::vector<ElementData*>& children = node->children;
+        const std::vector<BaseElementData*>& children = node->children;
 
         for (size_t i = 0; i < children.size(); ++i)
         {
@@ -145,7 +154,7 @@ void ElementWidgetPanel::DisplayTreeNode(ElementData* node, int itemFlags, Eleme
     }
 }
 
-void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& deleted)
+void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementData*& deleted)
 {
     //todo: copy/paste/duplicate
 
@@ -153,7 +162,7 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& dele
     {
         if (ImGui::BeginMenu("Add Child..."))
         {
-            ElementData* elementData = DisplayElementInstanciationContextMenu();
+            BaseElementData* elementData = DisplayElementInstanciationContextMenu();
             if (elementData)
             {
                 AddChildElement(node, elementData);
@@ -180,7 +189,7 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& dele
             {
                 if (ImGui::BeginMenu("Insert..."))
                 {
-                    ElementData* elementData = DisplayElementInstanciationContextMenu();
+                    BaseElementData* elementData = DisplayElementInstanciationContextMenu();
                     if (elementData)
                     {
                         InsertElement(node, elementData);
@@ -193,9 +202,10 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& dele
 
             if (ImGui::BeginMenu("Replace...") && !deleted)
             {
-                ElementData* elementData = DisplayElementInstanciationContextMenu();
+                BaseElementData* elementData = DisplayElementInstanciationContextMenu();
                 if (elementData)
                 {
+                    // TODO: I could use save/load xml instead of a manual deep copy ?
                     elementData->DeepCopy(node);
 
                     if (node == m_widgetRootData)
@@ -230,9 +240,9 @@ void ElementWidgetPanel::HandleContextMenu(ElementData* node, ElementData*& dele
     }
 }
 
-ElementData* ElementWidgetPanel::DisplayElementInstanciationContextMenu()
+BaseElementData* ElementWidgetPanel::DisplayElementInstanciationContextMenu()
 {
-    ElementData * elementData = nullptr;
+    BaseElementData* elementData = nullptr;
 
     if (ImGui::MenuItem("Element"))
     {

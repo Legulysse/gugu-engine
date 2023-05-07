@@ -11,8 +11,9 @@
 namespace gugu
 {
     struct ElementDataBindings;
+    struct ElementDataContext;
     class Element;
-    class ElementData;
+    class BaseElementData;
 }
 
 namespace pugi
@@ -33,10 +34,10 @@ public:
     virtual ~ElementWidget();
     
     Element* InstanciateWidget() const;
-    Element* InstanciateWidget(ElementDataBindings* bindings) const;
+    Element* InstanciateWidget(ElementDataContext& context) const;
 
-    ElementData* GetRootData() const;
-    void SetRootData(ElementData* data, bool deleteData);
+    BaseElementData* GetRootData() const;
+    void SetRootData(BaseElementData* data, bool deleteData);
 
     virtual EResourceType::Type GetResourceType() const override;
 
@@ -51,7 +52,7 @@ protected:
 
 protected:
 
-    ElementData* m_data;
+    BaseElementData* m_data;
 };
 
 }   // namespace gugu

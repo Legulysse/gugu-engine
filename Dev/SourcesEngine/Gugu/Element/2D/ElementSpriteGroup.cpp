@@ -304,7 +304,7 @@ bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
     size_t componentCount = spriteGroupData->components.size();
     if (componentCount > 0)
     {
-        ElementData* backupData = context.data;
+        BaseElementData* backupData = context.data;
 
         for (size_t i = 0; i < componentCount; ++i)
         {

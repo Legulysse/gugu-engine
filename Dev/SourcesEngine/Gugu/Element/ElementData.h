@@ -20,6 +20,7 @@ namespace gugu
 {
     struct ElementParseContext;
     struct ElementSaveContext;
+    class Resource;
     class Texture;
     class ImageSet;
     class SubImage;
@@ -31,12 +32,43 @@ namespace gugu
 
 namespace gugu {
 
-class ElementData
+class BaseElementData
 {
 public:
 
     std::string name;
-    std::vector<ElementData*> children;
+    std::vector<BaseElementData*> children;
+
+    virtual ~BaseElementData();
+
+    bool LoadFromXml(ElementParseContext& context);
+    bool SaveToXml(ElementSaveContext& context) const;
+
+    virtual const std::string& GetSerializedType() const = 0;
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) = 0;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const = 0;
+
+    virtual void DeepCopy(const BaseElementData* copyFrom);
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const = 0;
+};
+
+class ElementWidgetData : public BaseElementData
+{
+public:
+
+    ElementWidget* widget = nullptr;
+
+    virtual const std::string& GetSerializedType() const override;
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void DeepCopy(const BaseElementData* copyFrom) override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
+};
+
+class ElementData : public BaseElementData
+{
+public:
 
     Vector2f origin;
     Vector2f position;
@@ -54,14 +86,12 @@ public:
 
     virtual ~ElementData();
 
-    bool LoadFromXml(ElementParseContext& context);
-    bool SaveToXml(ElementSaveContext& context) const;
+    virtual const std::string& GetSerializedType() const override;
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual const std::string& GetSerializedType() const;
-    virtual bool LoadFromXmlImpl(ElementParseContext& context);
-    virtual bool SaveToXmlImpl(ElementSaveContext& context) const;
-
-    virtual void DeepCopy(const ElementData* copyFrom);
+    virtual void DeepCopy(const BaseElementData* copyFrom) override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 };
 
 class ElementSpriteBaseData : public ElementData
@@ -77,7 +107,8 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const ElementData* copyFrom) override;
+    virtual void DeepCopy(const BaseElementData* copyFrom) override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
 class ElementSpriteData : public ElementSpriteBaseData
@@ -92,7 +123,8 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const ElementData* copyFrom) override;
+    virtual void DeepCopy(const BaseElementData* copyFrom) override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
 class ElementSpriteGroupItemData : public ElementSpriteBaseData
@@ -105,7 +137,8 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const ElementData* copyFrom) override;
+    virtual void DeepCopy(const BaseElementData* copyFrom) override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
 class ElementSpriteGroupData : public ElementData
@@ -122,7 +155,8 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const ElementData* copyFrom) override;
+    virtual void DeepCopy(const BaseElementData* copyFrom) override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 };
 
 class ElementTextData : public ElementData
@@ -138,20 +172,21 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const ElementData* copyFrom) override;
+    virtual void DeepCopy(const BaseElementData* copyFrom) override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
 class ElementButtonData : public ElementData
 {
 public:
 
-    std::vector<ElementData*> components;
+    std::vector<BaseElementData*> components;
 
     // Cache
-    ElementData* commonComponent = nullptr;
-    ElementData* idleStateComponent = nullptr;
-    ElementData* focusedStateComponent = nullptr;
-    ElementData* disabledStateComponent = nullptr;
+    BaseElementData* commonComponent = nullptr;
+    BaseElementData* idleStateComponent = nullptr;
+    BaseElementData* focusedStateComponent = nullptr;
+    BaseElementData* disabledStateComponent = nullptr;
 
     virtual ~ElementButtonData();
 
@@ -159,7 +194,8 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const ElementData* copyFrom) override;
+    virtual void DeepCopy(const BaseElementData* copyFrom) override;
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 
     void RefreshCache();
 };

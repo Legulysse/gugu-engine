@@ -16,6 +16,7 @@ namespace gugu
     class DeltaTime;
     class RenderViewport;
     class ElementWidget;
+    class BaseElementData;
     class ElementData;
     class ElementSpriteGroupData;
     class ElementSpriteGroupItemData;
@@ -44,9 +45,9 @@ private:
     virtual void UpdateHierarchyImpl(const DeltaTime& dt) override;
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
 
-    void DisplayTreeNode(ElementData* node, int itemFlags, ElementData*& deleted);
-    void HandleContextMenu(ElementData* node, ElementData*& deleted);
-    ElementData* DisplayElementInstanciationContextMenu();
+    void DisplayTreeNode(BaseElementData* node, int itemFlags, BaseElementData*& deleted);
+    void HandleContextMenu(BaseElementData* node, BaseElementData*& deleted);
+    BaseElementData* DisplayElementInstanciationContextMenu();
 
     void ClearHierarchy();
     void RebuildHierarchy();
@@ -54,11 +55,11 @@ private:
 
     void DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup);
 
-    void AddChildElement(ElementData* parentData, ElementData* elementData);
-    void AddChildElement(ElementData* parentData, ElementData* elementData, size_t index);
-    void InsertElement(ElementData* referenceData, ElementData* elementData);
+    void AddChildElement(BaseElementData* parentData, BaseElementData* newData);
+    void AddChildElement(BaseElementData* parentData, BaseElementData* newData, size_t index);
+    void InsertElement(BaseElementData* referenceData, BaseElementData* newData);
     ElementSpriteGroupItem* AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
-    void DeleteElement(ElementData* elementData);
+    void DeleteElement(BaseElementData* deleted);
 
 private:
 
@@ -67,9 +68,9 @@ private:
 
     ElementWidget* m_elementWidget;
     ElementDataBindings* m_dataBindings;
-    ElementData* m_widgetRootData;
+    BaseElementData* m_widgetRootData;
     Element* m_widgetRootElement;
-    ElementData* m_selectedElementData;
+    BaseElementData* m_selectedElementData;
     Element* m_selectedElement;
 
     size_t m_generatorIndex;

@@ -8,7 +8,10 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Core/EngineConfig.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Math/MathUtility.h"
@@ -25,6 +28,61 @@ void RunUnitTests_Element(UnitTestResults* results)
     GUGU_UTEST_INIT("Element", "UnitTests_Element.log", results);
 
     //----------------------------------------------
+
+    GUGU_UTEST_SECTION("ElementWidget");
+    {
+        static const std::string dummyElementWidgetString = {
+            "<ElementWidget serializationVersion=\"1\">"
+                "<Element type=\"ElementButton\" name=\"root\">"
+                    "<Children>"
+                        "<Element type=\"ElementSprite\" name=\"sprite\">"
+                            "<Size x=\"128\" y=\"128\"/>"
+                        "</Element>"
+                    "</Children>"
+                "</Element>"
+            "</ElementWidget>"
+        };
+
+        ElementWidget* dummyWidget = new ElementWidget;
+
+        GUGU_UTEST_SUBSECTION("Serialization");
+        {
+            if (GUGU_UTEST_CHECK(dummyWidget->LoadFromString(dummyElementWidgetString)))
+            {
+                if (GUGU_UTEST_CHECK(dummyWidget->GetRootData()))
+                {
+                    GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children.size() == 1);
+                }
+            }
+
+            std::string saveResultString;
+            dummyWidget->SaveToString(saveResultString);
+            GUGU_UTEST_CHECK(dummyElementWidgetString == saveResultString);
+        }
+
+        GUGU_UTEST_SUBSECTION("Data Binding");
+        {
+            ElementDataBindings* dataBindings = new ElementDataBindings;
+
+            ElementDataContext context;
+            context.bindings = dataBindings;
+            Element* dummyWidgetInstance = dummyWidget->InstanciateWidget(context);
+
+            if (GUGU_UTEST_CHECK(dummyWidgetInstance != nullptr))
+            {
+                auto itRoot = context.bindings->elementFromName.find("root");
+                auto itSprite = context.bindings->elementFromName.find("sprite");
+
+                GUGU_UTEST_CHECK(itRoot != context.bindings->elementFromName.end() && itRoot->second != nullptr);
+                GUGU_UTEST_CHECK(itSprite != context.bindings->elementFromName.end() && itSprite->second != nullptr);
+            }
+
+            SafeDelete(dummyWidgetInstance);
+            SafeDelete(dataBindings);
+        }
+
+        SafeDelete(dummyWidget);
+    }
 
     GUGU_UTEST_SECTION("Picking");
     {

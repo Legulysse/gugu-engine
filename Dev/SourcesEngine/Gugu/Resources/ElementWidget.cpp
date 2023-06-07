@@ -11,6 +11,7 @@
 #include "Gugu/Element/ElementData.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -35,8 +36,22 @@ Element* ElementWidget::InstanciateWidget() const
 
 Element* ElementWidget::InstanciateWidget(ElementDataContext& context) const
 {
-    if (!m_data || StdVectorContains(context.ancestorWidgets, this))
+    if (!m_data)
         return nullptr;
+
+    if (StdVectorContains(context.ancestorWidgets, this))
+    {
+        std::string ancestorsLog;
+        for (auto ancestor : context.ancestorWidgets)
+        {
+            ancestorsLog += ancestor->GetFileInfo().GetFileName() + ", ";
+        }
+
+        ancestorsLog += GetFileInfo().GetFileName();
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("ElementWidget ancestors create an infinite loop : {0}", ancestorsLog));
+
+        return nullptr;
+    }
 
     context.ancestorWidgets.push_back(this);
 

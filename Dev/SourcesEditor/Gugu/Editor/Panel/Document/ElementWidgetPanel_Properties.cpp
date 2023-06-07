@@ -258,8 +258,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         }
         else if (elementSpriteGroupItemData)
         {
-            ElementSpriteGroup* ownerGroup = dynamic_cast<ElementSpriteGroup*>(elementSpriteGroupItem->GetParent());
-            ElementSpriteGroupData* ownerGroupData = dynamic_cast<ElementSpriteGroupData*>(m_dataBindings->dataFromElement.at(ownerGroup));
+            ElementSpriteGroupData* ownerGroupData = dynamic_cast<ElementSpriteGroupData*>(elementSpriteGroupItemData->parent);
 
             if (ImGui::InputText("SubImage", &elementSpriteGroupItemData->subImageName, ImGuiInputTextFlags_EnterReturnsTrue))
             {

@@ -93,44 +93,55 @@ void ElementWidgetPanel::AddChildElement(BaseElementData* parentData, BaseElemen
 
 void ElementWidgetPanel::AddChildElement(BaseElementData* parentData, BaseElementData* newData, size_t index)
 {
+    // TODO: handle add child WidgetData
+    Element* parent = m_dataBindings->elementFromData.at(parentData);
+    Element* element = nullptr;
+
     if (ElementData* elementData = dynamic_cast<ElementData*>(newData))
     {
-        Element* parent = m_dataBindings->elementFromData.at(parentData);
-        Element* element = InstanciateElement(elementData);
+        element = InstanciateElement(elementData);
+    }
 
-        if (index == system::InvalidIndex)
+    if (index == system::InvalidIndex)
+    {
+        parentData->children.push_back(newData);
+        newData->parent = parentData;
+
+        if (element)
         {
-            parentData->children.push_back(elementData);
             parent->AddChild(element);
         }
-        else
+    }
+    else
+    {
+        StdVectorInsertAt(parentData->children, index, newData);
+        newData->parent = parentData;
+
+        if (element)
         {
-            StdVectorInsertAt(parentData->children, index, newData);
             parent->InsertChild(element, index);
         }
+    }
 
-        m_dataBindings->elementFromData.insert(std::make_pair(elementData, element));
-        m_dataBindings->dataFromElement.insert(std::make_pair(element, elementData));
+    if (element)
+    {
+        m_dataBindings->elementFromData.insert(std::make_pair(newData, element));
+        m_dataBindings->dataFromElement.insert(std::make_pair(element, newData));
     }
 }
 
 void ElementWidgetPanel::InsertElement(BaseElementData* referenceData, BaseElementData* newData)
 {
-    if (ElementData* elementData = dynamic_cast<ElementData*>(newData))
+    if (BaseElementData* parentData = referenceData->parent)
     {
-        Element* reference = m_dataBindings->elementFromData.at(referenceData);
-        if (Element* parent = reference->GetParent())
-        {
-            BaseElementData* parentData = m_dataBindings->dataFromElement.at(parent);
-            size_t index = StdVectorIndexOf(parentData->children, referenceData);
+        size_t index = StdVectorIndexOf(parentData->children, referenceData);
 
-            AddChildElement(parentData, newData, index);
-        }
-        else
-        {
-            // Safety.
-            SafeDelete(newData);
-        }
+        AddChildElement(parentData, newData, index);
+    }
+    else
+    {
+        // Safety.
+        SafeDelete(newData);
     }
 }
 
@@ -140,73 +151,70 @@ ElementSpriteGroupItem* ElementWidgetPanel::AppendNewComponent(ElementSpriteGrou
     ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
 
     groupData->components.push_back(componentData);
+    componentData->parent = groupData;
+
     group->AddItem(component);
+
     m_dataBindings->elementFromData.insert(std::make_pair(componentData, component));
     m_dataBindings->dataFromElement.insert(std::make_pair(component, componentData));
 
     return component;
 }
 
-void ElementWidgetPanel::DeleteElement(BaseElementData* deleted)
+void ElementWidgetPanel::DeleteElement(BaseElementData* elementData)
 {
-    if (ElementData* elementData = dynamic_cast<ElementData*>(deleted))
+    // Special case : we may be deleting the root node through the Replace command.
+    if (elementData != m_widgetRootData)
     {
-        Element* element = m_dataBindings->elementFromData.at(elementData);
-
-        // Special case : we may be deleting the root node through the Replace command.
-        if (elementData != m_widgetRootData)
+        if (BaseElementData* parentData = elementData->parent)
         {
-            if (Element* parent = element->GetParent())
+            // Remove element from parent children.
+            StdVectorRemove<BaseElementData*>(parentData->children, elementData);
+
+            // Remove element from owner if it is a SpriteGroup component.
+            ElementSpriteGroupData* parentSpriteGroupData = dynamic_cast<ElementSpriteGroupData*>(parentData);
+            ElementSpriteGroupItemData* elementSpriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(elementData);
+            if (parentSpriteGroupData && elementSpriteGroupItemData)
             {
-                // Remove element from parent children.
-                BaseElementData* parentData = m_dataBindings->dataFromElement.at(parent);
-                StdVectorRemove<BaseElementData*>(parentData->children, elementData);
-
-                // Remove element from owner if it is a SpriteGroup component.
-                ElementSpriteGroupData* parentSpriteGroupData = dynamic_cast<ElementSpriteGroupData*>(parentData);
-                ElementSpriteGroupItemData* elementSpriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(elementData);
-                if (parentSpriteGroupData && elementSpriteGroupItemData)
-                {
-                    StdVectorRemove(parentSpriteGroupData->components, elementSpriteGroupItemData);
-                }
-
-                // Remove element from owner if it is a Button component.
-                ElementButtonData* parentButtonData = dynamic_cast<ElementButtonData*>(parentData);
-                if (parentButtonData)
-                {
-                    StdVectorRemove<BaseElementData*>(parentButtonData->components, elementData);
-
-                    parentButtonData->RefreshCache();
-                }
-            }
-        }
-
-        // Check if we are deleting an ancestor of the selected element.
-        bool selectionDeleted = false;
-
-        Element* ancestor = m_selectedElement;
-        while (ancestor)
-        {
-            if (ancestor == element)
-            {
-                selectionDeleted = true;
-                break;
+                StdVectorRemove(parentSpriteGroupData->components, elementSpriteGroupItemData);
             }
 
-            ancestor = ancestor->GetParent();
+            // Remove element from owner if it is a Button component.
+            ElementButtonData* parentButtonData = dynamic_cast<ElementButtonData*>(parentData);
+            if (parentButtonData)
+            {
+                StdVectorRemove<BaseElementData*>(parentButtonData->components, elementData);
+
+                parentButtonData->RefreshCache();
+            }
         }
-
-        if (selectionDeleted)
-        {
-            m_selectedElement = nullptr;
-            m_selectedElementData = nullptr;
-        }
-
-        // Finalize.
-        SafeDelete(elementData);
-
-        RebuildHierarchy();
     }
+
+    // Check if we are deleting an ancestor of the selected element.
+    bool selectionDeleted = false;
+
+    BaseElementData* ancestor = m_selectedElementData;
+    while (ancestor)
+    {
+        if (ancestor == elementData)
+        {
+            selectionDeleted = true;
+            break;
+        }
+
+        ancestor = ancestor->parent;
+    }
+
+    if (selectionDeleted)
+    {
+        m_selectedElement = nullptr;
+        m_selectedElementData = nullptr;
+    }
+
+    // Finalize.
+    SafeDelete(elementData);
+
+    RebuildHierarchy();
 }
 
 }   //namespace gugu

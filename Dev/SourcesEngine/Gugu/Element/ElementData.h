@@ -37,6 +37,7 @@ class BaseElementData
 public:
 
     std::string name;
+    BaseElementData* parent = nullptr;
     std::vector<BaseElementData*> children;
 
     virtual ~BaseElementData();

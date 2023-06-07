@@ -41,6 +41,7 @@ bool BaseElementData::LoadFromXml(ElementParseContext& context)
             if (BaseElementData* child = InstanciateElementData(childNode))
             {
                 children.push_back(child);
+                child->parent = this;
 
                 context.node = childNode;
                 result &= child->LoadFromXml(context);
@@ -95,6 +96,7 @@ void BaseElementData::DeepCopy(const BaseElementData* copyFrom)
         newChild->DeepCopy(child);
 
         children.push_back(newChild);
+        newChild->parent = this;
     }
 }
 
@@ -514,6 +516,7 @@ bool ElementSpriteGroupData::LoadFromXmlImpl(ElementParseContext& context)
 
             // Finalize.
             components.push_back(component);
+            component->parent = this;
         }
 
         context.node = backupNode;
@@ -572,6 +575,7 @@ void ElementSpriteGroupData::DeepCopy(const BaseElementData* copyFrom)
             newComponent->DeepCopy(component);
 
             components.push_back(newComponent);
+            newComponent->parent = this;
         }
     }
 }
@@ -762,6 +766,7 @@ bool ElementButtonData::LoadFromXmlImpl(ElementParseContext& context)
                 component->LoadFromXml(context);
 
                 components.push_back(component);
+                component->parent = this;
             }
         }
 
@@ -811,6 +816,7 @@ void ElementButtonData::DeepCopy(const BaseElementData* copyFrom)
             newComponent->DeepCopy(component);
 
             components.push_back(newComponent);
+            newComponent->parent = this;
         }
 
         RefreshCache();

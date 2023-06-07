@@ -59,7 +59,7 @@ private:
     void AddChildElement(BaseElementData* parentData, BaseElementData* newData, size_t index);
     void InsertElement(BaseElementData* referenceData, BaseElementData* newData);
     ElementSpriteGroupItem* AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
-    void DeleteElement(BaseElementData* deleted);
+    void DeleteElement(BaseElementData* elementData);
 
 private:
 

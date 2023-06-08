@@ -137,6 +137,7 @@ void Demo::OnButtonClick(int _eButton)
         kParameters.volume = 0.5f;
         kParameters.fadeOut = 1.f;
         kParameters.fadeIn = 2.f;
+        kParameters.loop = true;
         GetAudio()->PlayMusic(kParameters);
     }
     else if (_eButton == EButton::TrackAbyss)
@@ -146,6 +147,7 @@ void Demo::OnButtonClick(int _eButton)
         kParameters.volume = 0.5f;
         kParameters.fadeOut = 2.f;
         kParameters.fadeIn = 4.f;
+        kParameters.loop = true;
         GetAudio()->PlayMusic(kParameters);
     }
     else if (_eButton == EButton::TrackMighty3310Fight)
@@ -154,6 +156,7 @@ void Demo::OnButtonClick(int _eButton)
         kParameters.musicID = "Legulysse_Mighty3310_Fight.ogg";
         kParameters.fadeOut = 0.f;
         kParameters.fadeIn = 0.f;
+        kParameters.loop = true;
         GetAudio()->PlayMusic(kParameters);
     }
     else if (_eButton == EButton::TrackMighty3310Boss)
@@ -162,6 +165,7 @@ void Demo::OnButtonClick(int _eButton)
         kParameters.musicID = "Legulysse_Mighty3310_Boss.ogg";
         kParameters.fadeOut = 0.f;
         kParameters.fadeIn = 0.f;
+        kParameters.loop = true;
         GetAudio()->PlayMusic(kParameters);
     }
     else if (_eButton == EButton::TrackMighty3310Final)
@@ -170,6 +174,7 @@ void Demo::OnButtonClick(int _eButton)
         kParameters.musicID = "Legulysse_Mighty3310_Final.ogg";
         kParameters.fadeOut = 0.f;
         kParameters.fadeIn = 0.f;
+        kParameters.loop = true;
         GetAudio()->PlayMusic(kParameters);
     }
     else if (_eButton == EButton::PlaylistMighty3310)

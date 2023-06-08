@@ -28,7 +28,8 @@ struct MusicParameters
     float       volume;     // Volume range [0, 1]
     float       fadeIn;
     float       fadeOut;
-	int			layer;
+    int         layer;
+    bool        loop;
 
     MusicParameters();
 };

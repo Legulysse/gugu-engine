@@ -27,6 +27,7 @@ MusicParameters::MusicParameters()
     fadeIn = 2.f;
     fadeOut = 2.f;
 	layer = 0;
+    loop = false;
 }
 
 MusicLayer::MusicLayer()
@@ -91,7 +92,7 @@ void MusicLayer::SetNext(const MusicParameters& _kParameters)
         pMusic = GetResources()->GetMusic(_kParameters.musicID);
 
     m_nextInstance->Reset();
-    m_nextInstance->SetMusic(pMusic, true);
+    m_nextInstance->SetMusic(pMusic, _kParameters.loop);
     m_nextInstance->SetVolume(_kParameters.volume);
 
     m_fadeIn = Max(0.f, _kParameters.fadeIn);
@@ -126,7 +127,7 @@ void MusicLayer::FadeToNext()
                 pMusic = GetResources()->GetMusic(kParameters.musicID);
 
             m_nextInstance->Reset();
-            m_nextInstance->SetMusic(pMusic, false);
+            m_nextInstance->SetMusic(pMusic, kParameters.loop);
             m_nextInstance->SetVolume(kParameters.volume);
 
             m_fadeIn = Max(0.f, kParameters.fadeIn);
@@ -235,9 +236,16 @@ void MusicLayer::Update(const DeltaTime& dt)
     }
     else
     {
-        if (!m_playlist.empty() && m_currentInstance->IsFinished())
+        if (!m_playlist.empty())
         {
-            FadeToNext();
+            if (m_currentInstance->IsFinished())
+            {
+                FadeToNext();
+            }
+        }
+        else if (m_currentInstance->IsFinished())
+        {
+            Reset();
         }
     }
 }

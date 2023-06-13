@@ -17,6 +17,8 @@
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
+#include <SFML/Window/Clipboard.hpp>
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -509,6 +511,17 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
 {
     if (ImGui::BeginPopupContextItem())
     {
+        if (ImGui::MenuItem("Copy ID"))
+        {
+            sf::Clipboard::setString(sf::String::fromUtf8(node->resourceID.begin(), node->resourceID.end()));
+        }
+
+        if (ImGui::MenuItem("Open in Explorer"))
+        {
+            OpenFileExplorer(node->path);
+        }
+
+        ImGui::Separator();
         if (ImGui::MenuItem("Delete"))
         {
             if (GetEditor()->CloseDocument(node->resourceID, true))
@@ -518,12 +531,6 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
                     GetEditor()->RefreshAssets();
                 }
             }
-        }
-
-        ImGui::Separator();
-        if (ImGui::MenuItem("Open in Explorer"))
-        {
-            OpenFileExplorer(node->path);
         }
 
         ImGui::EndPopup();

@@ -65,25 +65,26 @@ Element* InstanciateElement(ElementData* data)
     if (!data)
         return nullptr;
 
+    std::string_view elementType = data->GetSerializedType();
     Element* result = nullptr;
 
-    if (StringEquals(data->GetSerializedType(), "Element"))
+    if (StringEquals(elementType, "Element"))
     {
         result = new Element;
     }
-    else if (StringEquals(data->GetSerializedType(), "ElementSprite"))
+    else if (StringEquals(elementType, "ElementSprite"))
     {
         result = new ElementSprite;
     }
-    else if (StringEquals(data->GetSerializedType(), "ElementSpriteGroup"))
+    else if (StringEquals(elementType, "ElementSpriteGroup"))
     {
         result = new ElementSpriteGroup;
     }
-    else if (StringEquals(data->GetSerializedType(), "ElementText"))
+    else if (StringEquals(elementType, "ElementText"))
     {
         result = new ElementText;
     }
-    else if (StringEquals(data->GetSerializedType(), "ElementButton"))
+    else if (StringEquals(elementType, "ElementButton"))
     {
         result = new ElementButton;
     }

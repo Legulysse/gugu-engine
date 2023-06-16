@@ -100,7 +100,7 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
 
     if (ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data))
     {
-        result = elementWidgetData->widget->InstanciateWidget(context);
+        result = elementWidgetData->widget == nullptr ? nullptr : elementWidgetData->widget->InstanciateWidget(context);
         if (result)
         {
             result->SetParent(parent);

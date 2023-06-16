@@ -269,6 +269,11 @@ BaseElementData* ElementWidgetPanel::DisplayElementInstanciationContextMenu()
         elementData = new ElementButtonData;
     }
 
+    if (ImGui::MenuItem("Element Widget"))
+    {
+        elementData = new ElementWidgetData;
+    }
+
     return elementData;
 }
 

@@ -100,12 +100,22 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
 
     if (ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data))
     {
-        result = elementWidgetData->widget == nullptr ? nullptr : elementWidgetData->widget->InstanciateWidget(context);
+        if (elementWidgetData->widget == nullptr)
+        {
+            // Instantiate a default empty Element.
+            result = new Element;
+        }
+        else
+        {
+            result = elementWidgetData->widget->InstanciateWidget(context);
+        }
+
         if (result)
         {
             result->SetParent(parent);
 
             // TODO: Load override data from elementWidgetData.
+            // - We cant use LoadFromData here since an ElementWidgetData is not an ElementData.
 
             if (context.bindings)
             {
@@ -129,6 +139,9 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
                     }
                 }
             }
+
+            /*bool result =*/ result->LoadChildrenFromData(context);
+            // TODO: handle bool return.
         }
     }
     else if (ElementData* elementData = dynamic_cast<ElementData*>(context.data))

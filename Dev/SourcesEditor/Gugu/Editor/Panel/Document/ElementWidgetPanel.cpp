@@ -95,11 +95,16 @@ void ElementWidgetPanel::AddChildElement(BaseElementData* parentData, BaseElemen
 {
     // TODO: handle add child WidgetData
     Element* parent = m_dataBindings->elementFromData.at(parentData);
-    Element* element = nullptr;
 
+    Element* element = nullptr;
     if (ElementData* elementData = dynamic_cast<ElementData*>(newData))
     {
         element = InstanciateElement(elementData);
+    }
+    else if (ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(newData))
+    {
+        // Add a default empty Element.
+        element = new Element;
     }
 
     if (index == system::InvalidIndex)

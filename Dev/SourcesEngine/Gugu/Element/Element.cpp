@@ -671,6 +671,15 @@ bool Element::LoadFromData(ElementDataContext& context)
         }
     }
 
+    result &= LoadChildrenFromData(context);
+    return result;
+}
+
+bool Element::LoadChildrenFromData(ElementDataContext& context)
+{
+    bool result = true;
+    BaseElementData* elementData = context.data;
+
     size_t childCount = elementData->children.size();
     if (childCount > 0)
     {

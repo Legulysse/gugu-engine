@@ -53,13 +53,13 @@ Element* ElementWidget::InstanciateWidget(ElementDataContext& context) const
         return nullptr;
     }
 
+    BaseElementData* backupData = context.data;
+    context.data = m_data;
     context.ancestorWidgets.push_back(this);
 
-    BaseElementData* backupData = context.data;
-
-    context.data = m_data;
     Element* root = InstanciateAndLoadElement(context, nullptr);
 
+    context.ancestorWidgets.pop_back();
     context.data = backupData;
     return root;
 }

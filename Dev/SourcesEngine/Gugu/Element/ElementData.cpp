@@ -24,6 +24,7 @@ namespace gugu {
 
 BaseElementData::~BaseElementData()
 {
+    ClearStdVector(children);
 }
 
 bool BaseElementData::LoadFromXml(ElementParseContext& context)
@@ -149,7 +150,6 @@ void ElementWidgetData::GetDependencies(std::set<Resource*>& dependencies) const
 
 ElementData::~ElementData()
 {
-    ClearStdVector(children);
 }
 
 const std::string& ElementData::GetSerializedType() const

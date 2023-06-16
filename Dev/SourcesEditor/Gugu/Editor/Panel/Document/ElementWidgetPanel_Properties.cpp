@@ -31,13 +31,28 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         return;
 
     ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
-
     Element* element = m_selectedElement;
+    bool needRebuildHierarchy = false;
+
     if (ImGui::CollapsingHeader("Common##_HEADER", headerFlags))
     {
         // Name
         ImGui::InputText("Name", &m_selectedElementData->name);
         ImGui::Spacing();
+
+        ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(m_selectedElementData);
+        if (elementWidgetData)
+        {
+            ElementWidget* widget = elementWidgetData->widget;
+            std::string widgetId = !widget ? "" : widget->GetID();
+            if (ImGui::InputText("Widget", &widgetId, ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                elementWidgetData->widget = GetResources()->GetElementWidget(widgetId);
+                RaiseDirty();
+
+                needRebuildHierarchy = true;
+            }
+        }
 
         ElementData* elementData = dynamic_cast<ElementData*>(m_selectedElementData);
         if (elementData)
@@ -340,6 +355,11 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             elementTextData->size = elementText->GetSize();
             RaiseDirty();
         }
+    }
+
+    if (needRebuildHierarchy)
+    {
+        RebuildHierarchy();
     }
 }
 

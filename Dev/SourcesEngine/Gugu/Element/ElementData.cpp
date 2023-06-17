@@ -85,22 +85,6 @@ bool BaseElementData::SaveToXml(ElementSaveContext& context) const
     return result;
 }
 
-void BaseElementData::DeepCopy(const BaseElementData* copyFrom)
-{
-    name = copyFrom->name;
-
-    ClearStdVector(children);
-
-    for (auto child : copyFrom->children)
-    {
-        BaseElementData* newChild = InstanciateElementData(child->GetSerializedType());
-        newChild->DeepCopy(child);
-
-        children.push_back(newChild);
-        newChild->parent = this;
-    }
-}
-
 const std::string& ElementWidgetData::GetSerializedType() const
 {
     static const std::string serializedType = "ElementWidget";
@@ -125,16 +109,6 @@ bool ElementWidgetData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     return true;
-}
-
-void ElementWidgetData::DeepCopy(const BaseElementData* copyFrom)
-{
-    BaseElementData::DeepCopy(copyFrom);
-
-    if (auto CopyFromSameType = dynamic_cast<const ElementWidgetData*>(copyFrom))
-    {
-        widget = CopyFromSameType->widget;
-    }
 }
 
 void ElementWidgetData::GetDependencies(std::set<Resource*>& dependencies) const
@@ -245,28 +219,6 @@ bool ElementData::SaveToXmlImpl(ElementSaveContext& context) const
     return result;
 }
 
-void ElementData::DeepCopy(const BaseElementData* copyFrom)
-{
-    BaseElementData::DeepCopy(copyFrom);
-
-    if (auto CopyFromSameType = dynamic_cast<const ElementData*>(copyFrom))
-    {
-        origin = CopyFromSameType->origin;
-        position = CopyFromSameType->position;
-        size = CopyFromSameType->size;
-        rotation = CopyFromSameType->rotation;
-        flipV = CopyFromSameType->flipV;
-        flipH = CopyFromSameType->flipH;
-
-        useDimOrigin = CopyFromSameType->useDimOrigin;
-        dimOrigin = CopyFromSameType->dimOrigin;
-        useDimPosition = CopyFromSameType->useDimPosition;
-        dimPosition = CopyFromSameType->dimPosition;
-        useDimSize = CopyFromSameType->useDimSize;
-        dimSize = CopyFromSameType->dimSize;
-    }
-}
-
 void ElementData::GetDependencies(std::set<Resource*>& dependencies) const
 {
     for (auto child : children)
@@ -320,20 +272,6 @@ bool ElementSpriteBaseData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     return true;
-}
-
-void ElementSpriteBaseData::DeepCopy(const BaseElementData* copyFrom)
-{
-    ElementData::DeepCopy(copyFrom);
-
-    if (auto CopyFromSameType = dynamic_cast<const ElementSpriteBaseData*>(copyFrom))
-    {
-        textureRect = CopyFromSameType->textureRect;
-        color = CopyFromSameType->color;
-        repeatTexture = CopyFromSameType->repeatTexture;
-        flipTextureV = CopyFromSameType->flipTextureV;
-        flipTextureH = CopyFromSameType->flipTextureH;
-    }
 }
 
 void ElementSpriteBaseData::GetDependencies(std::set<Resource*>& dependencies) const
@@ -391,18 +329,6 @@ bool ElementSpriteData::SaveToXmlImpl(ElementSaveContext& context) const
     return true;
 }
 
-void ElementSpriteData::DeepCopy(const BaseElementData* copyFrom)
-{
-    ElementSpriteBaseData::DeepCopy(copyFrom);
-
-    if (auto CopyFromSameType = dynamic_cast<const ElementSpriteData*>(copyFrom))
-    {
-        imageSet = CopyFromSameType->imageSet;
-        subImageName = CopyFromSameType->subImageName;
-        texture = CopyFromSameType->texture;
-    }
-}
-
 void ElementSpriteData::GetDependencies(std::set<Resource*>& dependencies) const
 {
     ElementSpriteBaseData::GetDependencies(dependencies);
@@ -451,16 +377,6 @@ bool ElementSpriteGroupItemData::SaveToXmlImpl(ElementSaveContext& context) cons
     }
 
     return true;
-}
-
-void ElementSpriteGroupItemData::DeepCopy(const BaseElementData* copyFrom)
-{
-    ElementSpriteBaseData::DeepCopy(copyFrom);
-
-    if (auto CopyFromSameType = dynamic_cast<const ElementSpriteGroupItemData*>(copyFrom))
-    {
-        subImageName = CopyFromSameType->subImageName;
-    }
 }
 
 void ElementSpriteGroupItemData::GetDependencies(std::set<Resource*>& dependencies) const
@@ -556,28 +472,6 @@ bool ElementSpriteGroupData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     return result;
-}
-
-void ElementSpriteGroupData::DeepCopy(const BaseElementData* copyFrom)
-{
-    ElementData::DeepCopy(copyFrom);
-
-    if (auto CopyFromSameType = dynamic_cast<const ElementSpriteGroupData*>(copyFrom))
-    {
-        imageSet = CopyFromSameType->imageSet;
-        texture = CopyFromSameType->texture;
-
-        ClearStdVector(components);
-
-        for (auto component : CopyFromSameType->components)
-        {
-            ElementSpriteGroupItemData* newComponent = new ElementSpriteGroupItemData;
-            newComponent->DeepCopy(component);
-
-            components.push_back(newComponent);
-            newComponent->parent = this;
-        }
-    }
 }
 
 void ElementSpriteGroupData::GetDependencies(std::set<Resource*>& dependencies) const
@@ -679,19 +573,6 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     return true;
-}
-
-void ElementTextData::DeepCopy(const BaseElementData* copyFrom)
-{
-    ElementData::DeepCopy(copyFrom);
-
-    if (auto CopyFromSameType = dynamic_cast<const ElementTextData*>(copyFrom))
-    {
-        font = CopyFromSameType->font;
-        text = CopyFromSameType->text;
-        resizeRule = CopyFromSameType->resizeRule;
-        multiline = CopyFromSameType->multiline;
-    }
 }
 
 void ElementTextData::GetDependencies(std::set<Resource*>& dependencies) const
@@ -800,27 +681,6 @@ bool ElementButtonData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     return result;
-}
-
-void ElementButtonData::DeepCopy(const BaseElementData* copyFrom)
-{
-    ElementData::DeepCopy(copyFrom);
-
-    if (auto CopyFromSameType = dynamic_cast<const ElementButtonData*>(copyFrom))
-    {
-        ClearStdVector(components);
-
-        for (auto component : CopyFromSameType->components)
-        {
-            BaseElementData* newComponent = InstanciateElementData(component->GetSerializedType());
-            newComponent->DeepCopy(component);
-
-            components.push_back(newComponent);
-            newComponent->parent = this;
-        }
-
-        RefreshCache();
-    }
 }
 
 void ElementButtonData::GetDependencies(std::set<Resource*>& dependencies) const

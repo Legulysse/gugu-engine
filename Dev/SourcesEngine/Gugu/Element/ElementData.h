@@ -49,7 +49,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) = 0;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const = 0;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom);
     virtual void GetDependencies(std::set<Resource*>& dependencies) const = 0;
 };
 
@@ -63,7 +62,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom) override;
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 };
 
@@ -91,7 +89,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom) override;
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 };
 
@@ -108,7 +105,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom) override;
     virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
@@ -124,7 +120,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom) override;
     virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
@@ -138,7 +133,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom) override;
     virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
@@ -156,7 +150,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom) override;
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 };
 
@@ -173,7 +166,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom) override;
     virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
@@ -195,7 +187,6 @@ public:
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
-    virtual void DeepCopy(const BaseElementData* copyFrom) override;
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 
     void RefreshCache();

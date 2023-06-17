@@ -205,8 +205,16 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
                 BaseElementData* elementData = DisplayElementInstanciationContextMenu();
                 if (elementData)
                 {
-                    // TODO: I could use save/load xml instead of a manual deep copy ?
-                    elementData->DeepCopy(node);
+                    // Deep copy.
+                    pugi::xml_document xmlDocument;
+
+                    ElementSaveContext saveContext;
+                    saveContext.node = xmlDocument;
+                    node->SaveToXml(saveContext);
+
+                    ElementParseContext loadContext;
+                    loadContext.node = xmlDocument;
+                    elementData->LoadFromXml(loadContext);
 
                     if (node == m_widgetRootData)
                     {

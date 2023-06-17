@@ -108,7 +108,7 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
         }
         else
         {
-            // There is no point in gathering data-to-element bindings for now.
+            // There is no point in gathering data-to-element bindings in child widgets for now.
             // - They would generate duplicate entries on widgets including another widget multiple times.
             ElementDataBindings* bindingsBackup = context.bindings;
             context.bindings = nullptr;

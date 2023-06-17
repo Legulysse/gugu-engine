@@ -108,7 +108,14 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
         }
         else
         {
+            // There is no point in gathering data-to-element bindings for now.
+            // - They would generate duplicate entries on widgets including another widget multiple times.
+            ElementDataBindings* bindingsBackup = context.bindings;
+            context.bindings = nullptr;
+
             result = elementWidgetData->widget->InstanciateWidget(context);
+
+            context.bindings = bindingsBackup;
         }
 
         if (result)

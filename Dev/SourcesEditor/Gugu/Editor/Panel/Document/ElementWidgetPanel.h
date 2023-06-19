@@ -65,6 +65,7 @@ private:
 
     RenderViewport* m_renderViewport;
     float m_zoomFactor;
+    bool m_showBounds;
 
     ElementWidget* m_elementWidget;
     ElementDataBindings* m_dataBindings;

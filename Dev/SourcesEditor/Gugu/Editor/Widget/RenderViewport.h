@@ -41,6 +41,8 @@ public:
     void SetZoom(float zoomMultiplier);
     float GetZoom() const;
 
+    void SetShowBounds(bool showBounds);
+
     Vector2f GetMousePickedPosition() const;
     Vector2f GetPickedPosition(const Vector2i& pixelCoords) const;
 
@@ -56,6 +58,7 @@ private:
     Vector2f m_renderSize;
     float m_zoomMultiplier;
     bool m_fillAvailableArea;
+    bool m_showBounds;
 };
 
 }   //namespace gugu

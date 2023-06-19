@@ -16,9 +16,10 @@
 
 namespace gugu {
 
-void WidgetRenderer::RenderWidget(sf::RenderTexture* renderTexture, Element* root)
+void WidgetRenderer::RenderWidget(sf::RenderTexture* renderTexture, Element* root, bool showBounds)
 {
     FrameInfos frameInfos;
+    frameInfos.showBounds = showBounds;
     frameInfos.defaultBoundsShape.setOutlineThickness(-1.f);
     frameInfos.defaultBoundsShape.setOutlineColor(sf::Color(255, 0, 255, 200));
     frameInfos.defaultBoundsShape.setFillColor(sf::Color::Transparent);

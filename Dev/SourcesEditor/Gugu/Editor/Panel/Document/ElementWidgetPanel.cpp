@@ -26,6 +26,7 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     , m_elementWidget(resource)
     , m_renderViewport(nullptr)
     , m_zoomFactor(1.f)
+    , m_showBounds(false)
     , m_dataBindings(nullptr)
     , m_widgetRootData(nullptr)
     , m_widgetRootElement(nullptr)
@@ -79,6 +80,11 @@ void ElementWidgetPanel::UpdatePanelImpl(const DeltaTime& dt)
     if (ImGui::InputInt2("Viewport Size", &size))
     {
         m_renderViewport->SetSize(size);
+    }
+
+    if (ImGui::Checkbox("Show Bounds", &m_showBounds))
+    {
+        m_renderViewport->SetShowBounds(m_showBounds);
     }
 
     // Viewport.

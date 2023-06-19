@@ -32,6 +32,7 @@ RenderViewport::RenderViewport(bool fillAvailableArea)
     , m_size(100, 100)
     , m_zoomMultiplier(1.f)
     , m_fillAvailableArea(fillAvailableArea)
+    , m_showBounds(false)
 {
     m_renderer = new WidgetRenderer;
     m_renderTexture = new sf::RenderTexture;
@@ -106,7 +107,7 @@ void RenderViewport::ImGuiEnd()
     m_renderTexture->clear(sf::Color(128, 128, 128, 255));
 
     // Render scene.
-    m_renderer->RenderWidget(m_renderTexture, m_root);
+    m_renderer->RenderWidget(m_renderTexture, m_root, m_showBounds);
 
     // Display.
     m_renderTexture->display();
@@ -137,6 +138,11 @@ void RenderViewport::SetZoom(float zoomMultiplier)
 float RenderViewport::GetZoom() const
 {
     return m_zoomMultiplier;
+}
+
+void RenderViewport::SetShowBounds(bool showBounds)
+{
+    m_showBounds = showBounds;
 }
 
 Vector2f RenderViewport::GetMousePickedPosition() const

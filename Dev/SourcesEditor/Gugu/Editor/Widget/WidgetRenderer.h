@@ -26,7 +26,7 @@ public:
     WidgetRenderer() {}
     virtual ~WidgetRenderer() {}
 
-    void RenderWidget(sf::RenderTexture* renderTexture, Element* root);
+    void RenderWidget(sf::RenderTexture* renderTexture, Element* root, bool showBounds);
 };
 
 }   // namespace gugu

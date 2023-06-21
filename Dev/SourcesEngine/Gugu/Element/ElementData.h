@@ -58,6 +58,14 @@ public:
 
     ElementWidget* widget = nullptr;
 
+    bool overrideRotation = false;
+    bool overrideFlipV = false;
+    bool overrideFlipH = false;
+
+    float rotation = 0.f;
+    bool flipV = false;
+    bool flipH = false;
+
     virtual const std::string& GetSerializedType() const override;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;

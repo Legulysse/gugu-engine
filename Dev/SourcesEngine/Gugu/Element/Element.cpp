@@ -675,6 +675,57 @@ bool Element::LoadFromData(ElementDataContext& context)
     return result;
 }
 
+bool Element::LoadFromWidgetData(ElementDataContext& context)
+{
+    // At this point, the element has already been deserialized through ElementWidget::InstanciateWidget.
+    // - We only need to load the overrides from the widget root (transform etc).
+    // - Some children may already exist from the initial deserialization.
+
+    bool result = true;
+    ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data);
+
+    if (elementWidgetData->overrideRotation)
+    {
+        SetRotation(elementWidgetData->rotation);
+    }
+
+    if (elementWidgetData->overrideFlipV)
+    {
+        SetFlipV(elementWidgetData->flipV);
+    }
+
+    if (elementWidgetData->overrideFlipH)
+    {
+        SetFlipH(elementWidgetData->flipH);
+    }
+
+    if (context.bindings)
+    {
+        // Fill bindings informations.
+        // - The instantiated Element will be referenced by both the ElementWidgetData and the widget root ElementData, but it will only reference the root ElementData.
+        // - As a result, the Element will have no knowledge of the ElementWidget it originates from, and get attached directly to the provided parent.
+        context.bindings->elementFromData.insert(std::make_pair(elementWidgetData, this));
+        //context.bindings->dataFromElement.insert(std::make_pair(this, elementData));
+
+        if (!elementWidgetData->name.empty())
+        {
+            // TODO: handle multiple elements with same name ?
+            auto it = context.bindings->elementFromName.find(elementWidgetData->name);
+            if (it == context.bindings->elementFromName.end())
+            {
+                context.bindings->elementFromName.insert(std::make_pair(elementWidgetData->name, this));
+            }
+            else
+            {
+                GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementWidgetData->name));
+            }
+        }
+    }
+
+    result &= LoadChildrenFromData(context);
+    return result;
+}
+
 bool Element::LoadChildrenFromData(ElementDataContext& context)
 {
     bool result = true;

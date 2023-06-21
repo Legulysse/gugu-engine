@@ -25,6 +25,7 @@ void ElementWidgetPanel::ClearHierarchy()
 {
     m_selectedElementData = nullptr;
     m_selectedElement = nullptr;
+
     SafeDelete(m_widgetRootElement);
     SafeDelete(m_dataBindings);
 
@@ -93,12 +94,7 @@ void ElementWidgetPanel::DisplayTreeNode(BaseElementData* node, int itemFlags, B
     if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
     {
         m_selectedElementData = node;
-        m_selectedElement = nullptr;
-
-        if (ElementData* elementData = dynamic_cast<ElementData*>(node))
-        {
-            m_selectedElement = m_dataBindings->elementFromData.at(node);
-        }
+        m_selectedElement = m_dataBindings->elementFromData.at(node);
     }
 
     // Context menu.

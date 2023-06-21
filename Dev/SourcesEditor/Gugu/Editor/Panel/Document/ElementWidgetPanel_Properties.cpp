@@ -43,15 +43,88 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(m_selectedElementData);
         if (elementWidgetData)
         {
+            // Helpers
+            int overrideId = 0;
+
+            auto checkOverrideSetting = [](int& id, bool& useOverride) -> bool
+            {
+                ImGui::PushID(id);
+                float posX_before = ImGui::GetCursorPosX();
+                bool updated = ImGui::Checkbox("##Override", &useOverride);
+                ImGui::PopID();
+
+                ImGui::SameLine();
+
+                float posX_after = ImGui::GetCursorPosX();
+                ImGui::SetCursorPosX(posX_after - ImGui::GetStyle().ItemInnerSpacing.x);
+                ImGui::SetNextItemWidth(ImGui::CalcItemWidth() + ImGui::GetStyle().ItemInnerSpacing.x - (posX_after - posX_before));
+
+                ++id;
+                return updated;
+            };
+
+            // Widget reference
             ElementWidget* widget = elementWidgetData->widget;
             std::string widgetId = !widget ? "" : widget->GetID();
             if (ImGui::InputText("Widget", &widgetId, ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 elementWidgetData->widget = GetResources()->GetElementWidget(widgetId);
-                RaiseDirty();
 
+                RaiseDirty();
                 needRebuildHierarchy = true;
             }
+
+            ImGui::Spacing();
+
+            // TODO: If the root data is a widget, I will need to iterate recursively on its own root data, until I find a usable root transform.
+            ElementData* widgetRootData = dynamic_cast<ElementData*>(widget->GetRootData());
+
+            // Rotation
+            if (checkOverrideSetting(overrideId, elementWidgetData->overrideRotation))
+            {
+                elementWidgetData->rotation = widgetRootData->rotation;
+                element->SetRotation(elementWidgetData->rotation);
+                RaiseDirty();
+            }
+
+            ImGui::BeginDisabled(!elementWidgetData->overrideRotation);
+            if (ImGui::InputFloat("Rotation", &elementWidgetData->rotation))
+            {
+                element->SetRotation(elementWidgetData->rotation);
+                RaiseDirty();
+            }
+            ImGui::EndDisabled();
+
+            // Flip
+            if (checkOverrideSetting(overrideId, elementWidgetData->overrideFlipV))
+            {
+                elementWidgetData->flipV = widgetRootData->flipV;
+                element->SetFlipV(elementWidgetData->flipV);
+                RaiseDirty();
+            }
+
+            ImGui::BeginDisabled(!elementWidgetData->overrideFlipV);
+            if (ImGui::Checkbox("Flip V", &elementWidgetData->flipV))
+            {
+                element->SetFlipV(elementWidgetData->flipV);
+                RaiseDirty();
+            }
+            ImGui::EndDisabled();
+
+            if (checkOverrideSetting(overrideId, elementWidgetData->overrideFlipH))
+            {
+                elementWidgetData->flipH = widgetRootData->flipH;
+                element->SetFlipH(elementWidgetData->flipH);
+                RaiseDirty();
+            }
+
+            ImGui::BeginDisabled(!elementWidgetData->overrideFlipH);
+            if (ImGui::Checkbox("Flip H", &elementWidgetData->flipH))
+            {
+                element->SetFlipH(elementWidgetData->flipH);
+                RaiseDirty();
+            }
+            ImGui::EndDisabled();
         }
 
         ElementData* elementData = dynamic_cast<ElementData*>(m_selectedElementData);

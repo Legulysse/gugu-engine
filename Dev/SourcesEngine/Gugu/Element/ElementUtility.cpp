@@ -121,35 +121,9 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
         if (result)
         {
             result->SetParent(parent);
-
-            // TODO: Load override data from elementWidgetData.
-            // - We cant use LoadFromData here since an ElementWidgetData is not an ElementData.
-
-            if (context.bindings)
-            {
-                // Fill bindings informations.
-                // - The instantiated Element will be referenced by both the ElementWidgetData and the widget root ElementData, but it will only reference the root ElementData.
-                // - As a result, the Element will have no knowledge of the ElementWidget it originates from, and get attached directly to the provided parent.
-                context.bindings->elementFromData.insert(std::make_pair(elementWidgetData, result));
-                //context.bindings->dataFromElement.insert(std::make_pair(result, elementData));
-
-                if (!elementWidgetData->name.empty())
-                {
-                    // TODO: handle multiple elements with same name ?
-                    auto it = context.bindings->elementFromName.find(elementWidgetData->name);
-                    if (it == context.bindings->elementFromName.end())
-                    {
-                        context.bindings->elementFromName.insert(std::make_pair(elementWidgetData->name, result));
-                    }
-                    else
-                    {
-                        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementWidgetData->name));
-                    }
-                }
-            }
-
-            /*bool result =*/ result->LoadChildrenFromData(context);
+            /*bool result =*/ result->LoadFromWidgetData(context);
             // TODO: handle bool return.
+
         }
     }
     else if (ElementData* elementData = dynamic_cast<ElementData*>(context.data))

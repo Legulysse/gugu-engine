@@ -214,6 +214,7 @@ public:
     // Serialization
 
     bool LoadFromData(ElementDataContext& context);
+    bool LoadFromWidgetData(ElementDataContext& context);
     bool LoadChildrenFromData(ElementDataContext& context);
 
 protected:

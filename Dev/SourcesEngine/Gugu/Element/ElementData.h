@@ -58,9 +58,12 @@ public:
 
     ElementWidget* widget = nullptr;
 
+    bool overrideOrigin = false;
     bool overrideRotation = false;
     bool overrideFlipV = false;
     bool overrideFlipH = false;
+
+    UDim2 dimOrigin;
 
     float rotation = 0.f;
     bool flipV = false;

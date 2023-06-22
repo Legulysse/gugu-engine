@@ -98,6 +98,8 @@ bool ElementWidgetData::LoadFromXmlImpl(ElementParseContext& context)
         widget = GetResources()->GetElementWidget(sourceWidget.as_string(""));
     }
 
+    overrideOrigin = xml::TryParseUDim2(context.node.child("UOrigin"), dimOrigin);
+
     overrideRotation = xml::TryParseAttribute(context.node.child("Rotation"), "value", rotation);
     overrideFlipV = xml::TryParseAttribute(context.node.child("FlipV"), "value", flipV);
     overrideFlipH = xml::TryParseAttribute(context.node.child("FlipH"), "value", flipH);
@@ -110,6 +112,11 @@ bool ElementWidgetData::SaveToXmlImpl(ElementSaveContext& context) const
     if (widget)
     {
         context.node.append_attribute("widget").set_value(widget->GetID().c_str());
+    }
+
+    if (overrideOrigin)
+    {
+        xml::WriteUDim2(context.node.append_child("UOrigin"), dimOrigin);
     }
 
     if (overrideRotation)

@@ -79,11 +79,61 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             // TODO: If the root data is a widget, I will need to iterate recursively on its own root data, until I find a usable root transform.
             ElementData* widgetRootData = dynamic_cast<ElementData*>(widget->GetRootData());
 
+            // Origin
+            if (checkOverrideSetting(overrideId, elementWidgetData->overrideOrigin))
+            {
+                if (!elementWidgetData->overrideOrigin)
+                {
+                    elementWidgetData->dimOrigin = UDim2::ZERO;
+
+                    if (widgetRootData->useDimOrigin)
+                    {
+                        element->SetUnifiedOrigin(widgetRootData->dimOrigin);
+                    }
+                    else
+                    {
+                        element->SetOrigin(widgetRootData->origin);
+                    }
+                }
+                else
+                {
+                    if (widgetRootData->useDimOrigin)
+                    {
+                        elementWidgetData->dimOrigin = widgetRootData->dimOrigin;
+                        element->SetUnifiedOrigin(elementWidgetData->dimOrigin);
+                    }
+                    else
+                    {
+                        elementWidgetData->dimOrigin = UDim2(Vector2::Zero_f, widgetRootData->origin);
+                        element->SetUnifiedOrigin(elementWidgetData->dimOrigin);
+                    }
+                }
+
+                RaiseDirty();
+            }
+
+            ImGui::BeginDisabled(!elementWidgetData->overrideOrigin);
+            if (ImGui::InputFloat4("Unified Origin", &elementWidgetData->dimOrigin))
+            {
+                element->SetUnifiedOrigin(elementWidgetData->dimOrigin);
+                RaiseDirty();
+            }
+            ImGui::EndDisabled();
+
             // Rotation
             if (checkOverrideSetting(overrideId, elementWidgetData->overrideRotation))
             {
-                elementWidgetData->rotation = widgetRootData->rotation;
-                element->SetRotation(elementWidgetData->rotation);
+                if (!elementWidgetData->overrideRotation)
+                {
+                    elementWidgetData->rotation = 0.f;
+                    element->SetRotation(widgetRootData->rotation);
+                }
+                else
+                {
+                    elementWidgetData->rotation = widgetRootData->rotation;
+                    element->SetRotation(elementWidgetData->rotation);
+                }
+
                 RaiseDirty();
             }
 
@@ -98,8 +148,17 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             // Flip
             if (checkOverrideSetting(overrideId, elementWidgetData->overrideFlipV))
             {
-                elementWidgetData->flipV = widgetRootData->flipV;
-                element->SetFlipV(elementWidgetData->flipV);
+                if (!elementWidgetData->overrideFlipV)
+                {
+                    elementWidgetData->flipV = false;
+                    element->SetFlipV(widgetRootData->flipV);
+                }
+                else
+                {
+                    elementWidgetData->flipV = widgetRootData->flipV;
+                    element->SetFlipV(elementWidgetData->flipV);
+                }
+
                 RaiseDirty();
             }
 
@@ -113,8 +172,17 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
             if (checkOverrideSetting(overrideId, elementWidgetData->overrideFlipH))
             {
-                elementWidgetData->flipH = widgetRootData->flipH;
-                element->SetFlipH(elementWidgetData->flipH);
+                if (!elementWidgetData->overrideFlipH)
+                {
+                    elementWidgetData->flipH = false;
+                    element->SetFlipH(widgetRootData->flipH);
+                }
+                else
+                {
+                    elementWidgetData->flipH = widgetRootData->flipH;
+                    element->SetFlipH(elementWidgetData->flipH);
+                }
+
                 RaiseDirty();
             }
 

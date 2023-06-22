@@ -684,6 +684,11 @@ bool Element::LoadFromWidgetData(ElementDataContext& context)
     bool result = true;
     ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data);
 
+    if (elementWidgetData->overrideOrigin)
+    {
+        SetUnifiedOrigin(elementWidgetData->dimOrigin);
+    }
+
     if (elementWidgetData->overrideRotation)
     {
         SetRotation(elementWidgetData->rotation);

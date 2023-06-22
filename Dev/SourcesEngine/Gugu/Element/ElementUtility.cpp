@@ -126,6 +126,12 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
 
             result = elementWidgetData->widget->InstanciateWidget(context);
 
+            if (!result)
+            {
+                // Instantiate a default empty Element.
+                result = new Element;
+            }
+
             context.dataBindings = bindingsBackup;
         }
 

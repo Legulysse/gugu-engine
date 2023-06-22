@@ -99,7 +99,6 @@ void ElementWidgetPanel::AddChildElement(BaseElementData* parentData, BaseElemen
 
 void ElementWidgetPanel::AddChildElement(BaseElementData* parentData, BaseElementData* newData, size_t index)
 {
-    // TODO: handle add child WidgetData
     Element* parent = m_dataBindings->elementFromData.at(parentData);
 
     Element* element = nullptr;

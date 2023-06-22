@@ -682,47 +682,29 @@ bool Element::LoadFromWidgetData(ElementDataContext& context)
     // - Some children may already exist from the initial deserialization.
 
     bool result = true;
-    ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data);
+    BaseElementData* elementData = context.data;
 
-    if (elementWidgetData->overrideOrigin)
-    {
-        SetUnifiedOrigin(elementWidgetData->dimOrigin);
-    }
-
-    if (elementWidgetData->overrideRotation)
-    {
-        SetRotation(elementWidgetData->rotation);
-    }
-
-    if (elementWidgetData->overrideFlipV)
-    {
-        SetFlipV(elementWidgetData->flipV);
-    }
-
-    if (elementWidgetData->overrideFlipH)
-    {
-        SetFlipH(elementWidgetData->flipH);
-    }
+    result = LoadFromWidgetDataImpl(context);
 
     if (context.bindings)
     {
         // Fill bindings informations.
         // - The instantiated Element will be referenced by both the ElementWidgetData and the widget root ElementData, but it will only reference the root ElementData.
         // - As a result, the Element will have no knowledge of the ElementWidget it originates from, and get attached directly to the provided parent.
-        context.bindings->elementFromData.insert(std::make_pair(elementWidgetData, this));
+        context.bindings->elementFromData.insert(std::make_pair(elementData, this));
         //context.bindings->dataFromElement.insert(std::make_pair(this, elementData));
 
-        if (!elementWidgetData->name.empty())
+        if (!elementData->name.empty())
         {
             // TODO: handle multiple elements with same name ?
-            auto it = context.bindings->elementFromName.find(elementWidgetData->name);
+            auto it = context.bindings->elementFromName.find(elementData->name);
             if (it == context.bindings->elementFromName.end())
             {
-                context.bindings->elementFromName.insert(std::make_pair(elementWidgetData->name, this));
+                context.bindings->elementFromName.insert(std::make_pair(elementData->name, this));
             }
             else
             {
-                GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementWidgetData->name));
+                GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementData->name));
             }
         }
     }
@@ -802,6 +784,43 @@ bool Element::LoadFromDataImpl(ElementDataContext& context)
     if (elementData->flipH)
     {
         SetFlipH(elementData->flipH);
+    }
+
+    return true;
+}
+
+bool Element::LoadFromWidgetDataImpl(ElementDataContext& context)
+{
+    ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data);
+
+    if (elementWidgetData->overrideOrigin)
+    {
+        SetUnifiedOrigin(elementWidgetData->dimOrigin);
+    }
+
+    if (elementWidgetData->overridePosition)
+    {
+        SetUnifiedPosition(elementWidgetData->dimPosition);
+    }
+
+    if (elementWidgetData->overrideSize)
+    {
+        SetUnifiedSize(elementWidgetData->dimSize);
+    }
+
+    if (elementWidgetData->overrideRotation)
+    {
+        SetRotation(elementWidgetData->rotation);
+    }
+
+    if (elementWidgetData->overrideFlipV)
+    {
+        SetFlipV(elementWidgetData->flipV);
+    }
+
+    if (elementWidgetData->overrideFlipH)
+    {
+        SetFlipH(elementWidgetData->flipH);
     }
 
     return true;

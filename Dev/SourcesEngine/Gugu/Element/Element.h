@@ -215,7 +215,6 @@ public:
 
     bool LoadFromData(ElementDataContext& context);
     bool LoadFromWidgetData(ElementDataContext& context);
-    bool LoadChildrenFromData(ElementDataContext& context);
 
 protected:
 
@@ -227,7 +226,9 @@ protected:
     //----------------------------------------------
     // Serialization
 
+    bool LoadChildrenFromData(ElementDataContext& context);
     virtual bool LoadFromDataImpl(ElementDataContext& context);
+    virtual bool LoadFromWidgetDataImpl(ElementDataContext& context);
 
     //----------------------------------------------
     // Internal Events

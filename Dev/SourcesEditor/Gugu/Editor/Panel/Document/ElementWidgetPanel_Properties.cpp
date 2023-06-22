@@ -120,6 +120,88 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             }
             ImGui::EndDisabled();
 
+            // Position
+            if (checkOverrideSetting(overrideId, elementWidgetData->overridePosition))
+            {
+                if (!elementWidgetData->overridePosition)
+                {
+                    elementWidgetData->dimPosition = UDim2::ZERO;
+
+                    if (widgetRootData->useDimPosition)
+                    {
+                        element->SetUnifiedPosition(widgetRootData->dimPosition);
+                    }
+                    else
+                    {
+                        element->SetPosition(widgetRootData->position);
+                    }
+                }
+                else
+                {
+                    if (widgetRootData->useDimPosition)
+                    {
+                        elementWidgetData->dimPosition = widgetRootData->dimPosition;
+                        element->SetUnifiedPosition(elementWidgetData->dimPosition);
+                    }
+                    else
+                    {
+                        elementWidgetData->dimPosition = UDim2(Vector2::Zero_f, widgetRootData->position);
+                        element->SetUnifiedPosition(elementWidgetData->dimPosition);
+                    }
+                }
+
+                RaiseDirty();
+            }
+
+            ImGui::BeginDisabled(!elementWidgetData->overridePosition);
+            if (ImGui::InputFloat4("Unified Position", &elementWidgetData->dimPosition))
+            {
+                element->SetUnifiedPosition(elementWidgetData->dimPosition);
+                RaiseDirty();
+            }
+            ImGui::EndDisabled();
+
+            // Size
+            if (checkOverrideSetting(overrideId, elementWidgetData->overrideSize))
+            {
+                if (!elementWidgetData->overrideSize)
+                {
+                    elementWidgetData->dimSize = UDim2::ZERO;
+
+                    if (widgetRootData->useDimSize)
+                    {
+                        element->SetUnifiedSize(widgetRootData->dimSize);
+                    }
+                    else
+                    {
+                        element->SetSize(widgetRootData->size);
+                    }
+                }
+                else
+                {
+                    if (widgetRootData->useDimSize)
+                    {
+                        elementWidgetData->dimSize = widgetRootData->dimSize;
+                        element->SetUnifiedSize(elementWidgetData->dimSize);
+                    }
+                    else
+                    {
+                        elementWidgetData->dimSize = UDim2(Vector2::Zero_f, widgetRootData->size);
+                        element->SetUnifiedSize(elementWidgetData->dimSize);
+                    }
+                }
+
+                RaiseDirty();
+            }
+
+            ImGui::BeginDisabled(!elementWidgetData->overrideSize);
+            if (ImGui::InputFloat4("Unified Size", &elementWidgetData->dimSize))
+            {
+                element->SetUnifiedSize(elementWidgetData->dimSize);
+                RaiseDirty();
+            }
+            ImGui::EndDisabled();
+
             // Rotation
             if (checkOverrideSetting(overrideId, elementWidgetData->overrideRotation))
             {

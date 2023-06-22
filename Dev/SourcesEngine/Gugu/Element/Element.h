@@ -227,6 +227,8 @@ protected:
     // Serialization
 
     bool LoadChildrenFromData(ElementDataContext& context);
+    void FillElementPath(ElementDataContext& context);
+
     virtual bool LoadFromDataImpl(ElementDataContext& context);
     virtual bool LoadFromWidgetDataImpl(ElementDataContext& context);
 

@@ -24,6 +24,19 @@ namespace gugu
 
 namespace gugu {
 
+struct ElementDataBindings
+{
+    std::map<const Element*, BaseElementData*> dataFromElement;
+    std::map<const BaseElementData*, Element*> elementFromData;
+};
+
+struct ElementPathBindings
+{
+    std::map<const std::string, Element*> elementFromPath;
+
+    Element* GetElement(const std::string& path) const;
+};
+
 struct ElementParseContext
 {
     pugi::xml_node node;
@@ -34,17 +47,12 @@ struct ElementSaveContext
     pugi::xml_node node;
 };
 
-struct ElementDataBindings
-{
-    std::map<Element*, BaseElementData*> dataFromElement;
-    std::map<BaseElementData*, Element*> elementFromData;
-    std::map<std::string, Element*> elementFromName;
-};
-
 struct ElementDataContext
 {
     BaseElementData* data = nullptr;
-    ElementDataBindings* bindings = nullptr;
+    ElementDataBindings* dataBindings = nullptr;
+    ElementPathBindings* pathBindings = nullptr;
+    std::vector<std::string> path;
     std::vector<const ElementWidget*> ancestorWidgets;
 };
 

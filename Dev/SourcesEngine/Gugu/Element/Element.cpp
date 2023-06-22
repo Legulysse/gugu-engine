@@ -651,25 +651,13 @@ bool Element::LoadFromData(ElementDataContext& context)
 
     result = LoadFromDataImpl(context);
 
-    if (context.bindings)
+    if (context.dataBindings)
     {
-        context.bindings->elementFromData.insert(std::make_pair(elementData, this));
-        context.bindings->dataFromElement.insert(std::make_pair(this, elementData));
-
-        if (!elementData->name.empty())
-        {
-            // TODO: handle multiple elements with same name ?
-            auto it = context.bindings->elementFromName.find(elementData->name);
-            if (it == context.bindings->elementFromName.end())
-            {
-                context.bindings->elementFromName.insert(std::make_pair(elementData->name, this));
-            }
-            else
-            {
-                GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementData->name));
-            }
-        }
+        context.dataBindings->elementFromData.insert(std::make_pair(elementData, this));
+        context.dataBindings->dataFromElement.insert(std::make_pair(this, elementData));
     }
+
+    FillElementPath(context);
 
     result &= LoadChildrenFromData(context);
     return result;
@@ -686,31 +674,49 @@ bool Element::LoadFromWidgetData(ElementDataContext& context)
 
     result = LoadFromWidgetDataImpl(context);
 
-    if (context.bindings)
+    if (context.dataBindings)
     {
         // Fill bindings informations.
         // - The instantiated Element will be referenced by both the ElementWidgetData and the widget root ElementData, but it will only reference the root ElementData.
         // - As a result, the Element will have no knowledge of the ElementWidget it originates from, and get attached directly to the provided parent.
-        context.bindings->elementFromData.insert(std::make_pair(elementData, this));
-        //context.bindings->dataFromElement.insert(std::make_pair(this, elementData));
-
-        if (!elementData->name.empty())
-        {
-            // TODO: handle multiple elements with same name ?
-            auto it = context.bindings->elementFromName.find(elementData->name);
-            if (it == context.bindings->elementFromName.end())
-            {
-                context.bindings->elementFromName.insert(std::make_pair(elementData->name, this));
-            }
-            else
-            {
-                GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same name : {0}", elementData->name));
-            }
-        }
+        context.dataBindings->elementFromData.insert(std::make_pair(elementData, this));
+        //context.dataBindings->dataFromElement.insert(std::make_pair(this, elementData));
     }
+
+    FillElementPath(context);
 
     result &= LoadChildrenFromData(context);
     return result;
+}
+
+void Element::FillElementPath(ElementDataContext& context)
+{
+    const std::string& name = context.data->name;
+
+    if (context.pathBindings && !name.empty())
+    {
+        std::string path = "";
+        for (const std::string& part : context.path)
+        {
+            if (!part.empty())
+            {
+                path += part + '/';
+            }
+        }
+
+        path += name;
+
+        // TODO: handle multiple elements with same name ?
+        auto it = context.pathBindings->elementFromPath.find(path);
+        if (it == context.pathBindings->elementFromPath.end())
+        {
+            context.pathBindings->elementFromPath.insert(std::make_pair(path, this));
+        }
+        else
+        {
+            GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same path : {0}", path));
+        }
+    }
 }
 
 bool Element::LoadChildrenFromData(ElementDataContext& context)
@@ -722,6 +728,7 @@ bool Element::LoadChildrenFromData(ElementDataContext& context)
     if (childCount > 0)
     {
         BaseElementData* backupData = elementData;
+        context.path.push_back(elementData->name);
 
         for (size_t i = 0; i < childCount; ++i)
         {
@@ -734,6 +741,7 @@ bool Element::LoadChildrenFromData(ElementDataContext& context)
             }
         }
 
+        context.path.pop_back();
         context.data = backupData;
     }
 

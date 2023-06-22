@@ -41,7 +41,7 @@ void ElementWidgetPanel::RebuildHierarchy()
     m_dataBindings = new ElementDataBindings;
 
     ElementDataContext context;
-    context.bindings = m_dataBindings;
+    context.dataBindings = m_dataBindings;
     m_widgetRootElement = m_elementWidget->InstanciateWidget(context);
 
     if (m_widgetRootElement)

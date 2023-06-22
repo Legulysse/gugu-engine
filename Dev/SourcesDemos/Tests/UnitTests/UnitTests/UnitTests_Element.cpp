@@ -33,10 +33,17 @@ void RunUnitTests_Element(UnitTestResults* results)
     {
         static const std::string dummyElementWidgetString = {
             "<ElementWidget serializationVersion=\"1\">"
-                "<Element type=\"ElementButton\" name=\"root\">"
+                "<Element type=\"Element\" name=\"root\">"
                     "<Children>"
-                        "<Element type=\"ElementSprite\" name=\"sprite\">"
+                        "<Element type=\"ElementSprite\" name=\"sprite_1\">"
                             "<Size x=\"128\" y=\"128\"/>"
+                        "</Element>"
+                        "<Element type=\"Element\">"
+                            "<Children>"
+                                "<Element type=\"ElementSprite\" name=\"sprite_2\">"
+                                    "<Size x=\"128\" y=\"128\"/>"
+                                "</Element>"
+                            "</Children>"
                         "</Element>"
                     "</Children>"
                 "</Element>"
@@ -51,7 +58,22 @@ void RunUnitTests_Element(UnitTestResults* results)
             {
                 if (GUGU_UTEST_CHECK(dummyWidget->GetRootData()))
                 {
-                    GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children.size() == 1);
+                    GUGU_UTEST_CHECK(dummyWidget->GetRootData()->GetSerializedType() == "Element");
+
+                    if (GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children.size() == 2))
+                    {
+                        GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[0]->GetSerializedType() == "ElementSprite");
+                        GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[0]->children.size() == 0);
+
+                        ElementSpriteData* spriteData = dynamic_cast<ElementSpriteData*>(dummyWidget->GetRootData()->children[0]);
+                        if (GUGU_UTEST_CHECK(spriteData != nullptr))
+                        {
+                            GUGU_UTEST_CHECK(ApproxEqual(spriteData->size, Vector2f(128, 128), math::Epsilon3));
+                        }
+
+                        GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[1]->GetSerializedType() == "Element");
+                        GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[1]->children.size() == 1);
+                    }
                 }
             }
 
@@ -60,25 +82,22 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(dummyElementWidgetString == saveResultString);
         }
 
-        GUGU_UTEST_SUBSECTION("Data Binding");
+        GUGU_UTEST_SUBSECTION("Path Bindings");
         {
-            ElementDataBindings* dataBindings = new ElementDataBindings;
-
-            ElementDataContext context;
-            context.bindings = dataBindings;
-            Element* dummyWidgetInstance = dummyWidget->InstanciateWidget(context);
+            ElementPathBindings pathBindings;
+            Element* dummyWidgetInstance = dummyWidget->InstanciateWidget(pathBindings);
 
             if (GUGU_UTEST_CHECK(dummyWidgetInstance != nullptr))
             {
-                auto itRoot = context.bindings->elementFromName.find("root");
-                auto itSprite = context.bindings->elementFromName.find("sprite");
-
-                GUGU_UTEST_CHECK(itRoot != context.bindings->elementFromName.end() && itRoot->second != nullptr);
-                GUGU_UTEST_CHECK(itSprite != context.bindings->elementFromName.end() && itSprite->second != nullptr);
+                GUGU_UTEST_CHECK(pathBindings.elementFromPath.size() == 3);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("root") != nullptr);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("sprite_1") == nullptr);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("sprite_2") == nullptr);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("root/sprite_1") != nullptr);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("root/sprite_2") != nullptr);
             }
 
             SafeDelete(dummyWidgetInstance);
-            SafeDelete(dataBindings);
         }
 
         SafeDelete(dummyWidget);

@@ -22,6 +22,17 @@
 
 namespace gugu {
 
+Element* ElementPathBindings::GetElement(const std::string& path) const
+{
+    auto it = elementFromPath.find(path);
+    if (it != elementFromPath.end())
+    {
+        return it->second;
+    }
+
+    return nullptr;
+}
+
 BaseElementData* InstanciateElementData(const pugi::xml_node& node)
 {
     std::string_view elementType = node.attribute("type").value();
@@ -110,12 +121,12 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
         {
             // There is no point in gathering data-to-element bindings in child widgets for now.
             // - They would generate duplicate entries on widgets including another widget multiple times.
-            ElementDataBindings* bindingsBackup = context.bindings;
-            context.bindings = nullptr;
+            ElementDataBindings* bindingsBackup = context.dataBindings;
+            context.dataBindings = nullptr;
 
             result = elementWidgetData->widget->InstanciateWidget(context);
 
-            context.bindings = bindingsBackup;
+            context.dataBindings = bindingsBackup;
         }
 
         if (result)
@@ -123,7 +134,6 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
             result->SetParent(parent);
             /*bool result =*/ result->LoadFromWidgetData(context);
             // TODO: handle bool return.
-
         }
     }
     else if (ElementData* elementData = dynamic_cast<ElementData*>(context.data))

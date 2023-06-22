@@ -34,6 +34,13 @@ Element* ElementWidget::InstanciateWidget() const
     return InstanciateWidget(context);
 }
 
+Element* ElementWidget::InstanciateWidget(ElementPathBindings& pathBindings) const
+{
+    ElementDataContext context;
+    context.pathBindings = &pathBindings;
+    return InstanciateWidget(context);
+}
+
 Element* ElementWidget::InstanciateWidget(ElementDataContext& context) const
 {
     if (!m_data)

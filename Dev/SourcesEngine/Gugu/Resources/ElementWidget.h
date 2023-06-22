@@ -10,8 +10,8 @@
 
 namespace gugu
 {
-    struct ElementDataBindings;
     struct ElementDataContext;
+    struct ElementPathBindings;
     class Element;
     class BaseElementData;
 }
@@ -34,6 +34,7 @@ public:
     virtual ~ElementWidget();
     
     Element* InstanciateWidget() const;
+    Element* InstanciateWidget(ElementPathBindings& pathBindings) const;
     Element* InstanciateWidget(ElementDataContext& context) const;
     bool LoadElementFromWidget(Element* element) const;
 

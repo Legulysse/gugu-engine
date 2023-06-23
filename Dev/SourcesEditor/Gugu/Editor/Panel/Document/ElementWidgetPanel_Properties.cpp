@@ -37,7 +37,11 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     if (ImGui::CollapsingHeader("Common##_HEADER", headerFlags))
     {
         // Name
-        ImGui::InputText("Name", &m_selectedElementData->name);
+        if (ImGui::InputText("Name", &m_selectedElementData->name))
+        {
+            RaiseDirty();
+        }
+
         ImGui::Spacing();
 
         ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(m_selectedElementData);

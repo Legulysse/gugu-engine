@@ -123,16 +123,18 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
             // - They would generate duplicate entries on widgets including another widget multiple times.
             ElementDataBindings* bindingsBackup = context.dataBindings;
             context.dataBindings = nullptr;
+            context.path.push_back(elementWidgetData->name);
 
             result = elementWidgetData->widget->InstanciateWidget(context);
+
+            context.path.pop_back();
+            context.dataBindings = bindingsBackup;
 
             if (!result)
             {
                 // Instantiate a default empty Element.
                 result = new Element;
             }
-
-            context.dataBindings = bindingsBackup;
         }
 
         if (result)

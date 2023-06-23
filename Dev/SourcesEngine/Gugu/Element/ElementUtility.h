@@ -32,6 +32,8 @@ struct ElementDataBindings
 
 struct ElementPathBindings
 {
+    // The root of an ElementWidget may be accessed through two different paths.
+    // - The path to the widget, and the path to the root inside the widget.
     std::map<const std::string, Element*> elementFromPath;
 
     Element* GetElement(const std::string& path) const;

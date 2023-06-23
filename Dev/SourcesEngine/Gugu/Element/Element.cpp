@@ -649,6 +649,8 @@ bool Element::LoadFromData(ElementDataContext& context)
     bool result = true;
     BaseElementData* elementData = context.data;
 
+    FillElementPath(context);
+    context.path.push_back(elementData->name);
     result = LoadFromDataImpl(context);
 
     if (context.dataBindings)
@@ -657,9 +659,9 @@ bool Element::LoadFromData(ElementDataContext& context)
         context.dataBindings->dataFromElement.insert(std::make_pair(this, elementData));
     }
 
-    FillElementPath(context);
-
     result &= LoadChildrenFromData(context);
+    context.path.pop_back();
+
     return result;
 }
 
@@ -672,6 +674,8 @@ bool Element::LoadFromWidgetData(ElementDataContext& context)
     bool result = true;
     BaseElementData* elementData = context.data;
 
+    FillElementPath(context);
+    context.path.push_back(elementData->name);
     result = LoadFromWidgetDataImpl(context);
 
     if (context.dataBindings)
@@ -683,9 +687,9 @@ bool Element::LoadFromWidgetData(ElementDataContext& context)
         //context.dataBindings->dataFromElement.insert(std::make_pair(this, elementData));
     }
 
-    FillElementPath(context);
-
     result &= LoadChildrenFromData(context);
+    context.path.pop_back();
+
     return result;
 }
 
@@ -728,7 +732,6 @@ bool Element::LoadChildrenFromData(ElementDataContext& context)
     if (childCount > 0)
     {
         BaseElementData* backupData = elementData;
-        context.path.push_back(elementData->name);
 
         for (size_t i = 0; i < childCount; ++i)
         {
@@ -741,7 +744,6 @@ bool Element::LoadChildrenFromData(ElementDataContext& context)
             }
         }
 
-        context.path.pop_back();
         context.data = backupData;
     }
 

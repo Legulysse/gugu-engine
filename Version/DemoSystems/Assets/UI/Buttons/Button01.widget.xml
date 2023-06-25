@@ -3,7 +3,7 @@
 	<Element type="ElementButton">
 		<Size x="200" y="30" />
 		<Components>
-			<Component type="ElementSpriteGroup" name="Idle">
+			<Element type="ElementSpriteGroup" name="Idle">
 				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
 				<ImageSet source="Button01.imageset.xml" />
 				<Components>
@@ -53,8 +53,8 @@
 						<SubImage name="Idle_BottomRight" />
 					</Element>
 				</Components>
-			</Component>
-			<Component type="ElementSpriteGroup" name="Focused">
+			</Element>
+			<Element type="ElementSpriteGroup" name="Focused">
 				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
 				<ImageSet source="Button01.imageset.xml" />
 				<Components>
@@ -104,8 +104,8 @@
 						<SubImage name="Focused_BottomRight" />
 					</Element>
 				</Components>
-			</Component>
-			<Component type="ElementSpriteGroup" name="Disabled">
+			</Element>
+			<Element type="ElementSpriteGroup" name="Disabled">
 				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
 				<ImageSet source="Button01.imageset.xml" />
 				<Components>
@@ -155,10 +155,10 @@
 						<SubImage name="Disabled_BottomRight" />
 					</Element>
 				</Components>
-			</Component>
-			<Component type="Element" name="Common">
+			</Element>
+			<Element type="Element" name="Common">
 				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
-			</Component>
+			</Element>
 		</Components>
 	</Element>
 </ElementWidget>

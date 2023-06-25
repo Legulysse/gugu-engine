@@ -451,8 +451,7 @@ bool ElementSpriteGroupData::LoadFromXmlImpl(ElementParseContext& context)
     {
         pugi::xml_node backupNode = context.node;
 
-        // TODO: rename as Element
-        for (pugi::xml_node nodeComponent = nodeComponents.child("Component"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Component"))
+        for (pugi::xml_node nodeComponent = nodeComponents.child("Element"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Element"))
         {
             ElementSpriteGroupItemData* component = new ElementSpriteGroupItemData;
 
@@ -502,7 +501,7 @@ bool ElementSpriteGroupData::SaveToXmlImpl(ElementSaveContext& context) const
 
         for (size_t i = 0; i < components.size(); ++i)
         {
-            context.node = componentsNode.append_child("Component");
+            context.node = componentsNode.append_child("Element");
             result &= components[i]->SaveToXml(context);
         }
 

@@ -31,32 +31,32 @@
 				<Size x="200" y="200" />
 				<ImageSet source="Human.imageset.xml" />
 				<Components>
-					<Component type="ElementSpriteGroupItem">
+					<Element type="ElementSpriteGroupItem">
 						<Size x="100" y="100" />
 						<SubImage name="x5_y12" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UOrigin xRel="1" yRel="0" xAbs="0" yAbs="0" />
 						<UPosition xRel="1" yRel="0" xAbs="0" yAbs="0" />
 						<Size x="100" y="100" />
 						<FlipTextureH value="true" />
 						<SubImage name="x1_y1" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UOrigin xRel="0" yRel="1" xAbs="0" yAbs="0" />
 						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="0" />
 						<Size x="100" y="100" />
 						<FlipTextureV value="true" />
 						<SubImage name="x1_y1" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UOrigin xRel="1" yRel="1" xAbs="0" yAbs="0" />
 						<UPosition xRel="1" yRel="1" xAbs="0" yAbs="0" />
 						<Size x="100" y="100" />
 						<FlipTextureV value="true" />
 						<FlipTextureH value="true" />
 						<SubImage name="x1_y1" />
-					</Component>
+					</Element>
 				</Components>
 			</Element>
 			<Element type="ElementSpriteGroup">
@@ -64,51 +64,51 @@
 				<Size x="100" y="100" />
 				<ImageSet source="Box9_Default.imageset.xml" />
 				<Components>
-					<Component type="ElementSpriteGroupItem">
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
 						<USize xRel="0" yRel="0" xAbs="16" yAbs="16" />
 						<SubImage name="TopLeft_01" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="16" yAbs="0" />
 						<USize xRel="1" yRel="0" xAbs="-32" yAbs="16" />
 						<SubImage name="Top" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="1" yRel="0" xAbs="-16" yAbs="0" />
 						<USize xRel="0" yRel="0" xAbs="16" yAbs="16" />
 						<SubImage name="TopRight_01" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="16" />
 						<USize xRel="0" yRel="1" xAbs="16" yAbs="-32" />
 						<SubImage name="Left" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="16" yAbs="16" />
 						<USize xRel="1" yRel="1" xAbs="-32" yAbs="-32" />
 						<SubImage name="Center" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="1" yRel="0" xAbs="-16" yAbs="16" />
 						<USize xRel="0" yRel="1" xAbs="16" yAbs="-32" />
 						<SubImage name="Right" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-16" />
 						<USize xRel="0" yRel="0" xAbs="16" yAbs="16" />
 						<SubImage name="BottomLeft_01" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="1" xAbs="16" yAbs="-16" />
 						<USize xRel="1" yRel="0" xAbs="-32" yAbs="16" />
 						<SubImage name="Bottom" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="1" yRel="1" xAbs="-16" yAbs="-16" />
 						<USize xRel="0" yRel="0" xAbs="16" yAbs="16" />
 						<SubImage name="BottomRight_01" />
-					</Component>
+					</Element>
 				</Components>
 			</Element>
 			<Element type="ElementSpriteGroup">
@@ -116,55 +116,55 @@
 				<Size x="150" y="300" />
 				<Texture source="uipack_rpg.png" />
 				<Components>
-					<Component type="ElementSpriteGroupItem">
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
 						<USize xRel="0" yRel="0" xAbs="8" yAbs="8" />
 						<TextureRect x="190" y="100" w="8" h="8" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="8" yAbs="0" />
 						<USize xRel="1" yRel="0" xAbs="-16" yAbs="8" />
 						<TextureRect x="198" y="100" w="84" h="8" />
 						<RepeatTexture value="true" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="1" yRel="0" xAbs="-8" yAbs="0" />
 						<USize xRel="0" yRel="0" xAbs="8" yAbs="8" />
 						<TextureRect x="282" y="100" w="8" h="8" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="8" />
 						<USize xRel="0" yRel="1" xAbs="8" yAbs="-16" />
 						<TextureRect x="190" y="108" w="8" h="84" />
 						<RepeatTexture value="true" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="8" yAbs="8" />
 						<USize xRel="1" yRel="1" xAbs="-16" yAbs="-16" />
 						<TextureRect x="198" y="108" w="84" h="84" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="1" yRel="0" xAbs="-8" yAbs="8" />
 						<USize xRel="0" yRel="1" xAbs="8" yAbs="-16" />
 						<TextureRect x="282" y="108" w="8" h="84" />
 						<RepeatTexture value="true" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-8" />
 						<USize xRel="0" yRel="0" xAbs="8" yAbs="8" />
 						<TextureRect x="190" y="192" w="8" h="8" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="1" xAbs="8" yAbs="-8" />
 						<USize xRel="1" yRel="0" xAbs="-16" yAbs="8" />
 						<TextureRect x="198" y="192" w="84" h="8" />
 						<RepeatTexture value="true" />
-					</Component>
-					<Component type="ElementSpriteGroupItem">
+					</Element>
+					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="1" yRel="1" xAbs="-8" yAbs="-8" />
 						<USize xRel="0" yRel="0" xAbs="8" yAbs="8" />
 						<TextureRect x="282" y="192" w="8" h="8" />
-					</Component>
+					</Element>
 				</Components>
 			</Element>
 			<Element type="ElementText">

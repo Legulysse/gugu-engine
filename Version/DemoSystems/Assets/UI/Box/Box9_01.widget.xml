@@ -4,51 +4,51 @@
 		<Size x="100" y="100" />
 		<ImageSet source="Box9_Default.imageset.xml" />
 		<Components>
-			<Component type="ElementSpriteGroupItem">
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
 				<USize xRel="0" yRel="0" xAbs="16" yAbs="16" />
 				<SubImage name="TopLeft_01" />
-			</Component>
-			<Component type="ElementSpriteGroupItem">
+			</Element>
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="0" xAbs="16" yAbs="0" />
 				<USize xRel="1" yRel="0" xAbs="-32" yAbs="16" />
 				<SubImage name="Top" />
-			</Component>
-			<Component type="ElementSpriteGroupItem">
+			</Element>
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="1" yRel="0" xAbs="-16" yAbs="0" />
 				<USize xRel="0" yRel="0" xAbs="16" yAbs="16" />
 				<SubImage name="TopRight_01" />
-			</Component>
-			<Component type="ElementSpriteGroupItem">
+			</Element>
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="16" />
 				<USize xRel="0" yRel="1" xAbs="16" yAbs="-32" />
 				<SubImage name="Left" />
-			</Component>
-			<Component type="ElementSpriteGroupItem">
+			</Element>
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="0" xAbs="16" yAbs="16" />
 				<USize xRel="1" yRel="1" xAbs="-32" yAbs="-32" />
 				<SubImage name="Center" />
-			</Component>
-			<Component type="ElementSpriteGroupItem">
+			</Element>
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="1" yRel="0" xAbs="-16" yAbs="16" />
 				<USize xRel="0" yRel="1" xAbs="16" yAbs="-32" />
 				<SubImage name="Right" />
-			</Component>
-			<Component type="ElementSpriteGroupItem">
+			</Element>
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-16" />
 				<USize xRel="0" yRel="0" xAbs="16" yAbs="16" />
 				<SubImage name="BottomLeft_01" />
-			</Component>
-			<Component type="ElementSpriteGroupItem">
+			</Element>
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="1" xAbs="16" yAbs="-16" />
 				<USize xRel="1" yRel="0" xAbs="-32" yAbs="16" />
 				<SubImage name="Bottom" />
-			</Component>
-			<Component type="ElementSpriteGroupItem">
+			</Element>
+			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="1" yRel="1" xAbs="-16" yAbs="-16" />
 				<USize xRel="0" yRel="0" xAbs="16" yAbs="16" />
 				<SubImage name="BottomRight_01" />
-			</Component>
+			</Element>
 		</Components>
 	</Element>
 </ElementWidget>

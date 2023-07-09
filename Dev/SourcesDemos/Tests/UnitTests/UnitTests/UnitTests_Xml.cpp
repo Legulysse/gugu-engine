@@ -18,21 +18,6 @@ using namespace gugu;
 
 namespace tests {
 
-pugi::xml_document ParseStringDocument(const std::string& xmlSource)
-{
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_string(xmlSource.c_str());
-    return document;
-}
-
-std::string ConvertDocumentToString(const pugi::xml_document& document)
-{
-    std::string result;
-    xml::StringWriter buffer(&result);
-    document.save(buffer, "", pugi::format_no_declaration | pugi::format_raw, pugi::encoding_utf8);
-    return result;
-}
-
 void RunUnitTests_Xml(UnitTestResults* results)
 {
     GUGU_UTEST_INIT("Xml", "UnitTests_Xml.log", results);
@@ -48,18 +33,14 @@ void RunUnitTests_Xml(UnitTestResults* results)
         nodeData.append_attribute("name").set_value("age");
         nodeData.append_attribute("value").set_value("30");
 
-        std::string result;
-        xml::StringWriter buffer(&result);
-        document.save(buffer, "", pugi::format_raw, pugi::encoding_utf8);
-
-        GUGU_UTEST_CHECK(result == "<?xml version=\"1.0\"?><Root version=\"10\"><Data name=\"age\" value=\"30\"/></Root>");
+        GUGU_UTEST_CHECK(xml::SaveDocumentToString(document) == "<Root version=\"10\"><Data name=\"age\" value=\"30\"/></Root>");
     }
 
     GUGU_UTEST_SECTION("Read Attribute");
     {
         GUGU_UTEST_SUBSECTION("Vector2i");
         {
-            pugi::xml_document document = ParseStringDocument("<Data x=\"10\" y=\"20\"/><IllFormedData x=\"10\"/>");
+            pugi::xml_document document = xml::ParseDocumentFromString("<Data x=\"10\" y=\"20\"/><IllFormedData x=\"10\"/>");
             pugi::xml_node nodeData = document.child("Data");
             pugi::xml_node nodeNoData = document.child("NoData");
             pugi::xml_node nodeIllData = document.child("IllFormedData");
@@ -122,7 +103,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("Vector2f");
         {
-            pugi::xml_document document = ParseStringDocument("<Data x=\"10\" y=\"20\"/><IllFormedData x=\"10\"/>");
+            pugi::xml_document document = xml::ParseDocumentFromString("<Data x=\"10\" y=\"20\"/><IllFormedData x=\"10\"/>");
             pugi::xml_node nodeData = document.child("Data");
             pugi::xml_node nodeNoData = document.child("NoData");
             pugi::xml_node nodeIllData = document.child("IllFormedData");
@@ -185,7 +166,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("UDim2");
         {
-            pugi::xml_document document = ParseStringDocument("<Data xRel=\"10\" yRel=\"20\" xAbs=\"100\" yAbs=\"200\"/>");
+            pugi::xml_document document = xml::ParseDocumentFromString("<Data xRel=\"10\" yRel=\"20\" xAbs=\"100\" yAbs=\"200\"/>");
             pugi::xml_node nodeData = document.child("Data");
             pugi::xml_node nodeNoData = document.child("NoData");
 
@@ -223,7 +204,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("Rect");
         {
-            pugi::xml_document document = ParseStringDocument("<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
+            pugi::xml_document document = xml::ParseDocumentFromString("<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
             pugi::xml_node nodeData = document.child("Data");
             pugi::xml_node nodeNoData = document.child("NoData");
 
@@ -271,7 +252,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
         {
             GUGU_UTEST_CHECK(sf::Color(0, 0, 0, 255) == sf::Color::Black);
 
-            pugi::xml_document document = ParseStringDocument("<Data r=\"10\" g=\"20\" b=\"30\" a=\"128\"/>");
+            pugi::xml_document document = xml::ParseDocumentFromString("<Data r=\"10\" g=\"20\" b=\"30\" a=\"128\"/>");
             pugi::xml_node nodeData = document.child("Data");
             pugi::xml_node nodeNoData = document.child("NoData");
 
@@ -316,7 +297,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_node node = document.append_child("Data");
             xml::WriteVector2i(node, Vector2i(10, 20));
 
-            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\"/>");
+            GUGU_UTEST_CHECK(xml::SaveDocumentToString(document) == "<Data x=\"10\" y=\"20\"/>");
         }
 
         GUGU_UTEST_SUBSECTION("Vector2f");
@@ -325,7 +306,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_node node = document.append_child("Data");
             xml::WriteVector2f(node, Vector2f(10.f, 20.f));
 
-            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\"/>");
+            GUGU_UTEST_CHECK(xml::SaveDocumentToString(document) == "<Data x=\"10\" y=\"20\"/>");
         }
 
         GUGU_UTEST_SUBSECTION("UDim2");
@@ -334,7 +315,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_node node = document.append_child("Data");
             xml::WriteUDim2(node, UDim2(Vector2f(10, 20), Vector2f(100, 200)));
 
-            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data xRel=\"10\" yRel=\"20\" xAbs=\"100\" yAbs=\"200\"/>");
+            GUGU_UTEST_CHECK(xml::SaveDocumentToString(document) == "<Data xRel=\"10\" yRel=\"20\" xAbs=\"100\" yAbs=\"200\"/>");
         }
 
         GUGU_UTEST_SUBSECTION("Rect");
@@ -343,7 +324,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_node node = document.append_child("Data");
             xml::WriteRect(node, sf::IntRect(10, 20, 100, 200));
 
-            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
+            GUGU_UTEST_CHECK(xml::SaveDocumentToString(document) == "<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
         }
 
         GUGU_UTEST_SUBSECTION("Color");
@@ -352,7 +333,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_node node = document.append_child("Data");
             xml::WriteColor(node, sf::Color(10, 20, 30, 128));
 
-            GUGU_UTEST_CHECK(ConvertDocumentToString(document) == "<Data r=\"10\" g=\"20\" b=\"30\" a=\"128\"/>");
+            GUGU_UTEST_CHECK(xml::SaveDocumentToString(document) == "<Data r=\"10\" g=\"20\" b=\"30\" a=\"128\"/>");
         }
     }
 

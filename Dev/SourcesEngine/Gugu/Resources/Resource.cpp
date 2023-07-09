@@ -80,8 +80,7 @@ bool Resource::LoadFromXmlFile()
 bool Resource::LoadFromXmlString(const std::string& source)
 {
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_string(source.c_str());
-    if (!result)
+    if (!xml::ParseDocumentFromString(source, doc))
         return false;
 
     return LoadFromXml(doc);
@@ -104,8 +103,7 @@ bool Resource::SaveToXmlString(std::string& result) const
     if (!SaveToXml(doc))
         return false;
 
-    xml::StringWriter buffer(&result);
-    doc.save(buffer, "", pugi::format_no_declaration | pugi::format_raw, pugi::encoding_utf8);
+    result = xml::SaveDocumentToString(doc);
     return true;
 }
 

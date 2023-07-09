@@ -18,7 +18,7 @@ namespace gugu {
 
 namespace xml {
 
-// Helper for string serialization.
+// Helpers for string serialization.
 struct StringWriter : pugi::xml_writer
 {
 public:
@@ -31,6 +31,10 @@ private:
 
     std::string* m_target = nullptr;
 };
+
+pugi::xml_document ParseDocumentFromString(const std::string& source);
+bool ParseDocumentFromString(const std::string& source, pugi::xml_document& document);
+std::string SaveDocumentToString(const pugi::xml_document& document);
 
 // Try to Parse a single value from a node's attribute (value will only be modified if the node and attribute exist).
 bool TryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, bool& value);

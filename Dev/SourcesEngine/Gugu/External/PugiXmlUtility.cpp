@@ -21,6 +21,27 @@ void StringWriter::write(const void* data, size_t size)
     m_target->append(static_cast<const char*>(data), size);
 }
 
+pugi::xml_document ParseDocumentFromString(const std::string& source)
+{
+    pugi::xml_document document;
+    ParseDocumentFromString(source, document);
+    return document;
+}
+
+bool ParseDocumentFromString(const std::string& source, pugi::xml_document& document)
+{
+    pugi::xml_parse_result result = document.load_string(source.c_str());
+    return result;
+}
+
+std::string SaveDocumentToString(const pugi::xml_document& document)
+{
+    std::string result;
+    xml::StringWriter buffer(&result);
+    document.save(buffer, "", pugi::format_no_declaration | pugi::format_raw, pugi::encoding_utf8);
+    return result;
+}
+
 bool TryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, bool& value)
 {
     if (pugi::xml_attribute attribute = node.attribute(attributeName.c_str()))

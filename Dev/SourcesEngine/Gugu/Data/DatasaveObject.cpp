@@ -58,8 +58,7 @@ bool DatasaveObject::SaveToString(std::string& result) const
     if (!SaveToXml(document))
         return false;
 
-    xml::StringWriter buffer(&result);
-    document.save(buffer, "", pugi::format_no_declaration | pugi::format_raw, pugi::encoding_utf8);
+    result = xml::SaveDocumentToString(document);
     return true;
 }
 

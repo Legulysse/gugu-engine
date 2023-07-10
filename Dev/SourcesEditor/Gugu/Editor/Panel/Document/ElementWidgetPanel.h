@@ -61,6 +61,9 @@ private:
     ElementSpriteGroupItem* AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
     void DeleteElement(BaseElementData* elementData);
 
+    void CopyElementToClipboard(BaseElementData* elementData);
+    void PasteElementFromClipboard(BaseElementData* parentData);
+
 private:
 
     RenderViewport* m_renderViewport;

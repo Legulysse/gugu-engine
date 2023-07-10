@@ -24,6 +24,7 @@ namespace gugu
     class DependenciesPanel;
     class ImageSetPanel;
     class DatasheetParser;
+    class EditorClipboard;
 }
 
 namespace sf
@@ -68,6 +69,7 @@ public:
     bool CloseEditor();
 
     DatasheetParser* GetDatasheetParser() const;
+    EditorClipboard* GetEditorClipboard() const;
 
 private:
 
@@ -89,6 +91,7 @@ private:
 private:
 
     EditorConfig m_editorConfig;
+    EditorClipboard* m_clipboard;
 
     ProjectSettings* m_project;
     std::string m_pendingOpenProjectFilePath;

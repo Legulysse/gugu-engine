@@ -208,9 +208,9 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
                     saveContext.node = xmlDocument;
                     node->SaveToXml(saveContext);
 
-                    ElementParseContext loadContext;
-                    loadContext.node = xmlDocument;
-                    elementData->LoadFromXml(loadContext);
+                    ElementParseContext parseContext;
+                    parseContext.node = xmlDocument.first_child();
+                    elementData->LoadFromXml(parseContext);
 
                     if (node == m_widgetRootData)
                     {
@@ -229,6 +229,28 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
 
                 ImGui::EndMenu();
             }
+        }
+
+        ImGui::Separator();
+
+        if (ImGui::MenuItem("Copy"))
+        {
+            CopyElementToClipboard(node);
+        }
+
+        if (ImGui::MenuItem("Cut"))
+        {
+            CopyElementToClipboard(node);
+            deleted = node;
+        }
+
+        if (ImGui::MenuItem("Paste"))
+        {
+            PasteElementFromClipboard(node);
+        }
+
+        if (ImGui::MenuItem("Duplicate"))
+        {
         }
 
         ImGui::Separator();

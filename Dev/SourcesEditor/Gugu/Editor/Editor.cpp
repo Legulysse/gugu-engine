@@ -10,6 +10,7 @@
 #include "Gugu/Editor/EditorVersion.h"
 #include "Gugu/Editor/Core/ProjectSettings.h"
 #include "Gugu/Editor/Core/UserSettings.h"
+#include "Gugu/Editor/Core/EditorClipboard.h"
 #include "Gugu/Editor/Modal/AboutDialog.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
@@ -51,6 +52,7 @@ Editor::Editor()
     , m_dependenciesPanel(nullptr)
     , m_lastActiveDocument(nullptr)
     , m_datasheetParser(nullptr)
+    , m_clipboard(nullptr)
 {
     // This constructor should stay empty.
     // Because it's a singleton, if a GetInstance() is called inside by another system but the constructor isn't finished,
@@ -107,6 +109,9 @@ void Editor::Init(const EditorConfig& editorConfig)
     {
         OpenProject(m_editorConfig.defaultProjectFilePath);
     }
+
+    // Init clipboard
+    m_clipboard = new EditorClipboard;
 }
 
 void Editor::Release()
@@ -115,6 +120,7 @@ void Editor::Release()
 
     ClearStdVector(m_modalDialogs);
 
+    SafeDelete(m_clipboard);
     SafeDelete(m_assetsExplorerPanel);
     SafeDelete(m_outputLogPanel);
     SafeDelete(m_dependenciesPanel);
@@ -791,6 +797,11 @@ void Editor::CloseEditorImpl()
 DatasheetParser* Editor::GetDatasheetParser() const
 {
     return m_datasheetParser;
+}
+
+EditorClipboard* Editor::GetEditorClipboard() const
+{
+    return m_clipboard;
 }
 
 Editor* GetEditor()

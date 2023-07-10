@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Core/EditorClipboard.h"
 #include "Gugu/Editor/Widget/RenderViewport.h"
 
 #include "Gugu/Element/ElementData.h"
@@ -15,6 +16,18 @@
 #include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
+#include "Gugu/External/PugiXmlUtility.h"
+
+////////////////////////////////////////////////////////////////
+// Constants
+
+namespace gugu
+{
+    namespace impl
+    {
+        const std::string ClipboardElementDataContentType = "ElementData";
+    }
+}
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -225,6 +238,39 @@ void ElementWidgetPanel::DeleteElement(BaseElementData* elementData)
     SafeDelete(elementData);
 
     RebuildHierarchy();
+}
+
+void ElementWidgetPanel::CopyElementToClipboard(BaseElementData* elementData)
+{
+    pugi::xml_document xmlDocument;
+
+    ElementSaveContext saveContext;
+    saveContext.node = xmlDocument;
+    elementData->SaveToXml(saveContext);
+
+    std::string result = xml::SaveDocumentToString(xmlDocument);
+
+    GetEditorClipboard()->SetStringContent(impl::ClipboardElementDataContentType, result);
+}
+
+void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData)
+{
+    if (GetEditorClipboard()->contentType != impl::ClipboardElementDataContentType)
+        return;
+
+    std::string clipboard = GetEditorClipboard()->stringContent;
+
+    pugi::xml_document xmlDocument = xml::ParseDocumentFromString(clipboard);
+    pugi::xml_node xmlRoot = xmlDocument.first_child();
+
+    BaseElementData* newNode = InstanciateElementData(xmlRoot);
+
+    ElementParseContext parseContext;
+    parseContext.node = xmlRoot;
+    newNode->LoadFromXml(parseContext);
+
+    AddChildElement(parentData, newNode);
+    RaiseDirty();
 }
 
 }   //namespace gugu

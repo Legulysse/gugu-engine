@@ -59,6 +59,10 @@ bool BaseElementData::SaveToXml(ElementSaveContext& context) const
 {
     bool result = true;
 
+    // Add new node
+    pugi::xml_node contextBackupNode = context.node;
+    context.node = context.node.append_child("Element");
+
     context.node.append_attribute("type").set_value(GetSerializedType().c_str());
 
     if (!name.empty())
@@ -70,18 +74,18 @@ bool BaseElementData::SaveToXml(ElementSaveContext& context) const
 
     if (!children.empty())
     {
-        pugi::xml_node childrenNode = context.node.append_child("Children");
         pugi::xml_node backupNode = context.node;
+        context.node = context.node.append_child("Children");
 
         for (size_t i = 0; i < children.size(); ++i)
         {
-            context.node = childrenNode.append_child("Element");
             result &= children[i]->SaveToXml(context);
         }
 
         context.node = backupNode;
     }
 
+    context.node = contextBackupNode;
     return result;
 }
 
@@ -496,12 +500,11 @@ bool ElementSpriteGroupData::SaveToXmlImpl(ElementSaveContext& context) const
 
     if (!components.empty())
     {
-        pugi::xml_node componentsNode = context.node.append_child("Components");
         pugi::xml_node backupNode = context.node;
+        context.node = context.node.append_child("Components");
 
         for (size_t i = 0; i < components.size(); ++i)
         {
-            context.node = componentsNode.append_child("Element");
             result &= components[i]->SaveToXml(context);
         }
 
@@ -704,12 +707,11 @@ bool ElementButtonData::SaveToXmlImpl(ElementSaveContext& context) const
 
     if (!components.empty())
     {
-        pugi::xml_node componentsNode = context.node.append_child("Components");
         pugi::xml_node backupNode = context.node;
+        context.node = context.node.append_child("Components");
 
         for (size_t i = 0; i < components.size(); ++i)
         {
-            context.node = componentsNode.append_child("Element");
             result &= components[i]->SaveToXml(context);
         }
 

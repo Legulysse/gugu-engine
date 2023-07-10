@@ -135,10 +135,8 @@ bool ElementWidget::SaveToXml(pugi::xml_document& document) const
     pugi::xml_node nodeRoot = document.append_child("ElementWidget");
     nodeRoot.append_attribute("serializationVersion") = 1;
 
-    pugi::xml_node nodeRootElement = nodeRoot.append_child("Element");
-
     ElementSaveContext context;
-    context.node = nodeRootElement;
+    context.node = nodeRoot;
     if (!m_data->SaveToXml(context))
         return false;
 

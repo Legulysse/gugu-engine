@@ -15,6 +15,7 @@
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/External/PugiXmlUtility.h"
 
 using namespace gugu;
 
@@ -50,10 +51,28 @@ void RunUnitTests_Element(UnitTestResults* results)
             "</ElementWidget>"
         };
 
+        static const std::string dummyElementDataString = {
+            "<Element type=\"Element\" name=\"root\">"
+                "<Children>"
+                    "<Element type=\"ElementSprite\" name=\"sprite_1\">"
+                        "<Size x=\"128\" y=\"128\"/>"
+                    "</Element>"
+                    "<Element type=\"Element\">"
+                        "<Children>"
+                            "<Element type=\"ElementSprite\" name=\"sprite_2\">"
+                                "<Size x=\"128\" y=\"128\"/>"
+                            "</Element>"
+                        "</Children>"
+                    "</Element>"
+                "</Children>"
+            "</Element>"
+        };
+
         ElementWidget* dummyWidget = new ElementWidget;
 
         GUGU_UTEST_SUBSECTION("Serialization");
         {
+            // Test ElementWidget Serialization
             if (GUGU_UTEST_CHECK(dummyWidget->LoadFromString(dummyElementWidgetString)))
             {
                 if (GUGU_UTEST_CHECK(dummyWidget->GetRootData()))
@@ -75,11 +94,32 @@ void RunUnitTests_Element(UnitTestResults* results)
                         GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[1]->children.size() == 1);
                     }
                 }
+
+                std::string saveResultString;
+                dummyWidget->SaveToString(saveResultString);
+                GUGU_UTEST_CHECK(saveResultString == dummyElementWidgetString);
             }
 
-            std::string saveResultString;
-            dummyWidget->SaveToString(saveResultString);
-            GUGU_UTEST_CHECK(dummyElementWidgetString == saveResultString);
+            // Test single ElementData Serialization
+            pugi::xml_document xmlLoadDocument = xml::ParseDocumentFromString(dummyElementDataString);
+            pugi::xml_node xmlRootNode = xmlLoadDocument.first_child();
+
+            BaseElementData* dummyElementData = InstanciateElementData(xmlRootNode);
+            ElementParseContext parseContext;
+            parseContext.node = xmlRootNode;
+            if (GUGU_UTEST_CHECK(dummyElementData->LoadFromXml(parseContext)))
+            {
+                pugi::xml_document xmlSaveDocument;
+                ElementSaveContext saveContext;
+                saveContext.node = xmlSaveDocument;
+                if (GUGU_UTEST_CHECK(dummyElementData->SaveToXml(saveContext)))
+                {
+                    std::string xmlSaveString = xml::SaveDocumentToString(xmlSaveDocument);
+                    GUGU_UTEST_CHECK(xmlSaveString == dummyElementDataString);
+                }
+            }
+
+            SafeDelete(dummyElementData);
         }
 
         GUGU_UTEST_SUBSECTION("Path Bindings");

@@ -255,6 +255,11 @@ void ElementWidgetPanel::CopyElementToClipboard(BaseElementData* elementData)
 
 void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData)
 {
+    PasteElementFromClipboard(parentData, system::InvalidIndex);
+}
+
+void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, size_t index)
+{
     if (GetEditorClipboard()->contentType != impl::ClipboardElementDataContentType)
         return;
 
@@ -269,7 +274,7 @@ void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData)
     parseContext.node = xmlRoot;
     newNode->LoadFromXml(parseContext);
 
-    AddChildElement(parentData, newNode);
+    AddChildElement(parentData, newNode, index);
     RaiseDirty();
 }
 

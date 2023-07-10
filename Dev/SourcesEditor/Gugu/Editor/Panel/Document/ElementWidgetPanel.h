@@ -63,6 +63,7 @@ private:
 
     void CopyElementToClipboard(BaseElementData* elementData);
     void PasteElementFromClipboard(BaseElementData* parentData);
+    void PasteElementFromClipboard(BaseElementData* parentData, size_t index);
 
 private:
 

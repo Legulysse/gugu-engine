@@ -238,20 +238,28 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
             CopyElementToClipboard(node);
         }
 
+        ImGui::BeginDisabled(node == m_widgetRootData);
         if (ImGui::MenuItem("Cut"))
         {
             CopyElementToClipboard(node);
             deleted = node;
         }
+        ImGui::EndDisabled();
 
         if (ImGui::MenuItem("Paste"))
         {
             PasteElementFromClipboard(node);
         }
 
+        ImGui::BeginDisabled(node == m_widgetRootData);
         if (ImGui::MenuItem("Duplicate"))
         {
+            size_t index = StdVectorIndexOf(node->parent->children, node);
+
+            CopyElementToClipboard(node);
+            PasteElementFromClipboard(node->parent, index + 1);
         }
+        ImGui::EndDisabled();
 
         ImGui::Separator();
 

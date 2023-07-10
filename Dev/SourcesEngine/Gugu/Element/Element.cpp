@@ -66,7 +66,7 @@ void Element::AddChild(Element* child)
 
 bool Element::InsertChild(Element* child, size_t index)
 {
-    if (index < 0 || index >= m_children.size())
+    if (index < 0 || index > m_children.size())
         return false;
 
     child->SetParent(this);

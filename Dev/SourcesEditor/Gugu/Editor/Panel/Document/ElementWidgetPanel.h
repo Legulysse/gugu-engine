@@ -23,6 +23,7 @@ namespace gugu
     class Element;
     class ElementSpriteGroup;
     class ElementSpriteGroupItem;
+    class ElementSFDrawable;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -65,11 +66,17 @@ private:
     void PasteElementFromClipboard(BaseElementData* parentData);
     void PasteElementFromClipboard(BaseElementData* parentData, size_t index);
 
+    void CreateGizmo();
+    void UpdateGizmo();
+
 private:
 
     RenderViewport* m_renderViewport;
+    Element* m_viewportRoot;
     float m_zoomFactor;
+    bool m_showOrigin;
     bool m_showBounds;
+    bool m_showAllBounds;
 
     ElementWidget* m_elementWidget;
     ElementDataBindings* m_dataBindings;
@@ -77,6 +84,9 @@ private:
     Element* m_widgetRootElement;
     BaseElementData* m_selectedElementData;
     Element* m_selectedElement;
+
+    ElementSFDrawable* m_gizmoOrigin;
+    ElementSFDrawable* m_gizmoBounds;
 
     size_t m_generatorIndex;
     std::string m_topLeftName, m_topName, m_topRightName, m_leftName, m_centerName, m_rightName, m_bottomLeftName, m_bottomName, m_bottomRightName;

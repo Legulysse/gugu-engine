@@ -46,7 +46,7 @@ void ElementWidgetPanel::RebuildHierarchy()
 
     if (m_widgetRootElement)
     {
-        m_renderViewport->GetRoot()->AddChild(m_widgetRootElement);
+        m_viewportRoot->AddChild(m_widgetRootElement);
     }
 }
 

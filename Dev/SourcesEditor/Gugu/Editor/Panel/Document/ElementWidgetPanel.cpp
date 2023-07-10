@@ -114,16 +114,11 @@ void ElementWidgetPanel::AddChildElement(BaseElementData* parentData, BaseElemen
 {
     Element* parent = m_dataBindings->elementFromData.at(parentData);
 
-    Element* element = nullptr;
-    if (ElementData* elementData = dynamic_cast<ElementData*>(newData))
-    {
-        element = InstanciateElement(elementData);
-    }
-    else if (ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(newData))
-    {
-        // Add a default empty Element.
-        element = new Element;
-    }
+    ElementDataContext context;
+    context.data = newData;
+    context.dataBindings = m_dataBindings;
+    context.ancestorWidgets.push_back(m_elementWidget);
+    Element* element = InstanciateAndLoadElement(context, parent);
 
     if (index == system::InvalidIndex)
     {
@@ -144,12 +139,6 @@ void ElementWidgetPanel::AddChildElement(BaseElementData* parentData, BaseElemen
         {
             parent->InsertChild(element, index);
         }
-    }
-
-    if (element)
-    {
-        m_dataBindings->elementFromData.insert(std::make_pair(newData, element));
-        m_dataBindings->dataFromElement.insert(std::make_pair(element, newData));
     }
 }
 

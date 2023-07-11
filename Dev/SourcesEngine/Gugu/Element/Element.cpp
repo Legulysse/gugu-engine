@@ -424,6 +424,29 @@ const sf::Transform& Element::GetInverseTransform() const
     return m_transform.getInverseTransform();
 }
 
+void Element::GetGlobalCorners(Vector2f& topLeft, Vector2f& topRight, Vector2f& bottomLeft, Vector2f& bottomRight) const
+{
+    topLeft = TransformToGlobal(Vector2::Zero_f);
+    topRight = TransformToGlobal(Vector2::Zero_f + Vector2f(m_size.x, 0));
+    bottomLeft = TransformToGlobal(Vector2::Zero_f + Vector2f(0, m_size.y));
+    bottomRight = TransformToGlobal(Vector2::Zero_f + m_size);
+}
+
+sf::FloatRect Element::GetGlobalBounds() const
+{
+    Vector2f topLeft, topRight, bottomLeft, bottomRight;
+    GetGlobalCorners(topLeft, topRight, bottomLeft, bottomRight);
+
+    float minX = Min(Min(topLeft.x, topRight.x), Min(bottomLeft.x, bottomRight.x));
+    float miny = Min(Min(topLeft.y, topRight.y), Min(bottomLeft.y, bottomRight.y));
+    float maxX = Max(Max(topLeft.x, topRight.x), Max(bottomLeft.x, bottomRight.x));
+    float maxy = Max(Max(topLeft.y, topRight.y), Max(bottomLeft.y, bottomRight.y));
+
+    Vector2f topLeftBounds = Vector2f(minX, miny);
+    Vector2f bottomRightBounds = Vector2f(maxX, maxy);
+    return sf::FloatRect(topLeftBounds, bottomRightBounds - topLeftBounds);
+}
+
 void Element::SetSizeX(float _fNewSizeX)
 {
     SetSize(Vector2f(_fNewSizeX, m_size.y));

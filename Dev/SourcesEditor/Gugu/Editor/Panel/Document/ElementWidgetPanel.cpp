@@ -290,35 +290,37 @@ void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, 
 
 void ElementWidgetPanel::CreateGizmo()
 {
-    // Origin
-    Vector2f position = sf::Vector2f(0.5f, 0.5f);
-    Vector2f size = sf::Vector2f(10.f, 10.f);
-    sf::Color color = sf::Color(255, 0, 0, 200);
-    sf::VertexArray* originGizmoVertices = new sf::VertexArray(sf::PrimitiveType::Lines, 4);
-
-    originGizmoVertices->append(sf::Vertex(Vector2f(position.x, -size.y), color));
-    originGizmoVertices->append(sf::Vertex(Vector2f(position.x, size.y + 1.f), color));
-    originGizmoVertices->append(sf::Vertex(Vector2f(-size.x, position.y), color));
-    originGizmoVertices->append(sf::Vertex(Vector2f(size.x + 1.f, position.y), color));
-
-    m_gizmoOrigin = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
-    m_gizmoOrigin->SetSFDrawable(originGizmoVertices);
-
     // Bounds
-    sf::RectangleShape* shapeBounds = new sf::RectangleShape;
-    shapeBounds->setFillColor(sf::Color(0, 0, 255, 40));
-    shapeBounds->setSize(sf::Vector2f(20, 20));
-
-    auto resizeRectangle = [](ElementSFDrawable* element)
     {
-        sf::RectangleShape* shape = (sf::RectangleShape*)element->GetSFDrawable();
-        shape->setSize(element->GetSize());
-    };
+        sf::Color color = sf::Color(0, 0, 255, 40);
+        sf::VertexArray* vertices = new sf::VertexArray(sf::PrimitiveType::Triangles);
 
-    m_gizmoBounds = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
-    m_gizmoBounds->SetSFDrawable(shapeBounds);
-    m_gizmoBounds->SetCallbackOnSizeChanged(resizeRectangle);
-    m_gizmoBounds->SetSize(50, 50);
+        vertices->append(sf::Vertex(Vector2::Zero_f, color));
+        vertices->append(sf::Vertex(Vector2::Zero_f, color));
+        vertices->append(sf::Vertex(Vector2::Zero_f, color));
+        vertices->append(sf::Vertex(Vector2::Zero_f, color));
+        vertices->append(sf::Vertex(Vector2::Zero_f, color));
+        vertices->append(sf::Vertex(Vector2::Zero_f, color));
+
+        m_gizmoBounds = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
+        m_gizmoBounds->SetSFDrawable(vertices);
+    }
+     
+    // Origin
+    {
+        Vector2f position = sf::Vector2f(0.5f, 0.5f);
+        Vector2f size = sf::Vector2f(10.f, 10.f);
+        sf::Color color = sf::Color(255, 0, 0, 200);
+        sf::VertexArray* vertices = new sf::VertexArray(sf::PrimitiveType::Lines);
+
+        vertices->append(sf::Vertex(Vector2f(position.x, -size.y), color));
+        vertices->append(sf::Vertex(Vector2f(position.x, size.y + 1.f), color));
+        vertices->append(sf::Vertex(Vector2f(-size.x, position.y), color));
+        vertices->append(sf::Vertex(Vector2f(size.x + 1.f, position.y), color));
+
+        m_gizmoOrigin = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
+        m_gizmoOrigin->SetSFDrawable(vertices);
+    }
 }
 
 void ElementWidgetPanel::UpdateGizmo()
@@ -335,22 +337,19 @@ void ElementWidgetPanel::UpdateGizmo()
 
     if (m_showBounds && m_selectedElement)
     {
-        Vector2f topLeftPosition = m_selectedElement->TransformToGlobal(Vector2::Zero_f);
-        Vector2f topRightPosition = m_selectedElement->TransformToGlobal(Vector2::Zero_f + Vector2f(m_selectedElement->GetSize().x, 0));
-        Vector2f bottomLeftPosition = m_selectedElement->TransformToGlobal(Vector2::Zero_f + Vector2f(0, m_selectedElement->GetSize().y));
-        Vector2f bottomRightPosition = m_selectedElement->TransformToGlobal(Vector2::Zero_f + m_selectedElement->GetSize());
+        Vector2f topLeft, topRight, bottomLeft, bottomRight;
+        m_selectedElement->GetGlobalCorners(topLeft, topRight, bottomLeft, bottomRight);
 
-        float minX = Min(Min(topLeftPosition.x, topRightPosition.x), Min(bottomLeftPosition.x, bottomRightPosition.x));
-        float miny = Min(Min(topLeftPosition.y, topRightPosition.y), Min(bottomLeftPosition.y, bottomRightPosition.y));
-        float maxX = Max(Max(topLeftPosition.x, topRightPosition.x), Max(bottomLeftPosition.x, bottomRightPosition.x));
-        float maxy = Max(Max(topLeftPosition.y, topRightPosition.y), Max(bottomLeftPosition.y, bottomRightPosition.y));
-
-        Vector2f topLeftBounds = Vector2f(minX, miny);
-        Vector2f bottomRightBounds = Vector2f(maxX, maxy);
+        sf::VertexArray* vertices = static_cast<sf::VertexArray*>(m_gizmoBounds->GetSFDrawable());
+        (*vertices)[0].position = topLeft - topLeft;
+        (*vertices)[1].position = topRight - topLeft;
+        (*vertices)[2].position = bottomLeft - topLeft;
+        (*vertices)[3].position = topRight - topLeft;
+        (*vertices)[4].position = bottomLeft - topLeft;
+        (*vertices)[5].position = bottomRight - topLeft;
 
         m_gizmoBounds->SetVisible(true);
-        m_gizmoBounds->SetPosition(topLeftBounds);
-        m_gizmoBounds->SetSize(bottomRightBounds - topLeftBounds);
+        m_gizmoBounds->SetPosition(topLeft);
     }
     else
     {

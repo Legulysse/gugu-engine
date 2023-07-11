@@ -151,6 +151,12 @@ public:
     const sf::Transform& GetTransform() const;
     const sf::Transform& GetInverseTransform() const;
 
+    // Get the Element local bounds corners (based on its position and size) projected into global space.
+    void GetGlobalCorners(Vector2f& topLeft, Vector2f& topRight, Vector2f& bottomLeft, Vector2f& bottomRight) const;
+
+    // Get the Element global bounds (based on its position and size) as an axis-aligned rectangle.
+    sf::FloatRect Element::GetGlobalBounds() const;
+
     //----------------------------------------------
     // Z-Index
 

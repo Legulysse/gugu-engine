@@ -669,6 +669,10 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
 
 bool Element::LoadFromData(ElementDataContext& context)
 {
+    // Load this Element data.
+    // - At this point, the element has already been deserialized through ElementWidget::InstanciateWidget.
+    // - This method will load the current Element data, then proceed to instanciate and load its children.
+
     bool result = true;
     BaseElementData* elementData = context.data;
 
@@ -690,7 +694,8 @@ bool Element::LoadFromData(ElementDataContext& context)
 
 bool Element::LoadFromWidgetData(ElementDataContext& context)
 {
-    // At this point, the element has already been deserialized through ElementWidget::InstanciateWidget.
+    // Load this Element override data from a given ElementWidgetData.
+    // - At this point, the element has already been deserialized through ElementWidget::InstanciateWidget.
     // - We only need to load the overrides from the widget root (transform etc).
     // - Some children may already exist from the initial deserialization.
 
@@ -748,6 +753,9 @@ void Element::FillElementPath(ElementDataContext& context)
 
 bool Element::LoadChildrenFromData(ElementDataContext& context)
 {
+    // This method will instanciate and load this Element children.
+    // - Some children may already exist from the initial deserialization.
+
     bool result = true;
     BaseElementData* elementData = context.data;
 

@@ -56,6 +56,7 @@ void ElementSFDrawable::OnSizeChanged()
 
 void ElementSFDrawable::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
+    // TODO: handle culling (need bounds).
     if (m_sfDrawable)
     {
         _kRenderPass.target->draw(*m_sfDrawable, _kTransformSelf);

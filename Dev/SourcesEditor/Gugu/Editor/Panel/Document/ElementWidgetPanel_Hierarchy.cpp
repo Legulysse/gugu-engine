@@ -152,8 +152,6 @@ void ElementWidgetPanel::DisplayTreeNode(BaseElementData* node, int itemFlags, B
 
 void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementData*& deleted)
 {
-    //todo: copy/paste/duplicate
-
     if (ImGui::BeginPopupContextItem())
     {
         if (ImGui::BeginMenu("Add Child..."))

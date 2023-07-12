@@ -244,7 +244,16 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         }
         ImGui::EndDisabled();
 
-        if (ImGui::MenuItem("Paste"))
+        ImGui::BeginDisabled(node == m_widgetRootData);
+        if (ImGui::MenuItem("Paste (Insert)"))
+        {
+            size_t index = StdVectorIndexOf(node->parent->children, node);
+
+            PasteElementFromClipboard(node->parent, index);
+        }
+        ImGui::EndDisabled();
+
+        if (ImGui::MenuItem("Paste as Child"))
         {
             PasteElementFromClipboard(node);
         }

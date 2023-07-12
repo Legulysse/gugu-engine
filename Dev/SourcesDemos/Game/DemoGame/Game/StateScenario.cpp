@@ -50,7 +50,7 @@ void StateScenario::Init()
         ElementSpriteGroup* panelCharacterSkills = m_root->AddChild<ElementSpriteGroup>();
         panelCharacterSkills->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
         panelCharacterSkills->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT + Vector2f(210, 0.f));
-        panelCharacterSkills->LoadFromFile("Box9_blue.xml");
+        panelCharacterSkills->LoadFromWidget("Panel_Blue.widget.xml");
         panelCharacterSkills->SetSize(300, 100);
 
         m_skillSprite1 = panelCharacterSkills->AddChild<ElementSprite>();
@@ -77,7 +77,7 @@ void StateScenario::Init()
         ElementSpriteGroup* panelCharacterBars = m_root->AddChild<ElementSpriteGroup>();
         panelCharacterBars->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
         panelCharacterBars->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT);
-        panelCharacterBars->LoadFromFile("Box9_blue.xml");
+        panelCharacterBars->LoadFromWidget("Panel_Blue.widget.xml");
         panelCharacterBars->SetSize(230, 110);
 
         float fSizeX = 200.f;
@@ -126,7 +126,7 @@ void StateScenario::Init()
         ElementSpriteGroup* panelStatus = m_root->AddChild<ElementSpriteGroup>();
         panelStatus->SetUnifiedOrigin(UDim2::POSITION_TOP_LEFT);
         panelStatus->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT);
-        panelStatus->LoadFromFile("Box9_blue.xml");
+        panelStatus->LoadFromWidget("Panel_Blue.widget.xml");
         panelStatus->SetSize(180, 60);
 
         m_textStatus = panelStatus->AddChild<ElementText>();
@@ -139,7 +139,7 @@ void StateScenario::Init()
         ElementSpriteGroup* characterSheetBackground = m_root->AddChild<ElementSpriteGroup>();
         characterSheetBackground->SetUnifiedOrigin(UDim2::POSITION_TOP_RIGHT);
         characterSheetBackground->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT);
-        characterSheetBackground->LoadFromFile("Box9_beige_big.xml");
+        characterSheetBackground->LoadFromWidget("Panel_Beige_Big.widget.xml");
         characterSheetBackground->SetSize(400, 600);
 
         m_characterSheet = characterSheetBackground;

@@ -5,7 +5,7 @@
 		<Components>
 			<Element type="ElementSpriteGroup" name="Idle">
 				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
-				<ImageSet source="Button01.imageset.xml" />
+				<ImageSet source="Button_01.imageset.xml" />
 				<Components>
 					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
@@ -56,7 +56,7 @@
 			</Element>
 			<Element type="ElementSpriteGroup" name="Focused">
 				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
-				<ImageSet source="Button01.imageset.xml" />
+				<ImageSet source="Button_01.imageset.xml" />
 				<Components>
 					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
@@ -107,7 +107,7 @@
 			</Element>
 			<Element type="ElementSpriteGroup" name="Disabled">
 				<USize xRel="1" yRel="1" xAbs="0" yAbs="0" />
-				<ImageSet source="Button01.imageset.xml" />
+				<ImageSet source="Button_01.imageset.xml" />
 				<Components>
 					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />

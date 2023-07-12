@@ -171,7 +171,7 @@
 				<Font source="mplus-1p-medium.ttf" />
 				<Text value="れぐーさん" />
 			</Element>
-			<Element type="ElementWidget" name="test button" widget="Button01.widget.xml" />
+			<Element type="ElementWidget" name="test button" widget="Button_01.widget.xml" />
 		</Children>
 	</Element>
 </ElementWidget>

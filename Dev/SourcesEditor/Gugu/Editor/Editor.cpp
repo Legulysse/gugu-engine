@@ -81,6 +81,9 @@ void Editor::Init(const EditorConfig& editorConfig)
     m_outputLogPanel = new OutputLogPanel;
     m_dependenciesPanel = new DependenciesPanel;
 
+    // Create clipboard.
+    m_clipboard = new EditorClipboard;
+
     // Check engine.
     if (!GetEngine()->GetEngineConfig().handleResourceDependencies)
     {
@@ -109,9 +112,6 @@ void Editor::Init(const EditorConfig& editorConfig)
     {
         OpenProject(m_editorConfig.defaultProjectFilePath);
     }
-
-    // Init clipboard
-    m_clipboard = new EditorClipboard;
 }
 
 void Editor::Release()

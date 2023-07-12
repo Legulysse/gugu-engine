@@ -37,6 +37,12 @@ struct ElementPathBindings
     std::map<const std::string, Element*> elementFromPath;
 
     Element* GetElement(const std::string& path) const;
+
+    template<typename T>
+    T* GetElementAs(const std::string& path) const
+    {
+        return dynamic_cast<T*>(GetElement(path));
+    }
 };
 
 struct ElementParseContext

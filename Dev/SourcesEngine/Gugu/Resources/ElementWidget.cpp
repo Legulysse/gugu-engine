@@ -51,10 +51,10 @@ Element* ElementWidget::InstanciateWidget(ElementDataContext& context) const
         std::string ancestorsLog;
         for (auto ancestor : context.ancestorWidgets)
         {
-            ancestorsLog += ancestor->GetFileInfo().GetFileName() + ", ";
+            ancestorsLog += ancestor->GetID() + ", ";
         }
 
-        ancestorsLog += GetFileInfo().GetFileName();
+        ancestorsLog += GetID();
         GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("ElementWidget ancestors create an infinite loop : {0}", ancestorsLog));
 
         return nullptr;

@@ -58,10 +58,10 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
                 std::string ancestorsLog;
                 for (Datasheet* ancestor : ancestors)
                 {
-                    ancestorsLog += ancestor->GetFileInfo().GetFileName() + ", ";
+                    ancestorsLog += ancestor->GetID() + ", ";
                 }
 
-                ancestorsLog += parentSheet->GetFileInfo().GetFileName();
+                ancestorsLog += parentSheet->GetID();
                 GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet ancestors create an infinite loop : {0}", ancestorsLog));
             }
             else

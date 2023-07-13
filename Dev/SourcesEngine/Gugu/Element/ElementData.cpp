@@ -463,14 +463,6 @@ bool ElementSpriteGroupData::LoadFromXmlImpl(ElementParseContext& context)
             context.node = nodeComponent;
             component->LoadFromXml(context);
 
-            // TODO: remove ?
-            // Read additional SubImage data (TextureRect is handled in the ElementSpriteBase parser).
-            if (imageSet)
-            {
-                // TODO: Actual node (SubImage value=""), probably need to pass ImageSet in parse context.
-                component->subImageName = nodeComponent.child("SubImage").attribute("name").as_string();
-            }
-
             // Finalize.
             components.push_back(component);
             component->parent = this;

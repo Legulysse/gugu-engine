@@ -21,6 +21,8 @@
     #include <dirent.h>
 #endif
 
+namespace fs = std::filesystem;
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -515,147 +517,72 @@ void OpenWebBrowser(const std::string& _strURL)
 
 void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool recursive)
 {
-#if defined(GUGU_OS_WINDOWS)
-
-    std::string normalizedPath;
-    NormalizePath(rootPath, normalizedPath);
-
-    //Win32 path conversion and filter
-    std::string filterPath = normalizedPath;
-    if (filterPath.empty())
+    std::string normalizedPath = NormalizePath(rootPath);
+    if (normalizedPath.empty())
     {
-        filterPath = ".";
+        normalizedPath = ".";
     }
 
-    StdStringReplaceSelf(filterPath, system::PathSeparator, '\\');
-    filterPath += "\\*";
-
-    WIN32_FIND_DATAA FindFileData;
-    HANDLE hFind = INVALID_HANDLE_VALUE;
-
-    hFind = FindFirstFileA(filterPath.c_str(), &FindFileData);
-
-    BOOL bContinue = (hFind != INVALID_HANDLE_VALUE);
-    while (bContinue != 0)
+    if (recursive)
     {
-        std::string fileName(FindFileData.cFileName);
-        if (fileName[0] != '.')
+        for (const auto& entry : fs::recursive_directory_iterator(fs::u8path(normalizedPath)))
         {
-            if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            if (entry.is_regular_file())
             {
-                if (recursive)
-                {
-                    std::string directoryFullPath;
-                    CombinePaths(normalizedPath, fileName, directoryFullPath);
-
-                    GetFiles(directoryFullPath, files, recursive);
-                }
-            }
-            else
-            {
-                files.push_back(FileInfo(normalizedPath, fileName));
+                files.push_back(FileInfo(NormalizePath(entry.path().generic_u8string())));
             }
         }
-
-        bContinue = FindNextFileA(hFind, &FindFileData);
     }
-
-    FindClose(hFind);
-
-#elif defined(GUGU_OS_LINUX)
-
-    std::string normalizedPath;
-    NormalizePath(rootPath, normalizedPath);
-
-    dirent* sdirent = nullptr;
-    DIR* flux = nullptr;
-
-    // TODO: Check this works now that I removed the trailing '/'.
-    if ((flux = opendir(normalizedPath.c_str())) != nullptr)
+    else
     {
-        while ((sdirent = readdir(flux)) != nullptr)
+        for (const auto& entry : fs::directory_iterator(fs::u8path(normalizedPath)))
         {
-            std::string fileName(sdirent->d_name);
-            if (fileName[0] != '.')
+            if (entry.is_regular_file())
             {
-                if (sdirent->d_type == DT_DIR)
-                {
-                    if (recursive)
-                    {
-                        GetFiles(normalizedPath + system::PathSeparator + fileName, files, recursive);
-                    }
-                }
-                else
-                {
-                    files.push_back(FileInfo(normalizedPath, fileName));
-                }
+                files.push_back(FileInfo(NormalizePath(entry.path().generic_u8string())));
             }
         }
-
-        closedir(flux);
     }
-
-#endif
 }
 
 void GetDirectories(const std::string& rootPath, std::vector<std::string>& directories, bool recursive)
 {
-#if defined(GUGU_OS_WINDOWS)
-
-    std::string normalizedPath;
-    NormalizePath(rootPath, normalizedPath);
-
-    //Win32 path conversion and filter
-    std::string filterPath = normalizedPath;
-    if (filterPath.empty())
+    std::string normalizedPath = NormalizePath(rootPath);
+    if (normalizedPath.empty())
     {
-        filterPath = ".";
+        normalizedPath = ".";
     }
 
-    StdStringReplaceSelf(filterPath, system::PathSeparator, '\\');
-    filterPath += "\\*";
-
-    WIN32_FIND_DATAA FindFileData;
-    HANDLE hFind = INVALID_HANDLE_VALUE;
-
-    hFind = FindFirstFileA(filterPath.c_str(), &FindFileData);
-
-    BOOL bContinue = (hFind != INVALID_HANDLE_VALUE);
-    while (bContinue != 0)
+    if (recursive)
     {
-        std::string fileName(FindFileData.cFileName);
-        if (fileName[0] != '.')
+        for (const auto& entry : fs::recursive_directory_iterator(fs::u8path(normalizedPath)))
         {
-            if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            if (entry.is_directory())
             {
-                std::string directoryFullPath;
-                CombinePaths(normalizedPath, fileName, directoryFullPath);
-
-                directories.push_back(directoryFullPath);
-
-                if (recursive)
-                {
-                    GetDirectories(directoryFullPath, directories, recursive);
-                }
+                directories.push_back(NormalizePath(entry.path().generic_u8string()));
             }
         }
-
-        bContinue = FindNextFileA(hFind, &FindFileData);
     }
-
-    FindClose(hFind);
-
-#endif
+    else
+    {
+        for (const auto& entry : fs::directory_iterator(fs::u8path(normalizedPath)))
+        {
+            if (entry.is_directory())
+            {
+                directories.push_back(NormalizePath(entry.path().generic_u8string()));
+            }
+        }
+    }
 }
 
 bool DirectoryExists(const std::string& path)
 {
-    return std::filesystem::is_directory(path);
+    return fs::is_directory(fs::u8path(path));
 }
 
 bool FileExists(const std::string& path)
 {
-    return std::filesystem::is_regular_file(path);
+    return fs::is_regular_file(fs::u8path(path));
 }
 
 bool EnsureDirectoryExists(const std::string& _strPath)
@@ -692,10 +619,11 @@ bool EnsureDirectoryExists(const std::string& _strPath)
 
 bool RemoveFile(const std::string& path)
 {
-    if (std::filesystem::is_regular_file(path))
+    fs::path convertedPath = fs::u8path(path);
+    if (fs::is_regular_file(convertedPath))
     {
         std::error_code errorCode;
-        return std::filesystem::remove(path, errorCode);
+        return fs::remove(convertedPath, errorCode);
     }
 
     return false;
@@ -703,10 +631,11 @@ bool RemoveFile(const std::string& path)
 
 bool RemoveTargetDirectory(const std::string& path)
 {
-    if (std::filesystem::is_directory(path))
+    fs::path convertedPath = fs::u8path(path);
+    if (fs::is_directory(convertedPath))
     {
         std::error_code errorCode;
-        return std::filesystem::remove(path, errorCode);
+        return fs::remove(convertedPath, errorCode);
     }
 
     return false;
@@ -714,10 +643,11 @@ bool RemoveTargetDirectory(const std::string& path)
 
 bool RemoveDirectoryTree(const std::string& path)
 {
-    if (std::filesystem::is_directory(path))
+    fs::path convertedPath = fs::u8path(path);
+    if (fs::is_directory(convertedPath))
     {
         std::error_code errorCode;
-        return std::filesystem::remove_all(path, errorCode) > 0;
+        return fs::remove_all(convertedPath, errorCode) > 0;
     }
 
     return false;

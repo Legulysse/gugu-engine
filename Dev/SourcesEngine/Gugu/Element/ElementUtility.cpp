@@ -110,9 +110,9 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
 
     Element* result = nullptr;
 
-    if (ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data))
+    if (ElementWidgetData* widgetInstanceData = dynamic_cast<ElementWidgetData*>(context.data))
     {
-        if (elementWidgetData->widget == nullptr)
+        if (widgetInstanceData->widget == nullptr)
         {
             // Instantiate a default empty Element.
             result = new Element;
@@ -123,9 +123,9 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
             // - They would generate duplicate entries on widgets including another widget multiple times.
             ElementDataBindings* bindingsBackup = context.dataBindings;
             context.dataBindings = nullptr;
-            context.path.push_back(elementWidgetData->name);
+            context.path.push_back(widgetInstanceData->name);
 
-            result = elementWidgetData->widget->InstanciateWidget(context);
+            result = widgetInstanceData->widget->InstanciateWidget(context);
 
             context.path.pop_back();
             context.dataBindings = bindingsBackup;

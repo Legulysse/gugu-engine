@@ -832,36 +832,36 @@ bool Element::LoadFromDataImpl(ElementDataContext& context)
 
 bool Element::LoadFromWidgetDataImpl(ElementDataContext& context)
 {
-    ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(context.data);
+    ElementWidgetData* widgetInstanceData = dynamic_cast<ElementWidgetData*>(context.data);
 
-    if (elementWidgetData->overrideOrigin)
+    if (widgetInstanceData->overrideOrigin)
     {
-        SetUnifiedOrigin(elementWidgetData->dimOrigin);
+        SetUnifiedOrigin(widgetInstanceData->dimOrigin);
     }
 
-    if (elementWidgetData->overridePosition)
+    if (widgetInstanceData->overridePosition)
     {
-        SetUnifiedPosition(elementWidgetData->dimPosition);
+        SetUnifiedPosition(widgetInstanceData->dimPosition);
     }
 
-    if (elementWidgetData->overrideSize)
+    if (widgetInstanceData->overrideSize)
     {
-        SetUnifiedSize(elementWidgetData->dimSize);
+        SetUnifiedSize(widgetInstanceData->dimSize);
     }
 
-    if (elementWidgetData->overrideRotation)
+    if (widgetInstanceData->overrideRotation)
     {
-        SetRotation(elementWidgetData->rotation);
+        SetRotation(widgetInstanceData->rotation);
     }
 
-    if (elementWidgetData->overrideFlipV)
+    if (widgetInstanceData->overrideFlipV)
     {
-        SetFlipV(elementWidgetData->flipV);
+        SetFlipV(widgetInstanceData->flipV);
     }
 
-    if (elementWidgetData->overrideFlipH)
+    if (widgetInstanceData->overrideFlipH)
     {
-        SetFlipH(elementWidgetData->flipH);
+        SetFlipH(widgetInstanceData->flipH);
     }
 
     return true;

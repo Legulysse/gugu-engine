@@ -44,8 +44,8 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
         ImGui::Spacing();
 
-        ElementWidgetData* elementWidgetData = dynamic_cast<ElementWidgetData*>(m_selectedElementData);
-        if (elementWidgetData)
+        ElementWidgetData* widgetInstanceData = dynamic_cast<ElementWidgetData*>(m_selectedElementData);
+        if (widgetInstanceData)
         {
             // Helpers
             int overrideId = 0;
@@ -68,11 +68,11 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             };
 
             // Widget reference
-            ElementWidget* widget = elementWidgetData->widget;
+            ElementWidget* widget = widgetInstanceData->widget;
             std::string widgetId = !widget ? "" : widget->GetID();
             if (ImGui::InputText("Widget", &widgetId, ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                elementWidgetData->widget = GetResources()->GetElementWidget(widgetId);
+                widgetInstanceData->widget = GetResources()->GetElementWidget(widgetId);
 
                 RaiseDirty();
                 needRebuildHierarchy = true;
@@ -86,11 +86,11 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                 ElementData* widgetRootData = dynamic_cast<ElementData*>(widget->GetRootData());
 
                 // Origin
-                if (checkOverrideSetting(overrideId, elementWidgetData->overrideOrigin))
+                if (checkOverrideSetting(overrideId, widgetInstanceData->overrideOrigin))
                 {
-                    if (!elementWidgetData->overrideOrigin)
+                    if (!widgetInstanceData->overrideOrigin)
                     {
-                        elementWidgetData->dimOrigin = UDim2::ZERO;
+                        widgetInstanceData->dimOrigin = UDim2::ZERO;
 
                         if (widgetRootData->useDimOrigin)
                         {
@@ -105,33 +105,33 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                     {
                         if (widgetRootData->useDimOrigin)
                         {
-                            elementWidgetData->dimOrigin = widgetRootData->dimOrigin;
-                            element->SetUnifiedOrigin(elementWidgetData->dimOrigin);
+                            widgetInstanceData->dimOrigin = widgetRootData->dimOrigin;
+                            element->SetUnifiedOrigin(widgetInstanceData->dimOrigin);
                         }
                         else
                         {
-                            elementWidgetData->dimOrigin = UDim2(Vector2::Zero_f, widgetRootData->origin);
-                            element->SetUnifiedOrigin(elementWidgetData->dimOrigin);
+                            widgetInstanceData->dimOrigin = UDim2(Vector2::Zero_f, widgetRootData->origin);
+                            element->SetUnifiedOrigin(widgetInstanceData->dimOrigin);
                         }
                     }
 
                     RaiseDirty();
                 }
 
-                ImGui::BeginDisabled(!elementWidgetData->overrideOrigin);
-                if (ImGui::InputFloat4("Unified Origin", &elementWidgetData->dimOrigin))
+                ImGui::BeginDisabled(!widgetInstanceData->overrideOrigin);
+                if (ImGui::InputFloat4("Unified Origin", &widgetInstanceData->dimOrigin))
                 {
-                    element->SetUnifiedOrigin(elementWidgetData->dimOrigin);
+                    element->SetUnifiedOrigin(widgetInstanceData->dimOrigin);
                     RaiseDirty();
                 }
                 ImGui::EndDisabled();
 
                 // Position
-                if (checkOverrideSetting(overrideId, elementWidgetData->overridePosition))
+                if (checkOverrideSetting(overrideId, widgetInstanceData->overridePosition))
                 {
-                    if (!elementWidgetData->overridePosition)
+                    if (!widgetInstanceData->overridePosition)
                     {
-                        elementWidgetData->dimPosition = UDim2::ZERO;
+                        widgetInstanceData->dimPosition = UDim2::ZERO;
 
                         if (widgetRootData->useDimPosition)
                         {
@@ -146,33 +146,33 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                     {
                         if (widgetRootData->useDimPosition)
                         {
-                            elementWidgetData->dimPosition = widgetRootData->dimPosition;
-                            element->SetUnifiedPosition(elementWidgetData->dimPosition);
+                            widgetInstanceData->dimPosition = widgetRootData->dimPosition;
+                            element->SetUnifiedPosition(widgetInstanceData->dimPosition);
                         }
                         else
                         {
-                            elementWidgetData->dimPosition = UDim2(Vector2::Zero_f, widgetRootData->position);
-                            element->SetUnifiedPosition(elementWidgetData->dimPosition);
+                            widgetInstanceData->dimPosition = UDim2(Vector2::Zero_f, widgetRootData->position);
+                            element->SetUnifiedPosition(widgetInstanceData->dimPosition);
                         }
                     }
 
                     RaiseDirty();
                 }
 
-                ImGui::BeginDisabled(!elementWidgetData->overridePosition);
-                if (ImGui::InputFloat4("Unified Position", &elementWidgetData->dimPosition))
+                ImGui::BeginDisabled(!widgetInstanceData->overridePosition);
+                if (ImGui::InputFloat4("Unified Position", &widgetInstanceData->dimPosition))
                 {
-                    element->SetUnifiedPosition(elementWidgetData->dimPosition);
+                    element->SetUnifiedPosition(widgetInstanceData->dimPosition);
                     RaiseDirty();
                 }
                 ImGui::EndDisabled();
 
                 // Size
-                if (checkOverrideSetting(overrideId, elementWidgetData->overrideSize))
+                if (checkOverrideSetting(overrideId, widgetInstanceData->overrideSize))
                 {
-                    if (!elementWidgetData->overrideSize)
+                    if (!widgetInstanceData->overrideSize)
                     {
-                        elementWidgetData->dimSize = UDim2::ZERO;
+                        widgetInstanceData->dimSize = UDim2::ZERO;
 
                         if (widgetRootData->useDimSize)
                         {
@@ -187,97 +187,97 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                     {
                         if (widgetRootData->useDimSize)
                         {
-                            elementWidgetData->dimSize = widgetRootData->dimSize;
-                            element->SetUnifiedSize(elementWidgetData->dimSize);
+                            widgetInstanceData->dimSize = widgetRootData->dimSize;
+                            element->SetUnifiedSize(widgetInstanceData->dimSize);
                         }
                         else
                         {
-                            elementWidgetData->dimSize = UDim2(Vector2::Zero_f, widgetRootData->size);
-                            element->SetUnifiedSize(elementWidgetData->dimSize);
+                            widgetInstanceData->dimSize = UDim2(Vector2::Zero_f, widgetRootData->size);
+                            element->SetUnifiedSize(widgetInstanceData->dimSize);
                         }
                     }
 
                     RaiseDirty();
                 }
 
-                ImGui::BeginDisabled(!elementWidgetData->overrideSize);
-                if (ImGui::InputFloat4("Unified Size", &elementWidgetData->dimSize))
+                ImGui::BeginDisabled(!widgetInstanceData->overrideSize);
+                if (ImGui::InputFloat4("Unified Size", &widgetInstanceData->dimSize))
                 {
-                    element->SetUnifiedSize(elementWidgetData->dimSize);
+                    element->SetUnifiedSize(widgetInstanceData->dimSize);
                     RaiseDirty();
                 }
                 ImGui::EndDisabled();
 
                 // Rotation
-                if (checkOverrideSetting(overrideId, elementWidgetData->overrideRotation))
+                if (checkOverrideSetting(overrideId, widgetInstanceData->overrideRotation))
                 {
-                    if (!elementWidgetData->overrideRotation)
+                    if (!widgetInstanceData->overrideRotation)
                     {
-                        elementWidgetData->rotation = 0.f;
+                        widgetInstanceData->rotation = 0.f;
                         element->SetRotation(widgetRootData->rotation);
                     }
                     else
                     {
-                        elementWidgetData->rotation = widgetRootData->rotation;
-                        element->SetRotation(elementWidgetData->rotation);
+                        widgetInstanceData->rotation = widgetRootData->rotation;
+                        element->SetRotation(widgetInstanceData->rotation);
                     }
 
                     RaiseDirty();
                 }
 
-                ImGui::BeginDisabled(!elementWidgetData->overrideRotation);
-                if (ImGui::InputFloat("Rotation", &elementWidgetData->rotation))
+                ImGui::BeginDisabled(!widgetInstanceData->overrideRotation);
+                if (ImGui::InputFloat("Rotation", &widgetInstanceData->rotation))
                 {
-                    element->SetRotation(elementWidgetData->rotation);
+                    element->SetRotation(widgetInstanceData->rotation);
                     RaiseDirty();
                 }
                 ImGui::EndDisabled();
 
                 // Flip
-                if (checkOverrideSetting(overrideId, elementWidgetData->overrideFlipV))
+                if (checkOverrideSetting(overrideId, widgetInstanceData->overrideFlipV))
                 {
-                    if (!elementWidgetData->overrideFlipV)
+                    if (!widgetInstanceData->overrideFlipV)
                     {
-                        elementWidgetData->flipV = false;
+                        widgetInstanceData->flipV = false;
                         element->SetFlipV(widgetRootData->flipV);
                     }
                     else
                     {
-                        elementWidgetData->flipV = widgetRootData->flipV;
-                        element->SetFlipV(elementWidgetData->flipV);
+                        widgetInstanceData->flipV = widgetRootData->flipV;
+                        element->SetFlipV(widgetInstanceData->flipV);
                     }
 
                     RaiseDirty();
                 }
 
-                ImGui::BeginDisabled(!elementWidgetData->overrideFlipV);
-                if (ImGui::Checkbox("Flip V", &elementWidgetData->flipV))
+                ImGui::BeginDisabled(!widgetInstanceData->overrideFlipV);
+                if (ImGui::Checkbox("Flip V", &widgetInstanceData->flipV))
                 {
-                    element->SetFlipV(elementWidgetData->flipV);
+                    element->SetFlipV(widgetInstanceData->flipV);
                     RaiseDirty();
                 }
                 ImGui::EndDisabled();
 
-                if (checkOverrideSetting(overrideId, elementWidgetData->overrideFlipH))
+                if (checkOverrideSetting(overrideId, widgetInstanceData->overrideFlipH))
                 {
-                    if (!elementWidgetData->overrideFlipH)
+                    if (!widgetInstanceData->overrideFlipH)
                     {
-                        elementWidgetData->flipH = false;
+                        widgetInstanceData->flipH = false;
                         element->SetFlipH(widgetRootData->flipH);
                     }
                     else
                     {
-                        elementWidgetData->flipH = widgetRootData->flipH;
-                        element->SetFlipH(elementWidgetData->flipH);
+                        widgetInstanceData->flipH = widgetRootData->flipH;
+                        element->SetFlipH(widgetInstanceData->flipH);
                     }
 
                     RaiseDirty();
                 }
 
-                ImGui::BeginDisabled(!elementWidgetData->overrideFlipH);
-                if (ImGui::Checkbox("Flip H", &elementWidgetData->flipH))
+                ImGui::BeginDisabled(!widgetInstanceData->overrideFlipH);
+                if (ImGui::Checkbox("Flip H", &widgetInstanceData->flipH))
                 {
-                    element->SetFlipH(elementWidgetData->flipH);
+                    element->SetFlipH(widgetInstanceData->flipH);
                     RaiseDirty();
                 }
                 ImGui::EndDisabled();

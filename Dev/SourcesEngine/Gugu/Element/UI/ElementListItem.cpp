@@ -10,6 +10,7 @@
 #include "Gugu/Element/UI/ElementList.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -71,6 +72,16 @@ void ElementListItem::SetSelected(bool _bIsSelected)
 bool ElementListItem::IsSelected() const
 {
     return m_isSelected;
+}
+
+bool ElementListItem::IsItemSizedToContent() const
+{
+    return ApproxEqual(GetSize().y, m_elementImpl->GetSize().y, math::Epsilon3);
+}
+
+void ElementListItem::ResizeToContent()
+{
+    SetSizeY(m_elementImpl->GetSize().y);
 }
 
 void ElementListItem::OnListResized(const Vector2f& _oListSize)

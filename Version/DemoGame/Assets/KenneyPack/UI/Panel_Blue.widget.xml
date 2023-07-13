@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<ElementWidget serializationVersion="1">
+	<Element type="ElementSpriteGroup">
+		<Size x="128" y="128" />
+		<Texture source="panel_blue.png" />
+		<Components>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+				<USize xRel="0" yRel="0" xAbs="8" yAbs="8" />
+				<TextureRect x="0" y="0" w="8" h="8" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="0" xAbs="8" yAbs="0" />
+				<USize xRel="1" yRel="0" xAbs="-16" yAbs="8" />
+				<TextureRect x="8" y="0" w="84" h="8" />
+				<RepeatTexture value="true" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="1" yRel="0" xAbs="-8" yAbs="0" />
+				<USize xRel="0" yRel="0" xAbs="8" yAbs="8" />
+				<TextureRect x="92" y="0" w="8" h="8" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="8" />
+				<USize xRel="0" yRel="1" xAbs="8" yAbs="-16" />
+				<TextureRect x="0" y="8" w="8" h="84" />
+				<RepeatTexture value="true" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="0" xAbs="8" yAbs="8" />
+				<USize xRel="1" yRel="1" xAbs="-16" yAbs="-16" />
+				<TextureRect x="8" y="8" w="84" h="84" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="1" yRel="0" xAbs="-8" yAbs="8" />
+				<USize xRel="0" yRel="1" xAbs="8" yAbs="-16" />
+				<TextureRect x="92" y="8" w="8" h="84" />
+				<RepeatTexture value="true" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-8" />
+				<USize xRel="0" yRel="0" xAbs="8" yAbs="8" />
+				<TextureRect x="0" y="92" w="8" h="8" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="1" xAbs="8" yAbs="-8" />
+				<USize xRel="1" yRel="0" xAbs="-16" yAbs="8" />
+				<TextureRect x="8" y="92" w="84" h="8" />
+				<RepeatTexture value="true" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="1" yRel="1" xAbs="-8" yAbs="-8" />
+				<USize xRel="0" yRel="0" xAbs="8" yAbs="8" />
+				<TextureRect x="92" y="92" w="8" h="8" />
+			</Element>
+		</Components>
+	</Element>
+</ElementWidget>

@@ -7,12 +7,12 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/External/PugiXmlUtility.h"
-#include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -30,31 +30,34 @@ ElementSprite::~ElementSprite()
 {
 }
 
-void ElementSprite::SetTexture(const std::string& _strTexturePath)
+void ElementSprite::SetTexture(const std::string& _strTexturePath, bool updateTextureRect, bool updateSize)
 {
-    SetTexture(GetResources()->GetTexture(_strTexturePath));
+    SetTexture(GetResources()->GetTexture(_strTexturePath), updateTextureRect, updateSize);
 }
 
-void ElementSprite::SetTexture(Texture* _pTexture)
+void ElementSprite::SetTexture(Texture* _pTexture, bool updateTextureRect, bool updateSize)
 {
     m_texture = _pTexture;
 
-    if (m_texture)
+    if (updateTextureRect)
     {
-        SetSubRect(m_texture->GetRect());
-    }
-    else
-    {
-        SetSubRect(sf::IntRect());
+        if (m_texture)
+        {
+            SetSubRect(m_texture->GetRect(), updateSize);
+        }
+        else
+        {
+            SetSubRect(sf::IntRect(), updateSize);
+        }
     }
 }
 
-void ElementSprite::SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName)
+void ElementSprite::SetSubImage(const std::string& _strImageSetName, const std::string& _strSubImageName, bool updateSize)
 {
     ImageSet* pImageSet = GetResources()->GetImageSet(_strImageSetName);
     if (pImageSet)
     {
-        SetSubImage(pImageSet->GetSubImage(_strSubImageName));
+        SetSubImage(pImageSet->GetSubImage(_strSubImageName), updateSize);
     }
     else
     {
@@ -62,12 +65,12 @@ void ElementSprite::SetSubImage(const std::string& _strImageSetName, const std::
     }
 }
 
-void ElementSprite::SetSubImage(SubImage* _pSubImage)
+void ElementSprite::SetSubImage(SubImage* _pSubImage, bool updateSize)
 {
     if (_pSubImage && _pSubImage->GetImageSet() && _pSubImage->GetImageSet()->GetTexture())
     {
         m_texture = _pSubImage->GetImageSet()->GetTexture();
-        SetSubRect(_pSubImage->GetRect());
+        SetSubRect(_pSubImage->GetRect(), updateSize);
     }
     else
     {
@@ -129,16 +132,27 @@ void ElementSprite::RecomputeVerticesColor()
     ElementSpriteBase::RecomputeVerticesColor(&m_vertices[0], m_vertices.getVertexCount());
 }
 
-bool ElementSprite::LoadFromXml(const pugi::xml_node& _oNodeElement)
+bool ElementSprite::LoadFromDataImpl(ElementDataContext& context)
 {
-    if (!ElementSpriteBase::LoadFromXml(_oNodeElement))
+    if (!ElementSpriteBase::LoadFromDataImpl(context))
         return false;
 
-    pugi::xml_node oNodeTexture = _oNodeElement.child("Texture");
-    if (!oNodeTexture.empty())
+    ElementSpriteData* spriteData = dynamic_cast<ElementSpriteData*>(context.data);
+
+    if (spriteData->imageSet)
     {
-        std::string strTexturePath = oNodeTexture.attribute("source").as_string("");
-        SetTexture(strTexturePath);
+        if (!spriteData->subImageName.empty())
+        {
+            SetSubImage(spriteData->imageSet->GetSubImage(spriteData->subImageName), false);
+        }
+        else
+        {
+            SetTexture(spriteData->imageSet->GetTexture(), false);
+        }
+    }
+    else if (spriteData->texture)
+    {
+        SetTexture(spriteData->texture, false);
     }
 
     return true;

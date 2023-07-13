@@ -21,6 +21,7 @@
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/Datasheet.h"
+#include "Gugu/Resources/ElementWidget.h"
 
 #include "Gugu/Data/DataBindingUtility.h"
 #include "Gugu/System/SystemUtility.h"
@@ -230,6 +231,10 @@ EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) 
     //{
     //    //TODO: check if the extension is a datasheet
     //}
+    else if (fileInfo.HasExtension("widget.xml") || fileInfo.HasExtension("widget"))
+    {
+        return EResourceType::ElementWidget;
+    }
     else
     {
         return EResourceType::Unknown;
@@ -284,6 +289,11 @@ Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)
 const DatasheetObject* ManagerResources::GetDatasheetRootObject(const std::string& _strName)
 {
     return GetDatasheet(_strName)->GetRootObject();
+}
+
+ElementWidget* ManagerResources::GetElementWidget(const std::string& _strName)
+{
+    return dynamic_cast<ElementWidget*>(GetResource(_strName, EResourceType::ElementWidget));
 }
 
 Resource* ManagerResources::GetResource(const std::string& _strName, EResourceType::Type _eExplicitType)
@@ -375,6 +385,10 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     else if (_eExplicitType == EResourceType::Datasheet)
     {
         pResource = new Datasheet;
+    }
+    else if (_eExplicitType == EResourceType::ElementWidget)
+    {
+        pResource = new ElementWidget;
     }
     else
     {
@@ -480,6 +494,7 @@ bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, c
         pInfo->fileInfo = _kFileInfos;
         pInfo->resource = nullptr;
 
+        // TODO: investigate the use of hint iterator here, seems like a bad usage.
         m_resources.insert(iteAsset, std::make_pair(mapKey, pInfo));
         
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Registered Resource : ID = {0}, Path = {1}"
@@ -978,6 +993,36 @@ void ManagerResources::UnregisterResourceListeners(const void* handle)
             {
                 ++i;
             }
+        }
+    }
+}
+
+void ManagerResources::NotifyResourceUpdated(const Resource* resource)
+{
+    auto it = m_resourceDependencies.find(resource);
+    if (it != m_resourceDependencies.end())
+    {
+        // Notify referencers that a dependency has been updated.
+        std::set<Resource*> referencers = it->second.referencers;
+
+        for (const auto& referencer : referencers)
+        {
+            auto itReferencer = m_resourceDependencies.find(referencer);
+            if (itReferencer != m_resourceDependencies.end())
+            {
+                std::vector<ResourceListener> listeners = itReferencer->second.listeners;
+                for (const auto& resourceListener : listeners)
+                {
+                    resourceListener.delegateResourceEvent(referencer, EResourceEvent::DependencyUpdated, resource);
+                }
+            }
+        }
+
+        // Notify the resource itself being updated.
+        std::vector<ResourceListener> listeners = it->second.listeners;
+        for (const auto& resourceListener : listeners)
+        {
+            resourceListener.delegateResourceEvent(resource, EResourceEvent::ResourceUpdated, nullptr);
         }
     }
 }

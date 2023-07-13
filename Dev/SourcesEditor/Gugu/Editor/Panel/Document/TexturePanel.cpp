@@ -42,7 +42,7 @@ TexturePanel::~TexturePanel()
 void TexturePanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.
-    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 0.f, 16.f))
     {
         m_renderViewport->SetZoom(m_zoomFactor);
     }
@@ -50,6 +50,12 @@ void TexturePanel::UpdatePanelImpl(const DeltaTime& dt)
     // Viewport.
     m_renderViewport->ImGuiBegin();
     m_renderViewport->ImGuiEnd();
+}
+
+bool TexturePanel::SaveStateImpl(std::string& result)
+{
+    // Currently texture edition is not handled.
+    return false;
 }
 
 }   //namespace gugu

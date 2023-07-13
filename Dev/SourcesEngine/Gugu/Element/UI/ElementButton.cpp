@@ -9,9 +9,13 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Events/ElementEventHandler.h"
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/System/SystemUtility.h"
@@ -23,20 +27,15 @@
 namespace gugu {
 
 ElementButton::ElementButton()
-    : m_spriteIdle(nullptr)
-    , m_spriteFocused(nullptr)
-    , m_spriteDisabled(nullptr)
-    , m_currentSprite(nullptr)
-    , m_text(nullptr)
+    : m_commonComponent(nullptr)
+    , m_idleStateComponent(nullptr)
+    , m_focusedStateComponent(nullptr)
+    , m_disabledStateComponent(nullptr)
+    , m_currentStateComponent(nullptr)
     , m_actionOnPressed(nullptr)
     , m_actionOnReleased(nullptr)
     , m_isDisabled(false)
 {
-    m_text = new ElementText;
-    m_text->SetParent(this);
-
-    SetTextAlignment(UDim2::POSITION_TOP_CENTER);
-
     GetEvents()->AddCallback(EInteractionEvent::MouseEntered, STD_BIND_1(&ElementButton::OnMouseEntered, this));
     GetEvents()->AddCallback(EInteractionEvent::MouseLeft, STD_BIND_1(&ElementButton::OnMouseLeft, this));
     GetEvents()->AddCallback(EInteractionEvent::MousePressed, STD_BIND_1(&ElementButton::OnMousePressed, this));
@@ -45,12 +44,27 @@ ElementButton::ElementButton()
 
 ElementButton::~ElementButton()
 {
-    m_currentSprite = nullptr;
+    m_currentStateComponent = nullptr;
 
-    SafeDelete(m_spriteIdle);
-    SafeDelete(m_spriteFocused);
-    SafeDelete(m_spriteDisabled);
-    SafeDelete(m_text);
+    SafeDelete(m_idleStateComponent);
+    SafeDelete(m_focusedStateComponent);
+    SafeDelete(m_disabledStateComponent);
+    SafeDelete(m_commonComponent);
+}
+
+bool ElementButton::LoadFromWidget(const std::string& elementWidgetID)
+{
+    return LoadFromWidget(GetResources()->GetElementWidget(elementWidgetID));
+}
+
+bool ElementButton::LoadFromWidget(ElementWidget* elementWidget)
+{
+    if (elementWidget)
+    {
+        elementWidget->LoadElementFromWidget(this);
+    }
+
+    return false;
 }
 
 void ElementButton::SetTexture(const std::string& textureIdleID, const std::string& textureFocusedID, const std::string& textureDisabledID)
@@ -75,7 +89,7 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
     spriteIdle->SetUnifiedSize(UDim2::SIZE_FULL);
     spriteIdle->SetParent(this);
 
-    m_spriteIdle = spriteIdle;
+    m_idleStateComponent = spriteIdle;
 
     if (textureFocused)
     {
@@ -84,7 +98,7 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
         spriteFocused->SetUnifiedSize(UDim2::SIZE_FULL);
         spriteFocused->SetParent(this);
 
-        m_spriteFocused = spriteFocused;
+        m_focusedStateComponent = spriteFocused;
     }
 
     if (textureDisabled)
@@ -94,23 +108,41 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
         spriteDisabled->SetUnifiedSize(UDim2::SIZE_FULL);
         spriteDisabled->SetParent(this);
 
-        m_spriteDisabled = spriteDisabled;
+        m_disabledStateComponent = spriteDisabled;
     }
 
     SetSize(Vector2f(textureIdle->GetSize()));
 
-    m_currentSprite = m_spriteIdle;
+    m_currentStateComponent = m_idleStateComponent;
 }
 
-void ElementButton::SetText(const std::string& _strText)
+void ElementButton::SetText(const std::string& value, const std::string& fontID)
 {
-    m_text->SetText(_strText);
-}
+    // TODO: This is a safety for incomplete button widgets, it could be rethink along with deprecated SetTexture methods.
+    if (!m_commonComponent)
+    {
+        m_commonComponent = new Element;
+        m_commonComponent->SetUnifiedSize(UDim2::SIZE_FULL);
+        m_commonComponent->SetParent(this);
+    }
 
-void ElementButton::SetTextAlignment(const UDim2& alignment, const Vector2f& offset)
-{
-    m_text->SetUnifiedOrigin(alignment);
-    m_text->SetUnifiedPosition(alignment + offset);
+    // If the common component is not a text, add a text child.
+    // TODO: successive calls will create several text children, this should either look for the first available text, or use a cache.
+    // - The default text target could be defined in xml components (I could have both a text and a common component ?).
+    // - The intended behaviour for this SetText method is to provide a helper for buttons customization, but buttons may not use a text when defined in xml.
+    // - Another possible decision would be to ignore this call if the component is not a text.
+    ElementText* text = dynamic_cast<ElementText*>(m_commonComponent);
+    if (!text)
+    {
+        text = new ElementText;
+        m_commonComponent->AddChild(text);
+
+        text->SetFont(fontID);
+        text->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
+        text->SetUnifiedPosition(UDim2::POSITION_TOP_CENTER);
+    }
+
+    text->SetText(value);
 }
 
 void ElementButton::SetDisabled(bool _bDisabled)
@@ -122,16 +154,16 @@ void ElementButton::SetDisabled(bool _bDisabled)
 
     if (m_isDisabled)
     {
-        if (m_currentSprite)
+        if (m_currentStateComponent)
         {
-            m_currentSprite = m_spriteDisabled ? m_spriteDisabled : m_spriteIdle;
+            m_currentStateComponent = m_disabledStateComponent ? m_disabledStateComponent : m_idleStateComponent;
         }
     }
     else
     {
-        if (m_currentSprite)
+        if (m_currentStateComponent)
         {
-            m_currentSprite = m_spriteIdle;
+            m_currentStateComponent = m_idleStateComponent;
         }
     }
 }
@@ -164,17 +196,17 @@ void ElementButton::OnMouseReleased(const InteractionInfos& interactionInfos)
 
 void ElementButton::OnMouseEntered(const InteractionInfos& interactionInfos)
 {
-    if (m_currentSprite && !m_isDisabled)
+    if (m_currentStateComponent && !m_isDisabled)
     {
-        m_currentSprite = m_spriteFocused ? m_spriteFocused : m_spriteIdle;
+        m_currentStateComponent = m_focusedStateComponent ? m_focusedStateComponent : m_idleStateComponent;
     }
 }
 
 void ElementButton::OnMouseLeft(const InteractionInfos& interactionInfos)
 {
-    if (m_currentSprite && !m_isDisabled)
+    if (m_currentStateComponent && !m_isDisabled)
     {
-        m_currentSprite = m_spriteIdle;
+        m_currentStateComponent = m_idleStateComponent;
     }
 }
 
@@ -183,93 +215,69 @@ void ElementButton::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
-        if (m_currentSprite)
+        if (m_currentStateComponent)
         {
-            m_currentSprite->Render(_kRenderPass, _kTransformSelf);
+            m_currentStateComponent->Render(_kRenderPass, _kTransformSelf);
         }
 
-        m_text->Render(_kRenderPass, _kTransformSelf);
+        if (m_commonComponent)
+        {
+            m_commonComponent->Render(_kRenderPass, _kTransformSelf);
+        }
     }
 }
 
 void ElementButton::OnSizeChanged()
 {
-    if (m_spriteIdle)
+    if (m_idleStateComponent)
     {
-        m_spriteIdle->ComputeUnifiedDimensions();
+        m_idleStateComponent->ComputeUnifiedDimensions();
     }
 
-    if (m_spriteFocused)
+    if (m_focusedStateComponent)
     {
-        m_spriteFocused->ComputeUnifiedDimensions();
+        m_focusedStateComponent->ComputeUnifiedDimensions();
     }
 
-    if (m_spriteDisabled)
+    if (m_disabledStateComponent)
     {
-        m_spriteDisabled->ComputeUnifiedDimensions();
+        m_disabledStateComponent->ComputeUnifiedDimensions();
     }
 
-    m_text->ComputeUnifiedDimensions();
+    if (m_commonComponent)
+    {
+        m_commonComponent->ComputeUnifiedDimensions();
+    }
 }
 
-ElementText* ElementButton::GetElementText() const
+bool ElementButton::LoadFromDataImpl(ElementDataContext& context)
 {
-    return m_text;
-}
-
-bool ElementButton::LoadFromFile(const std::string& path)
-{
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(GetResources()->GetResourceFilePath(path).c_str());
-    if (!result)
+    if (!Element::LoadFromDataImpl(context))
         return false;
 
-    pugi::xml_node nodeRoot = document.child("Element");
-    if (!nodeRoot)
-        return false;
+    ElementButtonData* buttonData = dynamic_cast<ElementButtonData*>(context.data);
+    BaseElementData* backupData = context.data;
 
-    pugi::xml_attribute nodeRootType = nodeRoot.attribute("type");
-    if (!nodeRootType || !StringEquals(nodeRootType.value(), "ElementButton"))
-        return false;
+    bool result = true;
 
-    return LoadFromXml(nodeRoot);
-}
-
-bool ElementButton::LoadFromXml(const pugi::xml_node& nodeSelf)
-{
-    if (!Element::LoadFromXml(nodeSelf))
-        return false;
-
-    pugi::xml_node nodeComponents = nodeSelf.child("Components");
-    if (nodeComponents)
+    auto loadComponentFromData = [&](ElementDataContext& context, BaseElementData* componentData, Element*& component)
     {
-        for (pugi::xml_node nodeComponentElement = nodeComponents.child("Element"); nodeComponentElement; nodeComponentElement = nodeComponentElement.next_sibling("Element"))
-        {
-            pugi::xml_attribute nodeElementName = nodeComponentElement.attribute("name");
-            if (nodeElementName && StringEquals(nodeElementName.value(), "Idle") && !m_spriteIdle)
-            {
-                m_spriteIdle = new ElementSpriteGroup;
-                m_spriteIdle->LoadFromXml(nodeComponentElement);
-                m_spriteIdle->SetParent(this, true);
-            }
-            else if (nodeElementName && StringEquals(nodeElementName.value(), "Focused") && !m_spriteFocused)
-            {
-                m_spriteFocused = new ElementSpriteGroup;
-                m_spriteFocused->LoadFromXml(nodeComponentElement);
-                m_spriteFocused->SetParent(this, true);
-            }
-            else if (nodeElementName && StringEquals(nodeElementName.value(), "Disabled") && !m_spriteDisabled)
-            {
-                m_spriteDisabled = new ElementSpriteGroup;
-                m_spriteDisabled->LoadFromXml(nodeComponentElement);
-                m_spriteDisabled->SetParent(this, true);
-            }
-        }
-    }
+        context.data = componentData;
+        component = InstanciateAndLoadElement(context, this);
+        // TODO: bool result
+    };
 
-    m_currentSprite = m_spriteIdle;
+    loadComponentFromData(context, buttonData->commonComponent, m_commonComponent);
+    loadComponentFromData(context, buttonData->idleStateComponent, m_idleStateComponent);
+    loadComponentFromData(context, buttonData->focusedStateComponent, m_focusedStateComponent);
+    loadComponentFromData(context, buttonData->disabledStateComponent, m_disabledStateComponent);
 
-    return m_currentSprite != nullptr;
+    // TODO: check null.
+    m_currentStateComponent = m_idleStateComponent;
+
+    context.data = backupData;
+
+    return result;
 }
 
 }   // namespace gugu

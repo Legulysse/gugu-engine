@@ -108,7 +108,7 @@ void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
     }
 
     // Toolbar.
-    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 0.f, 16.f))
     {
         m_renderViewport->SetZoom(m_zoomFactor);
     }
@@ -149,12 +149,7 @@ void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
 
     if (m_followCursor)
     {
-        // Handle picking (should be used inside a viewport begin/end block).
-        ImGuiIO& io = ImGui::GetIO();
-        const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
-        const Vector2f mouse_pos_in_canvas(io.MousePos.x - canvas_p0.x, io.MousePos.y - canvas_p0.y);
-        Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
-
+        Vector2f pickedGlobalPosition = m_renderViewport->GetMousePickedPosition();
         m_elementParticle->SetPosition(pickedGlobalPosition);
     }
 
@@ -355,13 +350,12 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
 void ParticleEffectPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    if (event == EResourceEvent::DependencyRemoved)
+    if (event == EResourceEvent::DependencyRemoved
+        || event == EResourceEvent::DependencyUpdated)
     {
         m_particleSystem->Init(m_particleEffect);
         m_particleSystem->Restart();
         m_maxParticleCount = 0;
-
-        RaiseDirty();
     }
 }
 

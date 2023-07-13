@@ -1,20 +1,21 @@
 <?xml version="1.0"?>
-<ParticleEffect>
+<ParticleEffect serializationVersion="1">
 	<Loop value="false" />
 	<Duration value="200" />
 	<MaxParticleCount value="500" />
 	<ParticleShape value="Quad" />
+	<SortBuffer value="false" />
 	<LocalSpace value="false" />
-	<EmitterShape value="Point" />
-	<EmitterRadius value="100" />
+	<EmitterShape value="Circle" />
+	<EmitterRadius value="5" />
 	<EmitterInnerRadius value="50" />
 	<SpawnPerSecond random="false" min="50" max="10" />
 	<ParticlesPerSpawn random="false" min="100" max="1" />
 	<EmissionBehaviour value="RandomDirection" />
 	<EmissionDirection x="0" y="-1" />
 	<EmissionAngle value="90" />
-	<Lifetime random="true" min="500" max="700" />
-	<Velocity random="true" min="75" max="100" />
+	<Lifetime random="true" min="100" max="600" />
+	<Velocity random="true" min="10" max="100" />
 	<KeepSizeRatio value="true" />
 	<StartSize random="true" min_x="3" min_y="3" max_x="8" max_y="8" />
 	<UpdateSizeOverLifetime value="false" />

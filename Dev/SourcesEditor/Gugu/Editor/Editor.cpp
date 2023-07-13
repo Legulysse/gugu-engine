@@ -10,6 +10,7 @@
 #include "Gugu/Editor/EditorVersion.h"
 #include "Gugu/Editor/Core/ProjectSettings.h"
 #include "Gugu/Editor/Core/UserSettings.h"
+#include "Gugu/Editor/Core/EditorClipboard.h"
 #include "Gugu/Editor/Modal/AboutDialog.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
@@ -21,11 +22,13 @@
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ParticleEffectPanel.h"
 #include "Gugu/Editor/Panel/Document/TexturePanel.h"
+#include "Gugu/Editor/Panel/Document/ElementWidgetPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
 #include "Gugu/Engine.h"
 #include "Gugu/Inputs/ManagerInputs.h"
+#include "Gugu/Window/Window.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/System/SystemUtility.h"
@@ -49,6 +52,7 @@ Editor::Editor()
     , m_dependenciesPanel(nullptr)
     , m_lastActiveDocument(nullptr)
     , m_datasheetParser(nullptr)
+    , m_clipboard(nullptr)
 {
     // This constructor should stay empty.
     // Because it's a singleton, if a GetInstance() is called inside by another system but the constructor isn't finished,
@@ -76,6 +80,9 @@ void Editor::Init(const EditorConfig& editorConfig)
     m_assetsExplorerPanel = new AssetsExplorerPanel;
     m_outputLogPanel = new OutputLogPanel;
     m_dependenciesPanel = new DependenciesPanel;
+
+    // Create clipboard.
+    m_clipboard = new EditorClipboard;
 
     // Check engine.
     if (!GetEngine()->GetEngineConfig().handleResourceDependencies)
@@ -113,6 +120,7 @@ void Editor::Release()
 
     ClearStdVector(m_modalDialogs);
 
+    SafeDelete(m_clipboard);
     SafeDelete(m_assetsExplorerPanel);
     SafeDelete(m_outputLogPanel);
     SafeDelete(m_dependenciesPanel);
@@ -451,6 +459,7 @@ void Editor::Update(const DeltaTime& dt)
 
         ImGui::DockBuilderDockWindow("Assets Explorer", dock_id_left);
         ImGui::DockBuilderDockWindow("Dependencies", dock_id_left);
+        ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
         ImGui::DockBuilderDockWindow("Output Log", dock_id_down);
         ImGui::DockBuilderDockWindow("Search Results", dock_id_down);
         ImGui::DockBuilderDockWindow("Properties", dock_id_right);
@@ -524,6 +533,16 @@ void Editor::Update(const DeltaTime& dt)
 
     StdVectorRemove<DocumentPanel*>(m_documentPanels, nullptr);
 
+    // Update Hierarchy panel.
+    if (ImGui::Begin("Hierarchy", false))
+    {
+        if (m_lastActiveDocument)
+        {
+            m_lastActiveDocument->UpdateHierarchy(dt);
+        }
+    }
+    ImGui::End();
+
     // Update Properties panel.
     if (ImGui::Begin("Properties", false))
     {
@@ -587,6 +606,10 @@ bool Editor::OpenDocument(const std::string& resourceID)
     {
         newDocument = new TexturePanel(GetResources()->GetTexture(resourceID));
     }
+    else if (resourceType == EResourceType::ElementWidget)
+    {
+        newDocument = new ElementWidgetPanel(GetResources()->GetElementWidget(resourceID));
+    }
     else if (resourceType == EResourceType::Unknown)
     {
         // Check datasheets.
@@ -613,6 +636,7 @@ bool Editor::OpenDocument(const std::string& resourceID)
 
     if (newDocument)
     {
+        newDocument->InitializePanel();
         m_documentPanels.push_back(newDocument);
     }
 
@@ -773,6 +797,11 @@ void Editor::CloseEditorImpl()
 DatasheetParser* Editor::GetDatasheetParser() const
 {
     return m_datasheetParser;
+}
+
+EditorClipboard* Editor::GetEditorClipboard() const
+{
+    return m_clipboard;
 }
 
 Editor* GetEditor()

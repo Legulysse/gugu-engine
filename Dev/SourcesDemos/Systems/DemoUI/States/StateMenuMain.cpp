@@ -55,11 +55,10 @@ void StateMenuMain::Init()
     pLogoSfml->SetUnifiedPosition(UDim2::POSITION_BOTTOM_RIGHT + Vector2f(-30.f, -10.f));
 
     //Box Menu
-    ElementSpriteGroup* pBox = m_root->AddChild<ElementSpriteGroup>();
-    pBox->LoadFromFile("Box9_02.xml");
-    pBox->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(50.f, 50.f));
+    Element* box = m_root->AddChildWidget("Box9_Default_01.widget.xml");
+    box->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(50.f, 50.f));
 
-    m_menu = pBox;
+    m_menu = box;
     m_menu->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, [](const InteractionInfos&) {});
 
     ElementButton* pButton;
@@ -68,34 +67,33 @@ void StateMenuMain::Init()
     float fPosX = padding;
     float fPosY = padding;
 
-    pButton = pBox->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton = dynamic_cast<ElementButton*>(box->AddChildWidget("Button_01.widget.xml")); // Alternative 1 : instanciate widget and cast as button.
     pButton->SetText("Gui Test");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 6));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY + pButton->GetSize().y;
-    pButton = pBox->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton = box->AddChild<ElementButton>();
+    pButton->LoadFromWidget("Button_01.widget.xml"); // Alternative 2 : instanciate a button and load a widget data inside.
     pButton->SetText("Demo Layout");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 4));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY + pButton->GetSize().y;
-    pButton = pBox->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton = box->AddChild<ElementButton>();
+    pButton->LoadFromWidget("Button_01.widget.xml");
     pButton->SetText("Disabled");
     pButton->SetDisabled(true);
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY + pButton->GetSize().y;
-    pButton = pBox->AddChild<ElementButton>();
-    pButton->LoadFromFile("Button01.xml");
+    pButton = box->AddChild<ElementButton>();
+    pButton->LoadFromWidget("Button_01.widget.xml");
     pButton->SetText("Quit");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
     pButton->SetPosition(fPosX, fPosY);
 
-    pBox->SetSize(pButton->GetSize().x + padding * 2.f, fPosY + pButton->GetSize().y + padding);
+    box->SetSize(pButton->GetSize().x + padding * 2.f, fPosY + pButton->GetSize().y + padding);
 }
 
 void StateMenuMain::Release()

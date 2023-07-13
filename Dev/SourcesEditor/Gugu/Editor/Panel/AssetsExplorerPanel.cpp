@@ -17,6 +17,8 @@
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
+#include <SFML/Window/Clipboard.hpp>
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -47,10 +49,7 @@ void AssetsExplorerPanel::ClearContent()
 {
     m_dirtyContent = false;
 
-    if (m_rootNode)
-    {
-        SafeDelete(m_rootNode);
-    }
+    SafeDelete(m_rootNode);
 }
 
 void AssetsExplorerPanel::RaiseDirtyContent()
@@ -252,13 +251,13 @@ void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
 
             if (!testTable)
             {
-                ImGui::PushID("AssetsTable");
+                ImGui::PushID("_ASSETS_TABLE");
                 DisplayTreeNode(m_rootNode, directoryFlags, fileFlags, test_drag_and_drop, testTable, 0);
                 ImGui::PopID();
             }
             else
             {
-                if (ImGui::BeginTable("AssetsTable", 3, tableFlags))
+                if (ImGui::BeginTable("_ASSETS_TABLE", 3, tableFlags))
                 {
                     // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
                     ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoHide);
@@ -474,6 +473,11 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node, bool* colla
                 GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::ParticleEffect));
             }
 
+            if (ImGui::MenuItem("ElementWidget"))
+            {
+                GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::ElementWidget));
+            }
+
             ImGui::EndMenu();
         }
 
@@ -507,6 +511,17 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
 {
     if (ImGui::BeginPopupContextItem())
     {
+        if (ImGui::MenuItem("Copy ID"))
+        {
+            sf::Clipboard::setString(sf::String::fromUtf8(node->resourceID.begin(), node->resourceID.end()));
+        }
+
+        if (ImGui::MenuItem("Open in Explorer"))
+        {
+            OpenFileExplorer(node->path);
+        }
+
+        ImGui::Separator();
         if (ImGui::MenuItem("Delete"))
         {
             if (GetEditor()->CloseDocument(node->resourceID, true))
@@ -516,12 +531,6 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
                     GetEditor()->RefreshAssets();
                 }
             }
-        }
-
-        ImGui::Separator();
-        if (ImGui::MenuItem("Open in Explorer"))
-        {
-            OpenFileExplorer(node->path);
         }
 
         ImGui::EndPopup();

@@ -7,14 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Resources/Texture.h"
-#include "Gugu/Resources/ImageSet.h"
-#include "Gugu/Window/Renderer.h"
-#include "Gugu/External/PugiXmlUtility.h"
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Math/MathUtility.h"
-
-#include <SFML/Graphics/RenderTarget.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -34,7 +29,7 @@ ElementSpriteBase::~ElementSpriteBase()
 {
 }
 
-void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect)
+void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect, bool updateSize)
 {
     sf::IntRect kOldRect = m_subRect;
     m_subRect = _oRect;
@@ -51,7 +46,7 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect)
         m_subRect.width = -m_subRect.width;
     }
 
-    if (m_subRect.width != kOldRect.width || m_subRect.height != kOldRect.height)
+    if (updateSize)
     {
         SetSize(Vector2f((float)Absolute(m_subRect.width), (float)Absolute(m_subRect.height)));
     }
@@ -87,6 +82,11 @@ void ElementSpriteBase::SetRepeatTexture(bool repeatTexture)
     }
 }
 
+bool ElementSpriteBase::GetRepeatTexture() const
+{
+    return m_repeatTexture;
+}
+
 void ElementSpriteBase::SetFlipTextureV(bool _bFlipTextureV)
 {
     SetFlipTexture(_bFlipTextureV, m_flipTextureH);
@@ -120,13 +120,23 @@ void ElementSpriteBase::SetFlipTexture(bool _bFlipTextureV, bool _bFlipTextureH)
     }
 }
 
+bool ElementSpriteBase::GetFlipTextureV() const
+{
+    return m_flipTextureV;
+}
+
+bool ElementSpriteBase::GetFlipTextureH() const
+{
+    return m_flipTextureH;
+}
+
 void ElementSpriteBase::SetColor(const sf::Color& _oColor)
 {
     m_color = _oColor;
     RaiseDirtyVertices();
 }
 
-sf::Color ElementSpriteBase::GetColor() const
+const sf::Color& ElementSpriteBase::GetColor() const
 {
     return m_color;
 }
@@ -338,21 +348,36 @@ void ElementSpriteBase::RecomputeVerticesColor(sf::Vertex* vertices, size_t coun
     }
 }
 
-bool ElementSpriteBase::LoadFromXml(const pugi::xml_node& _oNodeElement)
+bool ElementSpriteBase::LoadFromDataImpl(ElementDataContext& context)
 {
-    if (!Element::LoadFromXml(_oNodeElement))
+    if (!Element::LoadFromDataImpl(context))
         return false;
 
-    sf::IntRect rect;
-    if (xml::TryParseRect(_oNodeElement.child("TextureRect"), rect))
+    ElementSpriteBaseData* spriteData = dynamic_cast<ElementSpriteBaseData*>(context.data);
+
+    if (spriteData->textureRect != sf::IntRect())
     {
-        SetSubRect(rect);
+        SetSubRect(spriteData->textureRect, false);
     }
 
-    bool repeatTexture = false;
-    if (xml::TryParseAttribute(_oNodeElement.child("RepeatTexture"), "value", repeatTexture))
+    if (spriteData->repeatTexture)
     {
-        SetRepeatTexture(repeatTexture);
+        SetRepeatTexture(spriteData->repeatTexture);
+    }
+
+    if (spriteData->flipTextureV)
+    {
+        SetFlipTextureV(spriteData->flipTextureV);
+    }
+
+    if (spriteData->flipTextureH)
+    {
+        SetFlipTextureH(spriteData->flipTextureH);
+    }
+
+    if (spriteData->color != sf::Color::White)
+    {
+        SetColor(spriteData->color);
     }
 
     return true;

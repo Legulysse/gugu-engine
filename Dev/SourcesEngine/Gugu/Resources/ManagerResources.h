@@ -31,6 +31,7 @@ namespace gugu
     class Datasheet;
     class DataObject;
     class DatasheetObject;
+    class ElementWidget;
     struct DataEnumInfos;
     struct EngineConfig;
 }
@@ -102,6 +103,7 @@ public:
     AnimSet*    GetAnimSet      (const std::string& _strName);
     ParticleEffect* GetParticleEffect(const std::string& _strName);
     Datasheet*  GetDatasheet    (const std::string& _strName);
+    ElementWidget* GetElementWidget(const std::string& _strName);
 
     template<typename T>
     const T* GetDatasheetObject(const std::string& _strName)
@@ -158,6 +160,8 @@ public:
 
     void UpdateResourceDependencies(Resource* resource);
     const std::map<const Resource*, ResourceDependencies>& GetResourceDependencies() const;
+
+    void NotifyResourceUpdated(const Resource* resource);
 
 private:
 

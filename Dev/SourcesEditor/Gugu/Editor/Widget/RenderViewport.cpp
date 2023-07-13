@@ -32,6 +32,7 @@ RenderViewport::RenderViewport(bool fillAvailableArea)
     , m_size(100, 100)
     , m_zoomMultiplier(1.f)
     , m_fillAvailableArea(fillAvailableArea)
+    , m_showBounds(false)
 {
     m_renderer = new WidgetRenderer;
     m_renderTexture = new sf::RenderTexture;
@@ -88,14 +89,16 @@ void RenderViewport::ImGuiBegin()
 
     // Reset render target.
     m_renderTexture->setActive(true);
-    if (m_renderTexture->getSize() != canvas_sz)
+    if (m_renderTexture->getSize() != m_size)
     {
-        m_renderTexture->create(canvas_sz.x, canvas_sz.y);
+        m_renderTexture->create(m_size.x, m_size.y);
+
+        sf::View view;
+        view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
+        m_renderTexture->setView(view);
     }
 
-    sf::View view;
-    view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
-    m_renderTexture->setView(view);
+    m_renderSize = Vector2f(canvas_sz);
 }
 
 void RenderViewport::ImGuiEnd()
@@ -104,11 +107,11 @@ void RenderViewport::ImGuiEnd()
     m_renderTexture->clear(sf::Color(128, 128, 128, 255));
 
     // Render scene.
-    m_renderer->RenderWidget(m_renderTexture, m_root);
+    m_renderer->RenderWidget(m_renderTexture, m_root, m_showBounds);
 
     // Display.
     m_renderTexture->display();
-    ImGui::Image(*m_renderTexture);
+    ImGui::Image(*m_renderTexture, m_renderSize);
     //m_renderTexture->setActive(false);
 
     // Finalize imgui area.
@@ -122,14 +125,43 @@ void RenderViewport::SetSize(Vector2u size)
     m_root->SetSize(Vector2f(m_size));
 }
 
+const Vector2u& RenderViewport::GetSize() const
+{
+    return m_size;
+}
+
 void RenderViewport::SetZoom(float zoomMultiplier)
 {
     m_zoomMultiplier = zoomMultiplier;
 }
 
+float RenderViewport::GetZoom() const
+{
+    return m_zoomMultiplier;
+}
+
+void RenderViewport::SetShowBounds(bool showBounds)
+{
+    m_showBounds = showBounds;
+}
+
+Vector2f RenderViewport::GetMousePickedPosition() const
+{
+    // Handle picking (should be used inside a viewport begin/end block).
+    ImGuiIO& io = ImGui::GetIO();
+    Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
+
+    // Consider mouse pixel position in texture area.
+    Vector2f mouse_pos_in_canvas(io.MousePos.x - canvas_p0.x, io.MousePos.y - canvas_p0.y);
+
+    return GetPickedPosition(Vector2i(mouse_pos_in_canvas));
+}
+
 Vector2f RenderViewport::GetPickedPosition(const Vector2i& pixelCoords) const
 {
-    return m_renderTexture->mapPixelToCoords(pixelCoords, m_renderTexture->getView());
+    // Consider zoom level.
+    Vector2i pixelCoordsWithZoom = Vector2i(Vector2f(pixelCoords.x / m_zoomMultiplier, pixelCoords.y / m_zoomMultiplier));
+    return m_renderTexture->mapPixelToCoords(pixelCoordsWithZoom, m_renderTexture->getView());
 }
 
 Element* RenderViewport::GetRoot() const

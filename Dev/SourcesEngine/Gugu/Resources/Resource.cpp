@@ -80,8 +80,7 @@ bool Resource::LoadFromXmlFile()
 bool Resource::LoadFromXmlString(const std::string& source)
 {
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_string(source.c_str());
-    if (!result)
+    if (!xml::ParseDocumentFromString(source, doc))
         return false;
 
     return LoadFromXml(doc);
@@ -94,7 +93,6 @@ bool Resource::SaveToXmlFile() const
     if (!SaveToXml(doc))
         return false;
 
-    // I could use spaces instead of tabs, but it's probably a waste in the context of stored data ? It could be an engine option.
     return doc.save_file(GetFileInfo().GetFilePath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
 }
 
@@ -105,28 +103,24 @@ bool Resource::SaveToXmlString(std::string& result) const
     if (!SaveToXml(doc))
         return false;
 
-    xml::StringWriter buffer(&result);
-    doc.save(buffer, "", pugi::format_no_declaration | pugi::format_raw, pugi::encoding_utf8);
+    result = xml::SaveDocumentToString(doc);
     return true;
 }
 
 void Resource::Unload()
 {
-    // TODO: If I want to activate those error messages, I need to ensure they wont spam the editor for resources like Textures.
-    //GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Unload is not supported for this type of resource");
+    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Unload is not supported for this type of resource");
 }
 
 bool Resource::LoadFromXml(const pugi::xml_document& document)
 {
-    // TODO: If I want to activate those error messages, I need to ensure they wont spam the editor for resources like Textures.
-    //GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "LoadFromXml is not supported for this type of resource");
+    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "LoadFromXml is not supported for this type of resource");
     return false;
 }
 
 bool Resource::SaveToXml(pugi::xml_document& document) const
 {
-    // TODO: If I want to activate those error messages, I need to ensure they wont spam the editor for resources like Textures.
-    //GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "SaveToXml is not supported for this type of resource");
+    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "SaveToXml is not supported for this type of resource");
     return false;
 }
 

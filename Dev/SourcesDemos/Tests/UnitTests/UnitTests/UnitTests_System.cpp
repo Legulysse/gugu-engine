@@ -478,6 +478,21 @@ void RunUnitTests_System(UnitTestResults* results)
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("Containers");
+    {
+        GUGU_UTEST_SUBSECTION("Vector");
+        {
+            std::vector<int> container = { 10, 20, 30, 40, 50 };
+
+            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 10) == 0);
+            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 30) == 2);
+            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 50) == 4);
+            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 0) == system::InvalidIndex);
+        }
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_FINALIZE();
 }
 

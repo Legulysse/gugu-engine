@@ -7,11 +7,15 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Events/ElementEventHandler.h"
+#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/External/PugiXmlUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -60,8 +64,41 @@ void Element::AddChild(Element* child)
     m_children.push_back(child);
 }
 
+bool Element::InsertChild(Element* child, size_t index)
+{
+    if (index < 0 || index > m_children.size())
+        return false;
+
+    child->SetParent(this);
+    StdVectorInsertAt(m_children, index, child);
+    return true;
+}
+
+Element* Element::AddChildWidget(const std::string& elementWidgetID)
+{
+    return AddChildWidget(GetResources()->GetElementWidget(elementWidgetID));
+}
+
+Element* Element::AddChildWidget(ElementWidget* elementWidget)
+{
+    if (elementWidget)
+    {
+        if (Element* child = elementWidget->InstanciateWidget())
+        {
+            AddChild(child);
+            return child;
+        }
+    }
+
+    return nullptr;
+}
+
 void Element::SetParent(Element* parent, bool recomputeDimensions)
 {
+    // Some processes can set the parent before calling AddChild, this test ensures we reduce unnecessary dimensions computation.
+    if (m_parent == parent)
+        return;
+
     if (m_parent)
     {
         // Ensure this Element is not attached anymore to another Element.
@@ -190,17 +227,32 @@ void Element::SetUnifiedSize(const UDim2& _oNewDimSize)
     ComputeUnifiedDimensions();
 }
 
-UDim2 Element::GetUnifiedOrigin() const
+bool Element::GetUseUnifiedOrigin() const
+{
+    return m_useDimOrigin;
+}
+
+bool Element::GetUseUnifiedPosition() const
+{
+    return m_useDimPosition;
+}
+
+bool Element::GetUseUnifiedSize() const
+{
+    return m_useDimSize;
+}
+
+const UDim2& Element::GetUnifiedOrigin() const
 {
     return m_dimOrigin;
 }
 
-UDim2 Element::GetUnifiedPosition() const
+const UDim2& Element::GetUnifiedPosition() const
 {
     return m_dimPosition;
 }
 
-UDim2 Element::GetUnifiedSize() const
+const UDim2& Element::GetUnifiedSize() const
 {
     return m_dimSize;
 }
@@ -370,6 +422,29 @@ const sf::Transform& Element::GetTransform() const
 const sf::Transform& Element::GetInverseTransform() const
 {
     return m_transform.getInverseTransform();
+}
+
+void Element::GetGlobalCorners(Vector2f& topLeft, Vector2f& topRight, Vector2f& bottomLeft, Vector2f& bottomRight) const
+{
+    topLeft = TransformToGlobal(Vector2::Zero_f);
+    topRight = TransformToGlobal(Vector2::Zero_f + Vector2f(m_size.x, 0));
+    bottomLeft = TransformToGlobal(Vector2::Zero_f + Vector2f(0, m_size.y));
+    bottomRight = TransformToGlobal(Vector2::Zero_f + m_size);
+}
+
+sf::FloatRect Element::GetGlobalBounds() const
+{
+    Vector2f topLeft, topRight, bottomLeft, bottomRight;
+    GetGlobalCorners(topLeft, topRight, bottomLeft, bottomRight);
+
+    float minX = Min(Min(topLeft.x, topRight.x), Min(bottomLeft.x, bottomRight.x));
+    float miny = Min(Min(topLeft.y, topRight.y), Min(bottomLeft.y, bottomRight.y));
+    float maxX = Max(Max(topLeft.x, topRight.x), Max(bottomLeft.x, bottomRight.x));
+    float maxy = Max(Max(topLeft.y, topRight.y), Max(bottomLeft.y, bottomRight.y));
+
+    Vector2f topLeftBounds = Vector2f(minX, miny);
+    Vector2f bottomRightBounds = Vector2f(maxX, maxy);
+    return sf::FloatRect(topLeftBounds, bottomRightBounds - topLeftBounds);
 }
 
 void Element::SetSizeX(float _fNewSizeX)
@@ -592,24 +667,201 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
     }
 }
 
-bool Element::LoadFromXml(const pugi::xml_node& _oNodeElement)
+bool Element::LoadFromData(ElementDataContext& context)
 {
-    Vector2f size;
-    if (xml::TryParseVector2f(_oNodeElement.child("Size"), size))
+    // Load this Element data.
+    // - At this point, the element has already been deserialized through ElementWidget::InstanciateWidget.
+    // - This method will load the current Element data, then proceed to instanciate and load its children.
+
+    bool result = true;
+    BaseElementData* elementData = context.data;
+
+    FillElementPath(context);
+    context.path.push_back(elementData->name);
+    result = LoadFromDataImpl(context);
+
+    if (context.dataBindings)
     {
-        SetSize(size);
+        context.dataBindings->elementFromData.insert(std::make_pair(elementData, this));
+        context.dataBindings->dataFromElement.insert(std::make_pair(this, elementData));
     }
 
-    UDim2 dimPosition;
-    if (xml::TryParseUDim2(_oNodeElement.child("UPosition"), dimPosition))
+    result &= LoadChildrenFromData(context);
+    context.path.pop_back();
+
+    return result;
+}
+
+bool Element::LoadFromWidgetInstanceData(ElementDataContext& context)
+{
+    // Load this Element override data from a given ElementWidgetInstanceData.
+    // - At this point, the element has already been deserialized through ElementWidget::InstanciateWidget.
+    // - We only need to load the overrides from the widget root (transform etc).
+    // - Some children may already exist from the initial deserialization.
+
+    bool result = true;
+    BaseElementData* elementData = context.data;
+
+    FillElementPath(context);
+    context.path.push_back(elementData->name);
+    result = LoadFromWidgetInstanceDataImpl(context);
+
+    if (context.dataBindings)
     {
-        SetUnifiedPosition(dimPosition);
+        // Fill bindings informations.
+        // - The instantiated Element will be referenced by both the ElementWidgetInstanceData and the widget root ElementData, but it will only reference the root ElementData.
+        // - As a result, the Element will have no knowledge of the ElementWidget it originates from, and get attached directly to the provided parent.
+        context.dataBindings->elementFromData.insert(std::make_pair(elementData, this));
+        //context.dataBindings->dataFromElement.insert(std::make_pair(this, elementData));
     }
 
-    UDim2 dimSize;
-    if (xml::TryParseUDim2(_oNodeElement.child("USize"), dimSize))
+    result &= LoadChildrenFromData(context);
+    context.path.pop_back();
+
+    return result;
+}
+
+void Element::FillElementPath(ElementDataContext& context)
+{
+    const std::string& name = context.data->name;
+
+    if (context.pathBindings && !name.empty())
     {
-        SetUnifiedSize(dimSize);
+        std::string path = "";
+        for (const std::string& part : context.path)
+        {
+            if (!part.empty())
+            {
+                path += part + '/';
+            }
+        }
+
+        path += name;
+
+        // TODO: handle multiple elements with same name ?
+        auto it = context.pathBindings->elementFromPath.find(path);
+        if (it == context.pathBindings->elementFromPath.end())
+        {
+            context.pathBindings->elementFromPath.insert(std::make_pair(path, this));
+        }
+        else
+        {
+            GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("An ElementWidget contains several elements with the same path : {0}", path));
+        }
+    }
+}
+
+bool Element::LoadChildrenFromData(ElementDataContext& context)
+{
+    // This method will instanciate and load this Element children.
+    // - Some children may already exist from the initial deserialization.
+
+    bool result = true;
+    BaseElementData* elementData = context.data;
+
+    size_t childCount = elementData->children.size();
+    if (childCount > 0)
+    {
+        BaseElementData* backupData = elementData;
+
+        for (size_t i = 0; i < childCount; ++i)
+        {
+            BaseElementData* childData = elementData->children[i];
+
+            context.data = childData;
+            if (Element* child = InstanciateAndLoadElement(context, this))
+            {
+                AddChild(child);
+            }
+        }
+
+        context.data = backupData;
+    }
+
+    return result;
+}
+
+bool Element::LoadFromDataImpl(ElementDataContext& context)
+{
+    ElementData* elementData = dynamic_cast<ElementData*>(context.data);
+
+    if (elementData->useDimOrigin)
+    {
+        SetUnifiedOrigin(elementData->dimOrigin);
+    }
+    else if (elementData->origin != Vector2::Zero_f)
+    {
+        SetOrigin(elementData->origin);
+    }
+
+    if (elementData->useDimPosition)
+    {
+        SetUnifiedPosition(elementData->dimPosition);
+    }
+    else if (elementData->position != Vector2::Zero_f)
+    {
+        SetPosition(elementData->position);
+    }
+
+    if (elementData->useDimSize)
+    {
+        SetUnifiedSize(elementData->dimSize);
+    }
+    else if (elementData->size != Vector2::Zero_f)
+    {
+        SetSize(elementData->size);
+    }
+
+    if (elementData->rotation != 0.f)
+    {
+        SetRotation(elementData->rotation);
+    }
+
+    if (elementData->flipV)
+    {
+        SetFlipV(elementData->flipV);
+    }
+
+    if (elementData->flipH)
+    {
+        SetFlipH(elementData->flipH);
+    }
+
+    return true;
+}
+
+bool Element::LoadFromWidgetInstanceDataImpl(ElementDataContext& context)
+{
+    ElementWidgetInstanceData* widgetInstanceData = dynamic_cast<ElementWidgetInstanceData*>(context.data);
+
+    if (widgetInstanceData->overrideOrigin)
+    {
+        SetUnifiedOrigin(widgetInstanceData->dimOrigin);
+    }
+
+    if (widgetInstanceData->overridePosition)
+    {
+        SetUnifiedPosition(widgetInstanceData->dimPosition);
+    }
+
+    if (widgetInstanceData->overrideSize)
+    {
+        SetUnifiedSize(widgetInstanceData->dimSize);
+    }
+
+    if (widgetInstanceData->overrideRotation)
+    {
+        SetRotation(widgetInstanceData->rotation);
+    }
+
+    if (widgetInstanceData->overrideFlipV)
+    {
+        SetFlipV(widgetInstanceData->flipV);
+    }
+
+    if (widgetInstanceData->overrideFlipH)
+    {
+        SetFlipH(widgetInstanceData->flipH);
     }
 
     return true;

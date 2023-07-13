@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ElementWidget serializationVersion="1">
+	<Element type="ElementSpriteGroup">
+		<Size x="200" y="20" />
+		<ImageSet source="uipack_rpg.imageset.xml" />
+		<Components>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+				<USize xRel="0" yRel="0" xAbs="9" yAbs="18" />
+				<SubImage name="barBack_horizontalLeft" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="0" xAbs="9" yAbs="0" />
+				<USize xRel="1" yRel="0" xAbs="-18" yAbs="18" />
+				<SubImage name="barBack_horizontalMid" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="1" yRel="0" xAbs="-9" yAbs="0" />
+				<USize xRel="0" yRel="0" xAbs="9" yAbs="18" />
+				<SubImage name="barBack_horizontalRight" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+				<USize xRel="0" yRel="0" xAbs="9" yAbs="18" />
+				<SubImage name="barBlue_horizontalLeft" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="0" yRel="0" xAbs="9" yAbs="0" />
+				<USize xRel="1" yRel="0" xAbs="-18" yAbs="18" />
+				<SubImage name="barBlue_horizontalMid" />
+			</Element>
+			<Element type="ElementSpriteGroupItem">
+				<UPosition xRel="1" yRel="0" xAbs="-9" yAbs="0" />
+				<USize xRel="0" yRel="0" xAbs="9" yAbs="18" />
+				<SubImage name="barBlue_horizontalRight" />
+			</Element>
+		</Components>
+	</Element>
+</ElementWidget>

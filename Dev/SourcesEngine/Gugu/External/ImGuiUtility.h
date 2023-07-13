@@ -4,6 +4,9 @@
 // File Implementation
 
 #include "Gugu/Math/Vector2.h"
+#include "Gugu/Math/UDim.h"
+
+#include <SFML/Graphics/Rect.hpp>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -22,9 +25,12 @@ void Text(const std::string& text);
 // Scalar Inputs variations.
 bool InputInt2(const char* label, int* v1, int* v2, ImGuiInputTextFlags flags = 0);
 bool InputInt2(const char* label, gugu::Vector2i* v, ImGuiInputTextFlags flags = 0);
+bool InputInt2(const char* label, gugu::Vector2u* v, ImGuiInputTextFlags flags = 0);
+bool InputInt4(const char* label, sf::IntRect* v, ImGuiInputTextFlags flags = 0);
 bool InputFloat2(const char* label, float* v1, float* v2, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
 bool InputFloat2(const char* label, gugu::Vector2f* v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
 bool InputFloat4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
+bool InputFloat4(const char* label, gugu::UDim2* v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
 
 // Color Inputs variations.
 bool ColorEdit4(const char* label, sf::Color* color, ImGuiColorEditFlags flags = 0);

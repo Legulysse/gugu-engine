@@ -68,7 +68,7 @@ void StateGuiTest::Init()
     pList->SetSize(200.f, 200.f);
     //pList->SetScaleY(0.7f);
     pList->Rotate(22.5f);
-    pList->SetImageSet("ScrollBar01.imageset.xml");
+    pList->SetImageSet("ScrollBar_01.imageset.xml");
 
     for (int i=0; i<51; ++i)
     {

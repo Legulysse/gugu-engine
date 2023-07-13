@@ -43,14 +43,37 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
+    size_t logErrorsCount = 0;
+    const auto logDelegate = [&logErrorsCount](const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)
+    {
+        if (level == ELog::Error || level == ELog::Warning)
+        {
+            logErrorsCount += 1;
+        }
+    };
+
+    // TODO: Move log setup before Engine setup (need a way to provide the engine with an existing logger).
+    // TODO: Setup the logger to ignore Debug/Log levels, only keep warnings and errors (Or handle the output directly in the delegate).
+    GetLogEngine()->SetConsoleOutput(true, true);
+    GetLogEngine()->RegisterDelegate(nullptr, logDelegate);
+
+    //----------------------------------------------
+
     // TODO: Maybe I could separate standalone tests before engine initialization (and add a special test for engine init).
     UnitTestResults results("UnitTests.log");
 
+    // Standard Tests.
     RunUnitTests_Math(&results);
     RunUnitTests_System(&results);
     RunUnitTests_Xml(&results);
     RunUnitTests_Element(&results);
     RunUnitTests_DataBinding(&results);
+
+    // Finalize Tests.
+    GUGU_UTEST_INIT("Finalize", "UnitTests_Finalize.log", &results);
+    GUGU_UTEST_SECTION("Check Log Errors");
+    GUGU_UTEST_CHECK(logErrorsCount == 0);
+    GUGU_UTEST_FINALIZE();
 
     results.PrintResults();
 

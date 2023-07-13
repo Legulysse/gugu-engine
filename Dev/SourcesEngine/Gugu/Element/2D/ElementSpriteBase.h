@@ -27,19 +27,20 @@ public:
     ElementSpriteBase();
     virtual ~ElementSpriteBase();
 
-    void SetSubRect(const sf::IntRect& _oRect);
+    void SetSubRect(const sf::IntRect& _oRect, bool updateSize = true);
     sf::IntRect GetSubRect() const;
 
     void SetRepeatTexture(bool repeatTexture);
+    bool GetRepeatTexture() const;
 
     void SetFlipTextureV(bool _bFlipTextureV);  // Flip Top-Bottom
     void SetFlipTextureH(bool _bFlipTextureH);  // Flip Left-Right
     void SetFlipTexture(bool _bFlipTextureV, bool _bFlipTextureH);  // Flip Top-Bottom and Left-Right
+    bool GetFlipTextureV() const;
+    bool GetFlipTextureH() const;
 
     void SetColor(const sf::Color& _oColor);
-    sf::Color GetColor() const;
-
-    virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement) override;
+    const sf::Color& GetColor() const;
 
 protected:
 
@@ -50,6 +51,8 @@ protected:
     virtual void RaiseDirtyVertices();
 
     virtual void OnSizeChanged() override;
+
+    virtual bool LoadFromDataImpl(ElementDataContext& context) override;
 
 protected:
 

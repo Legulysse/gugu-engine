@@ -7,6 +7,7 @@
 #include "Gugu/Math/UDim.h"
 
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 #include <pugixml.hpp>
 
@@ -17,7 +18,7 @@ namespace gugu {
 
 namespace xml {
 
-// Helper for string serialization.
+// Helpers for string serialization.
 struct StringWriter : pugi::xml_writer
 {
 public:
@@ -30,6 +31,10 @@ private:
 
     std::string* m_target = nullptr;
 };
+
+pugi::xml_document ParseDocumentFromString(const std::string& source);
+bool ParseDocumentFromString(const std::string& source, pugi::xml_document& document);
+std::string SaveDocumentToString(const pugi::xml_document& document);
 
 // Try to Parse a single value from a node's attribute (value will only be modified if the node and attribute exist).
 bool TryParseAttribute(const pugi::xml_node& node, const std::string& attributeName, bool& value);
@@ -50,18 +55,21 @@ void ParseVector2i(const pugi::xml_node& node, Vector2i& value, const Vector2i& 
 void ParseVector2f(const pugi::xml_node& node, Vector2f& value, const Vector2f& defaultValue = Vector2::Zero_f);
 void ParseRect(const pugi::xml_node& node, sf::IntRect& value, const sf::IntRect& defaultValue = sf::IntRect());
 void ParseUDim2(const pugi::xml_node& node, UDim2& value, const UDim2& defaultValue = UDim2::ZERO);
+void ParseColor(const pugi::xml_node& node, sf::Color& value, const sf::Color& defaultValue = sf::Color());
 
 // Try to Parse a data structure from a node's attributes (value will only be modified if the node exists).
 bool TryParseVector2i(const pugi::xml_node& node, Vector2i& value);
 bool TryParseVector2f(const pugi::xml_node& node, Vector2f& value);
 bool TryParseRect(const pugi::xml_node& node, sf::IntRect& value);
 bool TryParseUDim2(const pugi::xml_node& node, UDim2& value);
+bool TryParseColor(const pugi::xml_node& node, sf::Color& value);
 
 // Write a data structure in a node's attributes.
 void WriteVector2i(pugi::xml_node node, const Vector2i& value);
 void WriteVector2f(pugi::xml_node node, const Vector2f& value);
 void WriteRect(pugi::xml_node node, const sf::IntRect& value);
 void WriteUDim2(pugi::xml_node node, const UDim2& value);
+void WriteColor(pugi::xml_node node, const sf::Color& value);
 
 }   // namespace xml
 

@@ -82,6 +82,7 @@ void ElementList::AddItem(ElementListItem* _pNewItem)
 
     m_items.push_back(_pNewItem);
 
+    // TODO: I should avoid calling this for every Add/Remove and use a delayed refresh.
     RecomputeItems();
 }
 
@@ -432,11 +433,30 @@ void ElementList::OnSizeChanged()
 
 void ElementList::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
+    // Check if items changed their size and need to be updated.
+    bool updatedItemSize = false;
+
+    for (size_t i = 0; i < m_items.size(); ++i)
+    {
+        if (!m_items[i]->IsItemSizedToContent())
+        {
+            m_items[i]->ResizeToContent();
+            updatedItemSize = true;
+        }
+    }
+
+    if (updatedItemSize)
+    {
+        RecomputeItems();
+    }
+
+    // Render visible items.
     for (size_t i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
     {
         m_items[i]->Render(_kRenderPass, _kTransformSelf);
     }
 
+    // Render scroll bar.
     m_scrollBackground->Render(_kRenderPass, _kTransformSelf);
     m_scrollSlider->Render(_kRenderPass, _kTransformSelf);
     m_scrollButtonTop->Render(_kRenderPass, _kTransformSelf);

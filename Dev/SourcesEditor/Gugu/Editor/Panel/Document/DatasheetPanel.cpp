@@ -618,10 +618,10 @@ void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMembe
 
 void DatasheetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    if (event == EResourceEvent::DependencyRemoved)
-    {
-        RaiseDirty();
-    }
+    //if (event == EResourceEvent::DependencyRemoved
+    //    || event == EResourceEvent::DependencyUpdated)
+    //{
+    //}
 }
 
 }   //namespace gugu

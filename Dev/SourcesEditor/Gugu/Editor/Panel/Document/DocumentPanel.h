@@ -28,7 +28,10 @@ public:
     DocumentPanel(Resource* resource);
     virtual ~DocumentPanel();
 
+    void InitializePanel();
+
     virtual void UpdatePanel(const DeltaTime& dt) final;
+    virtual void UpdateHierarchy(const DeltaTime& dt) final;
     virtual void UpdateProperties(const DeltaTime& dt) final;
 
     bool Save();
@@ -54,8 +57,13 @@ public:
 protected:
 
     void SaveState();
+    void ReloadCurrentState();
     bool UndoState();
     bool RedoState();
+
+    virtual bool SaveToFileImpl();
+    virtual bool SaveStateImpl(std::string& result);
+    virtual bool LoadStateImpl(const std::string& value);
 
     virtual void OnSaved() {}
     virtual void OnUndoRedo() {}
@@ -63,6 +71,7 @@ protected:
     virtual void OnVisibilityChanged(bool visible) {}
 
     virtual void UpdatePanelImpl(const DeltaTime& dt) = 0;
+    virtual void UpdateHierarchyImpl(const DeltaTime& dt) {}
     virtual void UpdatePropertiesImpl(const DeltaTime& dt) {}
 
 protected:

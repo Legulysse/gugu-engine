@@ -19,11 +19,16 @@ namespace gugu
 {
     struct RenderPass;
     struct InteractionInfos;
+    struct ElementParseContext;
+    struct ElementSaveContext;
+    struct ElementDataContext;
     class ElementEventHandler;
+    class ElementWidget;
 }
 
 namespace pugi
 {
+    // TODO: remove
     class xml_node;
 }
 
@@ -31,7 +36,7 @@ namespace pugi
 // File Declarations
 
 namespace gugu {
-    
+
 class Element
 {
 public:
@@ -51,11 +56,15 @@ public:
     }
 
     void AddChild(Element* child);
+    bool InsertChild(Element* child, size_t index);
+    Element* AddChildWidget(const std::string& elementWidgetID);
+    Element* AddChildWidget(ElementWidget* elementWidget);
+
     void RemoveChild(Element* child);
     void DeleteAllChildren();
 
     // Set the Element's parent, without registering it in the parent's children list.
-    void SetParent(Element* parent, bool recomputeDimensions = false);
+    void SetParent(Element* parent, bool recomputeDimensions = true);
 
     Element* GetParent() const;
     Element* GetTopParent() const;
@@ -142,6 +151,12 @@ public:
     const sf::Transform& GetTransform() const;
     const sf::Transform& GetInverseTransform() const;
 
+    // Get the Element local bounds corners (based on its position and size) projected into global space.
+    void GetGlobalCorners(Vector2f& topLeft, Vector2f& topRight, Vector2f& bottomLeft, Vector2f& bottomRight) const;
+
+    // Get the Element global bounds (based on its position and size) as an axis-aligned rectangle.
+    sf::FloatRect Element::GetGlobalBounds() const;
+
     //----------------------------------------------
     // Z-Index
 
@@ -181,9 +196,12 @@ public:
     void SetUnifiedPosition(const UDim2& _oNewDimPos);
     void SetUnifiedSize(const UDim2& _oNewDimSize);
 
-    UDim2 GetUnifiedOrigin() const;
-    UDim2 GetUnifiedPosition() const;
-    UDim2 GetUnifiedSize() const;
+    bool GetUseUnifiedOrigin() const;
+    bool GetUseUnifiedPosition() const;
+    bool GetUseUnifiedSize() const;
+    const UDim2& GetUnifiedOrigin() const;
+    const UDim2& GetUnifiedPosition() const;
+    const UDim2& GetUnifiedSize() const;
 
     void ResetUnifiedOrigin();
     void ResetUnifiedPosition();
@@ -199,9 +217,10 @@ public:
     ElementEventHandler* GetEvents();
 
     //----------------------------------------------
-    // Loading
+    // Serialization
 
-    virtual bool LoadFromXml(const pugi::xml_node& _oNodeElement);
+    bool LoadFromData(ElementDataContext& context);
+    bool LoadFromWidgetInstanceData(ElementDataContext& context);
 
 protected:
 
@@ -209,6 +228,15 @@ protected:
     // Render
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
+
+    //----------------------------------------------
+    // Serialization
+
+    bool LoadChildrenFromData(ElementDataContext& context);
+    void FillElementPath(ElementDataContext& context);
+
+    virtual bool LoadFromDataImpl(ElementDataContext& context);
+    virtual bool LoadFromWidgetInstanceDataImpl(ElementDataContext& context);
 
     //----------------------------------------------
     // Internal Events

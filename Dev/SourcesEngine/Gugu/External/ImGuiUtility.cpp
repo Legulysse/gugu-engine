@@ -30,13 +30,32 @@ bool InputInt2(const char* label, int* v1, int* v2, ImGuiInputTextFlags flags)
 
 bool InputInt2(const char* label, gugu::Vector2i* v, ImGuiInputTextFlags flags)
 {
-    int temp[2] = { v->x, v->y };
+    return InputInt2(label, &v->x, &v->y, flags);
+}
 
-    bool updated = ImGui::InputInt2(label, temp, flags);
+bool InputInt2(const char* label, gugu::Vector2u* v, ImGuiInputTextFlags flags)
+{
+    gugu::Vector2i temp = gugu::Vector2i(*v);
+    if (InputInt2(label, &temp, flags))
+    {
+        *v = gugu::Vector2u(temp);
+        return true;
+    }
+
+    return false;
+}
+
+bool InputInt4(const char* label, sf::IntRect* v, ImGuiInputTextFlags flags)
+{
+    int temp[4] = { v->left, v->top, v->width, v->height };
+
+    bool updated = ImGui::InputInt4(label, temp, flags);
     if (updated)
     {
-        v->x = temp[0];
-        v->y = temp[1];
+        v->left = temp[0];
+        v->top = temp[1];
+        v->width = temp[2];
+        v->height = temp[3];
     }
 
     return updated;
@@ -58,16 +77,7 @@ bool InputFloat2(const char* label, float* v1, float* v2, const char* format, Im
 
 bool InputFloat2(const char* label, gugu::Vector2f* v, const char* format, ImGuiInputTextFlags flags)
 {
-    float temp[2] = { v->x, v->y };
-
-    bool updated = ImGui::InputFloat2(label, temp, format, flags);
-    if (updated)
-    {
-        v->x = temp[0];
-        v->y = temp[1];
-    }
-
-    return updated;
+    return InputFloat2(label, &v->x, &v->y, format, flags);
 }
 
 bool InputFloat4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, const char* format, ImGuiInputTextFlags flags)
@@ -84,6 +94,11 @@ bool InputFloat4(const char* label, gugu::Vector2f* v1, gugu::Vector2f* v2, cons
     }
 
     return updated;
+}
+
+bool InputFloat4(const char* label, gugu::UDim2* v, const char* format, ImGuiInputTextFlags flags)
+{
+    return InputFloat4(label, &v->relative, &v->absolute, format, flags);
 }
 
 bool ColorEdit4(const char* label, sf::Color* color, ImGuiColorEditFlags flags)

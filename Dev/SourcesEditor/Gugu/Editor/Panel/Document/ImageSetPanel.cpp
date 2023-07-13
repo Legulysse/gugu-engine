@@ -65,10 +65,24 @@ ImageSetPanel::~ImageSetPanel()
     SafeDelete(m_renderViewport);
 }
 
+void ImageSetPanel::OnUndoRedo()
+{
+    RefreshSpriteTexture();
+
+    if (m_selectedIndex >= 0 && m_imageSet->GetSubImageCount() > 0)
+    {
+        m_selectedIndex = Min(m_selectedIndex, (int)m_imageSet->GetSubImageCount() - 1);
+    }
+    else
+    {
+        m_selectedIndex = -1;
+    }
+}
+
 void ImageSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 {
     // Toolbar.
-    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 1.f, 16.f))
+    if (ImGui::SliderFloat("Zoom Factor", &m_zoomFactor, 0.f, 16.f))
     {
         m_renderViewport->SetZoom(m_zoomFactor);
     }
@@ -351,11 +365,7 @@ void ImageSetPanel::CreateGizmo()
 
 void ImageSetPanel::UpdateGizmo()
 {
-    // Handle picking (should be used inside a viewport begin/end block).
-    ImGuiIO& io = ImGui::GetIO();
-    const Vector2f canvas_p0 = ImGui::GetCursorScreenPos();
-    const Vector2f mouse_pos_in_canvas(io.MousePos.x - canvas_p0.x, io.MousePos.y - canvas_p0.y);
-    Vector2f pickedGlobalPosition = m_renderViewport->GetPickedPosition(Vector2i(mouse_pos_in_canvas));
+    Vector2f pickedGlobalPosition = m_renderViewport->GetMousePickedPosition();
 
     const bool is_hovered = ImGui::IsItemHovered();
     const bool is_active = ImGui::IsItemActive();
@@ -536,15 +546,6 @@ void ImageSetPanel::OnRemoveSubImage()
 
     SubImage* subImage = m_imageSet->GetSubImage(m_selectedIndex);
 
-    for (auto& document : GetEditor()->GetDocuments())
-    {
-        AnimSetPanel* animSetPanel = dynamic_cast<AnimSetPanel*>(document);
-        if (animSetPanel)
-        {
-            animSetPanel->OnSubImageRemoved(subImage);
-        }
-    }
-
     m_imageSet->DeleteSubImage(subImage);
     m_selectedIndex = Clamp<int>(m_selectedIndex, -1, (int)m_imageSet->GetSubImageCount() - 1);
 
@@ -553,15 +554,6 @@ void ImageSetPanel::OnRemoveSubImage()
 
 void ImageSetPanel::OnRemoveAllSubImages()
 {
-    for (auto& document : GetEditor()->GetDocuments())
-    {
-        AnimSetPanel* animSetPanel = dynamic_cast<AnimSetPanel*>(document);
-        if (animSetPanel)
-        {
-            animSetPanel->OnAllSubImagesRemoved(m_imageSet);
-        }
-    }
-
     m_imageSet->DeleteAllSubImages();
     m_selectedIndex = -1;
 
@@ -646,11 +638,10 @@ void ImageSetPanel::GenerateSubImagesFromSize(const Vector2i& itemSize, const Ve
 
 void ImageSetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)
 {
-    if (event == EResourceEvent::DependencyRemoved)
+    if (event == EResourceEvent::DependencyRemoved
+        || event == EResourceEvent::DependencyUpdated)
     {
         RefreshSpriteTexture();
-
-        RaiseDirty();
     }
 }
 

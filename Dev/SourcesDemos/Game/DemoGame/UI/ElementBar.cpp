@@ -26,25 +26,25 @@ ElementBar::~ElementBar()
 
 void ElementBar::InitBar(BarColor _eColor, float _fBarBorderSizeX)
 {
-    std::string strTemplate = "";
+    std::string widget = "";
     switch (_eColor)
     {
     default:
     case BarColor::Red:
-        strTemplate = "RedBar.xml";
+        widget = "RedBar.widget.xml";
         break;
     case BarColor::Blue:
-        strTemplate = "BlueBar.xml";
+        widget = "BlueBar.widget.xml";
         break;
     case BarColor::Green:
-        strTemplate = "GreenBar.xml";
+        widget = "GreenBar.widget.xml";
         break;
     case BarColor::Yellow:
-        strTemplate = "YellowBar.xml";
+        widget = "YellowBar.widget.xml";
         break;
     }
 
-    LoadFromFile(strTemplate);
+    LoadFromWidget(widget);
 
     float fBarBorderSizeX = _fBarBorderSizeX;
 

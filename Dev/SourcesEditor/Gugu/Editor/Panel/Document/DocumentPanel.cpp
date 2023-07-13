@@ -29,14 +29,17 @@ DocumentPanel::DocumentPanel(Resource* resource)
     , m_closed(false)
     , m_currentUndoStateIndex(0)
 {
-    m_resourceID = resource->GetID();
+    m_resourceID = m_resource->GetID();
     m_title = m_resourceID;
-
-    SaveState();
 }
 
 DocumentPanel::~DocumentPanel()
 {
+}
+
+void DocumentPanel::InitializePanel()
+{
+    SaveState();
 }
 
 void DocumentPanel::UpdatePanel(const DeltaTime& dt)
@@ -86,9 +89,14 @@ void DocumentPanel::UpdateProperties(const DeltaTime& dt)
     UpdatePropertiesImpl(dt);
 }
 
+void DocumentPanel::UpdateHierarchy(const DeltaTime& dt)
+{
+    UpdateHierarchyImpl(dt);
+}
+
 bool DocumentPanel::Save()
 {
-    if (m_resource && m_resource->SaveToFile())
+    if (m_resource && SaveToFileImpl())
     {
         m_dirty = false;
 
@@ -124,7 +132,7 @@ bool DocumentPanel::Redo()
 void DocumentPanel::SaveState()
 {
     std::string state;
-    if (m_resource->SaveToString(state))
+    if (SaveStateImpl(state))
     {
         // Erase history past the current index.
         if (m_currentUndoStateIndex + 1 < m_undoStates.size())
@@ -148,13 +156,25 @@ void DocumentPanel::SaveState()
     }
 }
 
+void DocumentPanel::ReloadCurrentState()
+{
+    if (!m_undoStates.empty() && LoadStateImpl(m_undoStates[m_currentUndoStateIndex]))
+    {
+        GetResources()->NotifyResourceUpdated(m_resource);
+        GetResources()->UpdateResourceDependencies(m_resource);
+    }
+}
+
 bool DocumentPanel::UndoState()
 {
     if (!m_undoStates.empty() && m_currentUndoStateIndex > 0)
     {
         size_t newIndex = m_currentUndoStateIndex - 1;
-        if (m_resource->LoadFromString(m_undoStates[newIndex]))
+        if (LoadStateImpl(m_undoStates[newIndex]))
         {
+            GetResources()->NotifyResourceUpdated(m_resource);
+            GetResources()->UpdateResourceDependencies(m_resource);
+
             m_currentUndoStateIndex = newIndex;
             m_dirty = true;
             return true;
@@ -169,8 +189,11 @@ bool DocumentPanel::RedoState()
     if (!m_undoStates.empty() && m_currentUndoStateIndex + 1 < m_undoStates.size())
     {
         size_t newIndex = m_currentUndoStateIndex + 1;
-        if (m_resource->LoadFromString(m_undoStates[newIndex]))
+        if (LoadStateImpl(m_undoStates[newIndex]))
         {
+            GetResources()->NotifyResourceUpdated(m_resource);
+            GetResources()->UpdateResourceDependencies(m_resource);
+
             m_currentUndoStateIndex = newIndex;
             m_dirty = true;
             return true;
@@ -178,6 +201,21 @@ bool DocumentPanel::RedoState()
     }
 
     return false;
+}
+
+bool DocumentPanel::SaveToFileImpl()
+{
+    return m_resource->SaveToFile();
+}
+
+bool DocumentPanel::LoadStateImpl(const std::string& value)
+{
+    return m_resource->LoadFromString(value);
+}
+
+bool DocumentPanel::SaveStateImpl(std::string& result)
+{
+    return m_resource->SaveToString(result);
 }
 
 Resource* DocumentPanel::GetResource() const
@@ -207,6 +245,7 @@ void DocumentPanel::ForceFocus()
 
 void DocumentPanel::RaiseDirty()
 {
+    GetResources()->NotifyResourceUpdated(m_resource);
     GetResources()->UpdateResourceDependencies(m_resource);
 
     SaveState();

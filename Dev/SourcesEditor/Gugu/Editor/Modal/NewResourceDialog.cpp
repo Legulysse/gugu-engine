@@ -15,6 +15,7 @@
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/ParticleEffect.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
@@ -37,6 +38,7 @@ NewResourceDialog::NewResourceDialog(const std::string& resourcePath, EResourceT
         { EResourceType::AnimSet, "animset.xml" },
         { EResourceType::ImageSet, "imageset.xml" },
         { EResourceType::ParticleEffect, "particle.xml" },
+        { EResourceType::ElementWidget, "widget.xml" },
     };
 
     auto itExtension = resourceExtensions.find(m_resourceType);
@@ -124,6 +126,10 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
         else if (m_resourceType == EResourceType::ParticleEffect)
         {
             newResource = new ParticleEffect;
+        }
+        else if (m_resourceType == EResourceType::ElementWidget)
+        {
+            newResource = new ElementWidget;
         }
         else if (m_resourceType == EResourceType::Datasheet)
         {

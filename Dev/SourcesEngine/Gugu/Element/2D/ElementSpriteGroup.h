@@ -12,6 +12,7 @@
 
 namespace gugu
 {
+    class ElementWidget;
     class ElementSpriteGroup;
     class Texture;
 }
@@ -43,6 +44,8 @@ protected:
     virtual void OnTransformChanged() override;
     virtual void OnVisibleChanged() override;
 
+    virtual bool LoadFromDataImpl(ElementDataContext& context) override;
+
 protected:
 
     ElementSpriteGroup* m_spriteGroup;
@@ -56,30 +59,32 @@ public:
     ElementSpriteGroup();
     virtual ~ElementSpriteGroup();
 
+    bool LoadFromWidget(const std::string& elementWidgetID);
+    bool LoadFromWidget(ElementWidget* elementWidget);
+
     void SetTexture(const std::string& _strTexturePath);  //TODO: Rename as textureID
     void SetTexture(Texture* _pTexture);
     Texture* GetTexture() const;
 
-    void SetColor(const sf::Color& color);
-
-    size_t AddItem(ElementSpriteGroupItem* _pNewItem);
+    size_t AddItem(ElementSpriteGroupItem* item);
+    //void RemoveItem(ElementSpriteGroupItem* item);
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
+    const std::vector<ElementSpriteGroupItem*>& GetItems() const;
 
     void RaiseNeedRecompute();
 
-    bool LoadFromFile(const std::string& _strPath);
-    virtual bool LoadFromXml(const pugi::xml_node& nodeSelf) override;
-
 protected:
+
+    void Recompute();
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
 
+    virtual bool LoadFromDataImpl(ElementDataContext& context) override;
+
 protected:
 
     Texture* m_texture;
-    sf::Color m_color;
-    bool m_applyColor;
 
     sf::VertexArray m_vertices;
     bool m_needRecompute;

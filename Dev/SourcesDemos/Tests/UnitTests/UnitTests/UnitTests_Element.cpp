@@ -8,10 +8,14 @@
 // Includes
 
 #include "Gugu/Element/Element.h"
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Core/EngineConfig.h"
+#include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/External/PugiXmlUtility.h"
 
 using namespace gugu;
 
@@ -25,6 +29,119 @@ void RunUnitTests_Element(UnitTestResults* results)
     GUGU_UTEST_INIT("Element", "UnitTests_Element.log", results);
 
     //----------------------------------------------
+
+    GUGU_UTEST_SECTION("ElementWidget");
+    {
+        static const std::string dummyElementWidgetString = {
+            "<ElementWidget serializationVersion=\"1\">"
+                "<Element type=\"Element\" name=\"root\">"
+                    "<Children>"
+                        "<Element type=\"ElementSprite\" name=\"sprite_1\">"
+                            "<Size x=\"128\" y=\"128\"/>"
+                        "</Element>"
+                        "<Element type=\"Element\">"
+                            "<Children>"
+                                "<Element type=\"ElementSprite\" name=\"sprite_2\">"
+                                    "<Size x=\"128\" y=\"128\"/>"
+                                "</Element>"
+                            "</Children>"
+                        "</Element>"
+                    "</Children>"
+                "</Element>"
+            "</ElementWidget>"
+        };
+
+        static const std::string dummyElementDataString = {
+            "<Element type=\"Element\" name=\"root\">"
+                "<Children>"
+                    "<Element type=\"ElementSprite\" name=\"sprite_1\">"
+                        "<Size x=\"128\" y=\"128\"/>"
+                    "</Element>"
+                    "<Element type=\"Element\">"
+                        "<Children>"
+                            "<Element type=\"ElementSprite\" name=\"sprite_2\">"
+                                "<Size x=\"128\" y=\"128\"/>"
+                            "</Element>"
+                        "</Children>"
+                    "</Element>"
+                "</Children>"
+            "</Element>"
+        };
+
+        ElementWidget* dummyWidget = new ElementWidget;
+
+        GUGU_UTEST_SUBSECTION("Serialization");
+        {
+            // Test ElementWidget Serialization
+            if (GUGU_UTEST_CHECK(dummyWidget->LoadFromString(dummyElementWidgetString)))
+            {
+                if (GUGU_UTEST_CHECK(dummyWidget->GetRootData()))
+                {
+                    GUGU_UTEST_CHECK(dummyWidget->GetRootData()->GetSerializedType() == "Element");
+
+                    if (GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children.size() == 2))
+                    {
+                        GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[0]->GetSerializedType() == "ElementSprite");
+                        GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[0]->children.size() == 0);
+
+                        ElementSpriteData* spriteData = dynamic_cast<ElementSpriteData*>(dummyWidget->GetRootData()->children[0]);
+                        if (GUGU_UTEST_CHECK(spriteData != nullptr))
+                        {
+                            GUGU_UTEST_CHECK(ApproxEqual(spriteData->size, Vector2f(128, 128), math::Epsilon3));
+                        }
+
+                        GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[1]->GetSerializedType() == "Element");
+                        GUGU_UTEST_CHECK(dummyWidget->GetRootData()->children[1]->children.size() == 1);
+                    }
+                }
+
+                std::string saveResultString;
+                dummyWidget->SaveToString(saveResultString);
+                GUGU_UTEST_CHECK(saveResultString == dummyElementWidgetString);
+            }
+
+            // Test single ElementData Serialization
+            pugi::xml_document xmlLoadDocument = xml::ParseDocumentFromString(dummyElementDataString);
+            pugi::xml_node xmlRootNode = xmlLoadDocument.first_child();
+
+            BaseElementData* dummyElementData = InstanciateElementData(xmlRootNode);
+            ElementParseContext parseContext;
+            parseContext.node = xmlRootNode;
+            if (GUGU_UTEST_CHECK(dummyElementData->LoadFromXml(parseContext)))
+            {
+                pugi::xml_document xmlSaveDocument;
+                ElementSaveContext saveContext;
+                saveContext.node = xmlSaveDocument;
+                if (GUGU_UTEST_CHECK(dummyElementData->SaveToXml(saveContext)))
+                {
+                    std::string xmlSaveString = xml::SaveDocumentToString(xmlSaveDocument);
+                    GUGU_UTEST_CHECK(xmlSaveString == dummyElementDataString);
+                }
+            }
+
+            SafeDelete(dummyElementData);
+        }
+
+        GUGU_UTEST_SUBSECTION("Path Bindings");
+        {
+            ElementPathBindings pathBindings;
+            Element* dummyWidgetInstance = dummyWidget->InstanciateWidget(pathBindings);
+
+            if (GUGU_UTEST_CHECK(dummyWidgetInstance != nullptr))
+            {
+                GUGU_UTEST_CHECK(pathBindings.elementFromPath.size() == 3);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("root") != nullptr);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("sprite_1") == nullptr);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("sprite_2") == nullptr);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("root/sprite_1") != nullptr);
+                GUGU_UTEST_CHECK(pathBindings.GetElement("root/sprite_2") != nullptr);
+            }
+
+            SafeDelete(dummyWidgetInstance);
+        }
+
+        SafeDelete(dummyWidget);
+    }
 
     GUGU_UTEST_SECTION("Picking");
     {

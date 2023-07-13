@@ -7,7 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Events/ElementEventHandler.h"
+#include "Gugu/Element/ElementData.h"
+#include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Font.h"
 #include "Gugu/Window/Renderer.h"
@@ -26,6 +27,7 @@ ElementText::ElementText()
     , m_sfText(nullptr)
     , m_resizeRule(ETextResizeRule::FitSize)
     , m_isMultiline(false)
+    , m_needRecompute(false)
     , m_skipRecomputeOnResize(false)
 {
     m_sfText = new sf::Text;
@@ -54,7 +56,7 @@ void ElementText::SetFont(Font* _pFont)
         m_font = _pFont;
         m_sfText->setFont(*m_font->GetSFFont());
     
-        Recompute();
+        RaiseNeedRecompute();
     }
 }
 
@@ -62,7 +64,7 @@ void ElementText::SetFontSize(unsigned int _uiSize)
 {
     m_sfText->setCharacterSize(_uiSize);
     
-    Recompute();
+    RaiseNeedRecompute();
 }
 
 void ElementText::SetFontColor(const sf::Color& _oColor)
@@ -74,14 +76,14 @@ void ElementText::SetResizeRule(ETextResizeRule::Type _eResizeRule)
 {
     m_resizeRule = _eResizeRule;
     
-    Recompute();
+    RaiseNeedRecompute();
 }
 
 void ElementText::SetMultiline(bool _bIsMultiline)
 {
     m_isMultiline = _bIsMultiline;
     
-    Recompute();
+    RaiseNeedRecompute();
 }
 
 void ElementText::SetText(const sf::String& value /*, bool _bResize */)
@@ -90,7 +92,7 @@ void ElementText::SetText(const sf::String& value /*, bool _bResize */)
     {
         m_textValue = value;
 
-        Recompute();
+        RaiseNeedRecompute();
     }
 
     //if (/*_bResize && */ !m_bIsMultiline)
@@ -105,8 +107,15 @@ sf::String ElementText::GetText() const
     return m_textValue;
 }
 
+void ElementText::RaiseNeedRecompute()
+{
+    m_needRecompute = true;
+}
+
 void ElementText::Recompute()
 {
+    m_needRecompute = false;
+
     if (!m_isMultiline)
     {
         m_sfText->setString(m_textValue);
@@ -266,6 +275,11 @@ void ElementText::Recompute()
 
 void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
+    if (m_needRecompute)
+    {
+        Recompute();
+    }
+
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {
@@ -298,8 +312,33 @@ void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTr
 void ElementText::OnSizeChanged()
 {
     if (!m_skipRecomputeOnResize)
-        Recompute();
-    m_skipRecomputeOnResize = false;
+    {
+        RaiseNeedRecompute();
+    }
+    else
+    {
+        m_skipRecomputeOnResize = false;
+    }
+}
+
+bool ElementText::LoadFromDataImpl(ElementDataContext& context)
+{
+    if (!Element::LoadFromDataImpl(context))
+        return false;
+
+    ElementTextData* textData = dynamic_cast<ElementTextData*>(context.data);
+
+    if (textData->font)
+    {
+        SetFont(textData->font);
+    }
+
+    SetMultiline(textData->multiline);
+
+    // Assume Utf8 data.
+    SetText(sf::String::fromUtf8(textData->text.begin(), textData->text.end()));
+
+    return true;
 }
 
 }   // namespace gugu

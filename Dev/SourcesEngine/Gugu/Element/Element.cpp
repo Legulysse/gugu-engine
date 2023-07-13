@@ -692,7 +692,7 @@ bool Element::LoadFromData(ElementDataContext& context)
     return result;
 }
 
-bool Element::LoadFromWidgetData(ElementDataContext& context)
+bool Element::LoadFromWidgetInstanceData(ElementDataContext& context)
 {
     // Load this Element override data from a given ElementWidgetData.
     // - At this point, the element has already been deserialized through ElementWidget::InstanciateWidget.
@@ -704,7 +704,7 @@ bool Element::LoadFromWidgetData(ElementDataContext& context)
 
     FillElementPath(context);
     context.path.push_back(elementData->name);
-    result = LoadFromWidgetDataImpl(context);
+    result = LoadFromWidgetInstanceDataImpl(context);
 
     if (context.dataBindings)
     {
@@ -830,7 +830,7 @@ bool Element::LoadFromDataImpl(ElementDataContext& context)
     return true;
 }
 
-bool Element::LoadFromWidgetDataImpl(ElementDataContext& context)
+bool Element::LoadFromWidgetInstanceDataImpl(ElementDataContext& context)
 {
     ElementWidgetData* widgetInstanceData = dynamic_cast<ElementWidgetData*>(context.data);
 

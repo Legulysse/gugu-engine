@@ -140,7 +140,7 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
         if (result)
         {
             result->SetParent(parent);
-            /*bool result =*/ result->LoadFromWidgetData(context);
+            /*bool result =*/ result->LoadFromWidgetInstanceData(context);
             // TODO: handle bool return.
         }
     }

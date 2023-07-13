@@ -220,7 +220,7 @@ public:
     // Serialization
 
     bool LoadFromData(ElementDataContext& context);
-    bool LoadFromWidgetData(ElementDataContext& context);
+    bool LoadFromWidgetInstanceData(ElementDataContext& context);
 
 protected:
 
@@ -236,7 +236,7 @@ protected:
     void FillElementPath(ElementDataContext& context);
 
     virtual bool LoadFromDataImpl(ElementDataContext& context);
-    virtual bool LoadFromWidgetDataImpl(ElementDataContext& context);
+    virtual bool LoadFromWidgetInstanceDataImpl(ElementDataContext& context);
 
     //----------------------------------------------
     // Internal Events

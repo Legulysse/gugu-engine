@@ -154,6 +154,9 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
 {
     if (ImGui::BeginPopupContextItem())
     {
+        bool isRootNode = node == m_widgetRootData;
+        bool isComponent = dynamic_cast<ElementSpriteGroupItemData*>(node) != nullptr;
+
         if (ImGui::BeginMenu("Add Child..."))
         {
             BaseElementData* elementData = DisplayElementInstanciationContextMenu();
@@ -177,9 +180,9 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
             ImGui::EndMenu();
         }
 
-        if (!dynamic_cast<ElementSpriteGroupItemData*>(node))
+        if (!isComponent)
         {
-            if (node != m_widgetRootData)
+            if (!isRootNode)
             {
                 if (ImGui::BeginMenu("Insert..."))
                 {
@@ -210,7 +213,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
                     parseContext.node = xmlDocument.first_child();
                     elementData->LoadFromXml(parseContext);
 
-                    if (node == m_widgetRootData)
+                    if (isRootNode)
                     {
                         deleted = node;
                         m_elementWidget->SetRootData(elementData, false);
@@ -229,48 +232,52 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
             }
         }
 
+        // TODO: handle components copy/paste.
+        if (!isComponent)
+        {
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Copy"))
+            {
+                CopyElementToClipboard(node);
+            }
+
+            ImGui::BeginDisabled(isRootNode);
+            if (ImGui::MenuItem("Cut"))
+            {
+                CopyElementToClipboard(node);
+                deleted = node;
+            }
+            ImGui::EndDisabled();
+
+            ImGui::BeginDisabled(isRootNode);
+            if (ImGui::MenuItem("Paste (Insert)"))
+            {
+                size_t index = StdVectorIndexOf(node->parent->children, node);
+
+                PasteElementFromClipboard(node->parent, index);
+            }
+            ImGui::EndDisabled();
+
+            if (ImGui::MenuItem("Paste as Child"))
+            {
+                PasteElementFromClipboard(node);
+            }
+
+            ImGui::BeginDisabled(isRootNode);
+            if (ImGui::MenuItem("Duplicate"))
+            {
+                size_t index = StdVectorIndexOf(node->parent->children, node);
+
+                CopyElementToClipboard(node);
+                PasteElementFromClipboard(node->parent, index + 1);
+            }
+            ImGui::EndDisabled();
+        }
+
         ImGui::Separator();
 
-        if (ImGui::MenuItem("Copy"))
-        {
-            CopyElementToClipboard(node);
-        }
-
-        ImGui::BeginDisabled(node == m_widgetRootData);
-        if (ImGui::MenuItem("Cut"))
-        {
-            CopyElementToClipboard(node);
-            deleted = node;
-        }
-        ImGui::EndDisabled();
-
-        ImGui::BeginDisabled(node == m_widgetRootData);
-        if (ImGui::MenuItem("Paste (Insert)"))
-        {
-            size_t index = StdVectorIndexOf(node->parent->children, node);
-
-            PasteElementFromClipboard(node->parent, index);
-        }
-        ImGui::EndDisabled();
-
-        if (ImGui::MenuItem("Paste as Child"))
-        {
-            PasteElementFromClipboard(node);
-        }
-
-        ImGui::BeginDisabled(node == m_widgetRootData);
-        if (ImGui::MenuItem("Duplicate"))
-        {
-            size_t index = StdVectorIndexOf(node->parent->children, node);
-
-            CopyElementToClipboard(node);
-            PasteElementFromClipboard(node->parent, index + 1);
-        }
-        ImGui::EndDisabled();
-
-        ImGui::Separator();
-
-        ImGui::BeginDisabled(node == m_widgetRootData);
+        ImGui::BeginDisabled(isRootNode);
         if (ImGui::MenuItem("Delete") && !deleted)
         {
             deleted = node;

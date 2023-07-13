@@ -26,8 +26,7 @@ bool ProjectSettings::LoadFromFile(const std::string& pathFile)
     if (!rootNode)
         return false;
 
-    std::string projectDirectoryPath = pathFile;
-    DirectoryPartFromPath(pathFile, projectDirectoryPath);
+    std::string projectDirectoryPath = DirectoryPartFromPath(pathFile);
 
     projectAssetsPath = CombinePaths(projectDirectoryPath, rootNode.child("AssetsPath").attribute("value").value());
     projectBindingFilePath = CombinePaths(projectDirectoryPath, rootNode.child("BindingFilePath").attribute("value").value());

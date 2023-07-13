@@ -60,22 +60,18 @@ template<typename T>
 T FromString(const std::string& _strValue);
 
 std::string StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo);
-void StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo, std::string& _strResult);
 void StdStringReplaceSelf(std::string& _strValue, const std::string& _strFrom, const std::string& _strTo);
 
 std::string StdStringReplace(const std::string& value, const char& from, const char& to);
-void StdStringReplace(const std::string& value, const char& from, const char& to, std::string& result);
 void StdStringReplaceSelf(std::string& value, const char& from, const char& to);
 
 void StdStringSplit(std::string_view _strValue, std::string_view _strDelimiter, std::vector<std::string>& _vecTokens);
 void StdStringSplit(std::string_view _strValue, char _strDelimiter, std::vector<std::string>& _vecTokens);
 
 std::string StdStringToLower(const std::string& _strValue);
-void StdStringToLower(const std::string& _strValue, std::string& _strResult);
 void StdStringToLowerSelf(std::string& _strValue);
 
 std::string StdStringToUpper(const std::string& _strValue);
-void StdStringToUpper(const std::string& _strValue, std::string& _strResult);
 void StdStringToUpperSelf(std::string& _strValue);
 
 bool StdStringStartsWith(std::string_view _strValue, std::string_view _strSub);
@@ -115,7 +111,6 @@ void StringNumberFormatSelf(std::string& value, size_t leadingZeros = 0, const s
 
 // Convert all '\\' to '/', strip all "/xxx/.." parts, strip leading and trailing '/' if needed.
 std::string NormalizePath(const std::string& path);
-void NormalizePath(const std::string& path, std::string& resultPath);
 void NormalizePathSelf(std::string& path);
 
 // Combine two given paths into a single path with a separator. The resulting path will be normalized.
@@ -124,17 +119,14 @@ void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std
 
 // Simply append a trailing path separator '/' if there is none already. The given path is considered as normalized.
 std::string EnsureTrailingPathSeparator(const std::string& path);
-void EnsureTrailingPathSeparator(const std::string& path, std::string& resultPath);
 void EnsureTrailingPathSeparatorSelf(std::string& path);
 
 // Return the directories path part of a given pathFile. The given path is considered as normalized.
 std::string DirectoryPartFromPath(const std::string& pathFile);
-void DirectoryPartFromPath(const std::string& pathFile, std::string& resultPath);
 void DirectoryPartFromPathSelf(std::string& pathFile);
 
 // Return the file name part of a given pathFile. The given path is considered as normalized.
 std::string NamePartFromPath(const std::string& pathFile);
-void NamePartFromPath(const std::string& pathFile, std::string& file);
 void NamePartFromPathSelf(std::string& pathFile);
 
 // Check if a given path starts with a given subPath. Both paths are considered as complete and normalized.

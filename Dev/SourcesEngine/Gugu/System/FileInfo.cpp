@@ -27,7 +27,7 @@ FileInfo::FileInfo(const std::string& directoryPath, const std::string& fileName
 
 FileInfo::FileInfo(const std::string& path)
 {
-    NormalizePath(path, m_path);
+    m_path = NormalizePath(path);
     UpdateFromPath();
 }
 

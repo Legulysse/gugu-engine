@@ -79,12 +79,6 @@ std::string StdStringReplace(const std::string& value, const std::string& from, 
     return result;
 }
 
-void StdStringReplace(const std::string& value, const std::string& from, const std::string& to, std::string& result)
-{
-    result = value;
-    StdStringReplaceSelf(result, from, to);
-}
-
 void StdStringReplaceSelf(std::string& value, const std::string& from, const std::string& to)
  {
     size_t lengthFrom = from.length();
@@ -103,12 +97,6 @@ std::string StdStringReplace(const std::string& value, const char& from, const c
     std::string result = value;
     StdStringReplaceSelf(result, from, to);
     return result;
-}
-
-void StdStringReplace(const std::string& value, const char& from, const char& to, std::string& result)
-{
-    result = value;
-    StdStringReplaceSelf(result, from, to);
 }
 
 void StdStringReplaceSelf(std::string& _strValue, const char& from, const char& to)
@@ -183,12 +171,6 @@ std::string StdStringToLower(const std::string& _strValue)
     return strResult;
 }
 
-void StdStringToLower(const std::string& _strValue, std::string& _strResult)
-{
-    _strResult = _strValue;
-    StdStringToLowerSelf(_strResult);
-}
-
 void StdStringToLowerSelf(std::string& _strValue)
 {
     std::locale loc;
@@ -201,12 +183,6 @@ std::string StdStringToUpper(const std::string& _strValue)
     std::string strResult = _strValue;
     StdStringToUpperSelf(strResult);
     return strResult;
-}
-
-void StdStringToUpper(const std::string& _strValue, std::string& _strResult)
-{
-    _strResult = _strValue;
-    StdStringToUpperSelf(_strResult);
 }
 
 void StdStringToUpperSelf(std::string& _strValue)
@@ -301,12 +277,6 @@ std::string NormalizePath(const std::string& path)
     std::string resultPath = path;
     NormalizePathSelf(resultPath);
     return resultPath;
-}
-
-void NormalizePath(const std::string& path, std::string& resultPath)
-{
-    resultPath = path;
-    NormalizePathSelf(resultPath);
 }
 
 void NormalizePathSelf(std::string& path)
@@ -415,12 +385,6 @@ std::string EnsureTrailingPathSeparator(const std::string& path)
     return resultPath;
 }
 
-void EnsureTrailingPathSeparator(const std::string& path, std::string& resultPath)
-{
-    resultPath = path;
-    EnsureTrailingPathSeparatorSelf(resultPath);
-}
-
 void EnsureTrailingPathSeparatorSelf(std::string& path)
 {
     if (path.empty() || path.back() != system::PathSeparator)
@@ -434,12 +398,6 @@ std::string DirectoryPartFromPath(const std::string& pathFile)
     std::string resultPath = pathFile;
     DirectoryPartFromPathSelf(resultPath);
     return resultPath;
-}
-
-void DirectoryPartFromPath(const std::string& pathFile, std::string& path)
-{
-    path = pathFile;
-    DirectoryPartFromPathSelf(path);
 }
 
 void DirectoryPartFromPathSelf(std::string& pathFile)
@@ -461,12 +419,6 @@ std::string NamePartFromPath(const std::string& pathFile)
     std::string resultFile = pathFile;
     NamePartFromPathSelf(resultFile);
     return resultFile;
-}
-
-void NamePartFromPath(const std::string& pathFile, std::string& file)
-{
-    file = pathFile;
-    NamePartFromPathSelf(file);
 }
 
 void NamePartFromPathSelf(std::string& pathFile)

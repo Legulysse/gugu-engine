@@ -168,6 +168,7 @@
 				</Components>
 			</Element>
 			<Element type="ElementText">
+				<Position x="300" y="0" />
 				<Font source="mplus-1p-medium.ttf" />
 				<Text value="れぐーさん" />
 			</Element>

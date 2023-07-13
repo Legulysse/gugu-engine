@@ -552,8 +552,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     {
         if (ImGui::InputText("Text", &elementTextData->text, ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            // Assume Utf8 data (same as inside ElementText::LoadFromData).
-            elementText->SetText(sf::String::fromUtf8(elementTextData->text.begin(), elementTextData->text.end()));
+            elementText->SetText(elementTextData->text);
             elementTextData->size = elementText->GetSize();
             RaiseDirty();
         }

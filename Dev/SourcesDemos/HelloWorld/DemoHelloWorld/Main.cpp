@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     ElementText* pText = GetGameWindow()->GetUINode()->AddChild<ElementText>();
     pText->SetFont("mplus-1p-medium.ttf");
     pText->SetText("Hello World !");
-    //pText->SetText(L"יטאח");  // "れぐーさん"    "יטאח"
+    //pText->SetText(u8"יטאח");  // "れぐーさん"    "יטאח"
     pText->SetUnifiedOrigin(UDim2::POSITION_CENTER);
     pText->SetUnifiedPosition(UDim2::POSITION_CENTER);
     

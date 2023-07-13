@@ -329,15 +329,9 @@ bool ElementText::LoadFromDataImpl(ElementDataContext& context)
 
     ElementTextData* textData = dynamic_cast<ElementTextData*>(context.data);
 
-    if (textData->font)
-    {
-        SetFont(textData->font);
-    }
-
+    SetFont(textData->font);
     SetMultiline(textData->multiline);
-
-    // Assume Utf8 data.
-    SetText(sf::String::fromUtf8(textData->text.begin(), textData->text.end()));
+    SetText(textData->text);
 
     return true;
 }

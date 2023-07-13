@@ -91,7 +91,7 @@ bool BaseElementData::SaveToXml(ElementSaveContext& context) const
 
 const std::string& ElementWidgetData::GetSerializedType() const
 {
-    static const std::string serializedType = "ElementWidget";
+    static const std::string serializedType = "ElementWidgetInstance";
     return serializedType;
 }
 

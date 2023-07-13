@@ -43,7 +43,7 @@ BaseElementData* InstanciateElementData(std::string_view elementType)
 {
     BaseElementData* result = nullptr;
 
-    if (StringEquals(elementType, "ElementWidget"))
+    if (StringEquals(elementType, "ElementWidgetInstance"))
     {
         result = new ElementWidgetData;
     }

@@ -317,7 +317,7 @@ BaseElementData* ElementWidgetPanel::DisplayElementInstanciationContextMenu()
         elementData = new ElementButtonData;
     }
 
-    if (ImGui::MenuItem("Element Widget"))
+    if (ImGui::MenuItem("Element Widget Instance"))
     {
         elementData = new ElementWidgetData;
     }

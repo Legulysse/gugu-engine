@@ -694,7 +694,7 @@ bool Element::LoadFromData(ElementDataContext& context)
 
 bool Element::LoadFromWidgetInstanceData(ElementDataContext& context)
 {
-    // Load this Element override data from a given ElementWidgetData.
+    // Load this Element override data from a given ElementWidgetInstanceData.
     // - At this point, the element has already been deserialized through ElementWidget::InstanciateWidget.
     // - We only need to load the overrides from the widget root (transform etc).
     // - Some children may already exist from the initial deserialization.
@@ -709,7 +709,7 @@ bool Element::LoadFromWidgetInstanceData(ElementDataContext& context)
     if (context.dataBindings)
     {
         // Fill bindings informations.
-        // - The instantiated Element will be referenced by both the ElementWidgetData and the widget root ElementData, but it will only reference the root ElementData.
+        // - The instantiated Element will be referenced by both the ElementWidgetInstanceData and the widget root ElementData, but it will only reference the root ElementData.
         // - As a result, the Element will have no knowledge of the ElementWidget it originates from, and get attached directly to the provided parent.
         context.dataBindings->elementFromData.insert(std::make_pair(elementData, this));
         //context.dataBindings->dataFromElement.insert(std::make_pair(this, elementData));
@@ -832,7 +832,7 @@ bool Element::LoadFromDataImpl(ElementDataContext& context)
 
 bool Element::LoadFromWidgetInstanceDataImpl(ElementDataContext& context)
 {
-    ElementWidgetData* widgetInstanceData = dynamic_cast<ElementWidgetData*>(context.data);
+    ElementWidgetInstanceData* widgetInstanceData = dynamic_cast<ElementWidgetInstanceData*>(context.data);
 
     if (widgetInstanceData->overrideOrigin)
     {

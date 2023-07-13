@@ -44,7 +44,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
         ImGui::Spacing();
 
-        ElementWidgetData* widgetInstanceData = dynamic_cast<ElementWidgetData*>(m_selectedElementData);
+        ElementWidgetInstanceData* widgetInstanceData = dynamic_cast<ElementWidgetInstanceData*>(m_selectedElementData);
         if (widgetInstanceData)
         {
             // Helpers

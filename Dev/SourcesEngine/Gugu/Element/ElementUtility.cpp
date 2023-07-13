@@ -45,7 +45,7 @@ BaseElementData* InstanciateElementData(std::string_view elementType)
 
     if (StringEquals(elementType, "ElementWidgetInstance"))
     {
-        result = new ElementWidgetData;
+        result = new ElementWidgetInstanceData;
     }
     else if (StringEquals(elementType, "Element"))
     {
@@ -110,7 +110,7 @@ Element* InstanciateAndLoadElement(ElementDataContext& context, Element* parent)
 
     Element* result = nullptr;
 
-    if (ElementWidgetData* widgetInstanceData = dynamic_cast<ElementWidgetData*>(context.data))
+    if (ElementWidgetInstanceData* widgetInstanceData = dynamic_cast<ElementWidgetInstanceData*>(context.data))
     {
         if (widgetInstanceData->widget == nullptr)
         {

@@ -52,7 +52,7 @@ public:
     virtual void GetDependencies(std::set<Resource*>& dependencies) const = 0;
 };
 
-class ElementWidgetData : public BaseElementData
+class ElementWidgetInstanceData : public BaseElementData
 {
 public:
 

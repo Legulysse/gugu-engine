@@ -89,13 +89,13 @@ bool BaseElementData::SaveToXml(ElementSaveContext& context) const
     return result;
 }
 
-const std::string& ElementWidgetData::GetSerializedType() const
+const std::string& ElementWidgetInstanceData::GetSerializedType() const
 {
     static const std::string serializedType = "ElementWidgetInstance";
     return serializedType;
 }
 
-bool ElementWidgetData::LoadFromXmlImpl(ElementParseContext& context)
+bool ElementWidgetInstanceData::LoadFromXmlImpl(ElementParseContext& context)
 {
     if (pugi::xml_attribute sourceWidget = context.node.attribute("widget"))
     {
@@ -113,7 +113,7 @@ bool ElementWidgetData::LoadFromXmlImpl(ElementParseContext& context)
     return true;
 }
 
-bool ElementWidgetData::SaveToXmlImpl(ElementSaveContext& context) const
+bool ElementWidgetInstanceData::SaveToXmlImpl(ElementSaveContext& context) const
 {
     if (widget)
     {
@@ -153,7 +153,7 @@ bool ElementWidgetData::SaveToXmlImpl(ElementSaveContext& context) const
     return true;
 }
 
-void ElementWidgetData::GetDependencies(std::set<Resource*>& dependencies) const
+void ElementWidgetInstanceData::GetDependencies(std::set<Resource*>& dependencies) const
 {
     if (widget && !StdSetContains<Resource*>(dependencies, widget))
     {

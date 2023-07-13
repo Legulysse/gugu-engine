@@ -84,9 +84,7 @@ public:
     bool IsResourceLoaded(const std::string& _strName) const;
 
     bool GetResourceFileInfo(const std::string& _strName, FileInfo& fileInfo) const;
-    bool GetResourceFilePath(const std::string& _strName, std::string& pathName) const;
     const FileInfo& GetResourceFileInfo(const std::string& _strName) const;
-    const std::string& GetResourceFilePath(const std::string& _strName) const;
 
     void        ParseDirectory  (const std::string& _strPath);
     void        PreloadAll      ();

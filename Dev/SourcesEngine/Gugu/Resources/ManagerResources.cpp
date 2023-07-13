@@ -127,21 +127,8 @@ bool ManagerResources::GetResourceFileInfo(const std::string& _strName, FileInfo
     auto iteElement = m_resources.find(_strName);
     if (iteElement != m_resources.end())
     {
-        // Return a copy.
+        // This will return a copy.
         fileInfo = (*iteElement).second->fileInfo;
-        return true;
-    }
-    
-    return false;
-}
-
-bool ManagerResources::GetResourceFilePath(const std::string& _strName, std::string& pathName) const
-{
-    auto iteElement = m_resources.find(_strName);
-    if (iteElement != m_resources.end())
-    {
-        // Return a copy.
-        pathName = (*iteElement).second->fileInfo.GetFilePath();
         return true;
     }
 
@@ -157,18 +144,6 @@ const FileInfo& ManagerResources::GetResourceFileInfo(const std::string& _strNam
     }
 
     static const FileInfo defaultValue;
-    return defaultValue;
-}
-
-const std::string& ManagerResources::GetResourceFilePath(const std::string& _strName) const
-{
-    auto iteElement = m_resources.find(_strName);
-    if (iteElement != m_resources.end())
-    {
-        return (*iteElement).second->fileInfo.GetFilePath();
-    }
-
-    static const std::string defaultValue;
     return defaultValue;
 }
 
@@ -653,11 +628,12 @@ bool ManagerResources::DeleteResource(Resource* _pResource)
 bool ManagerResources::DeleteResource(const std::string& resourceID)
 {
     FileInfo fileInfo;
-    GetResourceFileInfo(resourceID, fileInfo);
-
-    if (RemoveResource(resourceID))
+    if (GetResourceFileInfo(resourceID, fileInfo))
     {
-        return RemoveFile(fileInfo.GetFilePath());
+        if (RemoveResource(resourceID))
+        {
+            return RemoveFile(fileInfo.GetFilePath());
+        }
     }
 
     return false;

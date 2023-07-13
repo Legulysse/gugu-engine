@@ -116,7 +116,7 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     if (GetResources()->HasResource(config.applicationIcon))
     {
         sf::Image oImgIcon;
-        oImgIcon.loadFromFile(GetResources()->GetResourceFilePath(config.applicationIcon));
+        oImgIcon.loadFromFile(GetResources()->GetResourceFileInfo(config.applicationIcon).GetFilePath());
 
         m_sfWindow->setIcon(oImgIcon.getSize().x, oImgIcon.getSize().y, oImgIcon.getPixelsPtr());
     }

@@ -86,11 +86,12 @@ void ElementText::SetMultiline(bool _bIsMultiline)
     RaiseNeedRecompute();
 }
 
-void ElementText::SetText(const sf::String& value /*, bool _bResize */)
+void ElementText::SetText(const std::string& value /*, bool _bResize */)
 {
-    if (m_textValue != value)
+    sf::String textValue = sf::String::fromUtf8(value.begin(), value.end());
+    if (m_textValue != textValue)
     {
-        m_textValue = value;
+        m_textValue = textValue;
 
         RaiseNeedRecompute();
     }

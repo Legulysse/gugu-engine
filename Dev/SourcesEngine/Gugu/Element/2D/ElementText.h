@@ -47,7 +47,7 @@ public:
     ElementText();
     virtual ~ElementText();
 
-    void SetText(const sf::String& value /* , bool _bResize = true */);
+    void SetText(const std::string& value /* , bool _bResize = true */);
     sf::String GetText() const;
 
     void SetFont        (const std::string& _strFontPath);

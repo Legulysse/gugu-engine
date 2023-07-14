@@ -38,7 +38,7 @@ RendererDemo::RendererDemo()
     m_renderTarget_Refraction->create(400, 300);
     m_renderTarget_Refraction->setSmooth(true);
     
-    m_shader_Final->loadFromFile(GetResources()->GetResourceFileInfo("RenderRefraction.frag").GetFilePath(), sf::Shader::Fragment);
+    m_shader_Final->loadFromFile(GetResources()->GetResourceFileInfo("RenderRefraction.frag").GetFileSystemPath(), sf::Shader::Fragment);
 }
 
 RendererDemo::~RendererDemo()

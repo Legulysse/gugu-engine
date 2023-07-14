@@ -47,9 +47,9 @@ bool Sound::LoadFromFile()
     Unload();
 
     m_sfSoundBuffer = new sf::SoundBuffer;
-    if (!m_sfSoundBuffer->loadFromFile(GetFileInfo().GetFilePath()))
+    if (!m_sfSoundBuffer->loadFromFile(GetFileInfo().GetFileSystemPath()))
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Sound not found : {0}", GetFileInfo().GetFilePath()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Sound not found : {0}", GetFileInfo().GetFilePath_utf8()));
         return false;
     }
 

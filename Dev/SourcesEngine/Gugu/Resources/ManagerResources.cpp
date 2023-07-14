@@ -84,7 +84,7 @@ void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
     for (size_t i = 0; i < vecFiles.size(); ++i)
     {
         const FileInfo& kFileInfos = vecFiles[i];
-        std::string strResourceID = (!m_useFullPath) ? kFileInfos.GetFileName() : kFileInfos.GetFilePath().substr(_strPathRoot.length());
+        std::string strResourceID = (!m_useFullPath) ? std::string(kFileInfos.GetFileName_utf8()) : std::string(kFileInfos.GetFilePath_utf8().substr(_strPathRoot.length()));
 
         if (RegisterResourceInfo(strResourceID, kFileInfos))
         {
@@ -313,7 +313,7 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
 
     if (_pResourceInfo->resource)
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource ignored, resource already loaded : {0}", _pResourceInfo->fileInfo.GetFileName()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource ignored, resource already loaded : {0}", _pResourceInfo->resourceID));
         return _pResourceInfo->resource;
     }
 
@@ -367,7 +367,7 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     }
     else
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource extension : {0}", oFileInfo.GetFileName()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource extension : {0}", oFileInfo.GetFilePath_utf8()));
     }
 
     if (pResource)
@@ -380,7 +380,7 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
 
         UpdateResourceDependencies(pResource);
 
-        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", oFileInfo.GetFileName()));
+        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", _pResourceInfo->resourceID));
     }
 
     return pResource;
@@ -474,15 +474,15 @@ bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, c
         
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Registered Resource : ID = {0}, Path = {1}"
             , _strResourceID
-            , _kFileInfos.GetFilePath()));
+            , _kFileInfos.GetFilePath_utf8()));
         
         return true;
     }
     
     GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("A Resource ID is already registered : ID = {0}, New Path = {1}, Registered Path = {2}"
         , _strResourceID
-        , _kFileInfos.GetFilePath()
-        , iteAsset->second->fileInfo.GetFilePath()));
+        , _kFileInfos.GetFilePath_utf8()
+        , iteAsset->second->fileInfo.GetFilePath_utf8()));
         
     return false;
 }
@@ -492,8 +492,8 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
     if (!_pNewResource)
         return false;
 
-    std::string strPathName = _oFileInfo.GetFilePath();
-    std::string strName     = _oFileInfo.GetFileName();
+    std::string strPathName = std::string(_oFileInfo.GetFilePath_utf8());
+    std::string strName     = std::string(_oFileInfo.GetFileName_utf8());
 
     if (strName.empty())
     {
@@ -526,7 +526,7 @@ bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFi
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Added Resource : ID = {0}, Path = {1}"
         , strResourceID
-        , _oFileInfo.GetFilePath()));
+        , _oFileInfo.GetFilePath_utf8()));
 
     return true;
 }
@@ -536,8 +536,8 @@ bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFile
     if (!_pResource)
         return false;
 
-    std::string strNewPathName = _oFileInfo.GetFilePath();
-    std::string strNewName     = _oFileInfo.GetFileName();
+    std::string strNewPathName = std::string(_oFileInfo.GetFilePath_utf8());
+    std::string strNewName     = std::string(_oFileInfo.GetFileName_utf8());
 
     if (strNewName.empty())
     {
@@ -561,7 +561,7 @@ bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFile
     auto iteOldResource = m_resources.find(_pResource->GetID());
     if (iteOldResource == m_resources.end())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource not found : {0}", oFileInfoOld.GetFileName()));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource not found : {0}", oFileInfoOld.GetFilePath_utf8()));
         return false;
     }
 
@@ -576,13 +576,13 @@ bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFile
     //Delete old file, save new file
     if (_pResource->SaveToFile())
     {
-        RemoveFile(oFileInfoOld.GetFilePath());
+        RemoveFile(oFileInfoOld.GetFilePath_utf8());
         return true;
     }
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Moved Resource : ID = {0}, Path = {1}"
         , strResourceID
-        , _oFileInfo.GetFilePath()));
+        , _oFileInfo.GetFilePath_utf8()));
 
     return false;
 }
@@ -632,7 +632,7 @@ bool ManagerResources::DeleteResource(const std::string& resourceID)
     {
         if (RemoveResource(resourceID))
         {
-            return RemoveFile(fileInfo.GetFilePath());
+            return RemoveFile(fileInfo.GetFilePath_utf8());
         }
     }
 
@@ -650,7 +650,7 @@ void ManagerResources::RemoveResourcesFromPath(const std::string& _strPath)
         auto iteResource = it;
         ++it;
 
-        if (PathStartsWith(iteResource->second->fileInfo.GetDirectoryPath(), _strPath))
+        if (PathStartsWith(iteResource->second->fileInfo.GetDirectoryPath_utf8(), _strPath))
         {
             RemoveResource(iteResource->first);
         }

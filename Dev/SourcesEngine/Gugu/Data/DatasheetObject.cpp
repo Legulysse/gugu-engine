@@ -67,7 +67,7 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
             else
             {
                 ancestors.push_back(parentSheet);
-                LoadFromFile(parentSheet->GetFileInfo().GetFilePath(), nullptr, ancestors);
+                LoadFromFile(parentSheet->GetFileInfo().GetFileSystemPath(), nullptr, ancestors);
             }
         }
     }

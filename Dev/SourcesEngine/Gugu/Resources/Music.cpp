@@ -28,9 +28,9 @@ bool Music::LoadSFMusic(sf::Music* _pMusic)
     if (!_pMusic)
         return false;
 
-    if (!_pMusic->openFromFile(GetFileInfo().GetFilePath()))
+    if (!_pMusic->openFromFile(GetFileInfo().GetFileSystemPath()))
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Music not found : {0}", GetFileInfo().GetFilePath()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Music not found : {0}", GetFileInfo().GetFilePath_utf8()));
         return false;
     }
 
@@ -51,7 +51,7 @@ sf::Time Music::GetDuration() const
 {
     //TODO: Check if I need to make something a bit cleaner
     sf::Music music;
-    if (music.openFromFile(GetFileInfo().GetFilePath()))
+    if (music.openFromFile(GetFileInfo().GetFileSystemPath()))
         return music.getDuration();
     return sf::Time::Zero;
 }

@@ -110,7 +110,7 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
     ImGui::BeginDisabled(m_resourceName.empty() || m_resourceExtension.empty());
     if (ImGui::Button("Validate"))
     {
-        FileInfo fileInfo(m_resourcePath, m_resourceName + system::ExtensionSeparator + m_resourceExtension);
+        FileInfo fileInfo = FileInfo::FromString_utf8(CombinePaths(m_resourcePath, m_resourceName + system::ExtensionSeparator + m_resourceExtension));
 
         //TODO: centralize resource type instanciation somewhere.
         Resource* newResource = nullptr;

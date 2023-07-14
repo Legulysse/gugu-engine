@@ -70,7 +70,7 @@ bool Resource::SaveToString(std::string& result) const
 bool Resource::LoadFromXmlFile()
 {
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(GetFileInfo().GetFilePath().c_str());
+    pugi::xml_parse_result result = doc.load_file(GetFileInfo().GetFileSystemPath().c_str());
     if (!result)
         return false;
 
@@ -93,7 +93,7 @@ bool Resource::SaveToXmlFile() const
     if (!SaveToXml(doc))
         return false;
 
-    return doc.save_file(GetFileInfo().GetFilePath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+    return doc.save_file(GetFileInfo().GetFileSystemPath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
 }
 
 bool Resource::SaveToXmlString(std::string& result) const

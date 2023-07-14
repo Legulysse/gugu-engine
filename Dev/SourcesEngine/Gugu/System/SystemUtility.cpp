@@ -467,9 +467,9 @@ void OpenWebBrowser(const std::string& _strURL)
 #endif
 }
 
-void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool recursive)
+void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bool recursive)
 {
-    std::string normalizedPath = NormalizePath(rootPath);
+    std::string normalizedPath = NormalizePath(rootPath_utf8);
     if (normalizedPath.empty())
     {
         normalizedPath = ".";
@@ -497,9 +497,9 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
     }
 }
 
-void GetDirectories(const std::string& rootPath, std::vector<std::string>& directories, bool recursive)
+void GetDirectories(const std::string& rootPath_utf8, std::vector<std::string>& directories, bool recursive)
 {
-    std::string normalizedPath = NormalizePath(rootPath);
+    std::string normalizedPath = NormalizePath(rootPath_utf8);
     if (normalizedPath.empty())
     {
         normalizedPath = ".";
@@ -527,25 +527,25 @@ void GetDirectories(const std::string& rootPath, std::vector<std::string>& direc
     }
 }
 
-bool DirectoryExists(const std::string& path)
+bool DirectoryExists(std::string_view path_utf8)
 {
-    return fs::is_directory(fs::u8path(path));
+    return fs::is_directory(fs::u8path(path_utf8));
 }
 
-bool FileExists(const std::string& path)
+bool FileExists(std::string_view path_utf8)
 {
-    return fs::is_regular_file(fs::u8path(path));
+    return fs::is_regular_file(fs::u8path(path_utf8));
 }
 
-bool EnsureDirectoryExists(const std::string& _strPath)
+bool EnsureDirectoryExists(std::string_view path_utf8)
 {
-    if (_strPath.empty())
+    if (path_utf8.empty())
         return true;
 
 #if defined(GUGU_OS_WINDOWS)
 
     std::vector<std::string> vecDirectories;
-    StdStringSplit(_strPath, system::PathSeparator, vecDirectories);
+    StdStringSplit(path_utf8, system::PathSeparator, vecDirectories);
 
     std::string strCombinedPath = "";
     for (auto strSubDirectory : vecDirectories)
@@ -569,9 +569,9 @@ bool EnsureDirectoryExists(const std::string& _strPath)
 #endif
 }
 
-bool RemoveFile(const std::string& path)
+bool RemoveFile(std::string_view path_utf8)
 {
-    fs::path convertedPath = fs::u8path(path);
+    fs::path convertedPath = fs::u8path(path_utf8);
     if (fs::is_regular_file(convertedPath))
     {
         std::error_code errorCode;
@@ -581,9 +581,9 @@ bool RemoveFile(const std::string& path)
     return false;
 }
 
-bool RemoveTargetDirectory(const std::string& path)
+bool RemoveTargetDirectory(std::string_view path_utf8)
 {
-    fs::path convertedPath = fs::u8path(path);
+    fs::path convertedPath = fs::u8path(path_utf8);
     if (fs::is_directory(convertedPath))
     {
         std::error_code errorCode;
@@ -593,9 +593,9 @@ bool RemoveTargetDirectory(const std::string& path)
     return false;
 }
 
-bool RemoveDirectoryTree(const std::string& path)
+bool RemoveDirectoryTree(std::string_view path_utf8)
 {
-    fs::path convertedPath = fs::u8path(path);
+    fs::path convertedPath = fs::u8path(path_utf8);
     if (fs::is_directory(convertedPath))
     {
         std::error_code errorCode;

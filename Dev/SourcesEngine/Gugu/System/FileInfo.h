@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include <string>
+#include <filesystem>
 
 ////////////////////////////////////////////////////////////////
 // File Declarations
@@ -15,31 +15,37 @@ class FileInfo
 public:
 
     FileInfo();
-    FileInfo(const std::string& directoryPath, const std::string& fileName);
-    FileInfo(const std::string& path);
 
-    std::string_view GetDirectoryPath() const;
-    const std::string& GetFileName() const;
-    const std::string& GetFilePath() const;
+    static FileInfo FromPath(const std::filesystem::path& path);
+    static FileInfo FromString_utf8(const std::string& path_utf8);
+
+    // System path.
+    const std::string& GetFileSystemPath() const;
+
+    // Utf8 accessors.
+    std::string_view GetFilePath_utf8() const;
+    std::string_view GetDirectoryPath_utf8() const;
+    std::string_view GetFileName_utf8() const;
 
     std::string_view GetPrettyName() const;
     std::string_view GetExtension() const;
     std::string_view GetAllExtensions() const;
     bool HasExtension(const std::string& extension) const;
 
-    bool operator < (const FileInfo& other) const;    //Used by std sorts
+    // Comparators (Used by std sorts).
+    bool operator < (const FileInfo& other) const;
     bool operator == (const FileInfo& other) const;
     bool operator != (const FileInfo& other) const;
 
 private:
 
-    void UpdateFromPath();
+    FileInfo(const std::filesystem::path& path);
 
 private:
 
-    std::string m_path;
-    std::string m_fileName;
-    size_t m_indexSeparator;
+    std::string m_systemPath;       // Actual file system path.
+    std::string m_filePath_utf8;    // Ut8 version of file path.
+    size_t m_indexSeparator;        // Index of the last separator, between file directory and file name.
 };
 
 }   // namespace gugu

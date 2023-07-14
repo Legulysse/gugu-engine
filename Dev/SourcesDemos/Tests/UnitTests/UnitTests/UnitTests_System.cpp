@@ -152,16 +152,17 @@ void RunUnitTests_System(UnitTestResults* results)
     {
         GUGU_UTEST_SUBSECTION("Construction");
         {
-            GUGU_UTEST_CHECK(FileInfo("hello/world.txt") == FileInfo("hello", "world.txt"));
-            GUGU_UTEST_CHECK(FileInfo("hello/world.txt") == FileInfo("", "hello/world.txt"));
-            GUGU_UTEST_CHECK(FileInfo("world.txt") == FileInfo("", "world.txt"));
+            GUGU_UTEST_CHECK(FileInfo::FromString_utf8("hello/world.txt") == FileInfo::FromString_utf8(CombinePaths("hello", "world.txt")));
+            GUGU_UTEST_CHECK(FileInfo::FromString_utf8("hello/world.txt") == FileInfo::FromString_utf8(CombinePaths("", "hello/world.txt")));
+            GUGU_UTEST_CHECK(FileInfo::FromString_utf8("world.txt") == FileInfo::FromString_utf8(CombinePaths("", "world.txt")));
 
             {
-                const FileInfo fileInfo("hello/world.txt");
+                const FileInfo fileInfo = FileInfo::FromString_utf8("hello/world.txt");
 
-                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "hello");
-                GUGU_UTEST_CHECK(fileInfo.GetFileName() == "world.txt");
-                GUGU_UTEST_CHECK(fileInfo.GetFilePath() == "hello/world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == "hello/world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == "hello/world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "hello");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
@@ -169,11 +170,12 @@ void RunUnitTests_System(UnitTestResults* results)
             }
 
             {
-                const FileInfo fileInfo("hello", "world.txt");
+                const FileInfo fileInfo = FileInfo::FromString_utf8(CombinePaths("hello", "world.txt"));
 
-                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "hello");
-                GUGU_UTEST_CHECK(fileInfo.GetFileName() == "world.txt");
-                GUGU_UTEST_CHECK(fileInfo.GetFilePath() == "hello/world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == "hello/world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == "hello/world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "hello");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
@@ -181,11 +183,12 @@ void RunUnitTests_System(UnitTestResults* results)
             }
 
             {
-                const FileInfo fileInfo("", "world.txt");
+                const FileInfo fileInfo = FileInfo::FromString_utf8(CombinePaths("", "world.txt"));
 
-                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "");
-                GUGU_UTEST_CHECK(fileInfo.GetFileName() == "world.txt");
-                GUGU_UTEST_CHECK(fileInfo.GetFilePath() == "world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == "world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == "world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
@@ -193,11 +196,12 @@ void RunUnitTests_System(UnitTestResults* results)
             }
 
             {
-                const FileInfo fileInfo("", ".txt");
+                const FileInfo fileInfo = FileInfo::FromString_utf8(CombinePaths("", ".txt"));
 
-                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "");
-                GUGU_UTEST_CHECK(fileInfo.GetFileName() == ".txt");
-                GUGU_UTEST_CHECK(fileInfo.GetFilePath() == ".txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == ".txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == ".txt");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == ".txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "");
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
@@ -205,11 +209,12 @@ void RunUnitTests_System(UnitTestResults* results)
             }
 
             {
-                const FileInfo fileInfo("", "world.file.txt");
+                const FileInfo fileInfo = FileInfo::FromString_utf8(CombinePaths("", "world.file.txt"));
 
-                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "");
-                GUGU_UTEST_CHECK(fileInfo.GetFileName() == "world.file.txt");
-                GUGU_UTEST_CHECK(fileInfo.GetFilePath() == "world.file.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == "world.file.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == "world.file.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == "world.file.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "file.txt");
@@ -218,11 +223,12 @@ void RunUnitTests_System(UnitTestResults* results)
             }
 
             {
-                const FileInfo fileInfo("", "world");
+                const FileInfo fileInfo = FileInfo::FromString_utf8(CombinePaths("", "world"));
 
-                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "");
-                GUGU_UTEST_CHECK(fileInfo.GetFileName() == "world");
-                GUGU_UTEST_CHECK(fileInfo.GetFilePath() == "world");
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == "world");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == "world");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "");
@@ -231,38 +237,39 @@ void RunUnitTests_System(UnitTestResults* results)
             }
 
             {
-                const FileInfo fileInfo("world.txt");
+                const FileInfo fileInfo = FileInfo::FromString_utf8("world.txt");
 
-                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath() == "");
-                GUGU_UTEST_CHECK(fileInfo.GetFileName() == "world.txt");
-                GUGU_UTEST_CHECK(fileInfo.GetFilePath() == "world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == "world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == "world.txt");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == "world.txt");
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
             }
         }
-
+        
         GUGU_UTEST_SUBSECTION("Comparison");
         {
-            GUGU_UTEST_CHECK(FileInfo("aaa", "111") == FileInfo("aaa", "111"));
-            GUGU_UTEST_CHECK(FileInfo("aaa", "111") != FileInfo("aaa", "222"));
-            GUGU_UTEST_CHECK(FileInfo("bbb", "111") != FileInfo("aaa", "111"));
+            GUGU_UTEST_CHECK(FileInfo::FromString_utf8("aaa/111") == FileInfo::FromString_utf8("aaa/111"));
+            GUGU_UTEST_CHECK(FileInfo::FromString_utf8("aaa/111") != FileInfo::FromString_utf8("aaa/222"));
+            GUGU_UTEST_CHECK(FileInfo::FromString_utf8("bbb/111") != FileInfo::FromString_utf8("aaa/111"));
 
             std::vector<FileInfo> fileInfoArray
             {
-                FileInfo("aaa", "111"),
-                FileInfo("bbb", "222"),
-                FileInfo("bbb", "111"),
-                FileInfo("aaa", "333"),
+                FileInfo::FromString_utf8("aaa/111"),
+                FileInfo::FromString_utf8("bbb/222"),
+                FileInfo::FromString_utf8("bbb/111"),
+                FileInfo::FromString_utf8("aaa/333"),
             };
 
             std::sort(fileInfoArray.begin(), fileInfoArray.end());
 
-            GUGU_UTEST_CHECK(fileInfoArray[0] == FileInfo("aaa", "111"));
-            GUGU_UTEST_CHECK(fileInfoArray[1] == FileInfo("aaa", "333"));
-            GUGU_UTEST_CHECK(fileInfoArray[2] == FileInfo("bbb", "111"));
-            GUGU_UTEST_CHECK(fileInfoArray[3] == FileInfo("bbb", "222"));
+            GUGU_UTEST_CHECK(fileInfoArray[0] == FileInfo::FromString_utf8("aaa/111"));
+            GUGU_UTEST_CHECK(fileInfoArray[1] == FileInfo::FromString_utf8("aaa/333"));
+            GUGU_UTEST_CHECK(fileInfoArray[2] == FileInfo::FromString_utf8("bbb/111"));
+            GUGU_UTEST_CHECK(fileInfoArray[3] == FileInfo::FromString_utf8("bbb/222"));
         }
     }
 
@@ -419,8 +426,10 @@ void RunUnitTests_System(UnitTestResults* results)
         GUGU_UTEST_SUBSECTION("Directories");
         {
             GUGU_UTEST_CHECK(DirectoryExists("Assets/TestDirectory"));
-            GUGU_UTEST_CHECK(!DirectoryExists("Assets/TestDirectory_NONE"));
             GUGU_UTEST_CHECK(FileExists("Assets/TestDirectory/TestEmptyFile.txt"));
+            GUGU_UTEST_CHECK(FileExists(u8"Assets/TestDirectory/Dauðra_Dura_Test_Utf8.txt"));
+
+            GUGU_UTEST_CHECK(!DirectoryExists("Assets/TestDirectory_NONE"));
             GUGU_UTEST_CHECK(!FileExists("Assets/TestDirectory/TestEmptyFile_NONE.txt"));
             GUGU_UTEST_CHECK(!FileExists("Assets/TestDirectory"));
             GUGU_UTEST_CHECK(!DirectoryExists("Assets/TestDirectory/TestEmptyFile.txt"));
@@ -467,12 +476,14 @@ void RunUnitTests_System(UnitTestResults* results)
             std::vector<FileInfo> filePaths;
             GetFiles("", filePaths, true);
 
-            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo("Assets/TestDirectory/TestEmptyFile.txt")));
+            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8("Assets/TestDirectory/TestEmptyFile.txt")));
+            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8(u8"Assets/TestDirectory/Dauðra_Dura_Test_Utf8.txt")));
 
             filePaths.clear();
             GetFiles("Assets", filePaths, true);
 
-            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo("Assets/TestDirectory/TestEmptyFile.txt")));
+            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8("Assets/TestDirectory/TestEmptyFile.txt")));
+            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8(u8"Assets/TestDirectory/Dauðra_Dura_Test_Utf8.txt")));
         }
     }
 

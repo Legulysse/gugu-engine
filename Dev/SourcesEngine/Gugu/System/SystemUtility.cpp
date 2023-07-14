@@ -481,7 +481,7 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
         {
             if (entry.is_regular_file())
             {
-                files.push_back(FileInfo(NormalizePath(entry.path().generic_u8string())));
+                files.push_back(FileInfo::FromPath(entry.path()));
             }
         }
     }
@@ -491,7 +491,7 @@ void GetFiles(const std::string& rootPath, std::vector<FileInfo>& files, bool re
         {
             if (entry.is_regular_file())
             {
-                files.push_back(FileInfo(NormalizePath(entry.path().generic_u8string())));
+                files.push_back(FileInfo::FromPath(entry.path()));
             }
         }
     }

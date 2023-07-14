@@ -427,7 +427,7 @@ void RunUnitTests_System(UnitTestResults* results)
         {
             GUGU_UTEST_CHECK(DirectoryExists("Assets/TestDirectory"));
             GUGU_UTEST_CHECK(FileExists("Assets/TestDirectory/TestEmptyFile.txt"));
-            GUGU_UTEST_CHECK(FileExists(u8"Assets/TestDirectory/Dauðra_Dura_Test_Utf8.txt"));
+            GUGU_UTEST_CHECK(FileExists(u8"Assets/TestDirectory/DauÃ°ra_Dura_Test_Utf8.txt"));
 
             GUGU_UTEST_CHECK(!DirectoryExists("Assets/TestDirectory_NONE"));
             GUGU_UTEST_CHECK(!FileExists("Assets/TestDirectory/TestEmptyFile_NONE.txt"));
@@ -477,13 +477,13 @@ void RunUnitTests_System(UnitTestResults* results)
             GetFiles("", filePaths, true);
 
             GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8("Assets/TestDirectory/TestEmptyFile.txt")));
-            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8(u8"Assets/TestDirectory/Dauðra_Dura_Test_Utf8.txt")));
+            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8(u8"Assets/TestDirectory/DauÃ°ra_Dura_Test_Utf8.txt")));
 
             filePaths.clear();
             GetFiles("Assets", filePaths, true);
 
             GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8("Assets/TestDirectory/TestEmptyFile.txt")));
-            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8(u8"Assets/TestDirectory/Dauðra_Dura_Test_Utf8.txt")));
+            GUGU_UTEST_CHECK(StdVectorContains(filePaths, FileInfo::FromString_utf8(u8"Assets/TestDirectory/DauÃ°ra_Dura_Test_Utf8.txt")));
         }
     }
 

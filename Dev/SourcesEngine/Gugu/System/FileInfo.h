@@ -19,6 +19,8 @@ public:
     static FileInfo FromPath(const std::filesystem::path& path);
     static FileInfo FromString_utf8(const std::string& path_utf8);
 
+    bool IsValid() const;
+
     // System path.
     const std::string& GetFileSystemPath() const;
 

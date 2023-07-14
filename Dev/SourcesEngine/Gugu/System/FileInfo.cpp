@@ -20,12 +20,22 @@ FileInfo::FileInfo()
 }
 
 FileInfo::FileInfo(const std::filesystem::path& path)
+    : m_indexSeparator(std::string::npos)
 {
-    m_systemPath = NormalizePath(path.string());
+    try
+    {
+        //TODO: Some characters may crash in path.string(), this will not be needed anymore once all libraries accept filesystem::path objects.
+        // - path.u8string() seems to work fine in those cases.
+        m_systemPath = NormalizePath(path.string());
 
-    // Cache
-    m_filePath_utf8 = NormalizePath(path.u8string());
-    m_indexSeparator = m_filePath_utf8.find_last_of(system::PathSeparator);
+        // Cache
+        m_filePath_utf8 = NormalizePath(path.u8string());
+        m_indexSeparator = m_filePath_utf8.find_last_of(system::PathSeparator);
+    }
+    catch (const std::system_error& e)
+    {
+        WriteInConsoleEndline(e.what(), true);
+    }
 }
 
 FileInfo FileInfo::FromPath(const std::filesystem::path& path)
@@ -36,6 +46,13 @@ FileInfo FileInfo::FromPath(const std::filesystem::path& path)
 FileInfo FileInfo::FromString_utf8(const std::string& path_utf8)
 {
     return FileInfo(std::filesystem::u8path(path_utf8));
+}
+
+bool FileInfo::IsValid() const
+{
+    //TODO: Some characters may crash in path.string(), this will not be needed anymore once all libraries accept filesystem::path objects.
+    // - path.u8string() seems to work fine in those cases.
+    return !m_systemPath.empty();
 }
 
 const std::string& FileInfo::GetFileSystemPath() const

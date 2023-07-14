@@ -481,7 +481,11 @@ void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bo
         {
             if (entry.is_regular_file())
             {
-                files.push_back(FileInfo::FromPath(entry.path()));
+                FileInfo fileInfo = FileInfo::FromPath(entry.path());
+                if (fileInfo.IsValid())
+                {
+                    files.push_back(fileInfo);
+                }
             }
         }
     }
@@ -491,7 +495,11 @@ void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bo
         {
             if (entry.is_regular_file())
             {
-                files.push_back(FileInfo::FromPath(entry.path()));
+                FileInfo fileInfo = FileInfo::FromPath(entry.path());
+                if (fileInfo.IsValid())
+                {
+                    files.push_back(fileInfo);
+                }
             }
         }
     }

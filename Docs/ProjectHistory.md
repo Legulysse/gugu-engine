@@ -1,5 +1,18 @@
 # Project History
 
+## ??/??/???? - Version 0.8 [Update 16/07/2023]
+- Ajout d'un nouveau logo !
+- Ajout des ElementWidgets (ressource xml représentant un layout d'Elements), refactor de la serialisation des Elements (ElementData).
+- Editor: Ajout de l'ElementWidget editor, ajout d'un générateur de Box9.
+- Ajout des Datasaves, clean du code de Databinding (séparation entre code commun, et spécifique Datasheet/Datasave, ajout d'une classe de base DataObject).
+- Update Databindings : gestion des Vector2i et Vector2f.
+- Update de GetFiles, GetDirectories et FileInfo pour se baser sur std::filesystem, ajout de getters utf8 sur FileInfo.
+- Ajout de UnitTests (Xml, Databinding).
+- Update de certains utilities pour utiliser std::string_view au lieu de générer des std::string (getters de FileInfo).
+- Itération SystemUtility (StringEquals).
+- Refactor des utilities xml (Read, Parse, TryParse), gestion des Vector2, update de la serialisation des UDim2.
+- Mise à jour PugiXml 1.13.
+
 ## 10/12/2022 - Version 0.7.1
 - Clean du build 64bits, retrait du build 32bits.
 - Mise à jour du build de C++14 vers C++17.

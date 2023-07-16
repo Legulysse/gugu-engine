@@ -1,6 +1,6 @@
 # Project History
 
-## ??/??/???? - Version 0.8 [Update 16/07/2023]
+## Version 0.8 &nbsp; _(??/??/????)_ [Update 16/07/2023]
 - Ajout d'un nouveau logo !
 - Ajout des ElementWidgets (ressource xml représentant un layout d'Elements), refactor de la serialisation des Elements (ElementData).
 - Editor: Ajout de l'ElementWidget editor, ajout d'un générateur de Box9.
@@ -13,7 +13,7 @@
 - Refactor des utilities xml (Read, Parse, TryParse), gestion des Vector2, update de la serialisation des UDim2.
 - Mise à jour PugiXml 1.13.
 
-## 10/12/2022 - Version 0.7.1
+## Version 0.7.1 &nbsp; _(10/12/2022)_
 - Clean du build 64bits, retrait du build 32bits.
 - Mise à jour du build de C++14 vers C++17.
 - Fix du build pour vs2022 (non testé).
@@ -22,7 +22,7 @@
 - Mise à jour SFML 2.6.x.
 - Mise à jour ImGui 1.85 (docking).
 
-## 06/11/2022 - Version 0.7
+## Version 0.7 &nbsp; _(06/11/2022)_
 - Editor: ajout du undo/redo, d'un fichier ProjectSettings, d'un fichier EditorConfig, et d'une popup de sauvegarde à la fermeture.
 - Editor: Ajout du ParticleEffect editor, de l'AnimSet editor, d'un viewer pour les textures, et de l'OutputLog.
 - Editor: Ajout d'un gestionnaire de dépendances entre Resources.
@@ -51,7 +51,7 @@
 - Update des scripts de build (wrapper pour un menu par defaut, option pour les subrepos).
 - Mise à jour premake 5.0.0-beta1 (visual 2022).
 
-## 01/10/2021 - Version 0.6
+## Version 0.6 &nbsp; _(01/10/2021)_
 - Ajout du nouvel Editor, basé sur ImGui (datasheet editor).
 - Ajout d'un ManagerAnimation, refacto SpriteAnimation, suppression d'ElementSpriteAnimation.
 - Itération datasheets (dissociation entre ressource et data gameplay, force const sur les datas, format xml, gestion des references/instances null).
@@ -71,25 +71,25 @@
 - Mise à jour SFML 2.5.1.
 - Mise à jour PugiXml 1.11.4.
 
-## 06/04/2020 - Version 0.5.2
+## Version 0.5.2 &nbsp; _(06/04/2020)_
 - Migration Bitbucket vers Github.
 - Ajout des commandes speed et bounds.
 - Ajout de la gestion des joysticks.
 - Ajout des fonctions d'interpolation.
 - Ajout du zoom sur les cameras.
 
-## 04/07/2018 - Version 0.5.1
+## Version 0.5.1 &nbsp; _(04/07/2018)_
 - Script de conversion des tabs en espaces.
 - Mise à jour SFML 2.5.0.
 
-## 30/06/2018 - Version 0.5
+## Version 0.5 &nbsp; _(30/06/2018)_
 - Grosse refacto generale (arbo, renommages, camelCase) en preparation de la mise en open-source.
 - Update/Optimisation des ElementSprite et ElementTile avec l'utilisation d'un VertexArray à la place de sf::sprites.
 - Ajout de ElementTileMap et ElementSpriteGroup.
 - Separation entre les assets de la demo Game et des autres demos.
 - Separation des sources de PugiXml dans un projet dédié.
 
-## 19/12/2017 - Version 0.4
+## Version 0.4 &nbsp; _(19/12/2017)_
 - Ajout démos (Camera, Audio, Callback, UI, Network, Math, System).
 - Ajout d'un état Disabled sur les ElementButtons.
 - Ajout de l'outil de Scope Trace (generation d'un json exploitable sur chrome/opera).
@@ -103,7 +103,7 @@
 - Mise à jour SFML 2.4.2.
 - Mise à jour Editor Qt 5.7.
 
-## 20/05/2015 - Version 0.3
+## Version 0.3 &nbsp; _(20/05/2015)_
 - Ajout de petites démos (HelloWorld, Datasheets, Game).
 - Ajout de la gestion d'un Renderer avec passes de rendu.
 - Remplacement du ManagerEvent par un HandlerEvents associé à chaque Window.
@@ -113,7 +113,7 @@
 - Mise à jour SFML trunk vers SFML 2.2 + integration des sources dans le projet.
 - Abandon du module 3D (Ogre).
 
-## 03/08/2014 - Version 0.2
+## Version 0.2 &nbsp; _(03/08/2014)_
 - Ajout de la gestion des resources par nom.
 - Ajout des bases pour les Datasheets.
 - Mise à jour du système Audio (SoundCues, MusicLayers and fades).
@@ -121,9 +121,9 @@
 - Ajout du MeshViewer.
 - Mise à jour Ogre 1.8 + bases d'archi pour le World 3D.
 
-## 11/06/2013 - Version 0.1
+## Version 0.1 &nbsp; _(11/06/2013)_
 
-## Early Prototyping
+## Early Prototyping &nbsp; _(2008 - 2013)_
 - 07/07/2009 - Obtention d'un dépôt SVN, premier archivage (julz & pmcc hosted).
 - 05/07/2009 - Grosse passe de clean : namespaces, includes, Game -> Engine (hamster check).
 - 05/05/2009 - Ajout de la gestion d'acteurs. Bases de Gui presque finies. Première passe de clean général.

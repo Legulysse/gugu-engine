@@ -18,6 +18,7 @@
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/UI/ElementButton.h"
+#include "Gugu/Element/UI/ElementLayout.h"
 
 using namespace gugu;
 
@@ -57,43 +58,40 @@ void StateMenuMain::Init()
     //Box Menu
     Element* box = m_root->AddChildWidget("Box9_Default_01.widget.xml");
     box->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(50.f, 50.f));
+    box->SetSize(240, 220);
 
     m_menu = box;
     m_menu->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, [](const InteractionInfos&) {});
 
-    ElementButton* pButton;
-    float padding = 20.f;
-    float fGapY = 10.f;
-    float fPosX = padding;
-    float fPosY = padding;
+    ElementLayout* verticalLayout = box->AddChild<ElementLayout>();
+    verticalLayout->SetLayoutDirection(ELayoutDirection::Vertical);
+    verticalLayout->SetItemSpacing(10.f);
+    verticalLayout->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(20.f, 20.f));
 
-    pButton = dynamic_cast<ElementButton*>(box->AddChildWidget("Button_01.widget.xml")); // Alternative 1 : instanciate widget and cast as button.
-    pButton->SetText("Gui Test");
-    pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 6));
-    pButton->SetPosition(fPosX, fPosY);
+    ElementButton* button;
+    button = new ElementButton;
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Gui Test");
+    button->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 6));
+    verticalLayout->AddItem(button);
 
-    fPosY += fGapY + pButton->GetSize().y;
-    pButton = box->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml"); // Alternative 2 : instanciate a button and load a widget data inside.
-    pButton->SetText("Demo Layout");
-    pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 4));
-    pButton->SetPosition(fPosX, fPosY);
+    button = new ElementButton;
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Demo Layout");
+    button->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 4));
+    verticalLayout->AddItem(button);
 
-    fPosY += fGapY + pButton->GetSize().y;
-    pButton = box->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Disabled");
-    pButton->SetDisabled(true);
-    pButton->SetPosition(fPosX, fPosY);
+    button = new ElementButton;
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Disabled");
+    button->SetDisabled(true);
+    verticalLayout->AddItem(button);
 
-    fPosY += fGapY + pButton->GetSize().y;
-    pButton = box->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Quit");
-    pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
-    pButton->SetPosition(fPosX, fPosY);
-
-    box->SetSize(pButton->GetSize().x + padding * 2.f, fPosY + pButton->GetSize().y + padding);
+    button = new ElementButton;
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Quit");
+    button->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
+    verticalLayout->AddItem(button);
 }
 
 void StateMenuMain::Release()

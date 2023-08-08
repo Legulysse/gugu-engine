@@ -2,7 +2,7 @@
 
 ## Version 0.8 &nbsp; _(??/??/????)_ [Update 16/07/2023]
 - Ajout d'un nouveau logo !
-- Ajout des ElementWidgets (ressource xml représentant un layout d'Elements), refactor de la serialisation des Elements (ElementData).
+- Ajout des ElementWidgets (ressource xml représentant une hierarchie d'Elements), refactor de la serialisation des Elements (ElementData).
 - Editor: Ajout de l'ElementWidget editor, ajout d'un générateur de Box9.
 - Ajout des Datasaves, clean du code de Databinding (séparation entre code commun, et spécifique Datasheet/Datasave, ajout d'une classe de base DataObject).
 - Update Databindings : gestion des Vector2i et Vector2f.

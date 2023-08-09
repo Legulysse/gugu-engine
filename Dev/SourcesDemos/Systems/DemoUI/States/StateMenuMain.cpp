@@ -28,6 +28,8 @@ using namespace gugu;
 namespace demoproject {
 
 StateMenuMain::StateMenuMain()
+    : m_root(nullptr)
+    , m_menu(nullptr)
 {
 }
 

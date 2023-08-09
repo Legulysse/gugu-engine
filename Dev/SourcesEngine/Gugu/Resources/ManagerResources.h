@@ -58,8 +58,8 @@ public:
 
     struct ResourceListener
     {
-        const void* handle;
-        DelegateResourceEvent delegateResourceEvent;
+        const void* handle = nullptr;
+        DelegateResourceEvent delegateResourceEvent = nullptr;
     };
 
     struct ResourceDependencies

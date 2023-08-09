@@ -19,12 +19,12 @@ namespace ELayoutDirection
     };
 }
 
-class ElementLayout : public Element
+class ElementLayoutGroup : public Element
 {
 public:
 
-    ElementLayout();
-    virtual ~ElementLayout();
+    ElementLayoutGroup();
+    virtual ~ElementLayoutGroup();
 
     void AddItem(Element* item);
 

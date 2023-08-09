@@ -2,7 +2,7 @@
 // Header
 
 #include "Gugu/Common.h"
-#include "Gugu/Element/UI/ElementLayout.h"
+#include "Gugu/Element/UI/ElementLayoutGroup.h"
 
 ////////////////////////////////////////////////////////////////
 // Includes
@@ -15,7 +15,7 @@
 
 namespace gugu {
     
-ElementLayout::ElementLayout()
+ElementLayoutGroup::ElementLayoutGroup()
     : m_direction(ELayoutDirection::Vertical)
     , m_autoResize(true)
     , m_wrap(false)
@@ -23,59 +23,59 @@ ElementLayout::ElementLayout()
 {
 }
 
-ElementLayout::~ElementLayout()
+ElementLayoutGroup::~ElementLayoutGroup()
 {
     ClearStdVector(m_items);
 }
 
-void ElementLayout::SetLayoutDirection(ELayoutDirection::Type direction)
+void ElementLayoutGroup::SetLayoutDirection(ELayoutDirection::Type direction)
 {
     m_direction = direction;
     m_needRecompute = true;
 }
 
-void ElementLayout::AddItem(Element* item)
+void ElementLayoutGroup::AddItem(Element* item)
 {
     item->SetParent(this);
     m_items.push_back(item);
     m_needRecompute = true;
 }
 
-ELayoutDirection::Type ElementLayout::GetLayoutDirection() const
+ELayoutDirection::Type ElementLayoutGroup::GetLayoutDirection() const
 {
     return m_direction;
 }
 
-void ElementLayout::SetAutoResize(bool autoResize)
+void ElementLayoutGroup::SetAutoResize(bool autoResize)
 {
     m_autoResize = autoResize;
     m_needRecompute = true;
 }
 
-void ElementLayout::SetWrapItems(bool wrap)
+void ElementLayoutGroup::SetWrapItems(bool wrap)
 {
     m_wrap = wrap;
     m_needRecompute = true;
 }
 
-void ElementLayout::SetItemSpacing(float spacing)
+void ElementLayoutGroup::SetItemSpacing(float spacing)
 {
     m_spacing = Vector2f(spacing, spacing);
     m_needRecompute = true;
 }
 
-void ElementLayout::SetItemSpacing(Vector2f spacing)
+void ElementLayoutGroup::SetItemSpacing(Vector2f spacing)
 {
     m_spacing = spacing;
     m_needRecompute = true;
 }
 
-Vector2f ElementLayout::GetItemSpacing() const
+Vector2f ElementLayoutGroup::GetItemSpacing() const
 {
     return m_spacing;
 }
 
-void ElementLayout::Recompute()
+void ElementLayoutGroup::Recompute()
 {
     m_needRecompute = false;
 
@@ -116,12 +116,12 @@ void ElementLayout::Recompute()
     }
 }
 
-void ElementLayout::OnSizeChanged()
+void ElementLayoutGroup::OnSizeChanged()
 {
     m_needRecompute = true;
 }
 
-void ElementLayout::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
+void ElementLayoutGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     if (m_needRecompute)
     {

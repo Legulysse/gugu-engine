@@ -18,7 +18,7 @@
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/UI/ElementButton.h"
-#include "Gugu/Element/UI/ElementLayout.h"
+#include "Gugu/Element/UI/ElementLayoutGroup.h"
 
 using namespace gugu;
 
@@ -63,7 +63,7 @@ void StateMenuMain::Init()
     m_menu = box;
     m_menu->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, [](const InteractionInfos&) {});
 
-    ElementLayout* verticalLayout = box->AddChild<ElementLayout>();
+    ElementLayoutGroup* verticalLayout = box->AddChild<ElementLayoutGroup>();
     verticalLayout->SetLayoutDirection(ELayoutDirection::Vertical);
     verticalLayout->SetItemSpacing(10.f);
     verticalLayout->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(20.f, 20.f));

@@ -237,13 +237,20 @@ private:
 #define GUGU_UTEST_CHECK(EXPRESSION)                            \
     unitTestHandler.LogTestResult((bool)(EXPRESSION),           \
         GUGU_STRINGIZE(EXPRESSION),                             \
-        __FILE__,                                               \
-        __LINE__)
+        __FILE__, __LINE__)
+
+#define GUGU_UTEST_CHECK_TRUE(EXPRESSION)                       \
+    unitTestHandler.LogTestResult((bool)(EXPRESSION) == true,   \
+        GUGU_STRINGIZE(EXPRESSION) " == true",                  \
+        __FILE__, __LINE__)
+
+#define GUGU_UTEST_CHECK_FALSE(EXPRESSION)                      \
+    unitTestHandler.LogTestResult((bool)(EXPRESSION) == false,  \
+        GUGU_STRINGIZE(EXPRESSION) " == false",                 \
+        __FILE__, __LINE__)
 
 #define GUGU_UTEST_SILENT_CHECK(EXPRESSION)                     \
     unitTestHandler.SilentTestResult((bool)(EXPRESSION),        \
-        GUGU_STRINGIZE(EXPRESSION),                             \
-        __FILE__,                                               \
-        __LINE__)
+        GUGU_STRINGIZE(EXPRESSION), __FILE__, __LINE__)
 
 }   // namespace gugu

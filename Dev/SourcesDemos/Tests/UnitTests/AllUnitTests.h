@@ -8,6 +8,7 @@
 
 namespace tests {
 
+void RunUnitTests_Core(gugu::UnitTestResults* results);
 void RunUnitTests_DataBinding(gugu::UnitTestResults* results);
 void RunUnitTests_Element(gugu::UnitTestResults* results);
 void RunUnitTests_Math(gugu::UnitTestResults* results);

@@ -66,6 +66,7 @@ int main(int argc, char* argv[])
     RunUnitTests_Math(&results);
     RunUnitTests_System(&results);
     RunUnitTests_Xml(&results);
+    RunUnitTests_Core(&results);
     RunUnitTests_Element(&results);
     RunUnitTests_DataBinding(&results);
 

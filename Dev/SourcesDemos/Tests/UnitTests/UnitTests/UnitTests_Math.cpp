@@ -78,6 +78,16 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(1.f, ratio, math::Epsilon6));
         }
 
+        GUGU_UTEST_SUBSECTION("Absolute");
+        {
+            GUGU_UTEST_CHECK(Absolute(0) == 0);
+            GUGU_UTEST_CHECK(Absolute(5) == 5);
+            GUGU_UTEST_CHECK(Absolute(-5) == 5);
+            GUGU_UTEST_CHECK(ApproxEqual(Absolute(0.f), 0.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(Absolute(5.5f), 5.5f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(Absolute(-5.5f), 5.5f, math::Epsilon6));
+        }
+
         GUGU_UTEST_SUBSECTION("Angles");
         {
             GUGU_UTEST_CHECK(ApproxEqual((float)ToDegrees(math::Pi), 180.f, math::Epsilon3));

@@ -6,6 +6,7 @@
 #include "Gugu/System/Types.h"
 
 #include <cmath>
+#include <cstdlib>
 #include <algorithm>
 
 ////////////////////////////////////////////////////////////////

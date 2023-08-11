@@ -60,9 +60,10 @@ T Distance(T _tValue1, T _tValue2)
 }
 
 template <typename T>
-T Absolute(T _tValue)    //Visual has a good abs() templated for int, float, etc... but CodeBlocks don't...
+T Absolute(T _tValue)
 {
-    return (_tValue >= (T)0) ? _tValue : (_tValue * (T)-1);
+    // Note: we need implementations from both cstdlib and cmath.
+    return std::abs(_tValue);
 }
 
 template <typename T>

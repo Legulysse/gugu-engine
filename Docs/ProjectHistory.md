@@ -16,7 +16,7 @@
 ## Version 0.7.1 &nbsp; _(10/12/2022)_
 - Clean du build 64bits, retrait du build 32bits.
 - Mise à jour du build de C++14 vers C++17.
-- Fix du build pour vs2022 (non testé).
+- Fix du build pour vs2022.
 - Simplification des scripts de build (encapsulation des appels redondants entre chaque projet).
 - Retrait des sources de SFML, ImGui, ImGui-SFML et PugiXml, au profit de submodules (rangés dans /Externals/*).
 - Mise à jour SFML 2.6.x.

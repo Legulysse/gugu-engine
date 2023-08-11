@@ -41,16 +41,18 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
         {
             const DataEnumInfos* enumInfos = GetResources()->GetDataEnumInfos("weaponType");
 
-            GUGU_UTEST_CHECK(enumInfos != nullptr);
-            GUGU_UTEST_CHECK(enumInfos->values.size() == 5);
+            if (GUGU_UTEST_CHECK(enumInfos != nullptr))
+            {
+                GUGU_UTEST_CHECK(enumInfos->values.size() == 5);
 
-            GUGU_UTEST_CHECK(enumInfos == EWeaponType::GetDataEnumInfos());
-            GUGU_UTEST_CHECK(EWeaponType::GetSize() == 5);
+                GUGU_UTEST_CHECK(enumInfos == EWeaponType::GetDataEnumInfos());
+                GUGU_UTEST_CHECK(EWeaponType::GetSize() == 5);
 
-            std::vector<EWeaponType::Type> enumValues;
-            EWeaponType::GetEnumValues(enumValues);
+                std::vector<EWeaponType::Type> enumValues;
+                EWeaponType::GetEnumValues(enumValues);
 
-            GUGU_UTEST_CHECK(enumValues.size() == 5);
+                GUGU_UTEST_CHECK(enumValues.size() == 5);
+            }
         }
 
         GUGU_UTEST_SUBSECTION("Classes");

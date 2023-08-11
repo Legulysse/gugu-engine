@@ -96,7 +96,7 @@ Element* Element::AddChildWidget(ElementWidget* elementWidget)
     return nullptr;
 }
 
-void Element::SetParent(Element* parent, bool recomputeDimensions)
+void Element::SetParent(Element* parent)
 {
     // Some processes can set the parent before calling AddChild, this test ensures we reduce unnecessary dimensions computation.
     if (m_parent == parent)
@@ -110,10 +110,7 @@ void Element::SetParent(Element* parent, bool recomputeDimensions)
 
     m_parent = parent;
 
-    if (recomputeDimensions)
-    {
-        ComputeUnifiedDimensionsFromParent();
-    }
+    ComputeUnifiedDimensionsFromParent();
 }
 
 void Element::RemoveChild(Element* child)

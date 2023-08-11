@@ -45,7 +45,8 @@ void ElementSpriteGroupItem::SetSpriteGroup(ElementSpriteGroup* spriteGroup)
     }
     else if (!m_spriteGroup)
     {
-        SetParent(nullptr, false);
+        // TODO: This case may happen if I actually implement a RemoveItem on SpriteGroup.
+        SetParent(nullptr);
     }
 }
 

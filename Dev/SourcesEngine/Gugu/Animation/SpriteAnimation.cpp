@@ -88,9 +88,9 @@ void SpriteAnimation::StartAnimation(Animation* animation)
     if (!animation || !m_animSet || animation->GetAnimSet() != m_animSet)
         return;
 
-    StopAnimation();
-
     m_animation = animation;
+    m_animIndexCurrent = 0;
+    m_animDurationCurrent = 0.f;
 
     RestartAnimation();
 }
@@ -201,6 +201,10 @@ void SpriteAnimation::SetCurrentFrame(size_t _uiIndex)
             }
         }
     }
+    else
+    {
+        m_sprite->SetTexture(nullptr);
+    }
 }
 
 void SpriteAnimation::SetCurrentFrame(AnimationFrame* _pFrame)
@@ -208,6 +212,10 @@ void SpriteAnimation::SetCurrentFrame(AnimationFrame* _pFrame)
     if (m_animation && _pFrame)
     {
         SetCurrentFrame(m_animation->GetFrameIndex(_pFrame));
+    }
+    else
+    {
+        m_sprite->SetTexture(nullptr);
     }
 }
 

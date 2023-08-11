@@ -57,6 +57,7 @@ namespace EElementEvent
         Destroyed,
         InteractionsEnabled,
         InteractionsDisabled,
+        SizeChanged,
     };
 }
 

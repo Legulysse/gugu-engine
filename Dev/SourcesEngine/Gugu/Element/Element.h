@@ -196,6 +196,8 @@ public:
     void SetUnifiedPosition(const UDim2& _oNewDimPos);
     void SetUnifiedSize(const UDim2& _oNewDimSize);
 
+    void SetUnifiedSize(const UDim2& _oNewDimSize, Element* dimSizeReference);
+
     bool GetUseUnifiedOrigin() const;
     bool GetUseUnifiedPosition() const;
     bool GetUseUnifiedSize() const;
@@ -237,6 +239,12 @@ protected:
 
     virtual bool LoadFromDataImpl(ElementDataContext& context);
     virtual bool LoadFromWidgetInstanceDataImpl(ElementDataContext& context);
+
+    //----------------------------------------------
+    // UI
+
+    void OnSizeReferenceDestroyed();
+    void OnSizeReferenceChanged();
 
     //----------------------------------------------
     // Internal Events
@@ -283,6 +291,7 @@ protected:
     UDim2 m_dimPosition;
     bool m_useDimSize;
     UDim2 m_dimSize;
+    Element* m_dimSizeReference;
 
     //----------------------------------------------
     // Events

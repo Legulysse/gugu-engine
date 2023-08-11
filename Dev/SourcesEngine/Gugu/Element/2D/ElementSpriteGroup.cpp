@@ -158,7 +158,7 @@ void ElementSpriteGroup::OnSizeChanged()
 {
     for (size_t i = 0; i < m_items.size(); ++i)
     {
-        m_items[i]->OnParentResized();
+        m_items[i]->ComputeUnifiedDimensionsFromParent();
     }
 }
 

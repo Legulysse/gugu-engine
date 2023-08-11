@@ -195,7 +195,6 @@ public:
     void SetUnifiedOrigin(const UDim2& _oNewDimOrigin);
     void SetUnifiedPosition(const UDim2& _oNewDimPos);
     void SetUnifiedSize(const UDim2& _oNewDimSize);
-
     void SetUnifiedSize(const UDim2& _oNewDimSize, Element* dimSizeReference);
 
     bool GetUseUnifiedOrigin() const;
@@ -209,9 +208,10 @@ public:
     void ResetUnifiedPosition();
     void ResetUnifiedSize();
 
-    void OnParentResized();
     void ComputeUnifiedOrigin();
-    void ComputeUnifiedDimensions();
+    void ComputeUnifiedPosition();
+    void ComputeUnifiedSize();
+    void ComputeUnifiedDimensionsFromParent();
 
     //----------------------------------------------
     // Events
@@ -245,6 +245,7 @@ protected:
 
     void OnSizeReferenceDestroyed();
     void OnSizeReferenceChanged();
+    void ClearSizeReference();
 
     //----------------------------------------------
     // Internal Events

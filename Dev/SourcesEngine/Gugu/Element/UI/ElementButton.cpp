@@ -231,22 +231,22 @@ void ElementButton::OnSizeChanged()
 {
     if (m_idleStateComponent)
     {
-        m_idleStateComponent->ComputeUnifiedDimensions();
+        m_idleStateComponent->ComputeUnifiedDimensionsFromParent();
     }
 
     if (m_focusedStateComponent)
     {
-        m_focusedStateComponent->ComputeUnifiedDimensions();
+        m_focusedStateComponent->ComputeUnifiedDimensionsFromParent();
     }
 
     if (m_disabledStateComponent)
     {
-        m_disabledStateComponent->ComputeUnifiedDimensions();
+        m_disabledStateComponent->ComputeUnifiedDimensionsFromParent();
     }
 
     if (m_commonComponent)
     {
-        m_commonComponent->ComputeUnifiedDimensions();
+        m_commonComponent->ComputeUnifiedDimensionsFromParent();
     }
 }
 

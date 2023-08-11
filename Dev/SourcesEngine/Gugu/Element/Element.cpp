@@ -43,13 +43,13 @@ Element::Element()
 
 Element::~Element()
 {
-    ResetUnifiedSize();
-
     if (m_eventHandler)
     {
         m_eventHandler->FireCallbacks(EElementEvent::Destroyed);
         SafeDelete(m_eventHandler);
     }
+
+    ClearSizeReference();
 
     //SafeDelete(m_pShader);
 
@@ -112,7 +112,7 @@ void Element::SetParent(Element* parent, bool recomputeDimensions)
 
     if (recomputeDimensions)
     {
-        ComputeUnifiedDimensions();
+        ComputeUnifiedDimensionsFromParent();
     }
 }
 
@@ -219,22 +219,24 @@ void Element::SetUnifiedPosition(const UDim2& _oNewDimPos)
     m_useDimPosition = true;
     m_dimPosition = _oNewDimPos;
 
-    ComputeUnifiedDimensions();
+    ComputeUnifiedPosition();
 }
 
 void Element::SetUnifiedSize(const UDim2& _oNewDimSize)
 {
-    m_useDimSize = true;
-    m_dimSize = _oNewDimSize;
-
-    ComputeUnifiedDimensions();
+    if (m_dimSizeReference)
+    {
+        SetUnifiedSize(_oNewDimSize, m_dimSizeReference);
+    }
+    else
+    {
+        SetUnifiedSize(_oNewDimSize, nullptr);
+    }
 }
 
 void Element::SetUnifiedSize(const UDim2& _oNewDimSize, Element* dimSizeReference)
 {
-    ResetUnifiedSize();
-
-    if (dimSizeReference)
+    if (dimSizeReference && dimSizeReference != m_dimSizeReference)
     {
         // Check dependency loop.
         std::set<const Element*> referenceDependencies;
@@ -251,24 +253,20 @@ void Element::SetUnifiedSize(const UDim2& _oNewDimSize, Element* dimSizeReferenc
             referenceDependencies.insert(referenceDependency);
             referenceDependency = referenceDependency->m_dimSizeReference;
         }
+
+        ClearSizeReference();
+
+        m_dimSizeReference = dimSizeReference;
+
+        Handle sizeHandle(this, 1);
+        m_dimSizeReference->GetEvents()->AddCallback(EElementEvent::Destroyed, sizeHandle, std::bind(&Element::OnSizeReferenceDestroyed, this));
+        m_dimSizeReference->GetEvents()->AddCallback(EElementEvent::SizeChanged, sizeHandle, std::bind(&Element::OnSizeReferenceChanged, this));
     }
 
     m_useDimSize = true;
     m_dimSize = _oNewDimSize;
-    m_dimSizeReference = dimSizeReference;
 
-    if (m_dimSizeReference)
-    {
-        Handle sizeHandle(this, 1);
-
-        m_dimSizeReference->GetEvents()->AddCallback(EElementEvent::Destroyed, sizeHandle, std::bind(
-            &Element::OnSizeReferenceDestroyed, this));
-
-        m_dimSizeReference->GetEvents()->AddCallback(EElementEvent::SizeChanged, sizeHandle, std::bind(
-            &Element::OnSizeReferenceChanged, this));
-    }
-
-    ComputeUnifiedDimensions();
+    ComputeUnifiedSize();
 }
 
 bool Element::GetUseUnifiedOrigin() const
@@ -315,12 +313,7 @@ void Element::ResetUnifiedPosition()
 
 void Element::ResetUnifiedSize()
 {
-    if (m_dimSizeReference)
-    {
-        Handle sizeHandle(this, 1);
-        m_dimSizeReference->GetEvents()->RemoveCallbacks(EElementEvent::Destroyed, sizeHandle);
-        m_dimSizeReference->GetEvents()->RemoveCallbacks(EElementEvent::SizeChanged, sizeHandle);
-    }
+    ClearSizeReference();
 
     m_useDimSize = false;
     m_dimSize = UDim2::ZERO;
@@ -529,7 +522,7 @@ void Element::SetSize(const Vector2f& _kNewSize)
     
     for (size_t i = 0; i < m_children.size(); ++i)
     {
-        m_children[i]->OnParentResized();
+        m_children[i]->ComputeUnifiedDimensionsFromParent();
     }
 }
 
@@ -576,44 +569,61 @@ void Element::ComputeUnifiedOrigin()
     }
 }
 
-void Element::ComputeUnifiedDimensions()
+void Element::ComputeUnifiedPosition()
 {
     if (m_useDimPosition)
     {
-        Element* dimPositionReference = m_parent;
-        if (dimPositionReference)
+        Element* dimReference = m_parent;
+        if (dimReference)
         {
-            SetPosition(m_dimPosition.GetPixelAlignedComputedDimension(dimPositionReference->GetSize()));
+            SetPosition(m_dimPosition.GetPixelAlignedComputedDimension(dimReference->GetSize()));
         }
     }
+}
 
+void Element::ComputeUnifiedSize()
+{
     if (m_useDimSize)
     {
-        Element* dimSizeReference = m_dimSizeReference ? m_dimSizeReference : m_parent;
-        if (dimSizeReference)
+        Element* dimReference = m_dimSizeReference ? m_dimSizeReference : m_parent;
+        if (dimReference)
         {
-            SetSize(m_dimSize.GetPixelAlignedComputedDimension(dimSizeReference->GetSize()));
+            SetSize(m_dimSize.GetPixelAlignedComputedDimension(dimReference->GetSize()));
         }
+    }
+}
+
+void Element::ComputeUnifiedDimensionsFromParent()
+{
+    ComputeUnifiedPosition();
+
+    if (m_useDimSize && !m_dimSizeReference)
+    {
+        ComputeUnifiedSize();
     }
 }
 
 void Element::OnSizeReferenceDestroyed()
 {
-    ResetUnifiedSize();
+    m_useDimSize = false;
+    m_dimSize = UDim2::ZERO;
+    m_dimSizeReference = nullptr;
 }
 
 void Element::OnSizeReferenceChanged()
 {
-    ComputeUnifiedDimensions();
+    ComputeUnifiedSize();
 }
 
-void Element::OnParentResized()
+void Element::ClearSizeReference()
 {
-    ComputeUnifiedDimensions();
-
-    for (size_t i = 0; i < m_children.size(); ++i)
+    if (m_dimSizeReference)
     {
-        m_children[i]->OnParentResized();
+        Handle sizeHandle(this, 1);
+        m_dimSizeReference->GetEvents()->RemoveCallbacks(EElementEvent::Destroyed, sizeHandle);
+        m_dimSizeReference->GetEvents()->RemoveCallbacks(EElementEvent::SizeChanged, sizeHandle);
+
+        m_dimSizeReference = nullptr;
     }
 }
 

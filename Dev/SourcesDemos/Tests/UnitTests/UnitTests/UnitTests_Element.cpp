@@ -143,6 +143,142 @@ void RunUnitTests_Element(UnitTestResults* results)
         SafeDelete(dummyWidget);
     }
 
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Unified Dimensions");
+    {
+        GUGU_UTEST_SUBSECTION("Size (parent ref)");
+        {
+            //----------------------------------------------
+            // Base tests.
+
+            Element* root = new Element;
+            root->SetSize(100.f, 100.f);
+
+            Element* elementA = root->AddChild<Element>();
+            elementA->SetSize(10.f, 10.f);
+
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(100.f, 100.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(10.f, 10.f), math::Epsilon3));
+
+            elementA->SetUnifiedSize(UDim2::SIZE_FULL);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(100.f, 100.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(100.f, 100.f), math::Epsilon3));
+
+            root->SetSize(50.f, 25.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(50.f, 25.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(50.f, 25.f), math::Epsilon3));
+
+            elementA->SetUnifiedSize(UDim2::SIZE_FULL + Vector2f(-10.f, -5.f));
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(50.f, 25.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(40.f, 20.f), math::Epsilon3));
+
+            elementA->ResetUnifiedSize();
+            root->SetSize(100.f, 50.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(100.f, 50.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(40.f, 20.f), math::Epsilon3));
+
+            //----------------------------------------------
+            // Set UDim before attaching to parent.
+
+            Element* elementB = new Element;
+            elementB->SetSize(5.f, 5.f);
+            elementB->SetUnifiedSize(UDim2::SIZE_HORIZONTAL_HALF);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(100.f, 50.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->GetSize(), Vector2f(5.f, 5.f), math::Epsilon3));
+
+            root->AddChild(elementB);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(100.f, 50.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->GetSize(), Vector2f(100.f, 25.f), math::Epsilon3));
+
+            //----------------------------------------------
+            // Finalize.
+
+            SafeDelete(root);
+        }
+
+        GUGU_UTEST_SUBSECTION("Size (child ref)");
+        {
+            //----------------------------------------------
+            // Base tests.
+
+            Element* root = new Element;
+            root->SetSize(100.f, 100.f);
+
+            Element* elementA = root->AddChild<Element>();
+            elementA->SetSize(10.f, 10.f);
+
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(100.f, 100.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(10.f, 10.f), math::Epsilon3));
+
+            root->SetUnifiedSize(UDim2::SIZE_FULL, elementA);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(10.f, 10.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(10.f, 10.f), math::Epsilon3));
+
+            elementA->SetSize(80.f, 80.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(80.f, 80.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(80.f, 80.f), math::Epsilon3));
+
+            root->SetUnifiedSize(UDim2::SIZE_HORIZONTAL_HALF);
+            elementA->SetSize(50.f, 50.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(50.f, 25.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(50.f, 50.f), math::Epsilon3));
+
+            root->ResetUnifiedSize();
+            elementA->SetSize(100.f, 50.f);
+            GUGU_UTEST_CHECK(!root->GetUseUnifiedSize());
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(50.f, 25.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetSize(), Vector2f(100.f, 50.f), math::Epsilon3));
+
+            //----------------------------------------------
+            // Delete reference after an initial attachment.
+
+            root->SetUnifiedSize(UDim2::SIZE_FULL, elementA);
+            GUGU_UTEST_CHECK(root->GetUseUnifiedSize());
+
+            SafeDelete(elementA);
+            GUGU_UTEST_CHECK(!root->GetUseUnifiedSize());
+
+            //----------------------------------------------
+            // Change reference after an initial attachment.
+
+            root->SetSize(10.f, 10.f);
+            Element* elementB = root->AddChild<Element>();
+            elementB->SetSize(20.f, 20.f);
+            Element* elementC = root->AddChild<Element>();
+            elementC->SetSize(30.f, 30.f);
+            GUGU_UTEST_CHECK(!root->GetUseUnifiedSize());
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(10.f, 10.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->GetSize(), Vector2f(20.f, 20.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementC->GetSize(), Vector2f(30.f, 30.f), math::Epsilon3));
+
+            root->SetUnifiedSize(UDim2::SIZE_FULL, elementB);
+            GUGU_UTEST_CHECK(root->GetUseUnifiedSize());
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(20.f, 20.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->GetSize(), Vector2f(20.f, 20.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementC->GetSize(), Vector2f(30.f, 30.f), math::Epsilon3));
+
+            root->SetUnifiedSize(UDim2::SIZE_FULL, elementC);
+            GUGU_UTEST_CHECK(root->GetUseUnifiedSize());
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetSize(), Vector2f(30.f, 30.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->GetSize(), Vector2f(20.f, 20.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementC->GetSize(), Vector2f(30.f, 30.f), math::Epsilon3));
+
+            SafeDelete(elementB);
+            GUGU_UTEST_CHECK(root->GetUseUnifiedSize());
+
+            SafeDelete(elementC);
+            GUGU_UTEST_CHECK(!root->GetUseUnifiedSize());
+
+            //----------------------------------------------
+            // Finalize.
+
+            SafeDelete(root);
+        }
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_SECTION("Picking");
     {
         GUGU_UTEST_SUBSECTION("Local Transform");

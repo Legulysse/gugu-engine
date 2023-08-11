@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Core/Callback.h"
+#include "Gugu/Core/Handle.h"
 #include "Gugu/Math/Vector2.h"
 
 #include <vector>
@@ -115,8 +116,8 @@ public:
     void RemoveCallbacks(EInteractionEvent::Type event);
     void FireCallbacks(EInteractionEvent::Type event, const InteractionInfos& interactionInfos);
 
-    void AddCallback(EElementEvent::Type event, const Callback& callback);
-    void RemoveCallbacks(EElementEvent::Type event);
+    void AddCallback(EElementEvent::Type event, const Handle& handle, const Callback& callback);
+    void RemoveCallbacks(EElementEvent::Type event, const Handle& handle);
     void FireCallbacks(EElementEvent::Type event);
 
     void RemoveAllCallbacks();
@@ -143,6 +144,7 @@ private:
     {
         EElementEvent::Type event;
         Callback callback;
+        Handle handle;
     };
     std::vector<ElementCallbackInfos> m_elementCallbacks;
 };

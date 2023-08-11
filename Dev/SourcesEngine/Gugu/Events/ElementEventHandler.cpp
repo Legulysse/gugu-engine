@@ -119,7 +119,7 @@ void ElementEventHandler::FireCallbacks(EInteractionEvent::Type event, const Int
     }
 }
 
-void ElementEventHandler::AddCallback(EElementEvent::Type event, const Callback& callback)
+void ElementEventHandler::AddCallback(EElementEvent::Type event, const Handle& handle, const Callback& callback)
 {
     if (!callback || event == EElementEvent::None)
         return;
@@ -127,14 +127,15 @@ void ElementEventHandler::AddCallback(EElementEvent::Type event, const Callback&
     ElementCallbackInfos kInfos;
     kInfos.event = event;
     kInfos.callback = callback;
+    kInfos.handle = handle;
     m_elementCallbacks.push_back(kInfos);
 }
 
-void ElementEventHandler::RemoveCallbacks(EElementEvent::Type event)
+void ElementEventHandler::RemoveCallbacks(EElementEvent::Type event, const Handle& handle)
 {
     for (auto iteCallback = m_elementCallbacks.begin(); iteCallback != m_elementCallbacks.end();)
     {
-        if (iteCallback->event == event)
+        if (iteCallback->event == event && iteCallback->handle == handle)
         {
             iteCallback = m_elementCallbacks.erase(iteCallback);
         }

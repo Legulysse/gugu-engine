@@ -506,6 +506,9 @@ void Element::SetSize(float _fNewSizeX, float _fNewSizeY)
 
 void Element::SetSize(const Vector2f& _kNewSize)
 {
+    if (ApproxEqual(m_size, _kNewSize, math::Epsilon3))
+        return;
+
     m_size = _kNewSize;
 
     // Ensure we dont get a negative size.

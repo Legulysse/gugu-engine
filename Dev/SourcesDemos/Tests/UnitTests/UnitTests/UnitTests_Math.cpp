@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/UDim.h"
 
 using namespace gugu;
 
@@ -113,6 +114,19 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK(ClampUnordered(5, 20, 10) == 10);
             GUGU_UTEST_CHECK(ClampUnordered(25, 20, 10) == 20);
         }
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("UDim");
+    {
+        GUGU_UTEST_CHECK(UDim2::POSITION_TOP_LEFT.GetComputedDimension(100.f, 50.f) == Vector2f(0.f, 0.f));
+        GUGU_UTEST_CHECK(UDim2::POSITION_CENTER.GetComputedDimension(100.f, 50.f) == Vector2f(50.f, 25.f));
+        GUGU_UTEST_CHECK(UDim2::POSITION_BOTTOM_RIGHT.GetComputedDimension(100.f, 50.f) == Vector2f(100.f, 50.f));
+
+        GUGU_UTEST_CHECK(UDim2::POSITION_TOP_LEFT.GetPixelAlignedComputedDimension(125.f, 55.f) == Vector2f(0.f, 0.f));
+        GUGU_UTEST_CHECK(UDim2::POSITION_CENTER.GetPixelAlignedComputedDimension(125.f, 55.f) == Vector2f(62.f, 27.f));
+        GUGU_UTEST_CHECK(UDim2::POSITION_BOTTOM_RIGHT.GetPixelAlignedComputedDimension(125.f, 55.f) == Vector2f(125.f, 55.f));
     }
 
     //----------------------------------------------

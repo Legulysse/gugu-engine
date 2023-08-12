@@ -147,6 +147,84 @@ void RunUnitTests_Element(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("Unified Dimensions");
     {
+        GUGU_UTEST_SUBSECTION("Origin");
+        {
+            //----------------------------------------------
+            // Base tests.
+
+            Element* root = new Element;
+            root->SetSize(100.f, 100.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetOrigin(), Vector2f(0.f, 0.f), math::Epsilon3));
+
+            root->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetOrigin(), Vector2f(50.f, 50.f), math::Epsilon3));
+
+            root->SetSize(50.f, 50.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetOrigin(), Vector2f(25.f, 25.f), math::Epsilon3));
+
+            root->SetUnifiedOrigin(UDim2::POSITION_TOP_RIGHT + Vector2f(10.f, -10.f));
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetOrigin(), Vector2f(60.f, -10.f), math::Epsilon3));
+
+            root->ResetUnifiedOrigin();
+            root->SetSize(100.f, 50.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetOrigin(), Vector2f(60.f, -10.f), math::Epsilon3));
+
+            //----------------------------------------------
+            // Finalize.
+
+            SafeDelete(root);
+        }
+
+        GUGU_UTEST_SUBSECTION("Position");
+        {
+            //----------------------------------------------
+            // Base tests.
+
+            Element* root = new Element;
+            root->SetSize(100.f, 100.f);
+
+            Element* elementA = root->AddChild<Element>();
+            elementA->SetSize(10.f, 10.f);
+
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+
+            elementA->SetUnifiedPosition(UDim2::POSITION_CENTER);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetPosition(), Vector2f(50.f, 50.f), math::Epsilon3));
+
+            root->SetSize(50.f, 25.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetPosition(), Vector2f(25.f, 12.f), math::Epsilon3));
+
+            elementA->SetUnifiedPosition(UDim2::POSITION_BOTTOM_RIGHT + Vector2f(-10.f, -10.f));
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetPosition(), Vector2f(40.f, 15.f), math::Epsilon3));
+
+            elementA->ResetUnifiedPosition();
+            root->SetSize(100.f, 50.f);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->GetPosition(), Vector2f(40.f, 15.f), math::Epsilon3));
+
+            //----------------------------------------------
+            // Set UDim before attaching to parent.
+
+            Element* elementB = new Element;
+            elementB->SetSize(5.f, 5.f);
+            elementB->SetUnifiedPosition(UDim2::POSITION_CENTER_LEFT);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+
+            root->AddChild(elementB);
+            GUGU_UTEST_CHECK(ApproxEqual(root->GetPosition(), Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->GetPosition(), Vector2f(0.f, 25.f), math::Epsilon3));
+
+            //----------------------------------------------
+            // Finalize.
+
+            SafeDelete(root);
+        }
+
         GUGU_UTEST_SUBSECTION("Size (parent ref)");
         {
             //----------------------------------------------

@@ -32,6 +32,7 @@ ElementButton::ElementButton()
     , m_focusedStateComponent(nullptr)
     , m_disabledStateComponent(nullptr)
     , m_currentStateComponent(nullptr)
+    , m_text(nullptr)
     , m_actionOnPressed(nullptr)
     , m_actionOnReleased(nullptr)
     , m_isDisabled(false)
@@ -45,6 +46,7 @@ ElementButton::ElementButton()
 ElementButton::~ElementButton()
 {
     m_currentStateComponent = nullptr;
+    m_text = nullptr;
 
     SafeDelete(m_idleStateComponent);
     SafeDelete(m_focusedStateComponent);
@@ -127,22 +129,19 @@ void ElementButton::SetText(const std::string& value, const std::string& fontID)
     }
 
     // If the common component is not a text, add a text child.
-    // TODO: successive calls will create several text children, this should either look for the first available text, or use a cache.
-    // - The default text target could be defined in xml components (I could have both a text and a common component ?).
-    // - The intended behaviour for this SetText method is to provide a helper for buttons customization, but buttons may not use a text when defined in xml.
-    // - Another possible decision would be to ignore this call if the component is not a text.
-    ElementText* text = dynamic_cast<ElementText*>(m_commonComponent);
-    if (!text)
+    if (!m_text)
     {
-        text = new ElementText;
-        m_commonComponent->AddChild(text);
-
-        text->SetFont(fontID);
-        text->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
-        text->SetUnifiedPosition(UDim2::POSITION_TOP_CENTER);
+        m_text = dynamic_cast<ElementText*>(m_commonComponent);
+        if (!m_text)
+        {
+            m_text = m_commonComponent->AddChild<ElementText>();
+            m_text->SetFont(fontID);
+            m_text->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
+            m_text->SetUnifiedPosition(UDim2::POSITION_TOP_CENTER);
+        }
     }
 
-    text->SetText(value);
+    m_text->SetText(value);
 }
 
 void ElementButton::SetDisabled(bool _bDisabled)

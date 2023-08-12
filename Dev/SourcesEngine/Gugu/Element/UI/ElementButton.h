@@ -64,6 +64,7 @@ protected:
     Element* m_focusedStateComponent;
     Element* m_disabledStateComponent;
     Element* m_currentStateComponent;
+    ElementText* m_text;
 
     Callback m_actionOnPressed;
     Callback m_actionOnReleased;

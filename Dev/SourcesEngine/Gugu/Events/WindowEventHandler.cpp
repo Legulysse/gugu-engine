@@ -15,6 +15,8 @@
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Element/Element.h"
 
+#include <SFML/Window/Event.hpp>
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 

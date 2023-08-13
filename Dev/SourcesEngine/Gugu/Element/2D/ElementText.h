@@ -5,6 +5,7 @@
 
 #include "Gugu/Element/Element.h"
 
+#include <SFML/System/String.hpp>
 #include <SFML/Graphics/Color.hpp>
 
 ////////////////////////////////////////////////////////////////

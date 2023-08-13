@@ -30,6 +30,7 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/Font.h"
 
+#include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include <imgui-SFML.h>

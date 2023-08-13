@@ -11,6 +11,7 @@
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/System/SystemUtility.h"
 
+#include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 

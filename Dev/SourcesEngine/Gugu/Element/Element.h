@@ -8,8 +8,8 @@
 #include "Gugu/Math/Vector2.h"
 
 #include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Window/Event.hpp>
 
+#include <string>
 #include <vector>
 
 ////////////////////////////////////////////////////////////////
@@ -19,17 +19,9 @@ namespace gugu
 {
     struct RenderPass;
     struct InteractionInfos;
-    struct ElementParseContext;
-    struct ElementSaveContext;
     struct ElementDataContext;
     class ElementEventHandler;
     class ElementWidget;
-}
-
-namespace pugi
-{
-    // TODO: remove
-    class xml_node;
 }
 
 ////////////////////////////////////////////////////////////////

@@ -16,9 +16,10 @@
 namespace gugu {
     
 ElementLayoutGroup::ElementLayoutGroup()
-    : m_direction(ELayoutDirection::Vertical)
-    , m_autoResize(true)
-    , m_wrap(false)
+    : m_mainDirection(ELayoutDirection::LeftToRight)
+    , m_wrapDirection(ELayoutDirection::Auto)
+    , m_mainDirectionBehaviour(ELayoutBehaviour::ResizeContainer)
+    , m_wrapDirectionBehaviour(ELayoutBehaviour::ResizeContainer)
 {
 }
 
@@ -27,9 +28,33 @@ ElementLayoutGroup::~ElementLayoutGroup()
     ClearStdVector(m_items);
 }
 
-void ElementLayoutGroup::SetLayoutDirection(ELayoutDirection::Type direction)
+void ElementLayoutGroup::SetMainDirection(ELayoutDirection::Type direction)
 {
-    m_direction = direction;
+    if (direction == ELayoutDirection::Auto)
+        return;
+
+    m_mainDirection = direction;
+    RaiseNeedRecompute();
+}
+
+void ElementLayoutGroup::SetWrapDirection(ELayoutDirection::Type direction)
+{
+    m_wrapDirection = direction;
+    RaiseNeedRecompute();
+}
+
+void ElementLayoutGroup::SetMainDirectionBehaviour(ELayoutBehaviour::Type behaviour)
+{
+    m_mainDirectionBehaviour = behaviour;
+    RaiseNeedRecompute();
+}
+
+void ElementLayoutGroup::SetWrapDirectionBehaviour(ELayoutBehaviour::Type behaviour)
+{
+    if (behaviour == ELayoutBehaviour::WrapItems)
+        return;
+
+    m_wrapDirectionBehaviour = behaviour;
     RaiseNeedRecompute();
 }
 
@@ -41,27 +66,29 @@ void ElementLayoutGroup::AddItem(Element* item)
     RaiseNeedRecompute();
 }
 
-ELayoutDirection::Type ElementLayoutGroup::GetLayoutDirection() const
+ELayoutDirection::Type ElementLayoutGroup::GetMainDirection() const
 {
-    return m_direction;
+    return m_mainDirection;
 }
 
-void ElementLayoutGroup::SetAutoResize(bool autoResize)
+ELayoutDirection::Type ElementLayoutGroup::GetWrapDirection() const
 {
-    m_autoResize = autoResize;
-    RaiseNeedRecompute();
+    return m_wrapDirection;
 }
 
-void ElementLayoutGroup::SetWrapItems(bool wrap)
+ELayoutBehaviour::Type ElementLayoutGroup::GetMainDirectionBehaviour() const
 {
-    m_wrap = wrap;
-    RaiseNeedRecompute();
+    return m_mainDirectionBehaviour;
+}
+
+ELayoutBehaviour::Type ElementLayoutGroup::GetWrapDirectionBehaviour() const
+{
+    return m_wrapDirectionBehaviour;
 }
 
 void ElementLayoutGroup::SetItemSpacing(float spacing)
 {
-    m_spacing = Vector2f(spacing, spacing);
-    RaiseNeedRecompute();
+    SetItemSpacing(Vector2f(spacing, spacing));
 }
 
 void ElementLayoutGroup::SetItemSpacing(Vector2f spacing)
@@ -77,41 +104,172 @@ Vector2f ElementLayoutGroup::GetItemSpacing() const
 
 void ElementLayoutGroup::RecomputeImpl()
 {
-    Vector2f itemPosition = Vector2::Zero_f;
-    Vector2f layoutSize = Vector2::Zero_f;
+    ELayoutDirection::Type mainDirection = m_mainDirection;
+    ELayoutDirection::Type wrapDirection = m_wrapDirection;
+
+    if (wrapDirection == ELayoutDirection::Auto)
+    {
+        switch (mainDirection)
+        {
+            case ELayoutDirection::LeftToRight:
+            case ELayoutDirection::RightToLeft:
+                wrapDirection = ELayoutDirection::TopToBottom;
+                break;
+            case ELayoutDirection::TopToBottom:
+            case ELayoutDirection::BottomToTop:
+                wrapDirection = ELayoutDirection::LeftToRight;
+                break;
+        }
+    }
+
+    Vector2f referencePosition = Vector2::Zero_f;
+
+    switch (mainDirection)
+    {
+        case ELayoutDirection::LeftToRight: referencePosition.x = 0.f; break;
+        case ELayoutDirection::RightToLeft: referencePosition.x = GetSize().x; break;
+        case ELayoutDirection::TopToBottom: referencePosition.y = 0.f; break;
+        case ELayoutDirection::BottomToTop: referencePosition.y = GetSize().y; break;
+    }
+
+    switch (wrapDirection)
+    {
+        case ELayoutDirection::LeftToRight: referencePosition.x = 0.f; break;
+        case ELayoutDirection::RightToLeft: referencePosition.x = GetSize().x; break;
+        case ELayoutDirection::TopToBottom: referencePosition.y = 0.f; break;
+        case ELayoutDirection::BottomToTop: referencePosition.y = GetSize().y; break;
+    }
+
+    Vector2f minPosition = referencePosition;
+    Vector2f maxPosition = referencePosition;
+    Vector2f currentGroupMinPosition = referencePosition;
+    Vector2f currentGroupMaxPosition = referencePosition;
 
     for (size_t i = 0; i < m_items.size(); ++i)
     {
         Vector2f itemSize = m_items[i]->GetSize();
 
-        if (m_wrap && i != 0)
+        Vector2f currentGroupSize = Vector2::Zero_f;
+        currentGroupSize.x = currentGroupMaxPosition.x - currentGroupMinPosition.x;
+        currentGroupSize.y = currentGroupMaxPosition.y - currentGroupMinPosition.y;
+
+        if (i != 0 && m_mainDirectionBehaviour == ELayoutBehaviour::WrapItems)
         {
-            if (m_direction == ELayoutDirection::Vertical && itemPosition.y + itemSize.y > GetSize().y)
+            bool resetMainDirection = false;
+
+            switch (mainDirection)
             {
-                itemPosition.x += m_spacing.x + itemSize.x;
-                itemPosition.y = 0.f;
+                case ELayoutDirection::LeftToRight:
+                case ELayoutDirection::RightToLeft:
+                    if (currentGroupSize.x + itemSize.x > GetSize().x)
+                    {
+                        resetMainDirection = true;
+                    }
+                    break;
+                case ELayoutDirection::TopToBottom:
+                case ELayoutDirection::BottomToTop:
+                    if (currentGroupSize.y + itemSize.y > GetSize().y)
+                    {
+                        resetMainDirection = true;
+                    }
+                    break;
             }
-            else if (m_direction == ELayoutDirection::Horizontal && itemPosition.x + itemSize.x > GetSize().x)
+
+            if (resetMainDirection)
             {
-                itemPosition.x = 0.f;
-                itemPosition.y += m_spacing.y + itemSize.y;
+                switch (mainDirection)
+                {
+                    case ELayoutDirection::LeftToRight: referencePosition.x = 0.f; break;
+                    case ELayoutDirection::RightToLeft: referencePosition.x = GetSize().x; break;
+                    case ELayoutDirection::TopToBottom: referencePosition.y = 0.f; break;
+                    case ELayoutDirection::BottomToTop: referencePosition.y = GetSize().y; break;
+                }
+
+                switch (wrapDirection)
+                {
+                    case ELayoutDirection::LeftToRight: referencePosition += Vector2f(currentGroupSize.x + m_spacing.x, 0.f); break;
+                    case ELayoutDirection::RightToLeft: referencePosition -= Vector2f(currentGroupSize.x + m_spacing.x, 0.f); break;
+                    case ELayoutDirection::TopToBottom: referencePosition += Vector2f(0.f, currentGroupSize.y + m_spacing.y); break;
+                    case ELayoutDirection::BottomToTop: referencePosition -= Vector2f(0.f, currentGroupSize.y + m_spacing.y); break;
+                }
+
+                currentGroupMinPosition = referencePosition;
+                currentGroupMaxPosition = referencePosition;
             }
+        }
+
+        Vector2f itemPosition = referencePosition;
+
+        switch (mainDirection)
+        {
+            case ELayoutDirection::LeftToRight: itemPosition.x += 0.f; break;
+            case ELayoutDirection::RightToLeft: itemPosition.x -= itemSize.x; break;
+            case ELayoutDirection::TopToBottom: itemPosition.y += 0.f; break;
+            case ELayoutDirection::BottomToTop: itemPosition.y -= itemSize.y; break;
+        }
+
+        switch (wrapDirection)
+        {
+            case ELayoutDirection::LeftToRight: itemPosition.x += 0.f; break;
+            case ELayoutDirection::RightToLeft: itemPosition.x -= itemSize.x; break;
+            case ELayoutDirection::TopToBottom: itemPosition.y += 0.f; break;
+            case ELayoutDirection::BottomToTop: itemPosition.y -= itemSize.y; break;
         }
 
         m_items[i]->SetPosition(itemPosition);
 
-        layoutSize.x = Max(layoutSize.x, itemPosition.x + itemSize.x);
-        layoutSize.y = Max(layoutSize.y, itemPosition.y + itemSize.y);
+        minPosition.x = Min(minPosition.x, itemPosition.x);
+        minPosition.y = Min(minPosition.y, itemPosition.y);
+        maxPosition.x = Max(maxPosition.x, itemPosition.x + itemSize.x);
+        maxPosition.y = Max(maxPosition.y, itemPosition.y + itemSize.y);
 
-        itemPosition += (m_direction == ELayoutDirection::Vertical)
-            ? Vector2f(0.f, m_spacing.y + itemSize.y)
-            : Vector2f(m_spacing.x + itemSize.x, 0.f);
+        currentGroupMinPosition.x = Min(currentGroupMinPosition.x, itemPosition.x);
+        currentGroupMinPosition.y = Min(currentGroupMinPosition.y, itemPosition.y);
+        currentGroupMaxPosition.x = Max(currentGroupMaxPosition.x, itemPosition.x + itemSize.x);
+        currentGroupMaxPosition.y = Max(currentGroupMaxPosition.y, itemPosition.y + itemSize.y);
+
+        switch (mainDirection)
+        {
+            case ELayoutDirection::LeftToRight: referencePosition += Vector2f(m_spacing.x + itemSize.x, 0.f); break;
+            case ELayoutDirection::RightToLeft: referencePosition -= Vector2f(m_spacing.x + itemSize.x, 0.f); break;
+            case ELayoutDirection::TopToBottom: referencePosition += Vector2f(0.f, m_spacing.y + itemSize.y); break;
+            case ELayoutDirection::BottomToTop: referencePosition -= Vector2f(0.f, m_spacing.y + itemSize.y); break;
+        }
     }
 
-    if (m_autoResize)
+    Vector2f layoutSize = GetSize();
+
+    if (m_mainDirectionBehaviour == ELayoutBehaviour::ResizeContainer)
     {
-        SetSize(layoutSize);
+        switch (mainDirection)
+        {
+            case ELayoutDirection::LeftToRight:
+            case ELayoutDirection::RightToLeft:
+                layoutSize.x = maxPosition.x - minPosition.x;
+                break;
+            case ELayoutDirection::TopToBottom:
+            case ELayoutDirection::BottomToTop:
+                layoutSize.y = maxPosition.y - minPosition.y;
+                break;
+        }
     }
+
+    if (m_wrapDirectionBehaviour == ELayoutBehaviour::ResizeContainer)
+    {
+        switch (wrapDirection)
+        {
+            case ELayoutDirection::LeftToRight:
+            case ELayoutDirection::RightToLeft:
+                layoutSize.x = maxPosition.x - minPosition.x;
+                break;
+            case ELayoutDirection::TopToBottom:
+            case ELayoutDirection::BottomToTop:
+                layoutSize.y = maxPosition.y - minPosition.y;
+                break;
+        }
+    }
+
+    SetSize(layoutSize);
 }
 
 void ElementLayoutGroup::OnSizeChanged()

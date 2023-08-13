@@ -62,10 +62,9 @@ void StateMenuMain::Init()
     Element* box = m_root->AddChildWidget("Box9_Default_01.widget.xml");
 
     ElementLayoutGroup* verticalLayout = box->AddChild<ElementLayoutGroup>();
-    verticalLayout->SetLayoutDirection(ELayoutDirection::Vertical);
+    verticalLayout->SetMainDirection(ELayoutDirection::TopToBottom);
     verticalLayout->SetItemSpacing(10.f);
     verticalLayout->SetUnifiedPosition(UDim2::POSITION_TOP_LEFT + Vector2f(20.f, 20.f));
-    verticalLayout->SetAutoResize(false);
     verticalLayout->SetSize(300.f, 350.f);
 
     m_menu = box;

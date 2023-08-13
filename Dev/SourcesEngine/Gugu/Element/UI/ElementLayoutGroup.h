@@ -14,8 +14,23 @@ namespace ELayoutDirection
 {
     enum Type
     {
-        Vertical,
-        Horizontal,
+        LeftToRight,    // (Default for main direction).
+        RightToLeft,
+        TopToBottom,
+        BottomToTop,
+        Auto,           // (Default for wrap direction) (Ignored by SetMainDirection).
+    };
+}
+
+namespace ELayoutBehaviour
+{
+    enum Type
+    {
+        ResizeContainer,    // Resize the container to fit the space occupied by the items (Default).
+        Overflow,           // Let the items move outside of the container bounds.
+        //HideItems,
+        //ResizeItems,
+        WrapItems,          // Wrap items to fill a new row/column when the current one is overflowing (Ignored by SetWrapDirectionBehaviour).
     };
 }
 
@@ -28,14 +43,15 @@ public:
 
     void AddItem(Element* item);
 
-    void SetLayoutDirection(ELayoutDirection::Type direction);
-    ELayoutDirection::Type GetLayoutDirection() const;
-
-    // TODO: autoresize and wrap are mutually exclusive, and interact with USize, maybe I could use an enum instead ?
-    // - LayoutBehaviour: WrapItems, FitDirection, FitSize
-    // - I will also need a warning in Recompute if some settings collide.
-    void SetAutoResize(bool autoResize);
-    void SetWrapItems(bool wrap);
+    void SetMainDirection(ELayoutDirection::Type direction);
+    void SetWrapDirection(ELayoutDirection::Type direction);
+    void SetMainDirectionBehaviour(ELayoutBehaviour::Type behaviour);
+    void SetWrapDirectionBehaviour(ELayoutBehaviour::Type behaviour);
+    
+    ELayoutDirection::Type GetMainDirection() const;
+    ELayoutDirection::Type GetWrapDirection() const;
+    ELayoutBehaviour::Type GetMainDirectionBehaviour() const;
+    ELayoutBehaviour::Type GetWrapDirectionBehaviour() const;
 
     void SetItemSpacing(float spacing);
     void SetItemSpacing(Vector2f spacing);
@@ -50,10 +66,11 @@ private:
 protected:
 
     std::vector<Element*> m_items;
-    ELayoutDirection::Type m_direction;
+    ELayoutDirection::Type m_mainDirection;
+    ELayoutDirection::Type m_wrapDirection;
+    ELayoutBehaviour::Type m_mainDirectionBehaviour;
+    ELayoutBehaviour::Type m_wrapDirectionBehaviour;
     Vector2f m_spacing;
-    bool m_autoResize;
-    bool m_wrap;
 };
 
 }   // namespace gugu

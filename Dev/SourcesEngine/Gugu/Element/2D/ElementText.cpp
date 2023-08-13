@@ -27,7 +27,6 @@ ElementText::ElementText()
     , m_sfText(nullptr)
     , m_resizeRule(ETextResizeRule::FitSize)
     , m_isMultiline(false)
-    , m_needRecompute(false)
     , m_skipRecomputeOnResize(false)
 {
     m_sfText = new sf::Text;
@@ -108,15 +107,8 @@ sf::String ElementText::GetText() const
     return m_textValue;
 }
 
-void ElementText::RaiseNeedRecompute()
+void ElementText::RecomputeImpl()
 {
-    m_needRecompute = true;
-}
-
-void ElementText::Recompute()
-{
-    m_needRecompute = false;
-
     if (!m_isMultiline)
     {
         m_sfText->setString(m_textValue);
@@ -270,17 +262,10 @@ void ElementText::Recompute()
         m_skipRecomputeOnResize = true;
         SetSizeY(m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height);
     }
-
-    OnRecompute();
 }
 
 void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    if (m_needRecompute)
-    {
-        Recompute();
-    }
-
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
     {

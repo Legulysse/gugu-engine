@@ -71,12 +71,9 @@ public:
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
     const std::vector<ElementSpriteGroupItem*>& GetItems() const;
 
-    void RaiseNeedRecompute();
-
 protected:
 
-    void Recompute();
-
+    virtual void RecomputeImpl() override;
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
 
@@ -85,9 +82,7 @@ protected:
 protected:
 
     Texture* m_texture;
-
     sf::VertexArray m_vertices;
-    bool m_needRecompute;
 
     std::vector<ElementSpriteGroupItem*> m_items;    //TODO: Rename as Components ?
 };

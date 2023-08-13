@@ -37,7 +37,7 @@ protected:
     void StartEditionImpl();
     void StopEditionImpl();
 
-    virtual void OnRecompute() override;
+    virtual void RecomputeImpl() override;
     virtual void OnTextRendered(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
 
 protected:

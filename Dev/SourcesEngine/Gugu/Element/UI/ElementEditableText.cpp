@@ -83,7 +83,7 @@ void ElementEditableText::StartEditionImpl()
 
     GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, true);
     
-    Recompute();
+    RaiseNeedRecompute();
 }
 
 void ElementEditableText::StopEditionImpl()
@@ -94,7 +94,7 @@ void ElementEditableText::StopEditionImpl()
 
     GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, false);
     
-    Recompute();
+    RaiseNeedRecompute();
 }
 
 void ElementEditableText::OnMouseSelected()
@@ -138,7 +138,7 @@ void ElementEditableText::ProcessSFEvent(const sf::Event& _oSFEvent)
             else
             {
                 m_textValue += '\n';
-                Recompute();
+                RaiseNeedRecompute();
                 return;     // return false;
             }
         }
@@ -147,7 +147,7 @@ void ElementEditableText::ProcessSFEvent(const sf::Event& _oSFEvent)
             if (!m_textValue.isEmpty())
             {
                 m_textValue.erase(m_textValue.getSize() - 1, 1);
-                Recompute();
+                RaiseNeedRecompute();
                 return;     // return false;
             }
         }
@@ -157,7 +157,7 @@ void ElementEditableText::ProcessSFEvent(const sf::Event& _oSFEvent)
         if (std::isprint(_oSFEvent.text.unicode))
         {
             m_textValue += _oSFEvent.text.unicode;
-            Recompute();
+            RaiseNeedRecompute();
             return;     // return false;
         }
 #if 0
@@ -228,8 +228,10 @@ void ElementEditableText::SetOnValidate(const Callback& callbackOnValidate)
     m_callbackOnValidate = callbackOnValidate;
 }
 
-void ElementEditableText::OnRecompute()
+void ElementEditableText::RecomputeImpl()
 {
+    ElementText::RecomputeImpl();
+
     if (m_isEditing)
     {
         size_t textSize = m_textValue.getSize();

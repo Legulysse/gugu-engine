@@ -174,6 +174,8 @@ public:
     //----------------------------------------------
     // Render
 
+    void RaiseNeedRecompute();
+
     void Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformParent);
 
     void SetRenderPass(int _iPass);
@@ -229,6 +231,7 @@ protected:
     //----------------------------------------------
     // Render
 
+    virtual void RecomputeImpl() {}
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
 
     //----------------------------------------------
@@ -275,8 +278,9 @@ protected:
     bool m_flipV;
     bool m_flipH;
 
-    int m_renderPass;
     bool m_isVisible;
+    bool m_needRecompute;
+    int m_renderPass;
     int32 m_zIndex;
 
     bool m_showDebugBounds;

@@ -28,8 +28,9 @@ Element::Element()
     : m_parent(nullptr)
     , m_flipV(false)
     , m_flipH(false)
-    , m_renderPass(GUGU_RENDERPASS_DEFAULT)
     , m_isVisible(true)
+    , m_needRecompute(false)
+    , m_renderPass(GUGU_RENDERPASS_DEFAULT)
     , m_zIndex(0)
     , m_showDebugBounds(false)
     , m_useDimOrigin(false)
@@ -712,10 +713,21 @@ bool Element::IsPickedLocal(Vector2f& localCoords) const
     return false;
 }
 
+void Element::RaiseNeedRecompute()
+{
+    m_needRecompute = true;
+}
+
 void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformParent)
 {
     if (m_isVisible)
     {
+        if (m_needRecompute)
+        {
+            m_needRecompute = false;
+            RecomputeImpl();
+        }
+
         sf::Transform combinedTransform = _kTransformParent * GetTransform();
         
         if ((_kRenderPass.pass & m_renderPass) != GUGU_RENDERPASS_INVALID)

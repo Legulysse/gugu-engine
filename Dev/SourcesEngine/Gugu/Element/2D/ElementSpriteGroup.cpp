@@ -116,7 +116,6 @@ bool ElementSpriteGroupItem::LoadFromDataImpl(ElementDataContext& context)
 
 ElementSpriteGroup::ElementSpriteGroup()
     : m_texture(nullptr)
-    , m_needRecompute(true)
 {
 }
 
@@ -168,11 +167,6 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
     if (!m_texture || !m_texture->GetSFTexture())
         return;
 
-    if (m_needRecompute)
-    {
-        Recompute();
-    }
-
     //TODO: maybe need a parameter to bypass this check ?
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
@@ -196,15 +190,8 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
     }
 }
 
-void ElementSpriteGroup::RaiseNeedRecompute()
+void ElementSpriteGroup::RecomputeImpl()
 {
-    m_needRecompute = true;
-}
-
-void ElementSpriteGroup::Recompute()
-{
-    m_needRecompute = false;
-
     size_t indexForceRecompute = (size_t)-1;
 
     size_t totalVertexCount = 0;
@@ -254,7 +241,7 @@ size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* item)
     item->SetSpriteGroup(this);
     m_items.push_back(item);
 
-    m_needRecompute = true;
+    RaiseNeedRecompute();
     return m_items.size() - 1;
 }
 
@@ -325,7 +312,7 @@ bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
         context.data = backupData;
     }
 
-    m_needRecompute = true;
+    RaiseNeedRecompute();
     return result;
 }
 

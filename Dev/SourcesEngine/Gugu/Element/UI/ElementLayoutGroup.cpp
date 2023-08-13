@@ -19,7 +19,6 @@ ElementLayoutGroup::ElementLayoutGroup()
     : m_direction(ELayoutDirection::Vertical)
     , m_autoResize(true)
     , m_wrap(false)
-    , m_needRecompute(false)
 {
 }
 
@@ -31,14 +30,15 @@ ElementLayoutGroup::~ElementLayoutGroup()
 void ElementLayoutGroup::SetLayoutDirection(ELayoutDirection::Type direction)
 {
     m_direction = direction;
-    m_needRecompute = true;
+    RaiseNeedRecompute();
 }
 
 void ElementLayoutGroup::AddItem(Element* item)
 {
     item->SetParent(this);
     m_items.push_back(item);
-    m_needRecompute = true;
+
+    RaiseNeedRecompute();
 }
 
 ELayoutDirection::Type ElementLayoutGroup::GetLayoutDirection() const
@@ -49,25 +49,25 @@ ELayoutDirection::Type ElementLayoutGroup::GetLayoutDirection() const
 void ElementLayoutGroup::SetAutoResize(bool autoResize)
 {
     m_autoResize = autoResize;
-    m_needRecompute = true;
+    RaiseNeedRecompute();
 }
 
 void ElementLayoutGroup::SetWrapItems(bool wrap)
 {
     m_wrap = wrap;
-    m_needRecompute = true;
+    RaiseNeedRecompute();
 }
 
 void ElementLayoutGroup::SetItemSpacing(float spacing)
 {
     m_spacing = Vector2f(spacing, spacing);
-    m_needRecompute = true;
+    RaiseNeedRecompute();
 }
 
 void ElementLayoutGroup::SetItemSpacing(Vector2f spacing)
 {
     m_spacing = spacing;
-    m_needRecompute = true;
+    RaiseNeedRecompute();
 }
 
 Vector2f ElementLayoutGroup::GetItemSpacing() const
@@ -75,10 +75,8 @@ Vector2f ElementLayoutGroup::GetItemSpacing() const
     return m_spacing;
 }
 
-void ElementLayoutGroup::Recompute()
+void ElementLayoutGroup::RecomputeImpl()
 {
-    m_needRecompute = false;
-
     Vector2f itemPosition = Vector2::Zero_f;
     Vector2f layoutSize = Vector2::Zero_f;
 
@@ -118,16 +116,16 @@ void ElementLayoutGroup::Recompute()
 
 void ElementLayoutGroup::OnSizeChanged()
 {
-    m_needRecompute = true;
+    RaiseNeedRecompute();
+
+    for (size_t i = 0; i < m_items.size(); ++i)
+    {
+        m_items[i]->ComputeUnifiedDimensionsFromParent();
+    }
 }
 
 void ElementLayoutGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    if (m_needRecompute)
-    {
-        Recompute();
-    }
-
     for (size_t i = 0; i < m_items.size(); ++i)
     {
         m_items[i]->Render(_kRenderPass, _kTransformSelf);

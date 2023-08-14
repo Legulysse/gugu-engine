@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <set>  // for std::less specialization
+#include <string>
 
 ////////////////////////////////////////////////////////////////
 // File Declarations
@@ -23,6 +24,8 @@ namespace Vector2
     const Vector2u Zero_u = Vector2u();
     const Vector2f Zero_f = Vector2f();
 }
+
+std::string ToString(Vector2f value);
 
 bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon);
 

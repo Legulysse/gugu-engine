@@ -45,7 +45,7 @@ public:
     UDim2(const Vector2f& rel);
     UDim2(const Vector2f& rel, const Vector2f& abs);
     
-    bool operator==(const UDim2& right);
+    bool operator==(const UDim2& right) const;
 
     UDim2& operator+=(const Vector2f& abs);
     const UDim2 operator+(const Vector2f& abs) const;
@@ -75,5 +75,7 @@ public:
     static const UDim2 SIZE_VERTICAL_HALF;
     static const UDim2 SIZE_FULL;
 };
+
+std::string ToString(UDim2 value);
 
 }   // namespace gugu

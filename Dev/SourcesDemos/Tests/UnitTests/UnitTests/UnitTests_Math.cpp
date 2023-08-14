@@ -113,6 +113,62 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK(ClampUnordered(15, 20, 10) == 15);
             GUGU_UTEST_CHECK(ClampUnordered(5, 20, 10) == 10);
             GUGU_UTEST_CHECK(ClampUnordered(25, 20, 10) == 20);
+            GUGU_UTEST_CHECK(Clamp01(0.5f) == 0.5f);
+            GUGU_UTEST_CHECK(Clamp01(-0.5f) == 0.f);
+            GUGU_UTEST_CHECK(Clamp01(1.5f) == 1.f);
+        }
+
+        GUGU_UTEST_SUBSECTION("Rounding");
+        {
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.5f), 11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(-10.5f), -11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.2f), 10.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(-10.2f), -10.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.8f), 11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(-10.8f), -11.f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(10.2f), 10.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(-10.2f), -11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(10.8f), 10.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(-10.8f), -11.f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(10.2f), 11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(-10.2f), -10.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(10.8f), 11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(-10.8f), -10.f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(10.2f), 10.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(-10.2f), -10.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(10.8f), 10.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(-10.8f), -10.f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(10.2f), 11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(-10.2f), -11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(10.8f), 11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(-10.8f), -11.f, math::Epsilon6);
+        }
+
+        GUGU_UTEST_SUBSECTION("Distance");
+        {
+            GUGU_UTEST_CHECK_EQUAL(Distance(25, 35), 10);
+            GUGU_UTEST_CHECK_EQUAL(Distance(35, 25), 10);
+            GUGU_UTEST_CHECK_EQUAL(Distance(-5, 5), 10);
+            GUGU_UTEST_CHECK_EQUAL(Distance(5, -5), 10);
+            GUGU_UTEST_CHECK_EQUAL(Distance(-35, -25), 10);
+
+            GUGU_UTEST_CHECK_TRUE(IsInRange(15, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInRange(5, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInRange(25, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInRange(15, 20, 10));
+            GUGU_UTEST_CHECK_FALSE(IsInRange(5, 20, 10));
+            GUGU_UTEST_CHECK_FALSE(IsInRange(25, 20, 10));
+
+            GUGU_UTEST_CHECK_TRUE(IsInRangeUnordered(15, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInRangeUnordered(5, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInRangeUnordered(25, 10, 20));
+            GUGU_UTEST_CHECK_TRUE(IsInRangeUnordered(15, 20, 10));
+            GUGU_UTEST_CHECK_FALSE(IsInRangeUnordered(5, 20, 10));
+            GUGU_UTEST_CHECK_FALSE(IsInRangeUnordered(25, 20, 10));
         }
     }
 
@@ -166,8 +222,33 @@ void RunUnitTests_Math(UnitTestResults* results)
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("Vector2");
+    {
+        GUGU_UTEST_CHECK_EQUAL(ToString(Vector2f(10.f, 20.f)), "(10, 20)");
+        GUGU_UTEST_CHECK_EQUAL(ToString(Vector2f(10.5f, 20.5f)), "(10.5, 20.5)");
+
+        Vector2f direction = Vector2f(10.f, 20.f);
+        Vector2f normalized = Normalize(direction);
+        Vector2f rotated = Rotate(direction, math::PiDivTwo);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(normalized, Vector2f(0.447214f, 0.894427f), math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(rotated, Vector2f(-20.f, 10.f), math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(Length(direction), 22.3607f, math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(Length(rotated), 22.3607f, math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(Length(normalized), 1.f, math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(direction), 500.f, math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(rotated), 500.f, math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(normalized), 1.f, math::Epsilon3);
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_SECTION("UDim");
     {
+        GUGU_UTEST_CHECK_EQUAL(ToString(UDim2::POSITION_CENTER + Vector2f(10.f, 20.f)), "(rel=(0.5, 0.5), abs=(10, 20))");
+
+        GUGU_UTEST_CHECK(UDim2::POSITION_CENTER + Vector2f(10.f, 20.f) == UDim2(Vector2f(0.5f, 0.5f), Vector2f(10.f, 20.f)));
+
         GUGU_UTEST_CHECK(UDim2::POSITION_TOP_LEFT.GetComputedDimension(100.f, 50.f) == Vector2f(0.f, 0.f));
         GUGU_UTEST_CHECK(UDim2::POSITION_CENTER.GetComputedDimension(100.f, 50.f) == Vector2f(50.f, 25.f));
         GUGU_UTEST_CHECK(UDim2::POSITION_BOTTOM_RIGHT.GetComputedDimension(100.f, 50.f) == Vector2f(100.f, 50.f));

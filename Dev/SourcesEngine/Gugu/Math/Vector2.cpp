@@ -8,11 +8,19 @@
 // Includes
 
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
 namespace gugu {
+
+std::string ToString(Vector2f value)
+{
+    std::ostringstream os;
+    os << "(" << ToString(value.x) << ", " << ToString(value.y) << ")";
+    return os.str();
+}
 
 bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon)
 {

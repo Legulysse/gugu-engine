@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -82,7 +83,7 @@ UDim2::UDim2(const Vector2f& rel, const Vector2f& abs)
 {
 }
 
-bool UDim2::operator==(const UDim2& right)
+bool UDim2::operator==(const UDim2& right) const
 {
     return relative == right.relative && absolute == right.absolute;
 }
@@ -116,6 +117,13 @@ Vector2f UDim2::GetPixelAlignedComputedDimension(float referenceX, float referen
 Vector2f UDim2::GetPixelAlignedComputedDimension(const Vector2f& reference) const
 {
     return Vector2f(RoundFloor(relative.x * reference.x + absolute.x), RoundFloor(relative.y * reference.y + absolute.y));
+}
+
+std::string ToString(UDim2 value)
+{
+    std::ostringstream os;
+    os << "(rel=" << ToString(value.relative) << ", abs=" << ToString(value.absolute) << ")";
+    return os.str();
 }
 
 const UDim UDim::ZERO = UDim(0.f);

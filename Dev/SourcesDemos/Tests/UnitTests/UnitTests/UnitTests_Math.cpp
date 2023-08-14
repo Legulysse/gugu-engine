@@ -118,6 +118,54 @@ void RunUnitTests_Math(UnitTestResults* results)
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("Interpolations");
+    {
+        GUGU_UTEST_CHECK_EQUAL(Lerp(20, 30, 0.f), 20);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(20, 30, 0.5f), 25);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(20, 30, 1.f), 30);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(20, 30, 2.f), 40);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(20, 30, -1.f), 10);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(20, 30, -2.f), 0);
+
+        GUGU_UTEST_CHECK_EQUAL(Lerp(30, 20, 0.f), 30);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(30, 20, 0.5f), 25);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(30, 20, 1.f), 20);
+
+        GUGU_UTEST_CHECK_EQUAL(Lerp(-20, 30, 0.f), -20);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(-20, 30, 0.5f), 5);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(-20, 30, 1.f), 30);
+
+        GUGU_UTEST_CHECK_EQUAL(Lerp(-30, 20, 0.f), -30);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(-30, 20, 0.5f), -5);
+        GUGU_UTEST_CHECK_EQUAL(Lerp(-30, 20, 1.f), 20);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(20, 30, 25), 0.5f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(20, 30, 40), 2.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(20, 30, 0), -2.f, math::Epsilon6);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(30, 20, 25), 0.5f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(30, 20, 10), 2.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(30, 20, 50), -2.f, math::Epsilon6);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(-20, 30, 5), 0.5f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(-20, 30, 80), 2.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(-20, 30, -120), -2.f, math::Epsilon6);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(-30, 20, -5), 0.5f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(-30, 20, 70), 2.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(InverseLerp(-30, 20, -130), -2.f, math::Epsilon6);
+
+        GUGU_UTEST_CHECK_EQUAL(RemapLerp(20, 30, 1, 5, 25), 3);
+        GUGU_UTEST_CHECK_EQUAL(RemapLerp(20, 30, 1, 5, 40), 9);
+        GUGU_UTEST_CHECK_EQUAL(RemapLerp(20, 30, 1, 5, 0), -7);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(RemapLerp(20, 30, 1.f, 5.f, 25), 3.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(RemapLerp(20, 30, 1.f, 5.f, 40), 9.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(RemapLerp(20, 30, 1.f, 5.f, 0), -7.f, math::Epsilon6);
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_SECTION("UDim");
     {
         GUGU_UTEST_CHECK(UDim2::POSITION_TOP_LEFT.GetComputedDimension(100.f, 50.f) == Vector2f(0.f, 0.f));

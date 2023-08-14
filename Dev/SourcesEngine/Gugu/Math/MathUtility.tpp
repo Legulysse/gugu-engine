@@ -127,8 +127,8 @@ float InverseLerp(const T& min, const T& max, const T& value)
     return (float)(value - min) / (float)(max - min);
 }
 
-template <typename T>
-T RemapLerp(const T& minA, const T& maxA, const T& minB, const T& maxB, const T& value)
+template <typename TFrom, typename TTo>
+TTo RemapLerp(const TFrom& minA, const TFrom& maxA, const TTo& minB, const TTo& maxB, const TFrom& value)
 {
     return Lerp(minB, maxB, InverseLerp(minA, maxA, value));
 }

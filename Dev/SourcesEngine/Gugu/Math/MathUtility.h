@@ -113,8 +113,8 @@ T Lerp(const T& min, const T& max, float ratio);
 template <typename T>
 float InverseLerp(const T& min, const T& max, const T& value);
 
-template <typename T>
-T RemapLerp(const T& minA, const T& maxA, const T& minB, const T& maxB, const T& value);
+template <typename TFrom, typename TTo>
+TTo RemapLerp(const TFrom& minA, const TFrom& maxA, const TTo& minB, const TTo& maxB, const TFrom& value);
 
 // Easing methods from https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
 float EaseInQuad(float ratio);

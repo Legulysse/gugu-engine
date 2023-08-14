@@ -145,7 +145,7 @@ public:
         m_pendingSubSectionTitle = title;
     }
 
-    bool LogTestResult(bool result, const std::string& expression, const std::string& file, size_t line)
+    bool RunTestCheck(bool result, const std::string& expression, const std::string& file, size_t line)
     {
         ++m_totalTestCount;
         ++m_subSectionTestCount;
@@ -163,13 +163,31 @@ public:
         return result;
     }
 
-    bool SilentTestResult(bool result, const std::string& expression, const std::string& file, size_t line)
+    bool SilentRunTestCheck(bool result, const std::string& expression, const std::string& file, size_t line)
     {
         if (!result)
         {
             ++m_totalTestCount;
 
             m_logger.Print(StringFormat("Test Failed: {1}({2}) -> {0}", expression, file, line));
+        }
+
+        return result;
+    }
+
+    bool RunTestCompare(bool result, const std::string& left, const std::string& right, const std::string& expression, const std::string& file, size_t line)
+    {
+        ++m_totalTestCount;
+        ++m_subSectionTestCount;
+
+        if (result)
+        {
+            ++m_totalSuccessCount;
+            ++m_subSectionSuccessCount;
+        }
+        else
+        {
+            m_logger.Print(StringFormat("Test Failed: {1}({2}) -> Compared {3} to {4} : {0}", expression, file, line, left, right));
         }
 
         return result;
@@ -235,22 +253,46 @@ private:
     unitTestHandler.BeginSubSection(NAME)
 
 #define GUGU_UTEST_CHECK(EXPRESSION)                            \
-    unitTestHandler.LogTestResult((bool)(EXPRESSION),           \
+    unitTestHandler.RunTestCheck((bool)(EXPRESSION),            \
         GUGU_STRINGIZE(EXPRESSION),                             \
         __FILE__, __LINE__)
 
+#define GUGU_UTEST_SILENT_CHECK(EXPRESSION)                     \
+    unitTestHandler.SilentRunTestCheck((bool)(EXPRESSION),      \
+        GUGU_STRINGIZE(EXPRESSION), __FILE__, __LINE__)
+
 #define GUGU_UTEST_CHECK_TRUE(EXPRESSION)                       \
-    unitTestHandler.LogTestResult((bool)(EXPRESSION) == true,   \
+    unitTestHandler.RunTestCheck((bool)(EXPRESSION) == true,    \
         GUGU_STRINGIZE(EXPRESSION) " == true",                  \
         __FILE__, __LINE__)
 
 #define GUGU_UTEST_CHECK_FALSE(EXPRESSION)                      \
-    unitTestHandler.LogTestResult((bool)(EXPRESSION) == false,  \
+    unitTestHandler.RunTestCheck((bool)(EXPRESSION) == false,   \
         GUGU_STRINGIZE(EXPRESSION) " == false",                 \
         __FILE__, __LINE__)
 
-#define GUGU_UTEST_SILENT_CHECK(EXPRESSION)                     \
-    unitTestHandler.SilentTestResult((bool)(EXPRESSION),        \
-        GUGU_STRINGIZE(EXPRESSION), __FILE__, __LINE__)
+#define GUGU_UTEST_CHECK_EQUAL(LEFT, RIGHT)                     \
+    unitTestHandler.RunTestCompare(LEFT == RIGHT,               \
+        ToString(LEFT), ToString(RIGHT),                        \
+        GUGU_STRINGIZE(LEFT) " == " GUGU_STRINGIZE(RIGHT),      \
+        __FILE__, __LINE__)
+
+#define GUGU_UTEST_CHECK_NOT_EQUAL(LEFT, RIGHT)                 \
+    unitTestHandler.RunTestCompare(LEFT != RIGHT,               \
+        ToString(LEFT), ToString(RIGHT),                        \
+        GUGU_STRINGIZE(LEFT) " != " GUGU_STRINGIZE(RIGHT),      \
+        __FILE__, __LINE__)
+
+#define GUGU_UTEST_CHECK_APPROX_EQUAL(LEFT, RIGHT, EPSILON)             \
+    unitTestHandler.RunTestCompare(ApproxEqual(LEFT, RIGHT, EPSILON),   \
+        ToString(LEFT), ToString(RIGHT),                                \
+        GUGU_STRINGIZE(LEFT) " == " GUGU_STRINGIZE(RIGHT),              \
+        __FILE__, __LINE__)
+
+#define GUGU_UTEST_CHECK_NOT_APPROX_EQUAL(LEFT, RIGHT, EPSILON)         \
+    unitTestHandler.RunTestCompare(!ApproxEqual(LEFT, RIGHT, EPSILON),  \
+        ToString(LEFT), ToString(RIGHT),                                \
+        GUGU_STRINGIZE(LEFT) " != " GUGU_STRINGIZE(RIGHT),              \
+        __FILE__, __LINE__)
 
 }   // namespace gugu

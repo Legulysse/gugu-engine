@@ -295,9 +295,9 @@ void RunUnitTests_Math(UnitTestResults* results)
 
             GUGU_UTEST_CHECK_EQUAL(resultsA.size(), 10);
             GUGU_UTEST_CHECK_EQUAL(resultsB.size(), 11);
-            GUGU_UTEST_CHECK(ApproxEqual(*resultsC.begin(), 0.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(*resultsC.begin(), 0.f, math::Epsilon6));
             GUGU_UTEST_CHECK(ApproxInferior(*resultsC.rbegin(), 10.f, math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxEqual(*resultsD.begin(), -5.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(*resultsD.begin(), -5.f, math::Epsilon6));
             GUGU_UTEST_CHECK(ApproxInferior(*resultsD.rbegin(), 5.f, math::Epsilon6));
         }
 

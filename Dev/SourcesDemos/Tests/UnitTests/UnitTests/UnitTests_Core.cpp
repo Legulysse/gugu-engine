@@ -9,6 +9,8 @@
 
 #include "Gugu/Core/Handle.h"
 
+#include <SFML/System/Sleep.hpp>
+
 using namespace gugu;
 
 ////////////////////////////////////////////////////////////////
@@ -31,6 +33,24 @@ void RunUnitTests_Core(UnitTestResults* results)
         GUGU_UTEST_CHECK_APPROX_EQUAL(10.f, 10.f, math::Epsilon6);
         GUGU_UTEST_CHECK_NOT_EQUAL(10, 11);
         GUGU_UTEST_CHECK_NOT_APPROX_EQUAL(10.f, 11.f, math::Epsilon6);
+
+        GUGU_UTEST_PERFORMANCE(100, []()
+            {
+            });
+
+        GUGU_UTEST_PERFORMANCE_WITH_WARMUP(1, 100, []()
+            {
+            });
+
+        GUGU_UTEST_PERFORMANCE(10, []()
+            {
+                sf::sleep(sf::milliseconds(10));
+            });
+
+        GUGU_UTEST_PERFORMANCE_WITH_WARMUP(1, 10, []()
+            {
+                sf::sleep(sf::milliseconds(10));
+            });
     }
 
     //----------------------------------------------

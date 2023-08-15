@@ -44,6 +44,8 @@ public:
     bool SilentRunTestCheck(bool result, const std::string& expression, const std::string& file, size_t line);
     bool RunTestCompare(bool result, const std::string& left, const std::string& right, const std::string& expression, const std::string& file, size_t line);
 
+    void RunPerformanceTest(size_t warmupLoops, size_t loops, const std::function<void()>& executionMethod);
+
 private:
 
     void FinalizeSection();
@@ -119,5 +121,11 @@ private:
         ToString(LEFT), ToString(RIGHT),                                \
         GUGU_STRINGIZE(LEFT) " != " GUGU_STRINGIZE(RIGHT),              \
         __FILE__, __LINE__)
+
+#define GUGU_UTEST_PERFORMANCE(LOOPS, EXECUTION_METHOD)                             \
+    unitTestHandler.RunPerformanceTest(0, LOOPS, EXECUTION_METHOD);
+
+#define GUGU_UTEST_PERFORMANCE_WITH_WARMUP(WARMUP_LOOPS, LOOPS, EXECUTION_METHOD)   \
+    unitTestHandler.RunPerformanceTest(WARMUP_LOOPS, LOOPS, EXECUTION_METHOD);
 
 }   // namespace gugu

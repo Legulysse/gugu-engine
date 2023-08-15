@@ -7,6 +7,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/Types.h"
+
+#include <SFML/System/Clock.hpp>
+
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
@@ -175,6 +179,26 @@ bool UnitTestHandler::RunTestCompare(bool result, const std::string& left, const
     }
 
     return result;
+}
+
+void UnitTestHandler::RunPerformanceTest(size_t warmupLoops, size_t loops, const std::function<void()>& executionMethod)
+{
+    for (size_t i = 0; i < warmupLoops; ++i)
+    {
+        executionMethod();
+    }
+
+    sf::Clock clock;
+
+    for (size_t i = 0; i < loops; ++i)
+    {
+        executionMethod();
+    }
+
+    float totalTime = (float)clock.getElapsedTime().asMicroseconds() / 1000.f;
+    float avgTime = totalTime / (float)loops;
+
+    m_logger.Print(StringFormat("Performance Test : avg: {0} ms, total: {1} ms ({2} iterations)", avgTime, totalTime, loops));
 }
 
 void UnitTestHandler::FinalizeSection()

@@ -9,6 +9,7 @@
 
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/UDim.h"
+#include "Gugu/Math/Random.h"
 
 using namespace gugu;
 
@@ -256,6 +257,78 @@ void RunUnitTests_Math(UnitTestResults* results)
         GUGU_UTEST_CHECK(UDim2::POSITION_TOP_LEFT.GetPixelAlignedComputedDimension(125.f, 55.f) == Vector2f(0.f, 0.f));
         GUGU_UTEST_CHECK(UDim2::POSITION_CENTER.GetPixelAlignedComputedDimension(125.f, 55.f) == Vector2f(62.f, 27.f));
         GUGU_UTEST_CHECK(UDim2::POSITION_BOTTOM_RIGHT.GetPixelAlignedComputedDimension(125.f, 55.f) == Vector2f(125.f, 55.f));
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Random");
+    {
+        // Setup
+        ResetRandSeed();
+
+        GUGU_UTEST_SECTION("Default");
+        {
+            std::map<size_t, int> resultsA;
+            std::map<int, int> resultsB;
+            std::set<float> resultsC;
+            std::set<float> resultsD;
+
+            for (int i = 0; i < 100000; ++i)
+            {
+                resultsA[GetRandom(10)] += 1;
+            }
+
+            for (int i = 0; i < 100000; ++i)
+            {
+                resultsB[GetRandom(-5, 5)] += 1;
+            }
+
+            for (int i = 0; i < 100000; ++i)
+            {
+                resultsC.insert(GetRandomf(10.f));
+            }
+
+            for (int i = 0; i < 100000; ++i)
+            {
+                resultsD.insert(GetRandomf(-5.f, 5.f));
+            }
+
+            GUGU_UTEST_CHECK_EQUAL(resultsA.size(), 10);
+            GUGU_UTEST_CHECK_EQUAL(resultsB.size(), 11);
+            GUGU_UTEST_CHECK(ApproxEqual(*resultsC.begin(), 0.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxInferior(*resultsC.rbegin(), 10.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxEqual(*resultsD.begin(), -5.f, math::Epsilon6));
+            GUGU_UTEST_CHECK(ApproxInferior(*resultsD.rbegin(), 5.f, math::Epsilon6));
+        }
+
+        GUGU_UTEST_SECTION("Weighted");
+        {
+            std::vector<int> weightsA { 1, 0, 9 };
+
+            std::map<int, int> resultsA;
+            for (int i = 0; i < 100000; ++i)
+            {
+                resultsA[GetWeightedRandomIndex(weightsA)] += 1;
+            }
+
+            GUGU_UTEST_CHECK_EQUAL(resultsA.size(), 2);
+
+            struct ItemType
+            {
+                int weight;
+            };
+            std::vector<ItemType> itemsA { {1}, { 0 }, { -1 }, { 8 } };
+
+            auto predicateA = [](const ItemType& item) -> int { return item.weight; };
+
+            std::map<int, int> resultsB;
+            for (int i = 0; i < 10000; ++i)
+            {
+                resultsB[GetWeightedRandomIndex(itemsA, predicateA)] += 1;
+            }
+
+            GUGU_UTEST_CHECK_EQUAL(resultsB.size(), 2);
+        }
     }
 
     //----------------------------------------------

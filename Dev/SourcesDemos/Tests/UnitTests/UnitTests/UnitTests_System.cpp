@@ -277,7 +277,32 @@ void RunUnitTests_System(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("String");
     {
-        GUGU_UTEST_SUBSECTION("StringEquals");
+        GUGU_UTEST_SUBSECTION("ToString");
+        {
+            GUGU_UTEST_CHECK_EQUAL(ToString(42), "42");
+            GUGU_UTEST_CHECK_EQUAL(ToString(42.5f), "42.5");
+            GUGU_UTEST_CHECK_EQUAL(ToString(42.5), "42.5");
+            GUGU_UTEST_CHECK_EQUAL(ToString(42.5f, 2), "42.50");
+            GUGU_UTEST_CHECK_EQUAL(ToString(42.5, 2), "42.50");
+            GUGU_UTEST_CHECK_EQUAL(ToString(true), "1");
+            GUGU_UTEST_CHECK_EQUAL(ToString(false), "0");
+            GUGU_UTEST_CHECK_EQUAL(ToString("42"), "42");
+            GUGU_UTEST_CHECK_EQUAL(ToString(std::string("42")), "42");
+        }
+
+        GUGU_UTEST_SUBSECTION("FromString");
+        {
+            GUGU_UTEST_CHECK_EQUAL(FromString<int>("42"), 42);
+            GUGU_UTEST_CHECK_EQUAL(FromString<float>("42.50"), 42.5f);
+            GUGU_UTEST_CHECK_EQUAL(FromString<double>("42.50"), 42.5);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("1"), true);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("0"), false);
+            GUGU_UTEST_CHECK_NOT_EQUAL(FromString<bool>("true"), true); // Converting from text-based true/false will always return false.
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("false"), false);   // Converting from text-based true/false will always return false.
+            GUGU_UTEST_CHECK_EQUAL(FromString<std::string>("42"), "42");
+        }
+
+        GUGU_UTEST_SUBSECTION("Equals");
         {
             const char* testCharA = "";
             const char* testCharB = "";
@@ -301,7 +326,41 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(!StringEquals(std::string_view("hello"), "hello world"));
         }
 
-        GUGU_UTEST_SUBSECTION("StringNumberFormat");
+        GUGU_UTEST_SUBSECTION("ToUpper/ToLower");
+        {
+            GUGU_UTEST_CHECK_EQUAL(StdStringToUpper("hello world 42"), "HELLO WORLD 42");
+            GUGU_UTEST_CHECK_EQUAL(StdStringToLower("HELLO WORLD 42"), "hello world 42");
+        }
+
+        GUGU_UTEST_SUBSECTION("StartsWith/EndsWith");
+        {
+            GUGU_UTEST_CHECK_TRUE(StdStringStartsWith("hello world 42", "hello"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("hello world 42", "42"));
+            GUGU_UTEST_CHECK_TRUE(StdStringEndsWith("hello world 42", "42"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("hello world 42", "hello"));
+        }
+
+        GUGU_UTEST_SUBSECTION("Format");
+        {
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("My name is {0}. Yes, {0}.", "plop"), "My name is plop. Yes, plop.");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", 42), "My age is 42.");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("{3}, {2}, {1}, {0} !", "go", 1, 2, 3), "3, 2, 1, go !");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("{1}{0}{2}", "a", "b", "c"), "bac");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("{1}{1}{0}", 7.f, 0.f), "007");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}", 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), "0 1 2 3 4 5 6 7 8 9 10");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("hello {0}, do you have {1} gold ?", "Jean-Jacques", 98521), "hello Jean-Jacques, do you have 98521 gold ?");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("hello {0}, do you have {1} gold ?", "Jean-Jacques"), "hello Jean-Jacques, do you have {1} gold ?");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", 42.5f), "My age is 42.5.");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", ToString(42.555f)), "My age is 42.555.");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", ToString(42.555f, 1)), "My age is 42.6.");
+
+            FormatParameters params;
+            params.Add("name", "Jean-Paul");
+            params.Add("gold", 77);
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("hello {name}, do you have {gold} gold ?", params), "hello Jean-Paul, do you have 77 gold ?");
+        }
+
+        GUGU_UTEST_SUBSECTION("NumberFormat");
         {
             GUGU_UTEST_CHECK(StringNumberFormat(1) == "1");
             GUGU_UTEST_CHECK(StringNumberFormat(123, 3) == "123");
@@ -496,6 +555,37 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(StdVectorIndexOf(container, 30) == 2);
             GUGU_UTEST_CHECK(StdVectorIndexOf(container, 50) == 4);
             GUGU_UTEST_CHECK(StdVectorIndexOf(container, 0) == system::InvalidIndex);
+
+            std::string valueA = "AAA";
+            std::string valueB = "BBB";
+            std::string valueC = "CCC";
+            std::vector<std::string> containerB { valueC };
+            GUGU_UTEST_CHECK_EQUAL(containerB[0], "CCC");
+
+            StdVectorPushFront(containerB, valueA);
+            GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
+            GUGU_UTEST_CHECK_EQUAL(containerB[1], "CCC");
+
+            StdVectorInsertAt(containerB, 1, valueB);
+            GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
+            GUGU_UTEST_CHECK_EQUAL(containerB[1], "BBB");
+            GUGU_UTEST_CHECK_EQUAL(containerB[2], "CCC");
+
+            GUGU_UTEST_CHECK(StdVectorContains(containerB, valueC));
+            GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) != containerB.end());
+
+            StdVectorRemove(containerB, valueC);
+            GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
+            GUGU_UTEST_CHECK_EQUAL(containerB[1], "BBB");
+
+            StdVectorRemoveAt(containerB, 0);
+            GUGU_UTEST_CHECK_EQUAL(containerB[0], "BBB");
+
+            StdVectorRemoveIf(containerB, [&](const std::string& item) { return item == valueB; });
+            GUGU_UTEST_CHECK(containerB.empty());
+
+            GUGU_UTEST_CHECK_FALSE(StdVectorContains(containerB, valueC));
+            GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) == containerB.end());
         }
     }
 

@@ -8,7 +8,6 @@
 // Includes
 
 #include "Gugu/Core/Handle.h"
-#include "Gugu/Math/MathUtility.h"
 
 using namespace gugu;
 

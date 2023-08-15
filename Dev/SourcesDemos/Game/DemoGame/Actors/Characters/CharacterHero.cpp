@@ -32,7 +32,7 @@ namespace demoproject {
 
 CharacterHero::CharacterHero()
 {
-    m_attackSpeed = 10;
+    m_attackSpeed = 200;
 
     m_attackCooldown = 0.f;
     m_skillCooldown = 0.f;

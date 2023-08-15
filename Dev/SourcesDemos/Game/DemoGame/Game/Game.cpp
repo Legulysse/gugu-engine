@@ -286,7 +286,7 @@ void Game::SpawnFloor()
     //Init Enemies
     const DS_Enemy* sheetEnemy = GetResources()->GetDatasheetObject<DS_Enemy>("DefaultEnemy.enemy");
 
-    size_t enemiesCount = m_floor * 50;
+    size_t enemiesCount = m_floor * 100;
     for (size_t i = 0; i < enemiesCount; ++i)
     {
         ControllerAI* pControllerAI = new ControllerAI;
@@ -297,7 +297,7 @@ void Game::SpawnFloor()
         CharacterEnemy* pEnemy = new CharacterEnemy;
         m_scene->AddActor(pEnemy);
 
-        sf::Vector2f position = GetRandomPointInCircle(Vector2::Zero_f, 150.f);
+        sf::Vector2f position = GetRandomPointInCircle(Vector2::Zero_f, 500.f);
 
         pEnemy->InitEnemy(sheetEnemy, position, 100.f, m_grid, m_charactersNode);
         pControllerAI->m_character = pEnemy;

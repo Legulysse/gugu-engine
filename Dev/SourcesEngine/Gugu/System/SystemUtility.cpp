@@ -475,9 +475,13 @@ void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bo
         normalizedPath = ".";
     }
 
+    fs::path rootPath = fs::u8path(normalizedPath);
+    if (!fs::is_directory(rootPath))
+        return;
+
     if (recursive)
     {
-        for (const auto& entry : fs::recursive_directory_iterator(fs::u8path(normalizedPath)))
+        for (const auto& entry : fs::recursive_directory_iterator(rootPath))
         {
             if (entry.is_regular_file())
             {
@@ -491,7 +495,7 @@ void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bo
     }
     else
     {
-        for (const auto& entry : fs::directory_iterator(fs::u8path(normalizedPath)))
+        for (const auto& entry : fs::directory_iterator(rootPath))
         {
             if (entry.is_regular_file())
             {
@@ -513,9 +517,13 @@ void GetDirectories(const std::string& rootPath_utf8, std::vector<std::string>& 
         normalizedPath = ".";
     }
 
+    fs::path rootPath = fs::u8path(normalizedPath);
+    if (!fs::is_directory(rootPath))
+        return;
+
     if (recursive)
     {
-        for (const auto& entry : fs::recursive_directory_iterator(fs::u8path(normalizedPath)))
+        for (const auto& entry : fs::recursive_directory_iterator(rootPath))
         {
             if (entry.is_directory())
             {
@@ -525,7 +533,7 @@ void GetDirectories(const std::string& rootPath_utf8, std::vector<std::string>& 
     }
     else
     {
-        for (const auto& entry : fs::directory_iterator(fs::u8path(normalizedPath)))
+        for (const auto& entry : fs::directory_iterator(rootPath))
         {
             if (entry.is_directory())
             {

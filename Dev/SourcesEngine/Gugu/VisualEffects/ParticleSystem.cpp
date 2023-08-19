@@ -26,18 +26,20 @@
 namespace gugu {
 
 ParticleSystem::ParticleSystem()
-    : m_running(false)
-    , m_stopEmitting(false)
-    , m_paused(false)
-    , m_activeParticleCount(0)
-    , m_currentDuration(0)
-    , m_nextEmitIndex(0)
-    , m_nextSpawnDelay(0)
-    , m_currentSpawnDelay(0)
+    : m_maxParticleCount(0)
+    , m_verticesPerParticle(0)
     , m_primitiveType(sf::PrimitiveType::Points)
     , m_imageSet(nullptr)
     , m_texture(nullptr)
     , m_element(nullptr)
+    , m_running(false)
+    , m_stopEmitting(false)
+    , m_paused(false)
+    , m_currentDuration(0)
+    , m_activeParticleCount(0)
+    , m_nextEmitIndex(0)
+    , m_nextSpawnDelay(0)
+    , m_currentSpawnDelay(0)
 {
 }
 
@@ -91,7 +93,7 @@ void ParticleSystem::Init(ParticleEffect* particleEffect)
 
 void ParticleSystem::Init(const ParticleSystemSettings& settings)
 {
-    Release();
+    Stop();
 
     // Copy and sanitize settings.
     m_settings = settings;
@@ -119,6 +121,9 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     m_dataEndSize.resize(m_maxParticleCount);
     m_dataVelocity.resize(m_maxParticleCount);
 
+    m_imageSet = nullptr;
+    m_texture = nullptr;
+
     if (m_settings.imageSet && m_settings.imageSet->GetSubImageCount() > 0 && m_settings.imageSet->GetTexture())
     {
         m_imageSet = m_settings.imageSet;
@@ -126,27 +131,16 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     }
 }
 
-void ParticleSystem::Release()
-{
-    Stop();
-
-    m_imageSet = nullptr;
-    m_texture = nullptr;
-}
-
 void ParticleSystem::Start()
 {
     if (m_running || m_dataVertices.empty())
         return;
 
-    if (m_element && !m_settings.localSpace)
-    {
-        SetEmitterPosition(m_element->TransformToGlobal(Vector2::Zero_f));
-    }
-    else
-    {
-        SetEmitterPosition(Vector2::Zero_f);
-    }
+    UpdateEmitterPosition();
+
+    // Reset all particles.
+    std::fill(m_dataLifetime.begin(), m_dataLifetime.end(), 0);
+    std::fill(m_dataVertices.begin(), m_dataVertices.end(), sf::Vertex(sf::Vector2f(), sf::Color::Transparent, sf::Vector2f()));
 
     m_running = true;
     m_paused = false;
@@ -175,16 +169,12 @@ void ParticleSystem::Stop()
     if (!m_running)
         return;
 
+    // When m_running is false, the render is ignored, so we dont need to reset particles data here.
     m_running = false;
     m_paused = false;
     m_activeParticleCount = 0;
     m_currentDuration = 0;
     m_nextEmitIndex = 0;
-
-    for (size_t i = 0; i < m_maxParticleCount; ++i)
-    {
-        ResetParticle(i);
-    }
 }
 
 void ParticleSystem::Restart()
@@ -196,6 +186,7 @@ void ParticleSystem::Restart()
 void ParticleSystem::AttachToElement(Element* element)
 {
     m_element = element;
+    UpdateEmitterPosition();
 }
 
 void ParticleSystem::SetEmitterPosition(const Vector2f& position)
@@ -386,11 +377,8 @@ void ParticleSystem::ResetParticle(size_t particleIndex)
     }
 }
 
-void ParticleSystem::Update(const DeltaTime& dt)
+void ParticleSystem::UpdateEmitterPosition()
 {
-    if (!m_running)
-        return;
-
     if (m_element && !m_settings.localSpace)
     {
         SetEmitterPosition(m_element->TransformToGlobal(Vector2::Zero_f));
@@ -399,6 +387,14 @@ void ParticleSystem::Update(const DeltaTime& dt)
     {
         SetEmitterPosition(Vector2::Zero_f);
     }
+}
+
+void ParticleSystem::Update(const DeltaTime& dt)
+{
+    if (!m_running)
+        return;
+
+    UpdateEmitterPosition();
 
     if (m_paused)
         return;

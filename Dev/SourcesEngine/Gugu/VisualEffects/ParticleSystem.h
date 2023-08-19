@@ -35,7 +35,6 @@ public:
 
     void Init(ParticleEffect* particleEffect);
     void Init(const ParticleSystemSettings& settings);
-    void Release();
 
     void Start();
     void Stop();
@@ -62,6 +61,8 @@ private:
     void EmitParticle(size_t particleIndex);
     void KillParticle(size_t particleIndex);
     void ResetParticle(size_t particleIndex);
+
+    void UpdateEmitterPosition();
 
 private:
 

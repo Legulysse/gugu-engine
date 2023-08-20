@@ -179,7 +179,7 @@ void ElementButton::SetOnMouseReleased(const Callback& _pActionOnReleased)
 
 void ElementButton::OnMousePressed(const InteractionInfos& interactionInfos)
 {
-    if (m_actionOnPressed)
+    if (m_actionOnPressed && !m_isDisabled)
     {
         m_actionOnPressed();
     }
@@ -187,7 +187,7 @@ void ElementButton::OnMousePressed(const InteractionInfos& interactionInfos)
 
 void ElementButton::OnMouseReleased(const InteractionInfos& interactionInfos)
 {
-    if (m_actionOnReleased)
+    if (m_actionOnReleased && !m_isDisabled)
     {
         m_actionOnReleased();
     }

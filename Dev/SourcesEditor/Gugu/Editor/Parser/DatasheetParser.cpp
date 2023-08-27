@@ -216,25 +216,35 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
 
                 if (!dataDefinition->isArray)
                 {
-                    if (dataDefinition->type == DataMemberDefinition::Bool)
+                    if (attributeDefaultValue)
                     {
-                        dataDefinition->defaultValue_bool = attributeDefaultValue.as_bool();
+                        if (dataDefinition->type == DataMemberDefinition::Bool)
+                        {
+                            dataDefinition->defaultValue_bool = attributeDefaultValue.as_bool();
+                        }
+                        else if (dataDefinition->type == DataMemberDefinition::Int)
+                        {
+                            dataDefinition->defaultValue_int = attributeDefaultValue.as_int();
+                        }
+                        else if (dataDefinition->type == DataMemberDefinition::Float)
+                        {
+                            dataDefinition->defaultValue_float = attributeDefaultValue.as_float();
+                        }
+                        else if (dataDefinition->type == DataMemberDefinition::String)
+                        {
+                            dataDefinition->defaultValue_string = attributeDefaultValue.value();
+                        }
+                        else if (dataDefinition->type == DataMemberDefinition::Enum)
+                        {
+                            dataDefinition->defaultValue_string = attributeDefaultValue.value();
+                        }
                     }
-                    else if (dataDefinition->type == DataMemberDefinition::Int)
+                    else
                     {
-                        dataDefinition->defaultValue_int = attributeDefaultValue.as_int();
-                    }
-                    else if (dataDefinition->type == DataMemberDefinition::Float)
-                    {
-                        dataDefinition->defaultValue_float = attributeDefaultValue.as_float();
-                    }
-                    else if (dataDefinition->type == DataMemberDefinition::String)
-                    {
-                        dataDefinition->defaultValue_string = attributeDefaultValue.value();
-                    }
-                    else if (dataDefinition->type == DataMemberDefinition::Enum)
-                    {
-                        dataDefinition->defaultValue_string = attributeDefaultValue.value();
+                        if (dataDefinition->type == DataMemberDefinition::Enum)
+                        {
+                            dataDefinition->defaultValue_string = dataDefinition->enumDefinition->values.empty() ? "" : dataDefinition->enumDefinition->values[0];
+                        }
                     }
                 }
 

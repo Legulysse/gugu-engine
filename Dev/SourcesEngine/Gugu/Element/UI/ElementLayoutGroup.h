@@ -42,6 +42,7 @@ public:
     virtual ~ElementLayoutGroup();
 
     void AddItem(Element* item);
+    void RemoveAllItems();
 
     void SetMainDirection(ELayoutDirection::Type direction);
     void SetWrapDirection(ELayoutDirection::Type direction);

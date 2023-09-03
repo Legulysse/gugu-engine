@@ -66,6 +66,13 @@ void ElementLayoutGroup::AddItem(Element* item)
     RaiseNeedRecompute();
 }
 
+void ElementLayoutGroup::RemoveAllItems()
+{
+    ClearStdVector(m_items);
+
+    RaiseNeedRecompute();
+}
+
 ELayoutDirection::Type ElementLayoutGroup::GetMainDirection() const
 {
     return m_mainDirection;

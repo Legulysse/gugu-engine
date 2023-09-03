@@ -201,7 +201,7 @@ size_t ElementList::GetSelectedIndex() const
             return i;
     }
 
-    return 0;
+    return system::InvalidIndex;
 }
 
 ElementListItem* ElementList::GetSelectedItem() const

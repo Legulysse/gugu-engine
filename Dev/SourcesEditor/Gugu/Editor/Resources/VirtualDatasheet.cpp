@@ -301,16 +301,20 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheetObject) cons
     // TODO: sort m_dataValues to match the definition.
     for (const VirtualDatasheetObject::DataValue* dataValue : m_dataValues)
     {
-        pugi::xml_node nodeData = nodeDatasheetObject.append_child("Data");
-        nodeData.append_attribute("name") = dataValue->name.c_str();
-
         if (!dataValue->dataMemberDefinition)
         {
-            // Store deprecated data as string.
-            nodeData.append_attribute("value") = dataValue->backupValue.c_str();
+            // TODO: Add a flag to keep deprecated data ?
+            // - It would be inconsistant between properties being kept but instances and arrays being lost.
+            //// Store deprecated data as string.
+            //pugi::xml_node nodeData = nodeDatasheetObject.append_child("Data");
+            //nodeData.append_attribute("name") = dataValue->name.c_str();
+            //nodeData.append_attribute("value") = dataValue->backupValue.c_str();
         }
         else
         {
+            pugi::xml_node nodeData = nodeDatasheetObject.append_child("Data");
+            nodeData.append_attribute("name") = dataValue->name.c_str();
+
             if (!dataValue->dataMemberDefinition->isArray)
             {
                 if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)

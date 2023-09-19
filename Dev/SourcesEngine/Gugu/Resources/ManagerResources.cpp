@@ -170,7 +170,11 @@ void ManagerResources::SaveAll()
 
 EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) const
 {
-    if (fileInfo.HasExtension("png") || fileInfo.HasExtension("jpg"))
+    if (fileInfo.HasExtension("png")
+        || fileInfo.HasExtension("jpg")
+        || fileInfo.HasExtension("jpeg")
+        || fileInfo.HasExtension("tga")
+        || fileInfo.HasExtension("bmp"))
     {
         return EResourceType::Texture;
     }

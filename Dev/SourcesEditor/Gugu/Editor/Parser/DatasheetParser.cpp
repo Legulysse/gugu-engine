@@ -12,6 +12,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 #include <vector>
 
@@ -209,7 +210,12 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                 
                 if (dataType == DataMemberDefinition::ObjectInstance || dataType == DataMemberDefinition::ObjectReference)
                 {
-                    GetClassDefinition(deducedType, dataDefinition->objectDefinition);
+                    if (!GetClassDefinition(deducedType, dataDefinition->objectDefinition))
+                    {
+                        dataType = DataMemberDefinition::Unknown;
+
+                        GetLogEngine()->Print(ELog::Error, ELogEngine::Databinding, StringFormat("No definition found for data instance/reference type : {0}", deducedType));
+                    }
                 }
 
                 dataDefinition->type = dataType;

@@ -77,6 +77,7 @@ namespace ELogEngine {
         Audio,
         Network,
         Element,
+        Databinding,
     };
 }
 

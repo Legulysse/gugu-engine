@@ -177,6 +177,7 @@ void LoggerEngine::Print(ELog::Type level, ELogEngine::Type category, const std:
         { ELogEngine::Audio, "[Audio] " },
         { ELogEngine::Network, "[Network] " },
         { ELogEngine::Element, "[Element] " },
+        { ELogEngine::Databinding, "[Databinding] " },
     };
 
     m_buffer << logCategoryAsStr.at(category);

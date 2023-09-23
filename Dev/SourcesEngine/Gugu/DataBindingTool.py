@@ -162,6 +162,11 @@ class DefinitionMember():
                 else:
                     if self.type == 'string':
                         strDefault = '"'+ strDefault +'"'
+                    elif self.type == 'float':
+                        if '.' in strDefault:
+                            strDefault += 'f'
+                        else:
+                            strDefault += '.f'
                 
         return strDefault
         

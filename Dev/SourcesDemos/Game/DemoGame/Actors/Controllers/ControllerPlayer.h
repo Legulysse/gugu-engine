@@ -34,6 +34,11 @@ public:
 
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
 
+private:
+
+    void HandleSkills(const gugu::DeltaTime& dt);
+    void HandleMove(const gugu::DeltaTime& dt);
+
 public:
 
     CharacterHero* m_character;

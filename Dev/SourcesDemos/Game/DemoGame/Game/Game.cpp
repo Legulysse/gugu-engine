@@ -209,10 +209,10 @@ void Game::StepScenario(const DeltaTime& dt)
     }
 
     // Reset Floor
-    if (m_delayReset > 0)
+    if (ApproxSuperiorToZero(m_delayReset, math::Epsilon6))
     {
         m_delayReset -= dt.ms();
-        if (m_delayReset <= 0)
+        if (ApproxInferiorOrEqualToZero(m_delayReset, math::Epsilon6))
         {
             m_delayReset = 0;
 

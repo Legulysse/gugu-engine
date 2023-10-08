@@ -72,7 +72,7 @@ public:
     Grid* m_grid;
 
     int m_floor;
-    int m_delayReset;
+    float m_delayReset;
 };
 
 Game* GetGame();

@@ -43,7 +43,7 @@ protected:
     gugu::Element* m_mouseFollow;
     gugu::Element* m_moveArm;
 
-    gugu::int64 m_startTime;
+    float m_animationTime;
     bool m_animateEmitters;
     bool m_rotateArm;
 

@@ -9,6 +9,7 @@
 
 #include "Actors/Characters/Character.h"
 
+#include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
 
 using namespace gugu;
@@ -32,9 +33,9 @@ void ControllerAI::Step(const DeltaTime& dt)
     SceneActor::Step(dt);
 
     m_delay -= dt.ms();
-    if (m_delay <= 0)
+    if (ApproxInferiorOrEqualToZero(m_delay, math::Epsilon6))
     {
-        m_delay = GetRandom(100, 1200);
+        m_delay = GetRandomf(100, 1200);
 
         m_direction.x = GetRandomf(-1.0, 1.0);
         m_direction.y = GetRandomf(-1.0, 1.0);

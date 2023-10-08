@@ -69,6 +69,7 @@ void Demo::AppStart()
         settings.maxParticleCount = 500;
         settings.minSpawnPerSecond = 500;
         settings.updateColorOverLifetime = true;
+        settings.useSortBuffer = true;
 
         m_particleSystemSettings.push_back(settings);
     }
@@ -129,6 +130,7 @@ void Demo::AppStart()
     armSettings.startColor = sf::Color::Yellow;
     armSettings.endColor = sf::Color::Red;
     armSettings.updateColorOverLifetime = true;
+    armSettings.useSortBuffer = true;
 
     ElementParticles* armElementParticle = arm->AddChild<ElementParticles>();
     armElementParticle->SetPositionX(300.f);
@@ -154,6 +156,7 @@ void Demo::AppStart()
     armSettings2.startColor = sf::Color::Yellow;
     armSettings2.endColor = sf::Color::Red;
     armSettings2.updateColorOverLifetime = true;
+    armSettings2.useSortBuffer = true;
 
     ElementParticles* armElementParticle2 = arm->AddChild<ElementParticles>();
     armElementParticle2->SetPositionX(-400.f);
@@ -166,6 +169,7 @@ void Demo::AppStart()
     // Cursor Particle
     ParticleSystemSettings cursorSettings;
     cursorSettings.updateColorOverLifetime = true;
+    cursorSettings.useSortBuffer = true;
 
     ElementParticles* cursorElementParticle = m_root->AddChild<ElementParticles>();
     ParticleSystem* cursorParticleSystem = cursorElementParticle->CreateParticleSystem(cursorSettings, true);
@@ -175,7 +179,7 @@ void Demo::AppStart()
     m_particleSystems.push_back(cursorParticleSystem);
     
     // Animation
-    m_startTime = GetTimestamp();
+    m_animationTime = 0.f;
     m_animateEmitters = true;
     m_rotateArm = true;
 }
@@ -189,10 +193,11 @@ void Demo::AppUpdate(const DeltaTime& dt)
 {
     if (m_animateEmitters)
     {
+        m_animationTime += dt.s();
+
         for (size_t i = 0; i < m_centerParticleElements.size(); ++i)
         {
-            int64 time = GetTimestamp() - m_startTime;
-            float curve = std::sin((float)time / 1000.f) * 100.f;
+            float curve = std::sin(m_animationTime) * 100.f;
             m_centerParticleElements[i]->SetPositionY(curve + -100.f + (i / 5) * 200.f);
         }
     }

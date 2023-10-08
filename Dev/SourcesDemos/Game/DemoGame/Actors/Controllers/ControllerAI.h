@@ -33,7 +33,7 @@ public:
     Character* m_character;
 
     gugu::Vector2f m_direction;
-    int m_delay;
+    float m_delay;
 };
 
 }   //namespace demoproject

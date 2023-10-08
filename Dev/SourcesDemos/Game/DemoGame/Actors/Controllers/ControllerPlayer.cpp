@@ -40,13 +40,17 @@ void ControllerPlayer::Step(const DeltaTime& dt)
 {
     SceneActor::Step(dt);
 
-    m_character->Move(m_moveDirection, dt);
+    HandleSkills(dt);
+    HandleMove(dt);
 }
 
 void ControllerPlayer::Update(const DeltaTime& dt)
 {
     SceneActor::Update(dt);
+}
 
+void ControllerPlayer::HandleSkills(const DeltaTime& dt)
+{
     ManagerInputs* inputs = GetInputs();
 
     //Attack
@@ -65,6 +69,11 @@ void ControllerPlayer::Update(const DeltaTime& dt)
         Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);
         m_character->UseSkillByIndex(1, kPickedPosition, dt);
     }
+}
+
+void ControllerPlayer::HandleMove(const DeltaTime& dt)
+{
+    ManagerInputs* inputs = GetInputs();
 
     //Movement
     Vector2f kDirection;
@@ -87,6 +96,7 @@ void ControllerPlayer::Update(const DeltaTime& dt)
     }
 
     m_moveDirection = kDirection;
+    m_character->Move(m_moveDirection, dt);
 
     //Camera
     Camera* pCamera = GetGameWindow()->GetCamera(0);

@@ -170,7 +170,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
     float positionMin = margin;
     float positionMax = margin + columnSize;
 
-    m_animationTimeMs += dt.ms();
+    m_animationTimeMs += static_cast<int>(dt.ms());
     m_animationTimeMs %= cycleDurationMs;
 
     float linearRatio = (m_animationTimeMs > interpolationDurationMs) ? 1.f : (float)m_animationTimeMs / (float)interpolationDurationMs;

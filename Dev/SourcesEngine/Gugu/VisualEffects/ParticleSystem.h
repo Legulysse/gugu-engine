@@ -80,17 +80,17 @@ private:
     bool m_running;
     bool m_stopEmitting;
     bool m_paused;
-    int m_currentDuration;
+    float m_currentDuration;
     size_t m_activeParticleCount;
     size_t m_nextEmitIndex;
-    int m_nextSpawnDelay;
-    int m_currentSpawnDelay;
+    float m_nextSpawnDelay;
+    float m_currentSpawnDelay;
 
     // Particles data
     std::vector<sf::Vertex> m_dataVertices;
     std::vector<sf::Vertex> m_sortBuffer;
-    std::vector<int> m_dataLifetime;
-    std::vector<int> m_dataRemainingTime;
+    std::vector<float> m_dataLifetime;
+    std::vector<float> m_dataRemainingTime;
     std::vector<Vector2f> m_dataPosition;
     std::vector<Vector2f> m_dataStartSize;
     std::vector<Vector2f> m_dataEndSize;

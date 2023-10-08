@@ -114,8 +114,8 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
 
     m_dataVertices.resize(m_maxParticleCount* m_verticesPerParticle);
     m_sortBuffer.resize(m_settings.useSortBuffer ? m_maxParticleCount * m_verticesPerParticle : 0);
-    m_dataLifetime.resize(m_maxParticleCount, 0);
-    m_dataRemainingTime.resize(m_maxParticleCount, 0);
+    m_dataLifetime.resize(m_maxParticleCount, 0.f);
+    m_dataRemainingTime.resize(m_maxParticleCount, 0.f);
     m_dataPosition.resize(m_maxParticleCount);
     m_dataStartSize.resize(m_maxParticleCount);
     m_dataEndSize.resize(m_maxParticleCount);
@@ -139,7 +139,7 @@ void ParticleSystem::Start()
     UpdateEmitterPosition();
 
     // Reset all particles.
-    std::fill(m_dataLifetime.begin(), m_dataLifetime.end(), 0);
+    std::fill(m_dataLifetime.begin(), m_dataLifetime.end(), 0.f);
     std::fill(m_dataVertices.begin(), m_dataVertices.end(), sf::Vertex(sf::Vector2f(), sf::Color::Transparent, sf::Vector2f()));
 
     m_running = true;
@@ -161,7 +161,7 @@ void ParticleSystem::Start()
     m_currentSpawnDelay = 0;
 
     float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-    m_nextSpawnDelay = (int)(1000.f / Max(math::Epsilon3, randValue));
+    m_nextSpawnDelay = 1000.f / Max(math::Epsilon3, randValue);
 }
 
 void ParticleSystem::Stop()
@@ -229,8 +229,8 @@ size_t ParticleSystem::GetParticleDataSize() const
     size_t total = 0;
     total += m_dataVertices.size() * sizeof(sf::Vertex);
     total += m_sortBuffer.size() * sizeof(sf::Vertex);
-    total += m_dataLifetime.size() * sizeof(int);
-    total += m_dataRemainingTime.size() * sizeof(int);
+    total += m_dataLifetime.size() * sizeof(float);
+    total += m_dataRemainingTime.size() * sizeof(float);
     total += m_dataPosition.size() * sizeof(Vector2f);
     total += m_dataStartSize.size() * sizeof(Vector2f);
     total += m_dataEndSize.size() * sizeof(Vector2f);
@@ -243,7 +243,7 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     ++m_activeParticleCount;
 
     // Reset lifetime.
-    int lifetime = GetRandom(m_settings.minLifetime, m_settings.maxLifetime);
+    float lifetime = static_cast<float>(GetRandom(m_settings.minLifetime, m_settings.maxLifetime));
     m_dataLifetime[particleIndex] = lifetime;
     m_dataRemainingTime[particleIndex] = lifetime;
 
@@ -364,7 +364,7 @@ void ParticleSystem::KillParticle(size_t particleIndex)
 void ParticleSystem::ResetParticle(size_t particleIndex)
 {
     // Disable particle.
-    m_dataLifetime[particleIndex] = 0;
+    m_dataLifetime[particleIndex] = 0.f;
 
     sf::Vertex* vertices = &m_dataVertices[particleIndex * m_verticesPerParticle];
     vertices->position = m_emitterPosition;
@@ -402,24 +402,24 @@ void ParticleSystem::Update(const DeltaTime& dt)
     // Update live particles.
     for (size_t i = 0; i < m_maxParticleCount; ++i)
     {
-        int lifetime = m_dataLifetime[i];
+        float lifetime = m_dataLifetime[i];
 
         // Ignore disabled particles.
-        if (lifetime <= 0)
+        if (ApproxInferiorOrEqualToZero(lifetime, math::Epsilon6))
             continue;
 
-        int remainingLifetime = m_dataRemainingTime[i];
+        float remainingLifetime = m_dataRemainingTime[i];
         remainingLifetime -= dt.ms();
         m_dataRemainingTime[i] = remainingLifetime;
 
-        if (remainingLifetime <= 0)
+        if (ApproxInferiorOrEqualToZero(remainingLifetime, math::Epsilon6))
         {
             KillParticle(i);
         }
         else
         {
             // Lifetime lerp (1 to 0).
-            float lerpValue = (float)remainingLifetime / (float)lifetime;
+            float lerpValue = remainingLifetime / lifetime;
 
             if (m_verticesPerParticle == 6 && m_settings.updateSizeOverLifetime)
             {
@@ -509,26 +509,26 @@ void ParticleSystem::Update(const DeltaTime& dt)
     {
         int nbSpawns = 0;
 
-        if (dt.ms() >= m_nextSpawnDelay)
+        if (ApproxSuperiorOrEqual(dt.ms(), m_nextSpawnDelay, math::Epsilon6))
         {
             // This case triggers if delay <= dt (high spawn rate).
             nbSpawns = Max(1, (int)(dt.s() * GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond)));
             m_currentSpawnDelay += dt.ms() - m_nextSpawnDelay;
 
             float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-            m_nextSpawnDelay = (int)(1000.f / Max(math::Epsilon3, randValue));
+            m_nextSpawnDelay = 1000.f / Max(math::Epsilon3, randValue);
         }
         else
         {
             // This case triggers if delay > dt (low spawn rate).
             m_currentSpawnDelay += dt.ms();
-            if (m_currentSpawnDelay >= m_nextSpawnDelay)
+            if (ApproxSuperiorOrEqual(m_currentSpawnDelay, m_nextSpawnDelay, math::Epsilon6))
             {
                 nbSpawns = 1;
                 m_currentSpawnDelay -= m_nextSpawnDelay;
 
                 float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-                m_nextSpawnDelay = (int)(1000.f / Max(math::Epsilon3, randValue));
+                m_nextSpawnDelay = 1000.f / Max(math::Epsilon3, randValue);
             }
         }
 
@@ -539,7 +539,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
                 size_t i = m_nextEmitIndex;
                 size_t emitCount = 0;
                 size_t emitLimit = Min(m_maxParticleCount, (size_t)GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn));
-                while (m_dataLifetime[i] <= 0 && emitCount < emitLimit)
+                while (ApproxInferiorOrEqualToZero(m_dataLifetime[i], math::Epsilon6) && emitCount < emitLimit)
                 {
                     EmitParticle(i);
 

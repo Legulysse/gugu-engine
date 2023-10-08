@@ -23,11 +23,11 @@ public:
     float GetScale() const;
 
     float s() const;
-    int32 ms() const;
+    float ms() const;
     int64 micro() const;
 
     float unscaled_s() const;
-    int32 unscaled_ms() const;
+    float unscaled_ms() const;
     int64 unscaled_micro() const;
 
 private:
@@ -38,8 +38,8 @@ private:
 
     float m_seconds;
     float m_unscaledSeconds;
-    int32 m_milliseconds;
-    int32 m_unscaledMilliseconds;
+    float m_milliseconds;
+    float m_unscaledMilliseconds;
 };
 
 }   // namespace gugu

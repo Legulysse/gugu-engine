@@ -610,7 +610,7 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
     }
 }
 
-bool Engine::SetTimer(const std::string& name, uint32 delay, uint32 ticks, bool tickNow, const Callback& callback)
+bool Engine::SetTimer(const std::string& name, float delayMs, uint32 ticks, bool tickNow, const Callback& callback)
 {
     if (!callback)
         return false;
@@ -618,7 +618,7 @@ bool Engine::SetTimer(const std::string& name, uint32 delay, uint32 ticks, bool 
     Timer* pNewTimer = new Timer;
 
     pNewTimer->currentTime = 0;
-    pNewTimer->tickDelay = delay;
+    pNewTimer->tickDelay = delayMs;
 
     pNewTimer->ticks = 0;
     pNewTimer->maxTicks = ticks;
@@ -674,7 +674,7 @@ void Engine::TickTimers(const DeltaTime& dt)
 
         pTimer->currentTime += dt.ms();
 
-        while (pTimer->currentTime >= pTimer->tickDelay)
+        while (ApproxSuperiorOrEqual(pTimer->currentTime, pTimer->tickDelay, math::Epsilon6))
         {
             pTimer->currentTime -= pTimer->tickDelay;
 

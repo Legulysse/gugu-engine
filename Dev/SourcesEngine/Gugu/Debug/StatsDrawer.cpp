@@ -194,7 +194,8 @@ void StatsDrawer::DrawFPS(const sf::Time& loopTime, Window* window)
     if (!GetResources()->GetDebugFont())
         return;
 
-    int fps = 1000 / ((loopTime.asMilliseconds() > 0) ? loopTime.asMilliseconds() : 1);
+    float loopTimeMs = static_cast<float>(static_cast<double>(loopTime.asMicroseconds()) / 1000.0);
+    int fps = static_cast<int>(1000 / ((loopTimeMs > 0) ? loopTimeMs : 1));
 
     m_statTextStandaloneFPS.setPosition(2.f, 2.f);
     m_statTextStandaloneFPS.setString("fps: " + ToString(fps));
@@ -207,8 +208,9 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
         return;
 
     float loopTimeMs = static_cast<float>(static_cast<double>(loopTime.asMicroseconds()) / 1000.0);
-    float renderTimeMs = static_cast<float>(static_cast<double>(renderTime.asMicroseconds()) / 1000.0);
     int fps = static_cast<int>(1000 / ((loopTimeMs > 0) ? loopTimeMs : 1));
+
+    float renderTimeMs = static_cast<float>(static_cast<double>(renderTime.asMicroseconds()) / 1000.0);
 
     // TODO: move this somwhere else.
     m_statFrameTimes.push_front(renderTimeMs);

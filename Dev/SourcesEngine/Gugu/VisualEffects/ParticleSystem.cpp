@@ -52,7 +52,7 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
     settings.duration = Max(settings.duration, 0);
     settings.maxParticleCount = Clamp(settings.maxParticleCount, 1, 100000);
 
-    settings.minSpawnPerSecond = Max(settings.minSpawnPerSecond, math::Epsilon3);
+    settings.minSpawnPerSecond = Max(settings.minSpawnPerSecond, math::Epsilon6);
     settings.minParticlesPerSpawn = Max(settings.minParticlesPerSpawn, 0);
 
     settings.emissionAngle = Clamp(settings.emissionAngle, 0.f, 360.f);
@@ -161,7 +161,7 @@ void ParticleSystem::Start()
     m_currentSpawnDelay = 0.f;
 
     float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-    m_nextSpawnDelay = 1000.f / Max(math::Epsilon3, randValue);
+    m_nextSpawnDelay = 1000.f / Max(math::Epsilon6, randValue);
 }
 
 void ParticleSystem::Stop()
@@ -516,7 +516,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
             m_currentSpawnDelay += dt.ms() - m_nextSpawnDelay;
 
             float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-            m_nextSpawnDelay = 1000.f / Max(math::Epsilon3, randValue);
+            m_nextSpawnDelay = 1000.f / Max(math::Epsilon6, randValue);
         }
         else
         {
@@ -528,7 +528,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
                 m_currentSpawnDelay -= m_nextSpawnDelay;
 
                 float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
-                m_nextSpawnDelay = 1000.f / Max(math::Epsilon3, randValue);
+                m_nextSpawnDelay = 1000.f / Max(math::Epsilon6, randValue);
             }
         }
 

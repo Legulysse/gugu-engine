@@ -46,19 +46,19 @@ private:
 
     struct StatsSummary
     {
-        int min = 99999999;
-        int max = 0;
-        int last = -1;
+        float min = 99999999.f;
+        float max = 0.f;
+        float avg = 0.f;
     };
 
-    void ComputeStatsSummary(const std::list<int>& statValues, StatsSummary& statsSummary);
-    void DrawCurve(const std::list<int>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow);
-    void DrawHistogram(const std::list<int>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow);
+    void ComputeStatsSummary(const std::list<float>& statValues, StatsSummary& statsSummary);
+    void DrawCurve(const std::list<float>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow);
+    void DrawHistogram(const std::list<float>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow);
     
 private:
 
-    std::list<int> m_statFrameTimes;
-    std::list<int> m_statDrawCalls;
+    std::list<float> m_statFrameTimes;
+    std::list<float> m_statDrawCalls;
 
     float m_curveHeight;
 

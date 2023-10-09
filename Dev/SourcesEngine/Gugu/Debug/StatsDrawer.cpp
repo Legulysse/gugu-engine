@@ -130,30 +130,38 @@ StatsDrawer::~StatsDrawer()
 {
 }
 
-void StatsDrawer::ComputeStatsSummary(const std::list<int>& statValues, StatsSummary& statsSummary)
+void StatsDrawer::ComputeStatsSummary(const std::list<float>& statValues, StatsSummary& statsSummary)
 {
-    for (int value : statValues)
+    float avg = 0.f;
+    int avgCount = 0;
+
+    for (float value : statValues)
     {
-        statsSummary.max = value >= 0 ? Max(statsSummary.max, value) : statsSummary.max;
-        statsSummary.min = value >= 0 ? Min(statsSummary.min, value) : statsSummary.min;
-        statsSummary.last = statsSummary.last == -1 && value >= 0 ? value : statsSummary.last;
+        if (ApproxSuperiorOrEqualToZero(value, math::Epsilon6))
+        {
+            statsSummary.max = Max(statsSummary.max, value);
+            statsSummary.min = Min(statsSummary.min, value);
+
+            avg += value;
+            ++avgCount;
+        }
     }
 
-    statsSummary.last = Max(0, statsSummary.last);
+    statsSummary.avg = avgCount > 0 ? avg / avgCount : 0.f;
 }
 
-void StatsDrawer::DrawCurve(const std::list<int>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow)
+void StatsDrawer::DrawCurve(const std::list<float>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow)
 {
     float curveHeight = m_curveHeight;
     float pointOffset = 0.5f;
 
-    int curveTopValue = Max(4, statsSummary.max);
+    float curveTopValue = Max(2.f, statsSummary.max);
     float curvePointScaleY = curveHeight / curveTopValue;
 
     int index = 0;
-    for (int value : statValues)
+    for (float value : statValues)
     {
-        value = Max(0, value);
+        value = Max(0.f, value);
         curve[index].position = Vector2f(pointOffset + position.x + index * 2, position.y + curveHeight - value * curvePointScaleY);
         ++index;
     }
@@ -161,18 +169,18 @@ void StatsDrawer::DrawCurve(const std::list<int>& statValues, const StatsSummary
     renderWindow->draw(curve);
 }
 
-void StatsDrawer::DrawHistogram(const std::list<int>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow)
+void StatsDrawer::DrawHistogram(const std::list<float>& statValues, const StatsSummary& statsSummary, sf::VertexArray& curve, Vector2f position, sf::RenderWindow* renderWindow)
 {
     float curveHeight = m_curveHeight;
     float pointOffset = 0.5f;
 
-    int curveTopValue = Max(4, statsSummary.max);
+    float curveTopValue = Max(2.f, statsSummary.max);
     float curvePointScaleY = curveHeight / curveTopValue;
 
     int index = 0;
-    for (int value : statValues)
+    for (float value : statValues)
     {
-        value = Max(0, value);
+        value = Max(0.f, value);
         curve[index * 2].position = Vector2f(pointOffset + position.x + index * 2, position.y + curveHeight);
         curve[index * 2 + 1].position = Vector2f(pointOffset + position.x + index * 2, position.y + curveHeight - value * curvePointScaleY);
         ++index;
@@ -198,17 +206,19 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
     if (!GetResources()->GetDebugFont())
         return;
 
-    int iFPS = 1000 / ((loopTime.asMilliseconds() > 0) ? loopTime.asMilliseconds() : 1);
+    float loopTimeMs = static_cast<float>(static_cast<double>(loopTime.asMicroseconds()) / 1000.0);
+    float renderTimeMs = static_cast<float>(static_cast<double>(renderTime.asMicroseconds()) / 1000.0);
+    int fps = static_cast<int>(1000 / ((loopTimeMs > 0) ? loopTimeMs : 1));
 
     // TODO: move this somwhere else.
-    m_statFrameTimes.push_front(renderTime.asMilliseconds());
+    m_statFrameTimes.push_front(renderTimeMs);
     if (m_statFrameTimes.size() > engineStats.maxStatCount)
     {
         m_statFrameTimes.pop_back();
     }
 
     // TODO: move this somwhere else.
-    m_statDrawCalls.push_front(frameInfos.statDrawCalls);
+    m_statDrawCalls.push_front(static_cast<float>(frameInfos.statDrawCalls));
     if (m_statDrawCalls.size() > engineStats.maxStatCount)
     {
         m_statDrawCalls.pop_back();
@@ -282,19 +292,19 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
 
         // Step Times
         m_statTextStepTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
-        m_statTextStepTime.setString(StringFormat("step: {0} ms,  max: {1} ms", statsSummarySteps.last, statsSummarySteps.max));
+        m_statTextStepTime.setString(StringFormat("step: {0} ms,  max: {1} ms", ToString(statsSummarySteps.avg, 2), ToString(statsSummarySteps.max, 2)));
         renderWindow->draw(m_statTextStepTime);
         ++lineCount;
 
         // Update Times
         m_statTextUpdateTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
-        m_statTextUpdateTime.setString(StringFormat("update: {0} ms,  max: {1} ms", statsSummaryUpdates.last, statsSummaryUpdates.max));
+        m_statTextUpdateTime.setString(StringFormat("update: {0} ms,  max: {1} ms", ToString(statsSummaryUpdates.avg, 2), ToString(statsSummaryUpdates.max, 2)));
         renderWindow->draw(m_statTextUpdateTime);
         ++lineCount;
 
         // Render Times
         m_statTextRenderTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
-        m_statTextRenderTime.setString(StringFormat("render: {0} ms,  max: {1} ms", statsSummaryRenders.last, statsSummaryRenders.max));
+        m_statTextRenderTime.setString(StringFormat("render: {0} ms,  max: {1} ms", ToString(statsSummaryRenders.avg, 2), ToString(statsSummaryRenders.max, 2)));
         renderWindow->draw(m_statTextRenderTime);
         ++lineCount;
 
@@ -306,7 +316,7 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
 
         // Fps
         m_statTextFPS.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * lineCount);
-        m_statTextFPS.setString(StringFormat("fps: {0}", iFPS));
+        m_statTextFPS.setString(StringFormat("fps: {0}", fps));
         renderWindow->draw(m_statTextFPS);
         ++lineCount;
 

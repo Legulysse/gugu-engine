@@ -386,7 +386,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         if (stepHappened)
         {
             // Step Stats
-            m_stats.stepTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
+            m_stats.stepTimes.push_front(static_cast<float>(static_cast<double>(clockStatSection.getElapsedTime().asMicroseconds()) / 1000.0));
             if (m_stats.stepTimes.size() > m_stats.maxStatCount)
             {
                 m_stats.stepTimes.pop_back();
@@ -405,7 +405,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         else
         {
             // Step Stats
-            m_stats.stepTimes.push_front(-1);
+            m_stats.stepTimes.push_front(-1.f);
             if (m_stats.stepTimes.size() > m_stats.maxStatCount)
             {
                 m_stats.stepTimes.pop_back();
@@ -442,7 +442,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         m_managerAudio->Update(dt_update);
 
         // Update Stats
-        m_stats.updateTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
+        m_stats.updateTimes.push_front(static_cast<float>(static_cast<double>(clockStatSection.getElapsedTime().asMicroseconds()) / 1000.0));
         if (m_stats.updateTimes.size() > m_stats.maxStatCount)
         {
             m_stats.updateTimes.pop_back();
@@ -462,7 +462,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
             m_windows[i]->Render(loopTime, m_stats);
 
         // Render Stats
-        m_stats.renderTimes.push_front(clockStatSection.getElapsedTime().asMilliseconds());
+        m_stats.renderTimes.push_front(static_cast<float>(static_cast<double>(clockStatSection.getElapsedTime().asMicroseconds()) / 1000.0));
         if (m_stats.renderTimes.size() > m_stats.maxStatCount)
         {
             m_stats.renderTimes.pop_back();
@@ -478,7 +478,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
     //m_managerNetwork->Unlock();
 
     // Loop Stats
-    m_stats.loopTimes.push_front(clockStatLoop.getElapsedTime().asMilliseconds());
+    m_stats.loopTimes.push_front(static_cast<float>(static_cast<double>(clockStatLoop.getElapsedTime().asMicroseconds()) / 1000.0));
     if (m_stats.loopTimes.size() > m_stats.maxStatCount)
     {
         m_stats.loopTimes.pop_back();

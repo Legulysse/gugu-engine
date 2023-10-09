@@ -15,10 +15,10 @@ namespace gugu {
 struct EngineStats
 {
     int maxStatCount = 150;
-    std::list<int> loopTimes;
-    std::list<int> stepTimes;
-    std::list<int> updateTimes;
-    std::list<int> renderTimes;
+    std::list<float> loopTimes;
+    std::list<float> stepTimes;
+    std::list<float> updateTimes;
+    std::list<float> renderTimes;
     std::list<int> stepCount;
     int animationCount = 0;
     int particleSystemCount = 0;

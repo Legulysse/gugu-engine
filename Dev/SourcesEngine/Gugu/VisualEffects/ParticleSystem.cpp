@@ -35,11 +35,11 @@ ParticleSystem::ParticleSystem()
     , m_running(false)
     , m_stopEmitting(false)
     , m_paused(false)
-    , m_currentDuration(0)
+    , m_currentDuration(0.f)
     , m_activeParticleCount(0)
     , m_nextEmitIndex(0)
-    , m_nextSpawnDelay(0)
-    , m_currentSpawnDelay(0)
+    , m_nextSpawnDelay(0.f)
+    , m_currentSpawnDelay(0.f)
 {
 }
 
@@ -144,7 +144,7 @@ void ParticleSystem::Start()
 
     m_running = true;
     m_paused = false;
-    m_currentDuration = 0;
+    m_currentDuration = 0.f;
     
     // TODO: Wait for the update to trigger a pending StartImpl ? to ensure we are not polluting Step.
     // TODO: I should refactor this to avoid duplicated code from the Update.
@@ -158,7 +158,7 @@ void ParticleSystem::Start()
     }
     
     m_nextEmitIndex = i % m_maxParticleCount;
-    m_currentSpawnDelay = 0;
+    m_currentSpawnDelay = 0.f;
 
     float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
     m_nextSpawnDelay = 1000.f / Max(math::Epsilon3, randValue);
@@ -173,7 +173,7 @@ void ParticleSystem::Stop()
     m_running = false;
     m_paused = false;
     m_activeParticleCount = 0;
-    m_currentDuration = 0;
+    m_currentDuration = 0.f;
     m_nextEmitIndex = 0;
 }
 
@@ -493,7 +493,7 @@ void ParticleSystem::Update(const DeltaTime& dt)
     }
     else if (!m_settings.loop)
     {
-        if (m_currentDuration >= m_settings.duration)
+        if (ApproxSuperiorOrEqual(m_currentDuration, static_cast<float>(m_settings.duration), math::Epsilon6))
         {
             canEmit = false;
             m_running = m_activeParticleCount > 0;

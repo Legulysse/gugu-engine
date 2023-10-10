@@ -69,6 +69,9 @@ public:
     void RunSingleLoop(const sf::Time& loopTime);
     void StopMainLoop();
 
+    void SetLoopPause(bool pause);
+    void SetLoopSpeed(float speed);
+
     void            SetApplication(Application* application);
     Application*    GetApplication() const;
 

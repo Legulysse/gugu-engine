@@ -490,6 +490,24 @@ void Engine::StopMainLoop()
     m_stopLoop = true;
 }
 
+void Engine::SetLoopPause(bool pause)
+{
+    m_pauseLoop = pause;
+    m_injectTime = sf::Time::Zero;
+}
+
+void Engine::SetLoopSpeed(float speed)
+{
+    m_useSpeedMultiplier = false;
+    m_speedMultiplier = 1.f;
+
+    if (!ApproxEqual(speed, 1.f, math::Epsilon6))
+    {
+        m_useSpeedMultiplier = true;
+        m_speedMultiplier = Max(0.f, speed);
+    }
+}
+
 void Engine::SetApplication(Application* application)
 {
     m_application = application;
@@ -577,6 +595,7 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
         else if (strCommand == "speed")
         {
             m_useSpeedMultiplier = false;
+            m_speedMultiplier = 1.f;
 
             if (!vecTokens.empty() && vecTokens[0] != "1")
             {

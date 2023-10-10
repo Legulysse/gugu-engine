@@ -2,7 +2,7 @@
 <Datasheet serializationVersion="1" bindingVersion="1">
 	<Data name="name" value="Fireball" />
 	<Data name="manaCost" value="40" />
-	<Data name="cooldown" value="2" />
+	<Data name="cooldown" value="1.5" />
 	<Data name="effects">
 		<Child type="effectProjectile">
 			<Data name="center" value="Caster" />
@@ -13,14 +13,14 @@
 			<Data name="effectsOnHit">
 				<Child type="effectDamage">
 					<Data name="center" value="Affected" />
-					<Data name="damage" value="5" />
+					<Data name="damage" value="10" />
 				</Child>
 			</Data>
 			<Data name="effectsOnDestination">
 				<Child type="effectArea">
 					<Data name="center" value="Affected" />
 					<Data name="excludeCaster" value="true" />
-					<Data name="maxRadius" value="200" />
+					<Data name="maxRadius" value="300" />
 					<Data name="effectsOnHit">
 						<Child type="effectDamage">
 							<Data name="center" value="Affected" />
@@ -35,7 +35,7 @@
 							<Data name="center" value="Affected" />
 						</Child>
 					</Data>
-					<Data name="maxRadius" value="100" />
+					<Data name="maxRadius" value="250" />
 					<Data name="excludeCaster" value="true" />
 					<Data name="center" value="Affected" />
 				</Child>

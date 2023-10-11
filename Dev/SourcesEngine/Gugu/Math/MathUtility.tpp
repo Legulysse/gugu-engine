@@ -83,6 +83,12 @@ T Power(const T& n, const int& p)
 // Rounding
 
 template <typename T>
+int RoundNearestInt(const T& n)
+{
+    return static_cast<int>(std::lround(n));
+}
+
+template <typename T>
 T RoundNearest(const T& n)
 {
     return std::round(n);

@@ -121,6 +121,13 @@ void RunUnitTests_Math(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("Rounding");
         {
+            GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(10.5f), 11.f);
+            GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(-10.5f), -11.f);
+            GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(10.2f), 10.f);
+            GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(-10.2f), -10.f);
+            GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(10.8f), 11.f);
+            GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(-10.8f), -11.f);
+
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.5f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(-10.5f), -11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.2f), 10.f, math::Epsilon6);

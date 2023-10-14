@@ -17,6 +17,7 @@
 #if defined(GUGU_OS_WINDOWS)
     #include <windows.h>
     #include <shellapi.h>
+    #include <combaseapi.h>
 #elif defined(GUGU_OS_LINUX)
     #include <dirent.h>
 #endif
@@ -635,6 +636,37 @@ std::string GetTimestampAsString()
     std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));  // "%Y-%m-%d %H:%M:%S"
 
     return std::string(buffer);
+}
+
+std::string GenerateUUID()
+{
+    std::string uuid;
+
+#if defined(GUGU_OS_WINDOWS)
+
+    GUID guid;
+    HRESULT hr = CoCreateGuid(&guid);
+    if (SUCCEEDED(hr))
+    {
+        std::stringstream stream;
+        stream << std::hex << std::uppercase
+            << std::setw(8) << std::setfill('0') << guid.Data1
+            /*<< "-"*/ << std::setw(4) << std::setfill('0') << guid.Data2
+            /*<< "-"*/ << std::setw(4) << std::setfill('0') << guid.Data3
+            /*<< "-"*/;
+        for (int i = 0; i < sizeof(guid.Data4); ++i)
+        {
+            /*if (i == 2)
+                stream << "-";*/
+            stream << std::hex << std::setw(2) << std::setfill('0') << (int)guid.Data4[i];
+        }
+
+        uuid = stream.str();
+    }
+
+#endif
+
+    return uuid;
 }
 
 }   // namespace gugu

@@ -648,20 +648,23 @@ std::string GenerateUUID()
     HRESULT hr = CoCreateGuid(&guid);
     if (SUCCEEDED(hr))
     {
-        std::stringstream stream;
-        stream << std::hex << std::uppercase
-            << std::setw(8) << std::setfill('0') << guid.Data1
-            /*<< "-"*/ << std::setw(4) << std::setfill('0') << guid.Data2
-            /*<< "-"*/ << std::setw(4) << std::setfill('0') << guid.Data3
-            /*<< "-"*/;
-        for (int i = 0; i < sizeof(guid.Data4); ++i)
+        uuid.resize(32, '0');
+
+        snprintf(uuid.data(), 9, "%08X", guid.Data1);
+        snprintf(uuid.data() + 8, 5, "%04hX", guid.Data2);
+        snprintf(uuid.data() + 12, 5, "%04hX", guid.Data3);
+
+        for (size_t i = 0; i < 8; ++i)
         {
-            /*if (i == 2)
-                stream << "-";*/
-            stream << std::hex << std::setw(2) << std::setfill('0') << (int)guid.Data4[i];
+            snprintf(uuid.data() + 16 + i * 2, 3, "%02X", guid.Data4[i]);
         }
 
-        uuid = stream.str();
+        // Alternative : directly use an equivalent structure to the one used by GUID, or cast it into less numeric elements.
+        // - This could be used by runtime instances, where a lot of instanciation or comparisons could happen.
+        // - The downside is that it would be less practical when debugging and copy-pasting values through debugger and serialized data.
+        // - Sample with a Vector2 of uint64 :
+        // static_assert(sizeof(GUID) == sizeof(sf::Vector2<uint64>));
+        // uuid = reinterpret_cast<sf::Vector2<uint64>&>(guid);
     }
 
 #endif

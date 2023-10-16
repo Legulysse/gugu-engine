@@ -593,23 +593,22 @@ void RunUnitTests_System(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("UUID");
     {
-        GUGU_UTEST_CHECK_EQUAL(GenerateUUID().size(), 32);
-
-        bool valid = true;
+        bool validSize = true;
+        bool validChars = true;
         for (size_t n = 0; n < 1000; ++n)
         {
             std::string uuid = GenerateUUID();
 
+            validSize &= uuid.size() == 32;
+
             for (size_t i = 0; i < uuid.size(); ++i)
             {
-                if (!(uuid[i] >= '0' && uuid[i] <= '9') && !(uuid[i] >= 'A' && uuid[i] <= 'Z'))
-                {
-                    valid = false;
-                }
+                validChars &= (uuid[i] >= '0' && uuid[i] <= '9') || (uuid[i] >= 'A' && uuid[i] <= 'Z');
             }
         }
 
-        GUGU_UTEST_CHECK(valid);
+        GUGU_UTEST_CHECK(validSize);
+        GUGU_UTEST_CHECK(validChars);
     }
 
     //----------------------------------------------

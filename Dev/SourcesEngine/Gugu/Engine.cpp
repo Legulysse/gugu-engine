@@ -441,6 +441,11 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         m_managerVisualEffects->Update(dt_update, m_stats);
         m_managerAudio->Update(dt_update);
 
+        if (m_application)
+            m_application->AppLateUpdate(dt_update);
+
+        m_managerScenes->LateUpdate(dt_update);
+
         // Update Stats
         m_stats.updateTimes.push_front(static_cast<float>(static_cast<double>(clockStatSection.getElapsedTime().asMicroseconds()) / 1000.0));
         if (m_stats.updateTimes.size() > m_stats.maxStatCount)

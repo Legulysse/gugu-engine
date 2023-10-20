@@ -36,4 +36,8 @@ void SceneActor::Update(const DeltaTime& dt)
 {
 }
 
+void SceneActor::LateUpdate(const DeltaTime& dt)
+{
+}
+
 }   // namespace gugu

@@ -71,11 +71,17 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
     pugi::xml_document xmlDocument;
     pugi::xml_parse_result result = xmlDocument.load_file(pathDatasheetBinding.c_str());
     if (!result)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Databinding, StringFormat("Bad formatting on definition file at offset : {0}", result.offset));
         return false;
+    }
 
     pugi::xml_node nodeBinding = xmlDocument.child("Binding");
     if (!nodeBinding)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Databinding, "Root node named Binding not found");
         return false;
+    }
 
     // Parse all enums.
     for (pugi::xml_node nodeEnum = nodeBinding.child("Enum"); nodeEnum; nodeEnum = nodeEnum.next_sibling("Enum"))

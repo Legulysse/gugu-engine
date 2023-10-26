@@ -31,6 +31,7 @@ public:
 
     virtual void Step(const DeltaTime& dt);
     virtual void Update(const DeltaTime& dt);
+    virtual void LateUpdate(const DeltaTime& dt);
 
 protected:
 

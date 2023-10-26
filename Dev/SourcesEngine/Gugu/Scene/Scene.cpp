@@ -72,6 +72,21 @@ void Scene::Update(const DeltaTime& dt)
     }
 }
 
+void Scene::LateUpdate(const DeltaTime& dt)
+{
+    for (size_t i = 0; i < m_childScenes.size(); ++i)
+    {
+        if (m_childScenes[i])
+            m_childScenes[i]->LateUpdate(dt);
+    }
+
+    for (size_t i = 0; i < m_actors.size(); ++i)
+    {
+        if (m_actors[i])
+            m_actors[i]->LateUpdate(dt);
+    }
+}
+
 Element* Scene::GetRootNode() const
 {
     return m_rootNode;

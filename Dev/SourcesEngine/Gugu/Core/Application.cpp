@@ -38,6 +38,10 @@ void Application::AppUpdate(const DeltaTime& dt)
 {
 }
 
+void Application::AppLateUpdate(const DeltaTime& dt)
+{
+}
+
 bool Application::OnMainWindowCloseEvent()
 {
     return true;

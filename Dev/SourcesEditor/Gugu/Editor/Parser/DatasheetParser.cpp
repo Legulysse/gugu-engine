@@ -207,6 +207,14 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                     {
                         dataType = DataMemberDefinition::String;
                     }
+                    else if (deducedType == "vector2i")
+                    {
+                        dataType = DataMemberDefinition::Vector2i;
+                    }
+                    else if (deducedType == "vector2f")
+                    {
+                        dataType = DataMemberDefinition::Vector2f;
+                    }
                 }
 
                 if (dataType == DataMemberDefinition::Unknown && GetEnumDefinition(deducedType, dataDefinition->enumDefinition))
@@ -249,6 +257,10 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                         else if (dataDefinition->type == DataMemberDefinition::Enum)
                         {
                             dataDefinition->defaultValue_string = attributeDefaultValue.value();
+                        }
+                        else
+                        {
+                            GetLogEngine()->Print(ELog::Error, ELogEngine::Databinding, StringFormat("Default value is not handled for type : {0}", deducedType));
                         }
                     }
                     else

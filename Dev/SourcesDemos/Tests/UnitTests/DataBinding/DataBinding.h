@@ -107,6 +107,8 @@ public:
 public:
 
     std::string name;
+    gugu::Vector2i size;
+    gugu::Vector2f scale;
 
 protected:
 

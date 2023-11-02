@@ -194,6 +194,14 @@ void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData
     {
         dataValue->value_string = attributeValue.value();
     }
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Vector2i)
+    {
+        xml::ParseVector2i(nodeData, dataValue->value_vector2i);
+    }
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Vector2f)
+    {
+        xml::ParseVector2f(nodeData, dataValue->value_vector2f);
+    }
     else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectReference)
     {
         VirtualDatasheet* referenceDatasheet = nullptr;
@@ -369,6 +377,14 @@ void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const
     else if (memberType == DatasheetParser::DataMemberDefinition::Enum)
     {
         nodeData.append_attribute("value") = dataValue->value_string.c_str();
+    }
+    else if (memberType == DatasheetParser::DataMemberDefinition::Vector2i)
+    {
+        xml::WriteVector2i(nodeData, dataValue->value_vector2i);
+    }
+    else if (memberType == DatasheetParser::DataMemberDefinition::Vector2f)
+    {
+        xml::WriteVector2f(nodeData, dataValue->value_vector2f);
     }
     else if (memberType == DatasheetParser::DataMemberDefinition::ObjectReference)
     {

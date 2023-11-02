@@ -31,6 +31,8 @@
     
     <Class name="item" code="DS_Item">
         <Data type="string" name="name" />
+        <Data type="vector2i" name="size" />
+        <Data type="vector2f" name="scale" />
     </Class>
     
     <Class name="condition" code="DS_Condition" abstract="true">

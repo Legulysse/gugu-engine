@@ -6,6 +6,7 @@
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/Math/Vector2.h"
 
 #include <vector>
 #include <string>
@@ -37,6 +38,8 @@ public:
         int value_int = 0;
         float value_float = 0.f;
         std::string value_string;
+        Vector2i value_vector2i;
+        Vector2f value_vector2f;
         DatasheetParser::ClassDefinition* value_objectInstanceDefinition = nullptr;
         VirtualDatasheetObject* value_objectInstance = nullptr;
         VirtualDatasheet* value_objectReference = nullptr;  // TODO: this is more a helper than an actual serialized value data, the naming should reflect that.

@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Math/Vector2.h"
+
 #include <string>
 #include <vector>
 
@@ -44,6 +46,8 @@ public:
             Float,
             String,
             Enum,
+            Vector2i,
+            Vector2f,
             ObjectInstance,
             ObjectReference,
         };
@@ -58,6 +62,8 @@ public:
         int defaultValue_int = 0;
         float defaultValue_float = 0.f;
         std::string defaultValue_string;
+        gugu::Vector2i defaultValue_vector2i;
+        gugu::Vector2f defaultValue_vector2f;
 
         // TODO: enum value (reuse string ?).
         // TODO: object instance value (always null in definition).

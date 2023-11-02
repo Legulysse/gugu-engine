@@ -81,6 +81,8 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
             if (GUGU_UTEST_CHECK(appleSheet != nullptr))
             {
                 GUGU_UTEST_CHECK(appleSheet->name == "Apple");
+                GUGU_UTEST_CHECK(appleSheet->size == Vector2i(32, 48));
+                GUGU_UTEST_CHECK(appleSheet->scale == Vector2f(1.f, 1.2f));
             }
 
             const DS_Item* bananaSheet = GetResources()->GetDatasheetObject<DS_Item>("Banana.item");

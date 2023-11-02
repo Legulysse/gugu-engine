@@ -77,7 +77,7 @@ void DS_Entity::ParseMembers(gugu::DataParseContext& context)
 DS_Character::DS_Character()
 {
     stamina = 100;
-    speed = 100;
+    speed = 100.f;
     weapon = EWeaponType::Sword;
 }
 
@@ -118,6 +118,8 @@ void DS_Faction::ParseMembers(gugu::DataParseContext& context)
 DS_Item::DS_Item()
 {
     name = "";
+    size = gugu::Vector2::Zero_i;
+    scale = gugu::Vector2::Zero_f;
 }
 
 DS_Item::~DS_Item()
@@ -129,6 +131,8 @@ void DS_Item::ParseMembers(gugu::DataParseContext& context)
     //gugu::DatasheetObject::ParseMembers(context);
 
     gugu::binding::ReadString(context, "name", name);
+    gugu::binding::ReadVector2(context, "size", size);
+    gugu::binding::ReadVector2(context, "scale", scale);
 }
 
 ////////////////////////////////////////////////////////////////

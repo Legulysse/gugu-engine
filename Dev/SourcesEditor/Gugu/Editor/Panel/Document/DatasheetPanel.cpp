@@ -457,6 +457,34 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
             ImGui::EndCombo();
         }
     }
+    else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Vector2i)
+    {
+        Vector2i dummy = dataValue ? dataValue->value_vector2i : dataMemberDefinition->defaultValue_vector2i;
+        if (ImGui::InputInt2("##value", &dummy))
+        {
+            if (!dataValue || isParentData)
+            {
+                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
+            }
+
+            dataValue->value_vector2i = dummy;
+            RaiseDirty();
+        }
+    }
+    else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Vector2f)
+    {
+        Vector2f dummy = dataValue ? dataValue->value_vector2f : dataMemberDefinition->defaultValue_vector2f;
+        if (ImGui::InputFloat2("##value", &dummy))
+        {
+            if (!dataValue || isParentData)
+            {
+                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
+            }
+
+            dataValue->value_vector2f = dummy;
+            RaiseDirty();
+        }
+    }
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
     {
         if (!dataMemberDefinition->objectDefinition)

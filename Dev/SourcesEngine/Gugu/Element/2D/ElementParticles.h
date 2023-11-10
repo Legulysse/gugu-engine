@@ -32,6 +32,8 @@ public:
 
     ParticleSystem* GetParticleSystem() const;
 
+    void RestartParticleSystem();
+
 protected:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;

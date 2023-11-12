@@ -72,13 +72,16 @@ template <typename T>
 T Distance(T _tValue1, T _tValue2);
 
 template <typename T>
-T Absolute(T _tValue);    //Visual has a good abs() templated for int, float, etc... but CodeBlocks doesn't
+T Absolute(T _tValue);
 
 template <typename T>
 T Power(const T& n, const int& p);
 
 //--------------------------------
 // Rounding
+
+template <typename T>
+int RoundNearestInt(const T& n);
 
 template <typename T>
 T RoundNearest(const T& n);

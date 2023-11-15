@@ -94,6 +94,8 @@ public:
     bool ProcessEvents();
     bool IsInputAllowed() const;
 
+    bool IsHostingImGui() const;
+
     bool IsFocused() const;
     bool IsHovered() const;
     
@@ -126,29 +128,31 @@ protected:
         Renderer* renderer;
     };
 
-    sf::RenderWindow*   m_sfWindow;
-    Renderer*           m_renderer;
+    sf::RenderWindow* m_sfWindow;
+    Renderer* m_renderer;
 
-    bool                m_hostImGui;
+    bool m_hostImGui;
 
-    Camera*                     m_mainCamera;
-    std::vector<Camera*>        m_cameras;
-    std::vector<SceneBinding>   m_sceneBindings;
+    Camera* m_mainCamera;
+    std::vector<Camera*> m_cameras;
+    std::vector<SceneBinding> m_sceneBindings;
 
-    WindowEventHandler*      m_eventHandler;
+    WindowEventHandler* m_eventHandler;
 
-    Element*            m_rootNode;             //Root for all Window Elements
-    Element*            m_rootUINode;           //Root for the interface content
-    Element*            m_consoleNode;          //Root for the console
+    Element* m_rootNode;                        //Root for all Window Elements
+    Element* m_rootUINode;                      //Root for the interface content
+    Element* m_consoleNode;                     //Root for the console
     ElementEditableText* m_consoleTextEntry;
-    ElementSprite*      m_mouseNode;            //Root for the mouse
+    ElementSprite* m_mouseNode;                 //Root for the mouse
 
-    bool                m_systemMouseVisible;
-    bool                m_mouseVisible;
-    bool                m_windowFocused;
-    bool                m_windowHovered;
+    bool m_systemMouseVisible;
+    bool m_mouseVisible;
+    bool m_wasSystemMouseVisible;
 
-    sf::Color           m_backgroundColor;
+    bool m_windowFocused;
+    bool m_windowHovered;
+
+    sf::Color m_backgroundColor;
 
     // Debug
     StatsDrawer* m_statsDrawer;

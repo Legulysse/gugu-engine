@@ -119,16 +119,21 @@ void Engine::Init(const EngineConfig& config)
 
     if (m_gameWindow)
     {
-        m_gameWindow->Create(m_engineConfig, true);
+        bool hostImGui = true;
+
+        m_gameWindow->Create(m_engineConfig, hostImGui);
         m_gameWindow->SetRenderer(m_defaultRenderer);
 
         AddWindow(m_gameWindow);
 
-        ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
+        if (hostImGui)
+        {
+            ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
 
-        // ImGui config flags :
-        // - ImGuiConfigFlags_NoMouseCursorChange : I handle cursors in Window Update.
-        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+            // ImGui config flags :
+            // - ImGuiConfigFlags_NoMouseCursorChange : I handle cursors in Window Update.
+            ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+        }
     }
 }
 
@@ -138,15 +143,13 @@ void Engine::Release()
 
     SafeDelete(m_application);
 
-    if (m_gameWindow)
+    if (m_gameWindow && m_gameWindow->IsHostingImGui())
     {
-        m_gameWindow = nullptr;
-
         ImGui::SFML::Shutdown();
     }
 
+    m_gameWindow = nullptr;
     ClearStdVector(m_windows);
-    //SafeDelete(m_gameWindow);
 
     SafeDelete(m_defaultRenderer);
 
@@ -428,7 +431,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         GUGU_SCOPE_TRACE_MAIN("Update");
         clockStatSection.restart();
 
-        if (m_gameWindow)
+        if (m_gameWindow && m_gameWindow->IsHostingImGui())
         {
             ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), loopTime);
         }

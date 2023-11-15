@@ -45,6 +45,7 @@ void Demo::AppStart()
     inputs->RegisterInput("ToggleImGui", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
     inputs->RegisterInput("UseMouse", inputs->BuildKeyboardEvent(sf::Keyboard::F2));
     inputs->RegisterInput("UseSystemMouse", inputs->BuildKeyboardEvent(sf::Keyboard::F3));
+    inputs->RegisterInput("UseNoMouse", inputs->BuildKeyboardEvent(sf::Keyboard::F4));
     inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
 
     // Set Mouse aspect
@@ -58,7 +59,7 @@ void Demo::AppStart()
 
     // Instructions
     ElementText* textInstructions = m_root->AddChild<ElementText>();
-    textInstructions->SetText("F1 : Toggle ImGui Demo.\nF2 : Use Game Mouse.\nF3 : Use System Mouse.\n\nEscape : Close Demo.");
+    textInstructions->SetText("F1 : Toggle ImGui Demo.\nF2 : Use Game Mouse.\nF3 : Use System Mouse.\nF4 : Use No Mouse.\n\nEscape : Close Demo.");
     textInstructions->SetPosition(15, 15);
 
     // Toggle text and Test Buttons
@@ -136,6 +137,12 @@ bool Demo::OnSFEvent(const sf::Event& event)
     {
         GetGameWindow()->SetMouseVisible(false);
         GetGameWindow()->SetSystemMouseVisible(true);
+        return false;
+    }
+    else if (inputs->IsInputEventPressed("UseNoMouse", event))
+    {
+        GetGameWindow()->SetMouseVisible(false);
+        GetGameWindow()->SetSystemMouseVisible(false);
         return false;
     }
     else if (inputs->IsInputEventReleased("CloseGame", event))

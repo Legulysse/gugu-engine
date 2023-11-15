@@ -64,6 +64,8 @@ Window::Window()
 
     m_systemMouseVisible = true;
     m_mouseVisible = false;
+    m_wasSystemMouseVisible = true;
+
     m_windowHovered = false;
     m_windowFocused = false;
 
@@ -103,7 +105,7 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     Settings.antialiasingLevel = 2;  // Request 2 levels of antialiasing
 
     //Create main window
-    m_sfWindow->create(sf::VideoMode(config.windowWidth, config.windowHeight, 32), config.applicationName,/* sf::Style::Default */ sf::Style::Resize | sf::Style::Close, Settings);
+    m_sfWindow->create(sf::VideoMode(config.windowWidth, config.windowHeight, 32), config.applicationName, sf::Style::Default, Settings);
     m_sfWindow->setFramerateLimit(config.framerateLimit);
     m_sfWindow->setVerticalSyncEnabled(config.enableVerticalSync);
 
@@ -356,7 +358,9 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
 
         if (!m_windowHovered || !m_windowFocused)
         {
-            isSystemMouseWantedVisible = true;
+            // It seems like letting the OS take back control avoids the cursor not refreshing correctly.
+            // (displaying an arrow instead of a resize cursor when going on the edge of the window).
+            //isSystemMouseWantedVisible = true;
             isMouseWantedVisible = false;
             allowImGuiMouse = false;
         }
@@ -375,11 +379,23 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
             }
         }
 
-        m_sfWindow->setMouseCursorVisible(isSystemMouseWantedVisible);
-        m_mouseNode->SetVisible(isMouseWantedVisible);
+        // Update system mouse.
+        if (isSystemMouseWantedVisible && !m_wasSystemMouseVisible)
+        {
+            m_sfWindow->setMouseCursorVisible(true);
+        }
+        else if (!isSystemMouseWantedVisible && m_wasSystemMouseVisible)
+        {
+            m_sfWindow->setMouseCursorVisible(false);
+        }
 
+        m_wasSystemMouseVisible = isSystemMouseWantedVisible;
+
+        // Update mouse node.
+        m_mouseNode->SetVisible(isMouseWantedVisible);
         m_mouseNode->SetPosition(GetGameWindow()->GetMousePosition());
 
+        // Render UI
         m_rootNode->SortOnZIndex();
 
         if (m_renderer)
@@ -618,6 +634,11 @@ bool Window::IsHovered() const
 bool Window::IsInputAllowed() const
 {
     return m_windowFocused && !IsConsoleVisible();
+}
+
+bool Window::IsHostingImGui() const
+{
+    return m_hostImGui;
 }
 
 bool Window::IsConsoleVisible() const

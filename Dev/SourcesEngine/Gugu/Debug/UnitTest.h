@@ -105,7 +105,7 @@ private:
         __FILE__, __LINE__)
 
 #define GUGU_UTEST_CHECK_NOT_EQUAL(LEFT, RIGHT)                 \
-    unitTestHandler.RunTestCompare(LEFT != RIGHT,               \
+    unitTestHandler.RunTestCompare(!(LEFT == RIGHT),            \
         ToString(LEFT), ToString(RIGHT),                        \
         GUGU_STRINGIZE(LEFT) " != " GUGU_STRINGIZE(RIGHT),      \
         __FILE__, __LINE__)

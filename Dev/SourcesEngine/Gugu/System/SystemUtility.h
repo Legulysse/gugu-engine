@@ -209,8 +209,6 @@ bool RemoveDirectoryTree(std::string_view path_utf8);
 int64 GetTimestamp();
 std::string GetTimestampAsString();
 
-std::string GenerateUUID();
-
 }   // namespace gugu
 
 ////////////////////////////////////////////////////////////////

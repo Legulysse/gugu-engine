@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/UUID.h"
 
 using namespace gugu;
 
@@ -593,11 +594,26 @@ void RunUnitTests_System(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("UUID");
     {
+        gugu::UUID uuidA = GenerateUUID();
+        gugu::UUID uuidB = GenerateUUID();
+        gugu::UUID uuidAA = uuidA;
+
+        GUGU_UTEST_CHECK_NOT_EQUAL(uuidA, uuidB);
+        GUGU_UTEST_CHECK_NOT_EQUAL(uuidAA, uuidB);
+        GUGU_UTEST_CHECK_EQUAL(uuidA, uuidAA);
+        GUGU_UTEST_CHECK(uuidA != uuidB);
+        GUGU_UTEST_CHECK(uuidAA != uuidB);
+        GUGU_UTEST_CHECK(uuidA == uuidAA);
+
+        std::vector<std::string> uuids;
         bool validSize = true;
         bool validChars = true;
-        for (size_t n = 0; n < 1000; ++n)
+        bool allDifferent = true;
+
+        for (size_t n = 0; n < 100; ++n)
         {
-            std::string uuid = GenerateUUID();
+            std::string uuid = GenerateUUIDAsString();
+            uuids.push_back(uuid);
 
             validSize &= uuid.size() == 32;
 
@@ -607,8 +623,17 @@ void RunUnitTests_System(UnitTestResults* results)
             }
         }
 
+        for (size_t i = 0; i < uuids.size(); ++i)
+        {
+            for (size_t ii = 0; ii < uuids.size(); ++ii)
+            {
+                allDifferent &= i == ii || uuids[i] != uuids[ii];
+            }
+        }
+
         GUGU_UTEST_CHECK(validSize);
         GUGU_UTEST_CHECK(validChars);
+        GUGU_UTEST_CHECK(allDifferent);
     }
 
     //----------------------------------------------

@@ -148,6 +148,7 @@ void ParticleSystem::Start()
     
     // TODO: Wait for the update to trigger a pending StartImpl ? to ensure we are not polluting Step.
     // TODO: I should refactor this to avoid duplicated code from the Update.
+    // TODO: Additional note : this actually can mess with particles lifetime, since they will get updated the same frame they are spawned, and may disappear before the next render.
     // TODO: Delay parameter ?
     size_t i = 0;
     size_t emitCount = Min(m_maxParticleCount, (size_t)GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn));

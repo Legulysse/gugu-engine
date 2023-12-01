@@ -52,8 +52,8 @@ size_t ElementTileMap::GetTileCount() const
 
 void ElementTileMap::BuildFromSquareGrid(SquareGrid* grid)
 {
-    int width = grid->GetWidth();
-    int height = grid->GetHeight();
+    size_t width = (size_t)grid->GetWidth();
+    size_t height = (size_t)grid->GetHeight();
 
     // Reset vertices.
     m_vertices.setPrimitiveType(sf::Triangles);
@@ -62,11 +62,11 @@ void ElementTileMap::BuildFromSquareGrid(SquareGrid* grid)
     // Compute all tiles position and size.
     Vector2f tileSize = grid->GetCellSize();
 
-    for (int y = 0; y < height; ++y)
+    for (size_t y = 0; y < height; ++y)
     {
-        for (int x = 0; x < width; ++x)
+        for (size_t x = 0; x < width; ++x)
         {
-            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(grid->GetCellPosition(Vector2i(x, y)), tileSize));
+            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(grid->GetCellPosition(Vector2i((int)x, (int)y)), tileSize));
         }
     }
 
@@ -75,8 +75,8 @@ void ElementTileMap::BuildFromSquareGrid(SquareGrid* grid)
 
 void ElementTileMap::BuildFromHexGrid(HexGrid* grid)
 {
-    int width = grid->GetWidth();
-    int height = grid->GetHeight();
+    size_t width = (size_t)grid->GetWidth();
+    size_t height = (size_t)grid->GetHeight();
 
     // Reset vertices.
     m_vertices.setPrimitiveType(sf::Triangles);
@@ -85,36 +85,36 @@ void ElementTileMap::BuildFromHexGrid(HexGrid* grid)
     // Compute all tiles position and size.
     Vector2f tileSize = grid->GetCellSize();
 
-    for (int y = 0; y < height; ++y)
+    for (size_t y = 0; y < height; ++y)
     {
-        for (int x = 0; x < width; ++x)
+        for (size_t x = 0; x < width; ++x)
         {
-            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(grid->GetCellPosition(Vector2i(x, y)), tileSize));
+            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(grid->GetCellPosition(Vector2i((int)x, (int)y)), tileSize));
         }
     }
 
     SetSize(grid->GetGridSize());
 }
 
-void ElementTileMap::BuildFromTileDimensions(int width, int height, const Vector2f& tileSize)
+void ElementTileMap::BuildFromTileDimensions(size_t width, size_t height, const Vector2f& tileSize)
 {
     // Reset vertices.
     m_vertices.setPrimitiveType(sf::Triangles);
     m_vertices.resize(width * height * 6);
 
     // Compute all tiles position and size.
-    for (int y = 0; y < height; ++y)
+    for (size_t y = 0; y < height; ++y)
     {
-        for (int x = 0; x < width; ++x)
+        for (size_t x = 0; x < width; ++x)
         {
-            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(Vector2f(x * tileSize.x, y * tileSize.y), tileSize));
+            UpdateTilePositionAndSize(x + y * width, sf::FloatRect(Vector2f((float)x * tileSize.x, (float)y * tileSize.y), tileSize));
         }
     }
 
-    SetSize(tileSize.x * width, tileSize.y * height);
+    SetSize(tileSize.x * (float)width, tileSize.y * (float)height);
 }
 
-void ElementTileMap::BuildFromTileCount(int count, const Vector2f& mapSize)
+void ElementTileMap::BuildFromTileCount(size_t count, const Vector2f& mapSize)
 {
     // Reset vertices.
     m_vertices.setPrimitiveType(sf::Triangles);
@@ -123,12 +123,12 @@ void ElementTileMap::BuildFromTileCount(int count, const Vector2f& mapSize)
     SetSize(mapSize);
 }
 
-void ElementTileMap::UpdateTilePositionAndSize(int x, int y, int width, const sf::FloatRect& rect)
+void ElementTileMap::UpdateTilePositionAndSize(size_t x, size_t y, size_t width, const sf::FloatRect& rect)
 {
     UpdateTilePositionAndSize(x + y * width, rect);
 }
 
-void ElementTileMap::UpdateTilePositionAndSize(int index, const sf::FloatRect& rect)
+void ElementTileMap::UpdateTilePositionAndSize(size_t index, const sf::FloatRect& rect)
 {
     float left = rect.left;
     float top = rect.top;
@@ -146,17 +146,17 @@ void ElementTileMap::UpdateTilePositionAndSize(int index, const sf::FloatRect& r
     quad[5].position = Vector2f(right, bottom);
 }
 
-void ElementTileMap::UpdateTileTextureCoords(int x, int y, int width, const sf::IntRect& rect)
+void ElementTileMap::UpdateTileTextureCoords(size_t x, size_t y, size_t width, const sf::IntRect& rect)
 {
     UpdateTileTextureCoords(x + y * width, rect);
 }
 
-void ElementTileMap::UpdateTileTextureCoords(int index, const sf::IntRect& rect)
+void ElementTileMap::UpdateTileTextureCoords(size_t index, const sf::IntRect& rect)
 {
     float left = (float)rect.left;
     float top = (float)rect.top;
-    float right = left + rect.width;
-    float bottom = top + rect.height;
+    float right = left + (float)rect.width;
+    float bottom = top + (float)rect.height;
 
     sf::Vertex* quad = &m_vertices[index * 6];
 
@@ -169,12 +169,12 @@ void ElementTileMap::UpdateTileTextureCoords(int index, const sf::IntRect& rect)
     quad[5].texCoords = Vector2f(right, bottom);
 }
 
-void ElementTileMap::UpdateTileColor(int x, int y, int width, const sf::Color& color)
+void ElementTileMap::UpdateTileColor(size_t x, size_t y, size_t width, const sf::Color& color)
 {
     UpdateTileColor(x + y * width, color);
 }
 
-void ElementTileMap::UpdateTileColor(int index, const sf::Color& color)
+void ElementTileMap::UpdateTileColor(size_t index, const sf::Color& color)
 {
     sf::Vertex* quad = &m_vertices[index * 6];
 

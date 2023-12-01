@@ -36,15 +36,15 @@ public:
 
     void BuildFromSquareGrid(SquareGrid* grid);
     void BuildFromHexGrid(HexGrid* grid);
-    void BuildFromTileDimensions(int width, int height, const Vector2f& tileSize);
-    void BuildFromTileCount(int count, const Vector2f& mapSize);
+    void BuildFromTileDimensions(size_t width, size_t height, const Vector2f& tileSize);
+    void BuildFromTileCount(size_t count, const Vector2f& mapSize);
 
-    void UpdateTilePositionAndSize(int index, const sf::FloatRect& rect);
-    void UpdateTilePositionAndSize(int x, int y, int width, const sf::FloatRect& rect);
-    void UpdateTileTextureCoords(int index, const sf::IntRect& rect);
-    void UpdateTileTextureCoords(int x, int y, int width, const sf::IntRect& rect);
-    void UpdateTileColor(int index, const sf::Color& color);
-    void UpdateTileColor(int x, int y, int width, const sf::Color& color);
+    void UpdateTilePositionAndSize(size_t index, const sf::FloatRect& rect);
+    void UpdateTilePositionAndSize(size_t x, size_t y, size_t width, const sf::FloatRect& rect);
+    void UpdateTileTextureCoords(size_t index, const sf::IntRect& rect);
+    void UpdateTileTextureCoords(size_t x, size_t y, size_t width, const sf::IntRect& rect);
+    void UpdateTileColor(size_t index, const sf::Color& color);
+    void UpdateTileColor(size_t x, size_t y, size_t width, const sf::Color& color);
 
     size_t GetTileCount() const;
 

@@ -407,14 +407,7 @@ void ImageSetPanel::UpdateGizmo()
                     m_isDraggingGizmo = true;
                     m_draggedGizmo = gizmoElement;
 
-                    if (gizmoElement == m_gizmoCenter)
-                    {
-                        m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobal(Vector2::Zero_f);
-                    }
-                    else
-                    {
-                        m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobal(Vector2::Zero_f + gizmoElement->GetOrigin());
-                    }
+                    m_gizmoOffsetGlobalPosition = pickedGlobalPosition - gizmoElement->TransformToGlobal(gizmoElement->GetOrigin());
                 }
             }
         }
@@ -423,18 +416,16 @@ void ImageSetPanel::UpdateGizmo()
         {
             if (is_active && ImGui::IsMouseDown(ImGuiMouseButton_Left))
             {
+                Vector2f elementGlobalPosition = pickedGlobalPosition - m_gizmoOffsetGlobalPosition;
+
                 if (m_draggedGizmo == m_gizmoCenter)
                 {
-                    Vector2f elementGlobalPosition = pickedGlobalPosition - m_gizmoOffsetGlobalPosition;
-
                     // Snap to pixel.
                     elementGlobalPosition = Vector2f(Vector2i(elementGlobalPosition));
-
                     m_draggedGizmo->SetPosition(elementGlobalPosition);
                 }
                 else
                 {
-                    Vector2f elementGlobalPosition = pickedGlobalPosition - m_gizmoOffsetGlobalPosition;
                     OnDragGizmoEdge(m_draggedGizmo, elementGlobalPosition);
                 }
             }

@@ -700,7 +700,7 @@ bool Element::IsPicked(const Vector2f& globalCoords, Vector2f& localPickedCoords
     return IsPickedLocal(localPickedCoords);
 }
 
-bool Element::IsPickedLocal(Vector2f& localCoords) const
+bool Element::IsPickedLocal(const Vector2f& localCoords) const
 {
     Vector2f bottomRight = GetSize();
 

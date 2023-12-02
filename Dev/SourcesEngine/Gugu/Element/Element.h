@@ -134,7 +134,7 @@ public:
 
     bool IsPicked(const Vector2f& globalCoords) const;
     bool IsPicked(const Vector2f& globalCoords, Vector2f& localPickedCoords) const;
-    virtual bool IsPickedLocal(Vector2f& localCoords) const;
+    virtual bool IsPickedLocal(const Vector2f& localCoords) const;
 
     Vector2f TransformToLocal(const Vector2f& globalCoords) const;
     Vector2f TransformToLocal(const Vector2f& ancestorCoords, Element* ancestorReference) const;

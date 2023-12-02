@@ -359,7 +359,87 @@ void RunUnitTests_Element(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("Picking");
     {
-        GUGU_UTEST_SUBSECTION("Local Transform");
+        GUGU_UTEST_SUBSECTION("Local and Global Transform");
+        {
+            Element* root = new Element;
+            Element* elementA = root->AddChild<Element>();
+            elementA->SetPosition(10.f, 20.f);
+            elementA->SetRotation(90.f);
+            elementA->SetOrigin(5.f, 5.f);
+            elementA->SetScale(2.f, 3.f);
+            Element* elementB = elementA->AddChild<Element>();
+            elementB->SetPosition(10.f, 0.f);
+            elementB->SetRotation(90.f);
+            elementB->SetOrigin(10.f, 10.f);
+            elementB->SetScale(10.f, 10.f);
+
+            GUGU_UTEST_CHECK(ApproxEqual(root->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(root->TransformToGlobal(Vector2f(10.f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(-2.5f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->TransformToGlobal(Vector2f(-2.5f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(10.5f, 11.25f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToGlobal(Vector2f(10.5f, 11.25f)), Vector2f(10.f, 5.f), math::Epsilon3));
+
+            GUGU_UTEST_CHECK(ApproxEqual(root->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(10.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->TransformToLocal(Vector2f(10.f, 5.f), elementA), Vector2f(10.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementA->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(-2.5f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(Vector2f(10.f, 5.f), elementB), Vector2f(10.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(Vector2f(10.f, 5.f), elementA), Vector2f(10.5f, 10.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(10.5f, 11.25f), math::Epsilon3));
+
+            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(elementA->TransformToLocal(Vector2f(10.f, 5.f), root), elementA), Vector2f(10.5f, 11.25f), math::Epsilon3));
+
+            SafeDelete(root);
+        }
+
+        GUGU_UTEST_SUBSECTION("Local Picking");
+        {
+            Element* root = new Element;
+            Element* elementA = root->AddChild<Element>();
+            elementA->SetSize(10.f, 10.f);
+
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(0.f, 0.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.f, 9.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.5f, 9.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(-.5f, -.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(10.f, 10.f)));
+
+            elementA->SetPosition(10.f, 10.f);
+
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(0.f, 0.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.f, 9.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.5f, 9.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(-.5f, -.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(10.f, 10.f)));
+
+            elementA->SetOrigin(10.f, 10.f);
+
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(0.f, 0.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.f, 9.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.5f, 9.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(-.5f, -.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(10.f, 10.f)));
+
+            elementA->SetRotation(90.f);
+
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(0.f, 0.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.f, 9.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.5f, 9.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(-.5f, -.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(10.f, 10.f)));
+
+            elementA->SetScale(2.f, 3.f);
+
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(0.f, 0.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.f, 9.f)));
+            GUGU_UTEST_CHECK(elementA->IsPickedLocal(Vector2f(9.5f, 9.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(-.5f, -.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPickedLocal(Vector2f(10.f, 10.f)));
+
+            SafeDelete(root);
+        }
+
+        GUGU_UTEST_SUBSECTION("Global Picking");
         {
             Element* root = new Element;
             Element* elementA = root->AddChild<Element>();
@@ -371,8 +451,12 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(9.5f, 9.5f)));
             GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(-.5f, -.5f)));
             GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(0.f, 0.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(0.f, 0.f), math::Epsilon3));
             GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(5.f, 5.f), picked));
             GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(10.f, 10.f), math::Epsilon3));
 
             elementA->SetPosition(10.f, 10.f);
 
@@ -381,19 +465,59 @@ void RunUnitTests_Element(UnitTestResults* results)
             GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(19.5f, 19.5f)));
             GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(9.5f, 9.5f)));
             GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(20.f, 20.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(10.f, 10.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(0.f, 0.f), math::Epsilon3));
             GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(15.f, 15.f), picked));
             GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(20.f, 20.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(10.f, 10.f), math::Epsilon3));
 
-            // TODO: Rotate.
-            // TODO: Scale.
-            // TODO: Origin.
+            elementA->SetOrigin(10.f, 10.f);
+
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(0.f, 0.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(9.f, 9.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(9.5f, 9.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(-.5f, -.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(0.f, 0.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(5.f, 5.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(10.f, 10.f), math::Epsilon3));
+
+            elementA->SetRotation(90.f);
+
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(20.f, 0.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(11.f, 9.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(10.5f, 9.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(20.5f, -.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(20.f, 0.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(15.f, 5.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(10.f, 10.f), math::Epsilon3));
+
+            elementA->SetScale(1.f, 2.f);
+
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(30.f, 0.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(11.f, 9.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(10.5f, 9.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(30.5f, -.5f)));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f)));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(30.f, 0.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(0.f, 0.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(elementA->IsPicked(Vector2f(20.f, 5.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(5.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK(!elementA->IsPicked(Vector2f(10.f, 10.f), picked));
+            GUGU_UTEST_CHECK(ApproxEqual(picked, Vector2f(10.f, 10.f), math::Epsilon3));
 
             SafeDelete(root);
         }
 
-        // TODO: Global Transform (test local/global conversions through all kinds of intermediate transforms).
-
-        GUGU_UTEST_SUBSECTION("Camera Transform");
+        GUGU_UTEST_SUBSECTION("Camera Picking");
         {
             // Check Window state.
             GUGU_UTEST_CHECK(GetGameWindow()->GetSize() == Vector2u(200, 200));

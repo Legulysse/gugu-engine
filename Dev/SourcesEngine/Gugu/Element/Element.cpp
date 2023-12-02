@@ -704,8 +704,8 @@ bool Element::IsPickedLocal(const Vector2f& localCoords) const
 {
     Vector2f bottomRight = GetSize();
 
-    if (localCoords.x >= 0 && localCoords.x < bottomRight.x
-        && localCoords.y >= 0 && localCoords.y < bottomRight.y)
+    if (ApproxSuperiorOrEqualToZero(localCoords.x, math::Epsilon6) && ApproxInferior(localCoords.x, bottomRight.x, math::Epsilon6)
+        && ApproxSuperiorOrEqualToZero(localCoords.y, math::Epsilon6) && ApproxInferior(localCoords.y, bottomRight.y, math::Epsilon6))
     {
         return true;
     }

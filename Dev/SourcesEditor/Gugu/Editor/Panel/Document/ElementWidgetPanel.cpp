@@ -184,6 +184,7 @@ ElementSpriteGroupItem* ElementWidgetPanel::AppendNewComponent(ElementSpriteGrou
     ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
 
     groupData->components.push_back(componentData);
+    groupData->RefreshCache();
     componentData->parent = groupData;
 
     group->AddItem(component);
@@ -204,12 +205,12 @@ void ElementWidgetPanel::DeleteElement(BaseElementData* elementData)
             // Remove element from parent children.
             StdVectorRemove<BaseElementData*>(parentData->children, elementData);
 
-            // Remove element from owner if it is a SpriteGroup component.
-            ElementSpriteGroupData* parentSpriteGroupData = dynamic_cast<ElementSpriteGroupData*>(parentData);
-            ElementSpriteGroupItemData* elementSpriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(elementData);
-            if (parentSpriteGroupData && elementSpriteGroupItemData)
+            // Remove element from owner if it is a component.
+            ElementCompositeData* parentCompositeData = dynamic_cast<ElementCompositeData*>(parentData);
+            if (parentCompositeData)
             {
-                StdVectorRemove(parentSpriteGroupData->components, elementSpriteGroupItemData);
+                StdVectorRemove<BaseElementData*>(parentCompositeData->components, elementData);
+                parentCompositeData->RefreshCache();
             }
 
             // Remove element from owner if it is a Button component.
@@ -305,7 +306,7 @@ void ElementWidgetPanel::CreateGizmo()
         m_gizmoBounds = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
         m_gizmoBounds->SetSFDrawable(vertices);
     }
-     
+
     // Origin
     {
         Vector2f position = sf::Vector2f(0.5f, 0.5f);

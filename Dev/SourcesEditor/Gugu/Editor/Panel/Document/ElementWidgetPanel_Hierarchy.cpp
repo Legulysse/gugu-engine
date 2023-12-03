@@ -103,9 +103,9 @@ void ElementWidgetPanel::DisplayTreeNode(BaseElementData* node, int itemFlags, B
     if (isOpen)
     {
         // Display components.
-        if (ElementSpriteGroupData* nodeSpriteGroup = dynamic_cast<ElementSpriteGroupData*>(node))
+        if (ElementCompositeData* nodeComposite = dynamic_cast<ElementCompositeData*>(node))
         {
-            const std::vector<ElementSpriteGroupItemData*>& components = nodeSpriteGroup->components;
+            const std::vector<BaseElementData*>& components = nodeComposite->components;
 
             ImGuiTreeNodeFlags componentFlags = ImGuiTreeNodeFlags_Leaf;
             ImGui::TreeNodeEx("<Components>", componentFlags);
@@ -155,7 +155,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
     if (ImGui::BeginPopupContextItem())
     {
         bool isRootNode = node == m_widgetRootData;
-        bool isComponent = dynamic_cast<ElementSpriteGroupItemData*>(node) != nullptr;
+        bool isComponent = dynamic_cast<ElementCompositeData*>(node->parent) != nullptr;
 
         if (ImGui::BeginMenu("Add Child..."))
         {

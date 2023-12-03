@@ -269,6 +269,77 @@ void ElementData::GetDependencies(std::set<Resource*>& dependencies) const
     }
 }
 
+ElementCompositeData::~ElementCompositeData()
+{
+    ClearStdVector(components);
+}
+
+void ElementCompositeData::RefreshCache()
+{
+}
+
+bool ElementCompositeData::LoadFromXmlImpl(ElementParseContext& context)
+{
+    if (!ElementData::LoadFromXmlImpl(context))
+        return false;
+
+    if (pugi::xml_node nodeComponents = context.node.child("Components"))
+    {
+        pugi::xml_node backupNode = context.node;
+
+        for (pugi::xml_node nodeComponent = nodeComponents.child("Element"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Element"))
+        {
+            if (BaseElementData* component = InstanciateElementData(nodeComponent))
+            {
+                context.node = nodeComponent;
+                component->LoadFromXml(context);
+
+                components.push_back(component);
+                component->parent = this;
+            }
+        }
+
+        context.node = backupNode;
+    }
+
+    RefreshCache();
+
+    return true;
+}
+
+bool ElementCompositeData::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!ElementData::SaveToXmlImpl(context))
+        return false;
+
+    bool result = true;
+
+    if (!components.empty())
+    {
+        pugi::xml_node backupNode = context.node;
+        context.node = context.node.append_child("Components");
+
+        for (size_t i = 0; i < components.size(); ++i)
+        {
+            result &= components[i]->SaveToXml(context);
+        }
+
+        context.node = backupNode;
+    }
+
+    return result;
+}
+
+void ElementCompositeData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementData::GetDependencies(dependencies);
+
+    for (auto component : components)
+    {
+        component->GetDependencies(dependencies);
+    }
+}
+
 bool ElementSpriteBaseData::LoadFromXmlImpl(ElementParseContext& context)
 {
     if (!ElementData::LoadFromXmlImpl(context))

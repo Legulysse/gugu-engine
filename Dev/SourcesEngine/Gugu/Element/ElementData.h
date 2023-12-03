@@ -107,6 +107,23 @@ public:
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 };
 
+class ElementCompositeData : public ElementData
+{
+public:
+
+    std::vector<BaseElementData*> components;
+
+    virtual ~ElementCompositeData();
+
+    virtual void RefreshCache();
+
+    virtual const std::string& GetSerializedType() const = 0;
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
+};
+
 class ElementSpriteBaseData : public ElementData
 {
 public:

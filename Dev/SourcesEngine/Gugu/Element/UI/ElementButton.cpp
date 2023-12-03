@@ -7,19 +7,16 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Element/ElementData.h"
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/System/SystemUtility.h"
-#include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -248,7 +245,7 @@ bool ElementButton::LoadFromDataImpl(ElementDataContext& context)
     if (!Element::LoadFromDataImpl(context))
         return false;
 
-    ElementButtonData* buttonData = dynamic_cast<ElementButtonData*>(context.data);
+    ElementButtonData* elementData = dynamic_cast<ElementButtonData*>(context.data);
     BaseElementData* backupData = context.data;
 
     bool result = true;
@@ -260,10 +257,10 @@ bool ElementButton::LoadFromDataImpl(ElementDataContext& context)
         // TODO: bool result
     };
 
-    loadComponentFromData(context, buttonData->commonComponent, m_commonComponent);
-    loadComponentFromData(context, buttonData->idleStateComponent, m_idleStateComponent);
-    loadComponentFromData(context, buttonData->focusedStateComponent, m_focusedStateComponent);
-    loadComponentFromData(context, buttonData->disabledStateComponent, m_disabledStateComponent);
+    loadComponentFromData(context, elementData->commonComponent, m_commonComponent);
+    loadComponentFromData(context, elementData->idleStateComponent, m_idleStateComponent);
+    loadComponentFromData(context, elementData->focusedStateComponent, m_focusedStateComponent);
+    loadComponentFromData(context, elementData->disabledStateComponent, m_disabledStateComponent);
 
     // TODO: check null.
     m_currentStateComponent = m_idleStateComponent;

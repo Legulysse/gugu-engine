@@ -489,7 +489,7 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             if (ImGui::InputText("SubImage", &elementSpriteData->subImageName, ImGuiInputTextFlags_EnterReturnsTrue))
             {
                 SubImage* subImage = elementSpriteData->imageSet->GetSubImage(elementSpriteData->subImageName);
-                elementSpriteGroupItem->SetSubRect(!subImage ? sf::IntRect() : subImage->GetRect(), false);
+                elementSprite->SetSubRect(!subImage ? sf::IntRect() : subImage->GetRect(), false);
                 elementSpriteData->textureRect = sf::IntRect();
                 RaiseDirty();
             }

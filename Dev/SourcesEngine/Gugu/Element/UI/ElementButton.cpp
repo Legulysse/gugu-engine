@@ -153,17 +153,11 @@ void ElementButton::SetDisabled(bool _bDisabled)
 
     if (m_isDisabled)
     {
-        if (m_currentStateComponent)
-        {
-            m_currentStateComponent = m_disabledStateComponent ? m_disabledStateComponent : m_idleStateComponent;
-        }
+        m_currentStateComponent = m_disabledStateComponent ? m_disabledStateComponent : m_idleStateComponent;
     }
     else
     {
-        if (m_currentStateComponent)
-        {
-            m_currentStateComponent = m_idleStateComponent;
-        }
+        m_currentStateComponent = m_idleStateComponent;
     }
 }
 
@@ -195,7 +189,7 @@ void ElementButton::OnMouseReleased(const InteractionInfos& interactionInfos)
 
 void ElementButton::OnMouseEntered(const InteractionInfos& interactionInfos)
 {
-    if (m_currentStateComponent && !m_isDisabled)
+    if (!m_isDisabled)
     {
         m_currentStateComponent = m_focusedStateComponent ? m_focusedStateComponent : m_idleStateComponent;
     }
@@ -203,7 +197,7 @@ void ElementButton::OnMouseEntered(const InteractionInfos& interactionInfos)
 
 void ElementButton::OnMouseLeft(const InteractionInfos& interactionInfos)
 {
-    if (m_currentStateComponent && !m_isDisabled)
+    if (!m_isDisabled)
     {
         m_currentStateComponent = m_idleStateComponent;
     }

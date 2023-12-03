@@ -738,61 +738,61 @@ void ElementWidgetPanel::DisplayGenerators(ElementSpriteGroupData* elementSprite
         const std::vector<ElementSpriteGroupItem*>& componentElements = elementSpriteGroup->GetItems();
 
         // Top left.
-        unifiedDimensionsGenerator(componentElements[0], elementSpriteGroupData->components[0]
+        unifiedDimensionsGenerator(componentElements[0], elementSpriteGroupData->cacheSpriteGroupComponents[0]
             , UDim2::POSITION_TOP_LEFT
-            , UDim2::SIZE_ZERO + elementSpriteGroupData->components[0]->size);
+            , UDim2::SIZE_ZERO + elementSpriteGroupData->cacheSpriteGroupComponents[0]->size);
 
         // Top center.
-        unifiedDimensionsGenerator(componentElements[1], elementSpriteGroupData->components[1]
-            , UDim2::POSITION_TOP_LEFT + Vector2f(elementSpriteGroupData->components[0]->size.x, 0.f)
-            , UDim2(1.f, 0.f) + Vector2f(-elementSpriteGroupData->components[0]->size.x - elementSpriteGroupData->components[2]->size.x, elementSpriteGroupData->components[1]->size.y));
+        unifiedDimensionsGenerator(componentElements[1], elementSpriteGroupData->cacheSpriteGroupComponents[1]
+            , UDim2::POSITION_TOP_LEFT + Vector2f(elementSpriteGroupData->cacheSpriteGroupComponents[0]->size.x, 0.f)
+            , UDim2(1.f, 0.f) + Vector2f(-elementSpriteGroupData->cacheSpriteGroupComponents[0]->size.x - elementSpriteGroupData->cacheSpriteGroupComponents[2]->size.x, elementSpriteGroupData->cacheSpriteGroupComponents[1]->size.y));
 
         // Top right.
-        unifiedDimensionsGenerator(componentElements[2], elementSpriteGroupData->components[2]
-            , UDim2::POSITION_TOP_RIGHT + Vector2f(-elementSpriteGroupData->components[2]->size.x, 0.f)
-            , UDim2::SIZE_ZERO + elementSpriteGroupData->components[2]->size);
+        unifiedDimensionsGenerator(componentElements[2], elementSpriteGroupData->cacheSpriteGroupComponents[2]
+            , UDim2::POSITION_TOP_RIGHT + Vector2f(-elementSpriteGroupData->cacheSpriteGroupComponents[2]->size.x, 0.f)
+            , UDim2::SIZE_ZERO + elementSpriteGroupData->cacheSpriteGroupComponents[2]->size);
 
         // Center left.
-        unifiedDimensionsGenerator(componentElements[3], elementSpriteGroupData->components[3]
-            , UDim2::POSITION_TOP_LEFT + Vector2f(0.f, elementSpriteGroupData->components[0]->size.y)
-            , UDim2(0.f, 1.f) + Vector2f(elementSpriteGroupData->components[3]->size.x, -elementSpriteGroupData->components[0]->size.y - elementSpriteGroupData->components[6]->size.y));
+        unifiedDimensionsGenerator(componentElements[3], elementSpriteGroupData->cacheSpriteGroupComponents[3]
+            , UDim2::POSITION_TOP_LEFT + Vector2f(0.f, elementSpriteGroupData->cacheSpriteGroupComponents[0]->size.y)
+            , UDim2(0.f, 1.f) + Vector2f(elementSpriteGroupData->cacheSpriteGroupComponents[3]->size.x, -elementSpriteGroupData->cacheSpriteGroupComponents[0]->size.y - elementSpriteGroupData->cacheSpriteGroupComponents[6]->size.y));
 
         // Center.
-        unifiedDimensionsGenerator(componentElements[4], elementSpriteGroupData->components[4]
-            , UDim2::POSITION_TOP_LEFT + Vector2f(elementSpriteGroupData->components[3]->size.x, elementSpriteGroupData->components[1]->size.y)
-            , UDim2::SIZE_FULL + Vector2f(-elementSpriteGroupData->components[3]->size.x - elementSpriteGroupData->components[5]->size.x, -elementSpriteGroupData->components[1]->size.y - elementSpriteGroupData->components[7]->size.y));
+        unifiedDimensionsGenerator(componentElements[4], elementSpriteGroupData->cacheSpriteGroupComponents[4]
+            , UDim2::POSITION_TOP_LEFT + Vector2f(elementSpriteGroupData->cacheSpriteGroupComponents[3]->size.x, elementSpriteGroupData->cacheSpriteGroupComponents[1]->size.y)
+            , UDim2::SIZE_FULL + Vector2f(-elementSpriteGroupData->cacheSpriteGroupComponents[3]->size.x - elementSpriteGroupData->cacheSpriteGroupComponents[5]->size.x, -elementSpriteGroupData->cacheSpriteGroupComponents[1]->size.y - elementSpriteGroupData->cacheSpriteGroupComponents[7]->size.y));
 
         // Center right.
-        unifiedDimensionsGenerator(componentElements[5], elementSpriteGroupData->components[5]
-            , UDim2::POSITION_TOP_RIGHT + Vector2f(-elementSpriteGroupData->components[5]->size.x, elementSpriteGroupData->components[2]->size.y)
-            , UDim2(0.f, 1.f) + Vector2f(elementSpriteGroupData->components[5]->size.x, -elementSpriteGroupData->components[2]->size.y - elementSpriteGroupData->components[8]->size.y));
+        unifiedDimensionsGenerator(componentElements[5], elementSpriteGroupData->cacheSpriteGroupComponents[5]
+            , UDim2::POSITION_TOP_RIGHT + Vector2f(-elementSpriteGroupData->cacheSpriteGroupComponents[5]->size.x, elementSpriteGroupData->cacheSpriteGroupComponents[2]->size.y)
+            , UDim2(0.f, 1.f) + Vector2f(elementSpriteGroupData->cacheSpriteGroupComponents[5]->size.x, -elementSpriteGroupData->cacheSpriteGroupComponents[2]->size.y - elementSpriteGroupData->cacheSpriteGroupComponents[8]->size.y));
 
         // Bottom left.
-        unifiedDimensionsGenerator(componentElements[6], elementSpriteGroupData->components[6]
-            , UDim2::POSITION_BOTTOM_LEFT + Vector2f(0.f, -elementSpriteGroupData->components[6]->size.y)
-            , UDim2::SIZE_ZERO + elementSpriteGroupData->components[6]->size);
+        unifiedDimensionsGenerator(componentElements[6], elementSpriteGroupData->cacheSpriteGroupComponents[6]
+            , UDim2::POSITION_BOTTOM_LEFT + Vector2f(0.f, -elementSpriteGroupData->cacheSpriteGroupComponents[6]->size.y)
+            , UDim2::SIZE_ZERO + elementSpriteGroupData->cacheSpriteGroupComponents[6]->size);
 
         // Bottom center.
-        unifiedDimensionsGenerator(componentElements[7], elementSpriteGroupData->components[7]
-            , UDim2::POSITION_BOTTOM_LEFT + Vector2f(elementSpriteGroupData->components[6]->size.x, -elementSpriteGroupData->components[7]->size.y)
-            , UDim2(1.f, 0.f) + Vector2f(-elementSpriteGroupData->components[6]->size.x - elementSpriteGroupData->components[8]->size.x, elementSpriteGroupData->components[7]->size.y));
+        unifiedDimensionsGenerator(componentElements[7], elementSpriteGroupData->cacheSpriteGroupComponents[7]
+            , UDim2::POSITION_BOTTOM_LEFT + Vector2f(elementSpriteGroupData->cacheSpriteGroupComponents[6]->size.x, -elementSpriteGroupData->cacheSpriteGroupComponents[7]->size.y)
+            , UDim2(1.f, 0.f) + Vector2f(-elementSpriteGroupData->cacheSpriteGroupComponents[6]->size.x - elementSpriteGroupData->cacheSpriteGroupComponents[8]->size.x, elementSpriteGroupData->cacheSpriteGroupComponents[7]->size.y));
 
         // Bottom right.
-        unifiedDimensionsGenerator(componentElements[8], elementSpriteGroupData->components[8]
-            , UDim2::POSITION_BOTTOM_RIGHT + -elementSpriteGroupData->components[8]->size
-            , UDim2::SIZE_ZERO + elementSpriteGroupData->components[8]->size);
+        unifiedDimensionsGenerator(componentElements[8], elementSpriteGroupData->cacheSpriteGroupComponents[8]
+            , UDim2::POSITION_BOTTOM_RIGHT + -elementSpriteGroupData->cacheSpriteGroupComponents[8]->size
+            , UDim2::SIZE_ZERO + elementSpriteGroupData->cacheSpriteGroupComponents[8]->size);
 
         // Segments tiling.
-        elementSpriteGroupData->components[1]->repeatTexture = m_tileTopSegment;
+        elementSpriteGroupData->cacheSpriteGroupComponents[1]->repeatTexture = m_tileTopSegment;
         componentElements[1]->SetRepeatTexture(m_tileTopSegment);
 
-        elementSpriteGroupData->components[3]->repeatTexture = m_tileLeftSegment;
+        elementSpriteGroupData->cacheSpriteGroupComponents[3]->repeatTexture = m_tileLeftSegment;
         componentElements[3]->SetRepeatTexture(m_tileLeftSegment);
 
-        elementSpriteGroupData->components[5]->repeatTexture = m_tileRightSegment;
+        elementSpriteGroupData->cacheSpriteGroupComponents[5]->repeatTexture = m_tileRightSegment;
         componentElements[5]->SetRepeatTexture(m_tileRightSegment);
 
-        elementSpriteGroupData->components[7]->repeatTexture = m_tileBottomSegment;
+        elementSpriteGroupData->cacheSpriteGroupComponents[7]->repeatTexture = m_tileBottomSegment;
         componentElements[7]->SetRepeatTexture(m_tileBottomSegment);
 
         // Finalize.

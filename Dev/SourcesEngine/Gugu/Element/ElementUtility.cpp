@@ -55,6 +55,10 @@ BaseElementData* InstanciateElementData(std::string_view elementType)
     {
         result = new ElementSpriteData;
     }
+    else if (StringEquals(elementType, "ElementSpriteGroupItem"))
+    {
+        result = new ElementSpriteGroupItemData;
+    }
     else if (StringEquals(elementType, "ElementSpriteGroup"))
     {
         result = new ElementSpriteGroupData;

@@ -294,7 +294,7 @@ bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
 
         for (size_t i = 0; i < componentCount; ++i)
         {
-            ElementSpriteGroupItemData* componentData = spriteGroupData->components[i];
+            ElementSpriteGroupItemData* componentData = dynamic_cast<ElementSpriteGroupItemData*>(spriteGroupData->components[i]);
             ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
 
             AddItem(component);

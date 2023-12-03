@@ -168,15 +168,16 @@ public:
     virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
-class ElementSpriteGroupData : public ElementData
+class ElementSpriteGroupData : public ElementCompositeData
 {
 public:
 
     ImageSet* imageSet = nullptr;
     Texture* texture = nullptr;
-    std::vector<ElementSpriteGroupItemData*> components;
 
-    virtual ~ElementSpriteGroupData();
+    std::vector<ElementSpriteGroupItemData*> cacheSpriteGroupComponents;
+
+    virtual void RefreshCache() override;
 
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;

@@ -497,9 +497,16 @@ void ElementSpriteGroupItemData::GetDependencies(std::set<Resource*>& dependenci
     ElementSpriteBaseData::GetDependencies(dependencies);
 }
 
-ElementSpriteGroupData::~ElementSpriteGroupData()
+void ElementSpriteGroupData::RefreshCache()
 {
-    ClearStdVector(components);
+    ElementCompositeData::RefreshCache();
+
+    cacheSpriteGroupComponents.clear();
+
+    for (const auto& component : components)
+    {
+        cacheSpriteGroupComponents.push_back(dynamic_cast<ElementSpriteGroupItemData*>(component));
+    }
 }
 
 const std::string& ElementSpriteGroupData::GetSerializedType() const
@@ -510,7 +517,7 @@ const std::string& ElementSpriteGroupData::GetSerializedType() const
 
 bool ElementSpriteGroupData::LoadFromXmlImpl(ElementParseContext& context)
 {
-    if (!ElementData::LoadFromXmlImpl(context))
+    if (!ElementCompositeData::LoadFromXmlImpl(context))
         return false;
 
     if (pugi::xml_node nodeImageSet = context.node.child("ImageSet"))
@@ -522,32 +529,12 @@ bool ElementSpriteGroupData::LoadFromXmlImpl(ElementParseContext& context)
         texture = GetResources()->GetTexture(textureNode.attribute("source").as_string(""));
     }
 
-    if (pugi::xml_node nodeComponents = context.node.child("Components"))
-    {
-        pugi::xml_node backupNode = context.node;
-
-        for (pugi::xml_node nodeComponent = nodeComponents.child("Element"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Element"))
-        {
-            ElementSpriteGroupItemData* component = new ElementSpriteGroupItemData;
-
-            // Parse default ElementSpriteBase data.
-            context.node = nodeComponent;
-            component->LoadFromXml(context);
-
-            // Finalize.
-            components.push_back(component);
-            component->parent = this;
-        }
-
-        context.node = backupNode;
-    }
-
     return true;
 }
 
 bool ElementSpriteGroupData::SaveToXmlImpl(ElementSaveContext& context) const
 {
-    if (!ElementData::SaveToXmlImpl(context))
+    if (!ElementCompositeData::SaveToXmlImpl(context))
         return false;
 
     bool result = true;
@@ -561,25 +548,12 @@ bool ElementSpriteGroupData::SaveToXmlImpl(ElementSaveContext& context) const
         context.node.append_child("Texture").append_attribute("source").set_value(texture->GetID().c_str());
     }
 
-    if (!components.empty())
-    {
-        pugi::xml_node backupNode = context.node;
-        context.node = context.node.append_child("Components");
-
-        for (size_t i = 0; i < components.size(); ++i)
-        {
-            result &= components[i]->SaveToXml(context);
-        }
-
-        context.node = backupNode;
-    }
-
     return result;
 }
 
 void ElementSpriteGroupData::GetDependencies(std::set<Resource*>& dependencies) const
 {
-    ElementData::GetDependencies(dependencies);
+    ElementCompositeData::GetDependencies(dependencies);
 
     if (imageSet)
     {
@@ -592,11 +566,6 @@ void ElementSpriteGroupData::GetDependencies(std::set<Resource*>& dependencies) 
     if (texture)
     {
         dependencies.insert(texture);
-    }
-
-    for (auto component : components)
-    {
-        component->GetDependencies(dependencies);
     }
 }
 

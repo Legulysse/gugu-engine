@@ -296,10 +296,19 @@ BaseElementData* ElementWidgetPanel::DisplayElementInstanciationContextMenu()
         elementData = new ElementTextData;
     }
 
+    ImGui::Separator();
+
     if (ImGui::MenuItem("Element Button"))
     {
         elementData = new ElementButtonData;
     }
+
+    if (ImGui::MenuItem("Element Checkbox"))
+    {
+        elementData = new ElementCheckboxData;
+    }
+
+    ImGui::Separator();
 
     if (ImGui::MenuItem("Element Widget Instance"))
     {

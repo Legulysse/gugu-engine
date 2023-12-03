@@ -222,4 +222,24 @@ public:
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
 };
 
+class ElementCheckboxData : public ElementCompositeData
+{
+public:
+
+    // Cache
+    BaseElementData* commonComponent = nullptr;
+    BaseElementData* idleStateComponent = nullptr;
+    BaseElementData* focusedStateComponent = nullptr;
+    BaseElementData* disabledStateComponent = nullptr;
+    BaseElementData* checkedComponent = nullptr;
+
+    virtual void RefreshCache() override;
+
+    virtual const std::string& GetSerializedType() const;
+    virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
+    virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
+
+    virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
+};
+
 }   // namespace gugu

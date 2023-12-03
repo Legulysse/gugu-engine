@@ -713,4 +713,65 @@ void ElementButtonData::GetDependencies(std::set<Resource*>& dependencies) const
     ElementCompositeData::GetDependencies(dependencies);
 }
 
+void ElementCheckboxData::RefreshCache()
+{
+    commonComponent = nullptr;
+    idleStateComponent = nullptr;
+    focusedStateComponent = nullptr;
+    disabledStateComponent = nullptr;
+    checkedComponent = nullptr;
+
+    for (auto component : components)
+    {
+        if (StringEquals(component->name, "Common"))
+        {
+            commonComponent = component;
+        }
+        else if (StringEquals(component->name, "Idle"))
+        {
+            idleStateComponent = component;
+        }
+        else if (StringEquals(component->name, "Focused"))
+        {
+            focusedStateComponent = component;
+        }
+        else if (StringEquals(component->name, "Disabled"))
+        {
+            disabledStateComponent = component;
+        }
+        else if (StringEquals(component->name, "Checked"))
+        {
+            checkedComponent = component;
+        }
+    }
+}
+
+const std::string& ElementCheckboxData::GetSerializedType() const
+{
+    static const std::string serializedType = "ElementCheckbox";
+    return serializedType;
+}
+
+bool ElementCheckboxData::LoadFromXmlImpl(ElementParseContext& context)
+{
+    if (!ElementCompositeData::LoadFromXmlImpl(context))
+        return false;
+
+    return true;
+}
+
+bool ElementCheckboxData::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!ElementCompositeData::SaveToXmlImpl(context))
+        return false;
+
+    bool result = true;
+    return result;
+}
+
+void ElementCheckboxData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementCompositeData::GetDependencies(dependencies);
+}
+
 }   // namespace gugu

@@ -13,6 +13,7 @@
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/UI/ElementButton.h"
+#include "Gugu/Element/UI/ElementCheckbox.h"
 #include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Logger.h"
@@ -71,6 +72,10 @@ BaseElementData* InstanciateElementData(std::string_view elementType)
     {
         result = new ElementButtonData;
     }
+    else if (StringEquals(elementType, "ElementCheckbox"))
+    {
+        result = new ElementCheckboxData;
+    }
 
     return result;
 }
@@ -102,6 +107,10 @@ Element* InstanciateElement(ElementData* data)
     else if (StringEquals(elementType, "ElementButton"))
     {
         result = new ElementButton;
+    }
+    else if (StringEquals(elementType, "ElementCheckbox"))
+    {
+        result = new ElementCheckbox;
     }
 
     return result;

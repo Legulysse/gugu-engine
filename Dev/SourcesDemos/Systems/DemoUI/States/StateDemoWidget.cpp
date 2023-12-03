@@ -15,6 +15,7 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Element/UI/ElementButton.h"
+#include "Gugu/Element/UI/ElementCheckbox.h"
 #include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
@@ -47,7 +48,12 @@ void StateDemoWidget::Init()
     // Customize widget elements
     if (ElementButton* button = pathBindings.GetElementAs<ElementButton>("test button"))
     {
-        button->SetText("My Button Text");
+        button->SetText("Button Text");
+    }
+
+    if (ElementCheckbox* checkbox = pathBindings.GetElementAs<ElementCheckbox>("test checkbox"))
+    {
+        checkbox->SetText("Checkbox Text");
     }
 }
 

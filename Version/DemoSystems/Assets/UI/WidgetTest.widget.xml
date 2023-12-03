@@ -29,7 +29,6 @@
 				<UOrigin xRel="0.5" yRel="0.5" xAbs="0" yAbs="0" />
 				<UPosition xRel="0.5" yRel="0.5" xAbs="0" yAbs="0" />
 				<Size x="200" y="200" />
-				<ImageSet source="Human.imageset.xml" />
 				<Components>
 					<Element type="ElementSpriteGroupItem">
 						<Size x="100" y="100" />
@@ -58,11 +57,11 @@
 						<SubImage name="x1_y1" />
 					</Element>
 				</Components>
+				<ImageSet source="Human.imageset.xml" />
 			</Element>
 			<Element type="ElementSpriteGroup">
 				<Position x="200" y="200" />
 				<Size x="100" y="100" />
-				<ImageSet source="Box9_Default.imageset.xml" />
 				<Components>
 					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
@@ -110,11 +109,11 @@
 						<SubImage name="BottomRight_01" />
 					</Element>
 				</Components>
+				<ImageSet source="Box9_Default.imageset.xml" />
 			</Element>
 			<Element type="ElementSpriteGroup">
 				<Position x="350" y="200" />
 				<Size x="150" y="300" />
-				<Texture source="uipack_rpg.png" />
 				<Components>
 					<Element type="ElementSpriteGroupItem">
 						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
@@ -166,13 +165,19 @@
 						<TextureRect x="282" y="192" w="8" h="8" />
 					</Element>
 				</Components>
+				<Texture source="uipack_rpg.png" />
 			</Element>
 			<Element type="ElementText">
 				<Position x="300" y="0" />
 				<Font source="mplus-1p-medium.ttf" />
 				<Text value="れぐーさん" />
 			</Element>
-			<Element type="ElementWidgetInstance" name="test button" widget="Button_01.widget.xml" />
+			<Element type="ElementWidgetInstance" name="test button" widget="Button_01.widget.xml">
+				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="100" />
+			</Element>
+			<Element type="ElementWidgetInstance" name="test checkbox" widget="Checkbox_01.widget.xml">
+				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="140" />
+			</Element>
 		</Children>
 	</Element>
 </ElementWidget>

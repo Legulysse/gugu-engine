@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<ElementWidget serializationVersion="1">
+	<Element type="ElementCheckbox">
+		<Size x="200" y="30" />
+		<Components>
+			<Element type="ElementSpriteGroup" name="Idle">
+				<Size x="30" y="30" />
+				<Components>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Idle_TopLeft" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="0" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Idle_Top" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Idle_TopRight" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Idle_Left" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<USize xRel="1" yRel="1" xAbs="-12" yAbs="-12" />
+						<SubImage name="Idle_Center" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Idle_Right" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Idle_BottomLeft" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="6" yAbs="-6" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Idle_Bottom" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="1" xAbs="-6" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Idle_BottomRight" />
+					</Element>
+				</Components>
+				<ImageSet source="Checkbox_01.imageset.xml" />
+			</Element>
+			<Element type="ElementSpriteGroup" name="Focused">
+				<Size x="30" y="30" />
+				<Components>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Focused_TopLeft" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="0" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Focused_Top" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Focused_TopRight" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Focused_Left" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<USize xRel="1" yRel="1" xAbs="-12" yAbs="-12" />
+						<SubImage name="Focused_Center" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Focused_Right" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Focused_BottomLeft" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="6" yAbs="-6" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Focused_Bottom" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="1" xAbs="-6" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Focused_BottomRight" />
+					</Element>
+				</Components>
+				<ImageSet source="Checkbox_01.imageset.xml" />
+			</Element>
+			<Element type="ElementSpriteGroup" name="Disabled">
+				<Size x="30" y="30" />
+				<Components>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Disabled_TopLeft" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="0" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Disabled_Top" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Disabled_TopRight" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Disabled_Left" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<USize xRel="1" yRel="1" xAbs="-12" yAbs="-12" />
+						<SubImage name="Disabled_Center" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Disabled_Right" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Disabled_BottomLeft" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="6" yAbs="-6" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Disabled_Bottom" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="1" xAbs="-6" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Disabled_BottomRight" />
+					</Element>
+				</Components>
+				<ImageSet source="Checkbox_01.imageset.xml" />
+			</Element>
+			<Element type="ElementSpriteGroup" name="Checked">
+				<Position x="8" y="8" />
+				<Size x="14" y="14" />
+				<Components>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Checked_TopLeft" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="0" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Checked_Top" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="0" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Checked_TopRight" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="0" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Checked_Left" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<USize xRel="1" yRel="1" xAbs="-12" yAbs="-12" />
+						<SubImage name="Checked_Center" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="0" xAbs="-6" yAbs="6" />
+						<USize xRel="0" yRel="1" xAbs="6" yAbs="-12" />
+						<SubImage name="Checked_Right" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="0" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Checked_BottomLeft" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="0" yRel="1" xAbs="6" yAbs="-6" />
+						<USize xRel="1" yRel="0" xAbs="-12" yAbs="6" />
+						<SubImage name="Checked_Bottom" />
+					</Element>
+					<Element type="ElementSpriteGroupItem">
+						<UPosition xRel="1" yRel="1" xAbs="-6" yAbs="-6" />
+						<USize xRel="0" yRel="0" xAbs="6" yAbs="6" />
+						<SubImage name="Checked_BottomRight" />
+					</Element>
+				</Components>
+				<ImageSet source="Checkbox_01.imageset.xml" />
+			</Element>
+			<Element type="Element" name="Common">
+				<Position x="30" y="0" />
+				<USize xRel="1" yRel="1" xAbs="-30" yAbs="0" />
+			</Element>
+		</Components>
+	</Element>
+</ElementWidget>

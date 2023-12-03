@@ -657,16 +657,6 @@ void ElementTextData::GetDependencies(std::set<Resource*>& dependencies) const
     }
 }
 
-ElementButtonData::~ElementButtonData()
-{
-    commonComponent = nullptr;
-    idleStateComponent = nullptr;
-    focusedStateComponent = nullptr;
-    disabledStateComponent = nullptr;
-
-    ClearStdVector(components);
-}
-
 void ElementButtonData::RefreshCache()
 {
     commonComponent = nullptr;
@@ -703,64 +693,24 @@ const std::string& ElementButtonData::GetSerializedType() const
 
 bool ElementButtonData::LoadFromXmlImpl(ElementParseContext& context)
 {
-    if (!ElementData::LoadFromXmlImpl(context))
+    if (!ElementCompositeData::LoadFromXmlImpl(context))
         return false;
-
-    if (pugi::xml_node nodeComponents = context.node.child("Components"))
-    {
-        pugi::xml_node backupNode = context.node;
-
-        for (pugi::xml_node nodeComponent = nodeComponents.child("Element"); nodeComponent; nodeComponent = nodeComponent.next_sibling("Element"))
-        {
-            if (BaseElementData* component = InstanciateElementData(nodeComponent))
-            {
-                context.node = nodeComponent;
-                component->LoadFromXml(context);
-
-                components.push_back(component);
-                component->parent = this;
-            }
-        }
-
-        context.node = backupNode;
-    }
-
-    RefreshCache();
 
     return true;
 }
 
 bool ElementButtonData::SaveToXmlImpl(ElementSaveContext& context) const
 {
-    if (!ElementData::SaveToXmlImpl(context))
+    if (!ElementCompositeData::SaveToXmlImpl(context))
         return false;
 
     bool result = true;
-
-    if (!components.empty())
-    {
-        pugi::xml_node backupNode = context.node;
-        context.node = context.node.append_child("Components");
-
-        for (size_t i = 0; i < components.size(); ++i)
-        {
-            result &= components[i]->SaveToXml(context);
-        }
-
-        context.node = backupNode;
-    }
-
     return result;
 }
 
 void ElementButtonData::GetDependencies(std::set<Resource*>& dependencies) const
 {
-    ElementData::GetDependencies(dependencies);
-
-    for (auto component : components)
-    {
-        component->GetDependencies(dependencies);
-    }
+    ElementCompositeData::GetDependencies(dependencies);
 }
 
 }   // namespace gugu

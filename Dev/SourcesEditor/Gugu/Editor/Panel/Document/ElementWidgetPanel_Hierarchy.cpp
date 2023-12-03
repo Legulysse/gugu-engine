@@ -119,22 +119,6 @@ void ElementWidgetPanel::DisplayTreeNode(BaseElementData* node, int itemFlags, B
 
             ImGui::TreePop();
         }
-        else if (ElementButtonData* nodeButton = dynamic_cast<ElementButtonData*>(node))
-        {
-            const std::vector<BaseElementData*>& components = nodeButton->components;
-
-            ImGuiTreeNodeFlags componentFlags = ImGuiTreeNodeFlags_Leaf;
-            ImGui::TreeNodeEx("<Components>", componentFlags);
-
-            for (size_t i = 0; i < components.size(); ++i)
-            {
-                ImGui::PushID((int)i);
-                DisplayTreeNode(components[i], itemFlags, deleted);
-                ImGui::PopID();
-            }
-
-            ImGui::TreePop();
-        }
 
         // Display children.
         const std::vector<BaseElementData*>& children = node->children;

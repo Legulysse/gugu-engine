@@ -175,6 +175,7 @@ public:
     ImageSet* imageSet = nullptr;
     Texture* texture = nullptr;
 
+    // Cache
     std::vector<ElementSpriteGroupItemData*> cacheSpriteGroupComponents;
 
     virtual void RefreshCache() override;
@@ -202,11 +203,9 @@ public:
     virtual void GetDependencies(std::set<Resource*>& dependencies) const;
 };
 
-class ElementButtonData : public ElementData
+class ElementButtonData : public ElementCompositeData
 {
 public:
-
-    std::vector<BaseElementData*> components;
 
     // Cache
     BaseElementData* commonComponent = nullptr;
@@ -214,15 +213,13 @@ public:
     BaseElementData* focusedStateComponent = nullptr;
     BaseElementData* disabledStateComponent = nullptr;
 
-    virtual ~ElementButtonData();
+    virtual void RefreshCache() override;
 
     virtual const std::string& GetSerializedType() const;
     virtual bool LoadFromXmlImpl(ElementParseContext& context) override;
     virtual bool SaveToXmlImpl(ElementSaveContext& context) const override;
 
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
-
-    void RefreshCache();
 };
 
 }   // namespace gugu

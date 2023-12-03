@@ -207,19 +207,10 @@ void ElementWidgetPanel::DeleteElement(BaseElementData* elementData)
 
             // Remove element from owner if it is a component.
             ElementCompositeData* parentCompositeData = dynamic_cast<ElementCompositeData*>(parentData);
-            if (parentCompositeData)
+            if (parentCompositeData && StdVectorContains(parentCompositeData->components, elementData))
             {
                 StdVectorRemove<BaseElementData*>(parentCompositeData->components, elementData);
                 parentCompositeData->RefreshCache();
-            }
-
-            // Remove element from owner if it is a Button component.
-            ElementButtonData* parentButtonData = dynamic_cast<ElementButtonData*>(parentData);
-            if (parentButtonData)
-            {
-                StdVectorRemove<BaseElementData*>(parentButtonData->components, elementData);
-
-                parentButtonData->RefreshCache();
             }
         }
     }

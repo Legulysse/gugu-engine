@@ -178,6 +178,9 @@
 			<Element type="ElementWidgetInstance" name="test checkbox" widget="Checkbox_01.widget.xml">
 				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="140" />
 			</Element>
+			<Element type="ElementWidgetInstance" name="test slider" widget="Slider_01.widget.xml">
+				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="180" />
+			</Element>
 		</Children>
 	</Element>
 </ElementWidget>

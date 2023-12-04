@@ -41,7 +41,7 @@ public:
 
 protected:
 
-    void OnMouseReleased(const InteractionInfos& interactionInfos);
+    void OnMousePressed(const InteractionInfos& interactionInfos);
     void OnMouseEntered(const InteractionInfos& interactionInfos);
     void OnMouseLeft(const InteractionInfos& interactionInfos);
 

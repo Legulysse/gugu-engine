@@ -35,7 +35,7 @@ ElementCheckbox::ElementCheckbox()
 {
     GetEvents()->AddCallback(EInteractionEvent::MouseEntered, STD_BIND_1(&ElementCheckbox::OnMouseEntered, this));
     GetEvents()->AddCallback(EInteractionEvent::MouseLeft, STD_BIND_1(&ElementCheckbox::OnMouseLeft, this));
-    GetEvents()->AddCallback(EInteractionEvent::MouseReleased, STD_BIND_1(&ElementCheckbox::OnMouseReleased, this));
+    GetEvents()->AddCallback(EInteractionEvent::MousePressed, STD_BIND_1(&ElementCheckbox::OnMousePressed, this));
 }
 
 ElementCheckbox::~ElementCheckbox()
@@ -131,7 +131,7 @@ void ElementCheckbox::SetOnCheckedChanged(const Callback& _pActionOnCheckedChang
     m_actionOnCheckedChanged = _pActionOnCheckedChanged;
 }
 
-void ElementCheckbox::OnMouseReleased(const InteractionInfos& interactionInfos)
+void ElementCheckbox::OnMousePressed(const InteractionInfos& interactionInfos)
 {
     if (!m_isDisabled)
     {

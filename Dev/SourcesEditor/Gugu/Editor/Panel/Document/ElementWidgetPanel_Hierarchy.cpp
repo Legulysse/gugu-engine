@@ -15,6 +15,7 @@
 #include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -94,7 +95,17 @@ void ElementWidgetPanel::DisplayTreeNode(BaseElementData* node, int itemFlags, B
     if (ImGui::IsMouseClicked(0) && ImGui::IsItemHovered(ImGuiHoveredFlags_None))
     {
         m_selectedElementData = node;
-        m_selectedElement = m_dataBindings->elementFromData.at(node);
+        m_selectedElement = nullptr;
+
+        const auto& it = m_dataBindings->elementFromData.find(node);
+        if (it != m_dataBindings->elementFromData.end())
+        {
+            m_selectedElement = m_dataBindings->elementFromData.at(node);
+        }
+        else
+        {
+            GetLogEngine()->Print(ELog::Error, ELogEngine::Editor, "The selected node ElementData has no matching Element instanciated");
+        }
     }
 
     // Context menu.

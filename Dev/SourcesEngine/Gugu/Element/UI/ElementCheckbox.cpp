@@ -135,7 +135,7 @@ void ElementCheckbox::OnMousePressed(const InteractionInfos& interactionInfos)
 {
     if (!m_isDisabled)
     {
-        SetChecked(!IsChecked());
+        SetChecked(!m_isChecked);
     }
 }
 

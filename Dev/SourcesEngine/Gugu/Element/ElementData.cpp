@@ -774,4 +774,60 @@ void ElementCheckboxData::GetDependencies(std::set<Resource*>& dependencies) con
     ElementCompositeData::GetDependencies(dependencies);
 }
 
+void ElementSliderData::RefreshCache()
+{
+    idleStateComponent = nullptr;
+    focusedStateComponent = nullptr;
+    disabledStateComponent = nullptr;
+    cursorComponent = nullptr;
+
+    for (auto component : components)
+    {
+        if (StringEquals(component->name, "Idle"))
+        {
+            idleStateComponent = component;
+        }
+        else if (StringEquals(component->name, "Focused"))
+        {
+            focusedStateComponent = component;
+        }
+        else if (StringEquals(component->name, "Disabled"))
+        {
+            disabledStateComponent = component;
+        }
+        else if (StringEquals(component->name, "Cursor"))
+        {
+            cursorComponent = component;
+        }
+    }
+}
+
+const std::string& ElementSliderData::GetSerializedType() const
+{
+    static const std::string serializedType = "ElementSlider";
+    return serializedType;
+}
+
+bool ElementSliderData::LoadFromXmlImpl(ElementParseContext& context)
+{
+    if (!ElementCompositeData::LoadFromXmlImpl(context))
+        return false;
+
+    return true;
+}
+
+bool ElementSliderData::SaveToXmlImpl(ElementSaveContext& context) const
+{
+    if (!ElementCompositeData::SaveToXmlImpl(context))
+        return false;
+
+    bool result = true;
+    return result;
+}
+
+void ElementSliderData::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    ElementCompositeData::GetDependencies(dependencies);
+}
+
 }   // namespace gugu

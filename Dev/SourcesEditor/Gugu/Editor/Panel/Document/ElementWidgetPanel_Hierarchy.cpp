@@ -308,6 +308,11 @@ BaseElementData* ElementWidgetPanel::DisplayElementInstanciationContextMenu()
         elementData = new ElementCheckboxData;
     }
 
+    if (ImGui::MenuItem("Element Slider"))
+    {
+        elementData = new ElementSliderData;
+    }
+
     ImGui::Separator();
 
     if (ImGui::MenuItem("Element Widget Instance"))

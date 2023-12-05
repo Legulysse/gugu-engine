@@ -42,6 +42,7 @@ protected:
     void OnMousePressed(const InteractionInfos& interactionInfos);
     void OnMouseEntered(const InteractionInfos& interactionInfos);
     void OnMouseLeft(const InteractionInfos& interactionInfos);
+    void OnMouseDragMoved(const InteractionInfos& interactionInfos);
 
     virtual void RecomputeImpl() override;
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;

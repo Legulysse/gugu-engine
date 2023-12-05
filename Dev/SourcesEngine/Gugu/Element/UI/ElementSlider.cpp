@@ -120,9 +120,30 @@ void ElementSlider::OnMousePressed(const InteractionInfos& interactionInfos)
 {
     if (!m_isDisabled)
     {
+        Vector2f pickedPosition = interactionInfos.localPickingPosition;
+
         float offset = m_cursorComponent->GetSize().x / 2.f;
-        int value = RemapLerp(offset, GetSize().x - offset, m_minValue, m_maxValue, interactionInfos.localPickingPosition.x);
+        int value = RemapLerp(offset, GetSize().x - offset, m_minValue, m_maxValue, pickedPosition.x);
         SetValue(value);
+
+        // Hack to allow drag event to trigger.
+        // TODO: I need to be able to directly call dragstart to avoid this hack.
+        interactionInfos.absorbEvent = false;
+    }
+}
+
+void ElementSlider::OnMouseDragMoved(const InteractionInfos& interactionInfos)
+{
+    if (!m_isDisabled)
+    {
+        Vector2f pickedPosition = interactionInfos.localPickingPosition;
+        pickedPosition = m_cursorComponent->TransformToGlobal(pickedPosition, this);
+
+        float offset = m_cursorComponent->GetSize().x / 2.f;
+        int value = RemapLerp(offset, GetSize().x - offset, m_minValue, m_maxValue, pickedPosition.x);
+        SetValue(value);
+
+        RaiseNeedRecompute();
     }
 }
 
@@ -146,7 +167,7 @@ void ElementSlider::RecomputeImpl()
 {
     float offset = m_cursorComponent->GetSize().x / 2.f;
     float position = RemapLerp(m_minValue, m_maxValue, offset, GetSize().x - offset, m_value);
-    m_cursorComponent->SetPositionX(position);
+    m_cursorComponent->SetPosition(position, 0.f);
 }
 
 void ElementSlider::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
@@ -213,6 +234,8 @@ bool ElementSlider::LoadFromDataImpl(ElementDataContext& context)
 
     // TODO: check null.
     m_currentStateComponent = m_idleStateComponent;
+
+    m_cursorComponent->GetEvents()->AddCallback(EInteractionEvent::MouseDragMoved, STD_BIND_1(&ElementSlider::OnMouseDragMoved, this));
 
     context.data = backupData;
 

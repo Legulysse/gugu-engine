@@ -357,41 +357,105 @@ void RunUnitTests_Element(UnitTestResults* results)
 
     //----------------------------------------------
 
-    GUGU_UTEST_SECTION("Picking");
+    GUGU_UTEST_SECTION("Transform");
     {
-        GUGU_UTEST_SUBSECTION("Local and Global Transform");
+        GUGU_UTEST_SUBSECTION("Local Global Transform");
         {
             Element* root = new Element;
             Element* elementA = root->AddChild<Element>();
+            Element* elementB = elementA->AddChild<Element>();
+
+            root->SetPosition(10.f, 10.f);
+            root->SetOrigin(-10.f, -10.f);
+            elementA->SetPosition(10.f, 10.f);
+            elementA->SetOrigin(-10.f, -10.f);
+            elementB->SetPosition(10.f, 10.f);
+            elementB->SetOrigin(-10.f, -10.f);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(root->TransformToGlobal(Vector2f(5.f, 5.f)), Vector2f(25.f, 25.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementA->TransformToGlobal(Vector2f(5.f, 5.f)), Vector2f(45.f, 45.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToGlobal(Vector2f(5.f, 5.f)), Vector2f(65.f, 65.f), math::Epsilon3);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(root->TransformToLocal(Vector2f(25.f, 25.f)), Vector2f(5.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementA->TransformToLocal(Vector2f(45.f, 45.f)), Vector2f(5.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(Vector2f(65.f, 65.f)), Vector2f(5.f, 5.f), math::Epsilon3);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Vector2f(5.f, 5.f), elementB->TransformToLocal(elementB->TransformToGlobal(Vector2f(5.f, 5.f))), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Vector2f(65.f, 65.f), elementB->TransformToGlobal(elementB->TransformToLocal(Vector2f(65.f, 65.f))), math::Epsilon3);
+
+            root->SetPosition(0.f, 0.f);
+            root->SetOrigin(0.f, 0.f);
+            elementA->SetOrigin(5.f, 5.f);
             elementA->SetPosition(10.f, 20.f);
             elementA->SetRotation(90.f);
-            elementA->SetOrigin(5.f, 5.f);
             elementA->SetScale(2.f, 3.f);
-            Element* elementB = elementA->AddChild<Element>();
+            elementB->SetOrigin(10.f, 10.f);
             elementB->SetPosition(10.f, 0.f);
             elementB->SetRotation(90.f);
-            elementB->SetOrigin(10.f, 10.f);
             elementB->SetScale(10.f, 10.f);
 
-            GUGU_UTEST_CHECK(ApproxEqual(root->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(root->TransformToGlobal(Vector2f(10.f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementA->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(-2.5f, 5.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementA->TransformToGlobal(Vector2f(-2.5f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(10.5f, 11.25f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToGlobal(Vector2f(10.5f, 11.25f)), Vector2f(10.f, 5.f), math::Epsilon3));
+            GUGU_UTEST_CHECK_APPROX_EQUAL(root->TransformToGlobal(Vector2f(10.f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementA->TransformToGlobal(Vector2f(-2.5f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToGlobal(Vector2f(10.5f, 11.25f)), Vector2f(10.f, 5.f), math::Epsilon3);
 
-            GUGU_UTEST_CHECK(ApproxEqual(root->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(10.f, 5.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementA->TransformToLocal(Vector2f(10.f, 5.f), elementA), Vector2f(10.f, 5.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementA->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(-2.5f, 5.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(Vector2f(10.f, 5.f), elementB), Vector2f(10.f, 5.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(Vector2f(10.f, 5.f), elementA), Vector2f(10.5f, 10.f), math::Epsilon3));
-            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(10.5f, 11.25f), math::Epsilon3));
+            GUGU_UTEST_CHECK_APPROX_EQUAL(root->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(10.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementA->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(-2.5f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(Vector2f(10.f, 5.f)), Vector2f(10.5f, 11.25f), math::Epsilon3);
 
-            GUGU_UTEST_CHECK(ApproxEqual(elementB->TransformToLocal(elementA->TransformToLocal(Vector2f(10.f, 5.f), root), elementA), Vector2f(10.5f, 11.25f), math::Epsilon3));
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Vector2f(10.5f, 11.25f), elementB->TransformToLocal(elementB->TransformToGlobal(Vector2f(10.5f, 11.25f))), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Vector2f(10.f, 5.f), elementB->TransformToGlobal(elementB->TransformToLocal(Vector2f(10.f, 5.f))), math::Epsilon3);
 
             SafeDelete(root);
         }
 
+        GUGU_UTEST_SUBSECTION("Ancestor Transform");
+        {
+            Element* root = new Element;
+            Element* elementA = root->AddChild<Element>();
+            Element* elementB = elementA->AddChild<Element>();
+
+            root->SetPosition(10.f, 10.f);
+            root->SetOrigin(-10.f, -10.f);
+            elementA->SetPosition(10.f, 10.f);
+            elementA->SetOrigin(-10.f, -10.f);
+            elementB->SetPosition(10.f, 10.f);
+            elementB->SetOrigin(-10.f, -10.f);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToGlobal(Vector2f(5.f, 5.f)), Vector2f(65.f, 65.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToGlobal(Vector2f(5.f, 5.f), root), Vector2f(45.f, 45.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToGlobal(Vector2f(5.f, 5.f), elementA), Vector2f(25.f, 25.f), math::Epsilon3);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(Vector2f(65.f, 65.f)), Vector2f(5.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(Vector2f(45.f, 45.f), root), Vector2f(5.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(Vector2f(25.f, 25.f), elementA), Vector2f(5.f, 5.f), math::Epsilon3);
+
+            root->SetPosition(0.f, 0.f);
+            root->SetOrigin(0.f, 0.f);
+            elementA->SetOrigin(5.f, 5.f);
+            elementA->SetPosition(10.f, 20.f);
+            elementA->SetRotation(90.f);
+            elementA->SetScale(2.f, 3.f);
+            elementB->SetOrigin(10.f, 10.f);
+            elementB->SetPosition(10.f, 0.f);
+            elementB->SetRotation(90.f);
+            elementB->SetScale(10.f, 10.f);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(root->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(10.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementA->TransformToLocal(Vector2f(10.f, 5.f), elementA), Vector2f(10.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementA->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(-2.5f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(Vector2f(10.f, 5.f), elementB), Vector2f(10.f, 5.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(Vector2f(10.f, 5.f), elementA), Vector2f(10.5f, 10.f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(Vector2f(10.f, 5.f), root), Vector2f(10.5f, 11.25f), math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(elementB->TransformToLocal(elementA->TransformToLocal(Vector2f(10.f, 5.f), root), elementA), Vector2f(10.5f, 11.25f), math::Epsilon3);
+
+            SafeDelete(root);
+        }
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Picking");
+    {
         GUGU_UTEST_SUBSECTION("Local Picking");
         {
             Element* root = new Element;

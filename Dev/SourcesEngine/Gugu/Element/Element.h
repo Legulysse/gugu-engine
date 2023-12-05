@@ -139,6 +139,7 @@ public:
     Vector2f TransformToLocal(const Vector2f& globalCoords) const;
     Vector2f TransformToLocal(const Vector2f& ancestorCoords, Element* ancestorReference) const;
     Vector2f TransformToGlobal(const Vector2f& localCoords) const;
+    Vector2f TransformToGlobal(const Vector2f& localCoords, Element* ancestorReference) const;
 
     const sf::Transform& GetTransform() const;
     const sf::Transform& GetInverseTransform() const;

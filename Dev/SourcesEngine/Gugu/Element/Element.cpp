@@ -193,6 +193,21 @@ Vector2f Element::TransformToGlobal(const Vector2f& localCoords) const
     return GetTransform().transformPoint(localCoords);
 }
 
+Vector2f Element::TransformToGlobal(const Vector2f& localCoords, Element* ancestorReference) const
+{
+    if (ancestorReference == this)
+    {
+        return localCoords;
+    }
+
+    if (m_parent && ancestorReference != m_parent)
+    {
+        return m_parent->TransformToGlobal(GetTransform().transformPoint(localCoords), ancestorReference);
+    }
+
+    return GetTransform().transformPoint(localCoords);
+}
+
 void Element::SetVisible(bool visible)
 {
     m_isVisible = visible;

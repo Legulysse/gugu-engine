@@ -101,6 +101,10 @@ Element* InstanciateElement(ElementData* data)
     {
         result = new ElementSprite;
     }
+    else if (StringEquals(elementType, "ElementSpriteGroupItem"))
+    {
+        result = new ElementSpriteGroupItem;
+    }
     else if (StringEquals(elementType, "ElementSpriteGroup"))
     {
         result = new ElementSpriteGroup;

@@ -18,6 +18,7 @@ namespace gugu
     class ElementWidget;
     class BaseElementData;
     class ElementData;
+    class ElementCompositeData;
     class ElementSpriteGroupData;
     class ElementSpriteGroupItemData;
     class Element;
@@ -59,7 +60,7 @@ private:
     void AddChildElement(BaseElementData* parentData, BaseElementData* newData);
     void AddChildElement(BaseElementData* parentData, BaseElementData* newData, size_t index);
     void InsertElement(BaseElementData* referenceData, BaseElementData* newData);
-    ElementSpriteGroupItem* AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData);
+    Element* AddComponent(ElementCompositeData* compositeData, ElementData* componentData);
     void DeleteElement(BaseElementData* elementData);
 
     void CopyElementToClipboard(BaseElementData* elementData);

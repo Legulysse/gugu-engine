@@ -171,7 +171,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
             {
                 if (ImGui::MenuItem("Element Sprite Group Item"))
                 {
-                    AppendNewComponent(nodeSpriteGroup, new ElementSpriteGroupItemData);
+                    AddComponent(nodeSpriteGroup, new ElementSpriteGroupItemData);
                     RaiseDirty();
                 }
 

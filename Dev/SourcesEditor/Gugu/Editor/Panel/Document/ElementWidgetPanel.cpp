@@ -19,6 +19,7 @@
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
@@ -168,31 +169,46 @@ void ElementWidgetPanel::InsertElement(BaseElementData* referenceData, BaseEleme
     if (BaseElementData* parentData = referenceData->parent)
     {
         size_t index = StdVectorIndexOf(parentData->children, referenceData);
-
         AddChildElement(parentData, newData, index);
     }
     else
     {
-        // Safety.
-        SafeDelete(newData);
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "InsertElement called on a reference data with no parent");
     }
 }
 
-ElementSpriteGroupItem* ElementWidgetPanel::AppendNewComponent(ElementSpriteGroupData* groupData, ElementSpriteGroupItemData* componentData)
+Element* ElementWidgetPanel::AddComponent(ElementCompositeData* compositeData, ElementData* componentData)
 {
-    ElementSpriteGroup* group = dynamic_cast<ElementSpriteGroup*>(m_dataBindings->elementFromData.at(groupData));
-    ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
+    Element* parent = m_dataBindings->elementFromData.at(compositeData);
 
-    groupData->components.push_back(componentData);
-    groupData->RefreshCache();
-    componentData->parent = groupData;
+    ElementDataContext context;
+    context.data = componentData;
+    context.dataBindings = m_dataBindings;
+    context.ancestorWidgets.push_back(m_elementWidget);
+    Element* element = InstanciateAndLoadElement(context, parent);
 
-    group->AddItem(component);
+    compositeData->components.push_back(componentData);
+    compositeData->RefreshCache();
+    componentData->parent = compositeData;
 
-    m_dataBindings->elementFromData.insert(std::make_pair(componentData, component));
-    m_dataBindings->dataFromElement.insert(std::make_pair(component, componentData));
+    // Finalize for specific types
+    bool finalized = false;
 
-    return component;
+    if (ElementSpriteGroup* composite = dynamic_cast<ElementSpriteGroup*>(parent))
+    {
+        if (ElementSpriteGroupItem* component = dynamic_cast<ElementSpriteGroupItem*>(element))
+        {
+            composite->AddItem(component);
+            finalized = true;
+        }
+    }
+    
+    if (!finalized)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, StringFormat("Unhandled component type {0} for composite type {1}", componentData->GetSerializedType(), compositeData->GetSerializedType()));
+    }
+
+    return element;
 }
 
 void ElementWidgetPanel::DeleteElement(BaseElementData* elementData)

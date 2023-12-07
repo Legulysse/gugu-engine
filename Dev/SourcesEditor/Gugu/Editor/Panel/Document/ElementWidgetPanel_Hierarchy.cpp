@@ -149,8 +149,9 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
 {
     if (ImGui::BeginPopupContextItem())
     {
+        ElementCompositeData* parentCompositeData = dynamic_cast<ElementCompositeData*>(node->parent);
         bool isRootNode = node == m_widgetRootData;
-        bool isComponent = dynamic_cast<ElementCompositeData*>(node->parent) != nullptr;
+        bool isComponent = parentCompositeData != nullptr && StdVectorContains(parentCompositeData->components, node);
 
         if (ImGui::BeginMenu("Add Child..."))
         {
@@ -161,22 +162,27 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
                 RaiseDirty();
             }
 
-            if (ElementSpriteGroupData* nodeSpriteGroup = dynamic_cast<ElementSpriteGroupData*>(node))
-            {
-                ImGui::Separator();
+            ImGui::EndMenu();
+        }
 
+        if (ElementSpriteGroupData* nodeSpriteGroup = dynamic_cast<ElementSpriteGroupData*>(node))
+        {
+            if (ImGui::BeginMenu("Add Component..."))
+            {
                 if (ImGui::MenuItem("Element Sprite Group Item"))
                 {
                     AppendNewComponent(nodeSpriteGroup, new ElementSpriteGroupItemData);
                     RaiseDirty();
                 }
-            }
 
-            ImGui::EndMenu();
+                ImGui::EndMenu();
+            }
         }
 
         if (!isComponent)
         {
+            ImGui::Separator();
+
             if (!isRootNode)
             {
                 if (ImGui::BeginMenu("Insert..."))

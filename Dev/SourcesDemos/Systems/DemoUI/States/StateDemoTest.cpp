@@ -50,10 +50,10 @@ void StateDemoTest::Init()
     m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
     // Background
-    ElementSprite* pTile = m_root->AddChild<ElementSprite>();
-    pTile->SetTexture("Background.jpg");
-    pTile->SetRepeatTexture(true);
-    pTile->SetUnifiedSize(UDim2::SIZE_FULL);
+    ElementSprite* background = m_root->AddChild<ElementSprite>();
+    background->SetTexture("Background.jpg");
+    background->SetRepeatTexture(true);
+    background->SetUnifiedSize(UDim2::SIZE_FULL);
 
     // Vertical layout
     ElementLayoutGroup* layout = m_root->AddChild<ElementLayoutGroup>();
@@ -94,60 +94,89 @@ void StateDemoTest::Init()
     });
 
     // List
-    ElementList* pList = m_root->AddChild<ElementList>();
-    pList->SetPosition(40.f, 250.f);
-    pList->SetSize(200.f, 200.f);
-    //pList->SetScaleY(0.7f);
-    pList->Rotate(22.5f);
-    pList->SetImageSet("ScrollBar_01.imageset.xml");
-    pList->SetDebugBoundsVisible(true);
+    ElementList* list = m_root->AddChild<ElementList>();
+    list->SetSize(200.f, 150.f);
+    list->SetImageSet("ScrollBar_01.imageset.xml");
+    list->SetDebugBoundsVisible(true);
+    layout->AddItem(list);
+
+    for (int i = 0; i < 51; ++i)
+    {
+        Element* itemRoot = new Element;
+        itemRoot->SetSizeY(30);
+
+        ElementText* itemText = itemRoot->AddChild<ElementText>();
+        itemText->SetText("Item " + ToString(i));
+        itemText->SetDebugBoundsVisible(true);
+
+        ElementButton* itemButton = itemText->AddChild<ElementButton>();
+        itemButton->LoadFromWidget("Button_01.widget.xml");
+        itemButton->SetPosition(90, 0);
+        itemButton->SetSize(60, 30);
+        itemButton->SetText("Btn");
+
+        ElementListItem* item = new ElementListItem();
+        item->SetElement(itemRoot);
+        //item->SetSizeY(30);
+
+        list->AddItem(item);
+    }
+
+    // List (rotated)
+    ElementList* listB = m_root->AddChild<ElementList>();
+    listB->SetPosition(80.f, 350.f);
+    listB->SetSize(200.f, 200.f);
+    //listB->SetScaleY(0.7f);
+    listB->Rotate(22.5f);
+    listB->SetImageSet("ScrollBar_01.imageset.xml");
+    listB->SetDebugBoundsVisible(true);
 
     for (int i=0; i<51; ++i)
     {
-        ElementText* pText = new ElementText;
-        pText->SetText("Element " + ToString(i));
-        pText->SetDebugBoundsVisible(true);
+        ElementText* itemText = new ElementText;
+        itemText->SetText("Element " + ToString(i));
+        itemText->SetDebugBoundsVisible(true);
 
-        ElementListItem* pItem = new ElementListItem();
-        pItem->SetElement(pText);
+        ElementListItem* item = new ElementListItem();
+        item->SetElement(itemText);
 
-        pList->AddItem(pItem);
+        listB->AddItem(item);
     }
 
     // Editable single line text
-    ElementEditableText* pEditLine = m_root->AddChild<ElementEditableText>();
-    //pEditLine->SetResizeRule(TextResizeRule::FitScale);
-    pEditLine->SetText("Single Line - Edit Me");
-    pEditLine->SetMultiline(false);
-    pEditLine->SetEditable(true);
-    pEditLine->SetPosition(300.f, 10.f);
-    //pEditLine->SetSize(300.f, 200.f);
-    pEditLine->SetDebugBoundsVisible(true);
+    ElementEditableText* editLine = m_root->AddChild<ElementEditableText>();
+    //editLine->SetResizeRule(TextResizeRule::FitScale);
+    editLine->SetText("Single Line - Edit Me");
+    editLine->SetMultiline(false);
+    editLine->SetEditable(true);
+    editLine->SetPosition(300.f, 10.f);
+    //editLine->SetSize(300.f, 200.f);
+    editLine->SetDebugBoundsVisible(true);
 
     // Editable multiline text
-    ElementEditableText* pText = m_root->AddChild<ElementEditableText>();
-    pText->SetResizeRule(ETextResizeRule::FitHeight);
-    pText->SetSize(600.f, 800.f);
-    pText->SetMultiline(true);
-    pText->SetEditable(true);
-    pText->SetText("Multiple Lines - Edit Me\n\nGraeci recteque molestiae vel ex, no est dico dissentiet, an dolor legere habemus eos. Regione perfecto delicatissimi ei vis, eu commodo pertinacia reprimique per. Dolore dissentiunt quo eu. Mea harum probatus efficiendi cu. Animal aliquid id qui, tibique probatus at duo, ne mea summo laudem definitionem. Amet stet dicta ei per. Ius errem luptatum instructior cu, eu integre facilisis adipiscing duo, ex ubique eripuit debitis qui.\n Ut sit everti electram theophrastus, sumo expetendis pri ad, has officiis pertinax ex. Quod fabellas cu vim, ei qui impedit mnesarchum, eum veniam admodum at. Est elit oratio eu, vim ferri possim denique an. Eu clita dolores sed, vis mnesarchum percipitur dissentiet ex, sea rebum scripta deterruisset te. No praesent imperdiet rationibus his.");
-    pText->SetPosition(300.f, 50.f);
-    pText->SetDebugBoundsVisible(true);
+    ElementEditableText* editText = m_root->AddChild<ElementEditableText>();
+    editText->SetResizeRule(ETextResizeRule::FitHeight);
+    editText->SetSize(600.f, 800.f);
+    editText->SetMultiline(true);
+    editText->SetEditable(true);
+    editText->SetText("Multiple Lines - Edit Me\n\nGraeci recteque molestiae vel ex, no est dico dissentiet, an dolor legere habemus eos. Regione perfecto delicatissimi ei vis, eu commodo pertinacia reprimique per. Dolore dissentiunt quo eu. Mea harum probatus efficiendi cu. Animal aliquid id qui, tibique probatus at duo, ne mea summo laudem definitionem. Amet stet dicta ei per. Ius errem luptatum instructior cu, eu integre facilisis adipiscing duo, ex ubique eripuit debitis qui.\n Ut sit everti electram theophrastus, sumo expetendis pri ad, has officiis pertinax ex. Quod fabellas cu vim, ei qui impedit mnesarchum, eum veniam admodum at. Est elit oratio eu, vim ferri possim denique an. Eu clita dolores sed, vis mnesarchum percipitur dissentiet ex, sea rebum scripta deterruisset te. No praesent imperdiet rationibus his.");
+    editText->SetPosition(300.f, 50.f);
+    editText->SetDebugBoundsVisible(true);
 }
 
 void StateDemoTest::Release()
 {
-    SafeDelete( m_root );
+    SafeDelete(m_root);
 }
 
-bool StateDemoTest::OnSFEvent(const sf::Event& _oSFEvent)
+bool StateDemoTest::OnSFEvent(const sf::Event& event)
 {
-    if (!EventListener::OnSFEvent(_oSFEvent))
+    if (!EventListener::OnSFEvent(event))
         return false;
 
     ManagerInputs* inputs = GetInputs();
 
-    if (inputs->IsInputEventReleased("CloseGame", _oSFEvent))
+    if (inputs->IsInputEventReleased("CloseGame", event))
     {
         GetOwner()->ChangeState(new StateMenuMain);
         return false;

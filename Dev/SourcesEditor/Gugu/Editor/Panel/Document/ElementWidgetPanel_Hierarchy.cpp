@@ -151,6 +151,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
     {
         ElementCompositeData* parentCompositeData = dynamic_cast<ElementCompositeData*>(node->parent);
         bool isRootNode = node == m_widgetRootData;
+        bool isComposite = dynamic_cast<ElementCompositeData*>(node) != nullptr;
         bool isComponent = parentCompositeData != nullptr && StdVectorContains(parentCompositeData->components, node);
 
         if (ImGui::BeginMenu("Add Child..."))
@@ -233,48 +234,53 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
             }
         }
 
-        // TODO: handle components copy/paste.
-        if (!isComponent)
+        ImGui::Separator();
+
+        if (ImGui::MenuItem("Copy"))
         {
-            ImGui::Separator();
-
-            if (ImGui::MenuItem("Copy"))
-            {
-                CopyElementToClipboard(node);
-            }
-
-            ImGui::BeginDisabled(isRootNode);
-            if (ImGui::MenuItem("Cut"))
-            {
-                CopyElementToClipboard(node);
-                deleted = node;
-            }
-            ImGui::EndDisabled();
-
-            ImGui::BeginDisabled(isRootNode);
-            if (ImGui::MenuItem("Paste (Insert)"))
-            {
-                size_t index = StdVectorIndexOf(node->parent->children, node);
-
-                PasteElementFromClipboard(node->parent, index);
-            }
-            ImGui::EndDisabled();
-
-            if (ImGui::MenuItem("Paste as Child"))
-            {
-                PasteElementFromClipboard(node);
-            }
-
-            ImGui::BeginDisabled(isRootNode);
-            if (ImGui::MenuItem("Duplicate"))
-            {
-                size_t index = StdVectorIndexOf(node->parent->children, node);
-
-                CopyElementToClipboard(node);
-                PasteElementFromClipboard(node->parent, index + 1);
-            }
-            ImGui::EndDisabled();
+            CopyElementToClipboard(node);
         }
+
+        ImGui::BeginDisabled(isRootNode);
+        if (ImGui::MenuItem("Cut"))
+        {
+            CopyElementToClipboard(node);
+            deleted = node;
+        }
+        ImGui::EndDisabled();
+
+        ImGui::BeginDisabled(isRootNode);
+        if (ImGui::MenuItem("Paste (Insert)"))
+        {
+            size_t index = StdVectorIndexOf(node->parent->children, node);
+
+            PasteElementFromClipboard(node->parent, isComponent, index);
+        }
+        ImGui::EndDisabled();
+
+        if (ImGui::MenuItem("Paste as Child"))
+        {
+            PasteElementFromClipboard(node, false);
+        }
+
+        if (isComposite)
+        {
+            // TODO: disable if composite/component types are not compatible.
+            if (ImGui::MenuItem("Paste as Component"))
+            {
+                PasteElementFromClipboard(node, isComponent);
+            }
+        }
+
+        ImGui::BeginDisabled(isRootNode);
+        if (ImGui::MenuItem("Duplicate"))
+        {
+            size_t index = StdVectorIndexOf(node->parent->children, node);
+
+            CopyElementToClipboard(node);
+            PasteElementFromClipboard(node->parent, isComponent, index + 1);
+        }
+        ImGui::EndDisabled();
 
         ImGui::Separator();
 

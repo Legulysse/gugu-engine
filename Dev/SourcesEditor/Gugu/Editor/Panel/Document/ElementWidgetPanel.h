@@ -64,8 +64,8 @@ private:
     void DeleteElement(BaseElementData* elementData);
 
     void CopyElementToClipboard(BaseElementData* elementData);
-    void PasteElementFromClipboard(BaseElementData* parentData);
-    void PasteElementFromClipboard(BaseElementData* parentData, size_t index);
+    void PasteElementFromClipboard(BaseElementData* parentData, bool asComponent);
+    void PasteElementFromClipboard(BaseElementData* parentData, bool asComponent, size_t index);
 
     void CreateGizmo();
     void UpdateGizmo();

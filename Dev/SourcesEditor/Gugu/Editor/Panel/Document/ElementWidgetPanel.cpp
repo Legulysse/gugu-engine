@@ -30,7 +30,7 @@ namespace gugu
 {
     namespace impl
     {
-        const std::string ClipboardElementDataContentType = "ElementData";
+        const std::string ClipboardContentType_ElementData = "ElementData";
     }
 }
 
@@ -266,19 +266,19 @@ void ElementWidgetPanel::CopyElementToClipboard(BaseElementData* elementData)
     saveContext.node = xmlDocument;
     elementData->SaveToXml(saveContext);
 
-    std::string result = xml::SaveDocumentToString(xmlDocument);
+    std::string stringContent = xml::SaveDocumentToString(xmlDocument);
 
-    GetEditorClipboard()->SetStringContent(impl::ClipboardElementDataContentType, result);
+    GetEditorClipboard()->SetStringContent(impl::ClipboardContentType_ElementData, stringContent);
 }
 
-void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData)
+void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, bool asComponent)
 {
-    PasteElementFromClipboard(parentData, system::InvalidIndex);
+    PasteElementFromClipboard(parentData, asComponent, system::InvalidIndex);
 }
 
-void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, size_t index)
+void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, bool asComponent, size_t index)
 {
-    if (GetEditorClipboard()->contentType != impl::ClipboardElementDataContentType)
+    if (GetEditorClipboard()->contentType != impl::ClipboardContentType_ElementData)
         return;
 
     std::string clipboard = GetEditorClipboard()->stringContent;
@@ -292,8 +292,18 @@ void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, 
     parseContext.node = xmlRoot;
     newNode->LoadFromXml(parseContext);
 
-    AddChildElement(parentData, newNode, index);
-    RaiseDirty();
+    if (asComponent)
+    {
+        ElementCompositeData* compositeData = dynamic_cast<ElementCompositeData*>(parentData);
+        ElementData* componentData = dynamic_cast<ElementData*>(newNode);
+        AddComponent(compositeData, componentData);     // TODO: handle index
+        RaiseDirty();
+    }
+    else
+    {
+        AddChildElement(parentData, newNode, index);
+        RaiseDirty();
+    }
 }
 
 void ElementWidgetPanel::CreateGizmo()

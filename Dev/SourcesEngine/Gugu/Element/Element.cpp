@@ -111,6 +111,7 @@ void Element::SetParent(Element* parent)
 
     m_parent = parent;
 
+    OnParentChanged();
     ComputeUnifiedDimensionsFromParent();
 }
 

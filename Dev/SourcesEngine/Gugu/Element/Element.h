@@ -246,6 +246,7 @@ protected:
     //----------------------------------------------
     // Internal Events
 
+    virtual void OnParentChanged() {}
     virtual void OnTransformChanged() {}
     virtual void OnVisibleChanged() {}
     virtual void OnSizeChanged() {}

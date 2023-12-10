@@ -250,11 +250,18 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         ImGui::EndDisabled();
 
         ImGui::BeginDisabled(isRootNode);
-        if (ImGui::MenuItem("Paste (Insert)"))
+        if (ImGui::MenuItem("Paste (Before)"))
         {
             size_t index = StdVectorIndexOf(node->parent->children, node);
-
             PasteElementFromClipboard(node->parent, isComponent, index);
+        }
+        ImGui::EndDisabled();
+
+        ImGui::BeginDisabled(isRootNode);
+        if (ImGui::MenuItem("Paste (After)"))
+        {
+            size_t index = StdVectorIndexOf(node->parent->children, node);
+            PasteElementFromClipboard(node->parent, isComponent, index + 1);
         }
         ImGui::EndDisabled();
 
@@ -268,7 +275,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
             // TODO: disable if composite/component types are not compatible.
             if (ImGui::MenuItem("Paste as Component"))
             {
-                PasteElementFromClipboard(node, isComponent);
+                PasteElementFromClipboard(node, true);
             }
         }
 

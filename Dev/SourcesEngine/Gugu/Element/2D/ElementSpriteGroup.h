@@ -15,6 +15,7 @@ namespace gugu
     class ElementWidget;
     class ElementSpriteGroup;
     class Texture;
+    class ImageSet;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -29,8 +30,6 @@ public:
     ElementSpriteGroupItem();
     virtual ~ElementSpriteGroupItem();
 
-    void SetSpriteGroup(ElementSpriteGroup* spriteGroup);
-
     bool HasDirtyVertices() const;
 
     size_t RecomputeVertexCount();
@@ -41,6 +40,7 @@ protected:
 
     virtual void RaiseDirtyVertices() override;
 
+    virtual void OnParentChanged() override;
     virtual void OnTransformChanged() override;
     virtual void OnVisibleChanged() override;
 
@@ -48,7 +48,6 @@ protected:
 
 protected:
 
-    ElementSpriteGroup* m_spriteGroup;
     size_t m_cachedVertexCount;
 };
 
@@ -66,6 +65,8 @@ public:
     void SetTexture(Texture* _pTexture);
     Texture* GetTexture() const;
 
+    ImageSet* GetImageSet() const;
+
     size_t AddItem(ElementSpriteGroupItem* item);
     //void RemoveItem(ElementSpriteGroupItem* item);
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
@@ -81,6 +82,7 @@ protected:
 
 protected:
 
+    ImageSet* m_imageSet;
     Texture* m_texture;
     sf::VertexArray m_vertices;
 

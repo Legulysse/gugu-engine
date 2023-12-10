@@ -15,6 +15,7 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/System/SystemUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -24,8 +25,7 @@
 namespace gugu {
 
 ElementSpriteGroupItem::ElementSpriteGroupItem()
-    : m_spriteGroup(nullptr)
-    , m_cachedVertexCount(0)
+    : m_cachedVertexCount(0)
 {
 }
 
@@ -33,30 +33,21 @@ ElementSpriteGroupItem::~ElementSpriteGroupItem()
 {
 }
 
-void ElementSpriteGroupItem::SetSpriteGroup(ElementSpriteGroup* spriteGroup)
-{
-    m_spriteGroup = spriteGroup;
-
-    if (!m_parent)
-    {
-        // TODO: This code implies that we could use a different parent from the SpriteGroup, but it probably breaks if we do.
-        // I should either force a synchronization between parent and group, or refactor sprite group behaviour to allow this kind of situation.
-        SetParent(m_spriteGroup);
-    }
-    else if (!m_spriteGroup)
-    {
-        // TODO: This case may happen if I actually implement a RemoveItem on SpriteGroup.
-        SetParent(nullptr);
-    }
-}
-
 void ElementSpriteGroupItem::RaiseDirtyVertices()
 {
     ElementSpriteBase::RaiseDirtyVertices();
 
-    if (m_spriteGroup)
+    if (ElementSpriteGroup* parentSpriteGroup = dynamic_cast<ElementSpriteGroup*>(m_parent))
     {
-        m_spriteGroup->RaiseNeedRecompute();
+        parentSpriteGroup->RaiseNeedRecompute();
+    }
+}
+
+void ElementSpriteGroupItem::OnParentChanged()
+{
+    if (m_parent && dynamic_cast<ElementSpriteGroup*>(m_parent) == nullptr)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "A SpriteGroupItem has been attached to an unsupported parent type (should be a SpriteGroup)");
     }
 }
 
@@ -110,12 +101,20 @@ bool ElementSpriteGroupItem::LoadFromDataImpl(ElementDataContext& context)
 
     ElementSpriteGroupItemData* spriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(context.data);
 
+    ElementSpriteGroup* parentSpriteGroup = dynamic_cast<ElementSpriteGroup*>(m_parent);
+    if (parentSpriteGroup && parentSpriteGroup->GetImageSet())
+    {
+        SubImage* subImage = parentSpriteGroup->GetImageSet()->GetSubImage(spriteGroupItemData->subImageName);
+        SetSubRect(!subImage ? sf::IntRect() : subImage->GetRect(), false);
+    }
+
     return true;
 }
 
 
 ElementSpriteGroup::ElementSpriteGroup()
-    : m_texture(nullptr)
+    : m_imageSet(nullptr)
+    , m_texture(nullptr)
 {
 }
 
@@ -152,6 +151,11 @@ void ElementSpriteGroup::SetTexture(Texture* _pTexture)
 Texture* ElementSpriteGroup::GetTexture() const
 {
     return m_texture;
+}
+
+ImageSet* ElementSpriteGroup::GetImageSet() const
+{
+    return m_imageSet;
 }
 
 void ElementSpriteGroup::OnSizeChanged()
@@ -238,7 +242,7 @@ void ElementSpriteGroup::RecomputeImpl()
 
 size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* item)
 {
-    item->SetSpriteGroup(this);
+    item->SetParent(this);
     m_items.push_back(item);
 
     RaiseNeedRecompute();
@@ -276,6 +280,7 @@ bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
 
     if (spriteGroupData->imageSet)
     {
+        m_imageSet = spriteGroupData->imageSet;
         SetTexture(spriteGroupData->imageSet->GetTexture());
     }
     else if (spriteGroupData->texture)
@@ -298,12 +303,6 @@ bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
             ElementSpriteGroupItem* component = new ElementSpriteGroupItem;
 
             AddItem(component);
-
-            if (spriteGroupData->imageSet)
-            {
-                SubImage* subImage = spriteGroupData->imageSet->GetSubImage(componentData->subImageName);
-                component->SetSubRect(!subImage ? sf::IntRect() : subImage->GetRect(), false);
-            }
 
             context.data = componentData;
             result &= component->LoadFromData(context);

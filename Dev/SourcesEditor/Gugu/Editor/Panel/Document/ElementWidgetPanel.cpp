@@ -179,6 +179,11 @@ void ElementWidgetPanel::InsertElement(BaseElementData* referenceData, BaseEleme
 
 Element* ElementWidgetPanel::AddComponent(ElementCompositeData* compositeData, ElementData* componentData)
 {
+    return AddComponent(compositeData, componentData, system::InvalidIndex);
+}
+
+Element* ElementWidgetPanel::AddComponent(ElementCompositeData* compositeData, ElementData* componentData, size_t index)
+{
     Element* parent = m_dataBindings->elementFromData.at(compositeData);
 
     ElementDataContext context;
@@ -187,9 +192,18 @@ Element* ElementWidgetPanel::AddComponent(ElementCompositeData* compositeData, E
     context.ancestorWidgets.push_back(m_elementWidget);
     Element* element = InstanciateAndLoadElement(context, parent);
 
-    compositeData->components.push_back(componentData);
-    compositeData->RefreshCache();
-    componentData->parent = compositeData;
+    if (index == system::InvalidIndex)
+    {
+        compositeData->components.push_back(componentData);
+        compositeData->RefreshCache();
+        componentData->parent = compositeData;
+    }
+    else
+    {
+        StdVectorInsertAt<BaseElementData*>(compositeData->components, index, componentData);
+        compositeData->RefreshCache();
+        componentData->parent = compositeData;
+    }
 
     // Finalize for specific types
     bool finalized = false;
@@ -198,8 +212,16 @@ Element* ElementWidgetPanel::AddComponent(ElementCompositeData* compositeData, E
     {
         if (ElementSpriteGroupItem* component = dynamic_cast<ElementSpriteGroupItem*>(element))
         {
-            composite->AddItem(component);
-            finalized = true;
+            if (index == system::InvalidIndex)
+            {
+                composite->AddItem(component);
+                finalized = true;
+            }
+            else
+            {
+                composite->InsertItem(component, index);
+                finalized = true;
+            }
         }
     }
     
@@ -296,7 +318,7 @@ void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, 
     {
         ElementCompositeData* compositeData = dynamic_cast<ElementCompositeData*>(parentData);
         ElementData* componentData = dynamic_cast<ElementData*>(newNode);
-        AddComponent(compositeData, componentData);     // TODO: handle index
+        AddComponent(compositeData, componentData, index);
         RaiseDirty();
     }
     else

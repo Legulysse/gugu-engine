@@ -249,6 +249,18 @@ size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* item)
     return m_items.size() - 1;
 }
 
+size_t ElementSpriteGroup::InsertItem(ElementSpriteGroupItem* item, size_t index)
+{
+    if (index < 0 || index > m_items.size())
+        return system::InvalidIndex;
+
+    item->SetParent(this);
+    StdVectorInsertAt(m_items, index, item);
+
+    RaiseNeedRecompute();
+    return index;
+}
+
 //void ElementSpriteGroup::RemoveItem(ElementSpriteGroupItem* item)
 //{
 //    // TODO: remove item should raise an index to force recomputation from the removed index.

@@ -252,7 +252,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         ImGui::BeginDisabled(isRootNode);
         if (ImGui::MenuItem("Paste (Before)"))
         {
-            size_t index = StdVectorIndexOf(node->parent->children, node);
+            size_t index = isComponent ? StdVectorIndexOf(parentCompositeData->components, node) : StdVectorIndexOf(node->parent->children, node);
             PasteElementFromClipboard(node->parent, isComponent, index);
         }
         ImGui::EndDisabled();
@@ -260,7 +260,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         ImGui::BeginDisabled(isRootNode);
         if (ImGui::MenuItem("Paste (After)"))
         {
-            size_t index = StdVectorIndexOf(node->parent->children, node);
+            size_t index = isComponent ? StdVectorIndexOf(parentCompositeData->components, node) : StdVectorIndexOf(node->parent->children, node);
             PasteElementFromClipboard(node->parent, isComponent, index + 1);
         }
         ImGui::EndDisabled();
@@ -282,7 +282,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         ImGui::BeginDisabled(isRootNode);
         if (ImGui::MenuItem("Duplicate"))
         {
-            size_t index = StdVectorIndexOf(node->parent->children, node);
+            size_t index = isComponent ? StdVectorIndexOf(parentCompositeData->components, node) : StdVectorIndexOf(node->parent->children, node);
 
             CopyElementToClipboard(node);
             PasteElementFromClipboard(node->parent, isComponent, index + 1);

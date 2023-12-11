@@ -61,6 +61,7 @@ private:
     void AddChildElement(BaseElementData* parentData, BaseElementData* newData, size_t index);
     void InsertElement(BaseElementData* referenceData, BaseElementData* newData);
     Element* AddComponent(ElementCompositeData* compositeData, ElementData* componentData);
+    Element* AddComponent(ElementCompositeData* compositeData, ElementData* componentData, size_t index);
     void DeleteElement(BaseElementData* elementData);
 
     void CopyElementToClipboard(BaseElementData* elementData);

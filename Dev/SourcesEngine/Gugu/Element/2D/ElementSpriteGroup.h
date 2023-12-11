@@ -68,6 +68,7 @@ public:
     ImageSet* GetImageSet() const;
 
     size_t AddItem(ElementSpriteGroupItem* item);
+    size_t InsertItem(ElementSpriteGroupItem* item, size_t index);
     //void RemoveItem(ElementSpriteGroupItem* item);
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
     const std::vector<ElementSpriteGroupItem*>& GetItems() const;

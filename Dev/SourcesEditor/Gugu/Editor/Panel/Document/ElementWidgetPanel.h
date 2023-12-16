@@ -5,6 +5,8 @@
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
 
+#include "Gugu/Math/Vector2.h"
+
 #include <SFML/Graphics/Rect.hpp>
 
 ////////////////////////////////////////////////////////////////
@@ -70,6 +72,8 @@ private:
 
     void CreateGizmo();
     void UpdateGizmo();
+
+    void GatherPickedElements(BaseElementData* elementData, const Vector2f& pickedGlobalPosition, std::vector<BaseElementData*>& picked) const;
 
 private:
 

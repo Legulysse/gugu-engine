@@ -100,7 +100,7 @@ void ElementWidgetPanel::DisplayTreeNode(BaseElementData* node, int itemFlags, B
         const auto& it = m_dataBindings->elementFromData.find(node);
         if (it != m_dataBindings->elementFromData.end())
         {
-            m_selectedElement = m_dataBindings->elementFromData.at(node);
+            m_selectedElement = it->second;
         }
         else
         {

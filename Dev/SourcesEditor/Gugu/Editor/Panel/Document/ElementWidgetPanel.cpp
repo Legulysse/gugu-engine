@@ -365,6 +365,11 @@ void ElementWidgetPanel::CreateGizmo()
 
 void ElementWidgetPanel::UpdateGizmo()
 {
+    Vector2f pickedGlobalPosition = m_renderViewport->GetMousePickedPosition();
+
+    const bool is_hovered = ImGui::IsItemHovered();
+    const bool is_active = ImGui::IsItemActive();
+
     if (m_showOrigin && m_selectedElement)
     {
         m_gizmoOrigin->SetVisible(true);
@@ -394,6 +399,49 @@ void ElementWidgetPanel::UpdateGizmo()
     else
     {
         m_gizmoBounds->SetVisible(false);
+    }
+
+    // Handle picking (gizmo will be sync next frame).
+    if (m_widgetRootElement && is_hovered && is_active && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+    {
+        // TODO: cycle through picked list if mouse did not move
+
+        std::vector<BaseElementData*> picked;
+        GatherPickedElements(m_widgetRootData, pickedGlobalPosition, picked);
+
+        if (!picked.empty())
+        {
+            BaseElementData* pickedElementData = picked.back();
+
+            auto it = m_dataBindings->elementFromData.find(pickedElementData);
+            if (it != m_dataBindings->elementFromData.end())
+            {
+                m_selectedElementData = pickedElementData;
+                m_selectedElement = it->second;
+            }
+        }
+    }
+}
+
+void ElementWidgetPanel::GatherPickedElements(BaseElementData* elementData, const Vector2f& pickedGlobalPosition, std::vector<BaseElementData*>& picked) const
+{
+    const auto& it = m_dataBindings->elementFromData.find(elementData);
+    if (it != m_dataBindings->elementFromData.end() && it->second->IsPicked(pickedGlobalPosition))
+    {
+        picked.push_back(elementData);
+    }
+
+    for (const auto& child : elementData->children)
+    {
+        GatherPickedElements(child, pickedGlobalPosition, picked);
+    }
+
+    if (const auto& compositeData = dynamic_cast<ElementCompositeData*>(elementData))
+    {
+        for (const auto& component : compositeData->components)
+        {
+            GatherPickedElements(component, pickedGlobalPosition, picked);
+        }
     }
 }
 

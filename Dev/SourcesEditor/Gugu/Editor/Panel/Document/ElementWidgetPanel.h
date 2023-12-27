@@ -69,6 +69,7 @@ private:
     void CopyElementToClipboard(BaseElementData* elementData);
     void PasteElementFromClipboard(BaseElementData* parentData, bool asComponent);
     void PasteElementFromClipboard(BaseElementData* parentData, bool asComponent, size_t index);
+    bool CanPasteElementFromClipboard() const;
 
     void CreateGizmo();
     void UpdateGizmo();

@@ -297,6 +297,11 @@ void ElementWidgetPanel::CopyElementToClipboard(BaseElementData* elementData)
     GetEditorClipboard()->SetStringContent(impl::ClipboardContentType_ElementData, stringContent);
 }
 
+bool ElementWidgetPanel::CanPasteElementFromClipboard() const
+{
+    return GetEditorClipboard()->contentType == impl::ClipboardContentType_ElementData;
+}
+
 void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, bool asComponent)
 {
     PasteElementFromClipboard(parentData, asComponent, system::InvalidIndex);
@@ -304,7 +309,7 @@ void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, 
 
 void ElementWidgetPanel::PasteElementFromClipboard(BaseElementData* parentData, bool asComponent, size_t index)
 {
-    if (GetEditorClipboard()->contentType != impl::ClipboardContentType_ElementData)
+    if (!CanPasteElementFromClipboard())
         return;
 
     std::string clipboard = GetEditorClipboard()->stringContent;

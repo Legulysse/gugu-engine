@@ -153,6 +153,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         bool isRootNode = node == m_widgetRootData;
         bool isComposite = dynamic_cast<ElementCompositeData*>(node) != nullptr;
         bool isComponent = parentCompositeData != nullptr && StdVectorContains(parentCompositeData->components, node);
+        bool canPasteElement = CanPasteElementFromClipboard();
 
         if (ImGui::BeginMenu("Add Child..."))
         {
@@ -249,7 +250,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         }
         ImGui::EndDisabled();
 
-        ImGui::BeginDisabled(isRootNode);
+        ImGui::BeginDisabled(isRootNode || !canPasteElement);
         if (ImGui::MenuItem("Paste (Before)"))
         {
             size_t index = isComponent ? StdVectorIndexOf(parentCompositeData->components, node) : StdVectorIndexOf(node->parent->children, node);
@@ -257,7 +258,7 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         }
         ImGui::EndDisabled();
 
-        ImGui::BeginDisabled(isRootNode);
+        ImGui::BeginDisabled(isRootNode || !canPasteElement);
         if (ImGui::MenuItem("Paste (After)"))
         {
             size_t index = isComponent ? StdVectorIndexOf(parentCompositeData->components, node) : StdVectorIndexOf(node->parent->children, node);
@@ -265,18 +266,22 @@ void ElementWidgetPanel::HandleContextMenu(BaseElementData* node, BaseElementDat
         }
         ImGui::EndDisabled();
 
+        ImGui::BeginDisabled(!canPasteElement);
         if (ImGui::MenuItem("Paste as Child"))
         {
             PasteElementFromClipboard(node, false);
         }
+        ImGui::EndDisabled();
 
         if (isComposite)
         {
             // TODO: disable if composite/component types are not compatible.
+            ImGui::BeginDisabled(!canPasteElement);
             if (ImGui::MenuItem("Paste as Component"))
             {
                 PasteElementFromClipboard(node, true);
             }
+            ImGui::EndDisabled();
         }
 
         ImGui::BeginDisabled(isRootNode);

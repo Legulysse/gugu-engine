@@ -166,8 +166,8 @@ size_t ElementSpriteBase::GetRequiredVertexCount() const
         int iTextureSizeY = Absolute(m_subRect.height);
 
         // Nb tiles we can fully render
-        int iNbFullTilesX = ((int)kAreaSize.x) / iTextureSizeX;
-        int iNbFullTilesY = ((int)kAreaSize.y) / iTextureSizeY;
+        int iNbFullTilesX = iTextureSizeX == 0 ? 0 : ((int)kAreaSize.x) / iTextureSizeX;
+        int iNbFullTilesY = iTextureSizeY == 0 ? 0 : ((int)kAreaSize.y) / iTextureSizeY;
 
         // Total tiles
         int iNbTilesX = iNbFullTilesX + 1;
@@ -213,8 +213,8 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
         int iTextureSizeY = Absolute(m_subRect.height);
 
         // Nb tiles we can fully render
-        int iNbFullTilesX = ((int)kAreaSize.x) / iTextureSizeX;
-        int iNbFullTilesY = ((int)kAreaSize.y) / iTextureSizeY;
+        int iNbFullTilesX = iTextureSizeX == 0 ? 0 : ((int)kAreaSize.x) / iTextureSizeX;
+        int iNbFullTilesY = iTextureSizeY == 0 ? 0 : ((int)kAreaSize.y) / iTextureSizeY;
 
         // Total tiles
         int iNbTilesX = iNbFullTilesX + 1;
@@ -229,8 +229,8 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
         // Remaining margins for truncated tiles
         float fRemainingAreaX = kAreaSize.x - (iNbFullTilesX * iTextureSizeX);
         float fRemainingAreaY = kAreaSize.y - (iNbFullTilesY * iTextureSizeY);
-        float fRemainingRight = fLeft + (float)m_subRect.width * (fRemainingAreaX / (float)iTextureSizeX);
-        float fRemainingBottom = fTop + (float)m_subRect.height * (fRemainingAreaY / (float)iTextureSizeY);
+        float fRemainingTextureX = iTextureSizeX == 0 ? 0 : fLeft + (float)m_subRect.width * (fRemainingAreaX / (float)iTextureSizeX);
+        float fRemainingTextureY = iTextureSizeY == 0 ? 0 : fTop + (float)m_subRect.height * (fRemainingAreaY / (float)iTextureSizeY);
 
         // Convenience cast
         float fTextureSizeX = (float)iTextureSizeX;
@@ -279,12 +279,12 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
                 quad[5].position = Vector2f(x * fTextureSizeX + fRemainingAreaX, (y + 1) * fTextureSizeY);
 
                 quad[0].texCoords = Vector2f(fLeft, fTop);
-                quad[1].texCoords = Vector2f(fRemainingRight, fTop);
+                quad[1].texCoords = Vector2f(fRemainingTextureX, fTop);
                 quad[2].texCoords = Vector2f(fLeft, fBottom);
 
-                quad[3].texCoords = Vector2f(fRemainingRight, fTop);
+                quad[3].texCoords = Vector2f(fRemainingTextureX, fTop);
                 quad[4].texCoords = Vector2f(fLeft, fBottom);
-                quad[5].texCoords = Vector2f(fRemainingRight, fBottom);
+                quad[5].texCoords = Vector2f(fRemainingTextureX, fBottom);
             }
         }
 
@@ -305,11 +305,11 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
 
                 quad[0].texCoords = Vector2f(fLeft, fTop);
                 quad[1].texCoords = Vector2f(fRight, fTop);
-                quad[2].texCoords = Vector2f(fLeft, fRemainingBottom);
+                quad[2].texCoords = Vector2f(fLeft, fRemainingTextureY);
 
                 quad[3].texCoords = Vector2f(fRight, fTop);
-                quad[4].texCoords = Vector2f(fLeft, fRemainingBottom);
-                quad[5].texCoords = Vector2f(fRight, fRemainingBottom);
+                quad[4].texCoords = Vector2f(fLeft, fRemainingTextureY);
+                quad[5].texCoords = Vector2f(fRight, fRemainingTextureY);
             }
         }
 
@@ -330,12 +330,12 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
             quad[5].position = Vector2f(x * fTextureSizeX + fRemainingAreaX, y * fTextureSizeY + fRemainingAreaY);
 
             quad[0].texCoords = Vector2f(fLeft, fTop);
-            quad[1].texCoords = Vector2f(fRemainingRight, fTop);
-            quad[2].texCoords = Vector2f(fLeft, fRemainingBottom);
+            quad[1].texCoords = Vector2f(fRemainingTextureX, fTop);
+            quad[2].texCoords = Vector2f(fLeft, fRemainingTextureY);
 
-            quad[3].texCoords = Vector2f(fRemainingRight, fTop);
-            quad[4].texCoords = Vector2f(fLeft, fRemainingBottom);
-            quad[5].texCoords = Vector2f(fRemainingRight, fRemainingBottom);
+            quad[3].texCoords = Vector2f(fRemainingTextureX, fTop);
+            quad[4].texCoords = Vector2f(fLeft, fRemainingTextureY);
+            quad[5].texCoords = Vector2f(fRemainingTextureX, fRemainingTextureY);
         }
     }
 }

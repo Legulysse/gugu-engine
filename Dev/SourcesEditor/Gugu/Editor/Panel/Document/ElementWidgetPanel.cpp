@@ -60,6 +60,10 @@ ElementWidgetPanel::ElementWidgetPanel(ElementWidget* resource)
     , m_tileLeftSegment(false)
     , m_tileRightSegment(false)
     , m_tileBottomSegment(false)
+    , m_leftSlice(0)
+    , m_rightSlice(0)
+    , m_topSlice(0)
+    , m_bottomSlice(0)
 {
     // Setup RenderViewport.
     m_renderViewport = new RenderViewport(true);

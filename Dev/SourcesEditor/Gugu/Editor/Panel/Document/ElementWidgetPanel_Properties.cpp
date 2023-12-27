@@ -424,6 +424,8 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     ElementSpriteGroup* elementSpriteGroup = dynamic_cast<ElementSpriteGroup*>(element);
     if (elementSpriteGroupData && ImGui::CollapsingHeader("Sprite Group##_HEADER", headerFlags))
     {
+        bool sourceChanged = false;
+
         Texture* texture = elementSpriteGroupData->texture;
         std::string textureId = !texture ? "" : texture->GetID();
         if (ImGui::InputText("Texture", &textureId, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -432,6 +434,8 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             elementSpriteGroupData->imageSet = nullptr;
             elementSpriteGroup->SetTexture(elementSpriteGroupData->texture);
             RaiseDirty();
+
+            sourceChanged = true;
         }
 
         ImageSet* imageSet = elementSpriteGroupData->imageSet;
@@ -442,9 +446,11 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             elementSpriteGroupData->texture = nullptr;
             elementSpriteGroup->SetTexture(!elementSpriteGroupData->imageSet ? nullptr : elementSpriteGroupData->imageSet->GetTexture());
             RaiseDirty();
+
+            sourceChanged = true;
         }
 
-        DisplayGenerators(elementSpriteGroupData, elementSpriteGroup);
+        DisplayGenerators(elementSpriteGroupData, elementSpriteGroup, sourceChanged);
     }
 
     ElementSpriteBaseData* elementSpriteBaseData = dynamic_cast<ElementSpriteBaseData*>(m_selectedElementData);
@@ -592,15 +598,15 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     }
 }
 
-void ElementWidgetPanel::DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup)
+void ElementWidgetPanel::DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup, bool sourceChanged)
 {
     Texture* texture = elementSpriteGroupData->texture;
     ImageSet* imageSet = elementSpriteGroupData->imageSet;
 
     ImGui::Spacing();
 
-    static const std::vector<std::string> generators = { "...", "Box9 - SubImages", "Box9 - Texture Rects" };
-    ImGui::Combo("Generator", generators, &m_generatorIndex);
+    static const std::vector<std::string> generators = { "...", "Box9 - SubImages", "Box9 - Texture Rects", "Box9 - Texture 9-slice" };
+    bool selectionChanged = ImGui::Combo("Generator", generators, &m_generatorIndex);
 
     ImGui::Spacing();
 
@@ -708,6 +714,85 @@ void ElementWidgetPanel::DisplayGenerators(ElementSpriteGroupData* elementSprite
                 {
                     ElementSpriteGroupItemData* componentData = new ElementSpriteGroupItemData;
                     ElementSpriteGroupItem* component = dynamic_cast<ElementSpriteGroupItem*>(AddComponent(elementSpriteGroupData, componentData));
+
+                    componentData->subImageName = "";
+                    componentData->textureRect = generatorTextureRects[i];
+                    component->SetSubRect(generatorTextureRects[i], true);
+                    componentData->size = component->GetSize();
+                }
+
+                generateDimensions = true;
+            }
+
+            ImGui::PopID();
+        }
+    }
+    else if (m_generatorIndex == 3)
+    {
+        if (!texture)
+        {
+            ImGui::Text("Please select a Texture");
+        }
+        else
+        {
+            if (selectionChanged || sourceChanged)
+            {
+                m_sliceAreaOrigin = Vector2::Zero_i;
+                m_sliceAreaSize = Vector2i(texture->GetSize());
+            }
+
+            // Generator : Texture 9-Slices.
+            ImGui::PushID("_TEXTURE_SLICES");
+
+            ImGui::InputInt2("Origin", &m_sliceAreaOrigin);
+            ImGui::InputInt2("Size", &m_sliceAreaSize);
+
+            ImGui::InputInt("Left Slice", &m_leftSlice);
+            ImGui::InputInt("Right Slice", &m_rightSlice);
+            ImGui::InputInt("Top Slice", &m_topSlice);
+            ImGui::InputInt("Bottom Slice", &m_bottomSlice);
+
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Tile Top", &m_tileTopSegment);
+            ImGui::Checkbox("Tile Left", &m_tileLeftSegment);
+            ImGui::Checkbox("Tile Right", &m_tileRightSegment);
+            ImGui::Checkbox("Tile Bottom", &m_tileBottomSegment);
+
+            ImGui::Spacing();
+
+            if (ImGui::Button("Generate"))
+            {
+                int x0 = 0;
+                int x1 = m_leftSlice;
+                int x2 = m_sliceAreaSize.x - m_rightSlice;
+                int y0 = 0;
+                int y1 = m_topSlice;
+                int y2 = m_sliceAreaSize.y - m_bottomSlice;
+
+                int w0 = m_leftSlice;
+                int w1 = m_sliceAreaSize.x - m_leftSlice - m_rightSlice;
+                int w2 = m_rightSlice;
+                int h0 = m_topSlice;
+                int h1 = m_sliceAreaSize.y - m_topSlice - m_bottomSlice;
+                int h2 = m_bottomSlice;
+
+                std::vector<sf::IntRect> generatorTextureRects = {
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x0, y0), Vector2i(w0, h0)),
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x1, y0), Vector2i(w1, h0)),
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x2, y0), Vector2i(w2, h0)),
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x0, y1), Vector2i(w0, h1)),
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x1, y1), Vector2i(w1, h1)),
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x2, y1), Vector2i(w2, h1)),
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x0, y2), Vector2i(w0, h2)),
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x1, y2), Vector2i(w1, h2)),
+                    sf::IntRect(m_sliceAreaOrigin + Vector2i(x2, y2), Vector2i(w2, h2)),
+                };
+
+                for (size_t i = 0; i < generatorTextureRects.size(); ++i)
+                {
+                    ElementSpriteGroupItemData* componentData = new ElementSpriteGroupItemData;
+                    ElementSpriteGroupItem* component = AppendNewComponent(elementSpriteGroupData, componentData);
 
                     componentData->subImageName = "";
                     componentData->textureRect = generatorTextureRects[i];

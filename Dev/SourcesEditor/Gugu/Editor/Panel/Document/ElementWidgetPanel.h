@@ -57,7 +57,7 @@ private:
     void RebuildHierarchy();
     void SelectRootNode();
 
-    void DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup);
+    void DisplayGenerators(ElementSpriteGroupData* elementSpriteGroupData, ElementSpriteGroup* elementSpriteGroup, bool sourceChanged);
 
     void AddChildElement(BaseElementData* parentData, BaseElementData* newData);
     void AddChildElement(BaseElementData* parentData, BaseElementData* newData, size_t index);
@@ -97,6 +97,8 @@ private:
     size_t m_generatorIndex;
     std::string m_topLeftName, m_topName, m_topRightName, m_leftName, m_centerName, m_rightName, m_bottomLeftName, m_bottomName, m_bottomRightName;
     sf::IntRect m_topLeftRect, m_topRect, m_topRightRect, m_leftRect, m_centerRect, m_rightRect, m_bottomLeftRect, m_bottomRect, m_bottomRightRect;
+    gugu::Vector2i m_sliceAreaOrigin, m_sliceAreaSize;
+    int m_leftSlice, m_rightSlice, m_topSlice, m_bottomSlice;
     bool m_tileTopSegment, m_tileLeftSegment, m_tileRightSegment, m_tileBottomSegment;
 };
 

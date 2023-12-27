@@ -792,7 +792,7 @@ void ElementWidgetPanel::DisplayGenerators(ElementSpriteGroupData* elementSprite
                 for (size_t i = 0; i < generatorTextureRects.size(); ++i)
                 {
                     ElementSpriteGroupItemData* componentData = new ElementSpriteGroupItemData;
-                    ElementSpriteGroupItem* component = AppendNewComponent(elementSpriteGroupData, componentData);
+                    ElementSpriteGroupItem* component = dynamic_cast<ElementSpriteGroupItem*>(AddComponent(elementSpriteGroupData, componentData));
 
                     componentData->subImageName = "";
                     componentData->textureRect = generatorTextureRects[i];

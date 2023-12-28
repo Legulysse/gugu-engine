@@ -22,10 +22,7 @@ SceneActor::SceneActor()
 
 SceneActor::~SceneActor()
 {
-    if (m_scene)
-    {
-        m_scene->RemoveActor(this);
-    }
+    RemoveFromScene();
 }
 
 void SceneActor::Step(const DeltaTime& dt)
@@ -38,6 +35,15 @@ void SceneActor::Update(const DeltaTime& dt)
 
 void SceneActor::LateUpdate(const DeltaTime& dt)
 {
+}
+
+void SceneActor::RemoveFromScene()
+{
+    if (m_scene)
+    {
+        m_scene->RemoveActor(this);
+        m_scene = nullptr;
+    }
 }
 
 }   // namespace gugu

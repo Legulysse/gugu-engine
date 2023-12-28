@@ -163,12 +163,16 @@ void Scene::AddActor(SceneActor* actor)
 
     m_actors.push_back(actor);
     actor->m_scene = this;
+
+    actor->OnAddedToScene();
 }
 
 void Scene::RemoveActor(SceneActor* actor)
 {
     if (actor->m_scene == this)
     {
+        actor->OnRemovedFromScene();
+
         StdVectorRemove(m_actors, actor);
         actor->m_scene = nullptr;
     }
@@ -189,6 +193,8 @@ void Scene::DeleteAllActors()
     {
         if (m_actors[i])
         {
+            m_actors[i]->OnRemovedFromScene();
+
             m_actors[i]->m_scene = nullptr;
             SafeDelete(m_actors[i]);
         }

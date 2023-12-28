@@ -27,6 +27,9 @@
 namespace gugu {
 
 ManagerAudio::ManagerAudio()
+    : m_soundIndex(0)
+    , m_masterMuted(false)
+    , m_masterVolume(1.f)
 {
 }
 
@@ -47,10 +50,6 @@ void ManagerAudio::Init(const EngineConfig& config)
         m_musicLayers[i].SetInstances(&m_musicInstances[i*2], &m_musicInstances[i*2 + 1]);
     }
 
-    m_soundIndex = 0;
-
-    SetVolumeMaster(1.f);
-
     GetLogEngine()->Print(ELog::Info, ELogEngine::Audio, "Manager Audio Ready");
 }
 
@@ -69,14 +68,40 @@ void ManagerAudio::Update(const DeltaTime& dt)
     }
 }
 
-void ManagerAudio::SetVolumeMaster(float _fVolume)
+void ManagerAudio::SetMasterMuted(bool muted)
 {
-    sf::Listener::setGlobalVolume(_fVolume * 100.f);
+    m_masterMuted = muted;
+
+    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
 }
 
-float ManagerAudio::GetVolumeMaster() const
+bool ManagerAudio::IsMasterMuted() const
 {
-    return sf::Listener::getGlobalVolume() * 0.01f;
+    return m_masterMuted;
+}
+
+void ManagerAudio::SetMasterVolume(float volume)
+{
+    m_masterVolume = volume;
+
+    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
+}
+
+void ManagerAudio::SetMasterVolume100(int volume)
+{
+    m_masterVolume = volume * 0.01f;
+
+    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
+}
+
+float ManagerAudio::GetMasterVolume() const
+{
+    return m_masterVolume;
+}
+
+int ManagerAudio::GetMasterVolume100() const
+{
+    return (int)(m_masterVolume * 100.f);
 }
 
 bool ManagerAudio::PlaySoundCue(const std::string& _strFile)

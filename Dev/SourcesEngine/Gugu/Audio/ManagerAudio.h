@@ -38,8 +38,12 @@ public:
     
     void    Update  (const DeltaTime& dt);
 
-    void    SetVolumeMaster (float _fVolume);   // Volume range [0, 1]
-    float   GetVolumeMaster () const;
+    void SetMasterMuted(bool muted);
+    bool IsMasterMuted() const;
+    void SetMasterVolume(float volume);     // Volume range [0, 1]
+    void SetMasterVolume100(int volume);    // Volume range [0, 100]
+    float GetMasterVolume() const;
+    int GetMasterVolume100() const;
 
     //void    SetVolumeGroup  (int _iGroup, float _fVolume);    //TODO
     //float   GetVolumeGroup  (int _iGroup) const;              //TODO
@@ -62,6 +66,9 @@ private:
     std::vector<MusicLayer>     m_musicLayers;
 
     size_t                      m_soundIndex;
+
+    bool m_masterMuted;
+    float m_masterVolume;
 };
 
 

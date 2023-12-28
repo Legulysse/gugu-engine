@@ -30,7 +30,7 @@ public:
     bool LoadFromWidget(const std::string& elementWidgetID);
     bool LoadFromWidget(ElementWidget* elementWidget);
 
-    void SetChecked(bool checked);
+    void SetChecked(bool checked, bool triggerCallback = true);
     bool IsChecked() const;
 
     void SetText(const std::string& text, const std::string& fontID = "");

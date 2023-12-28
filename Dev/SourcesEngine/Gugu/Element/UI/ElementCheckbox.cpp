@@ -65,13 +65,13 @@ bool ElementCheckbox::LoadFromWidget(ElementWidget* elementWidget)
     return false;
 }
 
-void ElementCheckbox::SetChecked(bool checked)
+void ElementCheckbox::SetChecked(bool checked, bool triggerCallback)
 {
     if (m_isChecked != checked)
     {
         m_isChecked = checked;
 
-        if (m_actionOnCheckedChanged)
+        if (m_actionOnCheckedChanged && triggerCallback)
         {
             m_actionOnCheckedChanged();
         }

@@ -72,7 +72,7 @@ void ElementSlider::SetValueLimits(int minValue, int maxValue)
     RaiseNeedRecompute();
 }
 
-void ElementSlider::SetValue(int value)
+void ElementSlider::SetValue(int value, bool triggerCallback)
 {
     value = Clamp(value, m_minValue, m_maxValue);
 
@@ -82,7 +82,7 @@ void ElementSlider::SetValue(int value)
 
         RaiseNeedRecompute();
 
-        if (m_actionOnValueChanged)
+        if (m_actionOnValueChanged && triggerCallback)
         {
             m_actionOnValueChanged();
         }

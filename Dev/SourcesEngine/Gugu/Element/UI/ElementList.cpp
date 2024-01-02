@@ -75,12 +75,11 @@ void ElementList::SetImageSet(const std::string& _strImageSetPath)
 
 void ElementList::AddItem(ElementListItem* _pNewItem)
 {
-    _pNewItem->SetList(this);
+    _pNewItem->SetParent(this);
+    m_items.push_back(_pNewItem);
 
     Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
     _pNewItem->OnListResized(kListSize);
-
-    m_items.push_back(_pNewItem);
 
     // TODO: I should avoid calling this for every Add/Remove and use a delayed refresh.
     RecomputeItems();

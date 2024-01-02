@@ -11,6 +11,7 @@
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -21,8 +22,7 @@
 namespace gugu {
     
 ElementListItem::ElementListItem()
-    : m_list(nullptr)
-    , m_elementImpl(nullptr)
+    : m_elementImpl(nullptr)
     , m_isSelected(false)
     , m_callbackOnSelected(nullptr)
     , m_callbackOnDeselected(nullptr)
@@ -34,12 +34,12 @@ ElementListItem::~ElementListItem()
     SafeDelete(m_elementImpl);
 }
 
-void ElementListItem::SetList(ElementList* _pList)
+void ElementListItem::OnParentChanged()
 {
-    //TODO : remove from previous List
-
-    SetParent(_pList);
-    m_list = _pList;
+    if (m_parent && dynamic_cast<ElementList*>(m_parent) == nullptr)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "A ListItem has been attached to an unsupported parent type (should be a List)");
+    }
 }
 
 void ElementListItem::SetElement(Element* _pElement)

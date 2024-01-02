@@ -26,29 +26,29 @@ public:
     ElementListItem();
     virtual ~ElementListItem();
 
-    void        SetList     (ElementList* _pList);
-    void        SetElement  (Element* _pElement);
-    Element*    GetElement  () const;
+    void SetElement(Element* _pElement);
+    Element* GetElement() const;
 
-    void        SetSelected (bool _bIsSelected);
-    bool        IsSelected  () const;
+    void SetSelected(bool _bIsSelected);
+    bool IsSelected() const;
 
-    void        OnListResized   (const Vector2f& _oListSize);
-    bool        IsItemSizedToContent() const;
-    void        ResizeToContent();
+    void OnListResized(const Vector2f& _oListSize);
+    bool IsItemSizedToContent() const;
+    void ResizeToContent();
     
-    void        SetOnSelected   (const Callback& callback);
-    void        SetOnDeselected (const Callback& callback);
+    void SetOnSelected(const Callback& callback);
+    void SetOnDeselected(const Callback& callback);
 
 private:
 
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
-    
+
+    virtual void OnParentChanged() override;
+
 protected:
 
-    ElementList*    m_list;
-    Element*        m_elementImpl;
-    bool            m_isSelected;
+    Element* m_elementImpl;
+    bool m_isSelected;
 
     Callback m_callbackOnSelected;
     Callback m_callbackOnDeselected;

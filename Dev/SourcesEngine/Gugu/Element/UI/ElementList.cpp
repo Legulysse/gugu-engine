@@ -73,46 +73,73 @@ void ElementList::SetImageSet(const std::string& _strImageSetPath)
     RecomputeItems();
 }
 
-void ElementList::AddItem(ElementListItem* _pNewItem)
+void ElementList::AddItem(ElementListItem* item)
 {
-    _pNewItem->SetParent(this);
-    m_items.push_back(_pNewItem);
+    item->SetParent(this);
+    m_items.push_back(item);
 
     Vector2f kListSize(m_size.x - m_scrollSlider->GetSize().x, m_size.y);
-    _pNewItem->OnListResized(kListSize);
+    item->OnListResized(kListSize);
 
     // TODO: I should avoid calling this for every Add/Remove and use a delayed refresh.
     RecomputeItems();
 }
 
-void ElementList::RemoveItem(size_t _iIndex)
+void ElementList::RemoveItem(size_t index)
 {
-    ElementListItem* pItem = m_items[_iIndex];
-    RemoveItem(pItem);
-}
+    if (index < 0 || index > m_items.size())
+        return;
 
-void ElementList::RemoveItem(ElementListItem* _pItem)
-{
-    for (auto iteItem = m_items.begin(); iteItem != m_items.end(); ++iteItem)
-    {
-        if (*iteItem == _pItem)
-        {
-            SafeDelete(_pItem);
-            m_items.erase(iteItem);
-            break;
-        }
-    }
+    ElementListItem* item = m_items[index];
+    StdVectorRemoveAt(m_items, index);
+    item->SetParent(nullptr);
 
-    m_currentIndexTop = m_items.size() == 0 ? 0 : Clamp<size_t>(m_currentIndexTop, 0, m_items.size() - 1);
-
+    ClampCurrentIndex();
     RecomputeItems();
 }
 
-void ElementList::RemoveAllItems()
+void ElementList::RemoveItem(ElementListItem* item)
+{
+    if (item->GetParent() != this)
+        return;
+
+    StdVectorRemove(m_items, item);
+    item->SetParent(nullptr);
+
+    ClampCurrentIndex();
+    RecomputeItems();
+}
+
+void ElementList::DeleteItem(size_t index)
+{
+    if (index < 0 || index > m_items.size())
+        return;
+
+    ElementListItem* item = m_items[index];
+    StdVectorRemoveAt(m_items, index);
+    SafeDelete(item);
+
+    ClampCurrentIndex();
+    RecomputeItems();
+}
+
+void ElementList::DeleteItem(ElementListItem* item)
+{
+    if (item->GetParent() != this)
+        return;
+
+    StdVectorRemove(m_items, item);
+    SafeDelete(item);
+
+    ClampCurrentIndex();
+    RecomputeItems();
+}
+
+void ElementList::DeleteAllItems()
 {
     ClearStdVector(m_items);
-    m_currentIndexTop = 0;
 
+    ClampCurrentIndex();
     RecomputeItems();
 }
 
@@ -294,6 +321,11 @@ void ElementList::OnSliderDragMoved(const InteractionInfos& interactionInfos)
         //TODO: Maybe disable the drag interaction when items list is empty
         RecomputeItems();
     }
+}
+
+void ElementList::ClampCurrentIndex()
+{
+    m_currentIndexTop = m_items.size() == 0 ? 0 : Clamp<size_t>(m_currentIndexTop, 0, m_items.size() - 1);
 }
 
 int ElementList::ScrollItems(int _iDelta)

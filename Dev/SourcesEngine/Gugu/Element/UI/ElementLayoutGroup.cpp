@@ -66,7 +66,29 @@ void ElementLayoutGroup::AddItem(Element* item)
     RaiseNeedRecompute();
 }
 
-void ElementLayoutGroup::RemoveAllItems()
+void ElementLayoutGroup::RemoveItem(Element* item)
+{
+    if (item->GetParent() != this)
+        return;
+
+    StdVectorRemove(m_items, item);
+    item->SetParent(nullptr);
+
+    RaiseNeedRecompute();
+}
+
+void ElementLayoutGroup::DeleteItem(Element* item)
+{
+    if (item->GetParent() != this)
+        return;
+
+    StdVectorRemove(m_items, item);
+    SafeDelete(item);
+
+    RaiseNeedRecompute();
+}
+
+void ElementLayoutGroup::DeleteAllItems()
 {
     ClearStdVector(m_items);
 

@@ -28,10 +28,12 @@ public:
 
     void SetImageSet        (const std::string& _strImageSetPath);
     
-    void AddItem            (ElementListItem* _pNewItem);
-    void RemoveItem         (size_t _iIndex);
-    void RemoveItem         (ElementListItem* _pItem);
-    void RemoveAllItems     ();
+    void AddItem            (ElementListItem* item);
+    void RemoveItem         (size_t index);
+    void RemoveItem         (ElementListItem* item);
+    void DeleteItem         (size_t index);
+    void DeleteItem         (ElementListItem* item);
+    void DeleteAllItems     ();
     
     void    GetItems        (std::vector<ElementListItem*>& _vecItems) const;
     size_t  GetItemCount    () const;
@@ -60,6 +62,7 @@ protected:
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
 
+    void    ClampCurrentIndex();
     int     ScrollItems(int _iDelta);
 
     void    RecomputeScrollBar();

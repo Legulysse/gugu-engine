@@ -106,7 +106,8 @@ void Element::SetParent(Element* parent)
     if (m_parent)
     {
         // Ensure this Element is not attached anymore to another Element.
-        m_parent->RemoveChild(this);
+        StdVectorRemove(m_parent->m_children, this);
+        m_parent = nullptr;
     }
 
     m_parent = parent;
@@ -121,6 +122,8 @@ void Element::RemoveChild(Element* child)
     {
         StdVectorRemove(m_children, child);
         child->m_parent = nullptr;
+
+        child->OnParentChanged();
     }
 }
 
@@ -129,7 +132,7 @@ void Element::DeleteAllChildren()
     for (size_t i = 0; i < m_children.size(); ++i)
     {
         Element* pElem = m_children[i];
-        pElem->m_parent = nullptr;  //Set to null before calling the delete, to avoid the child to call a remove
+        pElem->m_parent = nullptr;  //Set to null before calling the delete, to avoid the child to call a remove (no need to call OnParentChanged).
 
         SafeDelete(pElem);
     }

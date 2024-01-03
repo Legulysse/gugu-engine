@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
-<ParticleEffect>
+<ParticleEffect serializationVersion="1">
 	<Loop value="true" />
 	<Duration value="0" />
 	<MaxParticleCount value="5000" />
-	<ParticleShape value="Quad" />
+	<ParticleShape value="Point" />
+	<SortBuffer value="false" />
 	<LocalSpace value="false" />
 	<EmitterShape value="Point" />
 	<EmitterRadius value="10" />
@@ -17,10 +18,10 @@
 	<Velocity random="true" min="0" max="20" />
 	<KeepSizeRatio value="true" />
 	<StartSize random="false" min_x="1" min_y="1" max_x="5" max_y="5" />
-	<UpdateSizeOverLifetime value="true" />
+	<UpdateSizeOverLifetime value="false" />
 	<EndSize random="false" min_x="0" min_y="0" max_x="0" max_y="0" />
 	<UpdateColorOverLifetime value="true" />
 	<StartColor r="101" g="241" b="255" a="255" />
-	<EndColor r="21" g="0" b="255" a="50" />
+	<EndColor r="0" g="105" b="255" a="0" />
 	<ImageSetID value="" />
 </ParticleEffect>

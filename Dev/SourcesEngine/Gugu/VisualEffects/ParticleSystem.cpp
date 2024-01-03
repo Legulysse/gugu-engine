@@ -64,7 +64,7 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
         settings.maxSpawnPerSecond = settings.useRandomSpawnPerSecond ? Max(settings.minSpawnPerSecond, settings.maxSpawnPerSecond) : settings.minSpawnPerSecond;
         settings.maxParticlesPerSpawn = settings.useRandomParticlesPerSpawn ? Max(settings.minParticlesPerSpawn, settings.maxParticlesPerSpawn) : settings.minParticlesPerSpawn;
         
-        settings.emissionDirection = (settings.emissionDirection != sf::Vector2f(0, 0)) ? Normalize(settings.emissionDirection) : Vector2f(0.f, -1.f);
+        settings.emissionDirection = (settings.emissionDirection != Vector2::Zero_f) ? Normalize(settings.emissionDirection) : Vector2f(0.f, -1.f);
         settings.maxLifetime = settings.useRandomLifetime ? Max(settings.minLifetime, settings.maxLifetime) : settings.minLifetime;
         settings.maxVelocity = settings.useRandomVelocity ? Max(settings.minVelocity, settings.maxVelocity) : settings.minVelocity;
 
@@ -350,7 +350,7 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     {
         float velocityValue = GetRandomf(m_settings.minVelocity, m_settings.maxVelocity);
         Vector2f velocityVector = position - m_emitterPosition;
-        velocityVector = Normalize(velocityVector) * velocityValue;
+        velocityVector = velocityVector != Vector2::Zero_f ? Normalize(velocityVector) * velocityValue : Vector2f(0.f, -1.f) * velocityValue;
         m_dataVelocity[particleIndex] = velocityVector;
     }
 }

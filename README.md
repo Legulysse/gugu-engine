@@ -9,7 +9,7 @@ Contributors : Diccy, Amitsouko
 ## Dependencies
 
 - SFML 2.6.1 : used by the Engine.  
-- PugiXml 1.11.4 : used by the Engine.  
+- PugiXml 1.13 : used by the Engine.  
 - ImGui 1.87 (docking) : used by the Editor.  
 - ImGui-SFML 2.6 : used for the ImGui integration.  
 - Python 3.x : used for build and utility scripts.  

@@ -146,19 +146,19 @@ void ParticleSystem::Start()
     m_paused = false;
     m_currentDuration = 0.f;
     
+    // TODO: Delay parameter ?
     // TODO: Wait for the update to trigger a pending StartImpl ? to ensure we are not polluting Step.
     // TODO: I should refactor this to avoid duplicated code from the Update.
-    // TODO: Additional note : this actually can mess with particles lifetime, since they will get updated the same frame they are spawned, and may disappear before the next render.
-    // TODO: Delay parameter ?
-    size_t i = 0;
+    // - The current implementation will slightly mess with particles lifetime, since they will get updated the same frame they are spawned, and may disappear before the next render.
+    // - I need to be careful with firing rate computations in emission handling in update if I provide zero delays.
+
     size_t emitCount = Min(m_maxParticleCount, (size_t)GetRandom(m_settings.minParticlesPerSpawn, m_settings.maxParticlesPerSpawn));
-    while (i < emitCount)
+    for (size_t i = 0; i < emitCount; ++i)
     {
         EmitParticle(i);
-        ++i;
     }
     
-    m_nextEmitIndex = i % m_maxParticleCount;
+    m_nextEmitIndex = emitCount % m_maxParticleCount;
     m_currentSpawnDelay = 0.f;
 
     float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
@@ -324,11 +324,10 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
 
     // Reset color.
     sf::Vertex* vertices = &m_dataVertices[particleIndex * m_verticesPerParticle];
-    vertices->color = m_settings.startColor;
-    for (size_t ii = 1; ii < m_verticesPerParticle; ++ii)
+    for (size_t i = 0; i < m_verticesPerParticle; ++i)
     {
-        ++vertices;
         vertices->color = m_settings.startColor;
+        ++vertices;
     }
 
     // Reset velocity.
@@ -368,13 +367,11 @@ void ParticleSystem::ResetParticle(size_t particleIndex)
     m_dataLifetime[particleIndex] = 0.f;
 
     sf::Vertex* vertices = &m_dataVertices[particleIndex * m_verticesPerParticle];
-    vertices->position = m_emitterPosition;
-    vertices->color = sf::Color::Transparent;
-    for (size_t ii = 1; ii < m_verticesPerParticle; ++ii)
+    for (size_t i = 0; i < m_verticesPerParticle; ++i)
     {
-        ++vertices;
         vertices->position = m_emitterPosition;
         vertices->color = sf::Color::Transparent;
+        ++vertices;
     }
 }
 
@@ -474,11 +471,10 @@ void ParticleSystem::Update(const DeltaTime& dt)
                     Lerp<sf::Uint8>(m_settings.endColor.a, m_settings.startColor.a, lerpValue));
 
                 sf::Vertex* vertices = &m_dataVertices[i * m_verticesPerParticle];
-                vertices->color = color;
-                for (size_t ii = 1; ii < m_verticesPerParticle; ++ii)
+                for (size_t ii = 0; ii < m_verticesPerParticle; ++ii)
                 {
-                    ++vertices;
                     vertices->color = color;
+                    ++vertices;
                 }
             }
         }

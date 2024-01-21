@@ -75,6 +75,12 @@ template <typename T>
 T Absolute(T _tValue);
 
 template <typename T>
+T Sign(T value);
+
+template <typename T>
+int SignInt(T value);
+
+template <typename T>
 T Power(const T& n, const int& p);
 
 //--------------------------------

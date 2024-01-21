@@ -90,6 +90,23 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK(ApproxEqual(Absolute(-5.5f), 5.5f, math::Epsilon6));
         }
 
+        GUGU_UTEST_SUBSECTION("Sign");
+        {
+            GUGU_UTEST_CHECK_EQUAL(Sign(0), 0);
+            GUGU_UTEST_CHECK_EQUAL(Sign(5), 1);
+            GUGU_UTEST_CHECK_EQUAL(Sign(-5), -1);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Sign(0.f), 0.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Sign(0.5f), 1.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Sign(-0.5f), -1.f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_EQUAL(SignInt(0), 0);
+            GUGU_UTEST_CHECK_EQUAL(SignInt(5), 1);
+            GUGU_UTEST_CHECK_EQUAL(SignInt(-5), -1);
+            GUGU_UTEST_CHECK_EQUAL(SignInt(0.f), 0);
+            GUGU_UTEST_CHECK_EQUAL(SignInt(0.5f), 1);
+            GUGU_UTEST_CHECK_EQUAL(SignInt(-0.5f), -1);
+        }
+
         GUGU_UTEST_SUBSECTION("Angles");
         {
             GUGU_UTEST_CHECK(ApproxEqual((float)ToDegrees(math::Pi), 180.f, math::Epsilon3));

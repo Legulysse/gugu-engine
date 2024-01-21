@@ -67,6 +67,22 @@ T Absolute(T _tValue)
 }
 
 template <typename T>
+T Sign(T value)
+{
+    if (value > (T)0) return (T)1;
+    if (value < (T)0) return (T)-1;
+    return value;
+}
+
+template <typename T>
+int SignInt(T value)
+{
+    if (value > (T)0) return 1;
+    if (value < (T)0) return -1;
+    return 0;
+}
+
+template <typename T>
 T Power(const T& n, const int& p)
 {
     if (p >= 0)

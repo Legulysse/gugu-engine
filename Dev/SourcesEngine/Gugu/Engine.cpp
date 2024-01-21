@@ -191,7 +191,7 @@ void Engine::RunMainLoop()
         m_application->AppStart();
 
     // Init loop clock.
-    sf::Clock oClock;
+    sf::Clock loopClock;
 
     // Init loop variables.
     sf::Time loopTime = sf::Time::Zero;   //Time since last Loop.
@@ -222,7 +222,7 @@ void Engine::RunMainLoop()
         {
             GUGU_SCOPE_TRACE_MAIN("Engine Loop");
 
-            loopTime = oClock.restart();
+            loopTime = loopClock.restart();
             RunSingleLoop(loopTime);
 
             // Safeguard if there is no render in the loop, to avoid using cpu and risking dt times of zero.
@@ -296,16 +296,16 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         //Window Events (will abort the Step if main window is closed !)
         for (size_t i = 0; i < m_windows.size(); ++i)
         {
-            Window* pWindow = m_windows[i];
+            Window* window = m_windows[i];
 
-            bool bClosed = pWindow->ProcessEvents();
-            if (bClosed)
+            bool closed = window->ProcessEvents();
+            if (closed)
             {
                 //TODO: I currently avoid to delete Windows for crash safety (events, Elements), maybe I could handle this better
-                //RemoveWindow(pWindow); //if used, need manual handling of ++i
-                //SafeDelete(pWindow);
+                //RemoveWindow(window); //if used, need manual handling of ++i
+                //SafeDelete(window);
 
-                bool isMainWindow = (pWindow == m_gameWindow);
+                bool isMainWindow = (window == m_gameWindow);
                 if (isMainWindow && (!m_application || m_application->OnMainWindowCloseEvent()))
                 {
                     // The main window will be automatically closed by the engine release.
@@ -542,9 +542,9 @@ void Engine::RemoveWindow(Window* window)
     if (m_gameWindow == window)
         m_gameWindow = nullptr;
 
-    auto iteFind = StdVectorFind(m_windows, window);
-    if (iteFind != m_windows.end())
-        m_windows.erase(iteFind);
+    auto it = StdVectorFind(m_windows, window);
+    if (it != m_windows.end())
+        m_windows.erase(it);
 }
 
 void Engine::SetGameWindow(Window* window)
@@ -566,66 +566,66 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, StringFormat("CommandLine : {0}", lowerCommandLine));
 
-    std::vector<std::string> vecTokens;
-    StdStringSplit(lowerCommandLine, " ", vecTokens);
+    std::vector<std::string> tokens;
+    StdStringSplit(lowerCommandLine, " ", tokens);
 
-    if (!vecTokens.empty())
+    if (!tokens.empty())
     {
-        std::string strCommand = vecTokens[0];
-        vecTokens.erase(vecTokens.begin());
+        std::string command = tokens[0];
+        tokens.erase(tokens.begin());
 
-        if (strCommand == "fps")
+        if (command == "fps")
         {
             if (m_gameWindow)
                 m_gameWindow->ToggleShowFPS();
         }
-        else if (strCommand == "stats")
+        else if (command == "stats")
         {
             if (m_gameWindow)
                 m_gameWindow->ToggleShowStats();
         }
-        else if (strCommand == "bounds")
+        else if (command == "bounds")
         {
             if (m_gameWindow)
                 m_gameWindow->ToggleShowBounds();
         }
-        else if (strCommand == "ruler")
+        else if (command == "ruler")
         {
             if (m_gameWindow)
                 m_gameWindow->ToggleShowRuler();
         }
-        else if (strCommand == "trace")
+        else if (command == "trace")
         {
             m_traceLifetime = 10;
-            if (!vecTokens.empty())
-                FromString(vecTokens[0], m_traceLifetime);
+            if (!tokens.empty())
+                FromString(tokens[0], m_traceLifetime);
         }
-        else if (strCommand == "speed")
+        else if (command == "speed")
         {
             m_useSpeedMultiplier = false;
             m_speedMultiplier = 1.f;
 
-            if (!vecTokens.empty() && vecTokens[0] != "1")
+            if (!tokens.empty() && tokens[0] != "1")
             {
                 float speed = 1;
-                if (FromString(vecTokens[0], speed))
+                if (FromString(tokens[0], speed))
                 {
                     m_useSpeedMultiplier = true;
                     m_speedMultiplier = Max(0.f, speed);
                 }
             }
         }
-        else if (strCommand == "pause")
+        else if (command == "pause")
         {
             m_pauseLoop = !m_pauseLoop;
             m_injectTime = sf::Time::Zero;
         }
-        else if (strCommand == "time")
+        else if (command == "time")
         {
-            if (!vecTokens.empty())
+            if (!tokens.empty())
             {
                 int time = 0;
-                if (FromString(vecTokens[0], time))
+                if (FromString(tokens[0], time))
                 {
                     m_injectTime = sf::milliseconds(Max(0, time));
                 }
@@ -633,7 +633,7 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
         }
 
         if (GetApplication())
-            GetApplication()->ComputeCommandLine(strCommand, vecTokens);
+            GetApplication()->ComputeCommandLine(command, tokens);
     }
 }
 
@@ -642,52 +642,52 @@ bool Engine::SetTimer(const std::string& name, float delayMs, uint32 ticks, bool
     if (!callback)
         return false;
 
-    Timer* pNewTimer = new Timer;
+    Timer* newTimer = new Timer;
 
-    pNewTimer->currentTime = 0;
-    pNewTimer->tickDelay = delayMs;
+    newTimer->currentTime = 0;
+    newTimer->tickDelay = delayMs;
 
-    pNewTimer->ticks = 0;
-    pNewTimer->maxTicks = ticks;
+    newTimer->ticks = 0;
+    newTimer->maxTicks = ticks;
 
-    pNewTimer->callback = callback;
+    newTimer->callback = callback;
 
     if (tickNow)
     {
-        pNewTimer->callback();
+        newTimer->callback();
 
         if (ticks == 1)
         {
-            SafeDelete(pNewTimer);
+            SafeDelete(newTimer);
             return true;
         }
 
         if (ticks > 0)
-            pNewTimer->ticks += 1;
+            newTimer->ticks += 1;
     }
 
     ClearTimer(name);
-    m_timers[name] = pNewTimer;
+    m_timers[name] = newTimer;
 
     return true;
 }
 
 void Engine::ClearTimer(const std::string& name)
 {
-   auto kvp = m_timers.find(name);
-    if (kvp != m_timers.end())
+    auto it = m_timers.find(name);
+    if (it != m_timers.end())
     {
-        SafeDelete(kvp->second);
-        m_timers.erase(kvp);
+        SafeDelete(it->second);
+        m_timers.erase(it);
     }
 }
 
 const Timer* Engine::GetTimer(const std::string& name) const
 {
-    auto kvp = m_timers.find(name);
-    if (kvp != m_timers.end())
+    auto it = m_timers.find(name);
+    if (it != m_timers.end())
     {
-        return kvp->second;
+        return it->second;
     }
 
     return nullptr;
@@ -695,37 +695,37 @@ const Timer* Engine::GetTimer(const std::string& name) const
 
 void Engine::TickTimers(const DeltaTime& dt)
 {
-    for (auto kvp = m_timers.begin(); kvp != m_timers.end();)
+    for (auto it = m_timers.begin(); it != m_timers.end();)
     {
-        Timer* pTimer = kvp->second;
+        Timer* timer = it->second;
 
-        pTimer->currentTime += dt.ms();
+        timer->currentTime += dt.ms();
 
-        while (ApproxSuperiorOrEqual(pTimer->currentTime, pTimer->tickDelay, math::Epsilon6))
+        while (ApproxSuperiorOrEqual(timer->currentTime, timer->tickDelay, math::Epsilon6))
         {
-            pTimer->currentTime -= pTimer->tickDelay;
+            timer->currentTime -= timer->tickDelay;
 
-            if (pTimer->callback)
-                pTimer->callback();
+            if (timer->callback)
+                timer->callback();
 
-            if (pTimer->maxTicks == 0)  //infinite
+            if (timer->maxTicks == 0)  //infinite
                 continue;
 
-            pTimer->ticks += 1;
-            if (pTimer->ticks >= pTimer->maxTicks)
+            timer->ticks += 1;
+            if (timer->ticks >= timer->maxTicks)
             {
-                SafeDelete(pTimer);
+                SafeDelete(timer);
                 break;
             }
         }
 
-        if (!pTimer)
+        if (!timer)
         {
-            kvp = m_timers.erase(kvp);
+            it = m_timers.erase(it);
         }
         else
         {
-            ++kvp;
+            ++it;
         }
     }
 }

@@ -17,17 +17,17 @@ class Hash
 public:
 
     Hash();
-    Hash(const std::string& _strValue);
-    Hash(const char* _strValue);
-    Hash(const Hash& _oRight);
+    Hash(const std::string& value);
+    Hash(const char* value);
+    Hash(const Hash& right);
     ~Hash();
 
-    static uint64 HashString(const std::string& _strValue);
+    static uint64 HashString(const std::string& value);
 
     uint64 ToInt() const;
 
-    bool operator < (const Hash& _oRight) const; // Used by std sorts
-    Hash& operator = (const Hash& _oRight);
+    bool operator < (const Hash& right) const; // Used by std sorts
+    Hash& operator = (const Hash& right);
 
 private:
 

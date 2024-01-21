@@ -45,10 +45,10 @@ public:
     // Return true to allow the engine to automatically close the main window, or false to manually handle the event.
     virtual bool OnMainWindowCloseEvent();
 
-    virtual void ComputeCommandLine(const std::string& _strCommand, const std::vector<std::string>& _vecArgs);
+    virtual void ComputeCommandLine(const std::string& command, const std::vector<std::string>& args);
 
-    virtual NetPacketGame* ReadGamePacket(sf::Packet* _pSFPacket);
-    virtual void PlayerAddedToGame(ClientInfo* pClient);
+    virtual NetPacketGame* ReadGamePacket(sf::Packet* sfPacket);
+    virtual void PlayerAddedToGame(ClientInfo* client);
 };
 
 Application* GetApplication();

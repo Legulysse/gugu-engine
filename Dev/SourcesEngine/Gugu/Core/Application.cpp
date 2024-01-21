@@ -47,16 +47,16 @@ bool Application::OnMainWindowCloseEvent()
     return true;
 }
 
-void Application::ComputeCommandLine(const std::string& _strCommand, const std::vector<std::string>& _vecArgs)
+void Application::ComputeCommandLine(const std::string& command, const std::vector<std::string>& args)
 {
 }
 
-NetPacketGame* Application::ReadGamePacket(sf::Packet* _pSFPacket)
+NetPacketGame* Application::ReadGamePacket(sf::Packet* sfPacket)
 {
     return nullptr;
 }
 
-void Application::PlayerAddedToGame(ClientInfo* pClient)
+void Application::PlayerAddedToGame(ClientInfo* client)
 {
 }
 

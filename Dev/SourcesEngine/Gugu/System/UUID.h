@@ -20,6 +20,7 @@ public:
 
     bool operator == (const UUID& right) const;
     bool operator != (const UUID& right) const;
+    bool operator < (const UUID& right) const; // Used by std sorts
 
 private:
 

@@ -9,6 +9,7 @@
 
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/System/UUID.h"
+#include "Gugu/System/Hash.h"
 
 using namespace gugu;
 
@@ -592,11 +593,41 @@ void RunUnitTests_System(UnitTestResults* results)
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("Hash");
+    {
+        Hash hashA("");
+        Hash hashB("Hello World");
+
+        GUGU_UTEST_CHECK(hashA == Hash(""));
+        GUGU_UTEST_CHECK(hashB == Hash("Hello World"));
+        GUGU_UTEST_CHECK(Hash("") == Hash(""));
+        GUGU_UTEST_CHECK(Hash("Hello World") == Hash("Hello World"));
+        GUGU_UTEST_CHECK(hashA != hashB);
+        GUGU_UTEST_CHECK(hashA != Hash("Hello World"));
+        GUGU_UTEST_CHECK(hashB != Hash(""));
+        GUGU_UTEST_CHECK(hashA.ToInt() != 0);
+        GUGU_UTEST_CHECK(hashB.ToInt() != 0);
+        GUGU_UTEST_CHECK(hashA.ToInt() != hashB.ToInt());
+        GUGU_UTEST_CHECK(ToString(hashA) == ToString(hashA.ToInt()));
+
+        std::vector<Hash> vector_hash;
+        std::set<Hash> set_hash;
+        std::map<Hash, std::string> map_hash;
+
+        vector_hash.push_back(Hash());
+        set_hash.insert(Hash());
+        map_hash.insert(std::make_pair(Hash(), ""));
+        map_hash[Hash()] = "";
+        std::sort(vector_hash.begin(), vector_hash.end());
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_SECTION("UUID");
     {
-        gugu::UUID uuidA = GenerateUUID();
-        gugu::UUID uuidB = GenerateUUID();
-        gugu::UUID uuidAA = uuidA;
+        UUID uuidA = GenerateUUID();
+        UUID uuidB = GenerateUUID();
+        UUID uuidAA = uuidA;
 
         GUGU_UTEST_CHECK_NOT_EQUAL(uuidA, uuidB);
         GUGU_UTEST_CHECK_NOT_EQUAL(uuidAA, uuidB);
@@ -604,6 +635,7 @@ void RunUnitTests_System(UnitTestResults* results)
         GUGU_UTEST_CHECK(uuidA != uuidB);
         GUGU_UTEST_CHECK(uuidAA != uuidB);
         GUGU_UTEST_CHECK(uuidA == uuidAA);
+        GUGU_UTEST_CHECK(ToString(uuidA) == uuidA.ToString());
 
         std::vector<std::string> uuids;
         bool validSize = true;
@@ -619,7 +651,7 @@ void RunUnitTests_System(UnitTestResults* results)
 
             for (size_t i = 0; i < uuid.size(); ++i)
             {
-                validChars &= (uuid[i] >= '0' && uuid[i] <= '9') || (uuid[i] >= 'A' && uuid[i] <= 'Z');
+                validChars &= (uuid[i] >= '0' && uuid[i] <= '9') || (uuid[i] >= 'A' && uuid[i] <= 'F');
             }
         }
 
@@ -634,6 +666,16 @@ void RunUnitTests_System(UnitTestResults* results)
         GUGU_UTEST_CHECK(validSize);
         GUGU_UTEST_CHECK(validChars);
         GUGU_UTEST_CHECK(allDifferent);
+
+        std::vector<UUID> vector_uuid;
+        std::set<UUID> set_uuid;
+        std::map<UUID, std::string> map_uuid;
+
+        vector_uuid.push_back(GenerateUUID());
+        set_uuid.insert(GenerateUUID());
+        map_uuid.insert(std::make_pair(GenerateUUID(), ""));
+        map_uuid[GenerateUUID()] = "";
+        std::sort(vector_uuid.begin(), vector_uuid.end());
     }
 
     //----------------------------------------------

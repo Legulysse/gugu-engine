@@ -26,8 +26,9 @@ public:
 
     uint64 ToInt() const;
 
+    bool operator == (const Hash& right) const;
+    bool operator != (const Hash& right) const;
     bool operator < (const Hash& right) const; // Used by std sorts
-    Hash& operator = (const Hash& right);
 
 private:
 

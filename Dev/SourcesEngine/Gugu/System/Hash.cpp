@@ -50,15 +50,19 @@ uint64 Hash::ToInt() const
     return m_value;
 }
 
+bool Hash::operator == (const Hash& right) const
+{
+    return m_value == right.m_value;
+}
+
+bool Hash::operator != (const Hash& right) const
+{
+    return m_value != right.m_value;
+}
+
 bool Hash::operator < (const Hash& right) const
 {
     return m_value < right.m_value;
-}
-
-Hash& Hash::operator = (const Hash& right)
-{
-    m_value = right.m_value;
-    return *this;
 }
 
 std::ostream& operator << (std::ostream& stream, const Hash& hash)

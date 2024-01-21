@@ -5,7 +5,7 @@
 
 #include "Gugu/Core/Callback.h"
 #include "Gugu/System/Types.h"
-#include "Gugu/System/Hash.h"
+//#include "Gugu/System/Hash.h"
 #include "Gugu/System/FileInfo.h"
 #include "Gugu/Resources/EnumsResources.h"
 

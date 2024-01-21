@@ -264,6 +264,22 @@ void RunUnitTests_Math(UnitTestResults* results)
         GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(direction), 500.f, math::Epsilon3);
         GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(rotated), 500.f, math::Epsilon3);
         GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(normalized), 1.f, math::Epsilon3);
+
+        std::vector<Vector2i> vector_vector2i;
+        std::vector<Vector2u> vector_vector2u;
+        std::vector<Vector2f> vector_vector2f;
+        std::set<Vector2i> set_vector2i;
+        std::set<Vector2u> set_vector2u;
+        std::map<Vector2i, std::string> map_vector2i;
+        std::map<Vector2u, std::string> map_vector2u;
+
+        vector_vector2i.push_back(Vector2i());
+        vector_vector2u.push_back(Vector2u());
+        vector_vector2f.push_back(Vector2f());
+        set_vector2i.insert(Vector2i());
+        set_vector2u.insert(Vector2u());
+        map_vector2i.insert(std::make_pair(Vector2i(), ""));
+        map_vector2u.insert(std::make_pair(Vector2u(), ""));
     }
 
     //----------------------------------------------

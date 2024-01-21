@@ -69,6 +69,11 @@ bool UUID::operator != (const UUID& right) const
     return m_data1 != right.m_data1 || m_data2 != right.m_data2;
 }
 
+bool UUID::operator < (const UUID& right) const
+{
+    return m_data1 < right.m_data1 || (m_data1 == right.m_data1 && m_data2 < right.m_data2);
+}
+
 UUID GenerateUUID()
 {
     return UUID::Generate();

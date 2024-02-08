@@ -349,14 +349,14 @@ void NormalizePathSelf(std::string& path)
     }
 }
 
-std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight)
+std::string CombinePaths(std::string_view pathLeft, std::string_view pathRight)
 {
     std::string resultPath;
     CombinePaths(pathLeft, pathRight, resultPath);
     return resultPath;
 }
 
-void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std::string& resultPath)
+void CombinePaths(std::string_view pathLeft, std::string_view pathRight, std::string& resultPath)
 {
     if (pathLeft.empty() && pathRight.empty())
     {
@@ -374,7 +374,10 @@ void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std
     }
     else
     {
-        resultPath = pathLeft + system::PathSeparator + pathRight;
+        resultPath.reserve(pathLeft.size() + 1 + pathRight.size());
+        resultPath = pathLeft;
+        resultPath += system::PathSeparator;
+        resultPath += pathRight;
         NormalizePathSelf(resultPath);
     }
 }

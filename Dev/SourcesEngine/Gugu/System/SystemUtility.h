@@ -114,8 +114,8 @@ std::string NormalizePath(const std::string& path);
 void NormalizePathSelf(std::string& path);
 
 // Combine two given paths into a single path with a separator. The resulting path will be normalized.
-std::string CombinePaths(const std::string& pathLeft, const std::string& pathRight);
-void CombinePaths(const std::string& pathLeft, const std::string& pathRight, std::string& resultPath);
+std::string CombinePaths(std::string_view pathLeft, std::string_view pathRight);
+void CombinePaths(std::string_view pathLeft, std::string_view pathRight, std::string& resultPath);
 
 // Simply append a trailing path separator '/' if there is none already. The given path is considered as normalized.
 std::string EnsureTrailingPathSeparator(const std::string& path);

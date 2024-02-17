@@ -40,14 +40,7 @@ ElementCheckbox::ElementCheckbox()
 
 ElementCheckbox::~ElementCheckbox()
 {
-    m_currentStateComponent = nullptr;
-    m_text = nullptr;
-
-    SafeDelete(m_checkedComponent);
-    SafeDelete(m_idleStateComponent);
-    SafeDelete(m_focusedStateComponent);
-    SafeDelete(m_disabledStateComponent);
-    SafeDelete(m_commonComponent);
+    DeleteComponents();
 }
 
 bool ElementCheckbox::LoadFromWidget(const std::string& elementWidgetID)
@@ -59,7 +52,9 @@ bool ElementCheckbox::LoadFromWidget(ElementWidget* elementWidget)
 {
     if (elementWidget)
     {
-        elementWidget->LoadElementFromWidget(this);
+        DeleteComponents();
+
+        return elementWidget->LoadElementFromWidget(this);
     }
 
     return false;
@@ -203,6 +198,18 @@ void ElementCheckbox::OnSizeChanged()
     {
         m_checkedComponent->ComputeUnifiedDimensionsFromParent();
     }
+}
+
+void ElementCheckbox::DeleteComponents()
+{
+    m_currentStateComponent = nullptr;
+    m_text = nullptr;
+
+    SafeDelete(m_checkedComponent);
+    SafeDelete(m_idleStateComponent);
+    SafeDelete(m_focusedStateComponent);
+    SafeDelete(m_disabledStateComponent);
+    SafeDelete(m_commonComponent);
 }
 
 bool ElementCheckbox::LoadFromDataImpl(ElementDataContext& context)

@@ -47,7 +47,8 @@ protected:
     virtual void RecomputeImpl() override;
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) override;
     virtual void OnSizeChanged() override;
-    
+
+    void DeleteComponents();
     virtual bool LoadFromDataImpl(ElementDataContext& context) override;
 
 protected:

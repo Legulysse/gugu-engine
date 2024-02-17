@@ -40,12 +40,7 @@ ElementSlider::ElementSlider()
 
 ElementSlider::~ElementSlider()
 {
-    m_currentStateComponent = nullptr;
-
-    SafeDelete(m_cursorComponent);
-    SafeDelete(m_idleStateComponent);
-    SafeDelete(m_focusedStateComponent);
-    SafeDelete(m_disabledStateComponent);
+    DeleteComponents();
 }
 
 bool ElementSlider::LoadFromWidget(const std::string& elementWidgetID)
@@ -57,7 +52,9 @@ bool ElementSlider::LoadFromWidget(ElementWidget* elementWidget)
 {
     if (elementWidget)
     {
-        elementWidget->LoadElementFromWidget(this);
+        DeleteComponents();
+
+        return elementWidget->LoadElementFromWidget(this);
     }
 
     return false;
@@ -208,6 +205,16 @@ void ElementSlider::OnSizeChanged()
     {
         m_cursorComponent->ComputeUnifiedDimensionsFromParent();
     }
+}
+
+void ElementSlider::DeleteComponents()
+{
+    m_currentStateComponent = nullptr;
+
+    SafeDelete(m_cursorComponent);
+    SafeDelete(m_idleStateComponent);
+    SafeDelete(m_focusedStateComponent);
+    SafeDelete(m_disabledStateComponent);
 }
 
 bool ElementSlider::LoadFromDataImpl(ElementDataContext& context)

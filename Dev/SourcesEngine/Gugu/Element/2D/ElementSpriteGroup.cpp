@@ -132,7 +132,9 @@ bool ElementSpriteGroup::LoadFromWidget(ElementWidget* elementWidget)
 {
     if (elementWidget)
     {
-        elementWidget->LoadElementFromWidget(this);
+        DeleteAllChildren();
+
+        return elementWidget->LoadElementFromWidget(this);
     }
 
     return false;

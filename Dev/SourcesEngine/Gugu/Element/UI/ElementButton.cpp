@@ -42,13 +42,7 @@ ElementButton::ElementButton()
 
 ElementButton::~ElementButton()
 {
-    m_currentStateComponent = nullptr;
-    m_text = nullptr;
-
-    SafeDelete(m_idleStateComponent);
-    SafeDelete(m_focusedStateComponent);
-    SafeDelete(m_disabledStateComponent);
-    SafeDelete(m_commonComponent);
+    DeleteComponents();
 }
 
 bool ElementButton::LoadFromWidget(const std::string& elementWidgetID)
@@ -60,7 +54,9 @@ bool ElementButton::LoadFromWidget(ElementWidget* elementWidget)
 {
     if (elementWidget)
     {
-        elementWidget->LoadElementFromWidget(this);
+        DeleteComponents();
+
+        return elementWidget->LoadElementFromWidget(this);
     }
 
     return false;
@@ -238,6 +234,17 @@ void ElementButton::OnSizeChanged()
     {
         m_commonComponent->ComputeUnifiedDimensionsFromParent();
     }
+}
+
+void ElementButton::DeleteComponents()
+{
+    m_currentStateComponent = nullptr;
+    m_text = nullptr;
+
+    SafeDelete(m_idleStateComponent);
+    SafeDelete(m_focusedStateComponent);
+    SafeDelete(m_disabledStateComponent);
+    SafeDelete(m_commonComponent);
 }
 
 bool ElementButton::LoadFromDataImpl(ElementDataContext& context)

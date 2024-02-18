@@ -7,8 +7,10 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Core/Callback.h"
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Core/Handle.h"
+#include "Gugu/Core/Signal.h"
 
 #include <SFML/System/Sleep.hpp>
 
@@ -132,6 +134,68 @@ void RunUnitTests_Core(UnitTestResults* results)
         GUGU_UTEST_CHECK_APPROX_EQUAL(deltaTimeB.unscaled_ms(), 16.f, math::Epsilon6);
         GUGU_UTEST_CHECK_EQUAL(deltaTimeB.unscaled_micro(), 16000);
         GUGU_UTEST_CHECK_APPROX_EQUAL(deltaTimeB.GetScale(), 0.1f, math::Epsilon6);
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Callback");
+    {
+        int counter = 0;
+        Callback callback = [&counter]() { counter += 1; };
+
+        callback();
+        GUGU_UTEST_CHECK_EQUAL(counter, 1);
+
+        callback();
+        GUGU_UTEST_CHECK_EQUAL(counter, 2);
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Signal");
+    {
+        int counter = 0;
+
+        Signal<> signal0;
+        signal0.Subscribe(Handle(nullptr), [&counter]() { counter += 1; });
+        signal0.Notify();
+        GUGU_UTEST_CHECK_EQUAL(counter, 1);
+
+        Signal<int> signal1;
+        signal1.Subscribe(Handle(nullptr), [&counter](int a) { counter += a; });
+        signal1.Notify(2);
+        GUGU_UTEST_CHECK_EQUAL(counter, 3);
+
+        Signal<bool, int> signal2;
+        signal2.Subscribe(Handle(nullptr), [&counter](bool a, int b) { counter += b; });
+        signal2.Notify(false, 3);
+        GUGU_UTEST_CHECK_EQUAL(counter, 6);
+
+        std::string result;
+        Signal<> signalA;
+
+        signalA.Notify();
+        GUGU_UTEST_CHECK_EQUAL(result, "");
+
+        {
+            signalA.Subscribe(Handle(42), [&result]() { result += "1"; });
+            signalA.Notify();
+            GUGU_UTEST_CHECK_EQUAL(result, "1");
+
+            signalA.Subscribe(Handle(42), [&result]() { result += "1"; });
+            signalA.Notify();
+            GUGU_UTEST_CHECK_EQUAL(result, "111");
+
+            signalA.Notify();
+            GUGU_UTEST_CHECK_EQUAL(result, "11111");
+
+            signalA.Unsubscribe(Handle(42));
+            signalA.Notify();
+            GUGU_UTEST_CHECK_EQUAL(result, "11111");
+        }
+
+        signalA.Notify();
+        GUGU_UTEST_CHECK_EQUAL(result, "11111");
     }
 
     //----------------------------------------------

@@ -18,6 +18,28 @@ using DelegateType = std::function<TReturn()>;
 template <typename TReturn, typename TParam1>
 using DelegateType1P = std::function<TReturn(TParam1)>;
 
+template<typename ...T>
+class Signal
+{
+public:
+    void Register(std::function<void(T...)> callback)
+    {
+        m_callbacks.push_back(callback);
+    }
+
+    void Fire(T... args)
+    {
+        for (size_t i = 0; i < m_callbacks.size(); ++i)
+        {
+            m_callbacks[i](args...);
+        }
+    }
+
+private:
+    std::vector<std::function<void(T...)>> m_callbacks;
+};
+
+
 void TestFunction1(int value)
 {
     gugu::WriteInConsoleEndline(gugu::ToString(value), true);
@@ -68,7 +90,9 @@ void RunTestCallback()
 
     //----------------------------------------------
 
-#if 0
+#if 1
+
+    WriteInConsoleEndline("--------------------------------", true);
 
     auto functor1 = []() {
         WriteInConsoleEndline(ToString(22), true);
@@ -110,6 +134,22 @@ void RunTestCallback()
     WriteInConsoleEndline(object->m_actionType3() ? "true" : "false", true);
 
     SafeDelete(object);
+
+    WriteInConsoleEndline("--------------------------------", true);
+
+    Signal<> signal0;
+    signal0.Register([]() { WriteInConsoleEndline("Signal 0", true); });
+    signal0.Fire();
+
+    Signal<int> signal1;
+    signal1.Register([](int a) { WriteInConsoleEndline(StringFormat("Signal 1 : {0}", a), true); });
+    signal1.Fire(16);
+
+    Signal<bool, float> signal2;
+    signal2.Register([](bool a, float b) { WriteInConsoleEndline(StringFormat("Signal 2 : {0} {1}", a, b), true); });
+    signal2.Fire(false, 32.f);
+
+    WriteInConsoleEndline("--------------------------------", true);
 
 #endif
 }

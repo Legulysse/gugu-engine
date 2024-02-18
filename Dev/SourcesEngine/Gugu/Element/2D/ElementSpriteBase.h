@@ -39,7 +39,8 @@ public:
     bool GetFlipTextureV() const;
     bool GetFlipTextureH() const;
 
-    void SetColor(const sf::Color& _oColor);
+    void SetColor(const sf::Color& color);
+    void SetColorAlpha(uint8 alpha);    // 0 = transparent, 255 = opaque.
     const sf::Color& GetColor() const;
 
 protected:

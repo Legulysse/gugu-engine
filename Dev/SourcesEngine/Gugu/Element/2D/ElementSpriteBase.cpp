@@ -130,9 +130,15 @@ bool ElementSpriteBase::GetFlipTextureH() const
     return m_flipTextureH;
 }
 
-void ElementSpriteBase::SetColor(const sf::Color& _oColor)
+void ElementSpriteBase::SetColor(const sf::Color& color)
 {
-    m_color = _oColor;
+    m_color = color;
+    RaiseDirtyVertices();
+}
+
+void ElementSpriteBase::SetColorAlpha(uint8 alpha)
+{
+    m_color.a = alpha;
     RaiseDirtyVertices();
 }
 

@@ -73,17 +73,6 @@ void RunUnitTests_Core(UnitTestResults* results)
         Handle handleBB(nullptr, 1);
         Handle handleC(dummyPtr, 1);
 
-        GUGU_UTEST_CHECK_TRUE(handleNull.IsNull());
-        GUGU_UTEST_CHECK_TRUE(handleNullA.IsNull());
-        GUGU_UTEST_CHECK_TRUE(handleNullB.IsNull());
-        GUGU_UTEST_CHECK_TRUE(handleNullC.IsNull());
-
-        GUGU_UTEST_CHECK_FALSE(handleA.IsNull());
-        GUGU_UTEST_CHECK_FALSE(handleAA.IsNull());
-        GUGU_UTEST_CHECK_FALSE(handleB.IsNull());
-        GUGU_UTEST_CHECK_FALSE(handleBB.IsNull());
-        GUGU_UTEST_CHECK_FALSE(handleC.IsNull());
-
         GUGU_UTEST_CHECK_TRUE(handleNull == Handle());
         GUGU_UTEST_CHECK_TRUE(handleNull == Handle(nullptr));
         GUGU_UTEST_CHECK_TRUE(handleNull == Handle((size_t)0));

@@ -154,9 +154,26 @@ void StateMachine::PopStateImpl()
 
 void StateMachine::PopAllStatesImpl()
 {
-    while(!m_states.empty())
+    if (!m_states.empty())
     {
-        PopStateImpl();
+        // Exit current state.
+        State* state = GetState();
+        m_states.pop();
+        state->Exit(nullptr);
+
+        // Release current state.
+        state->Release();
+        SafeDelete(state);
+    }
+
+    // Release all other states.
+    while (!m_states.empty())
+    {
+        State* state = GetState();
+        m_states.pop();
+
+        state->Release();
+        SafeDelete(state);
     }
 }
 

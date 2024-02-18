@@ -228,13 +228,13 @@ void StateMachine::Step(const DeltaTime& dt)
 
 void StateMachine::Update(const DeltaTime& dt)
 {
-    //Skip Update if we are waiting a step to process a state change
-    if(m_nextStateAction == None)
-    {
+    //Skip Update if we are waiting a step to process a state change (TODO: Seems like an odd decision, disabled for now and waiting to be deleted if nothing breaks)
+    //if(m_nextStateAction == None)
+    //{
         //Process State update
         if (GetState())
             GetState()->Update(dt);
-    }
+    //}
 }
 
 }   // namespace gugu

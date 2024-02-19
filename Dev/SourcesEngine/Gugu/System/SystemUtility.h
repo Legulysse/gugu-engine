@@ -76,6 +76,8 @@ void StdStringToUpperSelf(std::string& _strValue);
 
 bool StdStringStartsWith(std::string_view _strValue, std::string_view _strSub);
 bool StdStringEndsWith(std::string_view _strValue, std::string_view _strSub);
+bool StdStringStartsWithInsensitive(std::string_view _strValue, std::string_view _strSub);
+bool StdStringEndsWithInsensitive(std::string_view _strValue, std::string_view _strSub);
 
 std::string StringFormat(const std::string& _tValue);
 template<typename T1>

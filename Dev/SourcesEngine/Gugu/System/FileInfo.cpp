@@ -113,7 +113,7 @@ bool FileInfo::HasExtension(const std::string& extension) const
     std::string_view fileName = GetFileName_utf8();
     return fileName.size() >= extension.size() + 1
         && fileName[fileName.size() - extension.size() - 1] == system::ExtensionSeparator
-        && StdStringEndsWith(fileName, extension);
+        && StdStringEndsWithInsensitive(fileName, extension);
 }
 
 bool FileInfo::operator < (const FileInfo& other) const

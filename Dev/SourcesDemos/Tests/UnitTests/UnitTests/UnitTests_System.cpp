@@ -169,6 +169,7 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
+                GUGU_UTEST_CHECK(fileInfo.HasExtension("TXT"));
             }
 
             {
@@ -182,6 +183,7 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
+                GUGU_UTEST_CHECK(fileInfo.HasExtension("TXT"));
             }
 
             {
@@ -195,6 +197,7 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
+                GUGU_UTEST_CHECK(fileInfo.HasExtension("TXT"));
             }
 
             {
@@ -208,6 +211,7 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
+                GUGU_UTEST_CHECK(fileInfo.HasExtension("TXT"));
             }
 
             {
@@ -222,6 +226,8 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "file.txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("file.txt"));
+                GUGU_UTEST_CHECK(fileInfo.HasExtension("TXT"));
+                GUGU_UTEST_CHECK(fileInfo.HasExtension("FILE.TXT"));
             }
 
             {
@@ -249,6 +255,7 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
+                GUGU_UTEST_CHECK(fileInfo.HasExtension("TXT"));
             }
         }
         
@@ -336,10 +343,61 @@ void RunUnitTests_System(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("StartsWith/EndsWith");
         {
-            GUGU_UTEST_CHECK_TRUE(StdStringStartsWith("hello world 42", "hello"));
-            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("hello world 42", "42"));
-            GUGU_UTEST_CHECK_TRUE(StdStringEndsWith("hello world 42", "42"));
-            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("hello world 42", "hello"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("", ""));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("a", ""));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("", "a"));
+            GUGU_UTEST_CHECK_TRUE(StdStringStartsWith("a", "a"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("A", "a"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("a", "A"));
+            GUGU_UTEST_CHECK_TRUE(StdStringStartsWith("hello world", "hello"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("hello world", "HeLlO"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("hello world", " hello"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("hello world", "world"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("hello world", "WoRlD"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("hello", "hello world"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWith("world", "hello world"));
+
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("", ""));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("a", ""));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("", "a"));
+            GUGU_UTEST_CHECK_TRUE(StdStringEndsWith("a", "a"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("A", "a"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("a", "A"));
+            GUGU_UTEST_CHECK_TRUE(StdStringEndsWith("hello world", "world"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("hello world", "WoRlD"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("hello world", "world "));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("hello world", "hello"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("hello world", "HeLlO"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("hello", "hello world"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWith("world", "hello world"));
+
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWithInsensitive("", ""));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWithInsensitive("a", ""));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWithInsensitive("", "a"));
+            GUGU_UTEST_CHECK_TRUE(StdStringStartsWithInsensitive("a", "a"));
+            GUGU_UTEST_CHECK_TRUE(StdStringStartsWithInsensitive("A", "a"));
+            GUGU_UTEST_CHECK_TRUE(StdStringStartsWithInsensitive("a", "A"));
+            GUGU_UTEST_CHECK_TRUE(StdStringStartsWithInsensitive("hello world", "hello"));
+            GUGU_UTEST_CHECK_TRUE(StdStringStartsWithInsensitive("hello world", "HeLlO"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWithInsensitive("hello world", " hello"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWithInsensitive("hello world", "world"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWithInsensitive("hello world", "WoRlD"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWithInsensitive("hello", "hello world"));
+            GUGU_UTEST_CHECK_FALSE(StdStringStartsWithInsensitive("world", "hello world"));
+
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWithInsensitive("", ""));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWithInsensitive("a", ""));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWithInsensitive("", "a"));
+            GUGU_UTEST_CHECK_TRUE(StdStringEndsWithInsensitive("a", "a"));
+            GUGU_UTEST_CHECK_TRUE(StdStringEndsWithInsensitive("A", "a"));
+            GUGU_UTEST_CHECK_TRUE(StdStringEndsWithInsensitive("a", "A"));
+            GUGU_UTEST_CHECK_TRUE(StdStringEndsWithInsensitive("hello world", "world"));
+            GUGU_UTEST_CHECK_TRUE(StdStringEndsWithInsensitive("hello world", "WoRlD"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWithInsensitive("hello world", "world "));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWithInsensitive("hello world", "hello"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWithInsensitive("hello world", "HeLlO"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWithInsensitive("hello", "hello world"));
+            GUGU_UTEST_CHECK_FALSE(StdStringEndsWithInsensitive("world", "hello world"));
         }
 
         GUGU_UTEST_SUBSECTION("Format");

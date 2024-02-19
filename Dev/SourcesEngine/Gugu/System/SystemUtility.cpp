@@ -195,14 +195,49 @@ void StdStringToUpperSelf(std::string& _strValue)
 
 bool StdStringStartsWith(std::string_view _strValue, std::string_view _strSub)
 {
-    return _strValue.size() >= _strSub.size()
-        && _strValue.compare(0, _strSub.size(), _strSub) == 0;
+    return !_strSub.empty()
+        && _strValue.size() >= _strSub.size()
+        && std::equal(_strValue.begin(),
+            _strValue.begin() + _strSub.size(),
+            _strSub.begin());
 }
 
 bool StdStringEndsWith(std::string_view _strValue, std::string_view _strSub)
 {
-    return _strValue.size() >= _strSub.size()
-        && _strValue.compare(_strValue.size() - _strSub.size(), _strSub.size(), _strSub) == 0;
+    return !_strSub.empty()
+        && _strValue.size() >= _strSub.size()
+        && std::equal(_strValue.begin() + _strValue.size() - _strSub.size(),
+            _strValue.end(),
+            _strSub.begin());
+}
+
+namespace impl
+{
+    bool TestCharEqualInsensitive(char a, char b)
+    {
+        std::locale loc;
+        return std::toupper(a, loc) == std::toupper(b, loc);
+    }
+}
+
+bool StdStringStartsWithInsensitive(std::string_view _strValue, std::string_view _strSub)
+{
+    return !_strSub.empty()
+        && _strValue.size() >= _strSub.size()
+        && std::equal(_strValue.begin(),
+            _strValue.begin() + _strSub.size(),
+            _strSub.begin(),
+            impl::TestCharEqualInsensitive);
+}
+
+bool StdStringEndsWithInsensitive(std::string_view _strValue, std::string_view _strSub)
+{
+    return !_strSub.empty()
+        && _strValue.size() >= _strSub.size()
+        && std::equal(_strValue.begin() + _strValue.size() - _strSub.size(),
+            _strValue.end(),
+            _strSub.begin(),
+            impl::TestCharEqualInsensitive);
 }
 
 std::string StringFormat(const std::string& _tValue)

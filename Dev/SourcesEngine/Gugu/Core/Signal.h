@@ -53,10 +53,10 @@ public:
             }
         }
 
-        FlushPendingRemoves();
+        FlushRemovedSubscribers();
     }
 
-    void FlushPendingRemoves()
+    void FlushRemovedSubscribers()
     {
         for (size_t i = m_subscribers.size(); i > 0; --i)
         {

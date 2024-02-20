@@ -70,7 +70,9 @@ public:
     void StopMainLoop();
 
     void SetLoopPause(bool pause);
+    bool IsLoopPaused() const;
     void SetLoopSpeed(float speed);
+    float GetLoopSpeed() const;
 
     void            SetApplication(Application* application);
     Application*    GetApplication() const;

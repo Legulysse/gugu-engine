@@ -504,6 +504,11 @@ void Engine::SetLoopPause(bool pause)
     m_injectTime = sf::Time::Zero;
 }
 
+bool Engine::IsLoopPaused() const
+{
+    return m_pauseLoop;
+}
+
 void Engine::SetLoopSpeed(float speed)
 {
     m_useSpeedMultiplier = false;
@@ -514,6 +519,11 @@ void Engine::SetLoopSpeed(float speed)
         m_useSpeedMultiplier = true;
         m_speedMultiplier = Max(0.f, speed);
     }
+}
+
+float Engine::GetLoopSpeed() const
+{
+    return m_speedMultiplier;
 }
 
 void Engine::SetApplication(Application* application)

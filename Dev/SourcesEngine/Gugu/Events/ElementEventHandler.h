@@ -109,8 +109,8 @@ public:
 
     void UnregisterWindowEventHandler();
 
-    void SetAllInteractionsEnabled(bool enabled);
-    void SetInteractionEnabled(EInteractionType::Type interactionType, bool enabled);
+    void SetAllInteractionsDisabled(bool disabled);
+    void SetInteractionDisabled(EInteractionType::Type interactionType, bool disabled);
     bool IsInteractionDisabled(EInteractionType::Type interactionType) const;
 
     bool IsInteractionRegisteredAndEnabled(EInteractionType::Type interactionType) const;
@@ -135,7 +135,7 @@ private:
     WindowEventHandler* m_handler;
     int m_registeredInteractions;
     int m_disabledInteractions;
-    bool m_interactionsEnabled;
+    bool m_allInteractionsDisabled;
 
     struct InteractionCallbackInfos
     {

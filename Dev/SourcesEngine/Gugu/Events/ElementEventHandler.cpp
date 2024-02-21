@@ -22,7 +22,7 @@ ElementEventHandler::ElementEventHandler(Element* element)
     , m_handler(nullptr)
     , m_registeredInteractions(EInteractionType::None)
     , m_disabledInteractions(EInteractionType::None)
-    , m_interactionsEnabled(true)
+    , m_allInteractionsDisabled(false)
 {
 }
 
@@ -45,45 +45,43 @@ void ElementEventHandler::UnregisterWindowEventHandler()
     }
 }
 
-void ElementEventHandler::SetAllInteractionsEnabled(bool enabled)
+void ElementEventHandler::SetAllInteractionsDisabled(bool disabled)
 {
-    if (m_interactionsEnabled == enabled)
+    if (m_allInteractionsDisabled == disabled)
         return;
 
-    m_interactionsEnabled = enabled;
+    m_allInteractionsDisabled = disabled;
 
-    if (m_interactionsEnabled)
-    {
-        FireCallbacks(EElementEvent::InteractionsEnabled);
-    }
-    else
+    if (m_allInteractionsDisabled)
     {
         FireCallbacks(EElementEvent::InteractionsDisabled);
     }
+    else
+    {
+        FireCallbacks(EElementEvent::InteractionsEnabled);
+    }
 }
 
-void ElementEventHandler::SetInteractionEnabled(EInteractionType::Type interactionType, bool enabled)
+void ElementEventHandler::SetInteractionDisabled(EInteractionType::Type interactionType, bool disabled)
 {
-    if (enabled)
+    if (disabled)
     {
-        m_disabledInteractions = m_disabledInteractions & ~interactionType;
+        m_disabledInteractions = m_disabledInteractions | interactionType;
     }
     else
     {
-        m_disabledInteractions = m_disabledInteractions | interactionType;
+        m_disabledInteractions = m_disabledInteractions & ~interactionType;
     }
 }
 
 bool ElementEventHandler::IsInteractionDisabled(EInteractionType::Type interactionType) const
 {
-    return m_interactionsEnabled
-        && (m_disabledInteractions & interactionType) == EInteractionType::None
-        && m_element->IsVisible(true);
+    return (m_disabledInteractions & interactionType) == EInteractionType::None;
 }
 
 bool ElementEventHandler::IsInteractionRegisteredAndEnabled(EInteractionType::Type interactionType) const
 {
-    return m_interactionsEnabled
+    return !m_allInteractionsDisabled
         && (m_registeredInteractions & interactionType) == interactionType
         && (m_disabledInteractions & interactionType) == EInteractionType::None
         && m_element->IsVisible(true);

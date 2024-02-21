@@ -32,8 +32,8 @@ ElementEditableText::ElementEditableText()
     GetEvents()->AddCallback(EInteractionEvent::MouseDeselected, STD_BIND(&ElementEditableText::OnMouseDeselected, this));
     GetEvents()->AddCallback(EInteractionEvent::RawSFEvent, STD_BIND_1(&ElementEditableText::OnSFEvent, this));
 
-    GetEvents()->SetInteractionEnabled(EInteractionType::Selection, false);
-    GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, false);
+    GetEvents()->SetInteractionDisabled(EInteractionType::Selection, true);
+    GetEvents()->SetInteractionDisabled(EInteractionType::RawSFEvent, true);
 }
 
 ElementEditableText::~ElementEditableText()
@@ -49,11 +49,11 @@ void ElementEditableText::SetEditable(bool _bIsEditable)
 
         if (m_isEditable)
         {
-            GetEvents()->SetInteractionEnabled(EInteractionType::Selection, true);
+            GetEvents()->SetInteractionDisabled(EInteractionType::Selection, false);
         }
         else
         {
-            GetEvents()->SetInteractionEnabled(EInteractionType::Selection, false);
+            GetEvents()->SetInteractionDisabled(EInteractionType::Selection, true);
 
             StopEditionImpl();
         }
@@ -82,7 +82,7 @@ void ElementEditableText::StartEditionImpl()
         m_sfTextCursor->setString("|");
     }
 
-    GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, true);
+    GetEvents()->SetInteractionDisabled(EInteractionType::RawSFEvent, false);
     
     RaiseNeedRecompute();
 }
@@ -93,7 +93,7 @@ void ElementEditableText::StopEditionImpl()
     m_isTickDisplayed   = false;
     m_isEditing     = false;
 
-    GetEvents()->SetInteractionEnabled(EInteractionType::RawSFEvent, false);
+    GetEvents()->SetInteractionDisabled(EInteractionType::RawSFEvent, true);
     
     RaiseNeedRecompute();
 }

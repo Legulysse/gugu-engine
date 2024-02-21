@@ -111,7 +111,9 @@ public:
 
     void SetAllInteractionsEnabled(bool enabled);
     void SetInteractionEnabled(EInteractionType::Type interactionType, bool enabled);
-    bool IsInteractionEnabled(EInteractionType::Type interactionType) const;
+    bool IsInteractionDisabled(EInteractionType::Type interactionType) const;
+
+    bool IsInteractionRegisteredAndEnabled(EInteractionType::Type interactionType) const;
 
     void AddCallback(EInteractionEvent::Type event, const DelegateInteractionEvent& callback);
     void RemoveCallbacks(EInteractionEvent::Type event);
@@ -131,8 +133,9 @@ private:
 
     Element* m_element;
     WindowEventHandler* m_handler;
+    int m_registeredInteractions;
+    int m_disabledInteractions;
     bool m_interactionsEnabled;
-    int m_interactionsFilter;
 
     struct InteractionCallbackInfos
     {

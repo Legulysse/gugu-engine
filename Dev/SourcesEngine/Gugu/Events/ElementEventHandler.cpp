@@ -20,8 +20,9 @@ namespace gugu {
 ElementEventHandler::ElementEventHandler(Element* element)
     : m_element(element)
     , m_handler(nullptr)
+    , m_registeredInteractions(EInteractionType::None)
+    , m_disabledInteractions(EInteractionType::None)
     , m_interactionsEnabled(true)
-    , m_interactionsFilter(EInteractionType::None)
 {
 }
 
@@ -65,18 +66,26 @@ void ElementEventHandler::SetInteractionEnabled(EInteractionType::Type interacti
 {
     if (enabled)
     {
-        m_interactionsFilter = m_interactionsFilter & ~interactionType;
+        m_disabledInteractions = m_disabledInteractions & ~interactionType;
     }
     else
     {
-        m_interactionsFilter = m_interactionsFilter | interactionType;
+        m_disabledInteractions = m_disabledInteractions | interactionType;
     }
 }
 
-bool ElementEventHandler::IsInteractionEnabled(EInteractionType::Type interactionType) const
+bool ElementEventHandler::IsInteractionDisabled(EInteractionType::Type interactionType) const
 {
     return m_interactionsEnabled
-        && (m_interactionsFilter & interactionType) == EInteractionType::None
+        && (m_disabledInteractions & interactionType) == EInteractionType::None
+        && m_element->IsVisible(true);
+}
+
+bool ElementEventHandler::IsInteractionRegisteredAndEnabled(EInteractionType::Type interactionType) const
+{
+    return m_interactionsEnabled
+        && (m_registeredInteractions & interactionType) == interactionType
+        && (m_disabledInteractions & interactionType) == EInteractionType::None
         && m_element->IsVisible(true);
 }
 
@@ -165,34 +174,41 @@ void ElementEventHandler::RemoveAllCallbacks()
 
 void ElementEventHandler::CheckRegistration(EInteractionEvent::Type event)
 {
-    if (event == EInteractionEvent::MouseEntered
-        || event == EInteractionEvent::MouseLeft)
+    EInteractionType::Type interactionType = EInteractionType::None;
+
+    switch (event)
     {
-        GetGameWindow()->GetEventHandler()->RegisterElementEventHandler(this, EInteractionType::Focus);
+    case EInteractionEvent::MouseEntered:
+    case EInteractionEvent::MouseLeft:
+        interactionType = EInteractionType::Focus;
+        break;
+    case EInteractionEvent::MousePressed:
+    case EInteractionEvent::MouseReleased:
+        interactionType = EInteractionType::Click;
+        break;
+    case EInteractionEvent::MouseSelected:
+    case EInteractionEvent::MouseDeselected:
+        interactionType = EInteractionType::Selection;
+        break;
+    case EInteractionEvent::MouseScrolled:
+        interactionType = EInteractionType::Scroll;
+        break;
+    case EInteractionEvent::MouseDragBegan:
+    case EInteractionEvent::MouseDragMoved:
+    case EInteractionEvent::MouseDragEnded:
+        interactionType = EInteractionType::Drag;
+        break;
+    case EInteractionEvent::RawSFEvent:
+        interactionType = EInteractionType::RawSFEvent;
+        break;
+    default:
+        break;
     }
-    else if (event == EInteractionEvent::MousePressed
-        || event == EInteractionEvent::MouseReleased)
+
+    if (interactionType != EInteractionType::None)
     {
-        GetGameWindow()->GetEventHandler()->RegisterElementEventHandler(this, EInteractionType::Click);
-    }
-    else if (event == EInteractionEvent::MouseSelected
-        || event == EInteractionEvent::MouseDeselected)
-    {
-        GetGameWindow()->GetEventHandler()->RegisterElementEventHandler(this, EInteractionType::Selection);
-    }
-    else if (event == EInteractionEvent::MouseScrolled)
-    {
-        GetGameWindow()->GetEventHandler()->RegisterElementEventHandler(this, EInteractionType::Scroll);
-    }
-    else if (event == EInteractionEvent::MouseDragBegan
-        || event == EInteractionEvent::MouseDragMoved
-        || event == EInteractionEvent::MouseDragEnded)
-    {
-        GetGameWindow()->GetEventHandler()->RegisterElementEventHandler(this, EInteractionType::Drag);
-    }
-    else if (event == EInteractionEvent::RawSFEvent)
-    {
-        GetGameWindow()->GetEventHandler()->RegisterElementEventHandler(this, EInteractionType::RawSFEvent);
+        m_registeredInteractions = m_registeredInteractions | interactionType;
+        GetGameWindow()->GetEventHandler()->RegisterElementEventHandler(this, interactionType);
     }
 }
 

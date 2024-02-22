@@ -297,8 +297,6 @@ void ElementList::OnMousePressed(const InteractionInfos& interactionInfos)
             return;
         }
     }
-
-    interactionInfos.absorbEvent = false;
 }
 
 void ElementList::OnMouseScrolled(const InteractionInfos& interactionInfos)

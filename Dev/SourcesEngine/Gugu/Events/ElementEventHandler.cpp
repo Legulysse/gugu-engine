@@ -41,6 +41,7 @@ void ElementEventHandler::UnregisterWindowEventHandler()
 {
     if (m_handler)
     {
+        // m_handler will be set to null inside this call.
         m_handler->UnregisterElementEventHandler(this);
     }
 }
@@ -102,6 +103,7 @@ void ElementEventHandler::AddCallback(EInteractionEvent::Type event, const Deleg
 
 void ElementEventHandler::RemoveCallbacks(EInteractionEvent::Type event)
 {
+    // TODO: update registration ? (both filter and registration in the handler)
     for (auto iteCallback = m_interactionCallbacks.begin(); iteCallback != m_interactionCallbacks.end();)
     {
         if (iteCallback->event == event)
@@ -122,6 +124,9 @@ void ElementEventHandler::FireCallbacks(EInteractionEvent::Type event, const Int
         if (m_interactionCallbacks[i].event == event)
         {
             m_interactionCallbacks[i].callback(interactionInfos);
+
+            if (interactionInfos.absorbEvent)
+                break;
         }
     }
 }
@@ -166,8 +171,9 @@ void ElementEventHandler::FireCallbacks(EElementEvent::Type event)
 
 void ElementEventHandler::RemoveAllCallbacks()
 {
-    m_elementCallbacks.clear();
+    m_registeredInteractions = 0;
     m_interactionCallbacks.clear();
+    m_elementCallbacks.clear();
 }
 
 void ElementEventHandler::CheckRegistration(EInteractionEvent::Type event)

@@ -46,6 +46,9 @@ Element::~Element()
 {
     if (m_eventHandler)
     {
+        // TODO: destroying the event handler here may cause crashes if we are still inside a callback loop.
+        // - Maybe I should transfer the ownership of the event handler to the window handler, to gracefully destroy the event handler later ?
+        // - This will only work for interaction events, not for element events.
         m_eventHandler->FireCallbacks(EElementEvent::Destroyed);
         SafeDelete(m_eventHandler);
     }

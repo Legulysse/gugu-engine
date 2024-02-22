@@ -95,6 +95,16 @@ void ElementLayoutGroup::DeleteAllItems()
     RaiseNeedRecompute();
 }
 
+size_t ElementLayoutGroup::GetItemCount() const
+{
+    return m_items.size();
+}
+
+const std::vector<Element*>& ElementLayoutGroup::GetItems() const
+{
+    return m_items;
+}
+
 ELayoutDirection::Type ElementLayoutGroup::GetMainDirection() const
 {
     return m_mainDirection;

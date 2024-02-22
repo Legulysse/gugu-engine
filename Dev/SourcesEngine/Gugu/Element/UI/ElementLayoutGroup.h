@@ -46,6 +46,9 @@ public:
     void DeleteItem(Element* item);
     void DeleteAllItems();
 
+    size_t GetItemCount() const;
+    const std::vector<Element*>& GetItems() const;
+
     void SetMainDirection(ELayoutDirection::Type direction);
     void SetWrapDirection(ELayoutDirection::Type direction);
     void SetMainDirectionBehaviour(ELayoutBehaviour::Type behaviour);

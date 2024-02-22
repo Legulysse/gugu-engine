@@ -12,6 +12,8 @@
 #include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Debug/Logger.h"
 
+#include <assert.h>
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -23,11 +25,16 @@ ElementEventHandler::ElementEventHandler(Element* element)
     , m_registeredInteractions(EInteractionType::None)
     , m_disabledInteractions(EInteractionType::None)
     , m_allInteractionsDisabled(false)
+    , m_processingInteractionCallbacks(false)
+    , m_processingElementCallbacks(false)
 {
 }
 
 ElementEventHandler::~ElementEventHandler()
 {
+    assert(!m_processingInteractionCallbacks);  // Destructor is called while callbacks are still being processed.
+    assert(!m_processingElementCallbacks);      // Destructor is called while callbacks are still being processed.
+
     RemoveAllCallbacks();
     UnregisterWindowEventHandler();
 }
@@ -93,6 +100,9 @@ void ElementEventHandler::AddCallback(EInteractionEvent::Type event, const Deleg
     if (!callback || event == EInteractionEvent::None)
         return;
 
+    // TODO: I could handle add/remove when processing callbacks, like for Signals.
+    assert(!m_processingInteractionCallbacks);  // Removal is called while callbacks are still being processed.
+
     InteractionCallbackInfos kInfos;
     kInfos.event = event;
     kInfos.callback = callback;
@@ -103,6 +113,9 @@ void ElementEventHandler::AddCallback(EInteractionEvent::Type event, const Deleg
 
 void ElementEventHandler::RemoveCallbacks(EInteractionEvent::Type event)
 {
+    // TODO: I could handle add/remove when processing callbacks, like for Signals.
+    assert(!m_processingInteractionCallbacks);  // Removal is called while callbacks are still being processed.
+
     // TODO: update registration ? (both filter and registration in the handler)
     for (auto iteCallback = m_interactionCallbacks.begin(); iteCallback != m_interactionCallbacks.end();)
     {
@@ -119,6 +132,8 @@ void ElementEventHandler::RemoveCallbacks(EInteractionEvent::Type event)
 
 void ElementEventHandler::FireCallbacks(EInteractionEvent::Type event, const InteractionInfos& interactionInfos)
 {
+    m_processingInteractionCallbacks = true;
+
     for (size_t i = 0; i < m_interactionCallbacks.size(); ++i)
     {
         if (m_interactionCallbacks[i].event == event)
@@ -129,12 +144,17 @@ void ElementEventHandler::FireCallbacks(EInteractionEvent::Type event, const Int
                 break;
         }
     }
+
+    m_processingInteractionCallbacks = false;
 }
 
 void ElementEventHandler::AddCallback(EElementEvent::Type event, const Handle& handle, const Callback& callback)
 {
     if (!callback || event == EElementEvent::None)
         return;
+
+    // TODO: I could handle add/remove when processing callbacks, like for Signals.
+    assert(!m_processingElementCallbacks);  // Removal is called while callbacks are still being processed.
 
     ElementCallbackInfos kInfos;
     kInfos.event = event;
@@ -145,6 +165,9 @@ void ElementEventHandler::AddCallback(EElementEvent::Type event, const Handle& h
 
 void ElementEventHandler::RemoveCallbacks(EElementEvent::Type event, const Handle& handle)
 {
+    // TODO: I could handle add/remove when processing callbacks, like for Signals.
+    assert(!m_processingElementCallbacks);  // Removal is called while callbacks are still being processed.
+
     for (auto iteCallback = m_elementCallbacks.begin(); iteCallback != m_elementCallbacks.end();)
     {
         if (iteCallback->event == event && iteCallback->handle == handle)
@@ -160,6 +183,8 @@ void ElementEventHandler::RemoveCallbacks(EElementEvent::Type event, const Handl
 
 void ElementEventHandler::FireCallbacks(EElementEvent::Type event)
 {
+    m_processingElementCallbacks = true;
+
     for (size_t i = 0; i < m_elementCallbacks.size(); ++i)
     {
         if (m_elementCallbacks[i].event == event)
@@ -167,6 +192,8 @@ void ElementEventHandler::FireCallbacks(EElementEvent::Type event)
             m_elementCallbacks[i].callback();
         }
     }
+
+    m_processingElementCallbacks = false;
 }
 
 void ElementEventHandler::RemoveAllCallbacks()

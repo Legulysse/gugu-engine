@@ -6,6 +6,7 @@
 #include "Gugu/Core/Handle.h"
 
 #include <functional>
+#include <assert.h>
 
 ////////////////////////////////////////////////////////////////
 // File Declarations
@@ -26,6 +27,11 @@ private:
 
 public:
 
+    ~Signal()
+    {
+        assert(!m_processingCallbacks);  // Destructor is called while callbacks are still being processed.
+    }
+
     void Subscribe(const Handle& handle, const std::function<void(T...)>& callback)
     {
         m_subscribers.push_back({ handle, callback, false });
@@ -44,7 +50,11 @@ public:
 
     void Notify(T... args)
     {
+        m_processingCallbacks = true;
+
+        // Check the number of subscribers before the loop, to ignore new subscribers.
         size_t count = m_subscribers.size();
+
         for (size_t i = 0; i < count; ++i)
         {
             if (!m_subscribers[i].pendingRemove)
@@ -54,6 +64,8 @@ public:
         }
 
         FlushRemovedSubscribers();
+
+        m_processingCallbacks = false;
     }
 
     void FlushRemovedSubscribers()
@@ -70,6 +82,7 @@ public:
 private:
 
     std::vector<SubcriberInfos> m_subscribers;
+    bool m_processingCallbacks = false;
 };
 
 }   // namespace gugu

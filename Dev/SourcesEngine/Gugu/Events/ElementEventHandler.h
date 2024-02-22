@@ -136,6 +136,8 @@ private:
     int m_registeredInteractions;
     int m_disabledInteractions;
     bool m_allInteractionsDisabled;
+    bool m_processingInteractionCallbacks;
+    bool m_processingElementCallbacks;
 
     struct InteractionCallbackInfos
     {

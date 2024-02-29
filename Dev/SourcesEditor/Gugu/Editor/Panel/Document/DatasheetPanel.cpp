@@ -578,7 +578,8 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
         // TODO: precompute this in definition.
         std::vector<std::string> comboValues;
         comboValues.reserve(dataMemberDefinition->objectDefinition->m_availableDerivedClasses.size() + 1);
-        comboValues.push_back("");
+        comboValues.push_back("##_NULL_CLASS");
+
         for (DatasheetParser::ClassDefinition* availableClass : dataMemberDefinition->objectDefinition->m_availableDerivedClasses)
         {
             comboValues.push_back(availableClass->m_name);
@@ -595,7 +596,11 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
                 }
 
                 DatasheetParser::ClassDefinition* newInstanceDefinition = nullptr;
-                GetEditor()->GetDatasheetParser()->GetClassDefinition(comboValues[i], newInstanceDefinition);
+
+                if (i != 0)
+                {
+                    GetEditor()->GetDatasheetParser()->GetClassDefinition(comboValues[i], newInstanceDefinition);
+                }
 
                 if (newInstanceDefinition != instanceDefinition || isParentData)
                 {

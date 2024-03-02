@@ -693,7 +693,16 @@ void RunUnitTests_System(UnitTestResults* results)
         GUGU_UTEST_CHECK(uuidA != uuidB);
         GUGU_UTEST_CHECK(uuidAA != uuidB);
         GUGU_UTEST_CHECK(uuidA == uuidAA);
-        GUGU_UTEST_CHECK(ToString(uuidA) == uuidA.ToString());
+
+        GUGU_UTEST_CHECK_EQUAL(ToString(uuidA), uuidA.ToString());
+        GUGU_UTEST_CHECK_EQUAL(ToString(uuidB), uuidB.ToString());
+        GUGU_UTEST_CHECK_NOT_EQUAL(ToString(uuidA), ToString(uuidB));
+        GUGU_UTEST_CHECK_NOT_EQUAL(uuidA.ToString(), uuidB.ToString());
+
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString(ToString(uuidA)), uuidA);
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString(ToString(uuidB)), uuidB);
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString(uuidA.ToString()), uuidA);
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString(uuidB.ToString()), uuidB);
 
         std::vector<std::string> uuids;
         bool validSize = true;

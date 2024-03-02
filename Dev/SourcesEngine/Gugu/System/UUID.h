@@ -15,16 +15,13 @@ class UUID
 public:
 
     static UUID Generate();
+    static UUID FromString(const std::string& value);
 
     std::string ToString() const;
 
     bool operator == (const UUID& right) const;
     bool operator != (const UUID& right) const;
     bool operator < (const UUID& right) const; // Used by std sorts
-
-private:
-
-    UUID() = default;
 
 private:
 

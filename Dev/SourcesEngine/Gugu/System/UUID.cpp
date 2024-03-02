@@ -8,6 +8,7 @@
 // Includes
 
 #include <sstream>
+#include <charconv>
 
 #if defined(GUGU_OS_WINDOWS)
     #include <combaseapi.h>
@@ -47,6 +48,14 @@ UUID UUID::Generate()
 
 #endif
 
+    return uuid;
+}
+
+UUID UUID::FromString(const std::string& value)
+{
+    UUID uuid;
+    std::from_chars(value.data(), value.data() + 16, uuid.m_data1, 16);
+    std::from_chars(value.data() + 16, value.data() + 16 + 16, uuid.m_data2, 16);
     return uuid;
 }
 

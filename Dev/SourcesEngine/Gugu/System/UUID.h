@@ -17,6 +17,7 @@ public:
     static UUID Generate();
     static UUID FromString(const std::string& value);
 
+    bool IsZero() const;
     std::string ToString() const;
 
     bool operator == (const UUID& right) const;

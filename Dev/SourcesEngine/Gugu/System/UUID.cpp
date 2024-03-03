@@ -68,6 +68,11 @@ std::string UUID::ToString() const
     return uuid;
 }
 
+bool UUID::IsZero() const
+{
+    return m_data1 == 0 && m_data2 == 0;
+}
+
 bool UUID::operator == (const UUID& right) const
 {
     return m_data1 == right.m_data1 && m_data2 == right.m_data2;

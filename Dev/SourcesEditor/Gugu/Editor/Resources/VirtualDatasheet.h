@@ -6,10 +6,12 @@
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/System/UUID.h"
 #include "Gugu/Math/Vector2.h"
 
-#include <vector>
 #include <string>
+#include <vector>
+#include <map>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -56,9 +58,10 @@ public:
     void GetDependencies(std::set<Resource*>& dependencies) const;
     void OnDependencyRemoved(const Resource* removedDependency);
 
-    bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition);
-    bool SaveToXml(pugi::xml_node& nodeDatasheetObject) const;
+    bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject);
+    bool SaveToXml(pugi::xml_node& nodeDatasheet) const;
 
+    void ResolveInstances(std::map<UUID, VirtualDatasheetObject*>& dataObjects);
     void RefreshParentObject(VirtualDatasheetObject* parentObject);
 
     VirtualDatasheetObject::DataValue* RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
@@ -74,10 +77,11 @@ protected:
     void ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue);
 
     void SaveInlineDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::DataMemberDefinition::Type memberType) const;
-    void SaveInstanceDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const;
+    void SaveInstanceDataValue(pugi::xml_node& nodeDatasheet, pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const;
 
 public:
 
+    UUID m_uuid;
     VirtualDatasheetObject* m_parentObject;
     DatasheetParser::ClassDefinition* m_classDefinition = nullptr;
     std::vector<VirtualDatasheetObject::DataValue*> m_dataValues;

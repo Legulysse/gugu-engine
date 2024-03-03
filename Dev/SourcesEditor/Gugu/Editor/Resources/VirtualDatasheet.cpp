@@ -100,16 +100,29 @@ void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependen
     }
 }
 
-bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition)
+bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject)
 {
-    if (!classDefinition)
+    pugi::xml_attribute attributeType = nodeDatasheetObject.attribute("type");
+
+    m_classDefinition = nullptr;
+    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.value(), m_classDefinition))
     {
         GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "A null ClassDefinition has been provided on VirtualDatasheetObject loading");
         return false;
     }
 
-    m_classDefinition = classDefinition;
+    // Retrieve or generate object UUID.
+    std::string uuid;
+    if (xml::TryParseAttribute(nodeDatasheetObject, "uuid", uuid))
+    {
+        m_uuid = UUID::FromString(uuid);
+    }
+    else
+    {
+        m_uuid = UUID::Generate();
+    }
 
+    // Parse Data nodes.
     for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
     {
         VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
@@ -162,6 +175,25 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     }
 
     return true;
+}
+
+void VirtualDatasheetObject::ResolveInstances(std::map<UUID, VirtualDatasheetObject*>& dataObjects)
+{
+    for (const auto& dataValue : m_dataValues)
+    {
+        if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+        {
+            auto it = dataObjects.find(UUID::FromString(dataValue->value_string));
+            if (it != dataObjects.end())
+            {
+                VirtualDatasheetObject* instanceObject = it->second;
+                dataObjects.erase(it);
+
+                dataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
+                dataValue->value_objectInstance = instanceObject;
+            }
+        }
+    }
 }
 
 void VirtualDatasheetObject::RefreshParentObject(VirtualDatasheetObject* parentObject)
@@ -230,31 +262,20 @@ void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData
 
 void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
 {
-    DatasheetParser::ClassDefinition* instanceDefinition = nullptr;
-
-    pugi::xml_attribute attributeType = nodeData.attribute("type");
-    if (!attributeType.empty() && StringEquals(attributeType.value(), ""))
+    pugi::xml_attribute instanceUUIDAttribute = nodeData.attribute("value");
+    if (instanceUUIDAttribute.empty() || StringEquals(instanceUUIDAttribute.value(), ""))
     {
-        // If an empty type is explicitly declared, the instance is forced as null (should already be null).
+        // If an empty uuid is explicitly declared, the instance is forced as null (should already be null).
         dataValue->value_objectInstanceDefinition = nullptr;
         dataValue->value_objectInstance = nullptr;
+        dataValue->value_string = "";
     }
     else
     {
-        if (attributeType.empty())
-        {
-            // If the definition is not provided, we fallback on the default definition.
-            instanceDefinition = dataMemberDef->objectDefinition;
-        }
-
-        if (instanceDefinition || GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.value(), instanceDefinition))
-        {
-            VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
-            instanceObject->LoadFromXml(nodeData, instanceDefinition);
-
-            dataValue->value_objectInstanceDefinition = instanceDefinition;
-            dataValue->value_objectInstance = instanceObject;
-        }
+        // Only store uuid here, wait for ResolveInstances to actually retrieve the object instance.
+        dataValue->value_objectInstanceDefinition = nullptr;
+        dataValue->value_objectInstance = nullptr;
+        dataValue->value_string = instanceUUIDAttribute.as_string();
     }
 }
 
@@ -304,8 +325,13 @@ VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const st
     return nullptr;
 }
 
-bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheetObject) const
+bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet) const
 {
+    // Serialize object.
+    pugi::xml_node nodeDatasheetObject = nodeDatasheet.append_child("Object");
+    nodeDatasheetObject.append_attribute("type") = m_classDefinition->m_name.c_str();
+    nodeDatasheetObject.append_attribute("uuid")= m_uuid.ToString().c_str();
+
     // TODO: sort m_dataValues to match the definition.
     for (const VirtualDatasheetObject::DataValue* dataValue : m_dataValues)
     {
@@ -327,7 +353,7 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheetObject) cons
             {
                 if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                 {
-                    SaveInstanceDataValue(nodeData, dataValue, dataValue->dataMemberDefinition->objectDefinition);
+                    SaveInstanceDataValue(nodeDatasheet, nodeData, dataValue, dataValue->dataMemberDefinition->objectDefinition);
                 }
                 else
                 {
@@ -341,7 +367,7 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheetObject) cons
                     if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
                         pugi::xml_node nodeChild = nodeData.append_child("Child");
-                        SaveInstanceDataValue(nodeChild, childDataValue, dataValue->dataMemberDefinition->objectDefinition);
+                        SaveInstanceDataValue(nodeDatasheet, nodeChild, childDataValue, dataValue->dataMemberDefinition->objectDefinition);
                     }
                     else
                     {
@@ -393,17 +419,17 @@ void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const
     }
 }
 
-void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const
+void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeDatasheet, pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const
 {
     if (dataValue->value_objectInstanceDefinition)
     {
-        nodeData.append_attribute("type") = dataValue->value_objectInstanceDefinition->m_name.c_str();
-        dataValue->value_objectInstance->SaveToXml(nodeData);
+        nodeData.append_attribute("value") = dataValue->value_objectInstance->m_uuid.ToString().c_str();
+        dataValue->value_objectInstance->SaveToXml(nodeDatasheet);
     }
     else
     {
-        // If the definition is null, then the instance itself is null, we use an empty type to explicitely declare that.
-        nodeData.append_attribute("type") = "";
+        // If the definition is null, then the instance itself is null, we use an empty value to explicitely declare that.
+        nodeData.append_attribute("value") = "";
     }
 }
 
@@ -502,17 +528,56 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 {
     Unload();
 
-    m_rootObject = new VirtualDatasheetObject;
-
     pugi::xml_node nodeDatasheetObject = document.child("Datasheet");
     if (!nodeDatasheetObject)
         return false;
 
-    if (!m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
+    // Parse Object nodes.
+    std::map<UUID, VirtualDatasheetObject*> dataObjects;
+    UUID rootUuid;
+    
+    for (pugi::xml_node nodeObject = nodeDatasheetObject.child("Object"); nodeObject; nodeObject = nodeObject.next_sibling("Object"))
+    {
+        VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
+
+        if (dataObject->LoadFromXml(nodeObject))
+        {
+            dataObjects.insert(std::make_pair(dataObject->m_uuid, dataObject));
+
+            if (rootUuid.IsZero())
+            {
+                rootUuid = dataObject->m_uuid;
+            }
+        }
+        else
+        {
+            // TODO: log error ?
+            SafeDelete(dataObject);
+        }
+    }
+
+    // Resolve instance links.
+    auto itRoot = dataObjects.find(rootUuid);
+    if (itRoot == dataObjects.end())
     {
         return false;
     }
 
+    m_rootObject = itRoot->second;
+    dataObjects.erase(itRoot);
+
+    m_rootObject->ResolveInstances(dataObjects);
+
+    // Delete unreferenced objects.
+    for (auto it : dataObjects)
+    {
+        // TODO: log error ?
+        SafeDelete(it.second);
+    }
+
+    dataObjects.clear();
+
+    // Compute parent data.
     std::string parentResourceID = "";
     VirtualDatasheet* parentDatasheet = nullptr;
 
@@ -544,7 +609,7 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
 {
     pugi::xml_node nodeDatasheet = document.append_child("Datasheet");
-    nodeDatasheet.append_attribute("serializationVersion") = 1;
+    nodeDatasheet.append_attribute("serializationVersion") = 2;
 
     // Binding version, could be used for application binding changes.
     nodeDatasheet.append_attribute("bindingVersion") = 1;

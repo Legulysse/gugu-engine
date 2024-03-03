@@ -606,9 +606,15 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
                 {
                     SafeDelete(dataValue->value_objectInstance);
 
+                    UUID newInstanceUuid = UUID::Generate();
+
                     VirtualDatasheetObject* newInstanceObject = new VirtualDatasheetObject;
+                    newInstanceObject->m_uuid = newInstanceUuid;
+                    newInstanceObject->m_classDefinition = newInstanceDefinition;
+
                     dataValue->value_objectInstanceDefinition = newInstanceDefinition;
                     dataValue->value_objectInstance = newInstanceObject;
+                    dataValue->value_string = newInstanceUuid.ToString();
                 }
 
                 RaiseDirty();

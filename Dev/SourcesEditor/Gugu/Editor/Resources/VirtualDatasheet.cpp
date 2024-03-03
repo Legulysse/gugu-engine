@@ -192,6 +192,10 @@ void VirtualDatasheetObject::ResolveInstances(std::map<UUID, VirtualDatasheetObj
                 dataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
                 dataValue->value_objectInstance = instanceObject;
             }
+            else
+            {
+                // TODO: handle missing instances.
+            }
         }
     }
 }

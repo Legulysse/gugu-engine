@@ -629,4 +629,101 @@ bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
     return true;
 }
 
+bool VirtualDatasheet::HandleMigration(const FileInfo& fileInfo)
+{
+    pugi::xml_document document;
+    pugi::xml_parse_result loadResult = document.load_file(fileInfo.GetFileSystemPath().c_str());
+    if (!loadResult)
+        return false;
+
+    int serializationVersion = document.child("Datasheet").attribute("serializationVersion").as_int();
+    if (serializationVersion <= 1)
+    {
+        Migrate_v1_to_v2(fileInfo, document);
+    }
+
+    document.save_file(fileInfo.GetFileSystemPath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+
+    return true;
+}
+
+bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document)
+{
+    pugi::xml_document migratedDocument;
+
+    pugi::xml_node nodeDatasheet = document.child("Datasheet");
+    if (!nodeDatasheet)
+        return false;
+
+    std::string attributeValueBindingVersion = nodeDatasheet.attribute("bindingVersion").as_string("1");
+    std::string attributeValueParent = nodeDatasheet.attribute("parent").as_string();
+
+    nodeDatasheet.remove_attributes();
+    nodeDatasheet.append_attribute("serializationVersion").set_value(2);
+    nodeDatasheet.append_attribute("bindingVersion").set_value(attributeValueBindingVersion.c_str());
+
+    if (!attributeValueParent.empty())
+    {
+        nodeDatasheet.append_attribute("parent").set_value(attributeValueParent.c_str());
+    }
+
+    pugi::xml_node nodeRootObject = nodeDatasheet.append_child("Object");
+    nodeRootObject.append_attribute("type").set_value(fileInfo.GetExtension().data(), fileInfo.GetExtension().size());
+    nodeRootObject.append_attribute("uuid").set_value(GenerateUUIDAsString().c_str());
+
+    DatasheetParser::ClassDefinition* rootClassDefinition = nullptr;
+    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(fileInfo.GetExtension(), rootClassDefinition))
+    {
+        return false;
+    }
+
+    pugi::xml_node nextNodeData = nodeDatasheet.child("Data");
+    for (pugi::xml_node nodeData = nextNodeData; nodeData; nodeData = nextNodeData)
+    {
+        nextNodeData = nodeData.next_sibling("Data");
+
+        DatasheetParser::DataMemberDefinition* dataMemberDef = rootClassDefinition->GetDataMemberDefinition(nodeData.attribute("name").as_string());
+        if (dataMemberDef)
+        {
+            if (dataMemberDef->isArray)
+            {
+            }
+            else
+            {
+                if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Type::ObjectInstance)
+                {
+                    pugi::xml_attribute attributeType = nodeData.attribute("type");
+                    nodeData.remove_attribute("type");
+
+                    if (attributeType.empty() || StringEquals(attributeType.value(), ""))
+                    {
+                        // Explicit null instance
+                        nodeData.append_attribute("value").set_value("");
+                    }
+                    else
+                    {
+                        DatasheetParser::ClassDefinition* instanceClassDefinition = nullptr;
+                        if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.as_string(), instanceClassDefinition))
+                        {
+                            instanceClassDefinition = dataMemberDef->objectDefinition;
+                        }
+
+                        std::string uuid = GenerateUUIDAsString();
+
+                        pugi::xml_node nodeInstanceObject = nodeDatasheet.append_child("Object");
+                        nodeInstanceObject.append_attribute("type").set_value(instanceClassDefinition->m_name.c_str());
+                        nodeInstanceObject.append_attribute("uuid").set_value(uuid.c_str());
+
+                        nodeData.append_attribute("value").set_value(uuid.c_str());
+                    }
+                }
+            }
+        }
+
+        nodeRootObject.append_move(nodeData);
+    }
+
+    return true;
+}
+
 }   // namespace gugu

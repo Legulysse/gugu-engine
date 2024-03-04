@@ -31,6 +31,7 @@
 #include "Gugu/Window/Window.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
@@ -264,6 +265,12 @@ void Editor::Update(const DeltaTime& dt)
             if (ImGui::MenuItem("Close Project"))
             {
                 CloseProject();
+            }
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("Migrate Resources"))
+            {
+                MigrateResources();
             }
 
             ImGui::Separator();
@@ -802,6 +809,24 @@ DatasheetParser* Editor::GetDatasheetParser() const
 EditorClipboard* Editor::GetEditorClipboard() const
 {
     return m_clipboard;
+}
+
+void Editor::MigrateResources() const
+{
+    std::vector<const ResourceInfo*> resourceInfos;
+    GetResources()->GetAllResourceInfos(resourceInfos);
+    for (const auto& resourceInfo : resourceInfos)
+    {
+        EResourceType::Type resourceType = GetResources()->GetResourceType(resourceInfo->fileInfo);
+        if (resourceType == EResourceType::Unknown)
+        {
+            // Check datasheets.
+            if (m_datasheetParser && m_datasheetParser->IsDatasheet(resourceInfo->fileInfo))
+            {
+                VirtualDatasheet::HandleMigration(resourceInfo->fileInfo);
+            }
+        }
+    }
 }
 
 Editor* GetEditor()

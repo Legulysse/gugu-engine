@@ -102,6 +102,9 @@ public:
     bool IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const;    // TODO: I could use an enum for error returns, and reuse them in other cases of references error feedbacks.
     void SetParentDatasheet(const std::string& parentDatasheetID, VirtualDatasheet* parentDatasheet);
 
+    static bool HandleMigration(const FileInfo& fileInfo);
+    static bool Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document);
+
 protected:
 
     virtual void Unload() override;

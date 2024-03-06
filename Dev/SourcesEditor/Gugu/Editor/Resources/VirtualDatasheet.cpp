@@ -181,20 +181,45 @@ void VirtualDatasheetObject::ResolveInstances(std::map<UUID, VirtualDatasheetObj
 {
     for (const auto& dataValue : m_dataValues)
     {
-        if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+        if (dataValue->dataMemberDefinition->isArray)
         {
-            auto it = dataObjects.find(UUID::FromString(dataValue->value_string));
-            if (it != dataObjects.end())
+            if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
             {
-                VirtualDatasheetObject* instanceObject = it->second;
-                dataObjects.erase(it);
+                for (const auto& childDataValue : dataValue->value_children)
+                {
+                    auto it = dataObjects.find(UUID::FromString(childDataValue->value_string));
+                    if (it != dataObjects.end())
+                    {
+                        VirtualDatasheetObject* instanceObject = it->second;
+                        dataObjects.erase(it);
 
-                dataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
-                dataValue->value_objectInstance = instanceObject;
+                        childDataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
+                        childDataValue->value_objectInstance = instanceObject;
+                    }
+                    else
+                    {
+                        // TODO: handle missing instances.
+                    }
+                }
             }
-            else
+        }
+        else
+        {
+            if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
             {
-                // TODO: handle missing instances.
+                auto it = dataObjects.find(UUID::FromString(dataValue->value_string));
+                if (it != dataObjects.end())
+                {
+                    VirtualDatasheetObject* instanceObject = it->second;
+                    dataObjects.erase(it);
+
+                    dataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
+                    dataValue->value_objectInstance = instanceObject;
+                }
+                else
+                {
+                    // TODO: handle missing instances.
+                }
             }
         }
     }
@@ -647,6 +672,83 @@ bool VirtualDatasheet::HandleMigration(const FileInfo& fileInfo)
     return true;
 }
 
+namespace impl {
+
+void MigrateInstanceObject_v1_to_v2(
+    pugi::xml_node nodeDatasheet,
+    pugi::xml_node nodeObjectV1,
+    pugi::xml_node nodeObjectV2,
+    DatasheetParser::ClassDefinition* instanceClassDefinition);
+
+void MigrateDataMember_v1_to_v2(
+    pugi::xml_node nodeDatasheet,
+    pugi::xml_node nodeData,
+    DatasheetParser::DataMemberDefinition* dataMemberDef)
+{
+    if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Type::ObjectInstance)
+    {
+        pugi::xml_attribute attributeType = nodeData.attribute("type");
+        nodeData.remove_attribute("type");
+
+        if (!attributeType.empty() && StringEquals(attributeType.value(), ""))
+        {
+            // Explicit null instance
+            nodeData.append_attribute("value").set_value("");
+        }
+        else
+        {
+            DatasheetParser::ClassDefinition* instanceClassDefinition = nullptr;
+            if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.as_string(), instanceClassDefinition))
+            {
+                instanceClassDefinition = dataMemberDef->objectDefinition;
+            }
+
+            std::string uuid = GenerateUUIDAsString();
+
+            pugi::xml_node nodeInstanceObject = nodeDatasheet.append_child("Object");
+            nodeInstanceObject.append_attribute("type").set_value(instanceClassDefinition->m_name.c_str());
+            nodeInstanceObject.append_attribute("uuid").set_value(uuid.c_str());
+
+            nodeData.append_attribute("value").set_value(uuid.c_str());
+
+            impl::MigrateInstanceObject_v1_to_v2(nodeDatasheet, nodeData, nodeInstanceObject, instanceClassDefinition);
+        }
+    }
+}
+
+void MigrateInstanceObject_v1_to_v2(
+    pugi::xml_node nodeDatasheet,
+    pugi::xml_node nodeObjectV1,
+    pugi::xml_node nodeObjectV2,
+    DatasheetParser::ClassDefinition* instanceClassDefinition)
+{
+    pugi::xml_node nextNodeData = nodeObjectV1.child("Data");
+    for (pugi::xml_node nodeData = nextNodeData; nodeData; nodeData = nextNodeData)
+    {
+        nextNodeData = nodeData.next_sibling("Data");
+
+        DatasheetParser::DataMemberDefinition* dataMemberDef = instanceClassDefinition->GetDataMemberDefinition(nodeData.attribute("name").as_string());
+        if (dataMemberDef)
+        {
+            if (dataMemberDef->isArray)
+            {
+                for (pugi::xml_node nodeChild = nodeData.child("Child"); nodeChild; nodeChild = nodeChild.next_sibling("Child"))
+                {
+                    MigrateDataMember_v1_to_v2(nodeDatasheet, nodeChild, dataMemberDef);
+                }
+            }
+            else
+            {
+                MigrateDataMember_v1_to_v2(nodeDatasheet, nodeData, dataMemberDef);
+            }
+        }
+
+        nodeObjectV2.append_move(nodeData);
+    }
+}
+
+}   // namespace impl
+
 bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document)
 {
     pugi::xml_document migratedDocument;
@@ -667,61 +769,17 @@ bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_docu
         nodeDatasheet.append_attribute("parent").set_value(attributeValueParent.c_str());
     }
 
-    pugi::xml_node nodeRootObject = nodeDatasheet.append_child("Object");
-    nodeRootObject.append_attribute("type").set_value(fileInfo.GetExtension().data(), fileInfo.GetExtension().size());
-    nodeRootObject.append_attribute("uuid").set_value(GenerateUUIDAsString().c_str());
-
     DatasheetParser::ClassDefinition* rootClassDefinition = nullptr;
     if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(fileInfo.GetExtension(), rootClassDefinition))
     {
         return false;
     }
 
-    pugi::xml_node nextNodeData = nodeDatasheet.child("Data");
-    for (pugi::xml_node nodeData = nextNodeData; nodeData; nodeData = nextNodeData)
-    {
-        nextNodeData = nodeData.next_sibling("Data");
+    pugi::xml_node nodeRootObject = nodeDatasheet.append_child("Object");
+    nodeRootObject.append_attribute("type").set_value(rootClassDefinition->m_name.c_str());
+    nodeRootObject.append_attribute("uuid").set_value(GenerateUUIDAsString().c_str());
 
-        DatasheetParser::DataMemberDefinition* dataMemberDef = rootClassDefinition->GetDataMemberDefinition(nodeData.attribute("name").as_string());
-        if (dataMemberDef)
-        {
-            if (dataMemberDef->isArray)
-            {
-            }
-            else
-            {
-                if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Type::ObjectInstance)
-                {
-                    pugi::xml_attribute attributeType = nodeData.attribute("type");
-                    nodeData.remove_attribute("type");
-
-                    if (attributeType.empty() || StringEquals(attributeType.value(), ""))
-                    {
-                        // Explicit null instance
-                        nodeData.append_attribute("value").set_value("");
-                    }
-                    else
-                    {
-                        DatasheetParser::ClassDefinition* instanceClassDefinition = nullptr;
-                        if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.as_string(), instanceClassDefinition))
-                        {
-                            instanceClassDefinition = dataMemberDef->objectDefinition;
-                        }
-
-                        std::string uuid = GenerateUUIDAsString();
-
-                        pugi::xml_node nodeInstanceObject = nodeDatasheet.append_child("Object");
-                        nodeInstanceObject.append_attribute("type").set_value(instanceClassDefinition->m_name.c_str());
-                        nodeInstanceObject.append_attribute("uuid").set_value(uuid.c_str());
-
-                        nodeData.append_attribute("value").set_value(uuid.c_str());
-                    }
-                }
-            }
-        }
-
-        nodeRootObject.append_move(nodeData);
-    }
+    impl::MigrateInstanceObject_v1_to_v2(nodeDatasheet, nodeDatasheet, nodeRootObject, rootClassDefinition);
 
     return true;
 }

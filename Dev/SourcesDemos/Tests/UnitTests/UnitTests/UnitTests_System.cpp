@@ -703,6 +703,13 @@ void RunUnitTests_System(UnitTestResults* results)
         GUGU_UTEST_CHECK_EQUAL(UUID::FromString(ToString(uuidB)), uuidB);
         GUGU_UTEST_CHECK_EQUAL(UUID::FromString(uuidA.ToString()), uuidA);
         GUGU_UTEST_CHECK_EQUAL(UUID::FromString(uuidB.ToString()), uuidB);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString(ToString(uuidA)), uuidB);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString(ToString(uuidB)), uuidA);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString(uuidA.ToString()), uuidB);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString(uuidB.ToString()), uuidA);
+
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("9052F2915FAC4B75A0C93547D1A0ADB3"), UUID::FromString("9052f2915fac4b75a0c93547d1a0adb3"));
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString("38c33747ec1d4dc784267b0ac2f0030b"), UUID::FromString("9052f2915fac4b75a0c93547d1a0adb3"));
 
         std::vector<std::string> uuids;
         bool validSize = true;
@@ -718,7 +725,7 @@ void RunUnitTests_System(UnitTestResults* results)
 
             for (size_t i = 0; i < uuid.size(); ++i)
             {
-                validChars &= (uuid[i] >= '0' && uuid[i] <= '9') || (uuid[i] >= 'A' && uuid[i] <= 'F');
+                validChars &= (uuid[i] >= '0' && uuid[i] <= '9') || (uuid[i] >= 'a' && uuid[i] <= 'f');
             }
         }
 

@@ -4,9 +4,11 @@
 // Includes
 
 #include "Gugu/Math/Vector2.h"
+#include "Gugu/System/UUID.h"
 
 #include <string>
 #include <vector>
+#include <map>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -31,6 +33,7 @@ namespace gugu {
 struct DataParseContext
 {
     pugi::xml_node* currentNode;
+    std::map<UUID, DataObject*> objectByUUID;
 };
 
 struct DataSaveContext
@@ -171,6 +174,9 @@ bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strN
 DataObject* InstanciateDataObject(DataParseContext& _kContext, const std::string& _strType);
 bool InstanciateDataObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
 bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
+
+bool ResolveDataObjectInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
+bool ResolveDataObjectInstances(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
 
 void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember);
 void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember);

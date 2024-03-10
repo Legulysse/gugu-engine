@@ -237,6 +237,66 @@ bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _str
     return false;
 }
 
+bool ResolveDataObjectInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
+{
+    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
+    {
+        // If a node exists but no uuid is provided, or an empty uuid is provided, we force a null instance (can be used to erase a parent instance through inheritance).
+        pugi::xml_attribute uuidAttribute = node.attribute("value");
+        if (uuidAttribute && !StringEquals(uuidAttribute.as_string(), ""))
+        {
+            const auto& it = _kContext.objectByUUID.find(UUID::FromString(uuidAttribute.as_string()));
+            if (it != _kContext.objectByUUID.end())
+            {
+                _pInstance = it->second;
+            }
+
+            // TODO: raise an error if an uuid is provided but no object could be found.
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool ResolveDataObjectInstances(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
+{
+    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
+    {
+        pugi::xml_node* parentNode = _kContext.currentNode;
+
+        for (pugi::xml_node childNode = node.child("Child"); childNode; childNode = childNode.next_sibling("Child"))
+        {
+            // If a node exists but no uuid is provided, or an empty uuid is provided, we force a null instance (can be used for explicit empty array entries).
+            pugi::xml_attribute uuidAttribute = childNode.attribute("value");
+            if (uuidAttribute && !StringEquals(uuidAttribute.as_string(), ""))
+            {
+                const auto& it = _kContext.objectByUUID.find(UUID::FromString(uuidAttribute.as_string()));
+                if (it != _kContext.objectByUUID.end())
+                {
+                    _vecInstances.push_back(it->second);
+                }
+                else
+                {
+                    // TODO: raise an error if an uuid is provided but no object could be found.
+                    _vecInstances.push_back(nullptr);
+                }
+            }
+            else
+            {
+                _vecInstances.push_back(nullptr);
+            }
+        }
+
+        _kContext.currentNode = parentNode;
+
+        return true;
+    }
+
+    return false;
+}
+
 void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember)
 {
     pugi::xml_node pNode = AddNodeData(_kContext, _strName);

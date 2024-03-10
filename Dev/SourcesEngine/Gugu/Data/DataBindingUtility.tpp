@@ -102,11 +102,11 @@ void ReadDatasheetInstance(DataParseContext& _kContext, const std::string& _strN
 {
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
-    DataObject* pInstance = nullptr;
-    if (impl::InstanciateDataObject(_kContext, _strName, _strType, pInstance))
+    DataObject* objectInstance = nullptr;
+    if (impl::ResolveDataObjectInstance(_kContext, _strName, _strType, objectInstance))
     {
         SafeDelete(_pMember);
-        _pMember = dynamic_cast<const T*>(pInstance);
+        _pMember = dynamic_cast<const T*>(objectInstance);
     }
 }
 
@@ -116,7 +116,7 @@ void ReadDatasheetInstanceArray(DataParseContext& _kContext, const std::string& 
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
     std::vector<DataObject*> vecInstances;
-    if (impl::InstanciateDataObjects(_kContext, _strName, _strType, vecInstances))
+    if (impl::ResolveDataObjectInstances(_kContext, _strName, _strType, vecInstances))
     {
         ClearStdVector(_vecMember);
 

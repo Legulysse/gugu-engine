@@ -710,6 +710,11 @@ void RunUnitTests_System(UnitTestResults* results)
 
         GUGU_UTEST_CHECK_EQUAL(UUID::FromString("9052F2915FAC4B75A0C93547D1A0ADB3"), UUID::FromString("9052f2915fac4b75a0c93547d1a0adb3"));
         GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString("38c33747ec1d4dc784267b0ac2f0030b"), UUID::FromString("9052f2915fac4b75a0c93547d1a0adb3"));
+        
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString("11112222333344445555666677778888"), UUID());
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("0"), UUID());
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("1111"), UUID());
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("1111222233334444555566667777888811112222333344445555666677778888"), UUID());
 
         std::vector<std::string> uuids;
         bool validSize = true;

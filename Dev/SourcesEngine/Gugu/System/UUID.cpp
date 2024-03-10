@@ -47,10 +47,17 @@ UUID UUID::Generate()
 
 UUID UUID::FromString(const std::string& value)
 {
-    UUID uuid;
-    std::from_chars(value.data(), value.data() + 16, uuid.m_data1, 16);
-    std::from_chars(value.data() + 16, value.data() + 16 + 16, uuid.m_data2, 16);
-    return uuid;
+    if (value.size() == 32)
+    {
+        UUID uuid;
+        std::from_chars(value.data(), value.data() + 16, uuid.m_data1, 16);
+        std::from_chars(value.data() + 16, value.data() + 16 + 16, uuid.m_data2, 16);
+        return uuid;
+    }
+    else
+    {
+        return UUID();
+    }
 }
 
 std::string UUID::ToString() const

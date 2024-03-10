@@ -110,13 +110,13 @@ void WriteEnumValues(DataSaveContext& _kContext, const std::string& _strName, co
     }
 }
 
-const DatasheetObject* ResolveDatasheetLink(const std::string& _strName)
+const DatasheetObject* ResolveDatasheetReference(const std::string& _strName)
 {
     Datasheet* datasheet = GetResources()->GetDatasheet(_strName);
     return datasheet ? datasheet->GetRootObject() : nullptr;
 }
 
-bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pNewDatasheet)
+bool ResolveDatasheetReference(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pNewDatasheet)
 {
     if (pugi::xml_node pNode = FindNodeData(_kContext, _strName))
     {
@@ -125,7 +125,7 @@ bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strNa
         if (datasheetID != "")
         {
             std::string strSheetName = datasheetID;
-            _pNewDatasheet = ResolveDatasheetLink(strSheetName);
+            _pNewDatasheet = ResolveDatasheetReference(strSheetName);
         }
 
         return true;
@@ -134,7 +134,7 @@ bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strNa
     return false;
 }
 
-bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecReferences)
+bool ResolveDatasheetReferences(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecReferences)
 {
     if (pugi::xml_node node = FindNodeData(_kContext, _strName))
     {
@@ -144,7 +144,7 @@ bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strN
             std::string datasheetID = child.attribute("value").as_string();
             if (datasheetID != "")
             {
-                const DatasheetObject* reference = ResolveDatasheetLink(datasheetID);
+                const DatasheetObject* reference = ResolveDatasheetReference(datasheetID);
                 _vecReferences.push_back(reference);
             }
             else

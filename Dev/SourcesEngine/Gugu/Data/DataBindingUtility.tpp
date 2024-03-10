@@ -56,7 +56,7 @@ void ReadDatasheetReference(DataParseContext& _kContext, const std::string& _str
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
     const DatasheetObject* pReference = nullptr;
-    if (impl::ResolveDatasheetLink(_kContext, _strName, pReference))
+    if (impl::ResolveDatasheetReference(_kContext, _strName, pReference))
     {
         _pMember = dynamic_cast<const T*>(pReference);
     }
@@ -68,7 +68,7 @@ void ReadDatasheetReferenceArray(DataParseContext& _kContext, const std::string&
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
     std::vector<const DatasheetObject*> vecReferences;
-    if (impl::ResolveDatasheetLinks(_kContext, _strName, vecReferences))
+    if (impl::ResolveDatasheetReferences(_kContext, _strName, vecReferences))
     {
         _vecMember.clear();
 

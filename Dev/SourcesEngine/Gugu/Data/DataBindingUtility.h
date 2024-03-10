@@ -167,9 +167,9 @@ bool ReadEnumValues(DataParseContext& _kContext, const std::string& _strName, co
 void WriteEnumValue(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, int _iValue);
 void WriteEnumValues(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<int>& _vecValues);
 
-const DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
-bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
-bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
+const DatasheetObject* ResolveDatasheetReference(const std::string& _strName);
+bool ResolveDatasheetReference(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
+bool ResolveDatasheetReferences(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
 
 void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember);
 

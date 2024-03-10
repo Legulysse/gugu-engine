@@ -42,6 +42,7 @@ ManagerResources::ManagerResources()
     m_debugFont = "";
     m_useFullPath = false;
     m_defaultTextureSmooth = false;
+    m_handleResourceDependencies = false;
 }
 
 ManagerResources::~ManagerResources()

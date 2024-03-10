@@ -59,7 +59,7 @@ public:
     void OnDependencyRemoved(const Resource* removedDependency);
 
     bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject);
-    bool SaveToXml(pugi::xml_node& nodeDatasheet) const;
+    bool SaveToXml(pugi::xml_node& nodeDatasheet, bool isRoot) const;
 
     void ResolveInstances(std::map<UUID, VirtualDatasheetObject*>& dataObjects);
     void RefreshParentObject(VirtualDatasheetObject* parentObject);

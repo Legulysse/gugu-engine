@@ -354,10 +354,10 @@ VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const st
     return nullptr;
 }
 
-bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet) const
+bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, bool isRoot) const
 {
     // Serialize object.
-    pugi::xml_node nodeDatasheetObject = nodeDatasheet.append_child("Object");
+    pugi::xml_node nodeDatasheetObject = nodeDatasheet.append_child(isRoot ? "RootObject" : "Object");
     nodeDatasheetObject.append_attribute("type") = m_classDefinition->m_name.c_str();
     nodeDatasheetObject.append_attribute("uuid")= m_uuid.ToString().c_str();
 
@@ -453,7 +453,7 @@ void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeDatasheet
     if (dataValue->value_objectInstanceDefinition)
     {
         nodeData.append_attribute("value") = dataValue->value_objectInstance->m_uuid.ToString().c_str();
-        dataValue->value_objectInstance->SaveToXml(nodeDatasheet);
+        dataValue->value_objectInstance->SaveToXml(nodeDatasheet, false);
     }
     else
     {
@@ -557,26 +557,33 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 {
     Unload();
 
-    pugi::xml_node nodeDatasheetObject = document.child("Datasheet");
-    if (!nodeDatasheetObject)
+    pugi::xml_node datasheetNode = document.child("Datasheet");
+    if (!datasheetNode)
         return false;
+
+    pugi::xml_node rootNode = datasheetNode.child("RootObject");
+    if (!rootNode)
+        return false;
+
+    m_rootObject = new VirtualDatasheetObject;
+    if (!m_rootObject->LoadFromXml(rootNode))
+    {
+        // TODO: log error ?
+        SafeDelete(m_rootObject);
+        return false;
+    }
 
     // Parse Object nodes.
     std::map<UUID, VirtualDatasheetObject*> dataObjects;
     UUID rootUuid;
     
-    for (pugi::xml_node nodeObject = nodeDatasheetObject.child("Object"); nodeObject; nodeObject = nodeObject.next_sibling("Object"))
+    for (pugi::xml_node nodeObject = datasheetNode.child("Object"); nodeObject; nodeObject = nodeObject.next_sibling("Object"))
     {
         VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
 
         if (dataObject->LoadFromXml(nodeObject))
         {
             dataObjects.insert(std::make_pair(dataObject->m_uuid, dataObject));
-
-            if (rootUuid.IsZero())
-            {
-                rootUuid = dataObject->m_uuid;
-            }
         }
         else
         {
@@ -586,15 +593,6 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
     }
 
     // Resolve instance links.
-    auto itRoot = dataObjects.find(rootUuid);
-    if (itRoot == dataObjects.end())
-    {
-        return false;
-    }
-
-    m_rootObject = itRoot->second;
-    dataObjects.erase(itRoot);
-
     m_rootObject->ResolveInstances(dataObjects);
 
     // Delete unreferenced objects.
@@ -610,7 +608,7 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
     std::string parentResourceID = "";
     VirtualDatasheet* parentDatasheet = nullptr;
 
-    pugi::xml_attribute attributeParent = nodeDatasheetObject.attribute("parent");
+    pugi::xml_attribute attributeParent = datasheetNode.attribute("parent");
     if (attributeParent)
     {
         // TODO: I should encapsulate this in some kind of GetOrLoad method.
@@ -648,7 +646,7 @@ bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
         nodeDatasheet.append_attribute("parent") = m_parentDatasheetID.c_str();
     }
 
-    if (m_rootObject && !m_rootObject->SaveToXml(nodeDatasheet))
+    if (m_rootObject && !m_rootObject->SaveToXml(nodeDatasheet, true))
         return false;
 
     return true;
@@ -690,7 +688,7 @@ void MigrateDataMember_v1_to_v2(
         pugi::xml_attribute attributeType = nodeData.attribute("type");
         nodeData.remove_attribute("type");
 
-        if (!attributeType.empty() && StringEquals(attributeType.value(), ""))
+        if (attributeType.empty() || StringEquals(attributeType.value(), ""))
         {
             // Explicit null instance
             nodeData.append_attribute("value").set_value("");
@@ -775,7 +773,7 @@ bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_docu
         return false;
     }
 
-    pugi::xml_node nodeRootObject = nodeDatasheet.append_child("Object");
+    pugi::xml_node nodeRootObject = nodeDatasheet.append_child("RootObject");
     nodeRootObject.append_attribute("type").set_value(rootClassDefinition->m_name.c_str());
     nodeRootObject.append_attribute("uuid").set_value(GenerateUUIDAsString().c_str());
 

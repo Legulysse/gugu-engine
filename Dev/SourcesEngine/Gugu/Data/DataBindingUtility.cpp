@@ -159,85 +159,25 @@ bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strN
     return false;
 }
 
-DataObject* InstanciateDataObject(DataParseContext& _kContext, const std::string& _strType)
+void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember)
 {
-    DataObject* instance = GetResources()->InstanciateDataObject(_strType);
-    if (instance)
-    {
-        instance->ParseMembers(_kContext);
-        return instance;
-    }
-    else
-    {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasheet : {0}", _strType));
-    }
+    pugi::xml_node pNode = AddNodeData(_kContext, _strName);
 
-    return nullptr;
-}
-
-bool InstanciateDataObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
-{
-    if (pugi::xml_node pNode = FindNodeData(_kContext, _strName))
+    for (size_t i = 0; i < _pMember.size(); ++i)
     {
-        // Check type overload.
-        // If serialized type is explicitely empty, we force a null instance (can be used to erase a parent instance through inheritance).
-        // If type is missing, no object will be instanced here, and we will keep the inherited object from parent instance.
-        pugi::xml_attribute pAttributeType = pNode.attribute("type");
-        std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
-
-        if (strType != "")
+        const Datasheet* datasheet = _pMember[i] == nullptr ? nullptr : _pMember[i]->GetDatasheet();
+        if (datasheet)
         {
-            pugi::xml_node* pNodeParent = _kContext.currentNode;
-            _kContext.currentNode = &pNode;
-
-            _pInstance = InstanciateDataObject(_kContext, strType);
-
-            _kContext.currentNode = pNodeParent;
+            pNode.append_child("Child").append_attribute("value").set_value(datasheet->GetID().c_str());
         }
-
-        return true;
-    }
-
-    return false;
-}
-
-bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
-{
-    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
-    {
-        pugi::xml_node* pNodeParent = _kContext.currentNode;
-
-        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
+        else
         {
-            // Check type overload.
-            // If serialized type is explicitely empty, we force a null instance (can be used for explicit empty array entries).
-            // If type is missing, we will also force a null instance (this may evolve later if I handle inherited arrays override per entry).
-            pugi::xml_attribute pAttributeType = child.attribute("type");
-            std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
-
-            if (strType != "")
-            {
-                // Instance can be null.
-                _kContext.currentNode = &child;
-                DataObject* pInstance = InstanciateDataObject(_kContext, strType);
-
-                _vecInstances.push_back(pInstance);
-            }
-            else
-            {
-                _vecInstances.push_back(nullptr);
-            }
+            pNode.append_child("Child").append_attribute("value");
         }
-
-        _kContext.currentNode = pNodeParent;
-
-        return true;
     }
-
-    return false;
 }
 
-bool ResolveDataObjectInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
+bool ResolveDatasheetObjectInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
 {
     if (pugi::xml_node node = FindNodeData(_kContext, _strName))
     {
@@ -260,7 +200,7 @@ bool ResolveDataObjectInstance(DataParseContext& _kContext, const std::string& _
     return false;
 }
 
-bool ResolveDataObjectInstances(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
+bool ResolveDatasheetObjectInstances(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
 {
     if (pugi::xml_node node = FindNodeData(_kContext, _strName))
     {
@@ -297,22 +237,72 @@ bool ResolveDataObjectInstances(DataParseContext& _kContext, const std::string& 
     return false;
 }
 
-void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember)
+DataObject* InstanciateDatasaveObject(DataParseContext& _kContext, const std::string& _strType)
 {
-    pugi::xml_node pNode = AddNodeData(_kContext, _strName);
-
-    for (size_t i = 0; i < _pMember.size(); ++i)
+    DataObject* instance = GetResources()->InstanciateDataObject(_strType);
+    if (instance)
     {
-        const Datasheet* datasheet = _pMember[i] == nullptr ? nullptr : _pMember[i]->GetDatasheet();
-        if (datasheet)
-        {
-            pNode.append_child("Child").append_attribute("value").set_value(datasheet->GetID().c_str());
-        }
-        else
-        {
-            pNode.append_child("Child").append_attribute("value");
-        }
+        instance->ParseMembers(_kContext);
+        return instance;
     }
+    else
+    {
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasave Object : {0}", _strType));
+    }
+
+    return nullptr;
+}
+
+bool InstanciateDatasaveObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
+{
+    if (pugi::xml_node pNode = FindNodeData(_kContext, _strName))
+    {
+        pugi::xml_attribute pAttributeType = pNode.attribute("type");
+        if (pAttributeType && !StringEquals(pAttributeType.as_string(), ""))
+        {
+            pugi::xml_node* pNodeParent = _kContext.currentNode;
+            _kContext.currentNode = &pNode;
+
+            _pInstance = InstanciateDatasaveObject(_kContext, pAttributeType.as_string());
+
+            _kContext.currentNode = pNodeParent;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool InstanciateDatasaveObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
+{
+    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
+    {
+        pugi::xml_node* pNodeParent = _kContext.currentNode;
+
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
+        {
+            pugi::xml_attribute pAttributeType = child.attribute("type");
+            if (pAttributeType && !StringEquals(pAttributeType.as_string(), ""))
+            {
+                // Instance can be null.
+                _kContext.currentNode = &child;
+                DataObject* pInstance = InstanciateDatasaveObject(_kContext, pAttributeType.as_string());
+
+                _vecInstances.push_back(pInstance);
+            }
+            else
+            {
+                _vecInstances.push_back(nullptr);
+            }
+        }
+
+        _kContext.currentNode = pNodeParent;
+
+        return true;
+    }
+
+    return false;
 }
 
 void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember)

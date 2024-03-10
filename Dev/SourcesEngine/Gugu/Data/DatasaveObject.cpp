@@ -64,12 +64,12 @@ bool DatasaveObject::SaveToString(std::string& result) const
 
 bool DatasaveObject::SaveToXml(pugi::xml_document& document) const
 {
-    pugi::xml_node rootNode = document.append_child("Datasave");
-    rootNode.append_attribute("serializationVersion").set_value(1);
-    rootNode.append_attribute("bindingVersion").set_value(1);
+    pugi::xml_node datasaveNode = document.append_child("Datasave");
+    datasaveNode.append_attribute("serializationVersion").set_value(1);
+    datasaveNode.append_attribute("bindingVersion").set_value(1);
 
     DataSaveContext context;
-    context.currentNode = &rootNode;
+    context.currentNode = &datasaveNode;
     SerializeMembers(context);
 
     return true;

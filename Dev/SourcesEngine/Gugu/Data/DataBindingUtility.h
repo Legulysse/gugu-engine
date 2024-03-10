@@ -171,14 +171,15 @@ const DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
 bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
 bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
 
-DataObject* InstanciateDataObject(DataParseContext& _kContext, const std::string& _strType);
-bool InstanciateDataObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
-bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
-
-bool ResolveDataObjectInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
-bool ResolveDataObjectInstances(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
-
 void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember);
+
+bool ResolveDatasheetObjectInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
+bool ResolveDatasheetObjectInstances(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
+
+DataObject* InstanciateDatasaveObject(DataParseContext& _kContext, const std::string& _strType);
+bool InstanciateDatasaveObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
+bool InstanciateDatasaveObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
+
 void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember);
 
 }   // namespace impl

@@ -72,6 +72,7 @@ public:
     int stamina;
     float speed;
     EWeaponType::Type weapon;
+    const DS_Condition* unlocked;
 
 protected:
 

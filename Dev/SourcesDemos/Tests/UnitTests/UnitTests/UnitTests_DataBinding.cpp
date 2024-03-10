@@ -65,6 +65,21 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 GUGU_UTEST_CHECK(billySheet->stamina == 200);
                 GUGU_UTEST_CHECK(billySheet->speed == 100);
                 GUGU_UTEST_CHECK(billySheet->weapon == EWeaponType::Crossbow);
+
+                if (GUGU_UTEST_CHECK(billySheet->unlocked != nullptr))
+                {
+                    ConditionContext context;
+
+                    context.playerLevel = 5;
+                    GUGU_UTEST_CHECK(billySheet->unlocked->IsValid(context));
+                    context.playerLevel = 10;
+                    GUGU_UTEST_CHECK(billySheet->unlocked->IsValid(context));
+
+                    context.playerLevel = 4;
+                    GUGU_UTEST_CHECK_FALSE(billySheet->unlocked->IsValid(context));
+                    context.playerLevel = 11;
+                    GUGU_UTEST_CHECK_FALSE(billySheet->unlocked->IsValid(context));
+                }
             }
 
             const DS_Character* paulaSheet = GetResources()->GetDatasheetObject<DS_Character>("Paula.character");
@@ -75,6 +90,7 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                 GUGU_UTEST_CHECK(paulaSheet->stamina == 250);
                 GUGU_UTEST_CHECK(paulaSheet->speed == 125);
                 GUGU_UTEST_CHECK(paulaSheet->weapon == EWeaponType::Mace);
+                GUGU_UTEST_CHECK(paulaSheet->unlocked == nullptr);
             }
 
             const DS_Item* appleSheet = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");

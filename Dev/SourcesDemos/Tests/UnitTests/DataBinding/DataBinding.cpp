@@ -79,10 +79,12 @@ DS_Character::DS_Character()
     stamina = 100;
     speed = 100.f;
     weapon = EWeaponType::Sword;
+    unlocked = nullptr;
 }
 
 DS_Character::~DS_Character()
 {
+    SafeDelete(unlocked);
 }
 
 void DS_Character::ParseMembers(gugu::DataParseContext& context)
@@ -92,6 +94,7 @@ void DS_Character::ParseMembers(gugu::DataParseContext& context)
     gugu::binding::ReadInt(context, "stamina", stamina);
     gugu::binding::ReadFloat(context, "speed", speed);
     gugu::binding::ReadEnum(context, "weapon", "weaponType", weapon);
+    gugu::binding::ReadDatasheetInstance(context, "unlocked", "condition", unlocked);
 }
 
 ////////////////////////////////////////////////////////////////

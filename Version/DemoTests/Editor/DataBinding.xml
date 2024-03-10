@@ -22,6 +22,7 @@
         <Data type="int" name="stamina" default="100" />
         <Data type="float" name="speed" default="100" />
         <Data type="weaponType" name="weapon" default="Sword" />
+        <Data type="instance:condition" name="unlocked" />
     </Class>
     
     <Class name="faction" code="DS_Faction">

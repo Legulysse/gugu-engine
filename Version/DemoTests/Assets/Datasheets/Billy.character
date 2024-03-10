@@ -1,6 +1,26 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1" parent="BaseCharacter.character">
-	<Data name="weapon" value="Crossbow" />
-	<Data name="name" value="Billy" />
-	<Data name="health" value="250" />
+<Datasheet serializationVersion="2" bindingVersion="1" parent="BaseCharacter.character">
+	<RootObject type="character" uuid="4ac5b3b81a654c049f8c7c092d498afd">
+		<Data name="weapon" value="Crossbow" />
+		<Data name="name" value="Billy" />
+		<Data name="health" value="250" />
+		<Data name="unlocked" value="408cec8a978447d8a3221ecb3afbebe5" />
+	</RootObject>
+	<Object type="conditionAnd" uuid="408cec8a978447d8a3221ecb3afbebe5">
+		<Data name="conditions">
+			<Child value="80189f80001f4341b16e9efabb5b32d0" />
+			<Child value="6bc6431a60ef4e30ba78d3f4cd512b0c" />
+			<Child value="3b0e6788d0d48510a698779166552ce4" />
+		</Data>
+	</Object>
+	<Object type="conditionPlayerLevel" uuid="80189f80001f4341b16e9efabb5b32d0">
+		<Data name="minLevel" value="5" />
+		<Data name="maxLevel" value="10" />
+	</Object>
+	<Object type="conditionPlayerLevel" uuid="6bc6431a60ef4e30ba78d3f4cd512b0c">
+		<Data name="maxLevel" value="10" />
+	</Object>
+	<Object type="conditionPlayerLevel" uuid="3b0e6788d0d48510a698779166552ce4">
+		<Data name="minLevel" value="5" />
+	</Object>
 </Datasheet>

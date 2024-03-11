@@ -62,10 +62,13 @@ UUID UUID::FromString(const std::string& value)
 
 std::string UUID::ToString() const
 {
+    // Note: std::to_chars does not seem to handle leading zeroes and will generate wrong results.
     std::string uuid;
     uuid.resize(32, '0');
-    std::to_chars(uuid.data(), uuid.data() + 16, m_data1, 16);
-    std::to_chars(uuid.data() + 16, uuid.data() + 16 + 16, m_data2, 16);
+    //std::to_chars(uuid.data(), uuid.data() + 16, m_data1, 16);
+    //std::to_chars(uuid.data() + 16, uuid.data() + 16 + 16, m_data2, 16);
+    snprintf(uuid.data(), 17, "%016llx", m_data1);
+    snprintf(uuid.data() + 16, 17, "%016llx", m_data2);
     return uuid;
 }
 

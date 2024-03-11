@@ -105,7 +105,6 @@ void ReadDatasheetInstance(DataParseContext& _kContext, const std::string& _strN
     DataObject* objectInstance = nullptr;
     if (impl::ResolveDatasheetObjectInstance(_kContext, _strName, _strType, objectInstance))
     {
-        SafeDelete(_pMember);
         _pMember = dynamic_cast<const T*>(objectInstance);
     }
 }
@@ -118,7 +117,7 @@ void ReadDatasheetInstanceArray(DataParseContext& _kContext, const std::string& 
     std::vector<DataObject*> vecInstances;
     if (impl::ResolveDatasheetObjectInstances(_kContext, _strName, _strType, vecInstances))
     {
-        ClearStdVector(_vecMember);
+        _vecMember.clear();
 
         for (size_t i = 0; i < vecInstances.size(); ++i)
         {

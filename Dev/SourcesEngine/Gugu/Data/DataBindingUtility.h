@@ -33,7 +33,7 @@ namespace gugu {
 struct DataParseContext
 {
     pugi::xml_node* currentNode;
-    std::map<UUID, DataObject*> objectByUUID;
+    const std::map<UUID, DataObject*>* objectByUUID;
 };
 
 struct DataSaveContext

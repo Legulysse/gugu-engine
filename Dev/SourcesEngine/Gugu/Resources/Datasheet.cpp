@@ -35,7 +35,8 @@ EResourceType::Type Datasheet::GetResourceType() const
 
 void Datasheet::Unload()
 {
-    SafeDelete(m_rootObject);
+    m_rootObject = nullptr;
+    ClearStdMap(m_instanceObjects);
 }
 
 bool Datasheet::LoadFromFile()

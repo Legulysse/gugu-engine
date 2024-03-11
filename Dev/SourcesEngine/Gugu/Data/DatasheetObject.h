@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Data/DataObject.h"
+#include "Gugu/System/UUID.h"
 
 #include <string>
 #include <vector>
@@ -38,6 +39,7 @@ public:
 
 private:
 
+    UUID m_uuid;
     Datasheet* m_datasheet;
 };
 

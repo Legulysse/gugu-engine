@@ -30,9 +30,12 @@ DatasheetObject::~DatasheetObject()
 
 bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerDatasheet, std::vector<Datasheet*>& ancestors)
 {
+    // This will only be set for the actual datasheet, and null when parsing parent datasheets.
+    bool isActualRoot = false;
     if (ownerDatasheet != nullptr)
     {
         m_datasheet = ownerDatasheet;
+        isActualRoot = true;
     }
 
     pugi::xml_document document;
@@ -48,7 +51,17 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
     if (rootNode.empty())
         return false;
 
+    UUID rootUuid = UUID::FromString(rootNode.attribute("uuid").as_string());
+    if (rootUuid.IsZero())
+        return false;
+
     // TODO: check root type exactitude ?
+
+    if (isActualRoot)
+    {
+        m_uuid = rootUuid;
+        m_datasheet->m_instanceObjects.insert(std::make_pair(m_uuid, this));
+    }
 
     pugi::xml_attribute pAttributeParent = datasheetNode.attribute("parent");
     if (pAttributeParent)
@@ -90,18 +103,26 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
         if (typeAttribute && uuidAttribute)
         {
             UUID uuid = UUID::FromString(uuidAttribute.as_string());
-            DataObject* instanceObject = GetResources()->InstanciateDataObject(typeAttribute.as_string());
-
-            if (instanceObject)
+            DataObject* instanceDataObject = GetResources()->InstanciateDataObject(typeAttribute.as_string());
+            DatasheetObject* instanceDatasheetObject = dynamic_cast<DatasheetObject*>(instanceDataObject);
+            if (instanceDatasheetObject)
             {
-                context.objectByUUID.insert(std::make_pair(uuid, instanceObject));
-                pendingNodes.insert(std::make_pair(instanceObject, objectNode));
+                instanceDatasheetObject->m_uuid = uuid;
+                m_datasheet->m_instanceObjects.insert(std::make_pair(uuid, instanceDatasheetObject));
+
+                pendingNodes.insert(std::make_pair(instanceDatasheetObject, objectNode));
+            }
+            else
+            {
+                SafeDelete(instanceDataObject);
             }
         }
     }
 
     // Parse objects data.
-    for (auto it : pendingNodes)
+    context.objectByUUID = &m_datasheet->m_instanceObjects;
+
+    for (auto& it : pendingNodes)
     {
         context.currentNode = &it.second;
         it.first->ParseMembers(context);

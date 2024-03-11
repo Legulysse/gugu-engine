@@ -185,8 +185,8 @@ bool ResolveDatasheetObjectInstance(DataParseContext& _kContext, const std::stri
         pugi::xml_attribute uuidAttribute = node.attribute("value");
         if (uuidAttribute && !StringEquals(uuidAttribute.as_string(), ""))
         {
-            const auto& it = _kContext.objectByUUID.find(UUID::FromString(uuidAttribute.as_string()));
-            if (it != _kContext.objectByUUID.end())
+            const auto& it = _kContext.objectByUUID->find(UUID::FromString(uuidAttribute.as_string()));
+            if (it != _kContext.objectByUUID->end())
             {
                 _pInstance = it->second;
             }
@@ -212,8 +212,8 @@ bool ResolveDatasheetObjectInstances(DataParseContext& _kContext, const std::str
             pugi::xml_attribute uuidAttribute = childNode.attribute("value");
             if (uuidAttribute && !StringEquals(uuidAttribute.as_string(), ""))
             {
-                const auto& it = _kContext.objectByUUID.find(UUID::FromString(uuidAttribute.as_string()));
-                if (it != _kContext.objectByUUID.end())
+                const auto& it = _kContext.objectByUUID->find(UUID::FromString(uuidAttribute.as_string()));
+                if (it != _kContext.objectByUUID->end())
                 {
                     _vecInstances.push_back(it->second);
                 }

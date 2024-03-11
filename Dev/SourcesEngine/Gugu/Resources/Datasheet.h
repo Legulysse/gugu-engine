@@ -4,12 +4,16 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/System/UUID.h"
+
+#include <map>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
 namespace gugu
 {
+    class DataObject;
     class DatasheetObject;
 }
 
@@ -20,6 +24,8 @@ namespace gugu {
 
 class Datasheet : public Resource
 {
+    friend class DatasheetObject;
+
 public:
 
     Datasheet();
@@ -39,6 +45,7 @@ protected:
 private:
 
     DatasheetObject* m_rootObject;
+    std::map<UUID, DataObject*> m_instanceObjects;
 };
 
 }   // namespace gugu

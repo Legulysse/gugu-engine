@@ -84,7 +84,7 @@ DS_Character::DS_Character()
 
 DS_Character::~DS_Character()
 {
-    SafeDelete(unlocked);
+    unlocked = nullptr;
 }
 
 void DS_Character::ParseMembers(gugu::DataParseContext& context)
@@ -162,7 +162,7 @@ DS_ConditionAnd::DS_ConditionAnd()
 
 DS_ConditionAnd::~DS_ConditionAnd()
 {
-    ClearStdVector(conditions);
+    conditions.clear();
 }
 
 void DS_ConditionAnd::ParseMembers(gugu::DataParseContext& context)

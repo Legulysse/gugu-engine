@@ -1,16 +1,16 @@
-<?xml version="1.0" ?>
-<Datasheet>
-    <Data name="name" value="Fireball" />
-    <Data name="null restriction"/>
-    <Data name="single restriction base" type="restriction"/>
-    <Data name="single restriction faction" type="restrictionFaction">
-        <Data name="faction" value="Yumeda.faction"/>
-    </Data>
-    <Data name="restrictions">
-        <Child />
-        <Child type="restrictionFaction">
-            <Data name="faction" value="Yumeda.faction"/>
-        </Child>
-        <Child type="restrictionTroop" />
-    </Data>
+<?xml version="1.0"?>
+<Datasheet serializationVersion="1" bindingVersion="1">
+	<Data name="name" value="Fireball" />
+	<Data name="null restriction" type="" />
+	<Data name="single restriction base" type="" />
+	<Data name="single restriction faction" type="restrictionFaction">
+		<Data name="faction" value="Yumeda.faction" />
+	</Data>
+	<Data name="restrictions">
+		<Child type="" />
+		<Child type="restrictionFaction">
+			<Data name="faction" value="Yumeda.faction" />
+		</Child>
+		<Child type="restrictionTroop" />
+	</Data>
 </Datasheet>

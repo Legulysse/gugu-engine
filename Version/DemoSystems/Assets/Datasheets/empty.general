@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
-<Datasheet>
-    <Data name="name" value="Unnamed" />
+<?xml version="1.0"?>
+<Datasheet serializationVersion="1" bindingVersion="1">
+	<Data name="name" value="Unnamed" />
 </Datasheet>

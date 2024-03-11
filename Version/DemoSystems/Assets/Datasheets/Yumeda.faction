@@ -1,5 +1,5 @@
-<?xml version="1.0" ?>
-<Datasheet>
-    <Data name="name" value="Yumeda Shogunate" />
-    <Data name="leader" value="Robert.general" />
+<?xml version="1.0"?>
+<Datasheet serializationVersion="1" bindingVersion="1">
+	<Data name="name" value="Yumeda Shogunate" />
+	<Data name="leader" value="Robert.general" />
 </Datasheet>

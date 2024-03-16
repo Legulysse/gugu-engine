@@ -47,15 +47,15 @@ void DatasheetPanel::DisplayDatasheet()
 
     // Using those as a base value to create width/height that are factor of the size of our font
     const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
-    ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody;
+    ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_ScrollY;
     if (ImGui::BeginTable("DatasheetPropertiesTable", 4, tableFlags))
     {
         // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
-        ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_NoHide;
-        ImGui::TableSetupColumn("name", columnFlags);
-        ImGui::TableSetupColumn("value", columnFlags);
-        ImGui::TableSetupColumn("depth", columnFlags);
-        ImGui::TableSetupColumn("reset", columnFlags);
+        ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_NoHide | ImGuiTableColumnFlags_WidthFixed;
+        ImGui::TableSetupColumn("name", columnFlags, 350.f);
+        ImGui::TableSetupColumn("value", columnFlags, 300.f);
+        ImGui::TableSetupColumn("depth", columnFlags, 60.f);
+        ImGui::TableSetupColumn("reset", columnFlags , 60.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 

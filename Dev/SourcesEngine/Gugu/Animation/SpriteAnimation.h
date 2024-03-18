@@ -64,6 +64,7 @@ public:
     void    AddEventCallback(const std::string& _strEvent, const Callback& callbackEvent);
 
     void    StepAnimation           (const DeltaTime& dt);
+    void    InjectDuration          (float seconds);
 
     void    SetCurrentFrame         (size_t _uiIndex);
     void    SetCurrentFrame         (AnimationFrame* _pFrame);

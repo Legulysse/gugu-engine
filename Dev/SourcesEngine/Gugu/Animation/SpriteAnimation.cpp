@@ -221,10 +221,15 @@ void SpriteAnimation::SetCurrentFrame(AnimationFrame* _pFrame)
 
 void SpriteAnimation::StepAnimation(const DeltaTime& dt)
 {
+    InjectDuration(dt.s() * m_animSpeed);
+}
+
+void SpriteAnimation::InjectDuration(float seconds)
+{
     AnimationFrame* pCurrentFrame = GetAnimationFrame();
-    if (pCurrentFrame && !m_animPause)
+    if (!m_animPause && pCurrentFrame)
     {
-        m_animDurationCurrent += dt.s() * m_animSpeed;
+        m_animDurationCurrent += seconds;
 
         while (!m_animPause && pCurrentFrame && pCurrentFrame->GetDuration() <= m_animDurationCurrent)
         {

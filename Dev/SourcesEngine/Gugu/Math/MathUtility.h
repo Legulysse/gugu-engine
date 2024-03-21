@@ -83,6 +83,9 @@ int SignInt(T value);
 template <typename T>
 T Power(const T& n, const int& p);
 
+template <typename T>
+T Power2(const T& n);
+
 //--------------------------------
 // Rounding
 

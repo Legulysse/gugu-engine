@@ -95,6 +95,12 @@ T Power(const T& n, const int& p)
     }
 }
 
+template <typename T>
+T Power2(const T& n)
+{
+    return n * n;
+}
+
 //--------------------------------
 // Rounding
 

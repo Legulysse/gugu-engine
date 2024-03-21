@@ -117,10 +117,15 @@ void RunUnitTests_Math(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("Power");
         {
-            GUGU_UTEST_CHECK(Power(5, 3) == 125);
-            GUGU_UTEST_CHECK(Power(5, 1) == 5);
-            GUGU_UTEST_CHECK(Power(5, 0) == 1);
-            GUGU_UTEST_CHECK(ApproxEqual(Power(2.f, -2), 0.25f, math::Epsilon3));
+            GUGU_UTEST_CHECK_EQUAL(Power(5, 3), 125);
+            GUGU_UTEST_CHECK_EQUAL(Power(5, 1), 5);
+            GUGU_UTEST_CHECK_EQUAL(Power(5, 0), 1);
+            GUGU_UTEST_CHECK_EQUAL(Power(20, 2), 400);
+            GUGU_UTEST_CHECK_EQUAL(Power(20, 2), Power2(20));
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Power(2.f, -2), 0.25f, math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Power(20.f, 2), 400.f, math::Epsilon3);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(Power(20.f, 2), Power2(20.f), math::Epsilon3);
         }
 
         GUGU_UTEST_SUBSECTION("Clamp");

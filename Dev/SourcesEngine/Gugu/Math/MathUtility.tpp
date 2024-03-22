@@ -67,9 +67,9 @@ T Clamp01(T _tValue)
 }
 
 template <typename T>
-T Distance(T _tValue1, T _tValue2)
+T Distance(T valueA, T valueB)
 {
-    return std::max(_tValue1, _tValue2) - std::min(_tValue1, _tValue2);
+    return std::abs(valueA - valueB);
 }
 
 template <typename T>

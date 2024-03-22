@@ -75,7 +75,7 @@ template <typename T>
 T Clamp01(T _tValue);
 
 template <typename T>
-T Distance(T _tValue1, T _tValue2);
+T Distance(T valueA, T valueB);
 
 template <typename T>
 T Absolute(T _tValue);

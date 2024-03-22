@@ -180,19 +180,8 @@ Vector2f Camera::GetPickedPosition(const Vector2i& _kMouseCoords) const
 
 bool Camera::IsMouseOverCamera(const Vector2i& _kMouseCoords) const
 {
-    Vector2f kWindowSize = Vector2f(m_window->GetSize());
-    const sf::FloatRect& kViewport = m_sfView.getViewport();
-    
-    Vector2f kViewportPosition = Vector2f(kWindowSize.x * kViewport.left, kWindowSize.y * kViewport.top);
-    Vector2f kViewportSize = Vector2f(kWindowSize.x * kViewport.width, kWindowSize.y * kViewport.height);
-
-    if (IsInRange((float)_kMouseCoords.x, kViewportPosition.x, kViewportPosition.x + kViewportSize.x - 1.f)
-    &&  IsInRange((float)_kMouseCoords.y, kViewportPosition.y, kViewportPosition.y + kViewportSize.y - 1.f) )
-    {
-        return true;
-    }
-
-    return false;
+    sf::IntRect viewport = m_window->GetSFRenderWindow()->getViewport(m_sfView);
+    return viewport.contains(_kMouseCoords);
 }
 
 bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElement) const

@@ -15,7 +15,7 @@
 
 namespace gugu {
 
-std::string ToString(Vector2f value)
+std::string ToString(const Vector2f& value)
 {
     std::ostringstream os;
     os << "(" << ToString(value.x) << ", " << ToString(value.y) << ")";

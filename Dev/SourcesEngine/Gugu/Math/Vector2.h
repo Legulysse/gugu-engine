@@ -25,7 +25,7 @@ namespace Vector2
     const Vector2f Zero_f = Vector2f();
 }
 
-std::string ToString(Vector2f value);
+std::string ToString(const Vector2f& value);
 
 bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon);
 

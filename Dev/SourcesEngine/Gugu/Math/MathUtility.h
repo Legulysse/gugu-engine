@@ -48,10 +48,16 @@ bool ApproxInferiorOrEqualToZero(float left, float epsilon);
 bool ApproxSuperiorOrEqualToZero(float left, float epsilon);
 
 template <typename T>
-bool IsInRange(T _tValue, T _tMin, T _tMax);
+bool IsInBounds(T value, T min, T max);
 
 template <typename T>
-bool IsInRangeUnordered(T _tValue, T _tLimitA, T _tLimitB);
+bool ApproxIsInBounds(T value, T min, T max, float epsilon);
+
+template <typename T>
+bool IsInBoundsUnordered(T value, T limitA, T limitB);
+
+template <typename T>
+bool ApproxIsInBoundsUnordered(T value, T limitA, T limitB, float epsilon);
 
 template <typename T>
 T Max(T _tValue, T _tMax);

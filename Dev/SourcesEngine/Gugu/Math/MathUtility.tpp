@@ -9,15 +9,28 @@ namespace gugu {
 // General
 
 template <typename T>
-bool IsInRange(T _tValue, T _tMin, T _tMax)
+bool IsInBounds(T value, T min, T max)
 {
-    return (_tValue >= _tMin && _tValue <= _tMax);
+    return (value >= min && value <= max);
 }
 
 template <typename T>
-bool IsInRangeUnordered(T _tValue, T _tLimitA, T _tLimitB)
+bool ApproxIsInBounds(T value, T min, T max, float epsilon)
 {
-    return (_tValue >= _tLimitA && _tValue <= _tLimitB) || (_tValue >= _tLimitB && _tValue <= _tLimitA);
+    return ApproxSuperiorOrEqual(value, min, epsilon) && ApproxInferiorOrEqual(value, max, epsilon);
+}
+
+template <typename T>
+bool IsInBoundsUnordered(T value, T limitA, T limitB)
+{
+    return (value >= limitA && value <= limitB) || (value >= limitB && value <= limitA);
+}
+
+template <typename T>
+bool ApproxIsInBoundsUnordered(T value, T limitA, T limitB, float epsilon)
+{
+    return (ApproxSuperiorOrEqual(value, limitA, epsilon) && ApproxInferiorOrEqual(value, limitB, epsilon))
+        || (ApproxSuperiorOrEqual(value, limitB, epsilon) && ApproxInferiorOrEqual(value, limitA, epsilon));
 }
 
 template <typename T>

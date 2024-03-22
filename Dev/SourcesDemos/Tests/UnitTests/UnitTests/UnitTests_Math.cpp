@@ -186,19 +186,33 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(Distance(5, -5), 10);
             GUGU_UTEST_CHECK_EQUAL(Distance(-35, -25), 10);
 
-            GUGU_UTEST_CHECK_TRUE(IsInRange(15, 10, 20));
-            GUGU_UTEST_CHECK_FALSE(IsInRange(5, 10, 20));
-            GUGU_UTEST_CHECK_FALSE(IsInRange(25, 10, 20));
-            GUGU_UTEST_CHECK_FALSE(IsInRange(15, 20, 10));
-            GUGU_UTEST_CHECK_FALSE(IsInRange(5, 20, 10));
-            GUGU_UTEST_CHECK_FALSE(IsInRange(25, 20, 10));
+            GUGU_UTEST_CHECK_TRUE(IsInBounds(15, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInBounds(5, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInBounds(25, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInBounds(15, 20, 10));
+            GUGU_UTEST_CHECK_FALSE(IsInBounds(5, 20, 10));
+            GUGU_UTEST_CHECK_FALSE(IsInBounds(25, 20, 10));
 
-            GUGU_UTEST_CHECK_TRUE(IsInRangeUnordered(15, 10, 20));
-            GUGU_UTEST_CHECK_FALSE(IsInRangeUnordered(5, 10, 20));
-            GUGU_UTEST_CHECK_FALSE(IsInRangeUnordered(25, 10, 20));
-            GUGU_UTEST_CHECK_TRUE(IsInRangeUnordered(15, 20, 10));
-            GUGU_UTEST_CHECK_FALSE(IsInRangeUnordered(5, 20, 10));
-            GUGU_UTEST_CHECK_FALSE(IsInRangeUnordered(25, 20, 10));
+            GUGU_UTEST_CHECK_TRUE(ApproxIsInBounds(15.f, 10.f, 20.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(5.f, 10.f, 20.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(25.f, 10.f, 20.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(15.f, 20.f, 10.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(5.f, 20.f, 10.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(25.f, 20.f, 10.f, math::Epsilon3));
+
+            GUGU_UTEST_CHECK_TRUE(IsInBoundsUnordered(15, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInBoundsUnordered(5, 10, 20));
+            GUGU_UTEST_CHECK_FALSE(IsInBoundsUnordered(25, 10, 20));
+            GUGU_UTEST_CHECK_TRUE(IsInBoundsUnordered(15, 20, 10));
+            GUGU_UTEST_CHECK_FALSE(IsInBoundsUnordered(5, 20, 10));
+            GUGU_UTEST_CHECK_FALSE(IsInBoundsUnordered(25, 20, 10));
+
+            GUGU_UTEST_CHECK_TRUE(ApproxIsInBoundsUnordered(15.f, 10.f, 20.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBoundsUnordered(5.f, 10.f, 20.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBoundsUnordered(25.f, 10.f, 20.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_TRUE(ApproxIsInBoundsUnordered(15.f, 20.f, 10.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBoundsUnordered(5.f, 20.f, 10.f, math::Epsilon3));
+            GUGU_UTEST_CHECK_FALSE(ApproxIsInBoundsUnordered(25.f, 20.f, 10.f, math::Epsilon3));
         }
     }
 

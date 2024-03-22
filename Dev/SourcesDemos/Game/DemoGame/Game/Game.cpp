@@ -332,7 +332,7 @@ void Game::GetCharactersInRange(std::vector<Character*>& characters, const Vecto
 {
     for (size_t iController = 0; iController < m_controllersAI.size(); ++iController)
     {
-        if (LengthSquare(m_controllersAI[iController]->m_character->GetPosition() - center) <= Power(radius, 2))
+        if (DistanceCheck(m_controllersAI[iController]->m_character->GetPosition(), center, radius))
         {
             characters.push_back(m_controllersAI[iController]->m_character);
         }

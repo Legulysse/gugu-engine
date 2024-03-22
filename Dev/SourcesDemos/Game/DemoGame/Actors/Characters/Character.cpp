@@ -88,10 +88,10 @@ void Character::TestCollision(Projectile* _pProjectile)
     if (!_pProjectile || m_isDead || _pProjectile->m_isDead)
         return;
 
-    if (LengthSquare(m_sprite->GetPosition() - _pProjectile->m_sprite->GetPosition()) > Power(32.f, 2))
-        return;
-
-    _pProjectile->OnHit(this);
+    if (DistanceCheck(m_sprite->GetPosition(), _pProjectile->m_sprite->GetPosition(), 32.f))
+    {
+        _pProjectile->OnHit(this);
+    }
 }
 
 void Character::ReceiveDamage(Character* source, float value)

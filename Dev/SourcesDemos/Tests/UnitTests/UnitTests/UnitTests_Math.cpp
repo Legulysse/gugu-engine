@@ -284,6 +284,63 @@ void RunUnitTests_Math(UnitTestResults* results)
         GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(rotated), 500.f, math::Epsilon3);
         GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(normalized), 1.f, math::Epsilon3);
 
+        GUGU_UTEST_CHECK_TRUE(IsInBounds(Vector2i(5, 5), Vector2i(0, 0), Vector2i(10, 10)));
+        GUGU_UTEST_CHECK_TRUE(IsInBounds(Vector2i(0, 0), Vector2i(0, 0), Vector2i(10, 10)));
+        GUGU_UTEST_CHECK_TRUE(IsInBounds(Vector2i(10, 10), Vector2i(0, 0), Vector2i(10, 10)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2i(-5, 5), Vector2i(0, 0), Vector2i(10, 10)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2i(15, 5), Vector2i(0, 0), Vector2i(10, 10)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2i(5, -5), Vector2i(0, 0), Vector2i(10, 10)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2i(5, 15), Vector2i(0, 0), Vector2i(10, 10)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2i(-5, -5), Vector2i(0, 0), Vector2i(10, 10)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2i(15, 15), Vector2i(0, 0), Vector2i(10, 10)));
+
+        GUGU_UTEST_CHECK_TRUE(IsInBounds(Vector2f(5.f, 5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+        GUGU_UTEST_CHECK_TRUE(IsInBounds(Vector2f(0.f, 0.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+        GUGU_UTEST_CHECK_TRUE(IsInBounds(Vector2f(10.f, 10.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2f(-5.f, 5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2f(15.f, 5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2f(5.f, -5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2f(5.f, 15.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2f(-5.f, -5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+        GUGU_UTEST_CHECK_FALSE(IsInBounds(Vector2f(15.f, 15.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f)));
+
+        GUGU_UTEST_CHECK_TRUE(ApproxIsInBounds(Vector2f(5.f, 5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxIsInBounds(Vector2f(0.f, 0.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxIsInBounds(Vector2f(10.f, 10.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(Vector2f(-5.f, 5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(Vector2f(15.f, 5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(Vector2f(5.f, -5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(Vector2f(5.f, 15.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(Vector2f(-5.f, -5.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxIsInBounds(Vector2f(15.f, 15.f), Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), math::Epsilon3));
+
+        GUGU_UTEST_CHECK_TRUE(DistanceCheck(Vector2i(0, 0), Vector2i(10, 0), 10.f));
+        GUGU_UTEST_CHECK_TRUE(DistanceCheck(Vector2i(0, 0), Vector2i(10, 0), 20.f));
+        GUGU_UTEST_CHECK_FALSE(DistanceCheck(Vector2i(0, 0), Vector2i(10, 0), 5.f));
+        GUGU_UTEST_CHECK_TRUE(DistanceCheck(Vector2i(0, 0), Vector2i(0, 10), 10.f));
+        GUGU_UTEST_CHECK_TRUE(DistanceCheck(Vector2i(0, 0), Vector2i(0, 10), 20.f));
+        GUGU_UTEST_CHECK_FALSE(DistanceCheck(Vector2i(0, 0), Vector2i(0, 10), 5.f));
+        GUGU_UTEST_CHECK_TRUE(DistanceCheck(Vector2i(10, 0), Vector2i(0, 0), 10.f));
+        GUGU_UTEST_CHECK_TRUE(DistanceCheck(Vector2i(10, 0), Vector2i(0, 0), 20.f));
+        GUGU_UTEST_CHECK_FALSE(DistanceCheck(Vector2i(10, 0), Vector2i(0, 0), 5.f));
+        GUGU_UTEST_CHECK_TRUE(DistanceCheck(Vector2i(0, 10), Vector2i(0, 0), 10.f));
+        GUGU_UTEST_CHECK_TRUE(DistanceCheck(Vector2i(0, 10), Vector2i(0, 0), 20.f));
+        GUGU_UTEST_CHECK_FALSE(DistanceCheck(Vector2i(0, 10), Vector2i(0, 0), 5.f));
+
+        GUGU_UTEST_CHECK_TRUE(ApproxDistanceCheck(Vector2f(0.f, 0.f), Vector2f(10.f, 0.f), 10.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxDistanceCheck(Vector2f(0.f, 0.f), Vector2f(10.f, 0.f), 20.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxDistanceCheck(Vector2f(0.f, 0.f), Vector2f(10.f, 0.f), 5.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxDistanceCheck(Vector2f(0.f, 0.f), Vector2f(0.f, 10.f), 10.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxDistanceCheck(Vector2f(0.f, 0.f), Vector2f(0.f, 10.f), 20.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxDistanceCheck(Vector2f(0.f, 0.f), Vector2f(0.f, 10.f), 5.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxDistanceCheck(Vector2f(10.f, 0.f), Vector2f(0.f, 0.f), 10.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxDistanceCheck(Vector2f(10.f, 0.f), Vector2f(0.f, 0.f), 20.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxDistanceCheck(Vector2f(10.f, 0.f), Vector2f(0.f, 0.f), 5.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxDistanceCheck(Vector2f(0.f, 10.f), Vector2f(0.f, 0.f), 10.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_TRUE(ApproxDistanceCheck(Vector2f(0.f, 10.f), Vector2f(0.f, 0.f), 20.f, math::Epsilon3));
+        GUGU_UTEST_CHECK_FALSE(ApproxDistanceCheck(Vector2f(0.f, 10.f), Vector2f(0.f, 0.f), 5.f, math::Epsilon3));
+
+        // Test compilation when used in containers.
         std::vector<Vector2i> vector_vector2i;
         std::vector<Vector2u> vector_vector2u;
         std::vector<Vector2f> vector_vector2f;

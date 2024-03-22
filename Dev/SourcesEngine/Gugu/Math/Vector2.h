@@ -41,6 +41,16 @@ sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector);
 template <typename T>
 sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians);
 
+template <typename T>
+bool IsInBounds(const sf::Vector2<T>& value, const sf::Vector2<T>& min, const sf::Vector2<T>& max);
+
+bool ApproxIsInBounds(const sf::Vector2f& value, const sf::Vector2f& min, const sf::Vector2f& max, float epsilon);
+
+template <typename T>
+bool DistanceCheck(const sf::Vector2<T>& left, const sf::Vector2<T>& right, float distance);
+
+bool ApproxDistanceCheck(const sf::Vector2f& left, const sf::Vector2f& right, float distance, float epsilon);
+
 }   // namespace gugu
 
 //----------------------------------------------
@@ -102,6 +112,23 @@ sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians)
     kResult.x = _kVector.x * fCos - _kVector.y * fSin;
     kResult.y = _kVector.x * fSin + _kVector.y * fCos;
     return kResult;
+}
+
+template <typename T>
+bool IsInBounds(const sf::Vector2<T>& value, const sf::Vector2<T>& min, const sf::Vector2<T>& max)
+{
+    return (value.x >= min.x && value.x <= max.x) && (value.y >= min.y && value.y <= max.y);
+}
+
+template <typename T>
+bool DistanceCheck(const sf::Vector2<T>& left, const sf::Vector2<T>& right, float distance)
+{
+    if (std::abs(left.x - right.x) <= distance && std::abs(left.y - right.y) <= distance)
+    {
+        return LengthSquare(right - left) <= Power2(distance);
+    }
+
+    return false;
 }
 
 }   // namespace gugu

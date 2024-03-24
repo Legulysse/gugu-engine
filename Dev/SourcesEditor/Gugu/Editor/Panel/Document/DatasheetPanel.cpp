@@ -40,7 +40,7 @@ void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
 
 void DatasheetPanel::DisplayDatasheet()
 {
-    if (m_datasheet->m_classDefinition == nullptr)
+    if (m_datasheet->m_rootObject == nullptr)
         return;
 
     DisplayParentReference();
@@ -59,7 +59,7 @@ void DatasheetPanel::DisplayDatasheet()
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 
-        for (DatasheetParser::ClassDefinition* classDefinition : m_datasheet->m_classDefinition->m_combinedInheritedClasses)
+        for (DatasheetParser::ClassDefinition* classDefinition : m_datasheet->m_rootObject->m_classDefinition->m_combinedInheritedClasses)
         {
             //ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
             //if (ImGui::CollapsingHeader(classDefinition->m_name.c_str(), headerFlags))
@@ -127,7 +127,7 @@ void DatasheetPanel::DisplayParentReference()
         }
     }
 
-    std::string parentObjectDefinition = !m_datasheet->m_classDefinition ? "None" : m_datasheet->m_classDefinition->m_name;
+    std::string parentObjectDefinition = !m_datasheet->GetClassDefinition() ? "None" : m_datasheet->GetClassDefinition()->m_name;
     std::string description = parentReference ? "Valid Ref" : (dummyParentRefID.empty() ? "Empty Ref" : (invalidRecursiveParent ? "Invalid Recursive Ref" : "Invalid Ref"));
 
     ImGui::Indent();
@@ -512,7 +512,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                     objectReference = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(dummyRefID);
                 }
 
-                if (objectReference && !objectReference->m_classDefinition->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
+                if (objectReference && !objectReference->GetClassDefinition()->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
                 {
                     objectReference = nullptr;
                 }
@@ -530,7 +530,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                     {
                         VirtualDatasheet* checkReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyRefID));
 
-                        if (checkReference && checkReference->m_classDefinition->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
+                        if (checkReference && checkReference->GetClassDefinition()->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
                         {
                             dataValue->value_objectReference = checkReference;
 

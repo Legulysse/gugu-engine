@@ -91,7 +91,7 @@ class VirtualDatasheet : public Resource
 {
 public:
 
-    VirtualDatasheet(DatasheetParser::ClassDefinition* classDefinition);
+    VirtualDatasheet();
     virtual ~VirtualDatasheet();
 
     virtual EResourceType::Type GetResourceType() const override;
@@ -99,8 +99,12 @@ public:
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
     virtual void OnDependencyRemoved(const Resource* removedDependency) override;
 
+    bool InstanciateRootObject(DatasheetParser::ClassDefinition* classDefinition);
+
     bool IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const;    // TODO: I could use an enum for error returns, and reuse them in other cases of references error feedbacks.
     void SetParentDatasheet(const std::string& parentDatasheetID, VirtualDatasheet* parentDatasheet);
+
+    DatasheetParser::ClassDefinition* GetClassDefinition() const;
 
     static bool HandleMigration(const FileInfo& fileInfo);
     static bool Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document);
@@ -113,7 +117,6 @@ protected:
 
 public:
 
-    DatasheetParser::ClassDefinition* m_classDefinition;
     VirtualDatasheetObject* m_rootObject;
     std::string m_parentDatasheetID;
     VirtualDatasheet* m_parentDatasheet;

@@ -279,7 +279,7 @@ void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData
         }
 
         // TODO: This may need to be refreshed more often, to handle created/deleted assets.
-        if (referenceDatasheet && !referenceDatasheet->m_classDefinition->IsDerivedFromClass(dataMemberDef->objectDefinition))
+        if (referenceDatasheet && !referenceDatasheet->GetClassDefinition()->IsDerivedFromClass(dataMemberDef->objectDefinition))
         {
             referenceDatasheet = nullptr;
         }
@@ -463,19 +463,15 @@ void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeDatasheet
 }
 
 
-VirtualDatasheet::VirtualDatasheet(DatasheetParser::ClassDefinition* classDefinition)
-    : m_classDefinition(classDefinition)
-    , m_rootObject(nullptr)
+VirtualDatasheet::VirtualDatasheet()
+    : m_rootObject(nullptr)
     , m_parentDatasheet(nullptr)
 {
-    m_rootObject = new VirtualDatasheetObject;
 }
 
 VirtualDatasheet::~VirtualDatasheet()
 {
     Unload();
-
-    m_classDefinition = nullptr;
 }
 
 EResourceType::Type VirtualDatasheet::GetResourceType() const
@@ -504,6 +500,22 @@ void VirtualDatasheet::OnDependencyRemoved(const Resource* removedDependency)
     m_rootObject->OnDependencyRemoved(removedDependency);
 }
 
+bool VirtualDatasheet::InstanciateRootObject(DatasheetParser::ClassDefinition* classDefinition)
+{
+    if (m_rootObject)
+    {
+        return false;
+    }
+
+    UUID newInstanceUuid = UUID::Generate();
+
+    m_rootObject = new VirtualDatasheetObject;
+    m_rootObject->m_uuid = newInstanceUuid;
+    m_rootObject->m_classDefinition = classDefinition;
+
+    return true;
+}
+
 bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
 {
     if (!parentDatasheet)
@@ -512,7 +524,7 @@ bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* 
         return true;
     }
 
-    if (parentDatasheet->m_classDefinition != m_classDefinition)
+    if (parentDatasheet->GetClassDefinition() != GetClassDefinition())
     {
         // We dont want a parent of a different class.
         return false;
@@ -544,6 +556,11 @@ void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, 
     m_parentDatasheet = parentDatasheet;
 
     m_rootObject->RefreshParentObject(m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
+}
+
+DatasheetParser::ClassDefinition* VirtualDatasheet::GetClassDefinition() const
+{
+    return m_rootObject ? m_rootObject->m_classDefinition : nullptr;
 }
 
 void VirtualDatasheet::Unload()

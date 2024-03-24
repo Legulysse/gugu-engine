@@ -68,6 +68,17 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
 
                 if (GUGU_UTEST_CHECK(billySheet->unlocked != nullptr))
                 {
+                    const DS_ConditionAnd* conditionAnd = dynamic_cast<const DS_ConditionAnd*>(billySheet->unlocked);
+                    if (GUGU_UTEST_CHECK(conditionAnd != nullptr))
+                    {
+                        if (GUGU_UTEST_CHECK_EQUAL(conditionAnd->conditions.size(), 3))
+                        {
+                            GUGU_UTEST_CHECK(conditionAnd->conditions[0] != nullptr);
+                            GUGU_UTEST_CHECK(conditionAnd->conditions[1] != nullptr);
+                            GUGU_UTEST_CHECK(conditionAnd->conditions[2] != nullptr);
+                        }
+                    }
+
                     ConditionContext context;
 
                     context.playerLevel = 5;

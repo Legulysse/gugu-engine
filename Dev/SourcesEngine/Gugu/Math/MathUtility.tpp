@@ -100,11 +100,11 @@ T Power(const T& n, const int& p)
 {
     if (p >= 0)
     {
-        return (T)std::pow((double)n, p);
+        return (T)std::pow(n, p);
     }
     else
     {
-        return (T)(1.f / std::pow((double)n, -p));
+        return (T)(1.f / std::pow(n, -p));
     }
 }
 

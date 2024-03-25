@@ -38,6 +38,12 @@ void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
     DisplayDatasheet();
 }
 
+bool DatasheetPanel::SaveToFileImpl()
+{
+    m_datasheet->SortDataValues();
+    return DocumentPanel::SaveToFileImpl();
+}
+
 void DatasheetPanel::DisplayDatasheet()
 {
     if (m_datasheet->m_rootObject == nullptr)

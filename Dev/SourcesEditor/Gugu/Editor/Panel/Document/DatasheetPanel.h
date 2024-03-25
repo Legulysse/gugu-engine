@@ -33,6 +33,7 @@ public:
 protected:
 
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
+    virtual bool SaveToFileImpl() override;
 
     void DisplayDatasheet();
     void DisplayParentReference();

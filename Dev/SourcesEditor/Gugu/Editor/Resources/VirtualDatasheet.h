@@ -68,6 +68,9 @@ public:
     bool RemoveDataValue(const std::string& name);
     VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name, bool& isParentData) const;
 
+    void SortDataValues();
+    void GatherObjectsToSave(std::vector<VirtualDatasheetObject*>& objects) const;
+
 protected:
 
     void GetDependencies(const std::vector<VirtualDatasheetObject::DataValue*>& dataValues, std::set<Resource*>& dependencies) const;
@@ -105,6 +108,8 @@ public:
     void SetParentDatasheet(const std::string& parentDatasheetID, VirtualDatasheet* parentDatasheet);
 
     DatasheetParser::ClassDefinition* GetClassDefinition() const;
+
+    void SortDataValues();
 
     static bool HandleMigration(const FileInfo& fileInfo);
     static bool Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document);

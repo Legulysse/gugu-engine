@@ -181,9 +181,9 @@ void VirtualDatasheetObject::ResolveInstances(std::map<UUID, VirtualDatasheetObj
 {
     for (const auto& dataValue : m_dataValues)
     {
-        if (dataValue->dataMemberDefinition->isArray)
+        if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
         {
-            if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+            if (dataValue->dataMemberDefinition->isArray)
             {
                 for (const auto& childDataValue : dataValue->value_children)
                 {
@@ -205,10 +205,7 @@ void VirtualDatasheetObject::ResolveInstances(std::map<UUID, VirtualDatasheetObj
                     }
                 }
             }
-        }
-        else
-        {
-            if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+            else
             {
                 auto it = dataObjects.find(UUID::FromString(dataValue->value_string));
                 if (it != dataObjects.end())

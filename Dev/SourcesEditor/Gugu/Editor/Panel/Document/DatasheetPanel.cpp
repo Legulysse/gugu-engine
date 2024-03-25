@@ -54,14 +54,13 @@ void DatasheetPanel::DisplayDatasheet()
     // Using those as a base value to create width/height that are factor of the size of our font
     const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
     ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_ScrollY;
-    if (ImGui::BeginTable("DatasheetPropertiesTable", 4, tableFlags))
+    if (ImGui::BeginTable("DatasheetPropertiesTable", 3, tableFlags))
     {
         // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
         ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_NoHide | ImGuiTableColumnFlags_WidthFixed;
         ImGui::TableSetupColumn("name", columnFlags, 350.f);
         ImGui::TableSetupColumn("value", columnFlags, 300.f);
-        ImGui::TableSetupColumn("depth", columnFlags, 60.f);
-        ImGui::TableSetupColumn("reset", columnFlags , 60.f);
+        ImGui::TableSetupColumn("depth", columnFlags, 100.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 
@@ -197,26 +196,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             DisplayInlineDataMemberContent(dataMemberDefinition, dataValue);
         }
 
-        ImGui::TableNextColumn();
-        ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
-
-        ImGui::TableNextColumn();
-        if (dataValue && !isParentData)
-        {
-            // TODO: I will probably end up using a push ID for the whole data member edition.
-            if (ImGui::Button(StringFormat("Reset##{0}", dataMemberDefinition->name).c_str()))
-            {
-                if (dataObject->RemoveDataValue(dataMemberDefinition->name))
-                {
-                    // Retrieve the parent data now that we have removed the self data.
-                    dataValue = nullptr;
-                    isParentData = false;
-                    dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
-
-                    RaiseDirty();
-                }
-            }
-        }
+        DisplayDepthColumn(dataMemberDefinition, dataObject, dataValue, isParentData);
 
         if (nodeOpen)
         {
@@ -263,26 +243,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             ImGui::Text("Empty Array");
         }
 
-        ImGui::TableNextColumn();
-        ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
-
-        ImGui::TableNextColumn();
-        if (dataValue && !isParentData)
-        {
-            // TODO: I will probably end up using a push ID for the whole data member edition.
-            if (ImGui::Button(StringFormat("Reset##{0}", dataMemberDefinition->name).c_str()))
-            {
-                if (dataObject->RemoveDataValue(dataMemberDefinition->name))
-                {
-                    // Retrieve the parent data now that we have removed the self data.
-                    dataValue = nullptr;
-                    isParentData = false;
-                    dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
-
-                    RaiseDirty();
-                }
-            }
-        }
+        DisplayDepthColumn(dataMemberDefinition, dataObject, dataValue, isParentData);
 
         ImGui::BeginDisabled(isParentData);
 
@@ -332,8 +293,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                         DisplayInlineDataMemberContent(dataMemberDefinition, childDataValue);
                     }
 
-                    ImGui::TableNextColumn();
-                    ImGui::TableNextColumn();
+                    DisplayEmptyDepthColumn();
 
                     if (nodeChildOpen)
                     {
@@ -369,6 +329,35 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
         ImGui::PopID();
     }
+}
+
+void DatasheetPanel::DisplayDepthColumn(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool& isParentData)
+{
+    ImGui::TableNextColumn();
+
+    ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
+
+    if (dataValue && !isParentData)
+    {
+        ImGui::SameLine();
+        if (ImGui::Button("Reset"))
+        {
+            if (dataObject->RemoveDataValue(dataMemberDefinition->name))
+            {
+                // Retrieve the parent data now that we have removed the self data.
+                dataValue = nullptr;
+                isParentData = false;
+                dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
+
+                RaiseDirty();
+            }
+        }
+    }
+}
+
+void DatasheetPanel::DisplayEmptyDepthColumn()
+{
+    ImGui::TableNextColumn();
 }
 
 void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)

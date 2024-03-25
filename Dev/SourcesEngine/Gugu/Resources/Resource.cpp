@@ -109,18 +109,18 @@ bool Resource::SaveToXmlString(std::string& result) const
 
 void Resource::Unload()
 {
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Unload is not supported for this type of resource");
+    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Unload is not supported for this type of resource : {0}", m_resourceInfos->fileInfo.GetFilePath_utf8()));
 }
 
 bool Resource::LoadFromXml(const pugi::xml_document& document)
 {
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "LoadFromXml is not supported for this type of resource");
+    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("LoadFromXml is not supported for this type of resource : {0}", m_resourceInfos->fileInfo.GetFilePath_utf8()));
     return false;
 }
 
 bool Resource::SaveToXml(pugi::xml_document& document) const
 {
-    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "SaveToXml is not supported for this type of resource");
+    GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("SaveToXml is not supported for this type of resource : {0}", m_resourceInfos->fileInfo.GetFilePath_utf8()));
     return false;
 }
 

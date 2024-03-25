@@ -268,6 +268,19 @@ void Editor::Update(const DeltaTime& dt)
             }
 
             ImGui::Separator();
+
+            // TODO: To fully implement this method I first need a few changes :
+            // - Refactor resources loader/getters (see notes near the call to InstanciateDatasheetResource in OpenDocument).
+            // - Ensure no serialization code remains in the editor (see the DatasheetPanel::OnSaveImpl for example).
+            // - Ensure I unload resources along the process to avoid a big memory spike.
+            // - Implement LoadFromFile properly for resources that dont use xml (textures, audio).
+            // - Maybe add a filter to ignore unsupported types (.txt, .md, etc).
+            if (ImGui::MenuItem("Force Save All"))
+            {
+                GetResources()->PreloadAll();
+                GetResources()->SaveAll();
+            }
+
             if (ImGui::MenuItem("Migrate Resources"))
             {
                 MigrateResources();
@@ -625,6 +638,11 @@ bool Editor::OpenDocument(const std::string& resourceID)
             VirtualDatasheet* datasheet = nullptr;
 
             // TODO: I should encapsulate this in some kind of GetOrLoad method.
+            // TODO: Maybe I could provide GetResource methods in a namespace, like resources::GetTexture(id), to allow adding more methods through plugins ?
+            // This way, I could add a resources::GetVirtualDatasheet(id) more easily.
+            // With this approach, those specialized getters could be in each resource header instead of the manager.
+            // Maybe I would need to replace the EResourceType enum with string constants ?
+            // Additionally, LoadResource would need factories for base types + extended types to remove the need of InjectResource.
             if (GetResources()->IsResourceLoaded(resourceID))
             {
                 datasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(resourceID));

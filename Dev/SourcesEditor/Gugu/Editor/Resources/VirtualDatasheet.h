@@ -61,7 +61,7 @@ public:
     bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject);
     bool SaveToXml(pugi::xml_node& nodeDatasheet, bool isRoot) const;
 
-    void ResolveInstances(std::map<UUID, VirtualDatasheetObject*>& dataObjects);
+    void ResolveInstances(const std::map<UUID, VirtualDatasheetObject*>& dataObjects);
     void RefreshParentObject(VirtualDatasheetObject* parentObject);
 
     VirtualDatasheetObject::DataValue* RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
@@ -102,7 +102,9 @@ public:
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
     virtual void OnDependencyRemoved(const Resource* removedDependency) override;
 
-    bool InstanciateRootObject(DatasheetParser::ClassDefinition* classDefinition);
+    bool InstanciateNewRootObject(DatasheetParser::ClassDefinition* classDefinition);
+    VirtualDatasheetObject* InstanciateNewObject(DatasheetParser::ClassDefinition* classDefinition);
+    bool DeleteInstanceObject(VirtualDatasheetObject* instanceObject);
 
     bool IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const;    // TODO: I could use an enum for error returns, and reuse them in other cases of references error feedbacks.
     void SetParentDatasheet(const std::string& parentDatasheetID, VirtualDatasheet* parentDatasheet);
@@ -123,6 +125,8 @@ protected:
 public:
 
     VirtualDatasheetObject* m_rootObject;
+    std::map<UUID, VirtualDatasheetObject*> m_instanceObjects;
+
     std::string m_parentDatasheetID;
     VirtualDatasheet* m_parentDatasheet;
 };

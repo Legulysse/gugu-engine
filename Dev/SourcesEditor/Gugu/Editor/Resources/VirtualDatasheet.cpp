@@ -22,11 +22,11 @@ namespace gugu {
 
 VirtualDatasheetObject::DataValue::~DataValue()
 {
-    SafeDelete(value_objectInstance);
     ClearStdVector(value_children);
 
     dataMemberDefinition = nullptr;
     value_objectInstanceDefinition = nullptr;
+    value_objectInstance = nullptr;
     value_objectReference = nullptr;
 }
 
@@ -177,7 +177,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     return true;
 }
 
-void VirtualDatasheetObject::ResolveInstances(std::map<UUID, VirtualDatasheetObject*>& dataObjects)
+void VirtualDatasheetObject::ResolveInstances(const std::map<UUID, VirtualDatasheetObject*>& dataObjects)
 {
     for (const auto& dataValue : m_dataValues)
     {
@@ -191,13 +191,9 @@ void VirtualDatasheetObject::ResolveInstances(std::map<UUID, VirtualDatasheetObj
                     if (it != dataObjects.end())
                     {
                         VirtualDatasheetObject* instanceObject = it->second;
-                        dataObjects.erase(it);
 
                         childDataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
                         childDataValue->value_objectInstance = instanceObject;
-
-                        // Recurse instances resolution.
-                        instanceObject->ResolveInstances(dataObjects);
                     }
                     else
                     {
@@ -211,13 +207,9 @@ void VirtualDatasheetObject::ResolveInstances(std::map<UUID, VirtualDatasheetObj
                 if (it != dataObjects.end())
                 {
                     VirtualDatasheetObject* instanceObject = it->second;
-                    dataObjects.erase(it);
 
                     dataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
                     dataValue->value_objectInstance = instanceObject;
-
-                    // Recurse instances resolution.
-                    instanceObject->ResolveInstances(dataObjects);
                 }
                 else
                 {
@@ -568,20 +560,48 @@ void VirtualDatasheet::OnDependencyRemoved(const Resource* removedDependency)
     m_rootObject->OnDependencyRemoved(removedDependency);
 }
 
-bool VirtualDatasheet::InstanciateRootObject(DatasheetParser::ClassDefinition* classDefinition)
+bool VirtualDatasheet::InstanciateNewRootObject(DatasheetParser::ClassDefinition* classDefinition)
 {
     if (m_rootObject)
     {
         return false;
     }
 
-    UUID newInstanceUuid = UUID::Generate();
+    UUID uuid = UUID::Generate();
 
     m_rootObject = new VirtualDatasheetObject;
-    m_rootObject->m_uuid = newInstanceUuid;
+    m_rootObject->m_uuid = uuid;
     m_rootObject->m_classDefinition = classDefinition;
 
     return true;
+}
+
+VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObject(DatasheetParser::ClassDefinition* classDefinition)
+{
+    UUID uuid = UUID::Generate();
+
+    VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
+    instanceObject->m_uuid = uuid;
+    instanceObject->m_classDefinition = classDefinition;
+
+    m_instanceObjects.insert(std::make_pair(uuid, instanceObject));
+    return instanceObject;
+}
+
+bool VirtualDatasheet::DeleteInstanceObject(VirtualDatasheetObject* instanceObject)
+{
+    if (!instanceObject)
+        return true;
+
+    auto it = m_instanceObjects.find(instanceObject->m_uuid);
+    if (it != m_instanceObjects.end())
+    {
+        m_instanceObjects.erase(it);
+        SafeDelete(instanceObject);
+        return true;
+    }
+
+    return false;
 }
 
 bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
@@ -639,6 +659,7 @@ void VirtualDatasheet::SortDataValues()
 void VirtualDatasheet::Unload()
 {
     SafeDelete(m_rootObject);
+    ClearStdMap(m_instanceObjects);
 
     m_parentDatasheet = nullptr;
 }
@@ -663,17 +684,14 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
         return false;
     }
 
-    // Parse Object nodes.
-    std::map<UUID, VirtualDatasheetObject*> dataObjects;
-    UUID rootUuid;
-    
+    // Parse Instance Object nodes.
     for (pugi::xml_node nodeObject = datasheetNode.child("Object"); nodeObject; nodeObject = nodeObject.next_sibling("Object"))
     {
         VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
 
         if (dataObject->LoadFromXml(nodeObject))
         {
-            dataObjects.insert(std::make_pair(dataObject->m_uuid, dataObject));
+            m_instanceObjects.insert(std::make_pair(dataObject->m_uuid, dataObject));
         }
         else
         {
@@ -683,16 +701,12 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
     }
 
     // Resolve instance links.
-    m_rootObject->ResolveInstances(dataObjects);
+    m_rootObject->ResolveInstances(m_instanceObjects);
 
-    // Delete unreferenced objects.
-    for (auto it : dataObjects)
+    for (const auto& kvp : m_instanceObjects)
     {
-        // TODO: log error ?
-        SafeDelete(it.second);
+        kvp.second->ResolveInstances(m_instanceObjects);
     }
-
-    dataObjects.clear();
 
     // Compute parent data.
     std::string parentResourceID = "";

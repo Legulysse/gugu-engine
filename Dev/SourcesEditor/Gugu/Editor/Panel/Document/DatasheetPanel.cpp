@@ -599,17 +599,14 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
 
                 if (newInstanceDefinition != instanceDefinition || isParentData)
                 {
-                    SafeDelete(dataValue->value_objectInstance);
+                    if (m_datasheet->DeleteInstanceObject(dataValue->value_objectInstance))
+                    {
+                        VirtualDatasheetObject* newInstanceObject = m_datasheet->InstanciateNewObject(newInstanceDefinition);
 
-                    UUID newInstanceUuid = UUID::Generate();
-
-                    VirtualDatasheetObject* newInstanceObject = new VirtualDatasheetObject;
-                    newInstanceObject->m_uuid = newInstanceUuid;
-                    newInstanceObject->m_classDefinition = newInstanceDefinition;
-
-                    dataValue->value_objectInstanceDefinition = newInstanceDefinition;
-                    dataValue->value_objectInstance = newInstanceObject;
-                    dataValue->value_string = newInstanceUuid.ToString();
+                        dataValue->value_objectInstanceDefinition = newInstanceDefinition;
+                        dataValue->value_objectInstance = newInstanceObject;
+                        dataValue->value_string = newInstanceObject->m_uuid.ToString();
+                    }
                 }
 
                 RaiseDirty();

@@ -137,7 +137,7 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
             if (GetEditor()->GetDatasheetParser()->GetClassDefinition(m_datasheetClassName, classDefinition))
             {
                 VirtualDatasheet* newDatasheet = new VirtualDatasheet();
-                newDatasheet->InstanciateRootObject(classDefinition);
+                newDatasheet->InstanciateNewRootObject(classDefinition);
 
                 newResource = newDatasheet;
             }

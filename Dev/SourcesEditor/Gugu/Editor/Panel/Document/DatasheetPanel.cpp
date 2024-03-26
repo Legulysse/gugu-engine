@@ -10,6 +10,7 @@
 #include "Gugu/Editor/Editor.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
+#include "Gugu/Editor/Resources/VirtualDatasheetObject.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/External/ImGuiUtility.h"

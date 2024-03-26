@@ -356,63 +356,6 @@ void VirtualDatasheetObject::SortDataValues()
     {
         return left->dataMemberDefinition->name < right->dataMemberDefinition->name;
     });
-
-    for (const auto& dataValue : m_dataValues)
-    {
-        if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-        {
-            if (dataValue->dataMemberDefinition->isArray)
-            {
-                for (const auto& childDataValue : dataValue->value_children)
-                {
-                    if (childDataValue->value_objectInstance)
-                    {
-                        childDataValue->value_objectInstance->SortDataValues();
-                    }
-                }
-            }
-            else
-            {
-                if (dataValue->value_objectInstance)
-                {
-                    dataValue->value_objectInstance->SortDataValues();
-                }
-            }
-        }
-    }
-}
-
-void VirtualDatasheetObject::GatherObjectsToSave(std::vector<VirtualDatasheetObject*>& objects) const
-{
-    for (const auto& dataValue : m_dataValues)
-    {
-        if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-        {
-            if (dataValue->dataMemberDefinition->isArray)
-            {
-                for (const auto& childDataValue : dataValue->value_children)
-                {
-                    if (childDataValue->value_objectInstance)
-                    {
-                        objects.push_back(childDataValue->value_objectInstance);
-
-                        // Recurse instances gathering.
-                        childDataValue->value_objectInstance->GatherObjectsToSave(objects);
-                    }
-                }
-            }
-            else
-            {
-                if (dataValue->value_objectInstance)
-                {
-                    objects.push_back(dataValue->value_objectInstance);
-
-                    // Recurse instances gathering.
-                    dataValue->value_objectInstance->GatherObjectsToSave(objects);
-                }
-            }
-        }
-    }
 }
 
 bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, bool isRoot) const
@@ -654,6 +597,11 @@ DatasheetParser::ClassDefinition* VirtualDatasheet::GetClassDefinition() const
 void VirtualDatasheet::SortDataValues()
 {
     m_rootObject->SortDataValues();
+
+    for (const auto& kvp : m_instanceObjects)
+    {
+        kvp.second->SortDataValues();
+    }
 }
 
 void VirtualDatasheet::Unload()
@@ -753,22 +701,14 @@ bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
         nodeDatasheet.append_attribute("parent") = m_parentDatasheetID.c_str();
     }
 
-    // Retrieve and sort objects to save.
-    std::vector<VirtualDatasheetObject*> pendingObjects;
-    m_rootObject->GatherObjectsToSave(pendingObjects);
-
-    std::sort(pendingObjects.begin(), pendingObjects.end(), [](const auto& left, const auto& right)
-    {
-        return left->m_uuid < right->m_uuid;
-    });
-
     // Serialize all objects to xml.
+    // Instance objects are naturally sorted by UUID through the map.
     if (!m_rootObject->SaveToXml(nodeDatasheet, true))
         return false;
 
-    for (size_t i = 0; i < pendingObjects.size(); ++i)
+    for (const auto& kvp : m_instanceObjects)
     {
-        if (!pendingObjects[i]->SaveToXml(nodeDatasheet, false))
+        if (!kvp.second->SaveToXml(nodeDatasheet, false))
             return false;
     }
 

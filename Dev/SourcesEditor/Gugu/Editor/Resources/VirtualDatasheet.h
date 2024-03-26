@@ -69,7 +69,6 @@ public:
     VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name, bool& isParentData) const;
 
     void SortDataValues();
-    void GatherObjectsToSave(std::vector<VirtualDatasheetObject*>& objects) const;
 
 protected:
 

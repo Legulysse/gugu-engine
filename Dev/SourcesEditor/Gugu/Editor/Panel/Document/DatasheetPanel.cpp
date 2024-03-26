@@ -308,11 +308,9 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::PopID();
 
                     // Handle child removal and array iteration.
-                    if (removeChild)
+                    if (removeChild && dataValue->RemoveChildDataValue(childIndex))
                     {
-                        // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
-                        SafeDelete(dataValue->value_children[childIndex]);
-                        StdVectorRemoveAt(dataValue->value_children, childIndex);
+                        m_datasheet->DeleteOrphanedInstanceObjects();
                         RaiseDirty();
                     }
                     else
@@ -349,6 +347,7 @@ void DatasheetPanel::DisplayDepthColumn(DatasheetParser::DataMemberDefinition* d
                 isParentData = false;
                 dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
 
+                m_datasheet->DeleteOrphanedInstanceObjects();
                 RaiseDirty();
             }
         }
@@ -601,14 +600,24 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
                 {
                     if (m_datasheet->DeleteInstanceObject(dataValue->value_objectInstance))
                     {
-                        VirtualDatasheetObject* newInstanceObject = m_datasheet->InstanciateNewObject(newInstanceDefinition);
+                        if (newInstanceDefinition)
+                        {
+                            VirtualDatasheetObject* newInstanceObject = m_datasheet->InstanciateNewObject(newInstanceDefinition);
 
-                        dataValue->value_objectInstanceDefinition = newInstanceDefinition;
-                        dataValue->value_objectInstance = newInstanceObject;
-                        dataValue->value_string = newInstanceObject->m_uuid.ToString();
+                            dataValue->value_objectInstanceDefinition = newInstanceDefinition;
+                            dataValue->value_objectInstance = newInstanceObject;
+                            dataValue->value_string = newInstanceObject->m_uuid.ToString();
+                        }
+                        else
+                        {
+                            dataValue->value_objectInstanceDefinition = nullptr;
+                            dataValue->value_objectInstance = nullptr;
+                            dataValue->value_string = "";
+                        }
                     }
                 }
 
+                m_datasheet->DeleteOrphanedInstanceObjects();
                 RaiseDirty();
             }
 

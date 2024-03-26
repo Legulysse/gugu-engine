@@ -30,6 +30,14 @@ VirtualDatasheetObject::DataValue::~DataValue()
     value_objectReference = nullptr;
 }
 
+bool VirtualDatasheetObject::DataValue::RemoveChildDataValue(size_t index)
+{
+    SafeDelete(value_children[index]);
+    StdVectorRemoveAt(value_children, index);
+    return true;
+}
+
+
 VirtualDatasheetObject::VirtualDatasheetObject()
     : m_parentObject(nullptr)
     , m_classDefinition(nullptr)
@@ -177,7 +185,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     return true;
 }
 
-void VirtualDatasheetObject::ResolveInstances(const std::map<UUID, VirtualDatasheetObject*>& dataObjects)
+void VirtualDatasheetObject::ResolveInstances(const std::map<UUID, VirtualDatasheetObject*>& dataObjects, std::set<UUID>& orphanObjectUuids)
 {
     for (const auto& dataValue : m_dataValues)
     {
@@ -191,6 +199,7 @@ void VirtualDatasheetObject::ResolveInstances(const std::map<UUID, VirtualDatash
                     if (it != dataObjects.end())
                     {
                         VirtualDatasheetObject* instanceObject = it->second;
+                        orphanObjectUuids.erase(it->first);
 
                         childDataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
                         childDataValue->value_objectInstance = instanceObject;
@@ -207,6 +216,7 @@ void VirtualDatasheetObject::ResolveInstances(const std::map<UUID, VirtualDatash
                 if (it != dataObjects.end())
                 {
                     VirtualDatasheetObject* instanceObject = it->second;
+                    orphanObjectUuids.erase(it->first);
 
                     dataValue->value_objectInstanceDefinition = instanceObject->m_classDefinition;
                     dataValue->value_objectInstance = instanceObject;
@@ -214,6 +224,35 @@ void VirtualDatasheetObject::ResolveInstances(const std::map<UUID, VirtualDatash
                 else
                 {
                     // TODO: handle missing instances.
+                }
+            }
+        }
+    }
+}
+
+void VirtualDatasheetObject::GatherInstanceUuids(std::set<UUID>& instanceUuids)
+{
+    for (const auto& dataValue : m_dataValues)
+    {
+        if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+        {
+            if (dataValue->dataMemberDefinition->isArray)
+            {
+                for (const auto& childDataValue : dataValue->value_children)
+                {
+                    if (childDataValue->value_objectInstance)
+                    {
+                        instanceUuids.insert(childDataValue->value_objectInstance->m_uuid);
+                        childDataValue->value_objectInstance->GatherInstanceUuids(instanceUuids);
+                    }
+                }
+            }
+            else
+            {
+                if (dataValue->value_objectInstance)
+                {
+                    instanceUuids.insert(dataValue->value_objectInstance->m_uuid);
+                    dataValue->value_objectInstance->GatherInstanceUuids(instanceUuids);
                 }
             }
         }
@@ -531,6 +570,33 @@ VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObject(DatasheetParser::
     return instanceObject;
 }
 
+bool VirtualDatasheet::DeleteOrphanedInstanceObjects()
+{
+    // Recursively retrieve all used instance uuids.
+    std::set<UUID> instanceUuids;
+    m_rootObject->GatherInstanceUuids(instanceUuids);
+
+    // Delete all orphaned instance objects.
+    bool foundOrphans = false;
+
+    for (auto it = m_instanceObjects.begin(); it != m_instanceObjects.end();)
+    {
+        if (!StdSetContains(instanceUuids, it->first))
+        {
+            SafeDelete(it->second);
+            it = m_instanceObjects.erase(it);
+
+            foundOrphans = true;
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    return foundOrphans;
+}
+
 bool VirtualDatasheet::DeleteInstanceObject(VirtualDatasheetObject* instanceObject)
 {
     if (!instanceObject)
@@ -633,6 +699,8 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
     }
 
     // Parse Instance Object nodes.
+    std::set<UUID> orphanObjectUuids;
+
     for (pugi::xml_node nodeObject = datasheetNode.child("Object"); nodeObject; nodeObject = nodeObject.next_sibling("Object"))
     {
         VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
@@ -640,6 +708,7 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
         if (dataObject->LoadFromXml(nodeObject))
         {
             m_instanceObjects.insert(std::make_pair(dataObject->m_uuid, dataObject));
+            orphanObjectUuids.insert(dataObject->m_uuid);
         }
         else
         {
@@ -649,11 +718,16 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
     }
 
     // Resolve instance links.
-    m_rootObject->ResolveInstances(m_instanceObjects);
+    m_rootObject->ResolveInstances(m_instanceObjects, orphanObjectUuids);
 
     for (const auto& kvp : m_instanceObjects)
     {
-        kvp.second->ResolveInstances(m_instanceObjects);
+        kvp.second->ResolveInstances(m_instanceObjects, orphanObjectUuids);
+    }
+
+    if (!orphanObjectUuids.empty())
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet contains {0} orphan instanced objects : {1}", orphanObjectUuids.size(), GetFileInfo().GetFilePath_utf8()));
     }
 
     // Compute parent data.

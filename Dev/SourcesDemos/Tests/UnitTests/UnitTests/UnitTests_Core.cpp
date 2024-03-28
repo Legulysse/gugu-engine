@@ -38,22 +38,22 @@ void RunUnitTests_Core(UnitTestResults* results)
         GUGU_UTEST_CHECK_NOT_APPROX_EQUAL(10.f, 11.f, math::Epsilon6);
 
         GUGU_UTEST_PERFORMANCE(100, []()
-            {
-            });
+        {
+        });
 
         GUGU_UTEST_PERFORMANCE_WITH_WARMUP(1, 100, []()
-            {
-            });
+        {
+        });
 
         GUGU_UTEST_PERFORMANCE(10, []()
-            {
-                sf::sleep(sf::milliseconds(10));
-            });
+        {
+            sf::sleep(sf::milliseconds(10));
+        });
 
         GUGU_UTEST_PERFORMANCE_WITH_WARMUP(1, 10, []()
-            {
-                sf::sleep(sf::milliseconds(10));
-            });
+        {
+            sf::sleep(sf::milliseconds(10));
+        });
     }
 
     //----------------------------------------------
@@ -143,6 +143,7 @@ void RunUnitTests_Core(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("Signal");
     {
+        // Tests with lambdas.
         int counter = 0;
 
         Signal<> signal0;
@@ -166,25 +167,44 @@ void RunUnitTests_Core(UnitTestResults* results)
         signalA.Notify();
         GUGU_UTEST_CHECK_EQUAL(result, "");
 
-        {
-            signalA.Subscribe(Handle(42), [&result]() { result += "1"; });
-            signalA.Notify();
-            GUGU_UTEST_CHECK_EQUAL(result, "1");
+        signalA.Subscribe(Handle(42), [&result]() { result += "1"; });
+        signalA.Notify();
+        GUGU_UTEST_CHECK_EQUAL(result, "1");
 
-            signalA.Subscribe(Handle(42), [&result]() { result += "1"; });
-            signalA.Notify();
-            GUGU_UTEST_CHECK_EQUAL(result, "111");
-
-            signalA.Notify();
-            GUGU_UTEST_CHECK_EQUAL(result, "11111");
-
-            signalA.Unsubscribe(Handle(42));
-            signalA.Notify();
-            GUGU_UTEST_CHECK_EQUAL(result, "11111");
-        }
+        signalA.Subscribe(Handle(42), [&result]() { result += "2"; });
+        signalA.Notify();
+        GUGU_UTEST_CHECK_EQUAL(result, "112");
 
         signalA.Notify();
-        GUGU_UTEST_CHECK_EQUAL(result, "11111");
+        GUGU_UTEST_CHECK_EQUAL(result, "11212");
+
+        signalA.Unsubscribe(Handle(42));
+        signalA.Notify();
+        GUGU_UTEST_CHECK_EQUAL(result, "11212");
+
+        signalA.Notify();
+        GUGU_UTEST_CHECK_EQUAL(result, "11212");
+
+        // Tests with std::bind.
+        struct TestCounter
+        {
+            int counter = 0;
+
+            void Add(int value) { counter += value; }
+        };
+
+        TestCounter test;
+        Signal<int> signalB;
+        signalB.Subscribe(Handle(77), STD_BIND_1(&TestCounter::Add, &test));
+        GUGU_UTEST_CHECK_EQUAL(test.counter, 0);
+
+        signalB.Notify(10);
+        GUGU_UTEST_CHECK_EQUAL(test.counter, 10);
+
+        signalB.Notify(20);
+        signalB.Notify(4);
+        signalB.Notify(2);
+        GUGU_UTEST_CHECK_EQUAL(test.counter, 36);
     }
 
     //----------------------------------------------

@@ -57,7 +57,6 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
 
     settings.emissionAngle = Clamp(settings.emissionAngle, 0.f, 360.f);
     settings.minLifetime = Max(settings.minLifetime, 1);
-    settings.minVelocity = Max(settings.minVelocity, 0.f);
 
     if (!limitsOnly)
     {
@@ -66,7 +65,7 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
         
         settings.emissionDirection = (settings.emissionDirection != Vector2::Zero_f) ? Normalize(settings.emissionDirection) : Vector2f(0.f, -1.f);
         settings.maxLifetime = settings.useRandomLifetime ? Max(settings.minLifetime, settings.maxLifetime) : settings.minLifetime;
-        settings.maxVelocity = settings.useRandomVelocity ? Max(settings.minVelocity, settings.maxVelocity) : settings.minVelocity;
+        settings.maxVelocity = settings.useRandomVelocity ? settings.maxVelocity : settings.minVelocity;
 
         settings.maxStartSize.x = settings.useRandomStartSize ? Max(settings.minStartSize.x, settings.maxStartSize.x) : settings.minStartSize.x;
         settings.maxStartSize.y = settings.useRandomStartSize ? Max(settings.minStartSize.y, settings.maxStartSize.y) : settings.minStartSize.y;
@@ -79,7 +78,6 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
         settings.maxParticlesPerSpawn = Max(settings.maxParticlesPerSpawn, 0);
 
         settings.maxLifetime = Max(settings.maxLifetime, 0);
-        settings.maxVelocity = Max(settings.maxVelocity, 0.f);
     }
 }
 

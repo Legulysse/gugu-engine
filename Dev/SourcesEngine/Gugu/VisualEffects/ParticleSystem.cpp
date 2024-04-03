@@ -58,6 +58,7 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
     settings.emissionAngle = Clamp(settings.emissionAngle, 0.f, 360.f);
     settings.minLifetime = Max(settings.minLifetime, 1);
 
+    // TODO: split in two methods.
     if (!limitsOnly)
     {
         settings.maxSpawnPerSecond = settings.useRandomSpawnPerSecond ? Max(settings.minSpawnPerSecond, settings.maxSpawnPerSecond) : settings.minSpawnPerSecond;
@@ -65,7 +66,11 @@ void ParticleSystem::SanitizeSettings(ParticleSystemSettings& settings, bool lim
         
         settings.emissionDirection = (settings.emissionDirection != Vector2::Zero_f) ? Normalize(settings.emissionDirection) : Vector2f(0.f, -1.f);
         settings.maxLifetime = settings.useRandomLifetime ? Max(settings.minLifetime, settings.maxLifetime) : settings.minLifetime;
-        settings.maxVelocity = settings.useRandomVelocity ? settings.maxVelocity : settings.minVelocity;
+
+        float minVelocity = settings.minVelocity;
+        float maxVelocity = settings.maxVelocity;
+        settings.minVelocity = settings.useRandomVelocity ? Min(minVelocity, maxVelocity) : minVelocity;
+        settings.maxVelocity = settings.useRandomVelocity ? Max(minVelocity, maxVelocity) : minVelocity;
 
         settings.maxStartSize.x = settings.useRandomStartSize ? Max(settings.minStartSize.x, settings.maxStartSize.x) : settings.minStartSize.x;
         settings.maxStartSize.y = settings.useRandomStartSize ? Max(settings.minStartSize.y, settings.maxStartSize.y) : settings.minStartSize.y;

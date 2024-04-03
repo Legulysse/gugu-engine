@@ -384,37 +384,75 @@ void RunUnitTests_Math(UnitTestResults* results)
 
         GUGU_UTEST_SECTION("Default");
         {
-            std::map<size_t, int> resultsA;
-            std::map<int, int> resultsB;
-            std::set<float> resultsC;
-            std::set<float> resultsD;
-
-            for (int i = 0; i < 100000; ++i)
             {
-                resultsA[GetRandom(10)] += 1;
-            }
+                std::map<size_t, int> resultsA;
+                std::map<int, int> resultsB;
+                std::map<int, int> resultsBB;
+                std::map<int, int> resultsBBB;
+                std::set<float> resultsC;
+                std::set<float> resultsD;
+                std::set<float> resultsDD;
+                std::set<float> resultsDDD;
 
-            for (int i = 0; i < 100000; ++i)
-            {
-                resultsB[GetRandom(-5, 5)] += 1;
-            }
+                for (int i = 0; i < 100000; ++i)
+                {
+                    resultsA[GetRandom(10)] += 1;
+                }
 
-            for (int i = 0; i < 100000; ++i)
-            {
-                resultsC.insert(GetRandomf(10.f));
-            }
+                for (int i = 0; i < 100000; ++i)
+                {
+                    resultsB[GetRandom(0, 5)] += 1;
+                }
 
-            for (int i = 0; i < 100000; ++i)
-            {
-                resultsD.insert(GetRandomf(-5.f, 5.f));
-            }
+                for (int i = 0; i < 100000; ++i)
+                {
+                    resultsBB[GetRandom(-5, 0)] += 1;
+                }
 
-            GUGU_UTEST_CHECK_EQUAL(resultsA.size(), 10);
-            GUGU_UTEST_CHECK_EQUAL(resultsB.size(), 11);
-            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(*resultsC.begin(), 0.f, math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxInferior(*resultsC.rbegin(), 10.f, math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxSuperiorOrEqual(*resultsD.begin(), -5.f, math::Epsilon6));
-            GUGU_UTEST_CHECK(ApproxInferior(*resultsD.rbegin(), 5.f, math::Epsilon6));
+                for (int i = 0; i < 100000; ++i)
+                {
+                    resultsBBB[GetRandom(-5, 5)] += 1;
+                }
+
+                for (int i = 0; i < 100000; ++i)
+                {
+                    resultsC.insert(GetRandomf(10.f));
+                }
+
+                for (int i = 0; i < 100000; ++i)
+                {
+                    resultsD.insert(GetRandomf(0.f, 5.f));
+                }
+
+                for (int i = 0; i < 100000; ++i)
+                {
+                    resultsDD.insert(GetRandomf(-5.f, 0.f));
+                }
+
+                for (int i = 0; i < 100000; ++i)
+                {
+                    resultsDDD.insert(GetRandomf(-5.f, 5.f));
+                }
+
+                GUGU_UTEST_CHECK_EQUAL(resultsA.size(), 10);
+                GUGU_UTEST_CHECK_EQUAL(resultsB.size(), 6);
+                GUGU_UTEST_CHECK_EQUAL(resultsB.begin()->first, 0);
+                GUGU_UTEST_CHECK_EQUAL(resultsB.rbegin()->first, 5);
+                GUGU_UTEST_CHECK_EQUAL(resultsBB.size(), 6);
+                GUGU_UTEST_CHECK_EQUAL(resultsBB.begin()->first, -5);
+                GUGU_UTEST_CHECK_EQUAL(resultsBB.rbegin()->first, 0);
+                GUGU_UTEST_CHECK_EQUAL(resultsBBB.size(), 11);
+                GUGU_UTEST_CHECK_EQUAL(resultsBBB.begin()->first, -5);
+                GUGU_UTEST_CHECK_EQUAL(resultsBBB.rbegin()->first, 5);
+                GUGU_UTEST_CHECK_APPROX_EQUAL(*resultsC.begin(), 0.f, math::Epsilon3);
+                GUGU_UTEST_CHECK_APPROX_EQUAL(*resultsC.rbegin(), 10.f, math::Epsilon3);
+                GUGU_UTEST_CHECK_APPROX_EQUAL(*resultsD.begin(), 0.f, math::Epsilon3);
+                GUGU_UTEST_CHECK_APPROX_EQUAL(*resultsD.rbegin(), 5.f, math::Epsilon3);
+                GUGU_UTEST_CHECK_APPROX_EQUAL(*resultsDD.begin(), -5.f, math::Epsilon3);
+                GUGU_UTEST_CHECK_APPROX_EQUAL(*resultsDD.rbegin(), 0.f, math::Epsilon3);
+                GUGU_UTEST_CHECK_APPROX_EQUAL(*resultsDDD.begin(), -5.f, math::Epsilon3);
+                GUGU_UTEST_CHECK_APPROX_EQUAL(*resultsDDD.rbegin(), 5.f, math::Epsilon3);
+            }
         }
 
         GUGU_UTEST_SECTION("Weighted");

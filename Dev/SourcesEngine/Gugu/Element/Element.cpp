@@ -217,6 +217,9 @@ Vector2f Element::TransformToGlobal(const Vector2f& localCoords, Element* ancest
 
 void Element::SetVisible(bool visible)
 {
+    if (m_isVisible == visible)
+        return;
+
     m_isVisible = visible;
     OnVisibleChanged();
 }

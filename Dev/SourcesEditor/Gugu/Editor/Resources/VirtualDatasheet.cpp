@@ -190,6 +190,7 @@ void VirtualDatasheet::Unload()
 {
     SafeDelete(m_rootObject);
     ClearStdMap(m_instanceObjects);
+    ClearStdMap(m_objectOverrides);
 
     m_parentDatasheet = nullptr;
 }
@@ -225,6 +226,22 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
         {
             m_instanceObjects.insert(std::make_pair(dataObject->m_uuid, dataObject));
             orphanObjectUuids.insert(dataObject->m_uuid);
+        }
+        else
+        {
+            // TODO: log error ?
+            SafeDelete(dataObject);
+        }
+    }
+
+    // Parse Object Override nodes.
+    for (pugi::xml_node nodeObject = datasheetNode.child("ObjectOverride"); nodeObject; nodeObject = nodeObject.next_sibling("ObjectOverride"))
+    {
+        VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
+
+        if (dataObject->LoadFromXml(nodeObject))
+        {
+            m_objectOverrides.insert(std::make_pair(dataObject->m_uuid, dataObject));
         }
         else
         {
@@ -293,12 +310,18 @@ bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
 
     // Serialize all objects to xml.
     // Instance objects are naturally sorted by UUID through the map.
-    if (!m_rootObject->SaveToXml(nodeDatasheet, true))
+    if (!m_rootObject->SaveToXml(nodeDatasheet, "RootObject"))
         return false;
 
     for (const auto& kvp : m_instanceObjects)
     {
-        if (!kvp.second->SaveToXml(nodeDatasheet, false))
+        if (!kvp.second->SaveToXml(nodeDatasheet, "Object"))
+            return false;
+    }
+
+    for (const auto& kvp : m_objectOverrides)
+    {
+        if (!kvp.second->SaveToXml(nodeDatasheet, "ObjectOverride"))
             return false;
     }
 

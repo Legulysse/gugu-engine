@@ -113,6 +113,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 {
     pugi::xml_attribute attributeType = nodeDatasheetObject.attribute("type");
 
+    // TODO: make type parsing optionnal for ObjectOverrides ? retrieve from parent object instead ?
     m_classDefinition = nullptr;
     if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.value(), m_classDefinition))
     {
@@ -398,10 +399,10 @@ void VirtualDatasheetObject::SortDataValues()
     });
 }
 
-bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, bool isRoot) const
+bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, const std::string& xmlObjectType) const
 {
     // Serialize object.
-    pugi::xml_node nodeDatasheetObject = nodeDatasheet.append_child(isRoot ? "RootObject" : "Object");
+    pugi::xml_node nodeDatasheetObject = nodeDatasheet.append_child(xmlObjectType.c_str());
     nodeDatasheetObject.append_attribute("type") = m_classDefinition->m_name.c_str();
     nodeDatasheetObject.append_attribute("uuid")= m_uuid.ToString().c_str();
 

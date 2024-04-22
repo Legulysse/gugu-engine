@@ -61,6 +61,7 @@ public:
 
     VirtualDatasheetObject* m_rootObject;
     std::map<UUID, VirtualDatasheetObject*> m_instanceObjects;
+    std::map<UUID, VirtualDatasheetObject*> m_objectOverrides;
 
     std::string m_parentDatasheetID;
     VirtualDatasheet* m_parentDatasheet;

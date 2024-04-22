@@ -40,13 +40,15 @@ bool VirtualDatasheetObject::DataValue::RemoveChildDataValue(size_t index)
 
 
 VirtualDatasheetObject::VirtualDatasheetObject()
-    : m_parentObject(nullptr)
+    : m_datasheet(nullptr)
+    , m_parentObject(nullptr)
     , m_classDefinition(nullptr)
 {
 }
 
 VirtualDatasheetObject::~VirtualDatasheetObject()
 {
+    m_datasheet = nullptr;
     m_parentObject = nullptr;
     m_classDefinition = nullptr;
     ClearStdVector(m_dataValues);
@@ -109,7 +111,7 @@ void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependen
     }
 }
 
-bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject)
+bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, VirtualDatasheet* datasheet)
 {
     pugi::xml_attribute attributeType = nodeDatasheetObject.attribute("type");
 
@@ -120,6 +122,9 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
         GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "A null ClassDefinition has been provided on VirtualDatasheetObject loading");
         return false;
     }
+
+    // Register owning datasheet.
+    m_datasheet = datasheet;
 
     // Retrieve or generate object UUID.
     std::string uuid;

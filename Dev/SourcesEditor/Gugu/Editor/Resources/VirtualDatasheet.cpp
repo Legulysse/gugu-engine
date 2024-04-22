@@ -68,6 +68,7 @@ bool VirtualDatasheet::InstanciateNewRootObject(DatasheetParser::ClassDefinition
     UUID uuid = UUID::Generate();
 
     m_rootObject = new VirtualDatasheetObject;
+    m_rootObject->m_datasheet = this;
     m_rootObject->m_uuid = uuid;
     m_rootObject->m_classDefinition = classDefinition;
 
@@ -79,6 +80,7 @@ VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObject(DatasheetParser::
     UUID uuid = UUID::Generate();
 
     VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
+    instanceObject->m_datasheet = this;
     instanceObject->m_uuid = uuid;
     instanceObject->m_classDefinition = classDefinition;
 
@@ -208,7 +210,7 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
         return false;
 
     m_rootObject = new VirtualDatasheetObject;
-    if (!m_rootObject->LoadFromXml(rootNode))
+    if (!m_rootObject->LoadFromXml(rootNode, this))
     {
         // TODO: log error ?
         SafeDelete(m_rootObject);
@@ -222,7 +224,7 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
     {
         VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
 
-        if (dataObject->LoadFromXml(nodeObject))
+        if (dataObject->LoadFromXml(nodeObject, this))
         {
             m_instanceObjects.insert(std::make_pair(dataObject->m_uuid, dataObject));
             orphanObjectUuids.insert(dataObject->m_uuid);
@@ -239,7 +241,7 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
     {
         VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
 
-        if (dataObject->LoadFromXml(nodeObject))
+        if (dataObject->LoadFromXml(nodeObject, this))
         {
             m_objectOverrides.insert(std::make_pair(dataObject->m_uuid, dataObject));
         }

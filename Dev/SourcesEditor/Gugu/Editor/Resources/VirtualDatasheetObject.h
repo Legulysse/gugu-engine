@@ -65,7 +65,7 @@ public:
     void GetDependencies(std::set<Resource*>& dependencies) const;
     void OnDependencyRemoved(const Resource* removedDependency);
 
-    bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject);
+    bool LoadFromXml(const pugi::xml_node& nodeDatasheetObject, VirtualDatasheet* datasheet);
     bool SaveToXml(pugi::xml_node& nodeDatasheet, const std::string& xmlObjectType) const;
 
     void ResolveInstances(const std::map<UUID, VirtualDatasheetObject*>& dataObjects, std::set<UUID>& orphanObjectUuids);
@@ -91,12 +91,13 @@ protected:
 
 public:
 
+    VirtualDatasheet* m_datasheet;
     UUID m_uuid;
 
     UUID m_parentObjectUuid;
     VirtualDatasheetObject* m_parentObject;
 
-    DatasheetParser::ClassDefinition* m_classDefinition = nullptr;
+    DatasheetParser::ClassDefinition* m_classDefinition;
     std::vector<VirtualDatasheetObject::DataValue*> m_dataValues;
 };
 

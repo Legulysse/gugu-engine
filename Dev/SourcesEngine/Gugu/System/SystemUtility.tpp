@@ -249,6 +249,16 @@ void StdVectorRemove(std::vector<T>& _vecContainer, const T& _tValue)
 }
 
 template<typename T>
+void StdVectorRemoveFirst(std::vector<T>& _vecContainer, const T& _tValue)
+{
+    typename std::vector<T>::const_iterator it = std::find(_vecContainer.cbegin(), _vecContainer.cend(), _tValue);
+    if (it != _vecContainer.cend())
+    {
+        _vecContainer.erase(it);
+    }
+}
+
+template<typename T>
 void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex)
 {
     _vecContainer.erase(_vecContainer.begin() + _iIndex);

@@ -165,6 +165,9 @@ template<typename T>
 void StdVectorRemove(std::vector<T>& _vecContainer, const T& _tValue);
 
 template<typename T>
+void StdVectorRemoveFirst(std::vector<T>& _vecContainer, const T& _tValue);
+
+template<typename T>
 void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex);
 
 template<typename T>

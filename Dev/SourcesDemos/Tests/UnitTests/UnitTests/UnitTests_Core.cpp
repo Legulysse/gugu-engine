@@ -100,6 +100,16 @@ void RunUnitTests_Core(UnitTestResults* results)
         GUGU_UTEST_CHECK_FALSE(handleC != Handle(dummyPtr, 1));
 
         delete dummyPtr;
+
+        std::vector<Handle> vector_handle;
+        std::set<Handle> set_handle;
+        std::map<Handle, std::string> map_handle;
+
+        vector_handle.push_back(Handle());
+        set_handle.insert(Handle());
+        map_handle.insert(std::make_pair(Handle(), ""));
+        map_handle[Handle()] = "";
+        std::sort(vector_handle.begin(), vector_handle.end());
     }
 
     //----------------------------------------------

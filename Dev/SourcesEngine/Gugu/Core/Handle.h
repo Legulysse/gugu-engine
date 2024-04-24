@@ -25,6 +25,11 @@ public:
         return m_ptr != right.m_ptr || m_id != right.m_id;
     }
 
+    bool operator < (const Handle& right) const // Used by std sorts
+    {
+        return m_ptr < right.m_ptr || (m_ptr == right.m_ptr && m_id < right.m_id);
+    }
+
 private:
 
     const void* m_ptr = nullptr;

@@ -44,6 +44,9 @@ public:
     bool IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const;    // TODO: I could use an enum for error returns, and reuse them in other cases of references error feedbacks.
     void SetParentDatasheet(const std::string& parentDatasheetID, VirtualDatasheet* parentDatasheet);
 
+    VirtualDatasheetObject* GetInstanceObjectFromUuid(const UUID& uuid) const;
+    VirtualDatasheetObject* GetObjectOverrideFromUuid(const UUID& uuid) const;
+
     DatasheetParser::ClassDefinition* GetClassDefinition() const;
 
     void SortDataValues();

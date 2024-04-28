@@ -49,6 +49,8 @@ void VirtualDatasheet::GetDependencies(std::set<Resource*>& dependencies) const
 
 void VirtualDatasheet::OnDependencyRemoved(const Resource* removedDependency)
 {
+    // TODO: dependency updated should refresh all parents.
+
     if (m_parentDatasheet == removedDependency)
     {
         m_parentDatasheetID = "";
@@ -171,6 +173,37 @@ void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, 
     m_parentDatasheet = parentDatasheet;
 
     m_rootObject->RefreshParentObject(m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
+
+    if (m_parentDatasheet)
+    {
+        for (const auto& kvp : m_objectOverrides)
+        {
+            auto parentObject = m_parentDatasheet->GetInstanceObjectFromUuid(kvp.first);
+            kvp.second->RefreshParentObject(parentObject);
+        }
+    }
+}
+
+VirtualDatasheetObject* VirtualDatasheet::GetInstanceObjectFromUuid(const UUID& uuid) const
+{
+    const auto itInstance = m_instanceObjects.find(uuid);
+    if (itInstance != m_instanceObjects.end())
+    {
+        return itInstance->second;
+    }
+
+    return nullptr;
+}
+
+VirtualDatasheetObject* VirtualDatasheet::GetObjectOverrideFromUuid(const UUID& uuid) const
+{
+    const auto itOverride = m_objectOverrides.find(uuid);
+    if (itOverride != m_objectOverrides.end())
+    {
+        return itOverride->second;
+    }
+
+    return nullptr;
 }
 
 DatasheetParser::ClassDefinition* VirtualDatasheet::GetClassDefinition() const

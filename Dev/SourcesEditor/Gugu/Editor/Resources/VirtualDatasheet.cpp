@@ -90,6 +90,17 @@ VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObject(DatasheetParser::
     return instanceObject;
 }
 
+VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObjectOverride(DatasheetParser::ClassDefinition* classDefinition, const UUID& uuid)
+{
+    VirtualDatasheetObject* objectOverride = new VirtualDatasheetObject;
+    objectOverride->m_datasheet = this;
+    objectOverride->m_uuid = uuid;
+    objectOverride->m_classDefinition = classDefinition;
+
+    m_objectOverrides.insert(std::make_pair(uuid, objectOverride));
+    return objectOverride;
+}
+
 bool VirtualDatasheet::DeleteOrphanedInstanceObjects()
 {
     // Recursively retrieve all used instance uuids.

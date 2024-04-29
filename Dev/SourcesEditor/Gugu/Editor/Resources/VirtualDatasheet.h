@@ -38,6 +38,7 @@ public:
 
     bool InstanciateNewRootObject(DatasheetParser::ClassDefinition* classDefinition);
     VirtualDatasheetObject* InstanciateNewObject(DatasheetParser::ClassDefinition* classDefinition);
+    VirtualDatasheetObject* InstanciateNewObjectOverride(DatasheetParser::ClassDefinition* classDefinition, const UUID& uuid);
     bool DeleteOrphanedInstanceObjects();
     bool DeleteInstanceObject(VirtualDatasheetObject* instanceObject);
 

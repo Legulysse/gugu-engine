@@ -259,7 +259,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
                     ImGui::TableNextRow();
 
-                    ImGui::BeginDisabled(isParentData);
+                    ImGui::BeginDisabled(isParentObject || isParentData);
 
                     ImGui::TableNextColumn();
                     ImGuiTreeNodeFlags nodeChildFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && childDataValue && childDataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;

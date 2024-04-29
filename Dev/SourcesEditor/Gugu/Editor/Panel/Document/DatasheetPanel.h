@@ -48,6 +48,8 @@ protected:
     void DisplayDepthColumn(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, bool isParentObject, VirtualDatasheetObject::DataValue*& dataValue, bool& isParentData);
     void DisplayEmptyDepthColumn();
 
+    void InstanciateDataObjectAndValueIfNeeded(VirtualDatasheetObject*& dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool& isParentData, DatasheetParser::DataMemberDefinition* dataMemberDefinition);
+
     void OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency);
 
 protected:

@@ -246,8 +246,6 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
         DisplayDepthColumn(dataMemberDefinition, dataObject, isParentObject, dataValue, isParentData);
 
-        ImGui::BeginDisabled(isParentData);
-
         if (nodeOpen)
         {
             if (dataValue && !dataValue->value_children.empty())
@@ -260,6 +258,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::PushID((int)childIndex);
 
                     ImGui::TableNextRow();
+
+                    ImGui::BeginDisabled(isParentData);
 
                     ImGui::TableNextColumn();
                     ImGuiTreeNodeFlags nodeChildFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && childDataValue && childDataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
@@ -296,6 +296,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
                     DisplayEmptyDepthColumn();
 
+                    ImGui::EndDisabled();
+
                     if (nodeChildOpen)
                     {
                         if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
@@ -323,8 +325,6 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
             ImGui::TreePop();
         }
-
-        ImGui::EndDisabled();
 
         ImGui::PopID();
     }
@@ -627,7 +627,6 @@ void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMembe
         }
 
         ImGui::PushID(dataMemberDefinition->name.c_str());
-        ImGui::BeginDisabled(isParentData);
 
         for (DatasheetParser::ClassDefinition* classDefinition : objectDefinition->m_combinedInheritedClasses)
         {
@@ -638,7 +637,6 @@ void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMembe
             ImGui::PopID();
         }
 
-        ImGui::EndDisabled();
         ImGui::PopID();
     }
 }

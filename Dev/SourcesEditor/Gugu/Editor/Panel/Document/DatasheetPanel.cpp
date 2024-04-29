@@ -647,7 +647,11 @@ void DatasheetPanel::InstanciateDataObjectAndValueIfNeeded(VirtualDatasheetObjec
 {
     if (dataObject->m_datasheet != m_datasheet)
     {
-        // TODO: new override object.
+        VirtualDatasheetObject* parentObject = dataObject;
+        dataObject = m_datasheet->InstanciateNewObjectOverride(parentObject->m_classDefinition, parentObject->m_uuid);
+        dataObject->RefreshParentObject(parentObject);
+
+        dataValue = nullptr;
     }
 
     if (!dataValue || isParentData)

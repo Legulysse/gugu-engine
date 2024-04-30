@@ -55,7 +55,7 @@ Engine::Engine()
     , m_speedMultiplier(1.f)
     , m_pauseLoop(false)
     , m_injectTime(sf::Time::Zero)
-    , m_displayImGui(false)
+    , m_showImGui(false)
 {
     // This constructor should stay empty.
     // Because it's a singleton, if a GetInstance() is called inside by another system but the constructor isn't finished,
@@ -134,6 +134,8 @@ void Engine::Init(const EngineConfig& config)
             // ImGui config flags :
             // - ImGuiConfigFlags_NoMouseCursorChange : I handle cursors in Window Update.
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+
+            m_showImGui = m_engineConfig.showImGui;
         }
     }
 }
@@ -451,7 +453,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
 
             ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), loopTime);
 
-            if (m_displayImGui)
+            if (m_showImGui)
             {
                 if (m_application)
                     m_application->AppUpdateImGui(dt_update);
@@ -544,14 +546,14 @@ float Engine::GetLoopSpeed() const
     return m_speedMultiplier;
 }
 
-void Engine::SetDisplayImGui(bool display)
+void Engine::SetShowImGui(bool showImGui)
 {
-    m_displayImGui = display;
+    m_showImGui = showImGui;
 }
 
-bool Engine::IsDisplayingImGui() const
+bool Engine::IsImGuiVisible() const
 {
-    return m_displayImGui;
+    return m_showImGui;
 }
 
 void Engine::SetApplication(Application* application)
@@ -673,7 +675,7 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
         }
         else if (command == "imgui")
         {
-            SetDisplayImGui(!m_displayImGui);
+            SetShowImGui(!m_showImGui);
         }
 
         if (GetApplication())

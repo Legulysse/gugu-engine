@@ -56,6 +56,7 @@ struct EngineConfig
     // Debug
     bool showStats;
     bool showFPS;
+    bool showImGui;
 
 
     EngineConfig()
@@ -87,6 +88,7 @@ struct EngineConfig
 
         showStats = false;
         showFPS = false;
+        showImGui = false;
     }
 };
 

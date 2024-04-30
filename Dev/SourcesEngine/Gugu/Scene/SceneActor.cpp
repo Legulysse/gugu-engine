@@ -37,6 +37,10 @@ void SceneActor::LateUpdate(const DeltaTime& dt)
 {
 }
 
+void SceneActor::UpdateImGui(const DeltaTime& dt)
+{
+}
+
 void SceneActor::RemoveFromScene()
 {
     if (m_scene)

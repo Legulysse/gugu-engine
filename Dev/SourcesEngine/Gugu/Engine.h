@@ -72,7 +72,11 @@ public:
     void SetLoopPause(bool pause);
     bool IsLoopPaused() const;
     void SetLoopSpeed(float speed);
+    void ResetLoopSpeed();
     float GetLoopSpeed() const;
+
+    void SetDisplayImGui(bool display);
+    bool IsDisplayingImGui() const;
 
     void            SetApplication(Application* application);
     Application*    GetApplication() const;
@@ -136,6 +140,7 @@ private:
     float               m_speedMultiplier;
     bool                m_pauseLoop;
     sf::Time            m_injectTime;
+    bool                m_displayImGui;
 
     // Stats
     EngineStats         m_stats;

@@ -41,6 +41,7 @@ public:
     void Step(const DeltaTime& dt);
     void Update(const DeltaTime& dt);
     void LateUpdate(const DeltaTime& dt);
+    void UpdateImGui(const DeltaTime& dt);
 
 protected:
 

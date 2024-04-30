@@ -41,6 +41,7 @@ public:
     virtual void AppStep(const DeltaTime& dt);
     virtual void AppUpdate(const DeltaTime& dt);
     virtual void AppLateUpdate(const DeltaTime& dt);
+    virtual void AppUpdateImGui(const DeltaTime& dt);
 
     // Return true to allow the engine to automatically close the main window, or false to manually handle the event.
     virtual bool OnMainWindowCloseEvent();

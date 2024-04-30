@@ -55,6 +55,7 @@ Engine::Engine()
     , m_speedMultiplier(1.f)
     , m_pauseLoop(false)
     , m_injectTime(sf::Time::Zero)
+    , m_displayImGui(false)
 {
     // This constructor should stay empty.
     // Because it's a singleton, if a GetInstance() is called inside by another system but the constructor isn't finished,
@@ -431,11 +432,6 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         GUGU_SCOPE_TRACE_MAIN("Update");
         clockStatSection.restart();
 
-        if (m_gameWindow && m_gameWindow->IsHostingImGui())
-        {
-            ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), loopTime);
-        }
-
         if (m_application)
             m_application->AppUpdate(dt_update);
 
@@ -448,6 +444,21 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
             m_application->AppLateUpdate(dt_update);
 
         m_managerScenes->LateUpdate(dt_update);
+
+        if (m_gameWindow && m_gameWindow->IsHostingImGui())
+        {
+            GUGU_SCOPE_TRACE_MAIN_("Update ImGui", IMGUI);
+
+            ImGui::SFML::Update(*m_gameWindow->GetSFRenderWindow(), loopTime);
+
+            if (m_displayImGui)
+            {
+                if (m_application)
+                    m_application->AppUpdateImGui(dt_update);
+
+                m_managerScenes->UpdateImGui(dt_update);
+            }
+        }
 
         // Update Stats
         m_stats.updateTimes.push_front(static_cast<float>(static_cast<double>(clockStatSection.getElapsedTime().asMicroseconds()) / 1000.0));
@@ -511,19 +522,36 @@ bool Engine::IsLoopPaused() const
 
 void Engine::SetLoopSpeed(float speed)
 {
-    m_useSpeedMultiplier = false;
-    m_speedMultiplier = 1.f;
-
     if (!ApproxEqual(speed, 1.f, math::Epsilon6))
     {
         m_useSpeedMultiplier = true;
         m_speedMultiplier = Max(0.f, speed);
     }
+    else
+    {
+        ResetLoopSpeed();
+    }
+}
+
+void Engine::ResetLoopSpeed()
+{
+    m_useSpeedMultiplier = false;
+    m_speedMultiplier = 1.f;
 }
 
 float Engine::GetLoopSpeed() const
 {
     return m_speedMultiplier;
+}
+
+void Engine::SetDisplayImGui(bool display)
+{
+    m_displayImGui = display;
+}
+
+bool Engine::IsDisplayingImGui() const
+{
+    return m_displayImGui;
 }
 
 void Engine::SetApplication(Application* application)
@@ -612,23 +640,25 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
         }
         else if (command == "speed")
         {
-            m_useSpeedMultiplier = false;
-            m_speedMultiplier = 1.f;
-
+            bool reset = true;
             if (!tokens.empty() && tokens[0] != "1")
             {
-                float speed = 1;
+                float speed = 1.f;
                 if (FromString(tokens[0], speed))
                 {
-                    m_useSpeedMultiplier = true;
-                    m_speedMultiplier = Max(0.f, speed);
+                    SetLoopSpeed(speed);
+                    reset = false;
                 }
+            }
+
+            if (reset)
+            {
+                ResetLoopSpeed();
             }
         }
         else if (command == "pause")
         {
-            m_pauseLoop = !m_pauseLoop;
-            m_injectTime = sf::Time::Zero;
+            SetLoopPause(!m_pauseLoop);
         }
         else if (command == "time")
         {
@@ -640,6 +670,10 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
                     m_injectTime = sf::milliseconds(Max(0, time));
                 }
             }
+        }
+        else if (command == "imgui")
+        {
+            SetDisplayImGui(!m_displayImGui);
         }
 
         if (GetApplication())

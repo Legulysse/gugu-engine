@@ -71,6 +71,14 @@ void ManagerScenes::LateUpdate(const DeltaTime& dt)
     }
 }
 
+void ManagerScenes::UpdateImGui(const DeltaTime& dt)
+{
+    if (m_rootScene)
+    {
+        m_rootScene->UpdateImGui(dt);
+    }
+}
+
 ManagerScenes* GetScenes()
 {
     return GetEngine()->GetManagerScenes();

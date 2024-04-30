@@ -42,6 +42,10 @@ void Application::AppLateUpdate(const DeltaTime& dt)
 {
 }
 
+void Application::AppUpdateImGui(const DeltaTime& dt)
+{
+}
+
 bool Application::OnMainWindowCloseEvent()
 {
     return true;

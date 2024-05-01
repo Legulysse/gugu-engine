@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
     config.debugFont = "Roboto-Regular.ttf";
     config.windowWidth = 1280;
     config.windowHeight = 720;
+    config.showImGui = true;
     
     GetEngine()->Init(config);
 

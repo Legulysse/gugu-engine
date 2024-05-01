@@ -195,7 +195,7 @@ void Demo::RefreshGrids()
     }
 }
 
-void Demo::AppUpdate(const DeltaTime& dt)
+void Demo::AppUpdateImGui(const DeltaTime& dt)
 {
     bool refresh = false;
 

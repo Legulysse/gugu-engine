@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
     config.windowHeight = 768;
     config.maximizeWindow = true;
     config.showStats = true;
+    config.showImGui = true;
 
     GetEngine()->Init(config);
 

@@ -189,7 +189,7 @@ void Demo::AppStop()
     SafeDelete(m_root);
 }
 
-void Demo::AppUpdate(const DeltaTime& dt)
+void Demo::AppUpdateImGui(const DeltaTime& dt)
 {
     if (m_animateEmitters)
     {

@@ -21,7 +21,7 @@ public:
     virtual void AppStart() override;
     virtual void AppStop() override;
 
-    virtual void AppUpdate(const DeltaTime& dt) override;
+    virtual void AppUpdateImGui(const DeltaTime& dt) override;
 
     virtual bool OnMainWindowCloseEvent() override;
 

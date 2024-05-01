@@ -38,7 +38,7 @@ void EditorApp::AppStop()
     GetEditor()->Release();
 }
 
-void EditorApp::AppUpdate(const DeltaTime& dt)
+void EditorApp::AppUpdateImGui(const DeltaTime& dt)
 {
     GetEditor()->Update(dt);
 }

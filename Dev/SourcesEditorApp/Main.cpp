@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
     config.windowHeight = 900;
     config.maximizeWindow = true;
     config.handleResourceDependencies = true;
+    config.showImGui = true;
 
     GetEngine()->Init(config);
 

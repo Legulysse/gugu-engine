@@ -267,7 +267,8 @@ Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)
 
 const DatasheetObject* ManagerResources::GetDatasheetRootObject(const std::string& _strName)
 {
-    return GetDatasheet(_strName)->GetRootObject();
+    Datasheet* sheet = GetDatasheet(_strName);
+    return sheet == nullptr ? nullptr : sheet->GetRootObject();
 }
 
 ElementWidget* ManagerResources::GetElementWidget(const std::string& _strName)

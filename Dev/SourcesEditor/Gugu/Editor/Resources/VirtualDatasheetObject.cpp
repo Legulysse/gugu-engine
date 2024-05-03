@@ -141,6 +141,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
     {
         VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
+        dataValue->owner = this;
         dataValue->name = nodeData.attribute("name").value();
 
         DatasheetParser::DataMemberDefinition* dataMemberDef = m_classDefinition->GetDataMemberDefinition(dataValue->name);
@@ -163,17 +164,19 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
             {
                 for (pugi::xml_node nodeChild = nodeData.child("Child"); nodeChild; nodeChild = nodeChild.next_sibling("Child"))
                 {
+                    VirtualDatasheetObject::DataValue* childDataValue = new VirtualDatasheetObject::DataValue;
+                    childDataValue->owner = this;
+
+                    dataValue->value_children.push_back(childDataValue);
+
+                    // TODO: merge those 2 branches.
                     if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
-                        VirtualDatasheetObject::DataValue* childDataValue = new VirtualDatasheetObject::DataValue;
                         ParseInstanceDataValue(nodeChild, dataMemberDef, childDataValue);
-                        dataValue->value_children.push_back(childDataValue);
                     }
                     else
                     {
-                        VirtualDatasheetObject::DataValue* childDataValue = new VirtualDatasheetObject::DataValue;
                         ParseInlineDataValue(nodeChild, dataMemberDef, childDataValue);
-                        dataValue->value_children.push_back(childDataValue);
                     }
                 }
             }
@@ -349,12 +352,24 @@ void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeDa
     }
 }
 
-VirtualDatasheetObject::DataValue* VirtualDatasheetObject::RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef)
+VirtualDatasheetObject::DataValue* VirtualDatasheetObject::InstanciateNewClassMemberDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef)
 {
     VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
+    dataValue->owner = this;
     dataValue->name = dataMemberDef->name;
     dataValue->dataMemberDefinition = dataMemberDef;
+
     m_dataValues.push_back(dataValue);
+    return dataValue;
+}
+
+VirtualDatasheetObject::DataValue* VirtualDatasheetObject::InstanciateNewArrayMemberDataValue(VirtualDatasheetObject::DataValue* arrayDataMember)
+{
+    // TODO: set default value ?
+    VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
+    dataValue->owner = this;
+
+    arrayDataMember->value_children.push_back(dataValue);
     return dataValue;
 }
 

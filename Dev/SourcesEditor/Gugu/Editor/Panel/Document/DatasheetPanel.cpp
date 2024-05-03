@@ -227,9 +227,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, isParentData, dataMemberDefinition);
 
-            // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
-            VirtualDatasheetObject::DataValue* newChildDataValue = new VirtualDatasheetObject::DataValue;
-            dataValue->value_children.push_back(newChildDataValue);
+            dataObject->InstanciateNewArrayMemberDataValue(dataValue);
             RaiseDirty();
         }
 
@@ -654,7 +652,7 @@ void DatasheetPanel::InstanciateDataObjectAndValueIfNeeded(VirtualDatasheetObjec
 
     if (!dataValue || isParentData)
     {
-        dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
+        dataValue = dataObject->InstanciateNewClassMemberDataValue(dataMemberDefinition);
         isParentData = false;
     }
 }

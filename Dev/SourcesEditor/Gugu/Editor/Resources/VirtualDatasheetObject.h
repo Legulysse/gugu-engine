@@ -37,6 +37,8 @@ public:
 
     struct DataValue
     {
+        VirtualDatasheetObject* owner = nullptr;
+
         std::string name;
         DatasheetParser::DataMemberDefinition* dataMemberDefinition = nullptr;
         std::string backupValue;
@@ -72,7 +74,8 @@ public:
     void GatherInstanceUuids(std::set<UUID>& instanceUuids);
     void RefreshParentObject(VirtualDatasheetObject* parentObject);
 
-    VirtualDatasheetObject::DataValue* RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
+    VirtualDatasheetObject::DataValue* InstanciateNewClassMemberDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
+    VirtualDatasheetObject::DataValue* InstanciateNewArrayMemberDataValue(VirtualDatasheetObject::DataValue* arrayDataMember);
     bool RemoveDataValue(const std::string& name);
     VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name, bool& isParentData) const;
 

@@ -104,8 +104,14 @@ VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObjectOverride(Datasheet
 bool VirtualDatasheet::DeleteOrphanedInstanceObjects()
 {
     // Recursively retrieve all used instance uuids.
+    // We dont need to check overrides in parent sheet, because we only care about instances from the current sheet.
     std::set<UUID> instanceUuids;
     m_rootObject->GatherInstanceUuids(instanceUuids);
+
+    for (auto it : m_objectOverrides)
+    {
+        it.second->GatherInstanceUuids(instanceUuids);
+    }
 
     // Delete all orphaned instance objects.
     bool foundOrphans = false;

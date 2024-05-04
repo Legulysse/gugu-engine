@@ -310,6 +310,11 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
         kvp.second->ResolveInstances(m_instanceObjects, orphanObjectUuids);
     }
 
+    for (const auto& kvp : m_objectOverrides)
+    {
+        kvp.second->ResolveInstances(m_instanceObjects, orphanObjectUuids);
+    }
+
     if (!orphanObjectUuids.empty())
     {
         GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet contains {0} orphan instanced objects : {1}", orphanObjectUuids.size(), GetFileInfo().GetFilePath_utf8()));

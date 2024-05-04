@@ -20,7 +20,10 @@ Generates a json file readable in chrome://tracing/ (chrome) or about://tracing/
 Set the engine loop speed multiplier at [multiplier] (default speed is 1, minimum is 0).
 
 ### > pause
-Pauses the engine loop (can be stacked on top of a modified speed).
+Pause the engine loop (can be stacked on top of a modified speed).
 
 ### > time [int:value]
-Injects [value] milliseconds into the engine loop (can only be used when the engine loop is paused).
+Inject [value] milliseconds into the engine loop (can only be used when the engine loop is paused).
+
+### > imgui
+Toggle ImGui rendering and execution.

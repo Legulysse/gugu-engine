@@ -388,9 +388,8 @@ bool VirtualDatasheetObject::RemoveDataValue(const std::string& name)
     return false;
 }
 
-VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name, bool& isParentData) const
+VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name) const
 {
-    isParentData = false;
     const VirtualDatasheetObject* dataObject = this;
     while (dataObject)
     {
@@ -402,11 +401,9 @@ VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const st
             }
         }
 
-        isParentData = true;
         dataObject = dataObject->m_parentObject;
     }
 
-    isParentData = false;
     return nullptr;
 }
 

@@ -77,7 +77,7 @@ public:
     VirtualDatasheetObject::DataValue* InstanciateNewClassMemberDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
     VirtualDatasheetObject::DataValue* InstanciateNewArrayMemberDataValue(VirtualDatasheetObject::DataValue* arrayDataMember);
     bool RemoveDataValue(const std::string& name);
-    VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name, bool& isParentData) const;
+    VirtualDatasheetObject::DataValue* GetDataValue(const std::string& name) const;
 
     void SortDataValues();
 

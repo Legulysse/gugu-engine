@@ -23,6 +23,9 @@
         <Data type="float" name="speed" default="100" />
         <Data type="weaponType" name="weapon" default="Sword" />
         <Data type="instance:condition" name="unlocked" />
+        <Data type="instance:action" name="actionOnDeath" />
+        <Data type="instance:effect" name="attackSkill" />
+        <Data type="instance:effect" name="supportSkill" />
     </Class>
     
     <Class name="faction" code="DS_Faction">
@@ -36,6 +39,37 @@
         <Data type="vector2f" name="scale" />
     </Class>
     
+    <Class name="effect" code="DS_Effect" abstract="true">
+    </Class>
+	
+    <Class name="effectGroup" code="DS_EffectGroup" base="effect">
+        <Data type="array:instance:effect" name="effects" />
+    </Class>
+	
+    <Class name="effectProjectile" code="DS_EffectProjectile" base="effect">
+        <Data type="float" name="speed" />
+        <Data type="float" name="lifetime" />
+        <Data type="instance:effect" name="hitEffect" />
+        <Data type="instance:effect" name="endEffect" />
+    </Class>
+	
+    <Class name="effectArea" code="DS_EffectArea" base="effect">
+        <Data type="int" name="radius" />
+        <Data type="float" name="tick" />
+        <Data type="float" name="duration" />
+        <Data type="instance:effect" name="areaTickEffect" />
+        <Data type="instance:effect" name="areaEnterEffect" />
+        <Data type="instance:effect" name="areaExitEffect" />
+    </Class>
+	
+    <Class name="effectDamage" code="DS_EffectDamage" base="effect">
+        <Data type="int" name="damage" />
+    </Class>
+	
+    <Class name="effectHeal" code="DS_EffectHeal" base="effect">
+        <Data type="int" name="heal" />
+    </Class>
+	
     <Class name="condition" code="DS_Condition" abstract="true">
         <Data type="bool" name="intendedResult" default="true" />
         <Method declaration="bool IsValid(const struct ConditionContext&amp; context) const;" />
@@ -46,13 +80,37 @@
         <Data type="array:instance:condition" name="conditions" />
         <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const override;" />
     </Class>
-    
+	
     <Class name="conditionPlayerLevel" code="DS_ConditionPlayerLevel" base="condition">
         <Data type="int" name="minLevel" default="-1" />
         <Data type="int" name="maxLevel" default="-1" />
         <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const override;" />
     </Class>
     
+    <Class name="conditionCheckFlag" code="DS_ConditionCheckFlag" base="condition">
+        <Data type="string" name="flag" />
+        <Data type="bool" name="raised" />
+        <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const override;" />
+    </Class>
+	
+    <Class name="action" code="DS_Action" abstract="true">
+    </Class>
+	
+    <Class name="actionList" code="DS_ActionList" base="action">
+        <Data type="array:instance:action" name="actions" />
+    </Class>
+	
+    <Class name="actionIfCondition" code="DS_ActionIfCondition" base="action">
+        <Data type="instance:condition" name="condition" />
+        <Data type="instance:action" name="actionIfTrue" />
+        <Data type="instance:action" name="actionIfFalse" />
+    </Class>
+	
+    <Class name="actionSetFlag" code="DS_ActionSetFlag" base="action">
+        <Data type="string" name="flag" />
+        <Data type="bool" name="raised" />
+    </Class>
+	
     <!-- Datasaves -->
     
     <Class type="datasave" name="gameSave" code="DS_GameSave">

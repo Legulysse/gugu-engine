@@ -91,6 +91,121 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                     context.playerLevel = 11;
                     GUGU_UTEST_CHECK_FALSE(billySheet->unlocked->IsValid(context));
                 }
+
+                if (GUGU_UTEST_CHECK(billySheet->attackSkill != nullptr))
+                {
+                    const DS_EffectDamage* effectDamage = dynamic_cast<const DS_EffectDamage*>(billySheet->attackSkill);
+                    if (GUGU_UTEST_CHECK(effectDamage != nullptr))
+                    {
+                        GUGU_UTEST_CHECK_EQUAL(effectDamage->damage, 120);
+                    }
+                }
+
+                if (GUGU_UTEST_CHECK(billySheet->supportSkill != nullptr))
+                {
+                    const DS_EffectArea* effectArea = dynamic_cast<const DS_EffectArea*>(billySheet->supportSkill);
+                    if (GUGU_UTEST_CHECK(effectArea != nullptr))
+                    {
+                        GUGU_UTEST_CHECK_EQUAL(effectArea->radius, 100);
+                        GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->tick, 0.5f, math::Epsilon3);
+                        GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->duration, 3.f, math::Epsilon3);
+                        GUGU_UTEST_CHECK_EQUAL(effectArea->areaEnterEffect, nullptr);
+                        GUGU_UTEST_CHECK_EQUAL(effectArea->areaExitEffect, nullptr);
+
+                        const DS_EffectHeal* effectHeal = dynamic_cast<const DS_EffectHeal*>(effectArea->areaTickEffect);
+                        if (GUGU_UTEST_CHECK(effectHeal != nullptr))
+                        {
+                            GUGU_UTEST_CHECK_EQUAL(effectHeal->heal, 20);
+                        }
+                    }
+                }
+            }
+
+            const DS_Character* billyLvl2Sheet = GetResources()->GetDatasheetObject<DS_Character>("Billy_Lvl_2.character");
+            if (GUGU_UTEST_CHECK(billyLvl2Sheet != nullptr))
+            {
+                GUGU_UTEST_CHECK(billyLvl2Sheet->name == "Billy");
+                GUGU_UTEST_CHECK(billyLvl2Sheet->health == 250);
+                GUGU_UTEST_CHECK(billyLvl2Sheet->stamina == 220);
+                GUGU_UTEST_CHECK(billyLvl2Sheet->speed == 110);
+                GUGU_UTEST_CHECK(billyLvl2Sheet->weapon == EWeaponType::Crossbow);
+
+                if (GUGU_UTEST_CHECK(billyLvl2Sheet->unlocked != nullptr))
+                {
+                    const DS_ConditionAnd* conditionAnd = dynamic_cast<const DS_ConditionAnd*>(billyLvl2Sheet->unlocked);
+                    if (GUGU_UTEST_CHECK(conditionAnd != nullptr))
+                    {
+                        if (GUGU_UTEST_CHECK_EQUAL(conditionAnd->conditions.size(), 3))
+                        {
+                            GUGU_UTEST_CHECK(conditionAnd->conditions[0] != nullptr);
+                            GUGU_UTEST_CHECK(conditionAnd->conditions[1] != nullptr);
+                            GUGU_UTEST_CHECK(conditionAnd->conditions[2] != nullptr);
+                        }
+                    }
+
+                    ConditionContext context;
+
+                    context.playerLevel = 5;
+                    GUGU_UTEST_CHECK(billyLvl2Sheet->unlocked->IsValid(context));
+                    context.playerLevel = 10;
+                    GUGU_UTEST_CHECK(billyLvl2Sheet->unlocked->IsValid(context));
+
+                    context.playerLevel = 4;
+                    GUGU_UTEST_CHECK_FALSE(billyLvl2Sheet->unlocked->IsValid(context));
+                    context.playerLevel = 11;
+                    GUGU_UTEST_CHECK_FALSE(billyLvl2Sheet->unlocked->IsValid(context));
+                }
+
+                if (GUGU_UTEST_CHECK(billyLvl2Sheet->attackSkill != nullptr))
+                {
+                    const DS_EffectGroup* effectgroup = dynamic_cast<const DS_EffectGroup*>(billyLvl2Sheet->attackSkill);
+                    if (GUGU_UTEST_CHECK(effectgroup != nullptr))
+                    {
+                        if (GUGU_UTEST_CHECK_EQUAL(effectgroup->effects.size(), 2))
+                        {
+                            const DS_EffectDamage* effectDamage = dynamic_cast<const DS_EffectDamage*>(effectgroup->effects[0]);
+                            if (GUGU_UTEST_CHECK(effectDamage != nullptr))
+                            {
+                                GUGU_UTEST_CHECK_EQUAL(effectDamage->damage, 120);
+                            }
+
+                            const DS_EffectArea* effectArea = dynamic_cast<const DS_EffectArea*>(effectgroup->effects[1]);
+                            if (GUGU_UTEST_CHECK(effectArea != nullptr))
+                            {
+                                GUGU_UTEST_CHECK_EQUAL(effectArea->radius, 50);
+                                GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->tick, 0.1f, math::Epsilon3);
+                                GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->duration, 1.f, math::Epsilon3);
+                                GUGU_UTEST_CHECK_EQUAL(effectArea->areaEnterEffect, nullptr);
+                                GUGU_UTEST_CHECK_EQUAL(effectArea->areaExitEffect, nullptr);
+
+                                const DS_EffectDamage* effectAreaDamage = dynamic_cast<const DS_EffectDamage*>(effectArea->areaTickEffect);
+                                if (GUGU_UTEST_CHECK(effectAreaDamage != nullptr))
+                                {
+                                    GUGU_UTEST_CHECK_EQUAL(effectAreaDamage->damage, 10);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (GUGU_UTEST_CHECK(billyLvl2Sheet->supportSkill != nullptr))
+                {
+                    const DS_EffectArea* effectArea = dynamic_cast<const DS_EffectArea*>(billyLvl2Sheet->supportSkill);
+                    if (GUGU_UTEST_CHECK(effectArea != nullptr))
+                    {
+                        GUGU_UTEST_CHECK_EQUAL(effectArea->radius, 130);
+                        GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->tick, 0.5f, math::Epsilon3);
+                        GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->duration, 3.f, math::Epsilon3);
+                        GUGU_UTEST_CHECK_EQUAL(effectArea->areaEnterEffect, nullptr);
+                        GUGU_UTEST_CHECK_EQUAL(effectArea->areaExitEffect, nullptr);
+
+                        const DS_EffectHeal* effectHeal = dynamic_cast<const DS_EffectHeal*>(effectArea->areaTickEffect);
+                        if (GUGU_UTEST_CHECK(effectHeal != nullptr))
+                        {
+                            GUGU_UTEST_CHECK_EQUAL(effectHeal->heal, 25);
+                        }
+                    }
+                }
             }
 
             const DS_Character* paulaSheet = GetResources()->GetDatasheetObject<DS_Character>("Paula.character");

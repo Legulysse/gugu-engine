@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1">
-	<Data name="health" value="200" />
-	<Data name="stamina" value="200" />
-	<Data name="name" value="CHARACTER NAME" />
+<Datasheet serializationVersion="2" bindingVersion="1">
+	<RootObject type="character" uuid="126717474cc345a0bf0f7c08bc4a4037">
+		<Data name="health" value="200" />
+		<Data name="name" value="CHARACTER NAME" />
+		<Data name="stamina" value="200" />
+	</RootObject>
 </Datasheet>

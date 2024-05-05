@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1" parent="BaseCharacter.character">
-	<Data name="name" value="Paula" />
-	<Data name="weapon" value="Mace" />
-	<Data name="stamina" value="250" />
-	<Data name="speed" value="125" />
+<Datasheet serializationVersion="2" bindingVersion="1" parent="BaseCharacter.character">
+	<RootObject type="character" uuid="0c85cf4ddf5c405882048c9ee674457f">
+		<Data name="name" value="Paula" />
+		<Data name="speed" value="125" />
+		<Data name="stamina" value="250" />
+		<Data name="weapon" value="Mace" />
+	</RootObject>
 </Datasheet>

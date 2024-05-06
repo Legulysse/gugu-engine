@@ -47,17 +47,23 @@ void VirtualDatasheet::GetDependencies(std::set<Resource*>& dependencies) const
     m_rootObject->GetDependencies(dependencies);
 }
 
-void VirtualDatasheet::OnDependencyRemoved(const Resource* removedDependency)
+void VirtualDatasheet::OnDependencyUpdated(const Resource* dependency)
 {
-    // TODO: dependency updated should refresh all parents.
+    if (m_parentDatasheet == dependency)    // TODO: check ancestors
+    {
+        SetParentDatasheet(m_parentDatasheetID, m_parentDatasheet);
+    }
+}
 
-    if (m_parentDatasheet == removedDependency)
+void VirtualDatasheet::OnDependencyRemoved(const Resource* dependency)
+{
+    if (m_parentDatasheet == dependency)    // TODO: check ancestors
     {
         m_parentDatasheetID = "";
         m_parentDatasheet = nullptr;
     }
 
-    m_rootObject->OnDependencyRemoved(removedDependency);
+    m_rootObject->OnDependencyRemoved(dependency);
 }
 
 bool VirtualDatasheet::InstanciateNewRootObject(DatasheetParser::ClassDefinition* classDefinition)

@@ -129,7 +129,12 @@ void Resource::GetDependencies(std::set<Resource*>& dependencies) const
     // No dependencies by default.
 }
 
-void Resource::OnDependencyRemoved(const Resource* removedDependency)
+void Resource::OnDependencyUpdated(const Resource* dependency)
+{
+    // No dependencies by default.
+}
+
+void Resource::OnDependencyRemoved(const Resource* dependency)
 {
     // No dependencies by default.
 }

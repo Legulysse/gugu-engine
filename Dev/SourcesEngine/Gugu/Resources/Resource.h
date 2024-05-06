@@ -47,7 +47,8 @@ public:
     virtual bool SaveToString(std::string& result) const;
 
     virtual void GetDependencies(std::set<Resource*>& dependencies) const;
-    virtual void OnDependencyRemoved(const Resource* removedDependency);
+    virtual void OnDependencyUpdated(const Resource* dependency);
+    virtual void OnDependencyRemoved(const Resource* dependency);
 
 protected:
 

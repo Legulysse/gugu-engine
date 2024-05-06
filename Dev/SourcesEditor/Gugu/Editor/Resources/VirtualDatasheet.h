@@ -34,7 +34,8 @@ public:
     virtual EResourceType::Type GetResourceType() const override;
 
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
-    virtual void OnDependencyRemoved(const Resource* removedDependency) override;
+    virtual void OnDependencyUpdated(const Resource* dependency) override;
+    virtual void OnDependencyRemoved(const Resource* dependency) override;
 
     bool InstanciateNewRootObject(DatasheetParser::ClassDefinition* classDefinition);
     VirtualDatasheetObject* InstanciateNewObject(DatasheetParser::ClassDefinition* classDefinition);

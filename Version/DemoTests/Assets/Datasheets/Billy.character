@@ -9,6 +9,7 @@
 		<Data name="weapon" value="Crossbow" />
 	</RootObject>
 	<Object type="effectArea" uuid="18413098e383407aa154c3331afd1dbe">
+		<Data name="areaEnterEffect" value="71f8746bca96472181af98d0161ccdbd" />
 		<Data name="areaTickEffect" value="89dee05f71a44417a64600618a49693c" />
 		<Data name="duration" value="3" />
 		<Data name="radius" value="100" />
@@ -29,6 +30,9 @@
 	</Object>
 	<Object type="conditionPlayerLevel" uuid="6bc6431a60ef4e30ba78d3f4cd512b0c">
 		<Data name="maxLevel" value="10" />
+	</Object>
+	<Object type="effectHeal" uuid="71f8746bca96472181af98d0161ccdbd">
+		<Data name="heal" value="50" />
 	</Object>
 	<Object type="conditionPlayerLevel" uuid="80189f80001f4341b16e9efabb5b32d0">
 		<Data name="maxLevel" value="10" />

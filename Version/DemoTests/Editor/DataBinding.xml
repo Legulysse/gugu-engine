@@ -70,6 +70,11 @@
         <Data type="int" name="heal" />
     </Class>
 	
+    <Class name="effectBuff" code="DS_EffectBuff" base="effect">
+        <Data type="string" name="buff" />
+        <Data type="int" name="value" />
+    </Class>
+	
     <Class name="condition" code="DS_Condition" abstract="true">
         <Data type="bool" name="intendedResult" default="true" />
         <Method declaration="bool IsValid(const struct ConditionContext&amp; context) const;" />

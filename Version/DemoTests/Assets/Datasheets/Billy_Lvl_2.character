@@ -5,6 +5,10 @@
 		<Data name="speed" value="110" />
 		<Data name="stamina" value="220" />
 	</RootObject>
+	<Object type="effectBuff" uuid="25bb406f94894b55a4b40d6d70494e6a">
+		<Data name="buff" value="Regen" />
+		<Data name="value" value="10" />
+	</Object>
 	<Object type="effectDamage" uuid="6dfad96c85de43c29adc792651c15a83">
 		<Data name="damage" value="120" />
 	</Object>
@@ -25,6 +29,7 @@
 	</Object>
 	<ObjectOverride type="effectArea" uuid="18413098e383407aa154c3331afd1dbe">
 		<Data name="radius" value="130" />
+		<Data name="areaEnterEffect" value="25bb406f94894b55a4b40d6d70494e6a" />
 	</ObjectOverride>
 	<ObjectOverride type="effectHeal" uuid="89dee05f71a44417a64600618a49693c">
 		<Data name="heal" value="25" />

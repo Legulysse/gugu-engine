@@ -57,6 +57,34 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("Classes");
         {
+            const DS_Character* paulaSheet = GetResources()->GetDatasheetObject<DS_Character>("Paula.character");
+            if (GUGU_UTEST_CHECK(paulaSheet != nullptr))
+            {
+                GUGU_UTEST_CHECK(paulaSheet->name == "Paula");
+                GUGU_UTEST_CHECK(paulaSheet->health == 200);
+                GUGU_UTEST_CHECK(paulaSheet->stamina == 250);
+                GUGU_UTEST_CHECK(paulaSheet->speed == 125);
+                GUGU_UTEST_CHECK(paulaSheet->weapon == EWeaponType::Mace);
+                GUGU_UTEST_CHECK(paulaSheet->unlocked == nullptr);
+            }
+
+            const DS_Item* appleSheet = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
+            if (GUGU_UTEST_CHECK(appleSheet != nullptr))
+            {
+                GUGU_UTEST_CHECK(appleSheet->name == "Apple");
+                GUGU_UTEST_CHECK(appleSheet->size == Vector2i(32, 48));
+                GUGU_UTEST_CHECK(appleSheet->scale == Vector2f(1.f, 1.2f));
+            }
+
+            const DS_Item* bananaSheet = GetResources()->GetDatasheetObject<DS_Item>("Banana.item");
+            if (GUGU_UTEST_CHECK(bananaSheet != nullptr))
+            {
+                GUGU_UTEST_CHECK(bananaSheet->name == "Banana");
+            }
+        }
+
+        GUGU_UTEST_SUBSECTION("Inheritance");
+        {
             const DS_Character* billySheet = GetResources()->GetDatasheetObject<DS_Character>("Billy.character");
             if (GUGU_UTEST_CHECK(billySheet != nullptr))
             {
@@ -109,13 +137,18 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                         GUGU_UTEST_CHECK_EQUAL(effectArea->radius, 100);
                         GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->tick, 0.5f, math::Epsilon3);
                         GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->duration, 3.f, math::Epsilon3);
-                        GUGU_UTEST_CHECK_EQUAL(effectArea->areaEnterEffect, nullptr);
                         GUGU_UTEST_CHECK_EQUAL(effectArea->areaExitEffect, nullptr);
 
-                        const DS_EffectHeal* effectHeal = dynamic_cast<const DS_EffectHeal*>(effectArea->areaTickEffect);
-                        if (GUGU_UTEST_CHECK(effectHeal != nullptr))
+                        const DS_EffectHeal* tickEffectHeal = dynamic_cast<const DS_EffectHeal*>(effectArea->areaTickEffect);
+                        if (GUGU_UTEST_CHECK(tickEffectHeal != nullptr))
                         {
-                            GUGU_UTEST_CHECK_EQUAL(effectHeal->heal, 20);
+                            GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->heal, 20);
+                        }
+
+                        const DS_EffectHeal* enterEffectHeal = dynamic_cast<const DS_EffectHeal*>(effectArea->areaEnterEffect);
+                        if (GUGU_UTEST_CHECK(enterEffectHeal != nullptr))
+                        {
+                            GUGU_UTEST_CHECK_EQUAL(enterEffectHeal->heal, 50);
                         }
                     }
                 }
@@ -178,10 +211,10 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                                 GUGU_UTEST_CHECK_EQUAL(effectArea->areaEnterEffect, nullptr);
                                 GUGU_UTEST_CHECK_EQUAL(effectArea->areaExitEffect, nullptr);
 
-                                const DS_EffectDamage* effectAreaDamage = dynamic_cast<const DS_EffectDamage*>(effectArea->areaTickEffect);
-                                if (GUGU_UTEST_CHECK(effectAreaDamage != nullptr))
+                                const DS_EffectDamage* tickEffectDamage = dynamic_cast<const DS_EffectDamage*>(effectArea->areaTickEffect);
+                                if (GUGU_UTEST_CHECK(tickEffectDamage != nullptr))
                                 {
-                                    GUGU_UTEST_CHECK_EQUAL(effectAreaDamage->damage, 10);
+                                    GUGU_UTEST_CHECK_EQUAL(tickEffectDamage->damage, 10);
                                 }
                             }
                         }
@@ -196,41 +229,22 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                         GUGU_UTEST_CHECK_EQUAL(effectArea->radius, 130);
                         GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->tick, 0.5f, math::Epsilon3);
                         GUGU_UTEST_CHECK_APPROX_EQUAL(effectArea->duration, 3.f, math::Epsilon3);
-                        GUGU_UTEST_CHECK_EQUAL(effectArea->areaEnterEffect, nullptr);
                         GUGU_UTEST_CHECK_EQUAL(effectArea->areaExitEffect, nullptr);
 
-                        const DS_EffectHeal* effectHeal = dynamic_cast<const DS_EffectHeal*>(effectArea->areaTickEffect);
-                        if (GUGU_UTEST_CHECK(effectHeal != nullptr))
+                        const DS_EffectHeal* tickEffectHeal = dynamic_cast<const DS_EffectHeal*>(effectArea->areaTickEffect);
+                        if (GUGU_UTEST_CHECK(tickEffectHeal != nullptr))
                         {
-                            GUGU_UTEST_CHECK_EQUAL(effectHeal->heal, 25);
+                            GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->heal, 25);
+                        }
+
+                        const DS_EffectBuff* enterEffectBuff = dynamic_cast<const DS_EffectBuff*>(effectArea->areaEnterEffect);
+                        if (GUGU_UTEST_CHECK(enterEffectBuff != nullptr))
+                        {
+                            GUGU_UTEST_CHECK_EQUAL(enterEffectBuff->buff, "Regen");
+                            GUGU_UTEST_CHECK_EQUAL(enterEffectBuff->value, 10);
                         }
                     }
                 }
-            }
-
-            const DS_Character* paulaSheet = GetResources()->GetDatasheetObject<DS_Character>("Paula.character");
-            if (GUGU_UTEST_CHECK(paulaSheet != nullptr))
-            {
-                GUGU_UTEST_CHECK(paulaSheet->name == "Paula");
-                GUGU_UTEST_CHECK(paulaSheet->health == 200);
-                GUGU_UTEST_CHECK(paulaSheet->stamina == 250);
-                GUGU_UTEST_CHECK(paulaSheet->speed == 125);
-                GUGU_UTEST_CHECK(paulaSheet->weapon == EWeaponType::Mace);
-                GUGU_UTEST_CHECK(paulaSheet->unlocked == nullptr);
-            }
-
-            const DS_Item* appleSheet = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
-            if (GUGU_UTEST_CHECK(appleSheet != nullptr))
-            {
-                GUGU_UTEST_CHECK(appleSheet->name == "Apple");
-                GUGU_UTEST_CHECK(appleSheet->size == Vector2i(32, 48));
-                GUGU_UTEST_CHECK(appleSheet->scale == Vector2f(1.f, 1.2f));
-            }
-
-            const DS_Item* bananaSheet = GetResources()->GetDatasheetObject<DS_Item>("Banana.item");
-            if (GUGU_UTEST_CHECK(bananaSheet != nullptr))
-            {
-                GUGU_UTEST_CHECK(bananaSheet->name == "Banana");
             }
         }
     }

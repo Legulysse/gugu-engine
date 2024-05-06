@@ -269,6 +269,25 @@ void DS_EffectHeal::ParseMembers(gugu::DataParseContext& context)
 }
 
 ////////////////////////////////////////////////////////////////
+DS_EffectBuff::DS_EffectBuff()
+{
+    buff = "";
+    value = 0;
+}
+
+DS_EffectBuff::~DS_EffectBuff()
+{
+}
+
+void DS_EffectBuff::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Effect::ParseMembers(context);
+
+    gugu::binding::ReadString(context, "buff", buff);
+    gugu::binding::ReadInt(context, "value", value);
+}
+
+////////////////////////////////////////////////////////////////
 DS_Condition::DS_Condition()
 {
     intendedResult = true;
@@ -575,6 +594,10 @@ gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType)
     if (classType == "effectHeal")
     {
         return new DS_EffectHeal;
+    }
+    if (classType == "effectBuff")
+    {
+        return new DS_EffectBuff;
     }
     if (classType == "conditionAnd")
     {

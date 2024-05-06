@@ -23,6 +23,7 @@ class DS_EffectProjectile;
 class DS_EffectArea;
 class DS_EffectDamage;
 class DS_EffectHeal;
+class DS_EffectBuff;
 class DS_Condition;
 class DS_ConditionAnd;
 class DS_ConditionPlayerLevel;
@@ -230,6 +231,24 @@ public:
 public:
 
     int heal;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectBuff : public DS_Effect
+{
+public:
+
+    DS_EffectBuff();
+    virtual ~DS_EffectBuff();
+
+public:
+
+    std::string buff;
+    int value;
 
 protected:
 

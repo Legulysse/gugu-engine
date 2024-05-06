@@ -151,6 +151,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 
             if (!dataMemberDef->isArray)
             {
+                // TODO: merge those two methods ?
                 if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                 {
                     ParseInstanceDataValue(nodeData, dataMemberDef, dataValue);
@@ -169,7 +170,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 
                     dataValue->value_children.push_back(childDataValue);
 
-                    // TODO: merge those 2 branches.
+                    // TODO: merge those two methods ?
                     if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
                         ParseInstanceDataValue(nodeChild, dataMemberDef, childDataValue);
@@ -409,7 +410,7 @@ VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const st
 
 void VirtualDatasheetObject::SortDataValues()
 {
-    // Sort data values to match the definition ordering.
+    // Sort data values alphabetically (It seems more stable than using the definition ordering).
     std::sort(m_dataValues.begin(), m_dataValues.end(), [](const auto& left, const auto& right)
     {
         return left->dataMemberDefinition->name < right->dataMemberDefinition->name;
@@ -441,6 +442,7 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, const std:
 
             if (!dataValue->dataMemberDefinition->isArray)
             {
+                // TODO: merge those two methods ?
                 if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                 {
                     SaveInstanceDataValue(nodeDatasheet, nodeData, dataValue, dataValue->dataMemberDefinition->objectDefinition);
@@ -454,6 +456,7 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, const std:
             {
                 for (const VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
                 {
+                    // TODO: merge those two methods ?
                     if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
                         pugi::xml_node nodeChild = nodeData.append_child("Child");

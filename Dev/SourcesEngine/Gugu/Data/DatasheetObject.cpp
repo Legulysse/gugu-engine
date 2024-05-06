@@ -66,10 +66,10 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
     pugi::xml_attribute pAttributeParent = datasheetNode.attribute("parent");
     if (pAttributeParent)
     {
-        //TODO: check same type
-        //TODO: error message if invalid base
+        // TODO: Do I need to actually load the parent sheet ?
+        // TODO: check same type.
+        // TODO: error message if invalid base.
         Datasheet* parentSheet = GetResources()->GetDatasheet(pAttributeParent.as_string());
-
         if (parentSheet)
         {
             if (StdVectorContains(ancestors, parentSheet))
@@ -91,11 +91,10 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
         }
     }
 
-    DataParseContext context;
+    // Instanciate Objects.
     std::map<DataObject*, pugi::xml_node> pendingNodes;
     pendingNodes.insert(std::make_pair(this, rootNode));
 
-    // Instanciate all objects.
     for (pugi::xml_node objectNode = datasheetNode.child("Object"); objectNode; objectNode = objectNode.next_sibling("Object"))
     {
         pugi::xml_attribute typeAttribute = objectNode.attribute("type");
@@ -119,16 +118,38 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
         }
     }
 
-    // Parse objects data.
+    // Prepare data parser.
+    DataParseContext context;
     context.objectByUUID = &m_datasheet->m_instanceObjects;
 
+    // Parse instance objects data.
     for (auto& it : pendingNodes)
     {
         context.currentNode = &it.second;
         it.first->ParseMembers(context);
     }
 
+    // Parse object overrides data.
+    for (pugi::xml_node objectOverrideNode = datasheetNode.child("ObjectOverride"); objectOverrideNode; objectOverrideNode = objectOverrideNode.next_sibling("ObjectOverride"))
+    {
+        UUID objectOverrideUuid = UUID::FromString(objectOverrideNode.attribute("uuid").as_string());
+        if (!objectOverrideUuid.IsZero())
+        {
+            auto it = m_datasheet->m_instanceObjects.find(objectOverrideUuid);
+            if (it != m_datasheet->m_instanceObjects.end())
+            {
+                context.currentNode = &objectOverrideNode;
+                it->second->ParseMembers(context);
+            }
+        }
+    }
+
     return true;
+}
+
+const UUID& DatasheetObject::GetUuid() const
+{
+    return m_uuid;
 }
 
 Datasheet* DatasheetObject::GetDatasheet() const

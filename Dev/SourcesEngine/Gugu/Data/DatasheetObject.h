@@ -34,6 +34,8 @@ public:
 
     virtual void ParseMembers(DataParseContext& _kContext) = 0;
 
+    const UUID& GetUuid() const;
+
     // Return the owning datasheet (only if this object is a root object, return nullptr otherwise).
     Datasheet* GetDatasheet() const;
 

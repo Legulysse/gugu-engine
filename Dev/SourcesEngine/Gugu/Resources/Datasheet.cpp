@@ -53,6 +53,7 @@ bool Datasheet::LoadFromFile()
 
     std::vector<Datasheet*> ancestors;
     ancestors.push_back(this);
+
     return m_rootObject->LoadFromFile(GetFileInfo().GetFileSystemPath(), this, ancestors);
 }
 

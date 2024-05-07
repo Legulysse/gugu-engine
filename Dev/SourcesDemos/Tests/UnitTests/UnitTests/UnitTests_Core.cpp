@@ -62,42 +62,61 @@ void RunUnitTests_Core(UnitTestResults* results)
     {
         int* dummyPtr = new int;
 
-        Handle handleNull;
+        Handle handleInvalid;
         Handle handleNullA(nullptr);
         Handle handleNullB((size_t)0);
         Handle handleNullC(nullptr, (size_t)0);
-
         Handle handleA(dummyPtr);
         Handle handleAA(dummyPtr, 0);
         Handle handleB(1);
         Handle handleBB(nullptr, 1);
         Handle handleC(dummyPtr, 1);
 
-        GUGU_UTEST_CHECK_TRUE(handleNull == Handle());
-        GUGU_UTEST_CHECK_TRUE(handleNull == Handle(nullptr));
-        GUGU_UTEST_CHECK_TRUE(handleNull == Handle((size_t)0));
-        GUGU_UTEST_CHECK_TRUE(handleNull == Handle(nullptr, 0));
-        GUGU_UTEST_CHECK_TRUE(handleNull == handleNullA);
-        GUGU_UTEST_CHECK_TRUE(handleNull == handleNullB);
-        GUGU_UTEST_CHECK_TRUE(handleNull == handleNullC);
+        GUGU_UTEST_CHECK_FALSE(handleInvalid.IsValid());
+        GUGU_UTEST_CHECK_TRUE(handleNullA.IsValid());
+        GUGU_UTEST_CHECK_TRUE(handleNullB.IsValid());
+        GUGU_UTEST_CHECK_TRUE(handleNullC.IsValid());
+        GUGU_UTEST_CHECK_TRUE(handleA.IsValid());
+        GUGU_UTEST_CHECK_TRUE(handleAA.IsValid());
+        GUGU_UTEST_CHECK_TRUE(handleB.IsValid());
+        GUGU_UTEST_CHECK_TRUE(handleBB.IsValid());
+        GUGU_UTEST_CHECK_TRUE(handleC.IsValid());
 
-        GUGU_UTEST_CHECK_FALSE(handleA == handleNull);
-        GUGU_UTEST_CHECK_FALSE(handleAA == handleNull);
-        GUGU_UTEST_CHECK_FALSE(handleB == handleNull);
-        GUGU_UTEST_CHECK_FALSE(handleBB == handleNull);
-        GUGU_UTEST_CHECK_FALSE(handleC == handleNull);
-        GUGU_UTEST_CHECK_TRUE(handleA == handleAA);
-        GUGU_UTEST_CHECK_TRUE(handleB == handleBB);
+        GUGU_UTEST_CHECK_TRUE(handleInvalid == Handle());
+        GUGU_UTEST_CHECK_FALSE(handleInvalid == Handle(nullptr));
+        GUGU_UTEST_CHECK_FALSE(handleInvalid == Handle((size_t)0));
+        GUGU_UTEST_CHECK_FALSE(handleInvalid == Handle(nullptr, 0));
+        GUGU_UTEST_CHECK_FALSE(handleInvalid == handleNullA);
+        GUGU_UTEST_CHECK_FALSE(handleInvalid == handleNullB);
+        GUGU_UTEST_CHECK_FALSE(handleInvalid == handleNullC);
+
+        GUGU_UTEST_CHECK_FALSE(handleA == handleInvalid);
+        GUGU_UTEST_CHECK_FALSE(handleAA == handleInvalid);
+        GUGU_UTEST_CHECK_FALSE(handleB == handleInvalid);
+        GUGU_UTEST_CHECK_FALSE(handleBB == handleInvalid);
+        GUGU_UTEST_CHECK_FALSE(handleC == handleInvalid);
+        GUGU_UTEST_CHECK_FALSE(handleA == handleAA);
+        GUGU_UTEST_CHECK_FALSE(handleB == handleBB);
         GUGU_UTEST_CHECK_TRUE(handleC == Handle(dummyPtr, 1));
 
-        GUGU_UTEST_CHECK_TRUE(handleA != handleNull);
-        GUGU_UTEST_CHECK_TRUE(handleAA != handleNull);
-        GUGU_UTEST_CHECK_TRUE(handleB != handleNull);
-        GUGU_UTEST_CHECK_TRUE(handleBB != handleNull);
-        GUGU_UTEST_CHECK_TRUE(handleC != handleNull);
-        GUGU_UTEST_CHECK_FALSE(handleA != handleAA);
-        GUGU_UTEST_CHECK_FALSE(handleB != handleBB);
+        GUGU_UTEST_CHECK_TRUE(handleA != handleInvalid);
+        GUGU_UTEST_CHECK_TRUE(handleAA != handleInvalid);
+        GUGU_UTEST_CHECK_TRUE(handleB != handleInvalid);
+        GUGU_UTEST_CHECK_TRUE(handleBB != handleInvalid);
+        GUGU_UTEST_CHECK_TRUE(handleC != handleInvalid);
+        GUGU_UTEST_CHECK_TRUE(handleA != handleAA);
+        GUGU_UTEST_CHECK_TRUE(handleB != handleBB);
         GUGU_UTEST_CHECK_FALSE(handleC != Handle(dummyPtr, 1));
+
+        GUGU_UTEST_CHECK_TRUE(handleInvalid == Handle());
+        GUGU_UTEST_CHECK_TRUE(handleNullA == Handle(nullptr));
+        GUGU_UTEST_CHECK_TRUE(handleNullB == Handle((size_t)0));
+        GUGU_UTEST_CHECK_TRUE(handleNullC == Handle(nullptr, (size_t)0));
+        GUGU_UTEST_CHECK_TRUE(handleA == Handle(dummyPtr));
+        GUGU_UTEST_CHECK_TRUE(handleAA == Handle(dummyPtr, 0));
+        GUGU_UTEST_CHECK_TRUE(handleB == Handle(1));
+        GUGU_UTEST_CHECK_TRUE(handleBB == Handle(nullptr, 1));
+        GUGU_UTEST_CHECK_TRUE(handleC == Handle(dummyPtr, 1));
 
         delete dummyPtr;
 

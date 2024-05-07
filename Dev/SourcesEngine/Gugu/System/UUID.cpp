@@ -66,7 +66,7 @@ bool UUID::operator == (const UUID& right) const
 
 bool UUID::operator != (const UUID& right) const
 {
-    return m_data1 != right.m_data1 || m_data2 != right.m_data2;
+    return !(*this == right);
 }
 
 bool UUID::operator < (const UUID& right) const

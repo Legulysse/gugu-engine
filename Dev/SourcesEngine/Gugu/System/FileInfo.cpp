@@ -116,21 +116,21 @@ bool FileInfo::HasExtension(const std::string& extension) const
         && StdStringEndsWithInsensitive(fileName, extension);
 }
 
-bool FileInfo::operator < (const FileInfo& other) const
+bool FileInfo::operator == (const FileInfo& right) const
+{
+    return m_systemPath == right.m_systemPath;
+}
+
+bool FileInfo::operator != (const FileInfo& right) const
+{
+    return !(*this == right);
+}
+
+bool FileInfo::operator < (const FileInfo& right) const
 {
     std::string_view path = GetDirectoryPath_utf8();
-    std::string_view otherPath = other.GetDirectoryPath_utf8();
-    return path < otherPath || (path == otherPath && GetFileName_utf8() < other.GetFileName_utf8());
-}
-
-bool FileInfo::operator == (const FileInfo& other) const
-{
-    return m_systemPath == other.m_systemPath;
-}
-
-bool FileInfo::operator != (const FileInfo& other) const
-{
-    return m_systemPath != other.m_systemPath;
+    std::string_view otherPath = right.GetDirectoryPath_utf8();
+    return path < otherPath || (path == otherPath && GetFileName_utf8() < right.GetFileName_utf8());
 }
 
 }   // namespace gugu

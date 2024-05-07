@@ -57,7 +57,7 @@ bool Hash::operator == (const Hash& right) const
 
 bool Hash::operator != (const Hash& right) const
 {
-    return m_value != right.m_value;
+    return !(*this == right);
 }
 
 bool Hash::operator < (const Hash& right) const

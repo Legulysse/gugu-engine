@@ -34,10 +34,9 @@ public:
     std::string_view GetAllExtensions() const;
     bool HasExtension(const std::string& extension) const;
 
-    // Comparators (Used by std sorts).
-    bool operator < (const FileInfo& other) const;
-    bool operator == (const FileInfo& other) const;
-    bool operator != (const FileInfo& other) const;
+    bool operator == (const FileInfo& right) const;
+    bool operator != (const FileInfo& right) const;
+    bool operator < (const FileInfo& right) const; // Used by std sorts
 
 private:
 

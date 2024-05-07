@@ -56,6 +56,8 @@ public:
     size_t GetActiveParticleCount() const;
     size_t GetParticleDataSize() const;
 
+    const ParticleSystemSettings& GetSettings() const;
+
 private:
 
     void EmitParticle(size_t particleIndex);

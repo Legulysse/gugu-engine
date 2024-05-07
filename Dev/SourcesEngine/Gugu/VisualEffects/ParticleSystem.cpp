@@ -242,6 +242,11 @@ size_t ParticleSystem::GetParticleDataSize() const
     return total;
 }
 
+const ParticleSystemSettings& ParticleSystem::GetSettings() const
+{
+    return m_settings;
+}
+
 void ParticleSystem::EmitParticle(size_t particleIndex)
 {
     ++m_activeParticleCount;

@@ -32,7 +32,11 @@ public:
 
     ParticleSystem* GetParticleSystem() const;
 
+    void StartParticleSystem();
     void RestartParticleSystem();
+    void StopParticleSystem();
+
+    void StopEmitting();
 
 protected:
 

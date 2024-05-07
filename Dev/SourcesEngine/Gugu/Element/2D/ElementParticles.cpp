@@ -59,9 +59,24 @@ ParticleSystem* ElementParticles::GetParticleSystem() const
     return m_particleSystem;
 }
 
+void ElementParticles::StartParticleSystem()
+{
+    m_particleSystem->Start();
+}
+
 void ElementParticles::RestartParticleSystem()
 {
     m_particleSystem->Restart();
+}
+
+void ElementParticles::StopParticleSystem()
+{
+    m_particleSystem->Stop();
+}
+
+void ElementParticles::StopEmitting()
+{
+    m_particleSystem->StopEmitting();
 }
 
 void ElementParticles::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)

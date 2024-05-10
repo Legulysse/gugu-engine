@@ -43,15 +43,29 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
 
             if (GUGU_UTEST_CHECK(enumInfos != nullptr))
             {
-                GUGU_UTEST_CHECK(enumInfos->values.size() == 5);
-
                 GUGU_UTEST_CHECK(enumInfos == EWeaponType::GetDataEnumInfos());
                 GUGU_UTEST_CHECK(EWeaponType::GetSize() == 5);
+
+                if (GUGU_UTEST_CHECK(enumInfos->values.size() == 5))
+                {
+                    GUGU_UTEST_CHECK(enumInfos->values[0] == "Unknown");
+                    GUGU_UTEST_CHECK(enumInfos->values[1] == "Sword");
+                    GUGU_UTEST_CHECK(enumInfos->values[2] == "Mace");
+                    GUGU_UTEST_CHECK(enumInfos->values[3] == "Axe");
+                    GUGU_UTEST_CHECK(enumInfos->values[4] == "Crossbow");
+                }
 
                 std::vector<EWeaponType::Type> enumValues;
                 EWeaponType::GetEnumValues(enumValues);
 
-                GUGU_UTEST_CHECK(enumValues.size() == 5);
+                if (GUGU_UTEST_CHECK(enumValues.size() == 5))
+                {
+                    GUGU_UTEST_CHECK(enumValues[0] == EWeaponType::Unknown);
+                    GUGU_UTEST_CHECK(enumValues[1] == EWeaponType::Sword);
+                    GUGU_UTEST_CHECK(enumValues[2] == EWeaponType::Mace);
+                    GUGU_UTEST_CHECK(enumValues[3] == EWeaponType::Axe);
+                    GUGU_UTEST_CHECK(enumValues[4] == EWeaponType::Crossbow);
+                }
             }
         }
 

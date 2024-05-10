@@ -21,6 +21,7 @@
 		<Data name="heal" value="50" />
 	</Object>
 	<Object type="effectHeal" uuid="89dee05f71a44417a64600618a49693c">
+		<Data name="entityVfx" value="TestArea.vfx" />
 		<Data name="heal" value="20" />
 	</Object>
 </Datasheet>

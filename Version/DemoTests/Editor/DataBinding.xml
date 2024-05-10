@@ -66,15 +66,24 @@
 	
     <Class name="effectDamage" code="DS_EffectDamage" base="effect">
         <Data type="int" name="damage" />
+        <Data type="reference:vfx" name="entityVfx" />
     </Class>
 	
     <Class name="effectHeal" code="DS_EffectHeal" base="effect">
         <Data type="int" name="heal" />
+        <Data type="reference:vfx" name="entityVfx" />
     </Class>
 	
     <Class name="effectBuff" code="DS_EffectBuff" base="effect">
         <Data type="string" name="buff" />
         <Data type="int" name="value" />
+        <Data type="reference:vfx" name="entityVfx" />
+    </Class>
+	
+    <!-- VFX -->
+    
+    <Class name="vfx" code="DS_VFX">
+        <Data type="string" name="particle" />
     </Class>
 	
     <!-- Conditions -->

@@ -34,5 +34,6 @@
 	</ObjectOverride>
 	<ObjectOverride type="effectHeal" uuid="89dee05f71a44417a64600618a49693c">
 		<Data name="heal" value="25" />
+		<Data name="entityVfx" value="TestArea2.vfx" />
 	</ObjectOverride>
 </Datasheet>

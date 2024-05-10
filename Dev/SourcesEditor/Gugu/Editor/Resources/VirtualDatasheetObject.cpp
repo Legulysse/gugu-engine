@@ -67,10 +67,6 @@ void VirtualDatasheetObject::GetDependencies(const std::vector<VirtualDatasheetO
         {
             dependencies.insert(dataValue->value_objectReference);
         }
-        else if (dataValue->value_objectInstance)
-        {
-            dataValue->value_objectInstance->GetDependencies(dependencies);
-        }
         else
         {
             GetDependencies(dataValue->value_children, dependencies);
@@ -89,12 +85,9 @@ void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependen
     {
         if (dataValue->value_objectReference == removedDependency)
         {
-            dataValue->value_string = "";
+            // TODO: Log warning ?
+            //dataValue->value_string = "";
             dataValue->value_objectReference = nullptr;
-        }
-        else if (dataValue->value_objectInstance)
-        {
-            dataValue->value_objectInstance->OnDependencyRemoved(removedDependency);
         }
         else
         {

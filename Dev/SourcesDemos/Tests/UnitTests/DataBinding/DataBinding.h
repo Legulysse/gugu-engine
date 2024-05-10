@@ -24,6 +24,7 @@ class DS_EffectArea;
 class DS_EffectDamage;
 class DS_EffectHeal;
 class DS_EffectBuff;
+class DS_VFX;
 class DS_Condition;
 class DS_ConditionAnd;
 class DS_ConditionPlayerLevel;
@@ -214,6 +215,7 @@ public:
 public:
 
     int damage;
+    const DS_VFX* entityVfx;
 
 protected:
 
@@ -231,6 +233,7 @@ public:
 public:
 
     int heal;
+    const DS_VFX* entityVfx;
 
 protected:
 
@@ -249,6 +252,24 @@ public:
 
     std::string buff;
     int value;
+    const DS_VFX* entityVfx;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_VFX : public gugu::DatasheetObject
+{
+public:
+
+    DS_VFX();
+    virtual ~DS_VFX();
+
+public:
+
+    std::string particle;
 
 protected:
 

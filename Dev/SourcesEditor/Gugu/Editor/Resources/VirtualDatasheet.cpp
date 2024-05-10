@@ -42,9 +42,21 @@ void VirtualDatasheet::GetDependencies(std::set<Resource*>& dependencies) const
     if (m_parentDatasheet)
     {
         dependencies.insert(m_parentDatasheet);
+
+        m_parentDatasheet->GetDependencies(dependencies);
     }
 
     m_rootObject->GetDependencies(dependencies);
+
+    for (const auto& kvp : m_instanceObjects)
+    {
+        kvp.second->GetDependencies(dependencies);
+    }
+
+    for (const auto& kvp : m_objectOverrides)
+    {
+        kvp.second->GetDependencies(dependencies);
+    }
 }
 
 void VirtualDatasheet::OnDependencyUpdated(const Resource* dependency)
@@ -63,6 +75,16 @@ void VirtualDatasheet::OnDependencyRemoved(const Resource* dependency)
     }
 
     m_rootObject->OnDependencyRemoved(dependency);
+
+    for (const auto& kvp : m_instanceObjects)
+    {
+        kvp.second->OnDependencyRemoved(dependency);
+    }
+
+    for (const auto& kvp : m_objectOverrides)
+    {
+        kvp.second->OnDependencyRemoved(dependency);
+    }
 }
 
 bool VirtualDatasheet::InstanciateNewRootObject(DatasheetParser::ClassDefinition* classDefinition)

@@ -238,10 +238,12 @@ void DS_EffectArea::ParseMembers(gugu::DataParseContext& context)
 DS_EffectDamage::DS_EffectDamage()
 {
     damage = 0;
+    entityVfx = nullptr;
 }
 
 DS_EffectDamage::~DS_EffectDamage()
 {
+    entityVfx = nullptr;
 }
 
 void DS_EffectDamage::ParseMembers(gugu::DataParseContext& context)
@@ -249,16 +251,19 @@ void DS_EffectDamage::ParseMembers(gugu::DataParseContext& context)
     DS_Effect::ParseMembers(context);
 
     gugu::binding::ReadInt(context, "damage", damage);
+    gugu::binding::ReadDatasheetReference(context, "entityVfx", entityVfx);
 }
 
 ////////////////////////////////////////////////////////////////
 DS_EffectHeal::DS_EffectHeal()
 {
     heal = 0;
+    entityVfx = nullptr;
 }
 
 DS_EffectHeal::~DS_EffectHeal()
 {
+    entityVfx = nullptr;
 }
 
 void DS_EffectHeal::ParseMembers(gugu::DataParseContext& context)
@@ -266,6 +271,7 @@ void DS_EffectHeal::ParseMembers(gugu::DataParseContext& context)
     DS_Effect::ParseMembers(context);
 
     gugu::binding::ReadInt(context, "heal", heal);
+    gugu::binding::ReadDatasheetReference(context, "entityVfx", entityVfx);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -273,10 +279,12 @@ DS_EffectBuff::DS_EffectBuff()
 {
     buff = "";
     value = 0;
+    entityVfx = nullptr;
 }
 
 DS_EffectBuff::~DS_EffectBuff()
 {
+    entityVfx = nullptr;
 }
 
 void DS_EffectBuff::ParseMembers(gugu::DataParseContext& context)
@@ -285,6 +293,24 @@ void DS_EffectBuff::ParseMembers(gugu::DataParseContext& context)
 
     gugu::binding::ReadString(context, "buff", buff);
     gugu::binding::ReadInt(context, "value", value);
+    gugu::binding::ReadDatasheetReference(context, "entityVfx", entityVfx);
+}
+
+////////////////////////////////////////////////////////////////
+DS_VFX::DS_VFX()
+{
+    particle = "";
+}
+
+DS_VFX::~DS_VFX()
+{
+}
+
+void DS_VFX::ParseMembers(gugu::DataParseContext& context)
+{
+    //gugu::DatasheetObject::ParseMembers(context);
+
+    gugu::binding::ReadString(context, "particle", particle);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -598,6 +624,10 @@ gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType)
     if (classType == "effectBuff")
     {
         return new DS_EffectBuff;
+    }
+    if (classType == "vfx")
+    {
+        return new DS_VFX;
     }
     if (classType == "conditionAnd")
     {

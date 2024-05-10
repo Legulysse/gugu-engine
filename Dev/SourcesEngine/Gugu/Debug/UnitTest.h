@@ -98,6 +98,16 @@ private:
         GUGU_STRINGIZE(EXPRESSION) " == false",                 \
         __FILE__, __LINE__)
 
+#define GUGU_UTEST_CHECK_NULL(EXPRESSION)                       \
+    unitTestHandler.RunTestCheck(EXPRESSION == nullptr,         \
+        GUGU_STRINGIZE(EXPRESSION) " == nullptr",               \
+        __FILE__, __LINE__)
+
+#define GUGU_UTEST_CHECK_NOT_NULL(EXPRESSION)                   \
+    unitTestHandler.RunTestCheck(EXPRESSION != nullptr,         \
+        GUGU_STRINGIZE(EXPRESSION) " != nullptr",               \
+        __FILE__, __LINE__)
+
 #define GUGU_UTEST_CHECK_EQUAL(LEFT, RIGHT)                     \
     unitTestHandler.RunTestCompare(LEFT == RIGHT,               \
         ToString(LEFT), ToString(RIGHT),                        \

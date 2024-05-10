@@ -29,13 +29,19 @@ void RunUnitTests_Core(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("UnitTest Handler");
     {
+        int* dummyPtr = new int;
+
         GUGU_UTEST_CHECK(true);
         GUGU_UTEST_CHECK_TRUE(true);
         GUGU_UTEST_CHECK_FALSE(false);
+        GUGU_UTEST_CHECK_NULL(nullptr);
+        GUGU_UTEST_CHECK_NOT_NULL(dummyPtr);
         GUGU_UTEST_CHECK_EQUAL(10, 10);
         GUGU_UTEST_CHECK_APPROX_EQUAL(10.f, 10.f, math::Epsilon6);
         GUGU_UTEST_CHECK_NOT_EQUAL(10, 11);
         GUGU_UTEST_CHECK_NOT_APPROX_EQUAL(10.f, 11.f, math::Epsilon6);
+
+        delete dummyPtr;
 
         GUGU_UTEST_PERFORMANCE(100, []()
             {

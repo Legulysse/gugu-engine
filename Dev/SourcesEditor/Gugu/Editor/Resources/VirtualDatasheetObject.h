@@ -71,7 +71,7 @@ public:
     bool SaveToXml(pugi::xml_node& nodeDatasheet, const std::string& xmlObjectType) const;
 
     void ResolveInstances(const std::map<UUID, VirtualDatasheetObject*>& dataObjects, std::set<UUID>& orphanObjectUuids);
-    void GatherInstanceUuids(std::set<UUID>& instanceUuids);
+    void GatherInstanceUuids(std::set<UUID>& instanceUuids) const;
     void RefreshParentObject(VirtualDatasheetObject* parentObject);
 
     VirtualDatasheetObject::DataValue* InstanciateNewClassMemberDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);

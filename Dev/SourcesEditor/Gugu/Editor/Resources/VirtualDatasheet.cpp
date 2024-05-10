@@ -135,9 +135,9 @@ bool VirtualDatasheet::DeleteOrphanedInstanceObjects()
     std::set<UUID> instanceUuids;
     m_rootObject->GatherInstanceUuids(instanceUuids);
 
-    for (auto it : m_objectOverrides)
+    for (const auto& kvp : m_objectOverrides)
     {
-        it.second->GatherInstanceUuids(instanceUuids);
+        kvp.second->GatherInstanceUuids(instanceUuids);
     }
 
     // Delete all orphaned instance objects.

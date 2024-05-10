@@ -226,7 +226,7 @@ void VirtualDatasheetObject::ResolveInstances(const std::map<UUID, VirtualDatash
     }
 }
 
-void VirtualDatasheetObject::GatherInstanceUuids(std::set<UUID>& instanceUuids)
+void VirtualDatasheetObject::GatherInstanceUuids(std::set<UUID>& instanceUuids) const
 {
     for (const auto& dataValue : m_dataValues)
     {

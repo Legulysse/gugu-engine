@@ -80,14 +80,6 @@ void VirtualDatasheetObject::GetDependencies(const std::vector<VirtualDatasheetO
 
 void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependency)
 {
-    const VirtualDatasheet* removedDatasheet = dynamic_cast<const VirtualDatasheet*>(removedDependency);
-
-    // TODO: Handle recursive reparenting on child objects (this could be tied to RefreshParentObject future updates).
-    if (removedDatasheet && removedDatasheet->m_rootObject == m_parentObject)
-    {
-        m_parentObject = nullptr;
-    }
-
     OnDependencyRemoved(removedDependency, m_dataValues);
 }
 

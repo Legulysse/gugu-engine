@@ -59,8 +59,7 @@ void VirtualDatasheet::OnDependencyRemoved(const Resource* dependency)
 {
     if (m_parentDatasheet == dependency)    // TODO: check ancestors
     {
-        m_parentDatasheetID = "";
-        m_parentDatasheet = nullptr;
+        SetParentDatasheet("", nullptr);
     }
 
     m_rootObject->OnDependencyRemoved(dependency);

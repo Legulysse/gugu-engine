@@ -5,7 +5,6 @@
 		<Data name="health" value="250" />
 		<Data name="name" value="Billy" />
 		<Data name="supportSkill" value="18413098e383407aa154c3331afd1dbe" />
-		<Data name="unlocked" value="408cec8a978447d8a3221ecb3afbebe5" />
 		<Data name="weapon" value="Crossbow" />
 	</RootObject>
 	<Object type="effectArea" uuid="18413098e383407aa154c3331afd1dbe">
@@ -15,28 +14,11 @@
 		<Data name="radius" value="100" />
 		<Data name="tick" value="0.5" />
 	</Object>
-	<Object type="conditionPlayerLevel" uuid="3b0e6788d0d48510a698779166552ce4">
-		<Data name="minLevel" value="5" />
-	</Object>
-	<Object type="conditionAnd" uuid="408cec8a978447d8a3221ecb3afbebe5">
-		<Data name="conditions">
-			<Child value="80189f80001f4341b16e9efabb5b32d0" />
-			<Child value="6bc6431a60ef4e30ba78d3f4cd512b0c" />
-			<Child value="3b0e6788d0d48510a698779166552ce4" />
-		</Data>
-	</Object>
 	<Object type="effectDamage" uuid="55d1c56f4d384614bcc5426d7adfd663">
 		<Data name="damage" value="120" />
 	</Object>
-	<Object type="conditionPlayerLevel" uuid="6bc6431a60ef4e30ba78d3f4cd512b0c">
-		<Data name="maxLevel" value="10" />
-	</Object>
 	<Object type="effectHeal" uuid="71f8746bca96472181af98d0161ccdbd">
 		<Data name="heal" value="50" />
-	</Object>
-	<Object type="conditionPlayerLevel" uuid="80189f80001f4341b16e9efabb5b32d0">
-		<Data name="maxLevel" value="10" />
-		<Data name="minLevel" value="5" />
 	</Object>
 	<Object type="effectHeal" uuid="89dee05f71a44417a64600618a49693c">
 		<Data name="heal" value="20" />

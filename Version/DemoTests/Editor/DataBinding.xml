@@ -11,7 +11,7 @@
         <Value name="Crossbow" />
     </Enum>
     
-    <!-- Datasheets -->
+    <!-- Entities -->
     
     <Class name="entity" code="DS_Entity" abstract="true">
         <Data type="string" name="name" default="Entity Name" />
@@ -38,6 +38,8 @@
         <Data type="vector2i" name="size" />
         <Data type="vector2f" name="scale" />
     </Class>
+    
+    <!-- Effects -->
     
     <Class name="effect" code="DS_Effect" abstract="true">
     </Class>
@@ -75,6 +77,8 @@
         <Data type="int" name="value" />
     </Class>
 	
+    <!-- Conditions -->
+    
     <Class name="condition" code="DS_Condition" abstract="true">
         <Data type="bool" name="intendedResult" default="true" />
         <Method declaration="bool IsValid(const struct ConditionContext&amp; context) const;" />
@@ -98,6 +102,8 @@
         <Method declaration="virtual bool IsValidImpl(const struct ConditionContext&amp; context) const override;" />
     </Class>
 	
+    <!-- Actions -->
+    
     <Class name="action" code="DS_Action" abstract="true">
     </Class>
 	

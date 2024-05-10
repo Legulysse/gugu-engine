@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/SystemUtility.h"
+
 using namespace gugu;
 
 ////////////////////////////////////////////////////////////////
@@ -40,7 +42,7 @@ bool DS_ConditionPlayerLevel::IsValidImpl(const struct ConditionContext& context
 
 bool DS_ConditionCheckFlag::IsValidImpl(const struct ConditionContext& context) const
 {
-    return false;
+    return StdSetContains(context.raisedFlags, flag) == raised;
 }
 
 } // namespace tests

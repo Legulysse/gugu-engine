@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<Datasheet serializationVersion="2" bindingVersion="1" parent="Billy_Lvl_2.character">
+	<RootObject type="character" uuid="373dca8e411945a3894c104f0dccf154">
+		<Data name="speed" value="120" />
+		<Data name="stamina" value="240" />
+	</RootObject>
+	<ObjectOverride type="effectArea" uuid="18413098e383407aa154c3331afd1dbe">
+		<Data name="radius" value="160" />
+	</ObjectOverride>
+	<ObjectOverride type="effectBuff" uuid="25bb406f94894b55a4b40d6d70494e6a">
+		<Data name="value" value="12" />
+	</ObjectOverride>
+	<ObjectOverride type="effectDamage" uuid="6dfad96c85de43c29adc792651c15a83">
+		<Data name="damage" value="130" />
+	</ObjectOverride>
+	<ObjectOverride type="effectDamage" uuid="9e09b2734ca84c1d8de3f26fc205b683">
+		<Data name="damage" value="12" />
+	</ObjectOverride>
+	<ObjectOverride type="effectArea" uuid="a290c8e6459b4de6adfdbb9e781eed63">
+		<Data name="radius" value="75" />
+		<Data name="duration" value="1.5" />
+	</ObjectOverride>
+</Datasheet>

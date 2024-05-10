@@ -4,6 +4,22 @@
 		<Data name="name" value="Paula" />
 		<Data name="speed" value="125" />
 		<Data name="stamina" value="250" />
+		<Data name="unlocked" value="408cec8a978447d8a3221ecb3afbebe5" />
 		<Data name="weapon" value="Mace" />
 	</RootObject>
+	<Object type="conditionAnd" uuid="408cec8a978447d8a3221ecb3afbebe5">
+		<Data name="conditions">
+			<Child value="80189f80001f4341b16e9efabb5b32d0" />
+			<Child value="a92c536ae96849fea6c82e8d21099ab2" />
+		</Data>
+	</Object>
+	<Object type="conditionPlayerLevel" uuid="80189f80001f4341b16e9efabb5b32d0">
+		<Data name="maxLevel" value="10" />
+		<Data name="minLevel" value="5" />
+	</Object>
+	<Object type="conditionCheckFlag" uuid="a92c536ae96849fea6c82e8d21099ab2">
+		<Data name="flag" value="TutorialInProgress" />
+		<Data name="intendedResult" value="false" />
+		<Data name="raised" value="true" />
+	</Object>
 </Datasheet>

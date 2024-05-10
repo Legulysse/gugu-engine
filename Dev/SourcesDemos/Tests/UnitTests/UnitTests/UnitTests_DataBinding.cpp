@@ -11,6 +11,7 @@
 #include "DataBinding/DataBindingImpl.h"
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/Datasheet.h"
 #include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
@@ -204,6 +205,11 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                         if (GUGU_UTEST_CHECK(tickEffectHeal != nullptr))
                         {
                             GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->heal, 20);
+
+                            if (GUGU_UTEST_CHECK_NOT_NULL(tickEffectHeal->entityVfx))
+                            {
+                                GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->entityVfx->GetDatasheet()->GetID(), "TestArea.vfx");
+                            }
                         }
 
                         const DS_EffectHeal* enterEffectHeal = dynamic_cast<const DS_EffectHeal*>(effectArea->areaEnterEffect);
@@ -270,6 +276,11 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                         if (GUGU_UTEST_CHECK(tickEffectHeal != nullptr))
                         {
                             GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->heal, 25);
+
+                            if (GUGU_UTEST_CHECK_NOT_NULL(tickEffectHeal->entityVfx))
+                            {
+                                GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->entityVfx->GetDatasheet()->GetID(), "TestArea2.vfx");
+                            }
                         }
 
                         const DS_EffectBuff* enterEffectBuff = dynamic_cast<const DS_EffectBuff*>(effectArea->areaEnterEffect);
@@ -337,6 +348,11 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                         if (GUGU_UTEST_CHECK(tickEffectHeal != nullptr))
                         {
                             GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->heal, 25);
+
+                            if (GUGU_UTEST_CHECK_NOT_NULL(tickEffectHeal->entityVfx))
+                            {
+                                GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->entityVfx->GetDatasheet()->GetID(), "TestArea2.vfx");
+                            }
                         }
 
                         const DS_EffectBuff* enterEffectBuff = dynamic_cast<const DS_EffectBuff*>(effectArea->areaEnterEffect);
@@ -404,6 +420,11 @@ void RunUnitTests_DataBinding(UnitTestResults* results)
                         if (GUGU_UTEST_CHECK(tickEffectHeal != nullptr))
                         {
                             GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->heal, 25);
+
+                            if (GUGU_UTEST_CHECK_NOT_NULL(tickEffectHeal->entityVfx))
+                            {
+                                GUGU_UTEST_CHECK_EQUAL(tickEffectHeal->entityVfx->GetDatasheet()->GetID(), "TestArea2.vfx");
+                            }
                         }
 
                         const DS_EffectBuff* enterEffectBuff = dynamic_cast<const DS_EffectBuff*>(effectArea->areaEnterEffect);

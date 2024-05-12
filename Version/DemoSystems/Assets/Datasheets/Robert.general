@@ -1,47 +1,54 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1">
-	<Data name="name" value="Robert" />
-	<Data name="life" value="100" />
-	<Data name="speed" value="42.25" />
-	<Data name="is monarch" value="true" />
-	<Data name="faction" value="Yumeda.faction" />
-	<Data name="sprite" type="spriteInfo">
+<Datasheet serializationVersion="2" bindingVersion="1">
+	<RootObject type="general" uuid="01283e053fb0468a8d2e63f1e140c573">
+		<Data name="name" value="Robert" />
+		<Data name="life" value="100" />
+		<Data name="speed" value="42.25" />
+		<Data name="is monarch" value="true" />
+		<Data name="faction" value="Yumeda.faction" />
+		<Data name="sprite" value="6edb367c11d348449c90fa49ead2e1ce" />
+		<Data name="sprite 2" value="568391e22dc249ac87bd0552d6404207" />
+		<Data name="names list">
+			<Child value="Bill" />
+			<Child value="Bob" />
+			<Child value="Tim" />
+		</Data>
+		<Data name="stats list">
+			<Child value="10" />
+			<Child value="20" />
+			<Child value="30" />
+		</Data>
+		<Data name="factions list">
+			<Child value="Yumeda.faction" />
+		</Data>
+		<Data name="more sprites">
+			<Child value="2b6ea0a71fdb4f8b9bc2cddffd2922d0" />
+			<Child value="4bd042b26dbd47d28cb4b4e5a4c6c0d7" />
+		</Data>
+		<Data name="weapon" value="Mace" />
+		<Data name="available weapons">
+			<Child value="Sword" />
+			<Child value="Mace" />
+		</Data>
+		<Data name="playableCondition" value="16ae6ccbfaad4a37a98d8d41bfbe34d8" />
+	</RootObject>
+	<Object type="spriteInfo" uuid="6edb367c11d348449c90fa49ead2e1ce">
 		<Data name="imageset" value="Robert.imageset.xml" />
 		<Data name="animset" value="Robert.animset.xml" />
-	</Data>
-	<Data name="sprite 2" type="spriteInfo">
+	</Object>
+	<Object type="spriteInfo" uuid="568391e22dc249ac87bd0552d6404207">
 		<Data name="imageset" value="Robert.imageset.xml" />
 		<Data name="animset" value="Robert.animset.xml" />
-	</Data>
-	<Data name="names list">
-		<Child value="Bill" />
-		<Child value="Bob" />
-		<Child value="Tim" />
-	</Data>
-	<Data name="stats list">
-		<Child value="10" />
-		<Child value="20" />
-		<Child value="30" />
-	</Data>
-	<Data name="factions list">
-		<Child value="Yumeda.faction" />
-	</Data>
-	<Data name="more sprites">
-		<Child type="spriteInfo">
-			<Data name="imageset" value="Eddard.imageset.xml" />
-			<Data name="animset" value="Eddard.animset.xml" />
-		</Child>
-		<Child type="spriteInfo">
-			<Data name="imageset" value="Zombie.imageset.xml" />
-			<Data name="animset" value="Zombie.animset.xml" />
-		</Child>
-	</Data>
-	<Data name="weapon" value="Mace" />
-	<Data name="available weapons">
-		<Child value="Sword" />
-		<Child value="Mace" />
-	</Data>
-	<Data name="playableCondition" type="conditionPlayerLevel">
+	</Object>
+	<Object type="spriteInfo" uuid="2b6ea0a71fdb4f8b9bc2cddffd2922d0">
+		<Data name="imageset" value="Eddard.imageset.xml" />
+		<Data name="animset" value="Eddard.animset.xml" />
+	</Object>
+	<Object type="spriteInfo" uuid="4bd042b26dbd47d28cb4b4e5a4c6c0d7">
+		<Data name="imageset" value="Zombie.imageset.xml" />
+		<Data name="animset" value="Zombie.animset.xml" />
+	</Object>
+	<Object type="conditionPlayerLevel" uuid="16ae6ccbfaad4a37a98d8d41bfbe34d8">
 		<Data name="minLevel" value="5" />
-	</Data>
+	</Object>
 </Datasheet>

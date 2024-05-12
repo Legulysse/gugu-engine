@@ -1,16 +1,21 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1">
-	<Data name="name" value="Fireball" />
-	<Data name="null restriction" type="" />
-	<Data name="single restriction base" type="" />
-	<Data name="single restriction faction" type="restrictionFaction">
+<Datasheet serializationVersion="2" bindingVersion="1">
+	<RootObject type="skill" uuid="cbf3dce133794f90a4d7507499444ada">
+		<Data name="name" value="Fireball" />
+		<Data name="null restriction" value="" />
+		<Data name="single restriction base" value="" />
+		<Data name="single restriction faction" value="1b0346f28b6b44d4a1801ad6d57079ce" />
+		<Data name="restrictions">
+			<Child value="" />
+			<Child value="5ec4ebe853604bc79032b7ab6f148a46" />
+			<Child value="6978390661804552a0e96800e63e99b7" />
+		</Data>
+	</RootObject>
+	<Object type="restrictionFaction" uuid="1b0346f28b6b44d4a1801ad6d57079ce">
 		<Data name="faction" value="Yumeda.faction" />
-	</Data>
-	<Data name="restrictions">
-		<Child type="" />
-		<Child type="restrictionFaction">
-			<Data name="faction" value="Yumeda.faction" />
-		</Child>
-		<Child type="restrictionTroop" />
-	</Data>
+	</Object>
+	<Object type="restrictionFaction" uuid="5ec4ebe853604bc79032b7ab6f148a46">
+		<Data name="faction" value="Yumeda.faction" />
+	</Object>
+	<Object type="restrictionTroop" uuid="6978390661804552a0e96800e63e99b7" />
 </Datasheet>

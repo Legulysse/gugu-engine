@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1">
-	<Data name="name" value="Dragon Warrior" />
+<Datasheet serializationVersion="2" bindingVersion="1">
+	<RootObject type="troop" uuid="af83118b5dfa48e89391ce555e7202d0">
+		<Data name="name" value="Dragon Warrior" />
+	</RootObject>
 </Datasheet>

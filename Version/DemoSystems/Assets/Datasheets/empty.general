@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1">
-	<Data name="name" value="Unnamed" />
+<Datasheet serializationVersion="2" bindingVersion="1">
+	<RootObject type="general" uuid="54bee43ba05d4e4d84c7c8926bc69cd5">
+		<Data name="name" value="Unnamed" />
+	</RootObject>
 </Datasheet>

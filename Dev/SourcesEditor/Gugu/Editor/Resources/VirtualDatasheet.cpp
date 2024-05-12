@@ -223,14 +223,14 @@ void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, 
         for (const auto& kvp : m_objectOverrides)
         {
             // First check if we override an override, and then look for the original instance object.
-            auto parentObjectOverride = m_parentDatasheet->GetObjectOverrideFromUuid(kvp.first);
-            kvp.second->SetParentObject(parentObjectOverride);
+            auto objectOverrideParent = m_parentDatasheet->GetObjectOverrideFromUuid(kvp.first);
 
-            if (!parentObjectOverride)
+            if (!objectOverrideParent)
             {
-                auto parentInstanceObject = m_parentDatasheet->GetInstanceObjectFromUuid(kvp.first);
-                kvp.second->SetParentObject(parentInstanceObject);
+                objectOverrideParent = m_parentDatasheet->GetInstanceObjectFromUuid(kvp.first);
             }
+
+            kvp.second->SetParentObject(objectOverrideParent);
         }
     }
 }

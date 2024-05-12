@@ -95,14 +95,12 @@ protected:
 
 public:
 
-    VirtualDatasheet* m_datasheet;
     UUID m_uuid;
-
-    UUID m_parentObjectUuid;
-    VirtualDatasheetObject* m_parentObject;
-
     DatasheetParser::ClassDefinition* m_classDefinition;
     std::vector<VirtualDatasheetObject::DataValue*> m_dataValues;
+
+    VirtualDatasheet* m_datasheet;
+    VirtualDatasheetObject* m_parentObject;
 };
 
 }   // namespace gugu

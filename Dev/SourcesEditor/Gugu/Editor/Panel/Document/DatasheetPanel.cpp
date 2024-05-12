@@ -642,7 +642,7 @@ bool DatasheetPanel::InstanciateDataObjectAndValueIfNeeded(VirtualDatasheetObjec
     {
         VirtualDatasheetObject* parentObject = dataObject;
         dataObject = m_datasheet->InstanciateNewObjectOverride(parentObject->m_classDefinition, parentObject->m_uuid);
-        dataObject->RefreshParentObject(parentObject);
+        dataObject->SetParentObject(parentObject);
         isNewData = true;
     }
 

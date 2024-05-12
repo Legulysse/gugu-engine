@@ -54,6 +54,11 @@ VirtualDatasheetObject::~VirtualDatasheetObject()
     ClearStdVector(m_dataValues);
 }
 
+void VirtualDatasheetObject::SetParentObject(VirtualDatasheetObject* parentObject)
+{
+    m_parentObject = parentObject;
+}
+
 void VirtualDatasheetObject::GetDependencies(std::set<Resource*>& dependencies) const
 {
     GetDependencies(m_dataValues, dependencies);
@@ -253,12 +258,6 @@ void VirtualDatasheetObject::GatherInstanceUuids(std::set<UUID>& instanceUuids) 
             }
         }
     }
-}
-
-void VirtualDatasheetObject::RefreshParentObject(VirtualDatasheetObject* parentObject)
-{
-    // TODO: Handle recursive reparenting on child objects when it is supported (this could be tied to OnDependencyRemoved future updates).
-    m_parentObject = parentObject;
 }
 
 void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)

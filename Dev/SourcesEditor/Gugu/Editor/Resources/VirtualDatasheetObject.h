@@ -64,6 +64,8 @@ public:
     VirtualDatasheetObject();
     ~VirtualDatasheetObject();
 
+    void SetParentObject(VirtualDatasheetObject* parentObject);
+
     void GetDependencies(std::set<Resource*>& dependencies) const;
     void OnDependencyRemoved(const Resource* removedDependency);
 
@@ -72,7 +74,6 @@ public:
 
     void ResolveInstances(const std::map<UUID, VirtualDatasheetObject*>& dataObjects, std::set<UUID>& orphanObjectUuids);
     void GatherInstanceUuids(std::set<UUID>& instanceUuids) const;
-    void RefreshParentObject(VirtualDatasheetObject* parentObject);
 
     VirtualDatasheetObject::DataValue* InstanciateNewClassMemberDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef);
     VirtualDatasheetObject::DataValue* InstanciateNewArrayMemberDataValue(VirtualDatasheetObject::DataValue* arrayDataMember);

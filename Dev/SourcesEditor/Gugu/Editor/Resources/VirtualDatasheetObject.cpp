@@ -105,7 +105,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 {
     pugi::xml_attribute attributeType = nodeDatasheetObject.attribute("type");
 
-    // TODO: make type parsing optionnal for ObjectOverrides ? retrieve from parent object instead ?
+    // TODO: check that override has the same type as the parent object.
     m_classDefinition = nullptr;
     if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.value(), m_classDefinition))
     {
@@ -141,15 +141,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 
             if (!dataMemberDef->isArray)
             {
-                // TODO: merge those two methods ?
-                if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                {
-                    ParseInstanceDataValue(nodeData, dataMemberDef, dataValue);
-                }
-                else
-                {
-                    ParseInlineDataValue(nodeData, dataMemberDef, dataValue);
-                }
+                ParseDataValue(nodeData, dataMemberDef, dataValue);
             }
             else
             {
@@ -160,15 +152,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
 
                     dataValue->value_children.push_back(childDataValue);
 
-                    // TODO: merge those two methods ?
-                    if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                    {
-                        ParseInstanceDataValue(nodeChild, dataMemberDef, childDataValue);
-                    }
-                    else
-                    {
-                        ParseInlineDataValue(nodeChild, dataMemberDef, childDataValue);
-                    }
+                    ParseDataValue(nodeChild, dataMemberDef, childDataValue);
                 }
             }
 
@@ -260,7 +244,7 @@ void VirtualDatasheetObject::GatherInstanceUuids(std::set<UUID>& instanceUuids) 
     }
 }
 
-void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
+void VirtualDatasheetObject::ParseDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
 {
     pugi::xml_attribute attributeValue = nodeData.attribute("value");
 
@@ -316,24 +300,22 @@ void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData
         dataValue->value_string = resourceID;
         dataValue->value_objectReference = referenceDatasheet;
     }
-}
-
-void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
-{
-    pugi::xml_attribute instanceUUIDAttribute = nodeData.attribute("value");
-    if (instanceUUIDAttribute.empty() || StringEquals(instanceUUIDAttribute.value(), ""))
+    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
     {
-        // If an empty uuid is explicitly declared, the instance is forced as null (should already be null).
-        dataValue->value_objectInstanceDefinition = nullptr;
-        dataValue->value_objectInstance = nullptr;
-        dataValue->value_string = "";
-    }
-    else
-    {
-        // Only store uuid here, wait for ResolveInstances to actually retrieve the object instance.
-        dataValue->value_objectInstanceDefinition = nullptr;
-        dataValue->value_objectInstance = nullptr;
-        dataValue->value_string = instanceUUIDAttribute.as_string();
+        if (attributeValue.empty() || StringEquals(attributeValue.value(), ""))
+        {
+            // If an empty uuid is explicitly declared, the instance is forced as null (should already be null).
+            dataValue->value_objectInstanceDefinition = nullptr;
+            dataValue->value_objectInstance = nullptr;
+            dataValue->value_string = "";
+        }
+        else
+        {
+            // Only store uuid here, wait for ResolveInstances to actually retrieve the object instance.
+            dataValue->value_objectInstanceDefinition = nullptr;
+            dataValue->value_objectInstance = nullptr;
+            dataValue->value_string = attributeValue.as_string();
+        }
     }
 }
 
@@ -426,31 +408,14 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, const std:
 
             if (!dataValue->dataMemberDefinition->isArray)
             {
-                // TODO: merge those two methods ?
-                if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                {
-                    SaveInstanceDataValue(nodeDatasheet, nodeData, dataValue, dataValue->dataMemberDefinition->objectDefinition);
-                }
-                else
-                {
-                    SaveInlineDataValue(nodeData, dataValue, dataValue->dataMemberDefinition->type);
-                }
+                SaveDataValue(nodeData, dataValue, dataValue->dataMemberDefinition->type);
             }
             else
             {
                 for (const VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
                 {
-                    // TODO: merge those two methods ?
-                    if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                    {
-                        pugi::xml_node nodeChild = nodeData.append_child("Child");
-                        SaveInstanceDataValue(nodeDatasheet, nodeChild, childDataValue, dataValue->dataMemberDefinition->objectDefinition);
-                    }
-                    else
-                    {
-                        pugi::xml_node nodeChild = nodeData.append_child("Child");
-                        SaveInlineDataValue(nodeChild, childDataValue, dataValue->dataMemberDefinition->type);
-                    }
+                    pugi::xml_node nodeChild = nodeData.append_child("Child");
+                    SaveDataValue(nodeChild, childDataValue, dataValue->dataMemberDefinition->type);
                 }
             }
         }
@@ -459,7 +424,7 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, const std:
     return true;
 }
 
-void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::DataMemberDefinition::Type memberType) const
+void VirtualDatasheetObject::SaveDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::DataMemberDefinition::Type memberType) const
 {
     if (memberType == DatasheetParser::DataMemberDefinition::Bool)
     {
@@ -494,19 +459,18 @@ void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const
         //nodeData.append_attribute("value") = dataValue->value_objectReference ? dataValue->value_objectReference->GetID().c_str() : "";
         nodeData.append_attribute("value") = dataValue->value_string.c_str();
     }
-}
-
-void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeDatasheet, pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const
-{
-    if (dataValue->value_objectInstanceDefinition)
+    else if (memberType == DatasheetParser::DataMemberDefinition::ObjectInstance)
     {
-        //nodeData.append_attribute("value") = dataValue->value_objectInstance->m_uuid.ToString().c_str();
-        nodeData.append_attribute("value") = dataValue->value_string.c_str();
-    }
-    else
-    {
-        // If the definition is null, then the instance itself is null, we use an empty value to explicitely declare that.
-        nodeData.append_attribute("value") = "";
+        if (dataValue->value_objectInstanceDefinition)
+        {
+            //nodeData.append_attribute("value") = dataValue->value_objectInstance->m_uuid.ToString().c_str();
+            nodeData.append_attribute("value") = dataValue->value_string.c_str();
+        }
+        else
+        {
+            // If the definition is null, then the instance itself is null, we use an empty value to explicitely declare that.
+            nodeData.append_attribute("value") = "";
+        }
     }
 }
 

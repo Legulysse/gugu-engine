@@ -61,17 +61,24 @@ void VirtualDatasheet::GetDependencies(std::set<Resource*>& dependencies) const
 
 void VirtualDatasheet::OnDependencyUpdated(const Resource* dependency)
 {
-    if (m_parentDatasheet == dependency)    // TODO: check ancestors
+    if (IsAncestor(dynamic_cast<const VirtualDatasheet*>(dependency)))
     {
+        // Refresh all objects inheritance.
         SetParentDatasheet(m_parentDatasheetID, m_parentDatasheet);
     }
 }
 
 void VirtualDatasheet::OnDependencyRemoved(const Resource* dependency)
 {
-    if (m_parentDatasheet == dependency)    // TODO: check ancestors
+    if (m_parentDatasheet == dependency)
     {
+        // Reset all objects inheritance.
         SetParentDatasheet("", nullptr);
+    }
+    else if (IsAncestor(dynamic_cast<const VirtualDatasheet*>(dependency)))
+    {
+        // Refresh all objects inheritance.
+        SetParentDatasheet(m_parentDatasheetID, m_parentDatasheet);
     }
 
     m_rootObject->OnDependencyRemoved(dependency);
@@ -177,7 +184,26 @@ bool VirtualDatasheet::DeleteInstanceObject(VirtualDatasheetObject* instanceObje
     return false;
 }
 
-bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
+bool VirtualDatasheet::IsAncestor(const VirtualDatasheet* ancestorDatasheet) const
+{
+    if (!ancestorDatasheet)
+        return false;
+
+    const VirtualDatasheet* parentDatasheet = m_parentDatasheet;
+    while (parentDatasheet)
+    {
+        if (parentDatasheet == ancestorDatasheet)
+        {
+            return true;
+        }
+
+        parentDatasheet = parentDatasheet->m_parentDatasheet;
+    }
+
+    return false;
+}
+
+bool VirtualDatasheet::IsValidAsParent(const VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
 {
     if (!parentDatasheet)
     {

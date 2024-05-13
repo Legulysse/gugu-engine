@@ -9,6 +9,7 @@
 
 #include "Gugu/Editor/Editor.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
+#include "Gugu/Editor/Resources/VirtualDatasheetObject.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/SystemUtility.h"
@@ -20,407 +21,15 @@
 
 namespace gugu {
 
-VirtualDatasheetObject::DataValue::~DataValue()
-{
-    SafeDelete(value_objectInstance);
-    ClearStdVector(value_children);
-
-    dataMemberDefinition = nullptr;
-    value_objectInstanceDefinition = nullptr;
-    value_objectReference = nullptr;
-}
-
-VirtualDatasheetObject::VirtualDatasheetObject()
-    : m_parentObject(nullptr)
-    , m_classDefinition(nullptr)
-{
-}
-
-VirtualDatasheetObject::~VirtualDatasheetObject()
-{
-    m_parentObject = nullptr;
-    m_classDefinition = nullptr;
-    ClearStdVector(m_dataValues);
-}
-
-void VirtualDatasheetObject::GetDependencies(std::set<Resource*>& dependencies) const
-{
-    GetDependencies(m_dataValues, dependencies);
-}
-
-void VirtualDatasheetObject::GetDependencies(const std::vector<VirtualDatasheetObject::DataValue*>& dataValues, std::set<Resource*>& dependencies) const
-{
-    for (auto dataValue : dataValues)
-    {
-        if (dataValue->value_objectReference)
-        {
-            dependencies.insert(dataValue->value_objectReference);
-        }
-        else if (dataValue->value_objectInstance)
-        {
-            dataValue->value_objectInstance->GetDependencies(dependencies);
-        }
-        else
-        {
-            GetDependencies(dataValue->value_children, dependencies);
-        }
-    }
-}
-
-void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependency)
-{
-    const VirtualDatasheet* removedDatasheet = dynamic_cast<const VirtualDatasheet*>(removedDependency);
-
-    // TODO: Handle recursive reparenting on child objects (this could be tied to RefreshParentObject future updates).
-    if (removedDatasheet && removedDatasheet->m_rootObject == m_parentObject)
-    {
-        m_parentObject = nullptr;
-    }
-
-    OnDependencyRemoved(removedDependency, m_dataValues);
-}
-
-void VirtualDatasheetObject::OnDependencyRemoved(const Resource* removedDependency, std::vector<VirtualDatasheetObject::DataValue*>& dataValues)
-{
-    for (auto dataValue : dataValues)
-    {
-        if (dataValue->value_objectReference == removedDependency)
-        {
-            dataValue->value_string = "";
-            dataValue->value_objectReference = nullptr;
-        }
-        else if (dataValue->value_objectInstance)
-        {
-            dataValue->value_objectInstance->OnDependencyRemoved(removedDependency);
-        }
-        else
-        {
-            OnDependencyRemoved(removedDependency, dataValue->value_children);
-        }
-    }
-}
-
-bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObject, DatasheetParser::ClassDefinition* classDefinition)
-{
-    if (!classDefinition)
-    {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "A null ClassDefinition has been provided on VirtualDatasheetObject loading");
-        return false;
-    }
-
-    m_classDefinition = classDefinition;
-
-    for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
-    {
-        VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
-        dataValue->name = nodeData.attribute("name").value();
-
-        DatasheetParser::DataMemberDefinition* dataMemberDef = m_classDefinition->GetDataMemberDefinition(dataValue->name);
-        if (dataMemberDef)
-        {
-            dataValue->dataMemberDefinition = dataMemberDef;
-
-            if (!dataMemberDef->isArray)
-            {
-                if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                {
-                    ParseInstanceDataValue(nodeData, dataMemberDef, dataValue);
-                }
-                else
-                {
-                    ParseInlineDataValue(nodeData, dataMemberDef, dataValue);
-                }
-            }
-            else
-            {
-                for (pugi::xml_node nodeChild = nodeData.child("Child"); nodeChild; nodeChild = nodeChild.next_sibling("Child"))
-                {
-                    if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                    {
-                        VirtualDatasheetObject::DataValue* childDataValue = new VirtualDatasheetObject::DataValue;
-                        ParseInstanceDataValue(nodeChild, dataMemberDef, childDataValue);
-                        dataValue->value_children.push_back(childDataValue);
-                    }
-                    else
-                    {
-                        VirtualDatasheetObject::DataValue* childDataValue = new VirtualDatasheetObject::DataValue;
-                        ParseInlineDataValue(nodeChild, dataMemberDef, childDataValue);
-                        dataValue->value_children.push_back(childDataValue);
-                    }
-                }
-            }
-
-            m_dataValues.push_back(dataValue);
-        }
-        else
-        {
-            // TODO: store deprecated data in a dedicated array ? add a special flag ? For now I just use a null dataMemberDef.
-            pugi::xml_attribute attributeValue = nodeData.attribute("value");
-            dataValue->backupValue = attributeValue.value();
-            m_dataValues.push_back(dataValue);
-        }
-    }
-
-    return true;
-}
-
-void VirtualDatasheetObject::RefreshParentObject(VirtualDatasheetObject* parentObject)
-{
-    // TODO: Handle recursive reparenting on child objects when it is supported (this could be tied to OnDependencyRemoved future updates).
-    m_parentObject = parentObject;
-}
-
-void VirtualDatasheetObject::ParseInlineDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
-{
-    pugi::xml_attribute attributeValue = nodeData.attribute("value");
-
-    if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Bool)
-    {
-        dataValue->value_bool = attributeValue.as_bool();
-    }
-    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Int)
-    {
-        dataValue->value_int = attributeValue.as_int();
-    }
-    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Float)
-    {
-        dataValue->value_float = attributeValue.as_float();
-    }
-    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::String)
-    {
-        dataValue->value_string = attributeValue.value();
-    }
-    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Enum)
-    {
-        dataValue->value_string = attributeValue.value();
-    }
-    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Vector2i)
-    {
-        xml::ParseVector2i(nodeData, dataValue->value_vector2i);
-    }
-    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Vector2f)
-    {
-        xml::ParseVector2f(nodeData, dataValue->value_vector2f);
-    }
-    else if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::ObjectReference)
-    {
-        VirtualDatasheet* referenceDatasheet = nullptr;
-
-        // TODO: I should encapsulate this in some kind of GetOrLoad method.
-        std::string resourceID = attributeValue.value();
-        if (GetResources()->IsResourceLoaded(resourceID))
-        {
-            referenceDatasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(resourceID));
-        }
-        else
-        {
-            referenceDatasheet = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(resourceID);
-        }
-
-        // TODO: This may need to be refreshed more often, to handle created/deleted assets.
-        if (referenceDatasheet && !referenceDatasheet->m_classDefinition->IsDerivedFromClass(dataMemberDef->objectDefinition))
-        {
-            referenceDatasheet = nullptr;
-        }
-
-        dataValue->value_string = resourceID;
-        dataValue->value_objectReference = referenceDatasheet;
-    }
-}
-
-void VirtualDatasheetObject::ParseInstanceDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
-{
-    DatasheetParser::ClassDefinition* instanceDefinition = nullptr;
-
-    pugi::xml_attribute attributeType = nodeData.attribute("type");
-    if (!attributeType.empty() && StringEquals(attributeType.value(), ""))
-    {
-        // If an empty type is explicitly declared, the instance is forced as null (should already be null).
-        dataValue->value_objectInstanceDefinition = nullptr;
-        dataValue->value_objectInstance = nullptr;
-    }
-    else
-    {
-        if (attributeType.empty())
-        {
-            // If the definition is not provided, we fallback on the default definition.
-            instanceDefinition = dataMemberDef->objectDefinition;
-        }
-
-        if (instanceDefinition || GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.value(), instanceDefinition))
-        {
-            VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
-            instanceObject->LoadFromXml(nodeData, instanceDefinition);
-
-            dataValue->value_objectInstanceDefinition = instanceDefinition;
-            dataValue->value_objectInstance = instanceObject;
-        }
-    }
-}
-
-VirtualDatasheetObject::DataValue* VirtualDatasheetObject::RegisterDataValue(DatasheetParser::DataMemberDefinition* dataMemberDef)
-{
-    VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
-    dataValue->name = dataMemberDef->name;
-    dataValue->dataMemberDefinition = dataMemberDef;
-    m_dataValues.push_back(dataValue);
-    return dataValue;
-}
-
-bool VirtualDatasheetObject::RemoveDataValue(const std::string& name)
-{
-    for (size_t i = 0; i < m_dataValues.size(); ++i)
-    {
-        if (m_dataValues[i]->name == name)
-        {
-            SafeDelete(m_dataValues[i]);
-            StdVectorRemoveAt(m_dataValues, i);
-            return true;
-        }
-    }
-
-    return false;
-}
-
-VirtualDatasheetObject::DataValue* VirtualDatasheetObject::GetDataValue(const std::string& name, bool& isParentData) const
-{
-    isParentData = false;
-    const VirtualDatasheetObject* dataObject = this;
-    while (dataObject)
-    {
-        for (VirtualDatasheetObject::DataValue* dataValue : dataObject->m_dataValues)
-        {
-            if (dataValue->name == name)
-            {
-                return dataValue;
-            }
-        }
-
-        isParentData = true;
-        dataObject = dataObject->m_parentObject;
-    }
-
-    isParentData = false;
-    return nullptr;
-}
-
-bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheetObject) const
-{
-    // TODO: sort m_dataValues to match the definition.
-    for (const VirtualDatasheetObject::DataValue* dataValue : m_dataValues)
-    {
-        if (!dataValue->dataMemberDefinition)
-        {
-            // TODO: Add a flag to keep deprecated data ?
-            // - It would be inconsistant between properties being kept but instances and arrays being lost.
-            //// Store deprecated data as string.
-            //pugi::xml_node nodeData = nodeDatasheetObject.append_child("Data");
-            //nodeData.append_attribute("name") = dataValue->name.c_str();
-            //nodeData.append_attribute("value") = dataValue->backupValue.c_str();
-        }
-        else
-        {
-            pugi::xml_node nodeData = nodeDatasheetObject.append_child("Data");
-            nodeData.append_attribute("name") = dataValue->name.c_str();
-
-            if (!dataValue->dataMemberDefinition->isArray)
-            {
-                if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                {
-                    SaveInstanceDataValue(nodeData, dataValue, dataValue->dataMemberDefinition->objectDefinition);
-                }
-                else
-                {
-                    SaveInlineDataValue(nodeData, dataValue, dataValue->dataMemberDefinition->type);
-                }
-            }
-            else
-            {
-                for (const VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
-                {
-                    if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
-                    {
-                        pugi::xml_node nodeChild = nodeData.append_child("Child");
-                        SaveInstanceDataValue(nodeChild, childDataValue, dataValue->dataMemberDefinition->objectDefinition);
-                    }
-                    else
-                    {
-                        pugi::xml_node nodeChild = nodeData.append_child("Child");
-                        SaveInlineDataValue(nodeChild, childDataValue, dataValue->dataMemberDefinition->type);
-                    }
-                }
-            }
-        }
-    }
-
-    return true;
-}
-
-void VirtualDatasheetObject::SaveInlineDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::DataMemberDefinition::Type memberType) const
-{
-    if (memberType == DatasheetParser::DataMemberDefinition::Bool)
-    {
-        nodeData.append_attribute("value") = dataValue->value_bool;
-    }
-    else if (memberType == DatasheetParser::DataMemberDefinition::Int)
-    {
-        nodeData.append_attribute("value") = dataValue->value_int;
-    }
-    else if (memberType == DatasheetParser::DataMemberDefinition::Float)
-    {
-        nodeData.append_attribute("value") = dataValue->value_float;
-    }
-    else if (memberType == DatasheetParser::DataMemberDefinition::String)
-    {
-        nodeData.append_attribute("value") = dataValue->value_string.c_str();
-    }
-    else if (memberType == DatasheetParser::DataMemberDefinition::Enum)
-    {
-        nodeData.append_attribute("value") = dataValue->value_string.c_str();
-    }
-    else if (memberType == DatasheetParser::DataMemberDefinition::Vector2i)
-    {
-        xml::WriteVector2i(nodeData, dataValue->value_vector2i);
-    }
-    else if (memberType == DatasheetParser::DataMemberDefinition::Vector2f)
-    {
-        xml::WriteVector2f(nodeData, dataValue->value_vector2f);
-    }
-    else if (memberType == DatasheetParser::DataMemberDefinition::ObjectReference)
-    {
-        //nodeData.append_attribute("value") = dataValue->value_objectReference ? dataValue->value_objectReference->GetID().c_str() : "";
-        nodeData.append_attribute("value") = dataValue->value_string.c_str();
-    }
-}
-
-void VirtualDatasheetObject::SaveInstanceDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::ClassDefinition* classDefinition) const
-{
-    if (dataValue->value_objectInstanceDefinition)
-    {
-        nodeData.append_attribute("type") = dataValue->value_objectInstanceDefinition->m_name.c_str();
-        dataValue->value_objectInstance->SaveToXml(nodeData);
-    }
-    else
-    {
-        // If the definition is null, then the instance itself is null, we use an empty type to explicitely declare that.
-        nodeData.append_attribute("type") = "";
-    }
-}
-
-
-VirtualDatasheet::VirtualDatasheet(DatasheetParser::ClassDefinition* classDefinition)
-    : m_classDefinition(classDefinition)
-    , m_rootObject(nullptr)
+VirtualDatasheet::VirtualDatasheet()
+    : m_rootObject(nullptr)
     , m_parentDatasheet(nullptr)
 {
-    m_rootObject = new VirtualDatasheetObject;
 }
 
 VirtualDatasheet::~VirtualDatasheet()
 {
     Unload();
-
-    m_classDefinition = nullptr;
 }
 
 EResourceType::Type VirtualDatasheet::GetResourceType() const
@@ -433,23 +42,168 @@ void VirtualDatasheet::GetDependencies(std::set<Resource*>& dependencies) const
     if (m_parentDatasheet)
     {
         dependencies.insert(m_parentDatasheet);
+
+        m_parentDatasheet->GetDependencies(dependencies);
     }
 
     m_rootObject->GetDependencies(dependencies);
-}
 
-void VirtualDatasheet::OnDependencyRemoved(const Resource* removedDependency)
-{
-    if (m_parentDatasheet == removedDependency)
+    for (const auto& kvp : m_instanceObjects)
     {
-        m_parentDatasheetID = "";
-        m_parentDatasheet = nullptr;
+        kvp.second->GetDependencies(dependencies);
     }
 
-    m_rootObject->OnDependencyRemoved(removedDependency);
+    for (const auto& kvp : m_objectOverrides)
+    {
+        kvp.second->GetDependencies(dependencies);
+    }
 }
 
-bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
+void VirtualDatasheet::OnDependencyUpdated(const Resource* dependency)
+{
+    if (IsAncestor(dynamic_cast<const VirtualDatasheet*>(dependency)))
+    {
+        // Refresh all objects inheritance.
+        SetParentDatasheet(m_parentDatasheetID, m_parentDatasheet);
+    }
+}
+
+void VirtualDatasheet::OnDependencyRemoved(const Resource* dependency)
+{
+    if (m_parentDatasheet == dependency)
+    {
+        // Reset all objects inheritance.
+        SetParentDatasheet("", nullptr);
+    }
+    else if (IsAncestor(dynamic_cast<const VirtualDatasheet*>(dependency)))
+    {
+        // Refresh all objects inheritance.
+        SetParentDatasheet(m_parentDatasheetID, m_parentDatasheet);
+    }
+
+    m_rootObject->OnDependencyRemoved(dependency);
+
+    for (const auto& kvp : m_instanceObjects)
+    {
+        kvp.second->OnDependencyRemoved(dependency);
+    }
+
+    for (const auto& kvp : m_objectOverrides)
+    {
+        kvp.second->OnDependencyRemoved(dependency);
+    }
+}
+
+bool VirtualDatasheet::InstanciateNewRootObject(DatasheetParser::ClassDefinition* classDefinition)
+{
+    if (m_rootObject)
+    {
+        return false;
+    }
+
+    UUID uuid = UUID::Generate();
+
+    m_rootObject = new VirtualDatasheetObject;
+    m_rootObject->m_datasheet = this;
+    m_rootObject->m_uuid = uuid;
+    m_rootObject->m_classDefinition = classDefinition;
+
+    return true;
+}
+
+VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObject(DatasheetParser::ClassDefinition* classDefinition)
+{
+    UUID uuid = UUID::Generate();
+
+    VirtualDatasheetObject* instanceObject = new VirtualDatasheetObject;
+    instanceObject->m_datasheet = this;
+    instanceObject->m_uuid = uuid;
+    instanceObject->m_classDefinition = classDefinition;
+
+    m_instanceObjects.insert(std::make_pair(uuid, instanceObject));
+    return instanceObject;
+}
+
+VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObjectOverride(DatasheetParser::ClassDefinition* classDefinition, const UUID& uuid)
+{
+    VirtualDatasheetObject* objectOverride = new VirtualDatasheetObject;
+    objectOverride->m_datasheet = this;
+    objectOverride->m_uuid = uuid;
+    objectOverride->m_classDefinition = classDefinition;
+
+    m_objectOverrides.insert(std::make_pair(uuid, objectOverride));
+    return objectOverride;
+}
+
+bool VirtualDatasheet::DeleteOrphanedInstanceObjects()
+{
+    // Recursively retrieve all used instance uuids.
+    // We dont need to check overrides in parent sheet, because we only care about instances from the current sheet.
+    std::set<UUID> instanceUuids;
+    m_rootObject->GatherInstanceUuids(instanceUuids);
+
+    for (const auto& kvp : m_objectOverrides)
+    {
+        kvp.second->GatherInstanceUuids(instanceUuids);
+    }
+
+    // Delete all orphaned instance objects.
+    bool foundOrphans = false;
+
+    for (auto it = m_instanceObjects.begin(); it != m_instanceObjects.end();)
+    {
+        if (!StdSetContains(instanceUuids, it->first))
+        {
+            SafeDelete(it->second);
+            it = m_instanceObjects.erase(it);
+
+            foundOrphans = true;
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    return foundOrphans;
+}
+
+bool VirtualDatasheet::DeleteInstanceObject(VirtualDatasheetObject* instanceObject)
+{
+    if (!instanceObject)
+        return true;
+
+    auto it = m_instanceObjects.find(instanceObject->m_uuid);
+    if (it != m_instanceObjects.end())
+    {
+        m_instanceObjects.erase(it);
+        SafeDelete(instanceObject);
+        return true;
+    }
+
+    return false;
+}
+
+bool VirtualDatasheet::IsAncestor(const VirtualDatasheet* ancestorDatasheet) const
+{
+    if (!ancestorDatasheet)
+        return false;
+
+    const VirtualDatasheet* parentDatasheet = m_parentDatasheet;
+    while (parentDatasheet)
+    {
+        if (parentDatasheet == ancestorDatasheet)
+        {
+            return true;
+        }
+
+        parentDatasheet = parentDatasheet->m_parentDatasheet;
+    }
+
+    return false;
+}
+
+bool VirtualDatasheet::IsValidAsParent(const VirtualDatasheet* parentDatasheet, bool* invalidRecursiveParent) const
 {
     if (!parentDatasheet)
     {
@@ -457,7 +211,7 @@ bool VirtualDatasheet::IsValidAsParent(VirtualDatasheet* parentDatasheet, bool* 
         return true;
     }
 
-    if (parentDatasheet->m_classDefinition != m_classDefinition)
+    if (parentDatasheet->GetClassDefinition() != GetClassDefinition())
     {
         // We dont want a parent of a different class.
         return false;
@@ -488,12 +242,77 @@ void VirtualDatasheet::SetParentDatasheet(const std::string& parentReferenceID, 
     m_parentDatasheetID = parentReferenceID;
     m_parentDatasheet = parentDatasheet;
 
-    m_rootObject->RefreshParentObject(m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
+    m_rootObject->SetParentObject(m_parentDatasheet ? m_parentDatasheet->m_rootObject : nullptr);
+
+    if (m_parentDatasheet)
+    {
+        for (const auto& kvp : m_objectOverrides)
+        {
+            // First check if we override an override, and then look for the original instance object.
+            auto objectOverrideParent = m_parentDatasheet->GetObjectOverrideFromUuid(kvp.first);
+
+            if (!objectOverrideParent)
+            {
+                objectOverrideParent = m_parentDatasheet->GetInstanceObjectFromUuid(kvp.first);
+            }
+
+            kvp.second->SetParentObject(objectOverrideParent);
+        }
+    }
+}
+
+VirtualDatasheetObject* VirtualDatasheet::GetInstanceObjectFromUuid(const UUID& uuid) const
+{
+    const auto itInstance = m_instanceObjects.find(uuid);
+    if (itInstance != m_instanceObjects.end())
+    {
+        return itInstance->second;
+    }
+
+    if (m_parentDatasheet)
+    {
+        return m_parentDatasheet->GetInstanceObjectFromUuid(uuid);
+    }
+
+    return nullptr;
+}
+
+VirtualDatasheetObject* VirtualDatasheet::GetObjectOverrideFromUuid(const UUID& uuid) const
+{
+    const auto itOverride = m_objectOverrides.find(uuid);
+    if (itOverride != m_objectOverrides.end())
+    {
+        return itOverride->second;
+    }
+
+    if (m_parentDatasheet)
+    {
+        return m_parentDatasheet->GetObjectOverrideFromUuid(uuid);
+    }
+
+    return nullptr;
+}
+
+DatasheetParser::ClassDefinition* VirtualDatasheet::GetClassDefinition() const
+{
+    return m_rootObject ? m_rootObject->m_classDefinition : nullptr;
+}
+
+void VirtualDatasheet::SortDataValues()
+{
+    m_rootObject->SortDataValues();
+
+    for (const auto& kvp : m_instanceObjects)
+    {
+        kvp.second->SortDataValues();
+    }
 }
 
 void VirtualDatasheet::Unload()
 {
     SafeDelete(m_rootObject);
+    ClearStdMap(m_instanceObjects);
+    ClearStdMap(m_objectOverrides);
 
     m_parentDatasheet = nullptr;
 }
@@ -502,21 +321,80 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 {
     Unload();
 
-    m_rootObject = new VirtualDatasheetObject;
-
-    pugi::xml_node nodeDatasheetObject = document.child("Datasheet");
-    if (!nodeDatasheetObject)
+    pugi::xml_node datasheetNode = document.child("Datasheet");
+    if (!datasheetNode)
         return false;
 
-    if (!m_rootObject->LoadFromXml(nodeDatasheetObject, m_classDefinition))
+    pugi::xml_node rootNode = datasheetNode.child("RootObject");
+    if (!rootNode)
+        return false;
+
+    m_rootObject = new VirtualDatasheetObject;
+    if (!m_rootObject->LoadFromXml(rootNode, this))
     {
+        // TODO: log error ?
+        SafeDelete(m_rootObject);
         return false;
     }
 
+    // Parse Instance Object nodes.
+    std::set<UUID> orphanObjectUuids;
+
+    for (pugi::xml_node nodeObject = datasheetNode.child("Object"); nodeObject; nodeObject = nodeObject.next_sibling("Object"))
+    {
+        VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
+
+        if (dataObject->LoadFromXml(nodeObject, this))
+        {
+            m_instanceObjects.insert(std::make_pair(dataObject->m_uuid, dataObject));
+            orphanObjectUuids.insert(dataObject->m_uuid);
+        }
+        else
+        {
+            // TODO: log error ?
+            SafeDelete(dataObject);
+        }
+    }
+
+    // Parse Object Override nodes.
+    for (pugi::xml_node nodeObject = datasheetNode.child("ObjectOverride"); nodeObject; nodeObject = nodeObject.next_sibling("ObjectOverride"))
+    {
+        VirtualDatasheetObject* dataObject = new VirtualDatasheetObject;
+
+        if (dataObject->LoadFromXml(nodeObject, this))
+        {
+            m_objectOverrides.insert(std::make_pair(dataObject->m_uuid, dataObject));
+        }
+        else
+        {
+            // TODO: log error ?
+            SafeDelete(dataObject);
+        }
+    }
+
+    // Resolve instance links.
+    m_rootObject->ResolveInstances(m_instanceObjects, orphanObjectUuids);
+
+    for (const auto& kvp : m_instanceObjects)
+    {
+        kvp.second->ResolveInstances(m_instanceObjects, orphanObjectUuids);
+    }
+
+    for (const auto& kvp : m_objectOverrides)
+    {
+        kvp.second->ResolveInstances(m_instanceObjects, orphanObjectUuids);
+    }
+
+    if (!orphanObjectUuids.empty())
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet contains {0} orphan instanced objects : {1}", orphanObjectUuids.size(), GetFileInfo().GetFilePath_utf8()));
+    }
+
+    // Compute parent data.
     std::string parentResourceID = "";
     VirtualDatasheet* parentDatasheet = nullptr;
 
-    pugi::xml_attribute attributeParent = nodeDatasheetObject.attribute("parent");
+    pugi::xml_attribute attributeParent = datasheetNode.attribute("parent");
     if (attributeParent)
     {
         // TODO: I should encapsulate this in some kind of GetOrLoad method.
@@ -543,8 +421,11 @@ bool VirtualDatasheet::LoadFromXml(const pugi::xml_document& document)
 
 bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
 {
+    if (!m_rootObject)
+        return false;
+
     pugi::xml_node nodeDatasheet = document.append_child("Datasheet");
-    nodeDatasheet.append_attribute("serializationVersion") = 1;
+    nodeDatasheet.append_attribute("serializationVersion") = 2;
 
     // Binding version, could be used for application binding changes.
     nodeDatasheet.append_attribute("bindingVersion") = 1;
@@ -554,8 +435,152 @@ bool VirtualDatasheet::SaveToXml(pugi::xml_document& document) const
         nodeDatasheet.append_attribute("parent") = m_parentDatasheetID.c_str();
     }
 
-    if (m_rootObject && !m_rootObject->SaveToXml(nodeDatasheet))
+    // Serialize all objects to xml.
+    // Instance objects are naturally sorted by UUID through the map.
+    if (!m_rootObject->SaveToXml(nodeDatasheet, "RootObject"))
         return false;
+
+    for (const auto& kvp : m_instanceObjects)
+    {
+        if (!kvp.second->SaveToXml(nodeDatasheet, "Object"))
+            return false;
+    }
+
+    for (const auto& kvp : m_objectOverrides)
+    {
+        if (!kvp.second->SaveToXml(nodeDatasheet, "ObjectOverride"))
+            return false;
+    }
+
+    return true;
+}
+
+bool VirtualDatasheet::HandleMigration(const FileInfo& fileInfo)
+{
+    pugi::xml_document document;
+    pugi::xml_parse_result loadResult = document.load_file(fileInfo.GetFileSystemPath().c_str());
+    if (!loadResult)
+        return false;
+
+    int serializationVersion = document.child("Datasheet").attribute("serializationVersion").as_int();
+    if (serializationVersion <= 1)
+    {
+        Migrate_v1_to_v2(fileInfo, document);
+    }
+
+    document.save_file(fileInfo.GetFileSystemPath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+
+    return true;
+}
+
+namespace impl {
+
+void MigrateInstanceObject_v1_to_v2(
+    pugi::xml_node nodeDatasheet,
+    pugi::xml_node nodeObjectV1,
+    pugi::xml_node nodeObjectV2,
+    DatasheetParser::ClassDefinition* instanceClassDefinition);
+
+void MigrateDataMember_v1_to_v2(
+    pugi::xml_node nodeDatasheet,
+    pugi::xml_node nodeData,
+    DatasheetParser::DataMemberDefinition* dataMemberDef)
+{
+    if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Type::ObjectInstance)
+    {
+        pugi::xml_attribute attributeType = nodeData.attribute("type");
+        nodeData.remove_attribute("type");
+
+        if (attributeType.empty() || StringEquals(attributeType.value(), ""))
+        {
+            // Explicit null instance
+            nodeData.append_attribute("value").set_value("");
+        }
+        else
+        {
+            DatasheetParser::ClassDefinition* instanceClassDefinition = nullptr;
+            if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.as_string(), instanceClassDefinition))
+            {
+                instanceClassDefinition = dataMemberDef->objectDefinition;
+            }
+
+            std::string uuid = GenerateUUIDAsString();
+
+            pugi::xml_node nodeInstanceObject = nodeDatasheet.append_child("Object");
+            nodeInstanceObject.append_attribute("type").set_value(instanceClassDefinition->m_name.c_str());
+            nodeInstanceObject.append_attribute("uuid").set_value(uuid.c_str());
+
+            nodeData.append_attribute("value").set_value(uuid.c_str());
+
+            impl::MigrateInstanceObject_v1_to_v2(nodeDatasheet, nodeData, nodeInstanceObject, instanceClassDefinition);
+        }
+    }
+}
+
+void MigrateInstanceObject_v1_to_v2(
+    pugi::xml_node nodeDatasheet,
+    pugi::xml_node nodeObjectV1,
+    pugi::xml_node nodeObjectV2,
+    DatasheetParser::ClassDefinition* instanceClassDefinition)
+{
+    pugi::xml_node nextNodeData = nodeObjectV1.child("Data");
+    for (pugi::xml_node nodeData = nextNodeData; nodeData; nodeData = nextNodeData)
+    {
+        nextNodeData = nodeData.next_sibling("Data");
+
+        DatasheetParser::DataMemberDefinition* dataMemberDef = instanceClassDefinition->GetDataMemberDefinition(nodeData.attribute("name").as_string());
+        if (dataMemberDef)
+        {
+            if (dataMemberDef->isArray)
+            {
+                for (pugi::xml_node nodeChild = nodeData.child("Child"); nodeChild; nodeChild = nodeChild.next_sibling("Child"))
+                {
+                    MigrateDataMember_v1_to_v2(nodeDatasheet, nodeChild, dataMemberDef);
+                }
+            }
+            else
+            {
+                MigrateDataMember_v1_to_v2(nodeDatasheet, nodeData, dataMemberDef);
+            }
+        }
+
+        nodeObjectV2.append_move(nodeData);
+    }
+}
+
+}   // namespace impl
+
+bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document)
+{
+    pugi::xml_document migratedDocument;
+
+    pugi::xml_node nodeDatasheet = document.child("Datasheet");
+    if (!nodeDatasheet)
+        return false;
+
+    std::string attributeValueBindingVersion = nodeDatasheet.attribute("bindingVersion").as_string("1");
+    std::string attributeValueParent = nodeDatasheet.attribute("parent").as_string();
+
+    nodeDatasheet.remove_attributes();
+    nodeDatasheet.append_attribute("serializationVersion").set_value(2);
+    nodeDatasheet.append_attribute("bindingVersion").set_value(attributeValueBindingVersion.c_str());
+
+    if (!attributeValueParent.empty())
+    {
+        nodeDatasheet.append_attribute("parent").set_value(attributeValueParent.c_str());
+    }
+
+    DatasheetParser::ClassDefinition* rootClassDefinition = nullptr;
+    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(fileInfo.GetExtension(), rootClassDefinition))
+    {
+        return false;
+    }
+
+    pugi::xml_node nodeRootObject = nodeDatasheet.append_child("RootObject");
+    nodeRootObject.append_attribute("type").set_value(rootClassDefinition->m_name.c_str());
+    nodeRootObject.append_attribute("uuid").set_value(GenerateUUIDAsString().c_str());
+
+    impl::MigrateInstanceObject_v1_to_v2(nodeDatasheet, nodeDatasheet, nodeRootObject, rootClassDefinition);
 
     return true;
 }

@@ -311,10 +311,16 @@ class DefinitionClass():
                     else:
                         _file.write('    '+ member.code +'.clear();\n')
                 elif member.isInstance:
-                    if not member.isArray:
-                        _file.write('    SafeDelete('+ member.code +');\n')
+                    if self.type == 'datasheet':
+                        if not member.isArray:
+                            _file.write('    '+ member.code +' = nullptr;\n')
+                        else:
+                            _file.write('    '+ member.code +'.clear();\n')
                     else:
-                        _file.write('    ClearStdVector('+ member.code +');\n')
+                        if not member.isArray:
+                            _file.write('    SafeDelete('+ member.code +');\n')
+                        else:
+                            _file.write('    ClearStdVector('+ member.code +');\n')
                 else:
                     pass
                     

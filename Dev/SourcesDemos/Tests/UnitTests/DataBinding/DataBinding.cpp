@@ -79,10 +79,18 @@ DS_Character::DS_Character()
     stamina = 100;
     speed = 100.f;
     weapon = EWeaponType::Sword;
+    unlocked = nullptr;
+    actionOnDeath = nullptr;
+    attackSkill = nullptr;
+    supportSkill = nullptr;
 }
 
 DS_Character::~DS_Character()
 {
+    unlocked = nullptr;
+    actionOnDeath = nullptr;
+    attackSkill = nullptr;
+    supportSkill = nullptr;
 }
 
 void DS_Character::ParseMembers(gugu::DataParseContext& context)
@@ -92,6 +100,10 @@ void DS_Character::ParseMembers(gugu::DataParseContext& context)
     gugu::binding::ReadInt(context, "stamina", stamina);
     gugu::binding::ReadFloat(context, "speed", speed);
     gugu::binding::ReadEnum(context, "weapon", "weaponType", weapon);
+    gugu::binding::ReadDatasheetInstance(context, "unlocked", "condition", unlocked);
+    gugu::binding::ReadDatasheetInstance(context, "actionOnDeath", "action", actionOnDeath);
+    gugu::binding::ReadDatasheetInstance(context, "attackSkill", "effect", attackSkill);
+    gugu::binding::ReadDatasheetInstance(context, "supportSkill", "effect", supportSkill);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -136,6 +148,172 @@ void DS_Item::ParseMembers(gugu::DataParseContext& context)
 }
 
 ////////////////////////////////////////////////////////////////
+DS_Effect::DS_Effect()
+{
+}
+
+DS_Effect::~DS_Effect()
+{
+}
+
+void DS_Effect::ParseMembers(gugu::DataParseContext& context)
+{
+    //gugu::DatasheetObject::ParseMembers(context);
+
+}
+
+////////////////////////////////////////////////////////////////
+DS_EffectGroup::DS_EffectGroup()
+{
+}
+
+DS_EffectGroup::~DS_EffectGroup()
+{
+    effects.clear();
+}
+
+void DS_EffectGroup::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Effect::ParseMembers(context);
+
+    gugu::binding::ReadDatasheetInstanceArray(context, "effects", "effect", effects);
+}
+
+////////////////////////////////////////////////////////////////
+DS_EffectProjectile::DS_EffectProjectile()
+{
+    speed = 0.f;
+    lifetime = 0.f;
+    hitEffect = nullptr;
+    endEffect = nullptr;
+}
+
+DS_EffectProjectile::~DS_EffectProjectile()
+{
+    hitEffect = nullptr;
+    endEffect = nullptr;
+}
+
+void DS_EffectProjectile::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Effect::ParseMembers(context);
+
+    gugu::binding::ReadFloat(context, "speed", speed);
+    gugu::binding::ReadFloat(context, "lifetime", lifetime);
+    gugu::binding::ReadDatasheetInstance(context, "hitEffect", "effect", hitEffect);
+    gugu::binding::ReadDatasheetInstance(context, "endEffect", "effect", endEffect);
+}
+
+////////////////////////////////////////////////////////////////
+DS_EffectArea::DS_EffectArea()
+{
+    radius = 0;
+    tick = 0.f;
+    duration = 0.f;
+    areaTickEffect = nullptr;
+    areaEnterEffect = nullptr;
+    areaExitEffect = nullptr;
+}
+
+DS_EffectArea::~DS_EffectArea()
+{
+    areaTickEffect = nullptr;
+    areaEnterEffect = nullptr;
+    areaExitEffect = nullptr;
+}
+
+void DS_EffectArea::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Effect::ParseMembers(context);
+
+    gugu::binding::ReadInt(context, "radius", radius);
+    gugu::binding::ReadFloat(context, "tick", tick);
+    gugu::binding::ReadFloat(context, "duration", duration);
+    gugu::binding::ReadDatasheetInstance(context, "areaTickEffect", "effect", areaTickEffect);
+    gugu::binding::ReadDatasheetInstance(context, "areaEnterEffect", "effect", areaEnterEffect);
+    gugu::binding::ReadDatasheetInstance(context, "areaExitEffect", "effect", areaExitEffect);
+}
+
+////////////////////////////////////////////////////////////////
+DS_EffectDamage::DS_EffectDamage()
+{
+    damage = 0;
+    entityVfx = nullptr;
+}
+
+DS_EffectDamage::~DS_EffectDamage()
+{
+    entityVfx = nullptr;
+}
+
+void DS_EffectDamage::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Effect::ParseMembers(context);
+
+    gugu::binding::ReadInt(context, "damage", damage);
+    gugu::binding::ReadDatasheetReference(context, "entityVfx", entityVfx);
+}
+
+////////////////////////////////////////////////////////////////
+DS_EffectHeal::DS_EffectHeal()
+{
+    heal = 0;
+    entityVfx = nullptr;
+}
+
+DS_EffectHeal::~DS_EffectHeal()
+{
+    entityVfx = nullptr;
+}
+
+void DS_EffectHeal::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Effect::ParseMembers(context);
+
+    gugu::binding::ReadInt(context, "heal", heal);
+    gugu::binding::ReadDatasheetReference(context, "entityVfx", entityVfx);
+}
+
+////////////////////////////////////////////////////////////////
+DS_EffectBuff::DS_EffectBuff()
+{
+    buff = "";
+    value = 0;
+    entityVfx = nullptr;
+}
+
+DS_EffectBuff::~DS_EffectBuff()
+{
+    entityVfx = nullptr;
+}
+
+void DS_EffectBuff::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Effect::ParseMembers(context);
+
+    gugu::binding::ReadString(context, "buff", buff);
+    gugu::binding::ReadInt(context, "value", value);
+    gugu::binding::ReadDatasheetReference(context, "entityVfx", entityVfx);
+}
+
+////////////////////////////////////////////////////////////////
+DS_VFX::DS_VFX()
+{
+    particle = "";
+}
+
+DS_VFX::~DS_VFX()
+{
+}
+
+void DS_VFX::ParseMembers(gugu::DataParseContext& context)
+{
+    //gugu::DatasheetObject::ParseMembers(context);
+
+    gugu::binding::ReadString(context, "particle", particle);
+}
+
+////////////////////////////////////////////////////////////////
 DS_Condition::DS_Condition()
 {
     intendedResult = true;
@@ -159,7 +337,7 @@ DS_ConditionAnd::DS_ConditionAnd()
 
 DS_ConditionAnd::~DS_ConditionAnd()
 {
-    ClearStdVector(conditions);
+    conditions.clear();
 }
 
 void DS_ConditionAnd::ParseMembers(gugu::DataParseContext& context)
@@ -186,6 +364,100 @@ void DS_ConditionPlayerLevel::ParseMembers(gugu::DataParseContext& context)
 
     gugu::binding::ReadInt(context, "minLevel", minLevel);
     gugu::binding::ReadInt(context, "maxLevel", maxLevel);
+}
+
+////////////////////////////////////////////////////////////////
+DS_ConditionCheckFlag::DS_ConditionCheckFlag()
+{
+    flag = "";
+    raised = false;
+}
+
+DS_ConditionCheckFlag::~DS_ConditionCheckFlag()
+{
+}
+
+void DS_ConditionCheckFlag::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Condition::ParseMembers(context);
+
+    gugu::binding::ReadString(context, "flag", flag);
+    gugu::binding::ReadBool(context, "raised", raised);
+}
+
+////////////////////////////////////////////////////////////////
+DS_Action::DS_Action()
+{
+}
+
+DS_Action::~DS_Action()
+{
+}
+
+void DS_Action::ParseMembers(gugu::DataParseContext& context)
+{
+    //gugu::DatasheetObject::ParseMembers(context);
+
+}
+
+////////////////////////////////////////////////////////////////
+DS_ActionList::DS_ActionList()
+{
+}
+
+DS_ActionList::~DS_ActionList()
+{
+    actions.clear();
+}
+
+void DS_ActionList::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Action::ParseMembers(context);
+
+    gugu::binding::ReadDatasheetInstanceArray(context, "actions", "action", actions);
+}
+
+////////////////////////////////////////////////////////////////
+DS_ActionIfCondition::DS_ActionIfCondition()
+{
+    condition = nullptr;
+    actionIfTrue = nullptr;
+    actionIfFalse = nullptr;
+}
+
+DS_ActionIfCondition::~DS_ActionIfCondition()
+{
+    condition = nullptr;
+    actionIfTrue = nullptr;
+    actionIfFalse = nullptr;
+}
+
+void DS_ActionIfCondition::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Action::ParseMembers(context);
+
+    gugu::binding::ReadDatasheetInstance(context, "condition", "condition", condition);
+    gugu::binding::ReadDatasheetInstance(context, "actionIfTrue", "action", actionIfTrue);
+    gugu::binding::ReadDatasheetInstance(context, "actionIfFalse", "action", actionIfFalse);
+}
+
+////////////////////////////////////////////////////////////////
+DS_ActionSetFlag::DS_ActionSetFlag()
+{
+    flag = "";
+    raised = false;
+}
+
+DS_ActionSetFlag::~DS_ActionSetFlag()
+{
+}
+
+void DS_ActionSetFlag::ParseMembers(gugu::DataParseContext& context)
+{
+    DS_Action::ParseMembers(context);
+
+    gugu::binding::ReadString(context, "flag", flag);
+    gugu::binding::ReadBool(context, "raised", raised);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -329,6 +601,34 @@ gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType)
     {
         return new DS_Item;
     }
+    if (classType == "effectGroup")
+    {
+        return new DS_EffectGroup;
+    }
+    if (classType == "effectProjectile")
+    {
+        return new DS_EffectProjectile;
+    }
+    if (classType == "effectArea")
+    {
+        return new DS_EffectArea;
+    }
+    if (classType == "effectDamage")
+    {
+        return new DS_EffectDamage;
+    }
+    if (classType == "effectHeal")
+    {
+        return new DS_EffectHeal;
+    }
+    if (classType == "effectBuff")
+    {
+        return new DS_EffectBuff;
+    }
+    if (classType == "vfx")
+    {
+        return new DS_VFX;
+    }
     if (classType == "conditionAnd")
     {
         return new DS_ConditionAnd;
@@ -336,6 +636,22 @@ gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType)
     if (classType == "conditionPlayerLevel")
     {
         return new DS_ConditionPlayerLevel;
+    }
+    if (classType == "conditionCheckFlag")
+    {
+        return new DS_ConditionCheckFlag;
+    }
+    if (classType == "actionList")
+    {
+        return new DS_ActionList;
+    }
+    if (classType == "actionIfCondition")
+    {
+        return new DS_ActionIfCondition;
+    }
+    if (classType == "actionSetFlag")
+    {
+        return new DS_ActionSetFlag;
     }
     if (classType == "gameSave")
     {

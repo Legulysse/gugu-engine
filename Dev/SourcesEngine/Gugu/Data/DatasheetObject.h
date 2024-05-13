@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Data/DataObject.h"
+#include "Gugu/System/UUID.h"
 
 #include <string>
 #include <vector>
@@ -33,11 +34,14 @@ public:
 
     virtual void ParseMembers(DataParseContext& _kContext) = 0;
 
+    const UUID& GetUuid() const;
+
     // Return the owning datasheet (only if this object is a root object, return nullptr otherwise).
     Datasheet* GetDatasheet() const;
 
 private:
 
+    UUID m_uuid;
     Datasheet* m_datasheet;
 };
 

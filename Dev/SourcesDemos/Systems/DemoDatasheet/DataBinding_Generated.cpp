@@ -109,11 +109,11 @@ DS_General::DS_General()
 DS_General::~DS_General()
 {
     m_faction = nullptr;
-    SafeDelete(m_sprite);
-    SafeDelete(m_sprite2);
+    m_sprite = nullptr;
+    m_sprite2 = nullptr;
     m_factions.clear();
-    ClearStdVector(m_sprites);
-    SafeDelete(playableCondition);
+    m_sprites.clear();
+    playableCondition = nullptr;
 }
 
 void DS_General::ParseMembers(gugu::DataParseContext& context)
@@ -251,11 +251,11 @@ DS_Skill::DS_Skill()
 
 DS_Skill::~DS_Skill()
 {
-    SafeDelete(m_emptyRestriction);
-    SafeDelete(m_nullRestriction);
-    SafeDelete(m_singleRestrictionBase);
-    SafeDelete(m_singleRestrictionFaction);
-    ClearStdVector(m_restrictions);
+    m_emptyRestriction = nullptr;
+    m_nullRestriction = nullptr;
+    m_singleRestrictionBase = nullptr;
+    m_singleRestrictionFaction = nullptr;
+    m_restrictions.clear();
 }
 
 void DS_Skill::ParseMembers(gugu::DataParseContext& context)
@@ -294,7 +294,7 @@ DS_ConditionAnd::DS_ConditionAnd()
 
 DS_ConditionAnd::~DS_ConditionAnd()
 {
-    ClearStdVector(conditions);
+    conditions.clear();
 }
 
 void DS_ConditionAnd::ParseMembers(gugu::DataParseContext& context)

@@ -88,6 +88,8 @@ private:
     void CloseProjectImpl();
     void CloseEditorImpl();
 
+    void MigrateResources() const;
+
 private:
 
     EditorConfig m_editorConfig;

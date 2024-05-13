@@ -17,9 +17,22 @@ class DS_Entity;
 class DS_Character;
 class DS_Faction;
 class DS_Item;
+class DS_Effect;
+class DS_EffectGroup;
+class DS_EffectProjectile;
+class DS_EffectArea;
+class DS_EffectDamage;
+class DS_EffectHeal;
+class DS_EffectBuff;
+class DS_VFX;
 class DS_Condition;
 class DS_ConditionAnd;
 class DS_ConditionPlayerLevel;
+class DS_ConditionCheckFlag;
+class DS_Action;
+class DS_ActionList;
+class DS_ActionIfCondition;
+class DS_ActionSetFlag;
 class DS_GameSave;
 class DS_ItemSave;
 
@@ -72,6 +85,10 @@ public:
     int stamina;
     float speed;
     EWeaponType::Type weapon;
+    const DS_Condition* unlocked;
+    const DS_Action* actionOnDeath;
+    const DS_Effect* attackSkill;
+    const DS_Effect* supportSkill;
 
 protected:
 
@@ -109,6 +126,150 @@ public:
     std::string name;
     gugu::Vector2i size;
     gugu::Vector2f scale;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_Effect : public gugu::DatasheetObject
+{
+public:
+
+    DS_Effect();
+    virtual ~DS_Effect();
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectGroup : public DS_Effect
+{
+public:
+
+    DS_EffectGroup();
+    virtual ~DS_EffectGroup();
+
+public:
+
+    std::vector<const DS_Effect*> effects;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectProjectile : public DS_Effect
+{
+public:
+
+    DS_EffectProjectile();
+    virtual ~DS_EffectProjectile();
+
+public:
+
+    float speed;
+    float lifetime;
+    const DS_Effect* hitEffect;
+    const DS_Effect* endEffect;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectArea : public DS_Effect
+{
+public:
+
+    DS_EffectArea();
+    virtual ~DS_EffectArea();
+
+public:
+
+    int radius;
+    float tick;
+    float duration;
+    const DS_Effect* areaTickEffect;
+    const DS_Effect* areaEnterEffect;
+    const DS_Effect* areaExitEffect;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectDamage : public DS_Effect
+{
+public:
+
+    DS_EffectDamage();
+    virtual ~DS_EffectDamage();
+
+public:
+
+    int damage;
+    const DS_VFX* entityVfx;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectHeal : public DS_Effect
+{
+public:
+
+    DS_EffectHeal();
+    virtual ~DS_EffectHeal();
+
+public:
+
+    int heal;
+    const DS_VFX* entityVfx;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_EffectBuff : public DS_Effect
+{
+public:
+
+    DS_EffectBuff();
+    virtual ~DS_EffectBuff();
+
+public:
+
+    std::string buff;
+    int value;
+    const DS_VFX* entityVfx;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_VFX : public gugu::DatasheetObject
+{
+public:
+
+    DS_VFX();
+    virtual ~DS_VFX();
+
+public:
+
+    std::string particle;
 
 protected:
 
@@ -174,6 +335,95 @@ public:
 
     int minLevel;
     int maxLevel;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_ConditionCheckFlag : public DS_Condition
+{
+public:
+
+    DS_ConditionCheckFlag();
+    virtual ~DS_ConditionCheckFlag();
+
+public:
+
+    virtual bool IsValidImpl(const struct ConditionContext& context) const override;
+
+public:
+
+    std::string flag;
+    bool raised;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_Action : public gugu::DatasheetObject
+{
+public:
+
+    DS_Action();
+    virtual ~DS_Action();
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_ActionList : public DS_Action
+{
+public:
+
+    DS_ActionList();
+    virtual ~DS_ActionList();
+
+public:
+
+    std::vector<const DS_Action*> actions;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_ActionIfCondition : public DS_Action
+{
+public:
+
+    DS_ActionIfCondition();
+    virtual ~DS_ActionIfCondition();
+
+public:
+
+    const DS_Condition* condition;
+    const DS_Action* actionIfTrue;
+    const DS_Action* actionIfFalse;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_ActionSetFlag : public DS_Action
+{
+public:
+
+    DS_ActionSetFlag();
+    virtual ~DS_ActionSetFlag();
+
+public:
+
+    std::string flag;
+    bool raised;
 
 protected:
 

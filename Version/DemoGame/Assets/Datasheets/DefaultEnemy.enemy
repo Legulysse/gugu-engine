@@ -1,9 +1,12 @@
-<?xml version="1.0" ?>
-<Datasheet>
-    <Data name="name" value="Default Enemy" />
-    <Data name="health" value="200" />
-    <Data name="speed" value="50" />
-    <Data name="sprite">
-        <Data name="animset" value="Orc.animset.xml" />
-    </Data>
+<?xml version="1.0"?>
+<Datasheet serializationVersion="2" bindingVersion="1">
+	<RootObject type="enemy" uuid="7422cc8592784ba2bf5ead17da48321f">
+		<Data name="name" value="Default Enemy" />
+		<Data name="health" value="200" />
+		<Data name="speed" value="50" />
+		<Data name="sprite" value="08c45cec3cc048e595802e0326fa3ac3" />
+	</RootObject>
+	<Object type="spriteInfo" uuid="08c45cec3cc048e595802e0326fa3ac3">
+		<Data name="animset" value="Orc.animset.xml" />
+	</Object>
 </Datasheet>

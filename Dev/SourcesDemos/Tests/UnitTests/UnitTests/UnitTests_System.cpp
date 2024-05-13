@@ -693,7 +693,34 @@ void RunUnitTests_System(UnitTestResults* results)
         GUGU_UTEST_CHECK(uuidA != uuidB);
         GUGU_UTEST_CHECK(uuidAA != uuidB);
         GUGU_UTEST_CHECK(uuidA == uuidAA);
-        GUGU_UTEST_CHECK(ToString(uuidA) == uuidA.ToString());
+
+        GUGU_UTEST_CHECK_EQUAL(ToString(uuidA), uuidA.ToString());
+        GUGU_UTEST_CHECK_EQUAL(ToString(uuidB), uuidB.ToString());
+        GUGU_UTEST_CHECK_NOT_EQUAL(ToString(uuidA), ToString(uuidB));
+        GUGU_UTEST_CHECK_NOT_EQUAL(uuidA.ToString(), uuidB.ToString());
+
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString(ToString(uuidA)), uuidA);
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString(ToString(uuidB)), uuidB);
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString(uuidA.ToString()), uuidA);
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString(uuidB.ToString()), uuidB);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString(ToString(uuidA)), uuidB);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString(ToString(uuidB)), uuidA);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString(uuidA.ToString()), uuidB);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString(uuidB.ToString()), uuidA);
+
+        // Test leading zeroes.
+        // 0x0a9468dfa5c24e4d 0xb107820bc502ccea -> 00762349546700426829 12756307456611765482
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("0a9468dfa5c24e4db107820bc502ccea").ToString(), "0a9468dfa5c24e4db107820bc502ccea");
+
+        // Test uppercase.
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("9052F2915FAC4B75A0C93547D1A0ADB3"), UUID::FromString("9052f2915fac4b75a0c93547d1a0adb3"));
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString("38c33747ec1d4dc784267b0ac2f0030b"), UUID::FromString("9052f2915fac4b75a0c93547d1a0adb3"));
+        
+        // Test invalid size.
+        GUGU_UTEST_CHECK_NOT_EQUAL(UUID::FromString("11112222333344445555666677778888"), UUID());
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("0"), UUID());
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("1111"), UUID());
+        GUGU_UTEST_CHECK_EQUAL(UUID::FromString("1111222233334444555566667777888811112222333344445555666677778888"), UUID());
 
         std::vector<std::string> uuids;
         bool validSize = true;
@@ -709,7 +736,7 @@ void RunUnitTests_System(UnitTestResults* results)
 
             for (size_t i = 0; i < uuid.size(); ++i)
             {
-                validChars &= (uuid[i] >= '0' && uuid[i] <= '9') || (uuid[i] >= 'A' && uuid[i] <= 'F');
+                validChars &= (uuid[i] >= '0' && uuid[i] <= '9') || (uuid[i] >= 'a' && uuid[i] <= 'f');
             }
         }
 

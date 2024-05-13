@@ -56,7 +56,7 @@ void ReadDatasheetReference(DataParseContext& _kContext, const std::string& _str
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
     const DatasheetObject* pReference = nullptr;
-    if (impl::ResolveDatasheetLink(_kContext, _strName, pReference))
+    if (impl::ResolveDatasheetReference(_kContext, _strName, pReference))
     {
         _pMember = dynamic_cast<const T*>(pReference);
     }
@@ -68,7 +68,7 @@ void ReadDatasheetReferenceArray(DataParseContext& _kContext, const std::string&
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
     std::vector<const DatasheetObject*> vecReferences;
-    if (impl::ResolveDatasheetLinks(_kContext, _strName, vecReferences))
+    if (impl::ResolveDatasheetReferences(_kContext, _strName, vecReferences))
     {
         _vecMember.clear();
 
@@ -102,11 +102,10 @@ void ReadDatasheetInstance(DataParseContext& _kContext, const std::string& _strN
 {
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
-    DataObject* pInstance = nullptr;
-    if (impl::InstanciateDataObject(_kContext, _strName, _strType, pInstance))
+    DataObject* objectInstance = nullptr;
+    if (impl::ResolveDatasheetObjectInstance(_kContext, _strName, _strType, objectInstance))
     {
-        SafeDelete(_pMember);
-        _pMember = dynamic_cast<const T*>(pInstance);
+        _pMember = dynamic_cast<const T*>(objectInstance);
     }
 }
 
@@ -116,9 +115,9 @@ void ReadDatasheetInstanceArray(DataParseContext& _kContext, const std::string& 
     static_assert(std::is_base_of<DatasheetObject, T>::value, "Data type is not based on DatasheetObject type");
 
     std::vector<DataObject*> vecInstances;
-    if (impl::InstanciateDataObjects(_kContext, _strName, _strType, vecInstances))
+    if (impl::ResolveDatasheetObjectInstances(_kContext, _strName, _strType, vecInstances))
     {
-        ClearStdVector(_vecMember);
+        _vecMember.clear();
 
         for (size_t i = 0; i < vecInstances.size(); ++i)
         {
@@ -135,7 +134,7 @@ void ReadDatasaveInstance(DataParseContext& _kContext, const std::string& _strNa
     static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasaveObject type");
 
     DataObject* pInstance = nullptr;
-    if (impl::InstanciateDataObject(_kContext, _strName, _strType, pInstance))
+    if (impl::InstanciateDatasaveObject(_kContext, _strName, _strType, pInstance))
     {
         SafeDelete(_pMember);
         _pMember = dynamic_cast<T*>(pInstance);
@@ -148,7 +147,7 @@ void ReadDatasaveInstanceArray(DataParseContext& _kContext, const std::string& _
     static_assert(std::is_base_of<DatasaveObject, T>::value, "Data type is not based on DatasaveObject type");
 
     std::vector<DataObject*> vecInstances;
-    if (impl::InstanciateDataObjects(_kContext, _strName, _strType, vecInstances))
+    if (impl::InstanciateDatasaveObjects(_kContext, _strName, _strType, vecInstances))
     {
         ClearStdVector(_vecMember);
 

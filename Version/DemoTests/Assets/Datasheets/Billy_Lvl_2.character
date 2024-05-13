@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<Datasheet serializationVersion="2" bindingVersion="1" parent="Billy.character">
+	<RootObject type="character" uuid="3a8b14247e664545a2d3208f4ec14016">
+		<Data name="attackSkill" value="d6597db7ac624bc48b7500caa3a25567" />
+		<Data name="speed" value="110" />
+		<Data name="stamina" value="220" />
+	</RootObject>
+	<Object type="effectBuff" uuid="25bb406f94894b55a4b40d6d70494e6a">
+		<Data name="buff" value="Regen" />
+		<Data name="value" value="10" />
+	</Object>
+	<Object type="effectDamage" uuid="6dfad96c85de43c29adc792651c15a83">
+		<Data name="damage" value="120" />
+	</Object>
+	<Object type="effectDamage" uuid="9e09b2734ca84c1d8de3f26fc205b683">
+		<Data name="damage" value="10" />
+	</Object>
+	<Object type="effectArea" uuid="a290c8e6459b4de6adfdbb9e781eed63">
+		<Data name="areaTickEffect" value="9e09b2734ca84c1d8de3f26fc205b683" />
+		<Data name="duration" value="1" />
+		<Data name="radius" value="50" />
+		<Data name="tick" value="0.100000001" />
+	</Object>
+	<Object type="effectGroup" uuid="d6597db7ac624bc48b7500caa3a25567">
+		<Data name="effects">
+			<Child value="6dfad96c85de43c29adc792651c15a83" />
+			<Child value="a290c8e6459b4de6adfdbb9e781eed63" />
+		</Data>
+	</Object>
+	<ObjectOverride type="effectArea" uuid="18413098e383407aa154c3331afd1dbe">
+		<Data name="radius" value="130" />
+		<Data name="areaEnterEffect" value="25bb406f94894b55a4b40d6d70494e6a" />
+		<Data name="duration" value="4" />
+	</ObjectOverride>
+	<ObjectOverride type="effectHeal" uuid="89dee05f71a44417a64600618a49693c">
+		<Data name="heal" value="25" />
+		<Data name="entityVfx" value="TestArea2.vfx" />
+	</ObjectOverride>
+</Datasheet>

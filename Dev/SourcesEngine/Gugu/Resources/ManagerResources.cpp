@@ -42,6 +42,7 @@ ManagerResources::ManagerResources()
     m_debugFont = "";
     m_useFullPath = false;
     m_defaultTextureSmooth = false;
+    m_handleResourceDependencies = false;
 }
 
 ManagerResources::~ManagerResources()
@@ -985,6 +986,10 @@ void ManagerResources::NotifyResourceUpdated(const Resource* resource)
     {
         // Notify referencers that a dependency has been updated.
         std::set<Resource*> referencers = it->second.referencers;
+        for (const auto& referencer : referencers)
+        {
+            referencer->OnDependencyUpdated(resource);
+        }
 
         for (const auto& referencer : referencers)
         {

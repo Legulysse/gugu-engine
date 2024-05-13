@@ -110,13 +110,13 @@ void WriteEnumValues(DataSaveContext& _kContext, const std::string& _strName, co
     }
 }
 
-const DatasheetObject* ResolveDatasheetLink(const std::string& _strName)
+const DatasheetObject* ResolveDatasheetReference(const std::string& _strName)
 {
     Datasheet* datasheet = GetResources()->GetDatasheet(_strName);
     return datasheet ? datasheet->GetRootObject() : nullptr;
 }
 
-bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pNewDatasheet)
+bool ResolveDatasheetReference(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pNewDatasheet)
 {
     if (pugi::xml_node pNode = FindNodeData(_kContext, _strName))
     {
@@ -125,7 +125,7 @@ bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strNa
         if (datasheetID != "")
         {
             std::string strSheetName = datasheetID;
-            _pNewDatasheet = ResolveDatasheetLink(strSheetName);
+            _pNewDatasheet = ResolveDatasheetReference(strSheetName);
         }
 
         return true;
@@ -134,7 +134,7 @@ bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strNa
     return false;
 }
 
-bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecReferences)
+bool ResolveDatasheetReferences(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecReferences)
 {
     if (pugi::xml_node node = FindNodeData(_kContext, _strName))
     {
@@ -144,7 +144,7 @@ bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strN
             std::string datasheetID = child.attribute("value").as_string();
             if (datasheetID != "")
             {
-                const DatasheetObject* reference = ResolveDatasheetLink(datasheetID);
+                const DatasheetObject* reference = ResolveDatasheetReference(datasheetID);
                 _vecReferences.push_back(reference);
             }
             else
@@ -152,84 +152,6 @@ bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strN
                 _vecReferences.push_back(nullptr);
             }
         }
-
-        return true;
-    }
-
-    return false;
-}
-
-DataObject* InstanciateDataObject(DataParseContext& _kContext, const std::string& _strType)
-{
-    DataObject* instance = GetResources()->InstanciateDataObject(_strType);
-    if (instance)
-    {
-        instance->ParseMembers(_kContext);
-        return instance;
-    }
-    else
-    {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasheet : {0}", _strType));
-    }
-
-    return nullptr;
-}
-
-bool InstanciateDataObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
-{
-    if (pugi::xml_node pNode = FindNodeData(_kContext, _strName))
-    {
-        // Check type overload.
-        // If serialized type is explicitely empty, we force a null instance (can be used to erase a parent instance through inheritance).
-        // If type is missing, no object will be instanced here, and we will keep the inherited object from parent instance.
-        pugi::xml_attribute pAttributeType = pNode.attribute("type");
-        std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
-
-        if (strType != "")
-        {
-            pugi::xml_node* pNodeParent = _kContext.currentNode;
-            _kContext.currentNode = &pNode;
-
-            _pInstance = InstanciateDataObject(_kContext, strType);
-
-            _kContext.currentNode = pNodeParent;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
-{
-    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
-    {
-        pugi::xml_node* pNodeParent = _kContext.currentNode;
-
-        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
-        {
-            // Check type overload.
-            // If serialized type is explicitely empty, we force a null instance (can be used for explicit empty array entries).
-            // If type is missing, we will also force a null instance (this may evolve later if I handle inherited arrays override per entry).
-            pugi::xml_attribute pAttributeType = child.attribute("type");
-            std::string strType = (pAttributeType) ? pAttributeType.as_string() : _strDefaultType;
-
-            if (strType != "")
-            {
-                // Instance can be null.
-                _kContext.currentNode = &child;
-                DataObject* pInstance = InstanciateDataObject(_kContext, strType);
-
-                _vecInstances.push_back(pInstance);
-            }
-            else
-            {
-                _vecInstances.push_back(nullptr);
-            }
-        }
-
-        _kContext.currentNode = pNodeParent;
 
         return true;
     }
@@ -253,6 +175,134 @@ void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _st
             pNode.append_child("Child").append_attribute("value");
         }
     }
+}
+
+bool ResolveDatasheetObjectInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
+{
+    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
+    {
+        // If a node exists but no uuid is provided, or an empty uuid is provided, we force a null instance (can be used to erase a parent instance through inheritance).
+        pugi::xml_attribute uuidAttribute = node.attribute("value");
+        if (uuidAttribute && !StringEquals(uuidAttribute.as_string(), ""))
+        {
+            const auto& it = _kContext.objectByUUID->find(UUID::FromString(uuidAttribute.as_string()));
+            if (it != _kContext.objectByUUID->end())
+            {
+                _pInstance = it->second;
+            }
+
+            // TODO: raise an error if an uuid is provided but no object could be found.
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool ResolveDatasheetObjectInstances(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
+{
+    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
+    {
+        pugi::xml_node* parentNode = _kContext.currentNode;
+
+        for (pugi::xml_node childNode = node.child("Child"); childNode; childNode = childNode.next_sibling("Child"))
+        {
+            // If a node exists but no uuid is provided, or an empty uuid is provided, we force a null instance (can be used for explicit empty array entries).
+            pugi::xml_attribute uuidAttribute = childNode.attribute("value");
+            if (uuidAttribute && !StringEquals(uuidAttribute.as_string(), ""))
+            {
+                const auto& it = _kContext.objectByUUID->find(UUID::FromString(uuidAttribute.as_string()));
+                if (it != _kContext.objectByUUID->end())
+                {
+                    _vecInstances.push_back(it->second);
+                }
+                else
+                {
+                    // TODO: raise an error if an uuid is provided but no object could be found.
+                    _vecInstances.push_back(nullptr);
+                }
+            }
+            else
+            {
+                _vecInstances.push_back(nullptr);
+            }
+        }
+
+        _kContext.currentNode = parentNode;
+
+        return true;
+    }
+
+    return false;
+}
+
+DataObject* InstanciateDatasaveObject(DataParseContext& _kContext, const std::string& _strType)
+{
+    DataObject* instance = GetResources()->InstanciateDataObject(_strType);
+    if (instance)
+    {
+        instance->ParseMembers(_kContext);
+        return instance;
+    }
+    else
+    {
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Could not instantiate Datasave Object : {0}", _strType));
+    }
+
+    return nullptr;
+}
+
+bool InstanciateDatasaveObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance)
+{
+    if (pugi::xml_node pNode = FindNodeData(_kContext, _strName))
+    {
+        pugi::xml_attribute pAttributeType = pNode.attribute("type");
+        if (pAttributeType && !StringEquals(pAttributeType.as_string(), ""))
+        {
+            pugi::xml_node* pNodeParent = _kContext.currentNode;
+            _kContext.currentNode = &pNode;
+
+            _pInstance = InstanciateDatasaveObject(_kContext, pAttributeType.as_string());
+
+            _kContext.currentNode = pNodeParent;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool InstanciateDatasaveObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances)
+{
+    if (pugi::xml_node node = FindNodeData(_kContext, _strName))
+    {
+        pugi::xml_node* pNodeParent = _kContext.currentNode;
+
+        for (pugi::xml_node child = node.child("Child"); child; child = child.next_sibling("Child"))
+        {
+            pugi::xml_attribute pAttributeType = child.attribute("type");
+            if (pAttributeType && !StringEquals(pAttributeType.as_string(), ""))
+            {
+                // Instance can be null.
+                _kContext.currentNode = &child;
+                DataObject* pInstance = InstanciateDatasaveObject(_kContext, pAttributeType.as_string());
+
+                _vecInstances.push_back(pInstance);
+            }
+            else
+            {
+                _vecInstances.push_back(nullptr);
+            }
+        }
+
+        _kContext.currentNode = pNodeParent;
+
+        return true;
+    }
+
+    return false;
 }
 
 void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember)

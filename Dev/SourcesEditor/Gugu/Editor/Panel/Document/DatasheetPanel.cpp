@@ -10,6 +10,7 @@
 #include "Gugu/Editor/Editor.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
+#include "Gugu/Editor/Resources/VirtualDatasheetObject.h"
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/External/ImGuiUtility.h"
@@ -38,28 +39,33 @@ void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)
     DisplayDatasheet();
 }
 
+bool DatasheetPanel::SaveToFileImpl()
+{
+    m_datasheet->SortDataValues();
+    return DocumentPanel::SaveToFileImpl();
+}
+
 void DatasheetPanel::DisplayDatasheet()
 {
-    if (m_datasheet->m_classDefinition == nullptr)
+    if (m_datasheet->m_rootObject == nullptr)
         return;
 
     DisplayParentReference();
 
     // Using those as a base value to create width/height that are factor of the size of our font
     const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
-    ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody;
-    if (ImGui::BeginTable("DatasheetPropertiesTable", 4, tableFlags))
+    ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_ScrollY;
+    if (ImGui::BeginTable("DatasheetPropertiesTable", 3, tableFlags))
     {
         // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
-        ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_NoHide;
-        ImGui::TableSetupColumn("name", columnFlags);
-        ImGui::TableSetupColumn("value", columnFlags);
-        ImGui::TableSetupColumn("depth", columnFlags);
-        ImGui::TableSetupColumn("reset", columnFlags);
+        ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_NoHide | ImGuiTableColumnFlags_WidthFixed;
+        ImGui::TableSetupColumn("name", columnFlags, 350.f);
+        ImGui::TableSetupColumn("value", columnFlags, 300.f);
+        ImGui::TableSetupColumn("depth", columnFlags, 100.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 
-        for (DatasheetParser::ClassDefinition* classDefinition : m_datasheet->m_classDefinition->m_combinedInheritedClasses)
+        for (DatasheetParser::ClassDefinition* classDefinition : m_datasheet->m_rootObject->m_classDefinition->m_combinedInheritedClasses)
         {
             //ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
             //if (ImGui::CollapsingHeader(classDefinition->m_name.c_str(), headerFlags))
@@ -127,7 +133,7 @@ void DatasheetPanel::DisplayParentReference()
         }
     }
 
-    std::string parentObjectDefinition = !m_datasheet->m_classDefinition ? "None" : m_datasheet->m_classDefinition->m_name;
+    std::string parentObjectDefinition = !m_datasheet->GetClassDefinition() ? "None" : m_datasheet->GetClassDefinition()->m_name;
     std::string description = parentReference ? "Valid Ref" : (dummyParentRefID.empty() ? "Empty Ref" : (invalidRecursiveParent ? "Invalid Recursive Ref" : "Invalid Ref"));
 
     ImGui::Indent();
@@ -161,8 +167,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
     ImGui::TableNextRow();
 
-    bool isParentData = false;
-    VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
+    VirtualDatasheetObject::DataValue* dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
 
     if (!dataMemberDefinition->isArray)
     {
@@ -177,11 +182,11 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
         if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
         {
-            DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, dataValue, isParentData);
+            DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, dataValue);
         }
         else
         {
-            DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, dataValue, isParentData);
+            DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, dataValue);
         }
 
         ImGui::PopItemWidth();
@@ -191,32 +196,13 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             DisplayInlineDataMemberContent(dataMemberDefinition, dataValue);
         }
 
-        ImGui::TableNextColumn();
-        ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
-
-        ImGui::TableNextColumn();
-        if (dataValue && !isParentData)
-        {
-            // TODO: I will probably end up using a push ID for the whole data member edition.
-            if (ImGui::Button(StringFormat("Reset##{0}", dataMemberDefinition->name).c_str()))
-            {
-                if (dataObject->RemoveDataValue(dataMemberDefinition->name))
-                {
-                    // Retrieve the parent data now that we have removed the self data.
-                    dataValue = nullptr;
-                    isParentData = false;
-                    dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
-
-                    RaiseDirty();
-                }
-            }
-        }
+        DisplayDepthColumn(dataMemberDefinition, dataObject, dataValue);
 
         if (nodeOpen)
         {
             if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
             {
-                DisplayInstanceDataMemberContent(dataMemberDefinition, dataValue, isParentData);
+                DisplayInstanceDataMemberContent(dataMemberDefinition, dataValue);
             }
 
             ImGui::TreePop();
@@ -235,14 +221,9 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         // TODO: I need to design the user flow for overriding default and inherited arrays.
         if (ImGui::Button("+"))
         {
-            if (!dataValue || isParentData)
-            {
-                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-            }
+            InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
-            // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
-            VirtualDatasheetObject::DataValue* newChildDataValue = new VirtualDatasheetObject::DataValue;
-            dataValue->value_children.push_back(newChildDataValue);
+            dataObject->InstanciateNewArrayMemberDataValue(dataValue);
             RaiseDirty();
         }
 
@@ -257,28 +238,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             ImGui::Text("Empty Array");
         }
 
-        ImGui::TableNextColumn();
-        ImGui::Text(dataValue ? (isParentData ? "parent " : "self   ") : "default");
-
-        ImGui::TableNextColumn();
-        if (dataValue && !isParentData)
-        {
-            // TODO: I will probably end up using a push ID for the whole data member edition.
-            if (ImGui::Button(StringFormat("Reset##{0}", dataMemberDefinition->name).c_str()))
-            {
-                if (dataObject->RemoveDataValue(dataMemberDefinition->name))
-                {
-                    // Retrieve the parent data now that we have removed the self data.
-                    dataValue = nullptr;
-                    isParentData = false;
-                    dataValue = dataObject->GetDataValue(dataMemberDefinition->name, isParentData);
-
-                    RaiseDirty();
-                }
-            }
-        }
-
-        ImGui::BeginDisabled(isParentData);
+        DisplayDepthColumn(dataMemberDefinition, dataObject, dataValue);
 
         if (nodeOpen)
         {
@@ -293,6 +253,8 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
                     ImGui::TableNextRow();
 
+                    ImGui::BeginDisabled(dataValue->owner->m_datasheet != m_datasheet);
+
                     ImGui::TableNextColumn();
                     ImGuiTreeNodeFlags nodeChildFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && childDataValue && childDataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
                     bool nodeChildOpen = ImGui::TreeNodeEx("##arrayitem", nodeChildFlags, "%s [%d]", dataMemberDefinition->name.c_str(), childIndex);
@@ -306,11 +268,11 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
                     if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
-                        DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
+                        DisplayInstanceDataMemberValue(dataMemberDefinition, dataObject, childDataValue);
                     }
                     else
                     {
-                        DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, childDataValue, isParentData);
+                        DisplayInlineDataMemberValue(dataMemberDefinition, dataObject, childDataValue);
                     }
 
                     ImGui::PopItemWidth();
@@ -326,14 +288,15 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                         DisplayInlineDataMemberContent(dataMemberDefinition, childDataValue);
                     }
 
-                    ImGui::TableNextColumn();
-                    ImGui::TableNextColumn();
+                    DisplayEmptyDepthColumn();
+
+                    ImGui::EndDisabled();
 
                     if (nodeChildOpen)
                     {
                         if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                         {
-                            DisplayInstanceDataMemberContent(dataMemberDefinition, childDataValue, isParentData);
+                            DisplayInstanceDataMemberContent(dataMemberDefinition, childDataValue);
                         }
 
                         ImGui::TreePop();
@@ -342,11 +305,9 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::PopID();
 
                     // Handle child removal and array iteration.
-                    if (removeChild)
+                    if (removeChild && dataValue->RemoveChildDataValue(childIndex))
                     {
-                        // TODO: I probably need to move this in a dedicated function (I also need to inject the default value).
-                        SafeDelete(dataValue->value_children[childIndex]);
-                        StdVectorRemoveAt(dataValue->value_children, childIndex);
+                        m_datasheet->DeleteOrphanedInstanceObjects();
                         RaiseDirty();
                     }
                     else
@@ -359,13 +320,40 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
             ImGui::TreePop();
         }
 
-        ImGui::EndDisabled();
-
         ImGui::PopID();
     }
 }
 
-void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)
+void DatasheetPanel::DisplayDepthColumn(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue)
+{
+    ImGui::TableNextColumn();
+
+    ImGui::Text(dataValue ? (dataValue->owner->m_datasheet != m_datasheet ? "parent " : "self   ") : "default");
+
+    if (dataValue && dataValue->owner->m_datasheet == m_datasheet)
+    {
+        ImGui::SameLine();
+        if (ImGui::Button("Reset"))
+        {
+            if (dataObject->RemoveDataValue(dataMemberDefinition->name))
+            {
+                // Retrieve the parent data now that we have removed the self data.
+                dataValue = nullptr;
+                dataValue = dataObject->GetDataValue(dataMemberDefinition->name);
+
+                m_datasheet->DeleteOrphanedInstanceObjects();
+                RaiseDirty();
+            }
+        }
+    }
+}
+
+void DatasheetPanel::DisplayEmptyDepthColumn()
+{
+    ImGui::TableNextColumn();
+}
+
+void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue)
 {
     //ImGui::PushItemWidth(-1);
 
@@ -374,10 +362,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         bool dummy = dataValue ? dataValue->value_bool : dataMemberDefinition->defaultValue_bool;
         if (ImGui::Checkbox("##value", &dummy))
         {
-            if (!dataValue || isParentData)
-            {
-                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-            }
+            InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
             dataValue->value_bool = dummy;
             RaiseDirty();
@@ -388,10 +373,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         int dummy = dataValue ? dataValue->value_int : dataMemberDefinition->defaultValue_int;
         if (ImGui::InputInt("##value", &dummy))
         {
-            if (!dataValue || isParentData)
-            {
-                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-            }
+            InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
             dataValue->value_int = dummy;
             RaiseDirty();
@@ -402,10 +384,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         float dummy = dataValue ? dataValue->value_float : dataMemberDefinition->defaultValue_float;
         if (ImGui::InputFloat("##value", &dummy))
         {
-            if (!dataValue || isParentData)
-            {
-                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-            }
+            InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
             dataValue->value_float = dummy;
             RaiseDirty();
@@ -416,10 +395,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
         if (ImGui::InputText("##value", &dummy))
         {
-            if (!dataValue || isParentData)
-            {
-                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-            }
+            InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
             dataValue->value_string = dummy;
             RaiseDirty();
@@ -438,10 +414,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                 bool selected = (dummy == comboValues[i]);
                 if (ImGui::Selectable(comboValues[i].c_str(), selected))
                 {
-                    if (!dataValue || isParentData)
-                    {
-                        dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-                    }
+                    InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
                     dataValue->value_string = comboValues[i];
                     RaiseDirty();
@@ -462,10 +435,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         Vector2i dummy = dataValue ? dataValue->value_vector2i : dataMemberDefinition->defaultValue_vector2i;
         if (ImGui::InputInt2("##value", &dummy))
         {
-            if (!dataValue || isParentData)
-            {
-                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-            }
+            InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
             dataValue->value_vector2i = dummy;
             RaiseDirty();
@@ -476,10 +446,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         Vector2f dummy = dataValue ? dataValue->value_vector2f : dataMemberDefinition->defaultValue_vector2f;
         if (ImGui::InputFloat2("##value", &dummy))
         {
-            if (!dataValue || isParentData)
-            {
-                dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-            }
+            InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
             dataValue->value_vector2f = dummy;
             RaiseDirty();
@@ -497,10 +464,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
             std::string dummyRefID = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
             if (ImGui::InputText("##value", &dummyRefID))
             {
-                if (!dataValue || isParentData)
-                {
-                    dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-                }
+                InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
                 // TODO: I should encapsulate this in some kind of GetOrLoad method.
                 if (GetResources()->IsResourceLoaded(dummyRefID))
@@ -512,7 +476,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                     objectReference = GetEditor()->GetDatasheetParser()->InstanciateDatasheetResource(dummyRefID);
                 }
 
-                if (objectReference && !objectReference->m_classDefinition->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
+                if (objectReference && !objectReference->GetClassDefinition()->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
                 {
                     objectReference = nullptr;
                 }
@@ -530,7 +494,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                     {
                         VirtualDatasheet* checkReference = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(dummyRefID));
 
-                        if (checkReference && checkReference->m_classDefinition->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
+                        if (checkReference && checkReference->GetClassDefinition()->IsDerivedFromClass(dataMemberDefinition->objectDefinition))
                         {
                             dataValue->value_objectReference = checkReference;
 
@@ -565,7 +529,7 @@ void DatasheetPanel::DisplayInlineDataMemberContent(DatasheetParser::DataMemberD
     }
 }
 
-void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)
+void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue)
 {
     DatasheetParser::ClassDefinition* instanceDefinition = dataValue ? dataValue->value_objectInstanceDefinition : nullptr;
     std::string dummyClassName = instanceDefinition ? instanceDefinition->m_name : "";
@@ -590,10 +554,7 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
             bool selected = (dummyClassName == comboValues[i]);
             if (ImGui::Selectable(comboValues[i].c_str(), selected))
             {
-                if (!dataValue || isParentData)
-                {
-                    dataValue = dataObject->RegisterDataValue(dataMemberDefinition);
-                }
+                bool isNewData = InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
                 DatasheetParser::ClassDefinition* newInstanceDefinition = nullptr;
 
@@ -602,15 +563,28 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
                     GetEditor()->GetDatasheetParser()->GetClassDefinition(comboValues[i], newInstanceDefinition);
                 }
 
-                if (newInstanceDefinition != instanceDefinition || isParentData)
+                if (newInstanceDefinition != instanceDefinition || isNewData)
                 {
-                    SafeDelete(dataValue->value_objectInstance);
+                    if (m_datasheet->DeleteInstanceObject(dataValue->value_objectInstance))
+                    {
+                        if (newInstanceDefinition)
+                        {
+                            VirtualDatasheetObject* newInstanceObject = m_datasheet->InstanciateNewObject(newInstanceDefinition);
 
-                    VirtualDatasheetObject* newInstanceObject = new VirtualDatasheetObject;
-                    dataValue->value_objectInstanceDefinition = newInstanceDefinition;
-                    dataValue->value_objectInstance = newInstanceObject;
+                            dataValue->value_objectInstanceDefinition = newInstanceDefinition;
+                            dataValue->value_objectInstance = newInstanceObject;
+                            dataValue->value_string = newInstanceObject->m_uuid.ToString();
+                        }
+                        else
+                        {
+                            dataValue->value_objectInstanceDefinition = nullptr;
+                            dataValue->value_objectInstance = nullptr;
+                            dataValue->value_string = "";
+                        }
+                    }
                 }
 
+                m_datasheet->DeleteOrphanedInstanceObjects();
                 RaiseDirty();
             }
 
@@ -627,26 +601,58 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
     //ImGui::PopItemWidth();
 }
 
-void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue, bool isParentData)
+void DatasheetPanel::DisplayInstanceDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue)
 {
     // If the definition is null, then the instance itself is null.
     if (dataValue && dataValue->value_objectInstanceDefinition)
     {
-        ImGui::PushID(dataMemberDefinition->name.c_str());
-        ImGui::BeginDisabled(isParentData);
+        auto objectDefinition = dataValue->value_objectInstanceDefinition;
+        auto objectInstance = dataValue->value_objectInstance;
 
-        for (DatasheetParser::ClassDefinition* classDefinition : dataValue->value_objectInstanceDefinition->m_combinedInheritedClasses)
+        // Check if we have an override for this object.
+        if (objectInstance->m_datasheet != m_datasheet)
+        {
+            VirtualDatasheetObject* overrideObject = m_datasheet->GetObjectOverrideFromUuid(dataValue->value_objectInstance->m_uuid);
+            if (overrideObject)
+            {
+                objectInstance = overrideObject;
+            }
+        }
+
+        ImGui::PushID(dataMemberDefinition->name.c_str());
+
+        for (DatasheetParser::ClassDefinition* classDefinition : objectDefinition->m_combinedInheritedClasses)
         {
             ImGui::PushID(classDefinition->m_name.c_str());
 
-            DisplayDataClass(classDefinition, dataValue->value_objectInstance);
+            DisplayDataClass(classDefinition, objectInstance);
 
             ImGui::PopID();
         }
 
-        ImGui::EndDisabled();
         ImGui::PopID();
     }
+}
+
+bool DatasheetPanel::InstanciateDataObjectAndValueIfNeeded(VirtualDatasheetObject*& dataObject, VirtualDatasheetObject::DataValue*& dataValue, DatasheetParser::DataMemberDefinition* dataMemberDefinition)
+{
+    bool isNewData = false;
+
+    if (dataObject->m_datasheet != m_datasheet)
+    {
+        VirtualDatasheetObject* parentObject = dataObject;
+        dataObject = m_datasheet->InstanciateNewObjectOverride(parentObject->m_classDefinition, parentObject->m_uuid);
+        dataObject->SetParentObject(parentObject);
+        isNewData = true;
+    }
+
+    if (isNewData || !dataValue || dataValue->owner->m_datasheet != m_datasheet)
+    {
+        dataValue = dataObject->InstanciateNewClassMemberDataValue(dataMemberDefinition);
+        isNewData = true;
+    }
+
+    return isNewData;
 }
 
 void DatasheetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)

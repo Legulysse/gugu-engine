@@ -8,6 +8,7 @@
 // Includes
 
 #include <sstream>
+#include <charconv>
 
 #if defined(GUGU_OS_WINDOWS)
     #include <combaseapi.h>
@@ -28,21 +29,15 @@ UUID UUID::Generate()
     HRESULT hr = CoCreateGuid(&guid);
     if (SUCCEEDED(hr))
     {
-        // This variation loses the original value (probably due to endianness ?) but is still a valid uuid in itself.
-        static_assert(sizeof(GUID) == sizeof(UUID));
-        uuid = reinterpret_cast<UUID&>(guid);
-
-        // This variation allows an exact string version of the original GUID (but is slower).
-        //std::string uuid;
-        //uuid.resize(32, '0');
-        //snprintf(uuid.data(), 9, "%08X", guid.Data1);
-        //snprintf(uuid.data() + 8, 5, "%04hX", guid.Data2);
-        //snprintf(uuid.data() + 12, 5, "%04hX", guid.Data3);
-
-        //for (size_t i = 0; i < 8; ++i)
-        //{
-        //    snprintf(uuid.data() + 16 + i * 2, 3, "%02X", guid.Data4[i]);
-        //}
+        uuid.m_data1 = ((uint64_t)guid.Data1) << 32 | ((uint64_t)guid.Data2) << 16 | (uint64_t)guid.Data3;
+        uuid.m_data2 = ((uint64_t)guid.Data4[0]) << 56
+            | ((uint64_t)guid.Data4[1]) << 48
+            | ((uint64_t)guid.Data4[2]) << 40
+            | ((uint64_t)guid.Data4[3]) << 32
+            | ((uint64_t)guid.Data4[4]) << 24
+            | ((uint64_t)guid.Data4[5]) << 16
+            | ((uint64_t)guid.Data4[6]) << 8
+            | (uint64_t)guid.Data4[7];
     }
 
 #endif
@@ -50,13 +45,36 @@ UUID UUID::Generate()
     return uuid;
 }
 
+UUID UUID::FromString(const std::string& value)
+{
+    if (value.size() == 32)
+    {
+        UUID uuid;
+        std::from_chars(value.data(), value.data() + 16, uuid.m_data1, 16);
+        std::from_chars(value.data() + 16, value.data() + 16 + 16, uuid.m_data2, 16);
+        return uuid;
+    }
+    else
+    {
+        return UUID();
+    }
+}
+
 std::string UUID::ToString() const
 {
+    // Note: std::to_chars does not seem to handle leading zeroes and will generate wrong results.
     std::string uuid;
     uuid.resize(32, '0');
-    snprintf(uuid.data(), 17, "%016llX", m_data1);
-    snprintf(uuid.data() + 16, 17, "%016llX", m_data2);
+    //std::to_chars(uuid.data(), uuid.data() + 16, m_data1, 16);
+    //std::to_chars(uuid.data() + 16, uuid.data() + 16 + 16, m_data2, 16);
+    snprintf(uuid.data(), 17, "%016llx", m_data1);
+    snprintf(uuid.data() + 16, 17, "%016llx", m_data2);
     return uuid;
+}
+
+bool UUID::IsZero() const
+{
+    return m_data1 == 0 && m_data2 == 0;
 }
 
 bool UUID::operator == (const UUID& right) const

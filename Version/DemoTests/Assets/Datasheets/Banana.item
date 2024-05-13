@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1" parent="BaseConsumable.item">
-	<Data name="name" value="Banana" />
+<Datasheet serializationVersion="2" bindingVersion="1" parent="BaseConsumable.item">
+	<RootObject type="item" uuid="2e7bdf288b1d4ffda4d12eeb0cf9c714">
+		<Data name="name" value="Banana" />
+	</RootObject>
 </Datasheet>

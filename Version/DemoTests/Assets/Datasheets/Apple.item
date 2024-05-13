@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1" parent="BaseConsumable.item">
-	<Data name="name" value="Apple" />
-	<Data name="size" x="32" y="48" />
-	<Data name="scale" x="1" y="1.20000005" />
+<Datasheet serializationVersion="2" bindingVersion="1" parent="BaseConsumable.item">
+	<RootObject type="item" uuid="b24a3c1451164d63840a3fff143d2eff">
+		<Data name="name" value="Apple" />
+		<Data name="scale" x="1" y="1.20000005" />
+		<Data name="size" x="32" y="48" />
+	</RootObject>
 </Datasheet>

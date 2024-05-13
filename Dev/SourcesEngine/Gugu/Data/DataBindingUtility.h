@@ -4,9 +4,11 @@
 // Includes
 
 #include "Gugu/Math/Vector2.h"
+#include "Gugu/System/UUID.h"
 
 #include <string>
 #include <vector>
+#include <map>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -31,6 +33,7 @@ namespace gugu {
 struct DataParseContext
 {
     pugi::xml_node* currentNode;
+    const std::map<UUID, DataObject*>* objectByUUID;
 };
 
 struct DataSaveContext
@@ -164,15 +167,19 @@ bool ReadEnumValues(DataParseContext& _kContext, const std::string& _strName, co
 void WriteEnumValue(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, int _iValue);
 void WriteEnumValues(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<int>& _vecValues);
 
-const DatasheetObject* ResolveDatasheetLink(const std::string& _strName);
-bool ResolveDatasheetLink(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
-bool ResolveDatasheetLinks(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
-
-DataObject* InstanciateDataObject(DataParseContext& _kContext, const std::string& _strType);
-bool InstanciateDataObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
-bool InstanciateDataObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
+const DatasheetObject* ResolveDatasheetReference(const std::string& _strName);
+bool ResolveDatasheetReference(DataParseContext& _kContext, const std::string& _strName, const DatasheetObject*& _pDatasheet);
+bool ResolveDatasheetReferences(DataParseContext& _kContext, const std::string& _strName, std::vector<const DatasheetObject*>& _vecDatasheets);
 
 void WriteDatasheetReferences(DataSaveContext& _kContext, const std::string& _strName, const std::vector<const DatasheetObject*>& _pMember);
+
+bool ResolveDatasheetObjectInstance(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
+bool ResolveDatasheetObjectInstances(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
+
+DataObject* InstanciateDatasaveObject(DataParseContext& _kContext, const std::string& _strType);
+bool InstanciateDatasaveObject(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, DataObject*& _pInstance);
+bool InstanciateDatasaveObjects(DataParseContext& _kContext, const std::string& _strName, const std::string& _strDefaultType, std::vector<DataObject*>& _vecInstances);
+
 void WriteDatasaveInstances(DataSaveContext& _kContext, const std::string& _strName, const std::string& _strType, const std::vector<DatasaveObject*>& _pMember);
 
 }   // namespace impl

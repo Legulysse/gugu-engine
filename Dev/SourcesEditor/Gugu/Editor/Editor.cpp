@@ -31,6 +31,7 @@
 #include "Gugu/Window/Window.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
@@ -316,6 +317,28 @@ void Editor::Update(const DeltaTime& dt)
             if (ImGui::MenuItem("Reset Panels", "F1"))
             {
                 ResetPanels();
+            }
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Tools"))
+        {
+            // TODO: To fully implement this method I first need a few changes :
+            // - Refactor resources loader/getters (see notes near the call to InstanciateDatasheetResource in OpenDocument).
+            // - Ensure no serialization code remains in the editor (see the DatasheetPanel::OnSaveImpl for example).
+            // - Ensure I unload resources along the process to avoid a big memory spike.
+            // - Implement LoadFromFile properly for resources that dont use xml (textures, audio).
+            // - Maybe add a filter to ignore unsupported types (.txt, .md, etc).
+            if (ImGui::MenuItem("Force Save All"))
+            {
+                GetResources()->PreloadAll();
+                GetResources()->SaveAll();
+            }
+
+            if (ImGui::MenuItem("Migrate Resources"))
+            {
+                MigrateResources();
             }
 
             ImGui::EndMenu();
@@ -618,6 +641,11 @@ bool Editor::OpenDocument(const std::string& resourceID)
             VirtualDatasheet* datasheet = nullptr;
 
             // TODO: I should encapsulate this in some kind of GetOrLoad method.
+            // TODO: Maybe I could provide GetResource methods in a namespace, like resources::GetTexture(id), to allow adding more methods through plugins ?
+            // This way, I could add a resources::GetVirtualDatasheet(id) more easily.
+            // With this approach, those specialized getters could be in each resource header instead of the manager.
+            // Maybe I would need to replace the EResourceType enum with string constants ?
+            // Additionally, LoadResource would need factories for base types + extended types to remove the need of InjectResource.
             if (GetResources()->IsResourceLoaded(resourceID))
             {
                 datasheet = dynamic_cast<VirtualDatasheet*>(GetResources()->GetResource(resourceID));
@@ -802,6 +830,24 @@ DatasheetParser* Editor::GetDatasheetParser() const
 EditorClipboard* Editor::GetEditorClipboard() const
 {
     return m_clipboard;
+}
+
+void Editor::MigrateResources() const
+{
+    std::vector<const ResourceInfo*> resourceInfos;
+    GetResources()->GetAllResourceInfos(resourceInfos);
+    for (const auto& resourceInfo : resourceInfos)
+    {
+        EResourceType::Type resourceType = GetResources()->GetResourceType(resourceInfo->fileInfo);
+        if (resourceType == EResourceType::Unknown)
+        {
+            // Check datasheets.
+            if (m_datasheetParser && m_datasheetParser->IsDatasheet(resourceInfo->fileInfo))
+            {
+                VirtualDatasheet::HandleMigration(resourceInfo->fileInfo);
+            }
+        }
+    }
 }
 
 Editor* GetEditor()

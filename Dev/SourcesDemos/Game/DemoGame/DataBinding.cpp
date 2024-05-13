@@ -107,14 +107,14 @@ void DS_SpriteInfo::ParseMembers(gugu::DataParseContext& context)
 DS_Character::DS_Character()
 {
     name = "CHARACTER_NAME";
-    health = 50;
-    speed = 50;
+    health = 50.f;
+    speed = 50.f;
     sprite = nullptr;
 }
 
 DS_Character::~DS_Character()
 {
-    SafeDelete(sprite);
+    sprite = nullptr;
 }
 
 void DS_Character::ParseMembers(gugu::DataParseContext& context)
@@ -130,11 +130,11 @@ void DS_Character::ParseMembers(gugu::DataParseContext& context)
 ////////////////////////////////////////////////////////////////
 DS_Hero::DS_Hero()
 {
-    stamina = 50;
-    staminaRecovery = 50;
-    staminaRecoveryDelay = 50;
-    mana = 50;
-    manaRecovery = 50;
+    stamina = 50.f;
+    staminaRecovery = 50.f;
+    staminaRecoveryDelay = 50.f;
+    mana = 50.f;
+    manaRecovery = 50.f;
 }
 
 DS_Hero::~DS_Hero()
@@ -171,15 +171,15 @@ void DS_Enemy::ParseMembers(gugu::DataParseContext& context)
 DS_Skill::DS_Skill()
 {
     name = "";
-    staminaCost = -1;
-    manaCost = -1;
+    staminaCost = -1.f;
+    manaCost = -1.f;
     useAttackSpeed = false;
-    cooldown = -1;
+    cooldown = -1.f;
 }
 
 DS_Skill::~DS_Skill()
 {
-    ClearStdVector(effects);
+    effects.clear();
 }
 
 void DS_Skill::ParseMembers(gugu::DataParseContext& context)
@@ -216,13 +216,13 @@ DS_EffectArea::DS_EffectArea()
 {
     excludeCaster = false;
     excludeTarget = false;
-    maxRadius = 50;
-    maxAngleFromDirection = -1;
+    maxRadius = 50.f;
+    maxAngleFromDirection = -1.f;
 }
 
 DS_EffectArea::~DS_EffectArea()
 {
-    ClearStdVector(effectsOnHit);
+    effectsOnHit.clear();
 }
 
 void DS_EffectArea::ParseMembers(gugu::DataParseContext& context)
@@ -240,15 +240,15 @@ void DS_EffectArea::ParseMembers(gugu::DataParseContext& context)
 DS_EffectProjectile::DS_EffectProjectile()
 {
     aim = EProjectileAim::Direction;
-    speed = 500;
-    lifetime = 2;
+    speed = 500.f;
+    lifetime = 2.f;
     maximumHits = 1;
 }
 
 DS_EffectProjectile::~DS_EffectProjectile()
 {
-    ClearStdVector(effectsOnHit);
-    ClearStdVector(effectsOnDestination);
+    effectsOnHit.clear();
+    effectsOnDestination.clear();
 }
 
 void DS_EffectProjectile::ParseMembers(gugu::DataParseContext& context)
@@ -266,7 +266,7 @@ void DS_EffectProjectile::ParseMembers(gugu::DataParseContext& context)
 ////////////////////////////////////////////////////////////////
 DS_EffectDamage::DS_EffectDamage()
 {
-    damage = 10;
+    damage = 10.f;
 }
 
 DS_EffectDamage::~DS_EffectDamage()
@@ -283,7 +283,7 @@ void DS_EffectDamage::ParseMembers(gugu::DataParseContext& context)
 ////////////////////////////////////////////////////////////////
 DS_EffectHeal::DS_EffectHeal()
 {
-    heal = 10;
+    heal = 10.f;
 }
 
 DS_EffectHeal::~DS_EffectHeal()

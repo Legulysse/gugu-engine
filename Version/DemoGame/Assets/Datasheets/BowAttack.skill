@@ -1,21 +1,25 @@
 <?xml version="1.0"?>
-<Datasheet serializationVersion="1" bindingVersion="1">
-	<Data name="name" value="Bow Attack" />
-	<Data name="staminaCost" value="0.100000001" />
-	<Data name="useAttackSpeed" value="true" />
-	<Data name="effects">
-		<Child type="effectProjectile">
-			<Data name="center" value="Caster" />
-			<Data name="aim" value="Direction" />
-			<Data name="speed" value="800" />
-			<Data name="lifetime" value="0.800000012" />
-			<Data name="maximumHits" value="3" />
-			<Data name="effectsOnHit">
-				<Child type="effectDamage">
-					<Data name="center" value="Affected" />
-					<Data name="damage" value="50" />
-				</Child>
-			</Data>
-		</Child>
-	</Data>
+<Datasheet serializationVersion="2" bindingVersion="1">
+	<RootObject type="skill" uuid="246a45b6c01e42e5859402ef09f72e90">
+		<Data name="name" value="Bow Attack" />
+		<Data name="staminaCost" value="0.100000001" />
+		<Data name="useAttackSpeed" value="true" />
+		<Data name="effects">
+			<Child value="866ab118ac4342c2b9d77a4ac94113ce" />
+		</Data>
+	</RootObject>
+	<Object type="effectProjectile" uuid="866ab118ac4342c2b9d77a4ac94113ce">
+		<Data name="center" value="Caster" />
+		<Data name="aim" value="Direction" />
+		<Data name="speed" value="800" />
+		<Data name="lifetime" value="0.800000012" />
+		<Data name="maximumHits" value="3" />
+		<Data name="effectsOnHit">
+			<Child value="1457c226d6574dac8270418b1cb52fd5" />
+		</Data>
+	</Object>
+	<Object type="effectDamage" uuid="1457c226d6574dac8270418b1cb52fd5">
+		<Data name="center" value="Affected" />
+		<Data name="damage" value="50" />
+	</Object>
 </Datasheet>

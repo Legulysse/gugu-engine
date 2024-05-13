@@ -35,7 +35,8 @@ EResourceType::Type Datasheet::GetResourceType() const
 
 void Datasheet::Unload()
 {
-    SafeDelete(m_rootObject);
+    m_rootObject = nullptr;
+    ClearStdMap(m_instanceObjects);
 }
 
 bool Datasheet::LoadFromFile()
@@ -52,6 +53,7 @@ bool Datasheet::LoadFromFile()
 
     std::vector<Datasheet*> ancestors;
     ancestors.push_back(this);
+
     return m_rootObject->LoadFromFile(GetFileInfo().GetFileSystemPath(), this, ancestors);
 }
 

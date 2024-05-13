@@ -268,25 +268,6 @@ void Editor::Update(const DeltaTime& dt)
             }
 
             ImGui::Separator();
-
-            // TODO: To fully implement this method I first need a few changes :
-            // - Refactor resources loader/getters (see notes near the call to InstanciateDatasheetResource in OpenDocument).
-            // - Ensure no serialization code remains in the editor (see the DatasheetPanel::OnSaveImpl for example).
-            // - Ensure I unload resources along the process to avoid a big memory spike.
-            // - Implement LoadFromFile properly for resources that dont use xml (textures, audio).
-            // - Maybe add a filter to ignore unsupported types (.txt, .md, etc).
-            if (ImGui::MenuItem("Force Save All"))
-            {
-                GetResources()->PreloadAll();
-                GetResources()->SaveAll();
-            }
-
-            if (ImGui::MenuItem("Migrate Resources"))
-            {
-                MigrateResources();
-            }
-
-            ImGui::Separator();
             if (ImGui::MenuItem("About..."))
             {
                 GetEditor()->OpenModalDialog(new AboutDialog());
@@ -336,6 +317,28 @@ void Editor::Update(const DeltaTime& dt)
             if (ImGui::MenuItem("Reset Panels", "F1"))
             {
                 ResetPanels();
+            }
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Tools"))
+        {
+            // TODO: To fully implement this method I first need a few changes :
+            // - Refactor resources loader/getters (see notes near the call to InstanciateDatasheetResource in OpenDocument).
+            // - Ensure no serialization code remains in the editor (see the DatasheetPanel::OnSaveImpl for example).
+            // - Ensure I unload resources along the process to avoid a big memory spike.
+            // - Implement LoadFromFile properly for resources that dont use xml (textures, audio).
+            // - Maybe add a filter to ignore unsupported types (.txt, .md, etc).
+            if (ImGui::MenuItem("Force Save All"))
+            {
+                GetResources()->PreloadAll();
+                GetResources()->SaveAll();
+            }
+
+            if (ImGui::MenuItem("Migrate Resources"))
+            {
+                MigrateResources();
             }
 
             ImGui::EndMenu();

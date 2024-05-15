@@ -306,6 +306,11 @@ void VirtualDatasheet::SortDataValues()
     {
         kvp.second->SortDataValues();
     }
+
+    for (const auto& kvp : m_objectOverrides)
+    {
+        kvp.second->SortDataValues();
+    }
 }
 
 void VirtualDatasheet::Unload()
@@ -573,8 +578,6 @@ void SortObjectData_v2(pugi::xml_node objectNode)
 
 bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document)
 {
-    pugi::xml_document migratedDocument;
-
     pugi::xml_node nodeDatasheet = document.child("Datasheet");
     if (!nodeDatasheet)
         return false;

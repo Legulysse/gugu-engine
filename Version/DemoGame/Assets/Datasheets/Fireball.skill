@@ -1,53 +1,53 @@
 <?xml version="1.0"?>
 <Datasheet serializationVersion="2" bindingVersion="1">
 	<RootObject type="skill" uuid="17d4aff235dc41238c4b6224c6eb8678">
-		<Data name="name" value="Fireball" />
-		<Data name="manaCost" value="40" />
 		<Data name="cooldown" value="1.5" />
 		<Data name="effects">
 			<Child value="79aeb77a8ff44be1a975db410606409f" />
 		</Data>
+		<Data name="manaCost" value="40" />
+		<Data name="name" value="Fireball" />
 	</RootObject>
-	<Object type="effectProjectile" uuid="79aeb77a8ff44be1a975db410606409f">
-		<Data name="center" value="Caster" />
-		<Data name="aim" value="Cursor" />
-		<Data name="speed" value="1000" />
-		<Data name="lifetime" value="-1" />
-		<Data name="maximumHits" value="-1" />
+	<Object type="effectArea" uuid="4935563302134c47a324ce95e581b6f6">
+		<Data name="center" value="Affected" />
 		<Data name="effectsOnHit">
-			<Child value="5ddc6966939c4a5fbab451a5e66e31fd" />
+			<Child value="86ee9c7742ad4ea3910764c59be099c8" />
 		</Data>
-		<Data name="effectsOnDestination">
-			<Child value="b92a852354fc4da8a2a037fcd34d4c3a" />
-			<Child value="4935563302134c47a324ce95e581b6f6" />
-		</Data>
+		<Data name="excludeCaster" value="true" />
+		<Data name="maxRadius" value="250" />
 	</Object>
 	<Object type="effectDamage" uuid="5ddc6966939c4a5fbab451a5e66e31fd">
 		<Data name="center" value="Affected" />
 		<Data name="damage" value="10" />
 	</Object>
+	<Object type="effectProjectile" uuid="79aeb77a8ff44be1a975db410606409f">
+		<Data name="aim" value="Cursor" />
+		<Data name="center" value="Caster" />
+		<Data name="effectsOnDestination">
+			<Child value="b92a852354fc4da8a2a037fcd34d4c3a" />
+			<Child value="4935563302134c47a324ce95e581b6f6" />
+		</Data>
+		<Data name="effectsOnHit">
+			<Child value="5ddc6966939c4a5fbab451a5e66e31fd" />
+		</Data>
+		<Data name="lifetime" value="-1" />
+		<Data name="maximumHits" value="-1" />
+		<Data name="speed" value="1000" />
+	</Object>
+	<Object type="effectDamage" uuid="86ee9c7742ad4ea3910764c59be099c8">
+		<Data name="center" value="Affected" />
+		<Data name="damage" value="100" />
+	</Object>
 	<Object type="effectArea" uuid="b92a852354fc4da8a2a037fcd34d4c3a">
 		<Data name="center" value="Affected" />
-		<Data name="excludeCaster" value="true" />
-		<Data name="maxRadius" value="300" />
 		<Data name="effectsOnHit">
 			<Child value="ee74df4c6beb4b239181d6748f77bc7d" />
 		</Data>
+		<Data name="excludeCaster" value="true" />
+		<Data name="maxRadius" value="300" />
 	</Object>
 	<Object type="effectDamage" uuid="ee74df4c6beb4b239181d6748f77bc7d">
 		<Data name="center" value="Affected" />
 		<Data name="damage" value="100" />
-	</Object>
-	<Object type="effectArea" uuid="4935563302134c47a324ce95e581b6f6">
-		<Data name="effectsOnHit">
-			<Child value="86ee9c7742ad4ea3910764c59be099c8" />
-		</Data>
-		<Data name="maxRadius" value="250" />
-		<Data name="excludeCaster" value="true" />
-		<Data name="center" value="Affected" />
-	</Object>
-	<Object type="effectDamage" uuid="86ee9c7742ad4ea3910764c59be099c8">
-		<Data name="damage" value="100" />
-		<Data name="center" value="Affected" />
 	</Object>
 </Datasheet>

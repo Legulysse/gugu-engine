@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <Datasheet serializationVersion="2" bindingVersion="1">
 	<RootObject type="hero" uuid="0584e9cb52164378adfec97200266d58">
-		<Data name="name" value="Heroic Hero" />
 		<Data name="health" value="200" />
+		<Data name="mana" value="60" />
+		<Data name="manaRecovery" value="20" />
+		<Data name="name" value="Heroic Hero" />
 		<Data name="speed" value="250" />
 		<Data name="sprite" value="aa9b77fa61cd4d6c9d8b1304ca5d02ad" />
 		<Data name="stamina" value="100" />
 		<Data name="staminaRecovery" value="50" />
 		<Data name="staminaRecoveryDelay" value="1" />
-		<Data name="mana" value="60" />
-		<Data name="manaRecovery" value="20" />
 	</RootObject>
 	<Object type="spriteInfo" uuid="aa9b77fa61cd4d6c9d8b1304ca5d02ad">
 		<Data name="animset" value="Human.animset.xml" />

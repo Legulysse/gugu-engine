@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <Datasheet serializationVersion="2" bindingVersion="1">
 	<RootObject type="enemy" uuid="7422cc8592784ba2bf5ead17da48321f">
-		<Data name="name" value="Default Enemy" />
 		<Data name="health" value="200" />
+		<Data name="name" value="Default Enemy" />
 		<Data name="speed" value="50" />
 		<Data name="sprite" value="08c45cec3cc048e595802e0326fa3ac3" />
 	</RootObject>

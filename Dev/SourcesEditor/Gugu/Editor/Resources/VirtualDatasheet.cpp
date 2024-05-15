@@ -466,6 +466,7 @@ bool VirtualDatasheet::HandleMigration(const FileInfo& fileInfo)
     if (serializationVersion <= 1)
     {
         Migrate_v1_to_v2(fileInfo, document);
+        SortNodes_v2(fileInfo, document);
     }
 
     document.save_file(fileInfo.GetFileSystemPath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
@@ -548,6 +549,26 @@ void MigrateInstanceObject_v1_to_v2(
     }
 }
 
+void SortObjectData_v2(pugi::xml_node objectNode)
+{
+    std::map<std::string, pugi::xml_node> dataNodes;
+
+    for (pugi::xml_node nodeData = objectNode.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
+    {
+        std::string name = nodeData.attribute("name").value();
+
+        if (!name.empty())
+        {
+            dataNodes.insert(std::make_pair(name, nodeData));
+        }
+    }
+
+    for (auto kvp : dataNodes)
+    {
+        objectNode.append_move(kvp.second);
+    }
+}
+
 }   // namespace impl
 
 bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document)
@@ -583,6 +604,55 @@ bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_docu
     impl::MigrateInstanceObject_v1_to_v2(nodeDatasheet, nodeDatasheet, nodeRootObject, rootClassDefinition);
 
     return true;
+}
+
+bool VirtualDatasheet::SortNodes_v2(const FileInfo& fileInfo, pugi::xml_document& document)
+{
+    pugi::xml_node datasheetNode = document.child("Datasheet");
+    if (!datasheetNode)
+        return false;
+
+    // Root
+    pugi::xml_node rootObjectNode = datasheetNode.child("RootObject");
+    impl::SortObjectData_v2(rootObjectNode);
+
+    // Instance objects
+    std::map<UUID, pugi::xml_node> instanceObjects;
+    for (pugi::xml_node nodeObject = datasheetNode.child("Object"); nodeObject; nodeObject = nodeObject.next_sibling("Object"))
+    {
+        pugi::xml_attribute attributeUuid = nodeObject.attribute("uuid");
+        UUID uuid = UUID::FromString(attributeUuid.value());
+
+        if (uuid.IsZero())
+            return false;
+
+        instanceObjects.insert(std::make_pair(uuid, nodeObject));
+        impl::SortObjectData_v2(nodeObject);
+    }
+
+    for (auto kvp : instanceObjects)
+    {
+        datasheetNode.append_move(kvp.second);
+    }
+
+    // Object overrides
+    std::map<UUID, pugi::xml_node> objectOverrides;
+    for (pugi::xml_node nodeObject = datasheetNode.child("ObjectOverride"); nodeObject; nodeObject = nodeObject.next_sibling("ObjectOverride"))
+    {
+        pugi::xml_attribute attributeUuid = nodeObject.attribute("uuid");
+        UUID uuid = UUID::FromString(attributeUuid.value());
+
+        if (uuid.IsZero())
+            return false;
+
+        objectOverrides.insert(std::make_pair(uuid, nodeObject));
+        impl::SortObjectData_v2(nodeObject);
+    }
+
+    for (auto kvp : objectOverrides)
+    {
+        datasheetNode.append_move(kvp.second);
+    }
 }
 
 }   // namespace gugu

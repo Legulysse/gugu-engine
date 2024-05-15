@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Datasheet serializationVersion="2" bindingVersion="1">
 	<RootObject type="faction" uuid="547c5b85a10a4453996a77d7d1d1592f">
-		<Data name="name" value="Yumeda Shogunate" />
 		<Data name="leader" value="Robert.general" />
+		<Data name="name" value="Yumeda Shogunate" />
 	</RootObject>
 </Datasheet>

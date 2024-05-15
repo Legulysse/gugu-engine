@@ -56,6 +56,7 @@ public:
 
     static bool HandleMigration(const FileInfo& fileInfo);
     static bool Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document);
+    static bool SortNodes_v2(const FileInfo& fileInfo, pugi::xml_document& document);
 
 protected:
 

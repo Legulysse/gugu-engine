@@ -17,7 +17,7 @@
 		<Data name="damage" value="12" />
 	</ObjectOverride>
 	<ObjectOverride type="effectArea" uuid="a290c8e6459b4de6adfdbb9e781eed63">
-		<Data name="radius" value="75" />
 		<Data name="duration" value="1.5" />
+		<Data name="radius" value="75" />
 	</ObjectOverride>
 </Datasheet>

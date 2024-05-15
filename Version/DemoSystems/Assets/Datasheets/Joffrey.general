@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
 <Datasheet serializationVersion="2" bindingVersion="1" parent="Robert.general">
 	<RootObject type="general" uuid="e39fb23864e94f9da7a70f95c1c556d8">
-		<Data name="name" value="Joffrey" />
-		<Data name="speed" value="30" />
-		<Data name="sprite" value="5d7acf574e0545a98af2d131e376158c" />
-		<Data name="stats list" />
+		<Data name="available weapons">
+			<Child value="Crossbow" />
+		</Data>
 		<Data name="factions list">
 			<Child value="" />
 		</Data>
 		<Data name="more sprites">
 			<Child value="b96e4dc0127c4273bf24d9475ebd43bf" />
 		</Data>
-		<Data name="weapon" value="Crossbow" />
-		<Data name="available weapons">
-			<Child value="Crossbow" />
-		</Data>
+		<Data name="name" value="Joffrey" />
 		<Data name="playableCondition" value="" />
+		<Data name="speed" value="30" />
+		<Data name="sprite" value="5d7acf574e0545a98af2d131e376158c" />
+		<Data name="stats list" />
+		<Data name="weapon" value="Crossbow" />
 	</RootObject>
 	<Object type="spriteInfo" uuid="5d7acf574e0545a98af2d131e376158c" />
 	<Object type="spriteInfo" uuid="b96e4dc0127c4273bf24d9475ebd43bf">
-		<Data name="imageset" value="Eddard.imageset.xml" />
 		<Data name="animset" value="Eddard.animset.xml" />
+		<Data name="imageset" value="Eddard.imageset.xml" />
 	</Object>
 </Datasheet>

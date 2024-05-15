@@ -28,12 +28,12 @@
 		</Data>
 	</Object>
 	<ObjectOverride type="effectArea" uuid="18413098e383407aa154c3331afd1dbe">
-		<Data name="radius" value="130" />
 		<Data name="areaEnterEffect" value="25bb406f94894b55a4b40d6d70494e6a" />
 		<Data name="duration" value="4" />
+		<Data name="radius" value="130" />
 	</ObjectOverride>
 	<ObjectOverride type="effectHeal" uuid="89dee05f71a44417a64600618a49693c">
-		<Data name="heal" value="25" />
 		<Data name="entityVfx" value="TestArea2.vfx" />
+		<Data name="heal" value="25" />
 	</ObjectOverride>
 </Datasheet>

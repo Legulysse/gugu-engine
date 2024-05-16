@@ -41,7 +41,6 @@ public:
 
         std::string name;
         DatasheetParser::DataMemberDefinition* dataMemberDefinition = nullptr;
-        std::string backupValue;
 
         bool value_bool = false;
         int value_int = 0;

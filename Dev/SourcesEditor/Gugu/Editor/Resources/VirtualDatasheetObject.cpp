@@ -130,13 +130,12 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     // Parse Data nodes.
     for (pugi::xml_node nodeData = nodeDatasheetObject.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
     {
-        VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
-        dataValue->owner = this;
-        dataValue->name = nodeData.attribute("name").value();
-
-        DatasheetParser::DataMemberDefinition* dataMemberDef = m_classDefinition->GetDataMemberDefinition(dataValue->name);
+        DatasheetParser::DataMemberDefinition* dataMemberDef = m_classDefinition->GetDataMemberDefinition(nodeData.attribute("name").value());
         if (dataMemberDef)
         {
+            VirtualDatasheetObject::DataValue* dataValue = new VirtualDatasheetObject::DataValue;
+            dataValue->owner = this;
+            dataValue->name = dataMemberDef->name;
             dataValue->dataMemberDefinition = dataMemberDef;
 
             if (!dataMemberDef->isArray)
@@ -160,10 +159,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
         }
         else
         {
-            // TODO: store deprecated data in a dedicated array ? add a special flag ? For now I just use a null dataMemberDef.
-            pugi::xml_attribute attributeValue = nodeData.attribute("value");
-            dataValue->backupValue = attributeValue.value();
-            m_dataValues.push_back(dataValue);
+            // TODO: store deprecated data in a dedicated array ? add a special flag ? add log error ?
         }
     }
 

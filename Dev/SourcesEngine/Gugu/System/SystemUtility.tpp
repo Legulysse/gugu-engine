@@ -307,9 +307,22 @@ void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vect
 }
 
 template<typename T>
-bool StdSetContains(const std::set<T>& _vecContainer, const T& _tValue)
+bool StdSetContains(const std::set<T>& container, const T& value)
 {
-    return std::find(_vecContainer.begin(), _vecContainer.end(), _tValue) != _vecContainer.end();
+    return std::find(container.begin(), container.end(), value) != container.end();
+}
+
+template<typename TKey, typename TValue>
+bool StdMapTryGet(const std::map<TKey, TValue>& container, const TKey& key, TValue& value)
+{
+    auto it = container.find(key);
+    if (it != container.end())
+    {
+        value = it->second;
+        return true;
+    }
+
+    return false;
 }
 
 }   // namespace gugu

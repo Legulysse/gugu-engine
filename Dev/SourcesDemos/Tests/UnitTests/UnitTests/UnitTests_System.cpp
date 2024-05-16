@@ -646,6 +646,56 @@ void RunUnitTests_System(UnitTestResults* results)
 
             GUGU_UTEST_CHECK_FALSE(StdVectorContains(containerB, valueC));
             GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) == containerB.end());
+
+            // TODO:
+            // StdVectorRemoveFirst
+            // StdVectorRemoveAt variant
+            // StdVectorAppend
+            // StdVectorDifference
+            // StdVectorIntersection
+        }
+
+        GUGU_UTEST_SUBSECTION("Set");
+        {
+            std::set<int> containerA;
+            containerA.insert(10);
+            containerA.insert(20);
+            containerA.insert(30);
+
+            GUGU_UTEST_CHECK_TRUE(StdSetContains(containerA, 10));
+            GUGU_UTEST_CHECK_TRUE(StdSetContains(containerA, 20));
+            GUGU_UTEST_CHECK_TRUE(StdSetContains(containerA, 30));
+            GUGU_UTEST_CHECK_FALSE(StdSetContains(containerA, 40));
+        }
+
+        GUGU_UTEST_SUBSECTION("Map");
+        {
+            std::map<std::string, int> containerA;
+            containerA["A"] = 10;
+            containerA["B"] = 20;
+            containerA["C"] = 30;
+
+            int result = 0;
+
+            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("A"), result)))
+            {
+                GUGU_UTEST_CHECK_EQUAL(result, 10);
+            }
+
+            if (GUGU_UTEST_CHECK_FALSE(StdMapTryGet(containerA, std::string("AA"), result)))
+            {
+                GUGU_UTEST_CHECK_EQUAL(result, 10); // The result value will be unchanged through the call to TryGet.
+            }
+
+            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("B"), result)))
+            {
+                GUGU_UTEST_CHECK_EQUAL(result, 20);
+            }
+
+            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("C"), result)))
+            {
+                GUGU_UTEST_CHECK_EQUAL(result, 30);
+            }
         }
     }
 

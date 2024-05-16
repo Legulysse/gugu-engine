@@ -656,6 +656,8 @@ bool VirtualDatasheet::SortNodes_v2(const FileInfo& fileInfo, pugi::xml_document
     {
         datasheetNode.append_move(kvp.second);
     }
+
+    return true;
 }
 
 }   // namespace gugu

@@ -42,4 +42,7 @@ sf::Color ColorConvertFloat4ToSfml(const ImVec4& color);
 // Combo variation.
 bool Combo(const char* label, const std::vector<std::string>& comboValues, size_t* selectedIndex, ImGuiComboFlags flags = 0);
 
+// ListBox variation.
+bool ListBox(const char* label, const std::vector<std::string>& comboValues, size_t* selectedIndex = nullptr);
+
 }   // namespace ImGui

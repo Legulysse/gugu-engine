@@ -133,7 +133,7 @@ sf::Color ColorConvertFloat4ToSfml(const ImVec4& color)
 bool Combo(const char* label, const std::vector<std::string>& comboValues, size_t* selectedIndex, ImGuiComboFlags flags)
 {
     bool updated = false;
-    if (ImGui::BeginCombo(label, comboValues[*selectedIndex].c_str()))
+    if (ImGui::BeginCombo(label, comboValues[*selectedIndex].c_str(), flags))
     {
         for (size_t i = 0; i < comboValues.size(); ++i)
         {
@@ -151,6 +151,39 @@ bool Combo(const char* label, const std::vector<std::string>& comboValues, size_
         }
 
         ImGui::EndCombo();
+    }
+
+    return updated;
+}
+
+bool ListBox(const char* label, const std::vector<std::string>& values, size_t* selectedIndex)
+{
+    bool updated = false;
+    if (ImGui::BeginListBox(label))
+    {
+        for (size_t i = 0; i < values.size(); ++i)
+        {
+            if (selectedIndex != nullptr)
+            {
+                bool selected = (*selectedIndex == i);
+                if (ImGui::Selectable(values[i].c_str(), selected))
+                {
+                    *selectedIndex = i;
+                    updated = true;
+                }
+
+                if (selected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            else
+            {
+                ImGui::Text(values[i]);
+            }
+        }
+
+        ImGui::EndListBox();
     }
 
     return updated;

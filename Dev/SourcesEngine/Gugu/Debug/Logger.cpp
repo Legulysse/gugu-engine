@@ -8,7 +8,10 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
+#include "Gugu/System/Platform.h"
+#include "Gugu/System/String.h"
+#include "Gugu/System/Time.h"
 
 #include <iostream>
 #include <fstream>

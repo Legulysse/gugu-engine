@@ -10,7 +10,8 @@
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Element/ElementData.h"
 #include "Gugu/Element/Element.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
+#include "Gugu/System/String.h"
 #include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////

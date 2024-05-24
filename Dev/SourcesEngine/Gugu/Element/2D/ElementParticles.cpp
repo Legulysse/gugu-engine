@@ -10,7 +10,7 @@
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/VisualEffects/ManagerVisualEffects.h"
 #include "Gugu/VisualEffects/ParticleSystem.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

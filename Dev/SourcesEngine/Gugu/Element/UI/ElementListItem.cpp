@@ -9,7 +9,7 @@
 
 #include "Gugu/Element/UI/ElementList.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Debug/Logger.h"
 

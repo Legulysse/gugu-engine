@@ -24,7 +24,10 @@
 #include "Gugu/Resources/ElementWidget.h"
 
 #include "Gugu/Data/DataBindingUtility.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
+#include "Gugu/System/Path.h"
+#include "Gugu/System/Platform.h"
+#include "Gugu/System/String.h"
 
 #include "Gugu/Core/Application.h"
 #include "Gugu/Debug/Logger.h"

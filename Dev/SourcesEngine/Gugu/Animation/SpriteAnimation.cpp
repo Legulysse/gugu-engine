@@ -13,7 +13,6 @@
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Math/MathUtility.h"
-#include "Gugu/System/SystemUtility.h"
 
 #include <sstream>
 

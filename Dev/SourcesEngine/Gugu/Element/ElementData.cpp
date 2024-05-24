@@ -13,7 +13,8 @@
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/Font.h"
 #include "Gugu/Resources/ElementWidget.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
+#include "Gugu/System/String.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
 

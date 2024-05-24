@@ -8,7 +8,6 @@
 // Includes
 
 #include "Gugu/Scene/Scene.h"
-#include "Gugu/System/SystemUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

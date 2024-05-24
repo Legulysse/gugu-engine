@@ -8,7 +8,8 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/String.h"
+#include "Gugu/System/Time.h"
 
 #include <fstream>
 

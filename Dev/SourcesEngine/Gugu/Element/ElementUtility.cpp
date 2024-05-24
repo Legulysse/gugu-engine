@@ -16,7 +16,7 @@
 #include "Gugu/Element/UI/ElementCheckbox.h"
 #include "Gugu/Element/UI/ElementSlider.h"
 #include "Gugu/Resources/ElementWidget.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/String.h"
 #include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////

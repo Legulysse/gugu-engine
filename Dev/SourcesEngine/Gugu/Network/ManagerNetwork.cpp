@@ -8,7 +8,8 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
+#include "Gugu/System/String.h"
 #include "Gugu/Network/NetworkPacket.h"
 #include "Gugu/Core/Application.h"
 #include "Gugu/Debug/Logger.h"

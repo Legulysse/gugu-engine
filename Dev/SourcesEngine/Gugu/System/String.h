@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <sstream>
 
 ////////////////////////////////////////////////////////////////
 // File Declarations

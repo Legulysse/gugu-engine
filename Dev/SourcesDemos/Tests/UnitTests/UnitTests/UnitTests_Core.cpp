@@ -14,6 +14,8 @@
 
 #include <SFML/System/Sleep.hpp>
 
+#include <set>
+
 using namespace gugu;
 
 ////////////////////////////////////////////////////////////////

@@ -12,7 +12,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Datasheet.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Platform.h"
 
 using namespace gugu;
 

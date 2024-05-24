@@ -14,6 +14,7 @@
 #include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
 

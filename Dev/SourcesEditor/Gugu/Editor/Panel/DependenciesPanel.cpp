@@ -12,7 +12,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Resource.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/String.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////

@@ -16,7 +16,7 @@
 #include "Gugu/VisualEffects/ParticleSystem.h"
 #include "Gugu/VisualEffects/ManagerVisualEffects.h"
 #include "Gugu/Element/2D/ElementParticles.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 

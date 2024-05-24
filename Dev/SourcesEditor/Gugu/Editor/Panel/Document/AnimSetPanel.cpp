@@ -19,7 +19,10 @@
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
+#include "Gugu/System/String.h"
+#include "Gugu/System/Platform.h"
+#include "Gugu/System/Path.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 

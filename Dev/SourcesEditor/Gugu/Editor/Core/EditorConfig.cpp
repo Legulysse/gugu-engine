@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
 

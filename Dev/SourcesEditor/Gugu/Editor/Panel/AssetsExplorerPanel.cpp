@@ -14,7 +14,10 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
+#include "Gugu/System/Platform.h"
+#include "Gugu/System/Path.h"
+#include "Gugu/System/String.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 #include <SFML/Window/Clipboard.hpp>

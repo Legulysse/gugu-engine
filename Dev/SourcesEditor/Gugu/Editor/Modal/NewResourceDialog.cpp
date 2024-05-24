@@ -16,7 +16,8 @@
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/ElementWidget.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Path.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////

@@ -12,7 +12,7 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Element/Element.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RenderTexture.hpp>

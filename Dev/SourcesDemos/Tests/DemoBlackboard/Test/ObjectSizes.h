@@ -3,7 +3,6 @@
 
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Events/ElementEventHandler.h"
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/Sprite.hpp>

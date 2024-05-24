@@ -1,7 +1,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/String.h"
+#include "Gugu/System/Platform.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Core/Callback.h"
 
 ////////////////////////////////////////////////////////////////

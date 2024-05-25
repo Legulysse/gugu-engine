@@ -17,7 +17,7 @@
 #include "Gugu/Scene/Scene.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Platform.h"
 
 using namespace gugu;
 

@@ -11,7 +11,7 @@
 
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 
 using namespace gugu;
 

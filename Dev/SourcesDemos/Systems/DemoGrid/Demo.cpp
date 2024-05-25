@@ -15,7 +15,7 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementTileMap.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Misc/Grid/SquareGrid.h"
 #include "Gugu/Misc/Grid/HexGrid.h"
 #include "Gugu/Misc/Grid/GridUtility.h"

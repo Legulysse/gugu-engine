@@ -16,7 +16,8 @@
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/Element/UI/ElementLayoutGroup.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
+#include "Gugu/System/String.h"
 
 using namespace gugu;
 

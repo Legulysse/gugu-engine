@@ -13,7 +13,7 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Inputs/ManagerInputs.h"
 #include "Gugu/Window/Window.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSpriteGroup.h"

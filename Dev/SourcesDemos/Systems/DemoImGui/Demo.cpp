@@ -13,7 +13,7 @@
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/UI/ElementEditableText.h"
 #include "Gugu/Element/UI/ElementButton.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 
 #include <imgui.h>

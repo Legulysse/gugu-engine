@@ -16,7 +16,7 @@
 #include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 
 using namespace gugu;
 

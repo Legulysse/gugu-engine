@@ -1,16 +1,29 @@
 # Project History
 
-## Version 0.8 &nbsp; _(??/??/????)_ [Update 16/07/2023]
+## Version 0.8 &nbsp; _(??/??/????)_ [Update 25/05/2024]
 - Ajout d'un nouveau logo !
+- Ajout de ElementLayoutGroup, ElementCheckbox, ElementSlider.
 - Ajout des ElementWidgets (ressource xml représentant une hierarchie d'Elements), refactor de la serialisation des Elements (ElementData).
 - Editor: Ajout de l'ElementWidget editor, ajout d'un générateur de Box9.
 - Ajout des Datasaves, clean du code de Databinding (séparation entre code commun, et spécifique Datasheet/Datasave, ajout d'une classe de base DataObject).
+- Refactor serialisation v2 des datasheets (liste flat d'objets avec UUIDs, override d'instances au sein de la hierarchie).
+- Split de SystemUtility.h en Container.h, Memory.h, Path.h, Platform.h, String.h et Time.h.
+- Ajout des utilitaires Handle, UUID, Signal.
+- Ajout de LateUpdate et UpdateImGui dans la loop centrale.
+- Ajout de UnitTests (Xml, Databinding, picking).
+- Update des Element UnifiedSize pour pouvoir se baser sur un Element donné (au lieu du parent).
 - Update Databindings : gestion des Vector2i et Vector2f.
 - Update de GetFiles, GetDirectories et FileInfo pour se baser sur std::filesystem, ajout de getters utf8 sur FileInfo.
-- Ajout de UnitTests (Xml, Databinding).
 - Update de certains utilities pour utiliser std::string_view au lieu de générer des std::string (getters de FileInfo).
-- Itération SystemUtility (StringEquals).
+- Update DeltaTime (float pour les milliseconds).
+- Update ManagerAudio (methodes de controle du master volume).
+- Itération SystemUtility (StringEquals, StdMapTryGet).
+- Itération MathUtility (DistanceCheck, Sign, Power2, renommage IsInRange en IsInBounds).
 - Refactor des utilities xml (Read, Parse, TryParse), gestion des Vector2, update de la serialisation des UDim2.
+- Clean sur la nomenclature Remove/Delete dans divers Elements.
+- Mise à jour SFML 2.6.1.
+- Mise à jour ImGui 1.87 (docking).
+- Mise à jour ImGui-SFML 2.6.
 - Mise à jour PugiXml 1.13.
 
 ## Version 0.7.1 &nbsp; _(10/12/2022)_

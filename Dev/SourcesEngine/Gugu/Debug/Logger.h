@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/Callback.h"
+#include "Gugu/System/Callback.h"
 
 #include <SFML/System/Mutex.hpp>
 #include <SFML/System/Lock.hpp>

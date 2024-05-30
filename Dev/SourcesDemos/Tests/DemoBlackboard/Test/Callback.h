@@ -4,7 +4,7 @@
 #include "Gugu/System/String.h"
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/Memory.h"
-#include "Gugu/Core/Callback.h"
+#include "Gugu/System/Callback.h"
 
 ////////////////////////////////////////////////////////////////
 // File Declarations

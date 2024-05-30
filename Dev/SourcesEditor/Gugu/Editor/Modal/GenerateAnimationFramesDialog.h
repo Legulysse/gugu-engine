@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
-#include "Gugu/Core/Callback.h"
+#include "Gugu/System/Callback.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

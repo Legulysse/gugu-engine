@@ -4,8 +4,8 @@
 // Includes
 
 #include "Gugu/Core/EngineConfig.h"
-#include "Gugu/Core/Callback.h"
 #include "Gugu/Misc/Pattern/Singleton.h"
+#include "Gugu/System/Callback.h"
 #include "Gugu/System/Types.h"
 #include "Gugu/Debug/EngineStats.h"
 

@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/Handle.h"
+#include "Gugu/System/Handle.h"
 
 #include <functional>
 #include <assert.h>

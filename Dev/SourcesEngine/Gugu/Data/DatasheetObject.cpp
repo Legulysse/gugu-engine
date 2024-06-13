@@ -30,14 +30,9 @@ DatasheetObject::~DatasheetObject()
 
 bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerDatasheet, std::vector<Datasheet*>& ancestors)
 {
-    // This will only be set for the actual datasheet, and null when parsing parent datasheets.
-    bool isActualRoot = false;
-    if (ownerDatasheet != nullptr)
-    {
-        m_datasheet = ownerDatasheet;
-        isActualRoot = true;
-    }
-
+    // This will only be true for the actual datasheet, and false when parsing parent datasheets.
+    bool isActualRoot = ancestors.size() == 1;
+    
     pugi::xml_document document;
     pugi::xml_parse_result result = document.load_file(path.c_str());
     if (!result)
@@ -60,6 +55,7 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
     if (isActualRoot)
     {
         m_uuid = rootUuid;
+        m_datasheet = ownerDatasheet;
         m_datasheet->m_instanceObjects.insert(std::make_pair(m_uuid, this));
     }
 
@@ -86,7 +82,7 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
             else
             {
                 ancestors.push_back(parentSheet);
-                LoadFromFile(parentSheet->GetFileInfo().GetFileSystemPath(), nullptr, ancestors);
+                LoadFromFile(parentSheet->GetFileInfo().GetFileSystemPath(), ownerDatasheet, ancestors);
             }
         }
     }
@@ -107,6 +103,7 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
             if (instanceDatasheetObject)
             {
                 instanceDatasheetObject->m_uuid = uuid;
+                instanceDatasheetObject->m_datasheet = m_datasheet;
                 m_datasheet->m_instanceObjects.insert(std::make_pair(uuid, instanceDatasheetObject));
 
                 pendingNodes.insert(std::make_pair(instanceDatasheetObject, objectNode));

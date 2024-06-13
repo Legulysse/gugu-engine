@@ -36,7 +36,7 @@ public:
 
     const UUID& GetUuid() const;
 
-    // Return the owning datasheet (only if this object is a root object, return nullptr otherwise).
+    // Return the owning datasheet.
     Datasheet* GetDatasheet() const;
 
 private:

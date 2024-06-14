@@ -14,6 +14,8 @@
 #include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
+#include "Gugu/Scene/ManagerScenes.h"
+#include "Gugu/Scene/Scene.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
@@ -590,13 +592,60 @@ void RunUnitTests_Element(UnitTestResults* results)
             Element* root = GetGameWindow()->GetRootNode()->AddChild<Element>();
 
             // Check picking element not belonging to the camera (neither scene nor window).
-            Element* elementInvalid = new Element;
-            elementInvalid->SetSize(10.f, 10.f);
+            {
+                Element* elementInvalid = new Element;
+                elementInvalid->SetSize(10.f, 10.f);
 
-            GUGU_UTEST_CHECK(elementInvalid->IsPicked(Vector2f(0.f, 0.f)));
-            GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(0, 0), elementInvalid));
+                GUGU_UTEST_CHECK(elementInvalid->IsPicked(Vector2f(0.f, 0.f)));
+                GUGU_UTEST_CHECK(!camera->IsMouseOverElement(Vector2i(0, 0), elementInvalid));
 
-            SafeDelete(elementInvalid);
+                SafeDelete(elementInvalid);
+            }
+
+            // Check picking elements through a scene with a secondary camera.
+            {
+                Scene* scene = GetScenes()->GetRootScene();
+                Camera* cameraScene = GetGameWindow()->CreateCamera();
+                GetGameWindow()->BindScene(scene, cameraScene);
+
+                Element* elementWindowA = root->AddChild<Element>();
+                elementWindowA->SetSize(10.f, 10.f);
+
+                Element* elementWindowB = root->AddChild<Element>();
+                elementWindowB->SetSize(10.f, 10.f);
+                elementWindowB->SetPosition(100.f, 100.f);
+
+                Element* elementSceneA = scene->GetRootNode()->AddChild<Element>();
+                elementSceneA->SetSize(10.f, 10.f);
+
+                Element* elementSceneB = scene->GetRootNode()->AddChild<Element>();
+                elementSceneB->SetSize(10.f, 10.f);
+                elementSceneB->SetPosition(100.f, 100.f);
+
+                cameraScene->SetCenterOnTarget(false);
+                cameraScene->SetTarget(0.f, 0.f);
+
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(5, 5), elementWindowA));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(105, 105), elementWindowA));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(5, 5), elementWindowB));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(105, 105), elementWindowB));
+                GUGU_UTEST_CHECK_TRUE(cameraScene->IsMouseOverElement(Vector2i(5, 5), elementSceneA));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(105, 105), elementSceneA));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(5, 5), elementSceneB));
+                GUGU_UTEST_CHECK_TRUE(cameraScene->IsMouseOverElement(Vector2i(105, 105), elementSceneB));
+
+                cameraScene->SetCenterOnTarget(true);
+                cameraScene->SetTarget(0.f, 0.f);
+
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(5, 5), elementWindowA));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(105, 105), elementWindowA));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(5, 5), elementWindowB));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(105, 105), elementWindowB));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(5, 5), elementSceneA));
+                GUGU_UTEST_CHECK_TRUE(cameraScene->IsMouseOverElement(Vector2i(105, 105), elementSceneA));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(5, 5), elementSceneB));
+                GUGU_UTEST_CHECK_FALSE(cameraScene->IsMouseOverElement(Vector2i(105, 105), elementSceneB));
+            }
 
             Element* elementA = root->AddChild<Element>();
             elementA->SetSize(10.f, 10.f);

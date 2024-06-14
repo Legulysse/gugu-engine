@@ -264,32 +264,25 @@ Camera* Window::GetMainCamera() const
     return m_mainCamera;
 }
 
-void Window::BindScene(Scene* scene)
+void Window::BindScene(Scene* scene, Camera* camera)
 {
-    BindScene(scene, m_mainCamera, m_renderer);
+    BindScene(scene, camera, m_renderer);
 }
 
-void Window::BindScene(Scene* scene, Camera* _pCamera)
+void Window::BindScene(Scene* scene, Camera* camera, Renderer* renderer)
 {
-    BindScene(scene, _pCamera, m_renderer);
-}
-
-void Window::BindScene(Scene* scene, Renderer* _pRenderer)
-{
-    BindScene(scene, m_mainCamera, _pRenderer);
-}
-
-void Window::BindScene(Scene* scene, Camera* _pCamera, Renderer* _pRenderer)
-{
-    if (!scene || !_pCamera || !_pRenderer)
+    if (!scene || !camera || !renderer)
         return;
 
-    _pCamera->SetScene(scene);
+    if (camera == m_mainCamera)
+        return;
+
+    camera->SetScene(scene);
 
     SceneBinding kBinding;
     kBinding.scene = scene;
-    kBinding.camera = _pCamera;
-    kBinding.renderer = _pRenderer;
+    kBinding.camera = camera;
+    kBinding.renderer = renderer;
     m_sceneBindings.push_back(kBinding);
 }
 

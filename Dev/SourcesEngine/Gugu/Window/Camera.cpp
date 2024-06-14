@@ -199,9 +199,10 @@ bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElemen
     bool bSceneNode = false;
     bool bWindowNode = false;
 
+    // If this camera is associated to a scene, it should not consider nodes from its associated window.
     if (m_scene)
         bSceneNode = (m_scene->GetRootNode() == pTopParent);
-    if (m_window)
+    else if (m_window)
         bWindowNode = (m_window->GetRootNode() == pTopParent);
 
     if (!bSceneNode && !bWindowNode)

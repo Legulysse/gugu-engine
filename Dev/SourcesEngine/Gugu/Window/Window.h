@@ -63,9 +63,7 @@ public:
     Camera*     GetCamera       (size_t _iIndex) const;
     Camera*     GetMainCamera   () const;
     
-    void        BindScene       (Scene* scene);
     void        BindScene       (Scene* scene, Camera* _pCamera);
-    void        BindScene       (Scene* scene, Renderer* _pRenderer);
     void        BindScene       (Scene* scene, Camera* _pCamera, Renderer* _pRenderer);
     void        UnbindScene     (Scene* scene);
 

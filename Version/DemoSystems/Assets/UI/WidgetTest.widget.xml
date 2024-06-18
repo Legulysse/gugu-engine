@@ -169,7 +169,8 @@
 			</Element>
 			<Element type="ElementText">
 				<Position x="300" y="0" />
-				<Font source="mplus-1p-medium.ttf" />
+				<Size x="20" y="20" />
+				<Font source="MPLUS1p-Medium.ttf" />
 				<Text value="れぐーさん" />
 			</Element>
 			<Element type="ElementWidgetInstance" name="test button" widget="Button_01.widget.xml">

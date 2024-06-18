@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     EngineConfig config;
     config.applicationName = "GuguEngine Demo HelloWorld";
     config.pathAssets = "Assets";
-    config.defaultFont = "Spaceranger.ttf";
+    config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";
     config.gameWindow = EGameWindow::Sfml;
     config.windowWidth = 400;

@@ -12,7 +12,7 @@
 #include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Element/2D/ElementSprite.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
 #include "Gugu/Debug/Trace.h"
 #include "Gugu/Debug/EngineStats.h"
 

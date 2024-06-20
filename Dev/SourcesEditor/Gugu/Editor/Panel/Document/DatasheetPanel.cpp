@@ -13,6 +13,7 @@
 #include "Gugu/Editor/Resources/VirtualDatasheetObject.h"
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/System/String.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 
 #include <SFML/System/Clock.hpp>

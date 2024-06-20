@@ -3,8 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/Callback.h"
-#include "Gugu/Core/Handle.h"
+#include "Gugu/System/Callback.h"
+#include "Gugu/System/Handle.h"
 #include "Gugu/Math/Vector2.h"
 
 #include <vector>

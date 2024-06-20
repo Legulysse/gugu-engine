@@ -16,7 +16,7 @@
 #include "Gugu/Element/2D/ElementParticles.h"
 #include "Gugu/VisualEffects/ParticleSystemSettings.h"
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
 

@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

@@ -7,12 +7,14 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Core/Callback.h"
 #include "Gugu/Core/DeltaTime.h"
-#include "Gugu/Core/Handle.h"
-#include "Gugu/Core/Signal.h"
+#include "Gugu/System/Callback.h"
+#include "Gugu/System/Handle.h"
+#include "Gugu/System/Signal.h"
 
 #include <SFML/System/Sleep.hpp>
+
+#include <set>
 
 using namespace gugu;
 

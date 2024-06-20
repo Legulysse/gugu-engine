@@ -7,7 +7,9 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/String.h"
+#include "Gugu/System/Platform.h"
+#include "Gugu/System/Memory.h"
 
 #if defined(GUGU_ENV_VISUAL )
 

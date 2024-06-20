@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
-#include "Gugu/Core/Callback.h"
+#include "Gugu/System/Callback.h"
 #include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////

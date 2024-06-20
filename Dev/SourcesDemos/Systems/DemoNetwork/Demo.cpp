@@ -10,7 +10,6 @@
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/Network/ManagerNetwork.h"
-#include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
 

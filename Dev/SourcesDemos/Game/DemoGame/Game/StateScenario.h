@@ -6,7 +6,7 @@
 #include "Gugu/Misc/Pattern/State.h"
 #include "Gugu/Events/EventListener.h"
 #include "Gugu/Events/ElementEventHandler.h"
-#include "Gugu/Core/Callback.h"
+#include "Gugu/System/Callback.h"
 
 #include <string>
 

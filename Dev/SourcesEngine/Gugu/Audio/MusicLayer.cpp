@@ -10,7 +10,6 @@
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Audio/MusicInstance.h"
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Resources/Music.h"
 

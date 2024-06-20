@@ -14,7 +14,7 @@
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
 #include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>

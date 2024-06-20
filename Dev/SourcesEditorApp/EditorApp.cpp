@@ -11,7 +11,6 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Window/Window.h"
-#include "Gugu/System/SystemUtility.h"
 
 #include <imgui.h>
 

@@ -9,7 +9,6 @@
 
 #include "Gugu/Editor/Editor.h"
 
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////

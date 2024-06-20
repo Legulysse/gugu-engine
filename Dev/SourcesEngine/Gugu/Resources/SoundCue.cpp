@@ -9,7 +9,6 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Sound.h"
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/External/PugiXmlUtility.h"
 #include "Gugu/Debug/Logger.h"

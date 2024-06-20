@@ -9,7 +9,7 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Scene/Scene.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

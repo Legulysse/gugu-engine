@@ -12,7 +12,7 @@
 #include "Gugu/VisualEffects/ParticleSystem.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ImageSet.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Scene/ManagerScenes.h"

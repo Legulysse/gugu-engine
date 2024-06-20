@@ -12,7 +12,8 @@
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
+#include "Gugu/System/String.h"
 #include "Gugu/Debug/Logger.h"
 #include "Gugu/External/PugiXmlUtility.h"
 

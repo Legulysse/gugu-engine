@@ -6,7 +6,6 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/2D/ElementText.h"
-#include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
 

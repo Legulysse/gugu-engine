@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/Common.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/String.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Debug/Logger.h"
 

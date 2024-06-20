@@ -9,7 +9,7 @@
 
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Text.hpp>

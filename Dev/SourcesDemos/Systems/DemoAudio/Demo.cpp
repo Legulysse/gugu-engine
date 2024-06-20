@@ -11,7 +11,7 @@
 #include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/UI/ElementButton.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 
 using namespace gugu;
 

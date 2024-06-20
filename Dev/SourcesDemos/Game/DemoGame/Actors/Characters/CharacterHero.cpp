@@ -7,21 +7,16 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Actors/Projectiles/Projectile.h"
 #include "UI/ElementBar.h"
-#include "Scene/Grid.h"
 #include "Skills/SkillUtility.h"
 
 #include "DataBinding.h"
 
-#include "Gugu/Scene/Scene.h"
 #include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Math/MathUtility.h"
-#include "Gugu/Math/Random.h"
-#include "Gugu/System/SystemUtility.h"
 
 using namespace gugu;
 

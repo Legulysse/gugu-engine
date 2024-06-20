@@ -16,6 +16,7 @@
 #include "Gugu/Window/Camera.h"
 #include "Gugu/Scene/ManagerScenes.h"
 #include "Gugu/Scene/Scene.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
 

@@ -8,8 +8,6 @@
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 #include "Gugu/Editor/Resources/VirtualDatasheetObject.h"
 
-#include "Gugu/System/SystemUtility.h"
-
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 

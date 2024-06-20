@@ -8,7 +8,9 @@
 // Includes
 
 #include "Gugu/Math/MathUtility.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/String.h"
+
+#include <sstream>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

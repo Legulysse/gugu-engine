@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/Element/2D/ElementText.h"
-#include "Gugu/Core/Callback.h"
+#include "Gugu/System/Callback.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations

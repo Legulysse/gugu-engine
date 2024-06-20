@@ -14,7 +14,6 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/Math/MathUtility.h"
 

@@ -10,7 +10,8 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/Data/DatasheetObject.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
+#include "Gugu/System/String.h"
 #include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////

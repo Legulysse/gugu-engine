@@ -16,7 +16,7 @@
 #include "Gugu/Element/ElementUtility.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/Element/UI/ElementCheckbox.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 
 using namespace gugu;
 

@@ -13,7 +13,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ElementWidget.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 
 ////////////////////////////////////////////////////////////////

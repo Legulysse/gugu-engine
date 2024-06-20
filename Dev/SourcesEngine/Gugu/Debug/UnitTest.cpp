@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/System/Types.h"
+#include "Gugu/System/String.h"
 
 #include <SFML/System/Clock.hpp>
 

@@ -15,7 +15,6 @@
 #include "Gugu/Resources/Music.h"
 #include "Gugu/Resources/SoundCue.h"
 
-#include "Gugu/System/SystemUtility.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Debug/Logger.h"
 

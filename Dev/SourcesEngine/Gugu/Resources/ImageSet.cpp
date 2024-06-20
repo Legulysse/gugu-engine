@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/System/SystemUtility.h"
+#include "Gugu/System/Container.h"
 #include "Gugu/External/PugiXmlUtility.h"
 #include "Gugu/Resources/Texture.h"
 

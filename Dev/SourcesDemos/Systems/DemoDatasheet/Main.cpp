@@ -76,40 +76,55 @@ int main(int argc, char* argv[])
     //TODO: Get all datasheets by type
 
     // Datasaves
-    DS_GameSave* gameSave = new DS_GameSave;
-    gameSave->LoadFromFile("User/gamesave.xml");
-
-    gameSave->experience += 1;
-    gameSave->name = "hello world";
-    gameSave->names.push_back(StringFormat("hello {0}", gameSave->names.size()));
-    gameSave->stats.push_back((int)gameSave->stats.size());
-    gameSave->weapon = EWeaponType::Axe;
-    gameSave->weapons.push_back((EWeaponType::Type)(gameSave->weapons.size() % EWeaponType::GetSize()));
-    gameSave->general = GetResources()->GetDatasheetObject<DS_General>("Robert.general");
-    gameSave->generals.push_back(GetResources()->GetDatasheetObject<DS_General>("Joffrey.general"));
-    gameSave->generals.push_back(nullptr);
-
-    if (gameSave->singleItem == nullptr)
     {
+        // Integration example
+        class PlayerSceneCharacter
+        {
+        private:
+
+            DS_PlayerSave* m_data;    // reference to serialized data, actually owned by the game save
+
+        public:
+
+            PlayerSceneCharacter(DS_PlayerSave* data)
+            {
+                m_data = data;
+            }
+
+            void ReceiveMoney(int value) const
+            {
+                m_data->money += value;
+            }
+
+            void ReceiveItem(DS_ItemSave* item)
+            {
+                m_data->inventory.push_back(item);
+            }
+        };
+
+        // New save
+        DS_GameSave* newGameSave = new DS_GameSave;
+        newGameSave->player = new DS_PlayerSave;
+
+        // Saving
+        newGameSave->SaveToFile("User/Save.xml");
+
+        // Loading
+        DS_GameSave* gameSave = new DS_GameSave;
+        gameSave->LoadFromFile("User/Save.xml");
+
+        // Gameplay
         DS_ItemSave* itemSave = new DS_ItemSave;
         itemSave->item = nullptr;
         itemSave->quantity = 10;
-        gameSave->singleItem = itemSave;
+
+        gameSave->player->money += 250;
+        gameSave->player->inventory.push_back(itemSave);
+
+        // Clear
+        SafeDelete(newGameSave);
+        SafeDelete(gameSave);
     }
-
-    gameSave->singleItem->quantity += 1;
-
-    DS_ItemSave* itemSaveB = new DS_ItemSave;
-    itemSaveB->item = nullptr;
-    itemSaveB->quantity = 10;
-    gameSave->multipleItems.push_back(itemSaveB);
-
-    gameSave->multipleItems.push_back(nullptr);
-
-    EnsureDirectoryExists("User");
-    gameSave->SaveToFile("User/gamesave.xml");
-
-    SafeDelete(gameSave);
 
     //----------------------------------------------
 

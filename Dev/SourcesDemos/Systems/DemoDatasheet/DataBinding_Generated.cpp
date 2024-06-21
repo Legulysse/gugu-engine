@@ -325,66 +325,83 @@ void DS_ConditionPlayerLevel::ParseMembers(gugu::DataParseContext& context)
 }
 
 ////////////////////////////////////////////////////////////////
+DS_Player::DS_Player()
+{
+    name = "";
+}
+
+DS_Player::~DS_Player()
+{
+}
+
+void DS_Player::ParseMembers(gugu::DataParseContext& context)
+{
+    //gugu::DatasheetObject::ParseMembers(context);
+
+    gugu::binding::ReadString(context, "name", name);
+}
+
+////////////////////////////////////////////////////////////////
 DS_GameSave::DS_GameSave()
 {
-    experience = 0;
-    name = "";
-    weapon = EWeaponType::Unknown;
-    emptyGeneral = nullptr;
-    general = nullptr;
-    emptyItem = nullptr;
-    singleItem = nullptr;
+    player = nullptr;
 }
 
 DS_GameSave::~DS_GameSave()
 {
-    emptyGeneral = nullptr;
-    general = nullptr;
-    generals.clear();
-    SafeDelete(emptyItem);
-    SafeDelete(singleItem);
-    ClearStdVector(multipleItems);
+    SafeDelete(player);
 }
 
 void DS_GameSave::ParseMembers(gugu::DataParseContext& context)
 {
     //gugu::DatasheetObject::ParseMembers(context);
 
-    gugu::binding::ReadInt(context, "experience", experience);
-    gugu::binding::ReadString(context, "name", name);
-    gugu::binding::ReadIntArray(context, "stats", stats);
-    gugu::binding::ReadStringArray(context, "names", names);
-    gugu::binding::ReadEnum(context, "weapon", "weaponType", weapon);
-    gugu::binding::ReadEnumArray(context, "weapons", "weaponType", weapons);
-    gugu::binding::ReadDatasheetReference(context, "emptyGeneral", emptyGeneral);
-    gugu::binding::ReadDatasheetReference(context, "general", general);
-    gugu::binding::ReadDatasheetReferenceArray(context, "generals", generals);
-    gugu::binding::ReadDatasaveInstance(context, "emptyItem", "itemSave", emptyItem);
-    gugu::binding::ReadDatasaveInstance(context, "singleItem", "itemSave", singleItem);
-    gugu::binding::ReadDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
+    gugu::binding::ReadDatasaveInstance(context, "player", "playerSave", player);
 }
 
 void DS_GameSave::SerializeMembers(gugu::DataSaveContext& context) const
 {
     //gugu::DatasheetObject::SerializeMembers(context);
 
-    gugu::binding::WriteInt(context, "experience", experience);
-    gugu::binding::WriteString(context, "name", name);
-    gugu::binding::WriteIntArray(context, "stats", stats);
-    gugu::binding::WriteStringArray(context, "names", names);
-    gugu::binding::WriteEnum(context, "weapon", "weaponType", weapon);
-    gugu::binding::WriteEnumArray(context, "weapons", "weaponType", weapons);
-    gugu::binding::WriteDatasheetReference(context, "emptyGeneral", emptyGeneral);
-    gugu::binding::WriteDatasheetReference(context, "general", general);
-    gugu::binding::WriteDatasheetReferenceArray(context, "generals", generals);
-    gugu::binding::WriteDatasaveInstance(context, "emptyItem", "itemSave", emptyItem);
-    gugu::binding::WriteDatasaveInstance(context, "singleItem", "itemSave", singleItem);
-    gugu::binding::WriteDatasaveInstanceArray(context, "multipleItems", "itemSave", multipleItems);
+    gugu::binding::WriteDatasaveInstance(context, "player", "playerSave", player);
 }
 
 const std::string& DS_GameSave::GetDataInstanceType() const
 {
     static const std::string dataInstanceType = "gameSave";
+    return dataInstanceType;
+}
+
+////////////////////////////////////////////////////////////////
+DS_PlayerSave::DS_PlayerSave()
+{
+    money = 0;
+}
+
+DS_PlayerSave::~DS_PlayerSave()
+{
+    ClearStdVector(inventory);
+}
+
+void DS_PlayerSave::ParseMembers(gugu::DataParseContext& context)
+{
+    //gugu::DatasheetObject::ParseMembers(context);
+
+    gugu::binding::ReadInt(context, "money", money);
+    gugu::binding::ReadDatasaveInstanceArray(context, "inventory", "itemSave", inventory);
+}
+
+void DS_PlayerSave::SerializeMembers(gugu::DataSaveContext& context) const
+{
+    //gugu::DatasheetObject::SerializeMembers(context);
+
+    gugu::binding::WriteInt(context, "money", money);
+    gugu::binding::WriteDatasaveInstanceArray(context, "inventory", "itemSave", inventory);
+}
+
+const std::string& DS_PlayerSave::GetDataInstanceType() const
+{
+    static const std::string dataInstanceType = "playerSave";
     return dataInstanceType;
 }
 
@@ -473,9 +490,17 @@ gugu::DataObject* DataBinding_InstanciateDataObject(std::string_view classType)
     {
         return new DS_ConditionPlayerLevel;
     }
+    if (classType == "player")
+    {
+        return new DS_Player;
+    }
     if (classType == "gameSave")
     {
         return new DS_GameSave;
+    }
+    if (classType == "playerSave")
+    {
+        return new DS_PlayerSave;
     }
     if (classType == "itemSave")
     {

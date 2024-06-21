@@ -26,7 +26,9 @@ class DS_Skill;
 class DS_Condition;
 class DS_ConditionAnd;
 class DS_ConditionPlayerLevel;
+class DS_Player;
 class DS_GameSave;
+class DS_PlayerSave;
 class DS_ItemSave;
 
 ////////////////////////////////////////////////////////////////
@@ -299,6 +301,23 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////
+class DS_Player : public gugu::DatasheetObject
+{
+public:
+
+    DS_Player();
+    virtual ~DS_Player();
+
+public:
+
+    std::string name;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+};
+
+////////////////////////////////////////////////////////////////
 class DS_GameSave : public gugu::DatasaveObject
 {
 public:
@@ -308,18 +327,28 @@ public:
 
 public:
 
-    int experience;
-    std::string name;
-    std::vector<int> stats;
-    std::vector<std::string> names;
-    EWeaponType::Type weapon;
-    std::vector<EWeaponType::Type> weapons;
-    const DS_General* emptyGeneral;
-    const DS_General* general;
-    std::vector<const DS_General*> generals;
-    DS_ItemSave* emptyItem;
-    DS_ItemSave* singleItem;
-    std::vector<DS_ItemSave*> multipleItems;
+    DS_PlayerSave* player;
+
+protected:
+
+    virtual void ParseMembers(gugu::DataParseContext& context) override;
+    virtual void SerializeMembers(gugu::DataSaveContext& context) const override;
+
+    virtual const std::string& GetDataInstanceType() const override;
+};
+
+////////////////////////////////////////////////////////////////
+class DS_PlayerSave : public gugu::DatasaveObject
+{
+public:
+
+    DS_PlayerSave();
+    virtual ~DS_PlayerSave();
+
+public:
+
+    int money;
+    std::vector<DS_ItemSave*> inventory;
 
 protected:
 

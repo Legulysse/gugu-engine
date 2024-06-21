@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<Datasheet serializationVersion="2" bindingVersion="1">
+	<RootObject type="item" uuid="9f191de898f44d17b4412e346b62dc0f">
+		<Data name="icon" value="Boots.png" />
+		<Data name="name" value="Wing Boots" />
+		<Data name="price" value="1500" />
+	</RootObject>
+</Datasheet>

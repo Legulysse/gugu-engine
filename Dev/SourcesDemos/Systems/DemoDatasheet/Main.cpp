@@ -56,6 +56,11 @@ int main(int argc, char* argv[])
     const DS_Troop* pTroop = GetResources()->GetDatasheetObject<DS_Troop>("Dragon.troop");
     const DS_Skill* pSkill = GetResources()->GetDatasheetObject<DS_Skill>("Fireball.skill");
 
+    const DS_Item* itemWingBoots = GetResources()->GetDatasheetObject<DS_Item>("WingBoots.item");
+    std::string itemName = itemWingBoots->name; // = "Wing Boots"
+    std::string itemIcon = itemWingBoots->icon; // = "Boots.png"
+    int itemPrice = itemWingBoots->price;       // = 1500
+
     ConditionContext context;
     context.playerLevel = 10;
     bool testCondition = pGeneralA->playableCondition && pGeneralA->playableCondition->IsValid(context);
@@ -115,7 +120,7 @@ int main(int argc, char* argv[])
 
         // Gameplay
         DS_ItemSave* itemSave = new DS_ItemSave;
-        itemSave->item = nullptr;
+        itemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
         itemSave->quantity = 10;
 
         gameSave->player->money += 250;

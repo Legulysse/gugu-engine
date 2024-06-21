@@ -72,7 +72,7 @@ gameSave->LoadFromFile("User/Save.xml");
 
 // Gameplay
 DS_ItemSave* itemSave = new DS_ItemSave;
-itemSave->item = nullptr;
+itemSave->item = GetResources()->GetDatasheetObject<DS_Item>("Apple.item");
 itemSave->quantity = 10;
 
 gameSave->player->money += 250;

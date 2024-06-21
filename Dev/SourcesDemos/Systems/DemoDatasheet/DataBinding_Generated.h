@@ -160,6 +160,8 @@ public:
 public:
 
     std::string name;
+    std::string icon;
+    int price;
 
 protected:
 

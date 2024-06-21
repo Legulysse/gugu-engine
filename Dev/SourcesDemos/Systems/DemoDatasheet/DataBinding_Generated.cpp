@@ -176,6 +176,8 @@ void DS_Troop::ParseMembers(gugu::DataParseContext& context)
 DS_Item::DS_Item()
 {
     name = "";
+    icon = "";
+    price = 0;
 }
 
 DS_Item::~DS_Item()
@@ -187,6 +189,8 @@ void DS_Item::ParseMembers(gugu::DataParseContext& context)
     //gugu::DatasheetObject::ParseMembers(context);
 
     gugu::binding::ReadString(context, "name", name);
+    gugu::binding::ReadString(context, "icon", icon);
+    gugu::binding::ReadInt(context, "price", price);
 }
 
 ////////////////////////////////////////////////////////////////

@@ -58,6 +58,8 @@
     
     <Class name="item" code="DS_Item">
         <Data type="string" name="name" />
+        <Data type="string" name="icon" />
+        <Data type="int" name="price" />
     </Class>
     
     <!-- Restriction -->

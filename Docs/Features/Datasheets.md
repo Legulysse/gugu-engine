@@ -4,6 +4,11 @@
 
 Datasheets are used as static database objects.
 
+Datasheet classes are defined in a databinding xml definition file.  
+The declared classes can be directly instanciated and edited in the Datasheet Editor as xml files, the editor will provide edition interfaces dynamically without the need of compiling anything.  
+The xml definitions are also parsed to generate c++ code (classes definition, serialization methods, and factories), to allow gameplay code to directly retrieve strongly typed objects.  
+Datasheets will handle inheritance, polymorphism, nested object instances, as well as references to other datasheets.
+
 ## Available Features
 
 - Classes : Classes can be defined as a collection of properties.
@@ -19,7 +24,7 @@ Datasheets are used as static database objects.
 - Polymorphism : A property defined as an instance for a defined class can hold an object from any subclass available matching this base class.
 
 
-## Example
+## Example (Simple Class)
 
 ### Binding
 
@@ -30,6 +35,10 @@ Datasheets are used as static database objects.
     <Data type="int" name="price" />
 </Class>
 ```
+
+### Generated Editor UI
+
+![Datasheet Editor Sample](./Images/DatasheetSample-01.png)
 
 ### Generated Code
 
@@ -53,3 +62,4 @@ std::string itemIcon = itemWingBoots->icon; // = "Boots.png"
 int itemPrice = itemWingBoots->price;       // = 1500
 ```
 
+## Example (Complex Class)

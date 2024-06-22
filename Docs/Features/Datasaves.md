@@ -7,7 +7,7 @@ Datasaves are used for serializing data at runtime.
 Datasave classes are defined in a databinding xml definition file.  
 The xml definitions are parsed to generate c++ code (classes definition, serialization methods, and factories).  
 The declared classes can then be instanciated and manipulated directly by the gameplay code, and will provide a set of load/save methods.  
-They will handle nested object instances, as well as references to datasheets.
+Datasaves will handle polymorphism, nested object instances, as well as references to datasheets.
 
 ## Example
 

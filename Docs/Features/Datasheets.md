@@ -24,7 +24,7 @@ Datasheets will handle inheritance, polymorphism, nested object instances, as we
 - Polymorphism : A property defined as an instance for a defined class can hold an object from any subclass available matching this base class.
 
 
-## Example (Simple Class)
+## Example (Base Use Case)
 
 ### Binding
 
@@ -62,4 +62,8 @@ std::string itemIcon = itemWingBoots->icon; // = "Boots.png"
 int itemPrice = itemWingBoots->price;       // = 1500
 ```
 
-## Example (Complex Class)
+## Example (Advanced Use Case)
+
+TODO
+
+![Datasheet Editor Sample](./Images/DatasheetSample-02.png)

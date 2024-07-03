@@ -759,6 +759,26 @@ void Window::ToggleShowRuler()
     m_showRuler = !m_showRuler;
 }
 
+bool Window::GetShowStats() const
+{
+    return m_showStats;
+}
+
+bool Window::GetShowFPS() const
+{
+    return m_showFPS;
+}
+
+bool Window::GetShowBounds() const
+{
+    return m_showBounds;
+}
+
+bool Window::GetShowRuler() const
+{
+    return m_showRuler;
+}
+
 Window* GetGameWindow()
 {
     return GetEngine()->GetGameWindow();

@@ -132,14 +132,20 @@ bool ElementSpriteBase::GetFlipTextureH() const
 
 void ElementSpriteBase::SetColor(const sf::Color& color)
 {
-    m_color = color;
-    RaiseDirtyVertices();
+    if (m_color != color)
+    {
+        m_color = color;
+        RaiseDirtyVertices();
+    }
 }
 
 void ElementSpriteBase::SetColorAlpha(uint8 alpha)
 {
-    m_color.a = alpha;
-    RaiseDirtyVertices();
+    if (m_color.a != alpha)
+    {
+        m_color.a = alpha;
+        RaiseDirtyVertices();
+    }
 }
 
 const sf::Color& ElementSpriteBase::GetColor() const

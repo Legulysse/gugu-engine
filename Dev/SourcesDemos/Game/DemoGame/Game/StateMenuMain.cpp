@@ -52,14 +52,16 @@ void StateMenuMain::Init()
 
     pButton = pBox->AddChild<ElementButton>();
     pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("New Game", "Roboto-Regular.ttf");
+    pButton->SetText("New Game");
+    pButton->GetTextComponent()->SetFont("Roboto-Regular.ttf");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 1));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY + pButton->GetSize().y;
     pButton = pBox->AddChild<ElementButton>();
     pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Quit", "Roboto-Regular.ttf");
+    pButton->SetText("Quit");
+    pButton->GetTextComponent()->SetFont("Roboto-Regular.ttf");
     pButton->SetOnMouseReleased(std::bind(&StateMenuMain::OnButtonClick, this, 0));
     pButton->SetPosition(fPosX, fPosY);
 

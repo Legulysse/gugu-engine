@@ -26,6 +26,8 @@ namespace Vector2
 }
 
 std::string ToString(const Vector2f& value);
+std::string ToString(const Vector2i& value);
+std::string ToString(const Vector2u& value);
 
 bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon);
 

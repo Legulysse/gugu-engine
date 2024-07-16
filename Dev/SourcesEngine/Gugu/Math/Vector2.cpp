@@ -24,6 +24,20 @@ std::string ToString(const Vector2f& value)
     return os.str();
 }
 
+std::string ToString(const Vector2i& value)
+{
+    std::ostringstream os;
+    os << "(" << ToString(value.x) << ", " << ToString(value.y) << ")";
+    return os.str();
+}
+
+std::string ToString(const Vector2u& value)
+{
+    std::ostringstream os;
+    os << "(" << ToString(value.x) << ", " << ToString(value.y) << ")";
+    return os.str();
+}
+
 bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon)
 {
     return gugu::ApproxEqual(left.x, right.x, epsilon) && gugu::ApproxEqual(left.y, right.y, epsilon);

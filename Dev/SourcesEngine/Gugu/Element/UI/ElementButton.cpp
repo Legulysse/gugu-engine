@@ -29,7 +29,7 @@ ElementButton::ElementButton()
     , m_focusedStateComponent(nullptr)
     , m_disabledStateComponent(nullptr)
     , m_currentStateComponent(nullptr)
-    , m_text(nullptr)
+    , m_textComponent(nullptr)
     , m_actionOnPressed(nullptr)
     , m_actionOnReleased(nullptr)
     , m_isDisabled(false)
@@ -111,7 +111,7 @@ void ElementButton::SetTextureImpl(Texture* textureIdle, Texture* textureFocused
     m_currentStateComponent = m_idleStateComponent;
 }
 
-void ElementButton::SetText(const std::string& value, const std::string& fontID)
+void ElementButton::SetText(const std::string& value)
 {
     // TODO: This is a safety for incomplete button widgets, it could be rethink along with deprecated SetTexture methods.
     if (!m_commonComponent)
@@ -122,19 +122,23 @@ void ElementButton::SetText(const std::string& value, const std::string& fontID)
     }
 
     // If the common component is not a text, add a text child.
-    if (!m_text)
+    if (!m_textComponent)
     {
-        m_text = dynamic_cast<ElementText*>(m_commonComponent);
-        if (!m_text)
+        m_textComponent = dynamic_cast<ElementText*>(m_commonComponent);
+        if (!m_textComponent)
         {
-            m_text = m_commonComponent->AddChild<ElementText>();
-            m_text->SetFont(fontID);
-            m_text->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
-            m_text->SetUnifiedPosition(UDim2::POSITION_TOP_CENTER);
+            m_textComponent = m_commonComponent->AddChild<ElementText>();
+            m_textComponent->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
+            m_textComponent->SetUnifiedPosition(UDim2::POSITION_TOP_CENTER);
         }
     }
 
-    m_text->SetText(value);
+    m_textComponent->SetText(value);
+}
+
+ElementText* ElementButton::GetTextComponent() const
+{
+    return m_textComponent;
 }
 
 void ElementButton::SetDisabled(bool _bDisabled)
@@ -239,7 +243,7 @@ void ElementButton::OnSizeChanged()
 void ElementButton::DeleteComponents()
 {
     m_currentStateComponent = nullptr;
-    m_text = nullptr;
+    m_textComponent = nullptr;
 
     SafeDelete(m_idleStateComponent);
     SafeDelete(m_focusedStateComponent);

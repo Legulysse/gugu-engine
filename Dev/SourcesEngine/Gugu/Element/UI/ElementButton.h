@@ -36,7 +36,8 @@ public:
     [[deprecated("Deprecated, use LoadFromWidget() instead.")]]
     void SetTexture(Texture* textureIdle, Texture* textureFocused, Texture* textureDisabled);
 
-    void SetText(const std::string& text, const std::string& fontID = "");
+    void SetText(const std::string& text);
+    ElementText* GetTextComponent() const;
 
     void SetDisabled(bool _bDisabled);
 
@@ -65,7 +66,7 @@ protected:
     Element* m_focusedStateComponent;
     Element* m_disabledStateComponent;
     Element* m_currentStateComponent;
-    ElementText* m_text;
+    ElementText* m_textComponent;
 
     Callback m_actionOnPressed;
     Callback m_actionOnReleased;

@@ -52,6 +52,11 @@ void TexturePanel::UpdatePanelImpl(const DeltaTime& dt)
     m_renderViewport->ImGuiEnd();
 }
 
+void TexturePanel::UpdatePropertiesImpl(const DeltaTime& dt)
+{
+    ImGui::Text("Resolution: %u x %u", m_texture->GetSize().x, m_texture->GetSize().y);
+}
+
 bool TexturePanel::SaveStateImpl(std::string& result)
 {
     // Currently texture edition is not handled.

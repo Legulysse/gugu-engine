@@ -30,6 +30,7 @@ public:
 protected:
 
     virtual void UpdatePanelImpl(const DeltaTime& dt) override;
+    virtual void UpdatePropertiesImpl(const DeltaTime& dt) override;
     virtual bool SaveStateImpl(std::string& result) override;
 
 private:

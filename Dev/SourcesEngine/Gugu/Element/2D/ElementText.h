@@ -30,14 +30,11 @@ namespace ETextResizeRule
 {
     enum Type
     {
-        FixedSize,      //No auto-resize, no auto-scale
-        FitSize,        //Recompute size to fit the text, no auto-scale (Default) (use before SetValue)
-        FitHeight,      //Recompute height to fit the text, no auto-scale (Use before SetSize)
-        FitScale,       //No auto-resize, rescale text to fill (Use before SetSize)
-
-        //TODO: Find a more robust way yo handle initialization :
-        //if setsize is called while FitSize is active and text is empty, it will be reset to size=0,
-        //and following instructions with FitHeight and SetValue wont be able to resize the Element.
+        FixedSize,      // No auto-resize, no auto-scale.
+        FitSize,        // Recompute size to fit the text (Default).
+        FitWidth,       // Recompute width to fit the text.
+        FitHeight,      // Recompute height to fit the text.
+        FitScale,       // Rescale text to fill the element size.
     };
 }
 

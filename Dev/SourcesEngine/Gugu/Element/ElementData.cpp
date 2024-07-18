@@ -584,6 +584,7 @@ bool ElementTextData::LoadFromXmlImpl(ElementParseContext& context)
     static const std::map<ETextResizeRule::Type, std::string> resizeRuleEnumToString = {
         { ETextResizeRule::FixedSize, "FixedSize" },
         { ETextResizeRule::FitSize, "FitSize" },
+        { ETextResizeRule::FitWidth, "FitWidth" },
         { ETextResizeRule::FitHeight, "FitHeight" },
         { ETextResizeRule::FitScale, "FitScale" },
     };
@@ -591,6 +592,7 @@ bool ElementTextData::LoadFromXmlImpl(ElementParseContext& context)
     static const std::map<std::string, ETextResizeRule::Type> resizeRuleStringToEnum = {
         { "FixedSize", ETextResizeRule::FixedSize },
         { "FitSize", ETextResizeRule::FitSize },
+        { "FitWidth", ETextResizeRule::FitWidth },
         { "FitHeight", ETextResizeRule::FitHeight },
         { "FitScale", ETextResizeRule::FitScale },
     };
@@ -621,6 +623,7 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
     static const std::map<ETextResizeRule::Type, std::string> resizeRuleEnumToString = {
         { ETextResizeRule::FixedSize, "FixedSize" },
         { ETextResizeRule::FitSize, "FitSize" },
+        { ETextResizeRule::FitWidth, "FitWidth" },
         { ETextResizeRule::FitHeight, "FitHeight" },
         { ETextResizeRule::FitScale, "FitScale" },
     };

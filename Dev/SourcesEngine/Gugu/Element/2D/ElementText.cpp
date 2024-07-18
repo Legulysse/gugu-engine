@@ -248,14 +248,22 @@ void ElementText::RecomputeImpl()
     //    fLineHeight = m_pSFText->getFont()->getLineSpacing(m_pSFText->getCharacterSize());
 
     //TODO: if the string is empty, we cant select it for edition since the size is (0,0).
-    if (m_resizeRule == ETextResizeRule::FitScale && m_size.x > 0 && m_size.y > 0 && m_sfText->getLocalBounds().width > 0 && m_sfText->getLocalBounds().height > 0)
+    if (m_resizeRule == ETextResizeRule::FitScale)
     {
-        m_sfText->setScale(m_size.x / (m_sfText->getLocalBounds().left + m_sfText->getLocalBounds().width), m_size.y / (m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height));
+        if (m_size.x > 0 && m_size.y > 0 && m_sfText->getLocalBounds().width > 0 && m_sfText->getLocalBounds().height > 0)
+        {
+            m_sfText->setScale(m_size.x / (m_sfText->getLocalBounds().left + m_sfText->getLocalBounds().width), m_size.y / (m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height));
+        }
     }
     else if (m_resizeRule == ETextResizeRule::FitSize)
     {
         m_skipRecomputeOnResize = true;
         SetSize(m_sfText->getLocalBounds().left + m_sfText->getLocalBounds().width, m_sfText->getLocalBounds().top + m_sfText->getLocalBounds().height);
+    }
+    else if (m_resizeRule == ETextResizeRule::FitWidth)
+    {
+        m_skipRecomputeOnResize = true;
+        SetSizeX(m_sfText->getLocalBounds().left + m_sfText->getLocalBounds().width);
     }
     else if (m_resizeRule == ETextResizeRule::FitHeight)
     {

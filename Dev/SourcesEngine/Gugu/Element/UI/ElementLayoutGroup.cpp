@@ -186,6 +186,8 @@ void ElementLayoutGroup::RecomputeImpl()
 
     for (size_t i = 0; i < m_items.size(); ++i)
     {
+        // TODO: Handle hidden items ?
+
         Vector2f itemSize = m_items[i]->GetSize();
 
         Vector2f currentGroupSize = Vector2::Zero_f;

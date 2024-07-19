@@ -580,7 +580,8 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             RaiseDirty();
         }
 
-        static const std::vector<std::string> resizeRules = { "FixedSize", "FitSize", "FitHeight", "FitScale" };
+        // TODO: use a common enum between this, base declaration, and serialization.
+        static const std::vector<std::string> resizeRules = { "FixedSize", "FitSize", "FitWidth", "FitHeight", "FitScale" };
 
         size_t resizeRuleIndex = (size_t)elementTextData->resizeRule;
         if (ImGui::Combo("Resize Rule", resizeRules, &resizeRuleIndex))

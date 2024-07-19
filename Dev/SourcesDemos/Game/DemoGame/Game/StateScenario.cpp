@@ -68,7 +68,7 @@ void StateScenario::Init()
 
         m_skillCooldownText1 = m_skillSprite1->AddChild<ElementText>();
         m_skillCooldownText1->SetText("--");
-        m_skillCooldownText1->SetFontColor(sf::Color::White);
+        m_skillCooldownText1->SetColor(sf::Color::White);
         m_skillCooldownText1->SetUnifiedOrigin(UDim2::POSITION_CENTER);
         m_skillCooldownText1->SetUnifiedPosition(UDim2::POSITION_CENTER);
     }

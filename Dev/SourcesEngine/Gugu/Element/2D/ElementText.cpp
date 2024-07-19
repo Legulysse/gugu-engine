@@ -33,7 +33,7 @@ ElementText::ElementText()
     m_sfText->setFillColor(sf::Color(0, 0, 0));
 
     SetFont(GetResources()->GetDefaultFont());
-    SetFontSize(20);
+    SetFontSize(20);    // Duplicate in ElementTextData declaration.
 }
 
 ElementText::~ElementText()
@@ -59,9 +59,9 @@ void ElementText::SetFont(Font* _pFont)
     }
 }
 
-void ElementText::SetFontSize(unsigned int _uiSize)
+void ElementText::SetFontSize(uint32 fontSize)
 {
-    m_sfText->setCharacterSize(_uiSize);
+    m_sfText->setCharacterSize(fontSize);
     
     RaiseNeedRecompute();
 }
@@ -323,6 +323,12 @@ bool ElementText::LoadFromDataImpl(ElementDataContext& context)
     ElementTextData* textData = dynamic_cast<ElementTextData*>(context.data);
 
     SetFont(textData->font);
+
+    if (textData->fontSize != 0)
+    {
+        SetFontSize(textData->fontSize);
+    }
+
     SetMultiline(textData->multiline);
     SetText(textData->text);
 

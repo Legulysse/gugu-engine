@@ -50,7 +50,7 @@ public:
 
     void SetFont        (const std::string& _strFontPath);
     void SetFont        (Font* _pFont);
-    void SetFontSize    (unsigned int _uiSize);
+    void SetFontSize    (uint32 fontSize);
     void SetFontColor   (const sf::Color& _oColor);
     //TODO: Add accessors for all sf::Text methods (LineSpacing, LetterSpacing, Style, etc)
 

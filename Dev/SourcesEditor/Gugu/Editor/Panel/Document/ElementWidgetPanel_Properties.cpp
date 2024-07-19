@@ -573,6 +573,14 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             RaiseDirty();
         }
 
+        int fontSize = elementTextData->fontSize;
+        if (ImGui::InputInt("FontSize", &fontSize))
+        {
+            elementTextData->fontSize = fontSize;
+            elementText->SetFontSize(elementTextData->fontSize);
+            RaiseDirty();
+        }
+
         if (ImGui::Checkbox("Multiline", &elementTextData->multiline))
         {
             elementText->SetMultiline(elementTextData->multiline);

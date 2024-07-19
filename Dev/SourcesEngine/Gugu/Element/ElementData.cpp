@@ -602,6 +602,7 @@ bool ElementTextData::LoadFromXmlImpl(ElementParseContext& context)
         font = GetResources()->GetFont(fontNode.attribute("source").as_string(""));
     }
 
+    xml::TryParseAttribute(context.node.child("FontSize"), "value", fontSize);
     xml::TryParseAttribute(context.node.child("Text"), "value", text);
     xml::TryParseAttribute(context.node.child("Multiline"), "value", multiline);
 
@@ -633,6 +634,8 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
         context.node.append_child("Font").append_attribute("source").set_value(font->GetID().c_str());
     }
 
+    context.node.append_child("FontSize").append_attribute("value").set_value(fontSize);
+
     if (!text.empty())
     {
         context.node.append_child("Text").append_attribute("value").set_value(text.c_str());
@@ -643,10 +646,7 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
         context.node.append_child("Multiline").append_attribute("value").set_value(multiline);
     }
 
-    if (resizeRule != ETextResizeRule::FitSize)
-    {
-        context.node.append_child("ResizeRule").append_attribute("value").set_value(resizeRuleEnumToString.at(resizeRule).c_str());
-    }
+    context.node.append_child("ResizeRule").append_attribute("value").set_value(resizeRuleEnumToString.at(resizeRule).c_str());
 
     return true;
 }

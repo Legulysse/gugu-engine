@@ -190,7 +190,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_consoleTextEntry->SetText("");
     m_consoleTextEntry->SetMultiline(false);
     //m_pConsoleTextEntry->SetEditable(true);
-    m_consoleTextEntry->SetFontColor(sf::Color(220, 220, 220));
+    m_consoleTextEntry->SetColor(sf::Color(220, 220, 220));
     m_consoleTextEntry->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT);
     m_consoleTextEntry->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
     m_consoleTextEntry->SetUnifiedSize(UDim2(Vector2f(1.f, 0.f), Vector2f(0.f, 30.f)));

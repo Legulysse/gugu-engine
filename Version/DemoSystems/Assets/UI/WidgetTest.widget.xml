@@ -169,9 +169,14 @@
 			</Element>
 			<Element type="ElementText">
 				<Position x="300" y="0" />
-				<Size x="20" y="20" />
+				<Size x="223" y="50" />
 				<Font source="MPLUS1p-Medium.ttf" />
+				<FontSize value="45" />
+				<Color r="233" g="226" b="27" a="255" />
+				<OutlineColor r="20" g="32" b="209" a="255" />
+				<OutlineThickness value="1" />
 				<Text value="れぐーさん" />
+				<ResizeRule value="FitSize" />
 			</Element>
 			<Element type="ElementWidgetInstance" name="test button" widget="Button_01.widget.xml">
 				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="100" />

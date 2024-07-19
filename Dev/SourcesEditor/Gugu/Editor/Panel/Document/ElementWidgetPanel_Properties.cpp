@@ -574,10 +574,28 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         }
 
         int fontSize = elementTextData->fontSize;
-        if (ImGui::InputInt("FontSize", &fontSize))
+        if (ImGui::InputInt("Font Size", &fontSize))
         {
             elementTextData->fontSize = fontSize;
             elementText->SetFontSize(elementTextData->fontSize);
+            RaiseDirty();
+        }
+
+        if (ImGui::ColorEdit4("Color", &elementTextData->color))
+        {
+            elementText->SetColor(elementTextData->color);
+            RaiseDirty();
+        }
+
+        if (ImGui::ColorEdit4("Outline Color", &elementTextData->outlineColor))
+        {
+            elementText->SetOutlineColor(elementTextData->outlineColor);
+            RaiseDirty();
+        }
+
+        if (ImGui::InputFloat("Outline Thickness", &elementTextData->outlineThickness))
+        {
+            elementText->SetOutlineThickness(elementTextData->outlineThickness);
             RaiseDirty();
         }
 

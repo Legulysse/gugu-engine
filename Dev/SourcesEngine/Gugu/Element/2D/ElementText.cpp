@@ -30,10 +30,12 @@ ElementText::ElementText()
     , m_skipRecomputeOnResize(false)
 {
     m_sfText = new sf::Text;
-    m_sfText->setFillColor(sf::Color(0, 0, 0));
 
     SetFont(GetResources()->GetDefaultFont());
-    SetFontSize(20);    // Duplicate in ElementTextData declaration.
+    SetFontSize(20);                    // Duplicate in ElementTextData declaration.
+    SetColor(sf::Color::Black);         // Duplicate in ElementTextData declaration.
+    SetOutlineColor(sf::Color::Black);  // Duplicate in ElementTextData declaration.
+    SetOutlineThickness(0.f);
 }
 
 ElementText::~ElementText()
@@ -66,9 +68,21 @@ void ElementText::SetFontSize(uint32 fontSize)
     RaiseNeedRecompute();
 }
 
-void ElementText::SetFontColor(const sf::Color& _oColor)
+void ElementText::SetColor(const sf::Color& color)
 {
-    m_sfText->setFillColor(_oColor);
+    m_sfText->setFillColor(color);
+}
+
+void ElementText::SetOutlineColor(const sf::Color& color)
+{
+    m_sfText->setOutlineColor(color);
+}
+
+void ElementText::SetOutlineThickness(float thickness)
+{
+    m_sfText->setOutlineThickness(thickness);
+
+    RaiseNeedRecompute();
 }
 
 void ElementText::SetResizeRule(ETextResizeRule::Type _eResizeRule)
@@ -323,12 +337,10 @@ bool ElementText::LoadFromDataImpl(ElementDataContext& context)
     ElementTextData* textData = dynamic_cast<ElementTextData*>(context.data);
 
     SetFont(textData->font);
-
-    if (textData->fontSize != 0)
-    {
-        SetFontSize(textData->fontSize);
-    }
-
+    SetFontSize(textData->fontSize);
+    SetColor(textData->color);
+    SetOutlineColor(textData->outlineColor);
+    SetOutlineThickness(textData->outlineThickness);
     SetMultiline(textData->multiline);
     SetText(textData->text);
 

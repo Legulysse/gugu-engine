@@ -192,7 +192,10 @@ class ElementTextData : public ElementData
 public:
 
     Font* font = nullptr;
-    uint32 fontSize = 20;   // Duplicate in ElementText ctor.
+    uint32 fontSize = 20;                       // Duplicate in ElementText ctor.
+    sf::Color color = sf::Color::Black;         // Duplicate in ElementText ctor.
+    sf::Color outlineColor = sf::Color::Black;  // Duplicate in ElementText ctor.
+    float outlineThickness = 0.f;
     std::string text;
     ETextResizeRule::Type resizeRule = ETextResizeRule::FitSize;
     bool multiline = false;

@@ -48,10 +48,12 @@ public:
     void SetText(const std::string& value /* , bool _bResize = true */);
     sf::String GetText() const;
 
-    void SetFont        (const std::string& _strFontPath);
-    void SetFont        (Font* _pFont);
-    void SetFontSize    (uint32 fontSize);
-    void SetFontColor   (const sf::Color& _oColor);
+    void SetFont(const std::string& _strFontPath);
+    void SetFont(Font* _pFont);
+    void SetFontSize(uint32 fontSize);
+    void SetColor(const sf::Color& _oColor);
+    void SetOutlineColor(const sf::Color& color);
+    void SetOutlineThickness(float thickness);
     //TODO: Add accessors for all sf::Text methods (LineSpacing, LetterSpacing, Style, etc)
 
     void SetResizeRule  (ETextResizeRule::Type _eResizeRule);

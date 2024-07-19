@@ -603,6 +603,9 @@ bool ElementTextData::LoadFromXmlImpl(ElementParseContext& context)
     }
 
     xml::TryParseAttribute(context.node.child("FontSize"), "value", fontSize);
+    xml::TryParseColor(context.node.child("Color"), color);
+    xml::TryParseColor(context.node.child("OutlineColor"), outlineColor);
+    xml::TryParseAttribute(context.node.child("OutlineThickness"), "value", outlineThickness);
     xml::TryParseAttribute(context.node.child("Text"), "value", text);
     xml::TryParseAttribute(context.node.child("Multiline"), "value", multiline);
 
@@ -635,6 +638,9 @@ bool ElementTextData::SaveToXmlImpl(ElementSaveContext& context) const
     }
 
     context.node.append_child("FontSize").append_attribute("value").set_value(fontSize);
+    xml::WriteColor(context.node.append_child("Color"), color);
+    xml::WriteColor(context.node.append_child("OutlineColor"), outlineColor);
+    context.node.append_child("OutlineThickness").append_attribute("value").set_value(outlineThickness);
 
     if (!text.empty())
     {

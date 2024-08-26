@@ -202,6 +202,7 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     updated |= ImGui::InputInt("duration (ms)", &particleSettings->duration, 0);
     ImGui::EndDisabled();
 
+    updated |= ImGui::Checkbox("Unscaled Time", &particleSettings->useUnscaledTime);
     updated |= ImGui::InputInt("max particles", &particleSettings->maxParticleCount, 0);
 
     const char* particleShapeValues[] = { "Point", "Quad" };

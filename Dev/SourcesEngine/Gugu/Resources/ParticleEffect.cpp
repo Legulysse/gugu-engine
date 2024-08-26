@@ -104,6 +104,7 @@ bool ParticleEffect::LoadFromXml(const pugi::xml_document& document)
     // Setup
     m_particleSettings.loop = nodeParticleEffect.child("Loop").attribute("value").as_bool(m_particleSettings.loop);
     m_particleSettings.duration = nodeParticleEffect.child("Duration").attribute("value").as_int(m_particleSettings.duration);
+    m_particleSettings.useUnscaledTime = nodeParticleEffect.child("UseUnscaledTime").attribute("value").as_bool(m_particleSettings.useUnscaledTime);
     m_particleSettings.maxParticleCount = nodeParticleEffect.child("MaxParticleCount").attribute("value").as_int(m_particleSettings.maxParticleCount);
     particleShapeValue = nodeParticleEffect.child("ParticleShape").attribute("value").as_string(particleShapeValue.c_str());
     m_particleSettings.useSortBuffer = nodeParticleEffect.child("SortBuffer").attribute("value").as_bool(m_particleSettings.useSortBuffer);
@@ -216,6 +217,7 @@ bool ParticleEffect::SaveToXml(pugi::xml_document& document) const
     // Setup
     nodeParticleEffect.append_child("Loop").append_attribute("value").set_value(m_particleSettings.loop);
     nodeParticleEffect.append_child("Duration").append_attribute("value").set_value(m_particleSettings.duration);
+    nodeParticleEffect.append_child("UseUnscaledTime").append_attribute("value").set_value(m_particleSettings.useUnscaledTime);
     nodeParticleEffect.append_child("MaxParticleCount").append_attribute("value").set_value(m_particleSettings.maxParticleCount);
     nodeParticleEffect.append_child("ParticleShape").append_attribute("value").set_value(particleShapeValue.c_str());
     nodeParticleEffect.append_child("SortBuffer").append_attribute("value").set_value(m_particleSettings.useSortBuffer);

@@ -394,7 +394,7 @@ void ParticleSystem::UpdateEmitterPosition()
     }
 }
 
-void ParticleSystem::Update(const DeltaTime& dt)
+void ParticleSystem::Update(const DeltaTime& updateDt)
 {
     if (!m_running)
         return;
@@ -403,6 +403,8 @@ void ParticleSystem::Update(const DeltaTime& dt)
 
     if (m_paused)
         return;
+
+    const DeltaTime dt = !m_settings.useUnscaledTime ? updateDt : DeltaTime(updateDt.GetUnscaledTime(), updateDt.GetUnscaledTime(), 1.f);
 
     // Update live particles.
     for (size_t i = 0; i < m_maxParticleCount; ++i)

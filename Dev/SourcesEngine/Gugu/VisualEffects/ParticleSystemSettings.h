@@ -51,6 +51,7 @@ struct ParticleSystemSettings
     // Setup
     bool loop = true;
     int duration = 5000;
+    bool useUnscaledTime = false;
     int maxParticleCount = 50;  // Hard-limit implemented at 100k particles, to avoid crashes.
     EParticleShape particleShape = EParticleShape::Quad;
     bool useSortBuffer = false;

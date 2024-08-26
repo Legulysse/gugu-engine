@@ -246,8 +246,8 @@ void Engine::RunMainLoop()
 void Engine::RunSingleLoop(const sf::Time& loopTime)
 {
     // handle speed multiplier if active.
-    sf::Time updateTimeScaled = loopTime;
-    sf::Time updateTimeUnscaled = loopTime;
+    sf::Time updateTimeUnscaled = sf::microseconds(Min<int64>(m_engineConfig.maxUpdateDeltaTimeMs * 1000, loopTime.asMicroseconds()));
+    sf::Time updateTimeScaled = updateTimeUnscaled;
     float updateDeltaScale = 1.f;
 
     if (m_useSpeedMultiplier)
@@ -264,20 +264,20 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
     }
 
     // Compute step time.
-    sf::Time stepTimeScaled = updateTimeScaled;
     sf::Time stepTimeUnscaled = updateTimeUnscaled;
+    sf::Time stepTimeScaled = updateTimeScaled;
     float stepDeltaScale = updateDeltaScale;
 
     if (m_engineConfig.useConstantStep)
     {
-        stepTimeScaled = sf::milliseconds(m_engineConfig.constantStepTime);
-        stepTimeUnscaled = stepTimeScaled;
+        stepTimeUnscaled = sf::milliseconds(m_engineConfig.constantStepTimeMs);
+        stepTimeScaled = stepTimeUnscaled;
         stepDeltaScale = 1.f;
     }
 
     // Compute delta times.
-    DeltaTime dt_step(stepTimeScaled, stepTimeUnscaled, stepDeltaScale);
     DeltaTime dt_update(updateTimeScaled, updateTimeUnscaled, updateDeltaScale);
+    DeltaTime dt_step(stepTimeScaled, stepTimeUnscaled, stepDeltaScale);
 
     // Prepare clocks for stats.
     sf::Clock clockStatLoop;

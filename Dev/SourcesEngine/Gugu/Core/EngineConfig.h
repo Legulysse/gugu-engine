@@ -27,9 +27,12 @@ struct EngineConfig
     std::string applicationName;
     std::string applicationIcon;
 
+    // Update
+    int maxUpdateDeltaTimeMs;
+
     // Step
     bool useConstantStep;
-    int constantStepTime;
+    int constantStepTimeMs;
 
     // Resources
     bool useAssetsFullPaths;
@@ -64,8 +67,10 @@ struct EngineConfig
         applicationName = "Game Project";
         applicationIcon = "";
 
+        maxUpdateDeltaTimeMs = 100;
+
         useConstantStep = true;
-        constantStepTime = 20;
+        constantStepTimeMs = 20;
 
         useAssetsFullPaths = false;
         pathAssets = "";

@@ -53,7 +53,9 @@ private:
     ElementParticles* m_elementParticle;
 
     bool m_followCursor;
+    bool m_offset;
     bool m_rotate;
+    float m_rotationSpeed;
     float m_restartDelay;
 
     bool m_pendingRestart;

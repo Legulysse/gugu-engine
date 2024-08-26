@@ -120,9 +120,15 @@ void Demo::AppStart()
 
     // Arm Particle
     ParticleSystemSettings armSettings;
-    armSettings.maxParticleCount = 100;
-    armSettings.minParticlesPerSpawn = 5;
+    armSettings.localSpace = false;
+    armSettings.maxParticleCount = 1000;
+    armSettings.emissionBehaviour = ParticleSystemSettings::EEmissionBehaviour::AngleDirection;
+    armSettings.emissionDirection = Vector2f(0.f, -1.f);
+    armSettings.emissionAngle = 45.f;
+    armSettings.minSpawnPerSecond = 100.f;
+    armSettings.minParticlesPerSpawn = 3;
     armSettings.minLifetime = 1500;
+    armSettings.minVelocity = 500;
     armSettings.useRandomStartSize = true;
     armSettings.minStartSize = Vector2f(5.f, 5.f);
     armSettings.maxStartSize = Vector2f(10.f, 10.f);

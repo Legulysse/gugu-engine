@@ -33,7 +33,9 @@ ParticleEffectPanel::ParticleEffectPanel(ParticleEffect* resource)
     , m_particleSystem(nullptr)
     , m_elementParticle(nullptr)
     , m_followCursor(false)
+    , m_offset(false)
     , m_rotate(false)
+    , m_rotationSpeed(90.f)
     , m_restartDelay(1.f)
     , m_pendingRestart(false)
     , m_currentDelay(0.f)
@@ -126,18 +128,30 @@ void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
     }
 
     ImGui::SameLine();
-    if (ImGui::Checkbox("Rotate", &m_rotate))
+    if (ImGui::Checkbox("Offset", &m_offset))
     {
-        if (m_rotate)
+        if (m_offset)
         {
             m_elementParticle->SetOriginY(150.f);
         }
         else
         {
             m_elementParticle->SetOriginY(0.f);
+        }
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Rotate", &m_rotate))
+    {
+        if (!m_rotate)
+        {
             m_elementParticle->SetRotation(0.f);
         }
     }
+
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(100.f);
+    ImGui::SliderFloat("Rotation Speed", &m_rotationSpeed, 0.f, 720.f);
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(100.f);
@@ -155,7 +169,7 @@ void ParticleEffectPanel::UpdatePanelImpl(const DeltaTime& dt)
 
     if (m_rotate)
     {
-        m_elementParticle->Rotate(dt.s() * 90.f);
+        m_elementParticle->Rotate(dt.s() * m_rotationSpeed);
     }
 
     m_renderViewport->ImGuiEnd();

@@ -77,6 +77,7 @@ private:
     sf::Texture* m_texture;
     Element* m_element;
     Vector2f m_emitterPosition;
+    float m_emitterRotation;
 
     // Runtime
     bool m_running;

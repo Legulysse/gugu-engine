@@ -31,6 +31,7 @@ ParticleSystem::ParticleSystem()
     , m_imageSet(nullptr)
     , m_texture(nullptr)
     , m_element(nullptr)
+    , m_emitterRotation(0.f)
     , m_running(false)
     , m_stopEmitting(false)
     , m_paused(false)
@@ -348,7 +349,7 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     {
         float velocityValue = GetRandomf(m_settings.minVelocity, m_settings.maxVelocity);
         Vector2f velocityVector = m_settings.emissionDirection * velocityValue;
-        float emissionAngle = GetRandomf(m_settings.emissionAngle) - (m_settings.emissionAngle * 0.5f);
+        float emissionAngle = m_emitterRotation + GetRandomf(m_settings.emissionAngle) - (m_settings.emissionAngle * 0.5f);
         velocityVector = Rotate(velocityVector, ToRadiansf(emissionAngle));
         m_dataVelocity[particleIndex] = velocityVector;
     }
@@ -387,10 +388,20 @@ void ParticleSystem::UpdateEmitterPosition()
     if (m_element && !m_settings.localSpace)
     {
         SetEmitterPosition(m_element->TransformToGlobal(Vector2::Zero_f));
+        m_emitterRotation = 0.f;
+
+        // TODO: GetGlobalRotation ?
+        Element* ancestor = m_element;
+        while (ancestor != nullptr)
+        {
+            m_emitterRotation += ancestor->GetRotation();
+            ancestor = ancestor->GetParent();
+        }
     }
     else
     {
         SetEmitterPosition(Vector2::Zero_f);
+        m_emitterRotation = 0.f;
     }
 }
 

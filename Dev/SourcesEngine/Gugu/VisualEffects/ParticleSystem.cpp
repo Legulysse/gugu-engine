@@ -519,7 +519,7 @@ void ParticleSystem::Update(const DeltaTime& updateDt)
         {
             // This case triggers if delay <= dt (high spawn rate).
             nbSpawns = Max(1, (int)(dt.s() * GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond)));
-            m_currentSpawnDelay += dt.ms() - m_nextSpawnDelay;
+            m_currentSpawnDelay = 0.f;
 
             float randValue = GetRandomf(m_settings.minSpawnPerSecond, m_settings.maxSpawnPerSecond);
             m_nextSpawnDelay = 1000.f / Max(math::Epsilon6, randValue);

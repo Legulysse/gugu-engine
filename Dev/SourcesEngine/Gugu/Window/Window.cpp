@@ -207,6 +207,16 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_windowFocused = m_sfWindow->hasFocus();
 }
 
+void Window::SetBackgroundColor(const sf::Color& backgroundColor)
+{
+    m_backgroundColor = backgroundColor;
+}
+
+const sf::Color& Window::GetBackgroundColor() const
+{
+    return m_backgroundColor;
+}
+
 void Window::SetRenderer(Renderer* _pRenderer)
 {
     m_renderer = _pRenderer;

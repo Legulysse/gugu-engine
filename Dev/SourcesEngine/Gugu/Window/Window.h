@@ -51,6 +51,9 @@ public:
     sf::RenderWindow*   Create  (const EngineConfig& config, bool hostImGui);
     virtual void        Init    (sf::RenderWindow* _pSFWindow, const EngineConfig& config);
 
+    void SetBackgroundColor(const sf::Color& backgroundColor);
+    const sf::Color& GetBackgroundColor() const;
+
     void        SetRenderer    (Renderer* _pRenderer);     //Assign a Renderer (no ownership transmission)
     Renderer*   GetRenderer    () const;
 

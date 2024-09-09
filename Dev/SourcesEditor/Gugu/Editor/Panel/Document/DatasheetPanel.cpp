@@ -194,11 +194,6 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
         ImGui::PopItemWidth();
 
-        if (dataMemberDefinition->type != DatasheetParser::DataMemberDefinition::ObjectInstance)
-        {
-            DisplayInlineDataMemberContent(dataMemberDefinition, dataValue);
-        }
-
         DisplayDepthColumn(dataMemberDefinition, dataObject, dataValue);
 
         if (nodeOpen)
@@ -322,11 +317,6 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                         removeChildIndex = childIndex;
                     }
                     ImGui::PopStyleColor(3);
-
-                    if (dataMemberDefinition->type != DatasheetParser::DataMemberDefinition::ObjectInstance)
-                    {
-                        DisplayInlineDataMemberContent(dataMemberDefinition, childDataValue);
-                    }
 
                     DisplayEmptyDepthColumn();
 
@@ -552,25 +542,6 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     }
 
     //ImGui::PopItemWidth();
-}
-
-void DatasheetPanel::DisplayInlineDataMemberContent(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject::DataValue*& dataValue)
-{
-    // TODO: maybe I could inline those informations and avoid splitting the display method ?
-    if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectReference)
-    {
-        if (dataMemberDefinition->objectDefinition)
-        {
-            VirtualDatasheet* objectReference = dataValue ? dataValue->value_objectReference : nullptr;
-            std::string dummyRefID = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
-            std::string objectDefinition = dataMemberDefinition->objectDefinition->m_name;
-            std::string description = objectReference ? "Valid Ref" : (!objectReference && dummyRefID.empty() ? "Empty Ref" : "Invalid Ref");
-
-            ImGui::Indent();
-            ImGui::Text(StringFormat("{1} (Def: {0})", objectDefinition, description).c_str());
-            ImGui::Unindent();
-        }
-    }
 }
 
 void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue)

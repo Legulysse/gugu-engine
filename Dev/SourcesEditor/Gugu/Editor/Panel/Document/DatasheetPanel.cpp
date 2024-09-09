@@ -265,9 +265,9 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::TableNextColumn();
 
                     // The double PushItemWidth will hide the label of the next widget then force its size.
-                    const float arrayButtonsSize = 3 * (button_size + ImGui::GetStyle().ItemInnerSpacing.x);
+                    const float sizeOffset = 3 * (button_size + ImGui::GetStyle().ItemInnerSpacing.x);
                     ImGui::PushItemWidth(-1);
-                    ImGui::PushItemWidth(ImMax(1.0f, ImGui::CalcItemWidth() - arrayButtonsSize));
+                    ImGui::PushItemWidth(ImMax(1.0f, ImGui::CalcItemWidth() - sizeOffset));
 
                     if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
@@ -389,6 +389,8 @@ void DatasheetPanel::DisplayEmptyDepthColumn()
 
 void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue*& dataValue)
 {
+    const float button_size = ImGui::GetFrameHeight();
+
     //ImGui::PushItemWidth(-1);
 
     if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
@@ -496,7 +498,48 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         {
             VirtualDatasheet* objectReference = dataValue ? dataValue->value_objectReference : nullptr;
             std::string dummyRefID = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
-            if (ImGui::InputText("##value", &dummyRefID))
+
+            float allocatedWidth = ImGui::CalcItemWidth();
+
+            // Feedback reference validation.
+            if (objectReference)
+            {
+                // Valid reference.
+                ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.32f, 0.65f, 0.65f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.32f, 0.9f, 0.9f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.32f, 1.0f, 1.0f));
+                ImGui::Button("##REFERENCE_BUTTON", ImVec2(button_size, button_size));
+                ImGui::PopStyleColor(3);
+            }
+            else if (!objectReference && dummyRefID.empty())
+            {
+                // Null reference.
+                ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.65f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.f, 0.9f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 0.f, 1.0f));
+                ImGui::Button("##REFERENCE_BUTTON", ImVec2(button_size, button_size));
+                ImGui::PopStyleColor(3);
+            }
+            else
+            {
+                // Invalid reference.
+                ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.65f, 0.65f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.9f, 0.9f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 1.0f, 1.0f));
+                ImGui::Button("##REFERENCE_BUTTON", ImVec2(button_size, button_size));
+                ImGui::PopStyleColor(3);
+            }
+
+            ImGui::SameLine();
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemInnerSpacing.x);
+
+            // Edit reference.
+            float sizeOffset = button_size + ImGui::GetStyle().ItemInnerSpacing.x;
+            ImGui::PushItemWidth(ImMax(1.0f, allocatedWidth - sizeOffset));
+            bool editedValue = ImGui::InputText("##value", &dummyRefID);
+            ImGui::PopItemWidth();
+
+            if (editedValue)
             {
                 InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 

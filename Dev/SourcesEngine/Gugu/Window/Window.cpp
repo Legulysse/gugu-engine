@@ -51,6 +51,9 @@
 namespace gugu {
 
 Window::Window()
+    : m_windowFocused(false)
+    , m_windowHovered(false)
+    , m_usedFocusSafety(false)
 {
     m_sfWindow = nullptr;
     m_renderer = nullptr;
@@ -69,9 +72,6 @@ Window::Window()
     m_systemMouseVisible = true;
     m_mouseVisible = false;
     m_wasSystemMouseVisible = true;
-
-    m_windowHovered = false;
-    m_windowFocused = false;
 
     m_backgroundColor = sf::Color(128,128,128,255);
 
@@ -326,6 +326,22 @@ void Window::UnbindScene(Scene* scene)
 void Window::OnSceneReleased(Scene* scene)
 {
     UnbindScene(scene);
+}
+
+void Window::Update(const DeltaTime& dt)
+{
+    // Note : There seems to be a bug with focus events on app start.
+    // - I can get in a situation where the window has focus without the app getting events for this.
+    // - Getting hasFocus on window setup then listening to events does not seem to be enough.
+    // - This safety will check focus state until it is obtained at least once
+    if (!m_windowFocused && !m_usedFocusSafety)
+    {
+        if (m_sfWindow->hasFocus())
+        {
+            m_windowFocused = true;
+            m_usedFocusSafety = true;
+        }
+    }
 }
 
 void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
@@ -636,6 +652,11 @@ bool Window::IsFocused() const
 bool Window::IsHovered() const
 {
     return m_windowHovered;
+}
+
+bool Window::UsedFocusSafety() const
+{
+    return m_usedFocusSafety;
 }
 
 bool Window::IsInputAllowed() const

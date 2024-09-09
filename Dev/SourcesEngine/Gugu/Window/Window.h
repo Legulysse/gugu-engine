@@ -19,6 +19,7 @@ namespace gugu
     struct EngineConfig;
     struct EngineStats;
     struct FrameInfos;
+    class DeltaTime;
     class WindowEventHandler;
     class Element;
     class ElementSprite;
@@ -72,6 +73,8 @@ public:
 
     void        OnSceneReleased (Scene* scene);
 
+    void Update(const DeltaTime& dt);
+
     void        Render          (const sf::Time& loopTime, const EngineStats& engineStats);
     void        Display         ();
 
@@ -99,6 +102,7 @@ public:
 
     bool IsFocused() const;
     bool IsHovered() const;
+    bool UsedFocusSafety() const;
     
     bool IsConsoleVisible() const;
 
@@ -156,6 +160,7 @@ protected:
 
     bool m_windowFocused;
     bool m_windowHovered;
+    bool m_usedFocusSafety;
 
     sf::Color m_backgroundColor;
 

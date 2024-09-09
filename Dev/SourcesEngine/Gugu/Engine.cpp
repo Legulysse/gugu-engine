@@ -436,6 +436,11 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         GUGU_SCOPE_TRACE_MAIN("Update");
         clockStatSection.restart();
 
+        for (size_t i = 0; i < m_windows.size(); ++i)
+        {
+            m_windows[i]->Update(dt_update);
+        }
+
         if (m_application)
             m_application->AppUpdate(dt_update);
 

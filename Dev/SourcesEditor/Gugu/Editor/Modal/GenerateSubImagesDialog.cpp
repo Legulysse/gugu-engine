@@ -21,8 +21,10 @@ GenerateSubImagesDialog::GenerateSubImagesDialog(const DelegateGenerateFromCount
     , m_delegateGenerateFromCount(delegateGenerateFromCount)
     , m_delegateGenerateFromSize(delegateGenerateFromSize)
     , m_generatorIndex(0)
-    , m_columnCount(0)
-    , m_rowCount(0)
+    , m_columnCount(1)
+    , m_rowCount(1)
+    , m_itemSize(Vector2i(16, 16))
+    , m_itemOffset(Vector2i(0, 0))
 {
 }
 

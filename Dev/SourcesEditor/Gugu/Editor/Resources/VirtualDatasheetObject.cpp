@@ -32,6 +32,14 @@ VirtualDatasheetObject::DataValue::~DataValue()
     value_objectReference = nullptr;
 }
 
+bool VirtualDatasheetObject::DataValue::MoveChildDataValue(size_t indexFrom, size_t indexTo)
+{
+    DataValue* temp = value_children[indexFrom];
+    StdVectorRemoveAt(value_children, indexFrom);
+    StdVectorInsertAt(value_children, indexTo, temp);
+    return true;
+}
+
 bool VirtualDatasheetObject::DataValue::RemoveChildDataValue(size_t index)
 {
     SafeDelete(value_children[index]);

@@ -55,6 +55,7 @@ public:
 
         ~DataValue();
 
+        bool MoveChildDataValue(size_t indexFrom, size_t indexTo);
         bool RemoveChildDataValue(size_t index);
     };
 

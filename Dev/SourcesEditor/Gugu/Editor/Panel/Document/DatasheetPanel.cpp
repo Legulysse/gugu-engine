@@ -14,6 +14,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/String.h"
+#include "Gugu/System/Container.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -165,6 +166,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 {
     ImGuiTreeNodeFlags nodeIndentFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
     ImGuiTreeNodeFlags nodeLeafFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
+    const float button_size = ImGui::GetFrameHeight();
 
     ImGui::TableNextRow();
 
@@ -220,7 +222,9 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         ImGui::PushID(dataMemberDefinition->name.c_str());
 
         // TODO: I need to design the user flow for overriding default and inherited arrays.
-        if (ImGui::Button("+"))
+        bool addChild = ImGui::Button("+", ImVec2(button_size, button_size));
+
+        if (addChild)
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
@@ -245,8 +249,11 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
         {
             if (dataValue && !dataValue->value_children.empty())
             {
-                size_t childIndex = 0;
-                while (childIndex < dataValue->value_children.size())
+                size_t moveDownChildIndex = system::InvalidIndex;
+                size_t moveUpChildIndex = system::InvalidIndex;
+                size_t removeChildIndex = system::InvalidIndex;
+
+                for (size_t childIndex = 0; childIndex < dataValue->value_children.size(); ++childIndex)
                 {
                     VirtualDatasheetObject::DataValue* childDataValue = dataValue->value_children[childIndex];
 
@@ -263,9 +270,9 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::TableNextColumn();
 
                     // The double PushItemWidth will hide the label of the next widget then force its size.
-                    const float button_size = ImGui::GetFrameHeight();
+                    const float arrayButtonsSize = 3 * (button_size + ImGui::GetStyle().ItemInnerSpacing.x);
                     ImGui::PushItemWidth(-1);
-                    ImGui::PushItemWidth(ImMax(1.0f, ImGui::CalcItemWidth() - (button_size + ImGui::GetStyle().ItemInnerSpacing.x)));
+                    ImGui::PushItemWidth(ImMax(1.0f, ImGui::CalcItemWidth() - arrayButtonsSize));
 
                     if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
@@ -281,8 +288,40 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
                     ImGui::SameLine();
                     ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemInnerSpacing.x);
-                    
-                    bool removeChild = ImGui::Button("X##arrayitemremove", ImVec2(button_size, button_size));
+                    ImGui::BeginDisabled(childIndex == dataValue->value_children.size() - 1);
+                    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.13f, 0.65f, 0.65f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.13f, 0.9f, 0.9f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.13f, 1.0f, 1.0f));
+                    if (ImGui::ArrowButton("##ARRAY_ITEM_MOVE_DOWN", ImGuiDir_Down))
+                    {
+                        moveDownChildIndex = childIndex;
+                    }
+                    ImGui::PopStyleColor(3);
+                    ImGui::EndDisabled();
+
+                    ImGui::SameLine();
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemInnerSpacing.x);
+                    ImGui::BeginDisabled(childIndex == 0);
+                    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.13f, 0.65f, 0.65f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.13f, 0.9f, 0.9f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.13f, 1.0f, 1.0f));
+                    if (ImGui::ArrowButton("##ARRAY_ITEM_MOVE_UP", ImGuiDir_Up))
+                    {
+                        moveUpChildIndex = childIndex;
+                    }
+                    ImGui::PopStyleColor(3);
+                    ImGui::EndDisabled();
+
+                    ImGui::SameLine();
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemInnerSpacing.x);
+                    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.65f, 0.65f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.9f, 0.9f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 1.0f, 1.0f));
+                    if (ImGui::Button("X##ARRAY_ITEM_REMOVE", ImVec2(button_size, button_size)))
+                    {
+                        removeChildIndex = childIndex;
+                    }
+                    ImGui::PopStyleColor(3);
 
                     if (dataMemberDefinition->type != DatasheetParser::DataMemberDefinition::ObjectInstance)
                     {
@@ -304,17 +343,21 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     }
 
                     ImGui::PopID();
+                }
 
-                    // Handle child removal and array iteration.
-                    if (removeChild && dataValue->RemoveChildDataValue(childIndex))
-                    {
-                        m_datasheet->DeleteOrphanedInstanceObjects();
-                        RaiseDirty();
-                    }
-                    else
-                    {
-                        ++childIndex;
-                    }
+                // Handle child removal and array iteration.
+                if (moveDownChildIndex != system::InvalidIndex && dataValue->MoveChildDataValue(moveDownChildIndex, moveDownChildIndex + 1))
+                {
+                    RaiseDirty();
+                }
+                else if (moveUpChildIndex != system::InvalidIndex && dataValue->MoveChildDataValue(moveUpChildIndex, moveUpChildIndex - 1))
+                {
+                    RaiseDirty();
+                }
+                else if (removeChildIndex != system::InvalidIndex && dataValue->RemoveChildDataValue(removeChildIndex))
+                {
+                    m_datasheet->DeleteOrphanedInstanceObjects();
+                    RaiseDirty();
                 }
             }
 

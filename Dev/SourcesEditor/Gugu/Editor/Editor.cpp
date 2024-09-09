@@ -446,7 +446,7 @@ void Editor::Update(const DeltaTime& dt)
 
     // Docking panels ids.
     const char* dockspaceWindowName = "EditorDockSpace Window";
-    const ImGuiID dockspace_id = ImGui::GetID("EditorDockSpace");
+    const ImGuiID dockspace_id = ImGui::GetID("_EDITOR_DOCKSPACE");
 
     // Begin Dockspace Window.
     ImGuiWindowFlags window_flags = /*ImGuiWindowFlags_MenuBar |*/ ImGuiWindowFlags_NoDocking;

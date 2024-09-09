@@ -57,7 +57,7 @@ void DatasheetPanel::DisplayDatasheet()
     // Using those as a base value to create width/height that are factor of the size of our font
     const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
     ImGuiTableFlags tableFlags = ImGuiTableFlags_BordersV | ImGuiTableFlags_BordersOuterH | ImGuiTableFlags_Resizable | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_ScrollY;
-    if (ImGui::BeginTable("DatasheetPropertiesTable", 3, tableFlags))
+    if (ImGui::BeginTable("_DATASHEET_PROPERTIES_TABLE", 3, tableFlags))
     {
         // The first column will use the default _WidthStretch when ScrollX is Off and _WidthFixed when ScrollX is On
         ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_NoHide | ImGuiTableColumnFlags_WidthFixed;
@@ -176,7 +176,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
     {
         ImGui::TableNextColumn();
         ImGuiTreeNodeFlags nodeFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && dataValue && dataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
-        bool nodeOpen = ImGui::TreeNodeEx("##node", nodeFlags, dataMemberDefinition->name.c_str());
+        bool nodeOpen = ImGui::TreeNodeEx("##_NODE", nodeFlags, dataMemberDefinition->name.c_str());
 
         ImGui::TableNextColumn();
 
@@ -210,7 +210,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
     {
         ImGui::TableNextColumn();
         ImGuiTreeNodeFlags nodeFlags = dataValue && !dataValue->value_children.empty() ? nodeIndentFlags : nodeLeafFlags;
-        bool nodeOpen = ImGui::TreeNodeEx("##node", nodeFlags, dataMemberDefinition->name.c_str());
+        bool nodeOpen = ImGui::TreeNodeEx("##_NODE", nodeFlags, dataMemberDefinition->name.c_str());
 
         ImGui::TableNextColumn();
 
@@ -260,7 +260,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
                     ImGui::TableNextColumn();
                     ImGuiTreeNodeFlags nodeChildFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && childDataValue && childDataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
-                    bool nodeChildOpen = ImGui::TreeNodeEx("##arrayitem", nodeChildFlags, "%s [%d]", dataMemberDefinition->name.c_str(), childIndex);
+                    bool nodeChildOpen = ImGui::TreeNodeEx("##_ARRAY_ITEM", nodeChildFlags, "%s [%d]", dataMemberDefinition->name.c_str(), childIndex);
 
                     ImGui::TableNextColumn();
 
@@ -287,7 +287,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.13f, 0.65f, 0.65f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.13f, 0.9f, 0.9f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.13f, 1.0f, 1.0f));
-                    if (ImGui::ArrowButton("##ARRAY_ITEM_MOVE_DOWN", ImGuiDir_Down))
+                    if (ImGui::ArrowButton("##_ARRAY_ITEM_MOVE_DOWN", ImGuiDir_Down))
                     {
                         moveDownChildIndex = childIndex;
                     }
@@ -300,7 +300,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.13f, 0.65f, 0.65f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.13f, 0.9f, 0.9f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.13f, 1.0f, 1.0f));
-                    if (ImGui::ArrowButton("##ARRAY_ITEM_MOVE_UP", ImGuiDir_Up))
+                    if (ImGui::ArrowButton("##_ARRAY_ITEM_MOVE_UP", ImGuiDir_Up))
                     {
                         moveUpChildIndex = childIndex;
                     }
@@ -312,7 +312,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.65f, 0.65f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.9f, 0.9f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 1.0f, 1.0f));
-                    if (ImGui::Button("X##ARRAY_ITEM_REMOVE", ImVec2(button_size, button_size)))
+                    if (ImGui::Button("X##_ARRAY_ITEM_REMOVE", ImVec2(button_size, button_size)))
                     {
                         removeChildIndex = childIndex;
                     }
@@ -396,7 +396,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Bool)
     {
         bool dummy = dataValue ? dataValue->value_bool : dataMemberDefinition->defaultValue_bool;
-        if (ImGui::Checkbox("##value", &dummy))
+        if (ImGui::Checkbox("##_VALUE", &dummy))
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
@@ -407,7 +407,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Int)
     {
         int dummy = dataValue ? dataValue->value_int : dataMemberDefinition->defaultValue_int;
-        if (ImGui::InputInt("##value", &dummy))
+        if (ImGui::InputInt("##_VALUE", &dummy))
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
@@ -418,7 +418,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Float)
     {
         float dummy = dataValue ? dataValue->value_float : dataMemberDefinition->defaultValue_float;
-        if (ImGui::InputFloat("##value", &dummy))
+        if (ImGui::InputFloat("##_VALUE", &dummy))
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
@@ -429,7 +429,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::String)
     {
         std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
-        if (ImGui::InputText("##value", &dummy))
+        if (ImGui::InputText("##_VALUE", &dummy))
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
@@ -442,7 +442,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         std::string dummy = dataValue ? dataValue->value_string : dataMemberDefinition->defaultValue_string;
 
         ImGuiComboFlags flags = 0;
-        if (ImGui::BeginCombo("##value", dummy.c_str(), flags))
+        if (ImGui::BeginCombo("##_VALUE", dummy.c_str(), flags))
         {
             const std::vector<std::string>& comboValues = dataMemberDefinition->enumDefinition->values;
             for (size_t i = 0; i < comboValues.size(); ++i)
@@ -469,7 +469,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Vector2i)
     {
         Vector2i dummy = dataValue ? dataValue->value_vector2i : dataMemberDefinition->defaultValue_vector2i;
-        if (ImGui::InputInt2("##value", &dummy))
+        if (ImGui::InputInt2("##_VALUE", &dummy))
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
@@ -480,7 +480,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
     else if (dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::Vector2f)
     {
         Vector2f dummy = dataValue ? dataValue->value_vector2f : dataMemberDefinition->defaultValue_vector2f;
-        if (ImGui::InputFloat2("##value", &dummy))
+        if (ImGui::InputFloat2("##_VALUE", &dummy))
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
 
@@ -508,7 +508,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                 ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.32f, 0.65f, 0.65f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.32f, 0.9f, 0.9f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.32f, 1.0f, 1.0f));
-                ImGui::Button("##REFERENCE_BUTTON", ImVec2(button_size, button_size));
+                ImGui::Button("##_REFERENCE_BUTTON", ImVec2(button_size, button_size));
                 ImGui::PopStyleColor(3);
             }
             else if (!objectReference && dummyRefID.empty())
@@ -517,7 +517,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                 ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.f, 0.65f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.f, 0.9f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 0.f, 1.0f));
-                ImGui::Button("##REFERENCE_BUTTON", ImVec2(button_size, button_size));
+                ImGui::Button("##_REFERENCE_BUTTON", ImVec2(button_size, button_size));
                 ImGui::PopStyleColor(3);
             }
             else
@@ -526,7 +526,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
                 ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.65f, 0.65f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.9f, 0.9f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 1.0f, 1.0f));
-                ImGui::Button("##REFERENCE_BUTTON", ImVec2(button_size, button_size));
+                ImGui::Button("##_REFERENCE_BUTTON", ImVec2(button_size, button_size));
                 ImGui::PopStyleColor(3);
             }
 
@@ -536,7 +536,7 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
             // Edit reference.
             float sizeOffset = button_size + ImGui::GetStyle().ItemInnerSpacing.x;
             ImGui::PushItemWidth(ImMax(1.0f, allocatedWidth - sizeOffset));
-            bool editedValue = ImGui::InputText("##value", &dummyRefID);
+            bool editedValue = ImGui::InputText("##_VALUE", &dummyRefID);
             ImGui::PopItemWidth();
 
             if (editedValue)
@@ -595,7 +595,7 @@ void DatasheetPanel::DisplayInstanceDataMemberValue(DatasheetParser::DataMemberD
     //ImGui::PushItemWidth(-1);
 
     ImGuiComboFlags flags = 0;
-    if (ImGui::BeginCombo("##value", dummyClassName.c_str(), flags))
+    if (ImGui::BeginCombo("##_VALUE", dummyClassName.c_str(), flags))
     {
         // TODO: precompute this in definition.
         std::vector<std::string> comboValues;

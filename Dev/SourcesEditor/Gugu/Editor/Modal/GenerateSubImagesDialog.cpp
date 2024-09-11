@@ -20,7 +20,7 @@ GenerateSubImagesDialog::GenerateSubImagesDialog(const DelegateGenerateFromCount
     : BaseModalDialog("Generate SubImages")
     , m_delegateGenerateFromCount(delegateGenerateFromCount)
     , m_delegateGenerateFromSize(delegateGenerateFromSize)
-    , m_generatorIndex(0)
+    , m_generatorIndex(EGenerator::ItemCount)
     , m_columnCount(1)
     , m_rowCount(1)
     , m_itemSize(Vector2i(16, 16))
@@ -35,17 +35,19 @@ GenerateSubImagesDialog::~GenerateSubImagesDialog()
 void GenerateSubImagesDialog::UpdateModalImpl(const DeltaTime& dt)
 {
     static const std::vector<std::string> generators = { "Item Count", "Item Size" };
-    ImGui::Combo("Generator", generators, &m_generatorIndex);
-
-    if (m_generatorIndex == 0)
+    size_t dummyIndex = static_cast<size_t>(m_generatorIndex);
+    if (ImGui::Combo("Generator", generators, &dummyIndex))
     {
-        // Generator : item count.
+        m_generatorIndex = static_cast<EGenerator>(dummyIndex);
+    }
+
+    if (m_generatorIndex == EGenerator::ItemCount)
+    {
         ImGui::InputInt("Items per Row", &m_columnCount);
         ImGui::InputInt("Row Count", &m_rowCount);
     }
-    else
+    else if (m_generatorIndex == EGenerator::ItemSize)
     {
-        // Generator : item size.
         ImGui::InputInt2("Item Size", &m_itemSize);
         ImGui::InputInt2("Offset", &m_itemOffset);
     }
@@ -59,11 +61,11 @@ void GenerateSubImagesDialog::UpdateModalImpl(const DeltaTime& dt)
     ImGui::SameLine();
     if (ImGui::Button("Validate"))
     {
-        if (m_generatorIndex == 0)
+        if (m_generatorIndex == EGenerator::ItemCount)
         {
             m_delegateGenerateFromCount(m_columnCount, m_rowCount);
         }
-        else
+        else if (m_generatorIndex == EGenerator::ItemSize)
         {
             m_delegateGenerateFromSize(m_itemSize, m_itemOffset);
         }

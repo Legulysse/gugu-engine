@@ -26,6 +26,14 @@ public:
     using DelegateGenerateFromDirectory = std::function<void(const std::string& path)>;
     using DelegateGenerateFromImageSet = std::function<void(size_t from, size_t to)>;
 
+protected:
+
+    enum class EGenerator : size_t
+    {
+        ImageSet,
+        Directory,
+    };
+
 public:
 
     GenerateAnimationFramesDialog(ImageSet* imageSet, const DelegateGenerateFromDirectory& delegateGenerateFromDirectory, const DelegateGenerateFromImageSet& delegateGenerateFromImageSet);
@@ -41,7 +49,7 @@ protected:
     DelegateGenerateFromDirectory m_delegateGenerateFromDirectory;
     DelegateGenerateFromImageSet m_delegateGenerateFromImageSet;
 
-    size_t m_generatorIndex;
+    EGenerator m_generatorIndex;
     std::string m_directoryPath;
     size_t m_from;
     size_t m_to;

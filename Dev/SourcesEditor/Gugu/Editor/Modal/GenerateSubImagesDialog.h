@@ -19,6 +19,14 @@ public:
     using DelegateGenerateFromCount = std::function<void(int columnCount, int rowCount)>;
     using DelegateGenerateFromSize = std::function<void(const Vector2i& itemSize, const Vector2i& itemOffset)>;
 
+protected:
+
+    enum class EGenerator : size_t
+    {
+        ItemCount,
+        ItemSize,
+    };
+
 public:
 
     GenerateSubImagesDialog(const DelegateGenerateFromCount& delegateGenerateFromCount, const DelegateGenerateFromSize& delegateGenerateFromSize);
@@ -33,7 +41,7 @@ protected:
     DelegateGenerateFromCount m_delegateGenerateFromCount;
     DelegateGenerateFromSize m_delegateGenerateFromSize;
 
-    size_t m_generatorIndex;
+    EGenerator m_generatorIndex;
     int m_columnCount;
     int m_rowCount;
     Vector2i m_itemSize;

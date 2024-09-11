@@ -14,6 +14,8 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
+#include "Gugu/Resources/AnimSet.h"
+#include "Gugu/Resources/ImageSet.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/Path.h"
@@ -524,6 +526,15 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
             OpenFileExplorer(node->path);
         }
 
+        if (GetResources()->GetResourceType(GetResources()->GetResourceFileInfo(node->resourceID)) == EResourceType::Texture)
+        {
+            ImGui::Separator();
+            if (ImGui::MenuItem("Generate Imageset and Animset"))
+            {
+                GenerateImageSetAndAnimSet(node->resourceID);
+            }
+        }
+
         ImGui::Separator();
         if (ImGui::MenuItem("Delete"))
         {
@@ -538,6 +549,50 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
 
         ImGui::EndPopup();
     }
+}
+
+void AssetsExplorerPanel::GenerateImageSetAndAnimSet(const std::string& resourceID)
+{
+    FileInfo textureFileInfo = GetResources()->GetResourceFileInfo(resourceID);
+    std::string baseFilename(textureFileInfo.GetPrettyName());
+
+    FileInfo imagesetFileInfo = FileInfo::FromString_utf8(CombinePaths(textureFileInfo.GetDirectoryPath_utf8(), baseFilename + system::ExtensionSeparator + "imageset.xml"));
+    FileInfo animsetFileInfo = FileInfo::FromString_utf8(CombinePaths(textureFileInfo.GetDirectoryPath_utf8(), baseFilename + system::ExtensionSeparator + "animset.xml"));
+
+    // Ensure imageset exists.
+    ImageSet* imageSet = GetResources()->GetImageSet(GetResources()->GetResourceID(imagesetFileInfo));
+    if (!imageSet)
+    {
+        imageSet = new ImageSet;
+        if (GetResources()->AddResource(imageSet, imagesetFileInfo))
+        {
+            imageSet->SetTexture(GetResources()->GetTexture(resourceID));
+            imageSet->SaveToFile();
+        }
+        else
+        {
+            SafeDelete(imageSet);
+        }
+    }
+
+    AnimSet* animSet = GetResources()->GetAnimSet(GetResources()->GetResourceID(animsetFileInfo));
+    if (!animSet)
+    {
+        animSet = new AnimSet;
+        if (GetResources()->AddResource(animSet, animsetFileInfo))
+        {
+            animSet->SetImageSet(imageSet);
+            animSet->SaveToFile();
+        }
+        else
+        {
+            SafeDelete(animSet);
+        }
+    }
+
+    GetEditor()->OpenDocument(imageSet->GetID());
+    GetEditor()->OpenDocument(animSet->GetID());
+    GetEditor()->RefreshAssets();
 }
 
 bool AssetsExplorerPanel::CompareTreeNodes(const TreeNode* left, const TreeNode* right)

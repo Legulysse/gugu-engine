@@ -178,6 +178,105 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(-10.8f), -11.f, math::Epsilon6);
         }
 
+        GUGU_UTEST_SUBSECTION("Modulo");
+        {
+            GUGU_UTEST_CHECK_EQUAL(0 % 10, 0);
+            GUGU_UTEST_CHECK_EQUAL(1 % 10, 1);
+            GUGU_UTEST_CHECK_EQUAL(-1 % 10, -1);
+            GUGU_UTEST_CHECK_EQUAL(9 % 10, 9);
+            GUGU_UTEST_CHECK_EQUAL(-9 % 10, -9);
+            GUGU_UTEST_CHECK_EQUAL(10 % 10, 0);
+            GUGU_UTEST_CHECK_EQUAL(-10 % 10, 0);
+            GUGU_UTEST_CHECK_EQUAL(19 % 10, 9);
+            GUGU_UTEST_CHECK_EQUAL(-19 % 10, -9);
+            GUGU_UTEST_CHECK_EQUAL(20 % 10, 0);
+            GUGU_UTEST_CHECK_EQUAL(-20 % 10, 0);
+
+            GUGU_UTEST_CHECK_EQUAL(0 % -10, 0);
+            GUGU_UTEST_CHECK_EQUAL(1 % -10, 1);
+            GUGU_UTEST_CHECK_EQUAL(-1 % -10, -1);
+            GUGU_UTEST_CHECK_EQUAL(9 % -10, 9);
+            GUGU_UTEST_CHECK_EQUAL(-9 % -10, -9);
+            GUGU_UTEST_CHECK_EQUAL(10 % -10, 0);
+            GUGU_UTEST_CHECK_EQUAL(-10 % -10, 0);
+            GUGU_UTEST_CHECK_EQUAL(19 % -10, 9);
+            GUGU_UTEST_CHECK_EQUAL(-19 % -10, -9);
+            GUGU_UTEST_CHECK_EQUAL(20 % -10, 0);
+            GUGU_UTEST_CHECK_EQUAL(-20 % -10, 0);
+
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(0, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(1, 10), 1);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-1, 10), -1);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(9, 10), 9);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-9, 10), -9);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(10, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-10, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(19, 10), 9);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-19, 10), -9);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(20, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-20, 10), 0);
+
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(0, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(1, -10), 1);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-1, -10), -1);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(9, -10), 9);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-9, -10), -9);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(10, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-10, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(19, -10), 9);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-19, -10), -9);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(20, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(TruncatedModulo(-20, -10), 0);
+
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(0, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(1, 10), 1);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-1, 10), 9);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(9, 10), 9);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-9, 10), 1);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(10, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-10, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(19, 10), 9);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-19, 10), 1);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(20, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-20, 10), 0);
+
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(0, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(1, -10), -9);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-1, -10), -1);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(9, -10), -1);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-9, -10), -9);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(10, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-10, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(19, -10), -1);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-19, -10), -9);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(20, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(FlooredModulo(-20, -10), 0);
+
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(0, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(1, 10), 1);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-1, 10), 9);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(9, 10), 9);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-9, 10), 1);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(10, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-10, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(19, 10), 9);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-19, 10), 1);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(20, 10), 0);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-20, 10), 0);
+
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(0, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(1, -10), 1);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-1, -10), 9);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(9, -10), 9);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-9, -10), 1);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(10, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-10, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(19, -10), 9);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-19, -10), 1);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(20, -10), 0);
+            GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-20, -10), 0);
+        }
+
         GUGU_UTEST_SUBSECTION("Distance");
         {
             GUGU_UTEST_CHECK_EQUAL(Distance(25, 35), 10);

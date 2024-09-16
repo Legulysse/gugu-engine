@@ -114,6 +114,31 @@ T Power2(const T& n)
     return n * n;
 }
 
+template <typename T>
+T TruncatedModulo(T value, T modulus)
+{
+    // Truncated : result has the same sign as the value.
+    // - https://en.wikipedia.org/wiki/Modulo
+    return value % modulus;
+}
+
+template <typename T>
+T FlooredModulo(T value, T modulus)
+{
+    // Floored : result has the same sign as the modulus.
+    // - https://en.wikipedia.org/wiki/Modulo
+    return (value % modulus + modulus) % modulus;
+}
+
+template <typename T>
+T EuclideanModulo(T value, T modulus)
+{
+    // Euclidean : result is always positive.
+    // - https://en.wikipedia.org/wiki/Modulo
+    T temp = value % modulus;
+    return temp >= 0 ? temp : (modulus >= 0 ? temp + modulus : temp - modulus);
+}
+
 //--------------------------------
 // Rounding
 

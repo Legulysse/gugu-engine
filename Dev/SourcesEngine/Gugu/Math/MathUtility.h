@@ -92,6 +92,15 @@ T Power(const T& n, const int& p);
 template <typename T>
 T Power2(const T& n);
 
+template <typename T>
+T TruncatedModulo(T value, T modulus);  // Result has the same sign as the value.
+
+template <typename T>
+T FlooredModulo(T value, T modulus);    // Result has the same sign as the modulus.
+
+template <typename T>
+T EuclideanModulo(T value, T modulus);  // Result is always positive.
+
 //--------------------------------
 // Rounding
 

@@ -87,10 +87,10 @@ template <typename T>
 int SignInt(T value);
 
 template <typename T>
-T Power(const T& n, const int& p);
+T Power(T n, int p);
 
 template <typename T>
-T Power2(const T& n);
+T Power2(T n);
 
 template <typename T>
 T TruncatedModulo(T value, T modulus);  // Result has the same sign as the value.

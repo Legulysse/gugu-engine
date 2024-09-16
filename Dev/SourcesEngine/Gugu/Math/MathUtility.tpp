@@ -96,20 +96,13 @@ int SignInt(T value)
 }
 
 template <typename T>
-T Power(const T& n, const int& p)
+T Power(T n, int p)
 {
-    if (p >= 0)
-    {
-        return (T)std::pow(n, p);
-    }
-    else
-    {
-        return (T)(1.f / std::pow(n, -p));
-    }
+    return (T)std::pow(n, p);
 }
 
 template <typename T>
-T Power2(const T& n)
+T Power2(T n)
 {
     return n * n;
 }

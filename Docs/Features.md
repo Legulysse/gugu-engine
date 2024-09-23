@@ -8,6 +8,17 @@
 - [Datasheets](./Features/Datasheets.md)
 - [Datasaves](./Features/Datasaves.md)
 
+### Elements
+
+- Element Hierarchy
+
+### Engine Core
+
+- Main Loop and DeltaTime
+- Base Application
+- [Console Commands](./Commands.md)
+
+
 ## Other Features
 
 ### Engine Core
@@ -18,7 +29,6 @@
 
 ### Elements
 
-- Element Hierarchy
 - ElementSprite
 - ElementSpriteGroup
 - ElementText

@@ -1,4 +1,13 @@
-# Built-in Console Commands
+# Console Commands
+
+## Overview
+
+Console commands are available at runtime by using the ² key.  
+A prompt will appear at the top of the window, where you can enter the desired command and its arguments.  
+
+The engine provide several built-in commands, but other commands can be implemented in the Application. Any command entered in the console will be forwarded to the application for custom computations.
+
+## Built-in Console Commands
 
 ### > fps
 Display a basic fps count on the screen.

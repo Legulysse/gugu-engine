@@ -2,6 +2,12 @@
 
 ## Main Features Overview
 
+### Engine Core
+
+- Main Loop and DeltaTime
+- Base Application
+- [Console Commands](./Commands.md)
+
 ### Data Binding
 
 - [DataBinding System](./Features/Databinding.md)
@@ -12,14 +18,8 @@
 
 - Element Hierarchy
 
-### Engine Core
 
-- Main Loop and DeltaTime
-- Base Application
-- [Console Commands](./Commands.md)
-
-
-## Other Features
+## Classes Overview
 
 ### Engine Core
 

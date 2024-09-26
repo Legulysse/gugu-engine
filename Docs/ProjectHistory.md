@@ -1,26 +1,31 @@
 # Project History
 
-## Version 0.8 &nbsp; _(??/??/????)_ [Update 25/05/2024]
+## Version 0.8 &nbsp; _(??/??/????)_ [Update 23/09/2024]
 - Ajout d'un nouveau logo !
 - Ajout de ElementLayoutGroup, ElementCheckbox, ElementSlider.
 - Ajout des ElementWidgets (ressource xml représentant une hierarchie d'Elements), refactor de la serialisation des Elements (ElementData).
-- Editor: Ajout de l'ElementWidget editor, ajout d'un générateur de Box9.
+- Editor: Ajout de l'ElementWidget editor, ajout d'un générateur de Box9, ajout d'un shortcut pour generer imageset et animset à partir d'une texture.
 - Ajout des Datasaves, clean du code de Databinding (séparation entre code commun, et spécifique Datasheet/Datasave, ajout d'une classe de base DataObject).
 - Refactor serialisation v2 des datasheets (liste flat d'objets avec UUIDs, override d'instances au sein de la hierarchie).
+- Datasheet Editor : update interface pour pouvoir réordonner les arrays, ajout d'un icone sur les references entre datasheets.
 - Split de SystemUtility.h en Container.h, Memory.h, Path.h, Platform.h, String.h et Time.h.
 - Ajout des utilitaires Handle, UUID, Signal.
 - Ajout de LateUpdate et UpdateImGui dans la loop centrale.
+- Ajout du parametre maxUpdateDeltaTime dans EngineConfig (par defaut à 100ms).
 - Ajout de UnitTests (Xml, Databinding, picking).
 - Update des Element UnifiedSize pour pouvoir se baser sur un Element donné (au lieu du parent).
+- Ajout de FitWidth comme option de resize sur les ElementText.
+- Update ParticleSystem : Gestion de la rotation de l'emitter, setting pour utiliser l'unscaledDeltaTime.
 - Update Databindings : gestion des Vector2i et Vector2f.
 - Update de GetFiles, GetDirectories et FileInfo pour se baser sur std::filesystem, ajout de getters utf8 sur FileInfo.
 - Update de certains utilities pour utiliser std::string_view au lieu de générer des std::string (getters de FileInfo).
 - Update DeltaTime (float pour les milliseconds).
 - Update ManagerAudio (methodes de controle du master volume).
 - Itération SystemUtility (StringEquals, StdMapTryGet).
-- Itération MathUtility (DistanceCheck, Sign, Power2, renommage IsInRange en IsInBounds).
+- Itération MathUtility (DistanceCheck, Sign, Power2, renommage IsInRange en IsInBounds, Modulo variants).
 - Refactor des utilities xml (Read, Parse, TryParse), gestion des Vector2, update de la serialisation des UDim2.
 - Clean sur la nomenclature Remove/Delete dans divers Elements.
+- Bugfix : ajout d'une safety pour la détection du focus au lancement de l'application.
 - Mise à jour SFML 2.6.1.
 - Mise à jour ImGui 1.87 (docking).
 - Mise à jour ImGui-SFML 2.6.

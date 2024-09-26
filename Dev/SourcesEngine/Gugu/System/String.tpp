@@ -98,20 +98,21 @@ namespace impl
 template<typename... TArgs>
 std::string StringFormat(const std::string& _tValue, const TArgs&... _tArgs)
 {
-    std::vector<std::string> vecArgs;
-    vecArgs.reserve(sizeof...(_tArgs));
-    gugu::impl::StringFormat_FormatArgs(vecArgs, _tArgs...);
+    std::vector<std::string> args_str;
+    args_str.reserve(sizeof...(_tArgs));
+    gugu::impl::StringFormat_FormatArgs(args_str, _tArgs...);
 
-    std::string strResult = _tValue;
-    uint32 iSize = (uint32)vecArgs.size();  //TODO: Switch to 64bits ?
-    iSize = (iSize < 100) ? iSize : 100;  // limit on 0-99 range : 2 chars + delimiters + ending = buffer size of 5 chars
-    for (uint32 i = 0; i < iSize; ++i)
+    std::string result = _tValue;
+    size_t argCount = args_str.size();
+    argCount = (argCount < 100) ? argCount : 100;  // limit on 0-99 range : 2 chars + delimiters + ending = buffer size of 5 chars
+    for (size_t i = 0; i < argCount; ++i)
     {
-        char strIndex[5];  // limit on 0-99 range : 2 chars + delimiters + ending = buffer size of 5 chars
-        sprintf(strIndex, "{%u}", i);
-        StdStringReplaceSelf(strResult, strIndex, vecArgs[i]);
+        char indexToken[5];  // limit on 0-99 range : 2 chars + delimiters + ending = buffer size of 5 chars
+        sprintf(indexToken, "{%zu}", i);
+        StdStringReplaceSelf(result, indexToken, args_str[i]);
     }
-    return strResult;
+
+    return result;
 }
 
 template<typename T>

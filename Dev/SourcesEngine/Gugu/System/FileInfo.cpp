@@ -52,8 +52,6 @@ FileInfo FileInfo::FromString_utf8(const std::string& path_utf8)
 
 bool FileInfo::IsValid() const
 {
-    //TODO: Some characters may crash in path.string(), this will not be needed anymore once all libraries accept filesystem::path objects.
-    // - path.u8string() seems to work fine in those cases.
     return !m_systemPath.empty();
 }
 

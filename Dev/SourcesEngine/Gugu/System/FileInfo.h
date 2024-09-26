@@ -45,7 +45,7 @@ private:
 private:
 
     std::string m_systemPath;       // Actual file system path.
-    std::string m_filePath_utf8;    // Ut8 version of file path.
+    std::string m_filePath_utf8;    // Utf8 version of file path.
     size_t m_indexSeparator;        // Index of the last separator, between file directory and file name.
 };
 

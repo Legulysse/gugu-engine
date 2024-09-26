@@ -9,6 +9,8 @@
 #include <list>
 #include <map>
 #include <set>
+#include <iterator>
+#include <algorithm>
 
 ////////////////////////////////////////////////////////////////
 // File Declarations

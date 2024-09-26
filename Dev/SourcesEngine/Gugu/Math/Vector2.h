@@ -127,7 +127,7 @@ bool DistanceCheck(const sf::Vector2<T>& left, const sf::Vector2<T>& right, floa
 {
     if (std::abs(left.x - right.x) <= distance && std::abs(left.y - right.y) <= distance)
     {
-        return LengthSquare(right - left) <= Power2(distance);
+        return LengthSquare(right - left) <= distance * distance;
     }
 
     return false;

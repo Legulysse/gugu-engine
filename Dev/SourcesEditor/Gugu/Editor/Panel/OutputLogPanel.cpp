@@ -96,7 +96,7 @@ bool OutputLogPanel::IsLogEntryVisible(const LogEntry& entry) const
 
 void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
 {
-    if (ImGui::Begin(m_title.c_str(), false))
+    if (ImGui::Begin(m_title.c_str(), nullptr))
     {
         static const ImVec4 color_red(1.f, 0.f, 0.f, 1.f);
         static const ImVec4 color_yellow(1.f, 1.f, 0.f, 1.f);

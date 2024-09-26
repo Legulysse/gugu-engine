@@ -461,7 +461,7 @@ void Editor::Update(const DeltaTime& dt)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin(dockspaceWindowName, false, window_flags);
+    ImGui::Begin(dockspaceWindowName, nullptr, window_flags);
     ImGui::PopStyleVar(3);
 
     // Editor panels preset.
@@ -558,7 +558,7 @@ void Editor::Update(const DeltaTime& dt)
     StdVectorRemove<DocumentPanel*>(m_documentPanels, nullptr);
 
     // Update Hierarchy panel.
-    if (ImGui::Begin("Hierarchy", false))
+    if (ImGui::Begin("Hierarchy", nullptr))
     {
         if (m_lastActiveDocument)
         {
@@ -568,7 +568,7 @@ void Editor::Update(const DeltaTime& dt)
     ImGui::End();
 
     // Update Properties panel.
-    if (ImGui::Begin("Properties", false))
+    if (ImGui::Begin("Properties", nullptr))
     {
         if (m_lastActiveDocument)
         {

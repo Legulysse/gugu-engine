@@ -31,7 +31,7 @@ DependenciesPanel::~DependenciesPanel()
 
 void DependenciesPanel::UpdatePanel(const DeltaTime& dt)
 {
-    if (ImGui::Begin(m_title.c_str(), false))
+    if (ImGui::Begin(m_title.c_str(), nullptr))
     {
         const std::map<const Resource*, ManagerResources::ResourceDependencies>& resourceDependencies = GetResources()->GetResourceDependencies();
         

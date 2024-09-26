@@ -208,7 +208,7 @@ void AssetsExplorerPanel::UpdatePanel(const DeltaTime& dt)
         RefreshContent();
     }
 
-    if (ImGui::Begin(m_title.c_str(), false))
+    if (ImGui::Begin(m_title.c_str(), nullptr))
     {
         if (m_rootNode)
         {

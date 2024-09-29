@@ -1,6 +1,8 @@
 # gugu::Engine 0.7.1
 [![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
 
+![gugu::Engine Logo Title](./Docs/Logos/Gugu-logo-title.png)
+
 A minimalist 2D game engine, written in C++, mainly based on SFML, ImGui, and PugiXml.
 
 Author : Legulysse  
@@ -44,7 +46,7 @@ Once compiled, most of them will run in /Version/DemoTests.
 The demo Game is a bit bigger, and is aimed to become a sample of a fully functional mini roguelike, to show all of the engine systems working together.  
 This demo will run in /Version/DemoGame.  
 
-![Demo Game](/Docs/Pictures/DemoGame_03.png)
+![Demo Screenshot](./Docs/Pictures/DemoGame_03.png)
 
 ### Editor
 
@@ -52,4 +54,4 @@ You can find the editor in /Tools/GuguEditor.
 Its sources can be found in /Dev/SourcesEditor and /Dev/SourcesEditorApp.  
 The editor allows the edition of gameplay datasheets, imagesets, animsets, and particle effects.  
 
-![Demo Game](/Docs/Pictures/Editor_02.png)
+![Editor Screenshot](./Docs/Pictures/Editor_02.png)

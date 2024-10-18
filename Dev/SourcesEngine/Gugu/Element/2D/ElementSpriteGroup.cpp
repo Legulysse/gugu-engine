@@ -198,7 +198,7 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
 
 void ElementSpriteGroup::RecomputeImpl()
 {
-    size_t indexForceRecompute = (size_t)-1;
+    size_t indexForceRecompute = system::InvalidIndex;
 
     size_t totalVertexCount = 0;
     for (size_t i = 0; i < m_items.size(); ++i)
@@ -212,7 +212,7 @@ void ElementSpriteGroup::RecomputeImpl()
             totalVertexCount += currentVertexCount;
         }
 
-        if (indexForceRecompute == (size_t)-1 && cachedVertexCount != currentVertexCount)
+        if (indexForceRecompute == system::InvalidIndex && cachedVertexCount != currentVertexCount)
         {
             indexForceRecompute = i;
         }

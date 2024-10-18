@@ -558,7 +558,7 @@ void RunUnitTests_Math(UnitTestResults* results)
         {
             std::vector<int> weightsA { 1, 0, 9 };
 
-            std::map<int, int> resultsA;
+            std::map<size_t, int> resultsA;
             for (int i = 0; i < 100000; ++i)
             {
                 resultsA[GetWeightedRandomIndex(weightsA)] += 1;
@@ -574,7 +574,7 @@ void RunUnitTests_Math(UnitTestResults* results)
 
             auto predicateA = [](const ItemType& item) -> int { return item.weight; };
 
-            std::map<int, int> resultsB;
+            std::map<size_t, int> resultsB;
             for (int i = 0; i < 10000; ++i)
             {
                 resultsB[GetWeightedRandomIndex(itemsA, predicateA)] += 1;

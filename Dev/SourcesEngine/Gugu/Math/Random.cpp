@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/Container.h"
 #include "Gugu/Math/MathUtility.h"
 
 #include <time.h>
@@ -67,10 +68,10 @@ Vector2f GetRandomPointInAnnulus(const Vector2f& center, float minRadius, float 
                     center.y + r * std::sin(theta));
 }
 
-int GetWeightedRandomIndex(const std::vector<int>& weights)
+size_t GetWeightedRandomIndex(const std::vector<int>& weights)
 {
 	if (weights.size() == 0)
-		return -1;
+		return system::InvalidIndex;
 
 	int totalWeight = 0;
 	for (size_t i = 0; i < weights.size(); ++i)
@@ -82,7 +83,7 @@ int GetWeightedRandomIndex(const std::vector<int>& weights)
 	}
 
 	if (totalWeight == 0)
-		return -1;
+		return system::InvalidIndex;
 
 	int rollWeight = GetRandom(1, totalWeight);
 	for (size_t i = 0; i < weights.size(); ++i)
@@ -91,14 +92,14 @@ int GetWeightedRandomIndex(const std::vector<int>& weights)
 		{
 			if (rollWeight <= weights[i])
 			{
-				return (int)i;
+				return i;
 			}
 
 			rollWeight -= weights[i];
 		}
 	}
 
-	return -1;
+	return system::InvalidIndex;
 }
 
 }   // namespace gugu

@@ -1,6 +1,6 @@
 # Project History
 
-## Version 0.8 &nbsp; _(??/??/????)_ [Update 23/09/2024]
+## Version 0.8 &nbsp; _(20/10/2024)_
 - Ajout d'un nouveau logo !
 - Ajout de ElementLayoutGroup, ElementCheckbox, ElementSlider.
 - Ajout des ElementWidgets (ressource xml représentant une hierarchie d'Elements), refactor de la serialisation des Elements (ElementData).

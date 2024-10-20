@@ -4,6 +4,7 @@
 - Ajout d'un nouveau logo !
 - Ajout de ElementLayoutGroup, ElementCheckbox, ElementSlider.
 - Ajout des ElementWidgets (ressource xml représentant une hierarchie d'Elements), refactor de la serialisation des Elements (ElementData).
+- Editor: Version 0.3.
 - Editor: Ajout de l'ElementWidget editor, ajout d'un générateur de Box9, ajout d'un shortcut pour generer imageset et animset à partir d'une texture.
 - Ajout des Datasaves, clean du code de Databinding (séparation entre code commun, et spécifique Datasheet/Datasave, ajout d'une classe de base DataObject).
 - Refactor serialisation v2 des datasheets (liste flat d'objets avec UUIDs, override d'instances au sein de la hierarchie).
@@ -25,7 +26,7 @@
 - Itération MathUtility (DistanceCheck, Sign, Power2, renommage IsInRange en IsInBounds, Modulo variants).
 - Refactor des utilities xml (Read, Parse, TryParse), gestion des Vector2, update de la serialisation des UDim2.
 - Clean sur la nomenclature Remove/Delete dans divers Elements.
-- Bugfix : ajout d'une safety pour la détection du focus au lancement de l'application.
+- Bugfix: ajout d'une safety pour la détection du focus au lancement de l'application.
 - Mise à jour SFML 2.6.1.
 - Mise à jour ImGui 1.87 (docking).
 - Mise à jour ImGui-SFML 2.6.
@@ -70,7 +71,7 @@
 - Mise à jour premake 5.0.0-beta1 (visual 2022).
 
 ## Version 0.6 &nbsp; _(01/10/2021)_
-- Ajout du nouvel Editor, basé sur ImGui (datasheet editor).
+- Ajout du nouvel Editor (version 0.2), basé sur ImGui (datasheet editor).
 - Ajout d'un ManagerAnimation, refacto SpriteAnimation, suppression d'ElementSpriteAnimation.
 - Itération datasheets (dissociation entre ressource et data gameplay, force const sur les datas, format xml, gestion des references/instances null).
 - Refacto des classes de sprite (Ajout d'ElementSpriteBase, suppression d'ElementTile, refacto d'ElementSpriteGroup pour heriter d'ElementSpriteBase).

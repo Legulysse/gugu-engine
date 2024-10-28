@@ -168,6 +168,7 @@ public:
     // Render
 
     void RaiseNeedRecompute();
+    void RecomputeIfNeeded();
 
     void Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformParent);
 

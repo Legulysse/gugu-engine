@@ -744,15 +744,20 @@ void Element::RaiseNeedRecompute()
     m_needRecompute = true;
 }
 
+void Element::RecomputeIfNeeded()
+{
+    if (m_needRecompute)
+    {
+        m_needRecompute = false;
+        RecomputeImpl();
+    }
+}
+
 void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformParent)
 {
     if (m_isVisible)
     {
-        if (m_needRecompute)
-        {
-            m_needRecompute = false;
-            RecomputeImpl();
-        }
+        RecomputeIfNeeded();
 
         sf::Transform combinedTransform = _kTransformParent * GetTransform();
         

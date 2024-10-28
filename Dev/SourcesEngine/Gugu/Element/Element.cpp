@@ -666,7 +666,7 @@ int32 Element::GetZIndex() const
 
 void Element::SortOnZIndex()
 {
-    std::sort(m_children.begin(), m_children.end(), CompareZIndex);
+    std::stable_sort(m_children.begin(), m_children.end(), CompareZIndex);
 
     for (size_t i = 0; i < m_children.size(); ++i)
     {

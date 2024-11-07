@@ -57,6 +57,11 @@ bool SquareGrid::PickCoords(const Vector2f& position, Vector2i& pickedCoords) co
 
 void SquareGrid::GetNeighbours(const Vector2i& coords, std::vector<Vector2i>& neighbours) const
 {
+    GetNeighbours(coords, neighbours, m_eightSides);
+}
+
+void SquareGrid::GetNeighbours(const Vector2i& coords, std::vector<Vector2i>& neighbours, bool eightSides) const
+{
     static const std::array<Vector2i, 12> neighbourDirections = {
         // Four sides.
         Vector2i(-1, 0),
@@ -75,10 +80,10 @@ void SquareGrid::GetNeighbours(const Vector2i& coords, std::vector<Vector2i>& ne
         Vector2i(-1, 1),
     };
 
-    neighbours.reserve(m_eightSides ? 8 : 4);
+    neighbours.reserve(eightSides ? 8 : 4);
 
-    size_t from = m_eightSides ? 4 : 0;
-    size_t to = m_eightSides ? 12 : 4;
+    size_t from = eightSides ? 4 : 0;
+    size_t to = eightSides ? 12 : 4;
     for (size_t i = from; i < to; ++i)
     {
         Vector2i neighbour = coords + neighbourDirections[i];

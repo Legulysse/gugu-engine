@@ -274,7 +274,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             int columnIndex = 0;
             ImGui::TableSetColumnIndex(columnIndex++);
 
-            ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
+            ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap;
             if (ImGui::Selectable("##_ANIMATION_SELECTABLE", m_currentAnimation == animation, selectable_flags, ImVec2(0, row_min_height)))
             {
                 if (m_currentAnimation != animation)
@@ -334,7 +334,7 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
                     std::string frameName = StringFormat("{0} [{1}]", animation->GetName(), frameIndex);
 
-                    ImGuiSelectableFlags selectable_frame_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
+                    ImGuiSelectableFlags selectable_frame_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap;
                     if (ImGui::Selectable(frameName.c_str(), m_currentFrame == frame, selectable_frame_flags, ImVec2(0, frame_row_min_height)))
                     {
                         if (m_currentAnimation != animation)

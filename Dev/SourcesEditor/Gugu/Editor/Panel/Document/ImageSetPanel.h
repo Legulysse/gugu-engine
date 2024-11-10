@@ -64,6 +64,7 @@ private:
 
     ImageSet* m_imageSet;
     int m_selectedIndex;
+    bool m_forceScrollToSelectedIndex;
 
     std::string m_frameNameTemplate;
 

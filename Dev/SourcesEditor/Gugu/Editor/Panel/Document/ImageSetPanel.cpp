@@ -38,6 +38,7 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     , m_renderViewport(nullptr)
     , m_zoomFactor(1.f)
     , m_selectedIndex(-1)
+    , m_forceScrollToSelectedIndex(false)
     , m_gizmoCenter(nullptr)
     , m_frameNameTemplate("x{x}_y{y}")
     , m_sprite(nullptr)
@@ -207,10 +208,26 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         // TODO: handle sort (ImGuiTableSortSpecs).
         ImGuiListClipper clipper;
         clipper.Begin((int)subImages.size());
+
+        if (m_forceScrollToSelectedIndex)
+        {
+            // IncludeItemByIndex will force the clipper to include the provided items to the loop.
+            // Those items will not necessarily be displayed, but they will be processed.
+            // This can be used to apply a SetScrollHereY call on the desired item.
+            clipper.IncludeItemByIndex(m_selectedIndex);
+        }
+
         while (clipper.Step())
         {
             for (int rowIndex = clipper.DisplayStart; rowIndex < clipper.DisplayEnd; ++rowIndex)
             {
+                if (m_forceScrollToSelectedIndex && m_selectedIndex == rowIndex)
+                {
+                    m_forceScrollToSelectedIndex = false;
+
+                    ImGui::SetScrollHereY();
+                }
+
                 ImGui::PushID(rowIndex);
 
                 float row_min_height = 0.f;
@@ -243,10 +260,11 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
                 char label[32];
                 sprintf(label, "%04d", rowIndex);
-                ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowItemOverlap;
+                ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap;
                 if (ImGui::Selectable(label, rowIndex == m_selectedIndex, selectable_flags, ImVec2(0, row_min_height)))
                 {
                     m_selectedIndex = rowIndex;
+                    m_forceScrollToSelectedIndex = false;
                 }
 
                 ImGui::TableSetColumnIndex(columnIndex++);
@@ -456,6 +474,7 @@ void ImageSetPanel::UpdateGizmo()
             if (subImages[rowIndex]->GetRect().contains(Vector2i(pickedGlobalPosition)))
             {
                 m_selectedIndex = (int)rowIndex;
+                m_forceScrollToSelectedIndex = true;
                 break;
             }
         }
@@ -527,6 +546,7 @@ void ImageSetPanel::OnAddSubImage()
     }
 
     m_selectedIndex = (int)m_imageSet->GetSubImageCount() - 1;
+    m_forceScrollToSelectedIndex = true;
 
     RaiseDirty();
 }

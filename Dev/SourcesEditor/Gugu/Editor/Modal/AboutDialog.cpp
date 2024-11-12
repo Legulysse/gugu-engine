@@ -42,14 +42,14 @@ void AboutDialog::UpdateModalImpl(const DeltaTime& dt)
 
     ImGui::Text("Based on :");
 
-    ImGui::Text("Dear ImGui %s", IMGUI_VERSION);
-    ImGui::Text("SFML %i.%i.%i", SFML_VERSION_MAJOR, SFML_VERSION_MINOR, SFML_VERSION_PATCH);
-    ImGui::Text("ImGui-SFML");  // No version macro available here.
-
     int pugixmlMajor = PUGIXML_VERSION / 1000;
     int pugixmlMinor = (PUGIXML_VERSION - (pugixmlMajor * 1000)) / 10;
     int pugixmlPatch = PUGIXML_VERSION - (pugixmlMajor * 1000) - (pugixmlMinor * 10);
+
+    ImGui::Text("SFML %i.%i.%i", SFML_VERSION_MAJOR, SFML_VERSION_MINOR, SFML_VERSION_PATCH);
     ImGui::Text("PugiXml %i.%i.%i", pugixmlMajor, pugixmlMinor, pugixmlPatch);
+    ImGui::Text("Dear ImGui %s", IMGUI_VERSION);
+    ImGui::Text("ImGui-SFML");  // No version macro available here.
 
     ImGui::Spacing();
     ImGui::Spacing();

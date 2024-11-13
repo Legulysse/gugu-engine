@@ -66,6 +66,34 @@ void RunUnitTests_Core(UnitTestResults* results)
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("Common Macros");
+    {
+        int configurationCount = 0;
+        int operatingSystemCount = 0;
+
+#if defined(GUGU_RELEASE)
+        ++configurationCount;
+#endif
+#if defined(GUGU_DEBUG)
+        ++configurationCount;
+#endif
+
+#if defined(GUGU_OS_WINDOWS)
+        ++operatingSystemCount;
+#endif
+#if defined(GUGU_OS_LINUX)
+        ++operatingSystemCount;
+#endif
+#if defined(GUGU_OS_MAC)
+        ++operatingSystemCount;
+#endif
+
+        GUGU_UTEST_CHECK_EQUAL(configurationCount, 1);
+        GUGU_UTEST_CHECK_EQUAL(operatingSystemCount, 1);
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_SECTION("Handle");
     {
         int* dummyPtr = new int;

@@ -144,25 +144,34 @@ void StateDemoTest::Init()
         listB->AddItem(item);
     }
 
+    // utf8 (french) static multiline text
+    ElementText* multilineText = m_root->AddChild<ElementText>();
+    multilineText->SetResizeRule(ETextResizeRule::FitHeight);
+    multilineText->SetSize(600.f, 800.f);
+    multilineText->SetMultiline(true);
+    multilineText->SetText("L'intérêt de ce texte est de contenir des caractères spéciaux.\nComme une arobase @, un dollar $, ou un dièse #.");
+    multilineText->SetPosition(300.f, 10.f);
+    multilineText->SetDebugBoundsVisible(true);
+
     // Editable single line text
     ElementEditableText* editLine = m_root->AddChild<ElementEditableText>();
     //editLine->SetResizeRule(TextResizeRule::FitScale);
     editLine->SetText("Single Line - Edit Me");
     editLine->SetMultiline(false);
     editLine->SetEditable(true);
-    editLine->SetPosition(300.f, 10.f);
+    editLine->SetPosition(300.f, 80.f);
     //editLine->SetSize(300.f, 200.f);
     editLine->SetDebugBoundsVisible(true);
 
     // Editable multiline text
-    ElementEditableText* editText = m_root->AddChild<ElementEditableText>();
-    editText->SetResizeRule(ETextResizeRule::FitHeight);
-    editText->SetSize(600.f, 800.f);
-    editText->SetMultiline(true);
-    editText->SetEditable(true);
-    editText->SetText("Multiple Lines - Edit Me\n\nGraeci recteque molestiae vel ex, no est dico dissentiet, an dolor legere habemus eos. Regione perfecto delicatissimi ei vis, eu commodo pertinacia reprimique per. Dolore dissentiunt quo eu. Mea harum probatus efficiendi cu. Animal aliquid id qui, tibique probatus at duo, ne mea summo laudem definitionem. Amet stet dicta ei per. Ius errem luptatum instructior cu, eu integre facilisis adipiscing duo, ex ubique eripuit debitis qui.\n Ut sit everti electram theophrastus, sumo expetendis pri ad, has officiis pertinax ex. Quod fabellas cu vim, ei qui impedit mnesarchum, eum veniam admodum at. Est elit oratio eu, vim ferri possim denique an. Eu clita dolores sed, vis mnesarchum percipitur dissentiet ex, sea rebum scripta deterruisset te. No praesent imperdiet rationibus his.");
-    editText->SetPosition(300.f, 50.f);
-    editText->SetDebugBoundsVisible(true);
+    ElementEditableText* editMultilineText = m_root->AddChild<ElementEditableText>();
+    editMultilineText->SetResizeRule(ETextResizeRule::FitHeight);
+    editMultilineText->SetSize(600.f, 800.f);
+    editMultilineText->SetMultiline(true);
+    editMultilineText->SetEditable(true);
+    editMultilineText->SetText("Multiple Lines - Edit Me\n\nGraeci recteque molestiae vel ex, no est dico dissentiet, an dolor legere habemus eos. Regione perfecto delicatissimi ei vis, eu commodo pertinacia reprimique per. Dolore dissentiunt quo eu. Mea harum probatus efficiendi cu. Animal aliquid id qui, tibique probatus at duo, ne mea summo laudem definitionem. Amet stet dicta ei per. Ius errem luptatum instructior cu, eu integre facilisis adipiscing duo, ex ubique eripuit debitis qui.\n Ut sit everti electram theophrastus, sumo expetendis pri ad, has officiis pertinax ex. Quod fabellas cu vim, ei qui impedit mnesarchum, eum veniam admodum at. Est elit oratio eu, vim ferri possim denique an. Eu clita dolores sed, vis mnesarchum percipitur dissentiet ex, sea rebum scripta deterruisset te. No praesent imperdiet rationibus his.");
+    editMultilineText->SetPosition(300.f, 120.f);
+    editMultilineText->SetDebugBoundsVisible(true);
 }
 
 void StateDemoTest::Release()

@@ -666,7 +666,7 @@ int32 Element::GetZIndex() const
 
 void Element::SortOnZIndex()
 {
-    std::sort(m_children.begin(), m_children.end(), CompareZIndex);
+    std::stable_sort(m_children.begin(), m_children.end(), CompareZIndex);
 
     for (size_t i = 0; i < m_children.size(); ++i)
     {
@@ -744,15 +744,20 @@ void Element::RaiseNeedRecompute()
     m_needRecompute = true;
 }
 
+void Element::RecomputeIfNeeded()
+{
+    if (m_needRecompute)
+    {
+        m_needRecompute = false;
+        RecomputeImpl();
+    }
+}
+
 void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformParent)
 {
     if (m_isVisible)
     {
-        if (m_needRecompute)
-        {
-            m_needRecompute = false;
-            RecomputeImpl();
-        }
+        RecomputeIfNeeded();
 
         sf::Transform combinedTransform = _kTransformParent * GetTransform();
         

@@ -357,7 +357,6 @@ function SetupBuildCfgWithEditor(pathEngineRoot, pathEditorVersion)
     return BuildCfg
 end
 
-
 -- Default Solution
 function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
 

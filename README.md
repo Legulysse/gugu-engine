@@ -6,7 +6,7 @@
 A minimalist 2D game engine, written in C++, mainly based on SFML, ImGui, and PugiXml.
 
 Author : Legulysse  
-Contributors : Diccy, Amitsouko
+Contributors : Panda, Diccy, Amitsouko
 
 ## Dependencies
 

@@ -49,6 +49,10 @@ void GenerateAnimationFramesDialog::UpdateModalImpl(const DeltaTime& dt)
         {
             ImGui::Text("Please provide an ImageSet on this AnimSet to use this generator.");
         }
+        else if (m_imageSet->GetSubImageCount() == 0)
+        {
+            ImGui::Text("Please provide at least 1 SubImage in the provided ImageSet to use this generator.");
+        }
         else
         {
             const std::vector<SubImage*>& subImages = m_imageSet->GetSubImages();

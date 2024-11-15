@@ -1,4 +1,4 @@
-# gugu::Engine 0.8.0
+# gugu::Engine 0.8.0-post
 [![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
 
 ![gugu::Engine Logo Title](./Docs/Logos/Gugu-logo-title.png)
@@ -15,7 +15,7 @@ Contributors : Diccy, Amitsouko
 - ImGui 1.87 (docking) : used by the Editor.  
 - ImGui-SFML 2.6 : used for the ImGui integration.  
 - Python 3.x : used for build and utility scripts.  
-- Premake 5 alpha 16 : used by build scripts.  
+- Premake 5.0.0-beta1 : used by build scripts.  
 
 ## Docs
 

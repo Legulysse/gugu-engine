@@ -34,14 +34,17 @@ void RunUnitTests_Core(UnitTestResults* results)
         int* dummyPtr = new int;
 
         GUGU_UTEST_CHECK(true);
+        GUGU_UTEST_SILENT_CHECK(true);
+
         GUGU_UTEST_CHECK_TRUE(true);
         GUGU_UTEST_CHECK_FALSE(false);
         GUGU_UTEST_CHECK_NULL(nullptr);
         GUGU_UTEST_CHECK_NOT_NULL(dummyPtr);
+
         GUGU_UTEST_CHECK_EQUAL(10, 10);
-        GUGU_UTEST_CHECK_APPROX_EQUAL(10.f, 10.f, math::Epsilon6);
         GUGU_UTEST_CHECK_NOT_EQUAL(10, 11);
-        GUGU_UTEST_CHECK_NOT_APPROX_EQUAL(10.f, 11.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(10.f, 10.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_NOT_EQUAL(10.f, 11.f, math::Epsilon6);
 
         delete dummyPtr;
 
@@ -62,6 +65,34 @@ void RunUnitTests_Core(UnitTestResults* results)
         {
             sf::sleep(sf::milliseconds(10));
         });
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Common Macros");
+    {
+        int configurationCount = 0;
+        int operatingSystemCount = 0;
+
+#if defined(GUGU_RELEASE)
+        ++configurationCount;
+#endif
+#if defined(GUGU_DEBUG)
+        ++configurationCount;
+#endif
+
+#if defined(GUGU_OS_WINDOWS)
+        ++operatingSystemCount;
+#endif
+#if defined(GUGU_OS_LINUX)
+        ++operatingSystemCount;
+#endif
+#if defined(GUGU_OS_MAC)
+        ++operatingSystemCount;
+#endif
+
+        GUGU_UTEST_CHECK_EQUAL(configurationCount, 1);
+        GUGU_UTEST_CHECK_EQUAL(operatingSystemCount, 1);
     }
 
     //----------------------------------------------

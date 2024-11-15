@@ -12,22 +12,30 @@
 //----------------------------------------------
 // Operating System
 
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
+
     #define GUGU_OS_WINDOWS
 
-    #ifndef WIN32_LEAN_AND_MEAN
+    #if !defined(WIN32_LEAN_AND_MEAN)
         #define WIN32_LEAN_AND_MEAN
     #endif
 
-    #ifndef NOMINMAX
+    #if !defined(NOMINMAX)
         #define NOMINMAX
     #endif
 
-#elif defined(linux) || defined(__linux)
+#elif defined(__unix__) && defined(__linux__)
+
     #define GUGU_OS_LINUX
 
-#elif defined(__APPLE__) || defined(MACOSX) || defined(macintosh) || defined(Macintosh)
-    #define GUGU_OS_MAC
+#elif defined(__APPLE__) && defined(__MACH__)
+
+    // Apple platform, see which one it is
+    #include "TargetConditionals.h"
+
+    #if TARGET_OS_MAC
+        #define GUGU_OS_MAC
+    #endif
 
 #endif
 
@@ -41,8 +49,8 @@
 //----------------------------------------------
 // Debug / Release
 
-#if defined(_DEBUG)
-    #define GUGU_DEBUG
-#else
+#if defined(NDEBUG)
     #define GUGU_RELEASE
+#else
+    #define GUGU_DEBUG
 #endif

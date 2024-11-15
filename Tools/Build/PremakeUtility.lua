@@ -385,6 +385,7 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
     end
     defines { "SFML_STATIC" }
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"
     
@@ -398,15 +399,13 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
     -- Target Definitions    
     filter { "configurations:Debug" }
         kind "ConsoleApp"
-        defines { "DEBUG" }
-        flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+        defines { "_DEBUG" }
         symbols "On"
         targetname (TargetName.."-d")
         
     filter { "configurations:Release" }
         kind "WindowedApp"
         defines { "NDEBUG" }
-        flags { "NoMinimalRebuild", "MultiProcessorCompile" }
         optimize "On"
         targetname (TargetName)
         
@@ -441,6 +440,7 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     end
     defines { "SFML_STATIC" }
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"
     
@@ -452,14 +452,12 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
 
     -- Target Definitions
     filter { "configurations:Debug" }
-        defines { "DEBUG", "_DEBUG" }
-        flags { "NoMinimalRebuild", "MultiProcessorCompile" }
+        defines {"_DEBUG" }
         symbols "On"
         targetname (TargetName.."-s-d")
 
     filter { "configurations:Release" }
         defines { "NDEBUG" }
-        flags { "NoMinimalRebuild", "MultiProcessorCompile" }
         optimize "On"
         targetname (TargetName.."-s")
         

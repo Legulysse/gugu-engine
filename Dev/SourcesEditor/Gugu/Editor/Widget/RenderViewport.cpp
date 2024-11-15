@@ -58,8 +58,9 @@ void RenderViewport::ImGuiBegin()
     Vector2u areaSize = m_fillAvailableArea ? Vector2u(0, 0) : canvas_sz;
 
     // Begin imgui area.
-    ImGuiWindowFlags flags = ImGuiWindowFlags_HorizontalScrollbar;
-    ImGui::BeginChild("RenderViewport", areaSize, false, flags);
+    ImGuiChildFlags child_flags = ImGuiChildFlags_None;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+    ImGui::BeginChild("RenderViewport", areaSize, child_flags, window_flags);
 
     // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
     Vector2f canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!

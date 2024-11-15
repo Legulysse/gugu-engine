@@ -86,7 +86,8 @@ private:
 
 #define GUGU_UTEST_SILENT_CHECK(EXPRESSION)                     \
     unitTestHandler.SilentRunTestCheck((bool)(EXPRESSION),      \
-        GUGU_STRINGIZE(EXPRESSION), __FILE__, __LINE__)
+        GUGU_STRINGIZE(EXPRESSION),                             \
+        __FILE__, __LINE__)
 
 #define GUGU_UTEST_CHECK_TRUE(EXPRESSION)                       \
     unitTestHandler.RunTestCheck((bool)(EXPRESSION) == true,    \
@@ -126,7 +127,7 @@ private:
         GUGU_STRINGIZE(LEFT) " == " GUGU_STRINGIZE(RIGHT),              \
         __FILE__, __LINE__)
 
-#define GUGU_UTEST_CHECK_NOT_APPROX_EQUAL(LEFT, RIGHT, EPSILON)         \
+#define GUGU_UTEST_CHECK_APPROX_NOT_EQUAL(LEFT, RIGHT, EPSILON)         \
     unitTestHandler.RunTestCompare(!ApproxEqual(LEFT, RIGHT, EPSILON),  \
         ToString(LEFT), ToString(RIGHT),                                \
         GUGU_STRINGIZE(LEFT) " != " GUGU_STRINGIZE(RIGHT),              \

@@ -316,7 +316,10 @@ function SetupBuildCfg(pathEngineRoot)
     pathEngineRoot = EnsureSlash(pathEngineRoot)
 
     BuildCfg = {
-        -- Engine
+        -- Build options.
+        ImGui_DisableObsoleteFunctions = false,
+
+        -- Engine directories.
         DirSourcesEngine    = EnsureSlash(pathEngineRoot.."Dev/SourcesEngine"),
         DirSourcesImGuiSetup = EnsureSlash(pathEngineRoot.."Dev/SourcesImGuiSetup"),
         DirSourcesSfml      = EnsureSlash(pathEngineRoot.."Externals/SFML"),
@@ -334,7 +337,10 @@ function SetupBuildCfgWithEditor(pathEngineRoot, pathEditorVersion)
     pathEditorVersion = EnsureSlash(pathEditorVersion)
 
     BuildCfg = {
-        -- Engine
+        -- Build options.
+        ImGui_DisableObsoleteFunctions = false,
+
+        -- Engine directories.
         DirSourcesEngine    = EnsureSlash(pathEngineRoot.."Dev/SourcesEngine"),
         DirSourcesImGuiSetup = EnsureSlash(pathEngineRoot.."Dev/SourcesImGuiSetup"),
         DirSourcesSfml      = EnsureSlash(pathEngineRoot.."Externals/SFML"),
@@ -342,7 +348,7 @@ function SetupBuildCfgWithEditor(pathEngineRoot, pathEditorVersion)
         DirSourcesImGui     = EnsureSlash(pathEngineRoot.."Externals/ImGui"),
         DirSourcesImGuiSFML = EnsureSlash(pathEngineRoot.."Externals/ImGuiSFML"),
         
-        -- Editor
+        -- Editor directories.
         DirEditorVersion    = EnsureSlash(pathEditorVersion),
         DirSourcesEditorApp = EnsureSlash(pathEngineRoot.."Dev/SourcesEditorApp"),
         DirSourcesEditor    = EnsureSlash(pathEngineRoot.."Dev/SourcesEditor"),
@@ -374,7 +380,10 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
     
     -- Base Definition
     language "C++"
-    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"", "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
+    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"" }
+    if BuildCfg.ImGui_DisableObsoleteFunctions then
+        defines { "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
+    end
     defines { "SFML_STATIC" }
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
     systemversion "latest"
@@ -427,7 +436,10 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     -- Base Definition
     kind "StaticLib"
     language "C++"
-    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"", "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
+    defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"" }
+    if BuildCfg.ImGui_DisableObsoleteFunctions then
+        defines { "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
+    end
     defines { "SFML_STATIC" }
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
     systemversion "latest"

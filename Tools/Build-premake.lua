@@ -9,8 +9,11 @@ require "PremakeUtility"
 local pathDev       = EnsureSlash("../Dev")
 local pathVersion   = EnsureSlash("../Version")
 
+-- Build Configuration
 BuildCfg = SetupBuildCfgWithEditor("../", "../Tools/GuguEditor")
 
+-- Optional flags
+--BuildCfg.ImGui_DisableObsoleteFunctions = true
 
 -- Build Solution
 solution "GuguEngine"

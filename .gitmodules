@@ -6,7 +6,7 @@
 	url = https://github.com/SFML/SFML.git
 [submodule "Externals/ImGuiSFML"]
 	path = Externals/ImGuiSFML
-	url = https://github.com/eliasdaler/imgui-sfml.git
+	url = https://github.com/SFML/imgui-sfml.git
 [submodule "Externals/ImGui"]
 	path = Externals/ImGui
 	url = https://github.com/ocornut/imgui.git

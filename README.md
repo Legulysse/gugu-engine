@@ -16,8 +16,8 @@ Contributors : Panda, Diccy, Amitsouko
 | [PugiXml](https://github.com/zeux/pugixml) | 1.14 | Engine |
 | [Dear ImGui](https://github.com/ocornut/imgui) | 1.89.9-docking | Editor |
 | [ImGui-SFML](https://github.com/SFML/imgui-sfml) | 2.6.x | ImGui integration |
+| [Premake](https://github.com/premake/premake-core) | 5.0.0-beta3 | Build scripts |
 | [Python](https://www.python.org/) | 3.x | Build and utility scripts |
-| [Premake](https://premake.github.io/) | 5.0.0-beta2 | Build scripts |
 
 ## Docs
 

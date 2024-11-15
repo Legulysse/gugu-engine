@@ -10,12 +10,14 @@ Contributors : Diccy, Amitsouko
 
 ## Dependencies
 
-- [SFML 2.6.2](https://github.com/SFML/SFML) : used by the Engine.  
-- [PugiXml 1.14](https://github.com/zeux/pugixml) : used by the Engine.  
-- [ImGui 1.89.9-docking](https://github.com/ocornut/imgui) : used by the Editor.  
-- [ImGui-SFML 2.6.x](https://github.com/SFML/imgui-sfml) : used for the ImGui integration.  
-- [Python 3.x](https://www.python.org/) : used for build and utility scripts.  
-- [Premake 5.0.0-beta2](https://premake.github.io/) : used by build scripts.  
+| Name | Version | Usage |
+|---|---|---|
+| [SFML](https://github.com/SFML/SFML) |  2.6.2 | Engine |
+| [PugiXml](https://github.com/zeux/pugixml) | 1.14 | Engine |
+| [Dear ImGui](https://github.com/ocornut/imgui) | 1.89.9-docking | Editor |
+| [ImGui-SFML](https://github.com/SFML/imgui-sfml) | 2.6.x | ImGui integration |
+| [Python](https://www.python.org/) | 3.x | Build and utility scripts |
+| [Premake](https://premake.github.io/) | 5.0.0-beta2 | Build scripts |
 
 ## Docs
 

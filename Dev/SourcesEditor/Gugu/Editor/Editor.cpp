@@ -275,7 +275,7 @@ void Editor::Update(const DeltaTime& dt)
             }
 
             ImGui::Separator();
-            if (ImGui::MenuItem("Quit", "Alt+F4"))
+            if (ImGui::MenuItem("Quit", ImGui::GetKeyChordName(ImGuiMod_Alt | ImGuiKey_F4)))
             {
                 CloseEditor();
             }
@@ -287,23 +287,23 @@ void Editor::Update(const DeltaTime& dt)
         {
             ImGui::BeginDisabled(m_lastActiveDocument == nullptr);
 
-            if (ImGui::MenuItem("Undo", "Ctrl+Z"))
+            if (ImGui::MenuItem("Undo", ImGui::GetKeyChordName(ImGuiMod_Ctrl | ImGuiKey_Z)))
             {
                 UndoActiveDocument();
             }
 
-            if (ImGui::MenuItem("Redo", "Ctrl+Y"))
+            if (ImGui::MenuItem("Redo", ImGui::GetKeyChordName(ImGuiMod_Ctrl | ImGuiKey_Y)))
             {
                 RedoActiveDocument();
             }
 
             ImGui::Separator();
-            if (ImGui::MenuItem("Save", "Ctrl+S"))
+            if (ImGui::MenuItem("Save", ImGui::GetKeyChordName(ImGuiMod_Ctrl | ImGuiKey_S)))
             {
                 SaveActiveDocument();
             }
 
-            if (ImGui::MenuItem("Save All", "Ctrl+Shift+S"))
+            if (ImGui::MenuItem("Save All", ImGui::GetKeyChordName(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_S)))
             {
                 SaveAllDirtyDocuments();
             }
@@ -315,7 +315,7 @@ void Editor::Update(const DeltaTime& dt)
 
         if (ImGui::BeginMenu("View"))
         {
-            if (ImGui::MenuItem("Reset Panels", "F1"))
+            if (ImGui::MenuItem("Reset Panels", ImGui::GetKeyChordName(ImGuiKey_F1)))
             {
                 ResetPanels();
             }

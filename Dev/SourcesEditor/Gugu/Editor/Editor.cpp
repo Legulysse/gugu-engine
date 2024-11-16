@@ -354,10 +354,10 @@ void Editor::Update(const DeltaTime& dt)
     }
 
     // This popup has a higher priority than any other popup and thus can force reopening itself every frame, discarding any other popup.
-    if (m_checkDirtyDocuments && !ImGui::IsPopupOpen("Save Documents"))
+    if (m_checkDirtyDocuments && !ImGui::IsPopupOpen("Save Documents", ImGuiPopupFlags_None))
     {
         //TODO: for clarity, I could explicitly force close other popups here, instead of letting imgui handling it.
-        ImGui::OpenPopup("Save Documents");
+        ImGui::OpenPopup("Save Documents", ImGuiPopupFlags_None);
     }
 
     if (ImGui::BeginPopupModal("Save Documents", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))

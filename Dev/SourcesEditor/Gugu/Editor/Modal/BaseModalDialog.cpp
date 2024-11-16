@@ -31,9 +31,12 @@ void BaseModalDialog::UpdateModal(const DeltaTime& dt)
     {
         m_opening = false;
 
-        if (!ImGui::IsPopupOpen("", ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel))
+        // Note: with the new ImGuiPopupFlags_NoReopen, maybe the popup handling could be simplified ?
+        ImGuiPopupFlags testPopupFlags = ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel;
+        if (!ImGui::IsPopupOpen("", testPopupFlags))
         {
-            ImGui::OpenPopup(m_title.c_str());
+            ImGuiPopupFlags openPopupFlags = ImGuiPopupFlags_None;
+            ImGui::OpenPopup(m_title.c_str(), openPopupFlags);
         }
         else
         {

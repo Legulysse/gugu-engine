@@ -8,6 +8,12 @@ A minimalist 2D game engine, written in C++, mainly based on SFML, ImGui, and Pu
 Author : Legulysse  
 Contributors : Panda, Diccy, Amitsouko
 
+## Docs
+
+- [Changelog](./Docs/ProjectHistory.md) (French)  
+- [Features](./Docs/Features.md)  
+- [Console Commands](./Docs/Commands.md)  
+
 ## Dependencies
 
 | Name | Version | Usage |
@@ -18,12 +24,6 @@ Contributors : Panda, Diccy, Amitsouko
 | [ImGui-SFML](https://github.com/SFML/imgui-sfml) | 2.6.x | ImGui integration |
 | [Premake](https://github.com/premake/premake-core) | 5.0.0-beta3 | Build scripts |
 | [Python](https://www.python.org/) | 3.x | Build and utility scripts |
-
-## Docs
-
-- [Changelog](./Docs/ProjectHistory.md) (French)  
-- [Features](./Docs/Features.md)  
-- [Console Commands](./Docs/Commands.md)  
 
 ## Quick Overview
 

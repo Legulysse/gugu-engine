@@ -18,8 +18,8 @@ Display rendering stats with curves/histograms on the screen.
 ### > bounds
 Display all Elements bounds.
 
-### > ruler
-Display vertical and horizontal lines centered on cursor, with graduations every 100 pixels.
+### > ruler [int:size]
+Display vertical and horizontal lines centered on cursor, with graduations every [size] pixels (default : ruler 100).
 
 ### > trace [int:nbFrames]
 Trace performances for the next [nbFrames] frames (default : trace 10).  

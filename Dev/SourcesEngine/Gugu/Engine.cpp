@@ -639,7 +639,20 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
         else if (command == "ruler")
         {
             if (m_gameWindow)
-                m_gameWindow->ToggleShowRuler();
+            {
+                if (!tokens.empty())
+                {
+                    int rulerSize = 100;
+                    FromString(tokens[0], rulerSize);
+
+                    m_gameWindow->SetRulerSize(rulerSize);
+                    m_gameWindow->SetShowRuler(true);
+                }
+                else
+                {
+                    m_gameWindow->ToggleShowRuler();
+                }
+            }
         }
         else if (command == "trace")
         {

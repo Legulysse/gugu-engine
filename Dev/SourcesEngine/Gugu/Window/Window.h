@@ -112,6 +112,7 @@ public:
     void SetShowFPS(bool showFPS);
     void SetShowBounds(bool showBounds);
     void SetShowRuler(bool showRuler);
+    void SetRulerSize(int rulerSize);
     void ToggleShowStats();
     void ToggleShowFPS();
     void ToggleShowBounds();
@@ -171,6 +172,7 @@ protected:
     bool m_showFPS;
     bool m_showBounds;
     bool m_showRuler;
+    int m_rulerSize;
 };
 
 Window* GetGameWindow();

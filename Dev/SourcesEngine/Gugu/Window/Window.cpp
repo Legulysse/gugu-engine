@@ -80,6 +80,7 @@ Window::Window()
     m_showFPS = false;
     m_showBounds = false;
     m_showRuler = false;
+    m_rulerSize = 100;
 }
 
 Window::~Window()
@@ -441,11 +442,11 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
             //TODO: merge into StatsDrawer, rename as DebugDrawer.
             if (m_ruler.getVertexCount() == 0)
             {
-                int graduations = 10;
-                float graduationSize = 100.f;
+                float graduationSize = static_cast<float>(m_rulerSize);
+                int graduations = RoundNearestInt(Max(GetSize().x, GetSize().y)) / m_rulerSize;
 
                 Vector2f position = sf::Vector2f(0.5f, 0.5f);
-                Vector2f size = sf::Vector2f(GetSize()) * 2.f;
+                Vector2f size = sf::Vector2f(GetSize());
                 sf::Color rulerColor = sf::Color(255, 0, 255, 200);
                 m_ruler = sf::VertexArray(sf::PrimitiveType::Lines, 4 + graduations * 8);
 
@@ -766,6 +767,17 @@ void Window::SetShowBounds(bool showBounds)
 void Window::SetShowRuler(bool showRuler)
 {
     m_showRuler = showRuler;
+}
+
+void Window::SetRulerSize(int rulerSize)
+{
+    rulerSize = Max(2, Absolute(rulerSize));
+
+    if (m_rulerSize != rulerSize)
+    {
+        m_rulerSize = rulerSize;
+        m_ruler.clear();
+    }
 }
 
 void Window::ToggleShowStats()

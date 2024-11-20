@@ -47,10 +47,10 @@
 #endif
 
 //----------------------------------------------
-// Debug / Release
+// Build Configuration
 
-#if defined(NDEBUG)
-    #define GUGU_RELEASE
+#if defined(GUGU_DEBUG) || defined(GUGU_RELEASE)
+    #define GUGU_DEVELOPMENT_BUILD
 #else
-    #define GUGU_DEBUG
+    #define GUGU_PRODUCTION_BUILD
 #endif

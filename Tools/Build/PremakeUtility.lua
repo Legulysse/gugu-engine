@@ -364,9 +364,9 @@ function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
     
     -- Base Definition
     location (DirSolution.._ACTION)
-    configurations { "Debug", "Release" }   -- "Debug", "Release"
-    platforms { "x64" }                     -- "x86", "x64"
-    cppdialect "c++17"                      -- "c++14", "c++17", "c++20"
+    configurations { "DevDebug", "DevRelease", "ProdMaster" } 	-- "Debug", "Release", "Master"
+    platforms { "x64" }  	-- "x86", "x64"
+    cppdialect "c++17"   	-- "c++14", "c++17", "c++20"
     
 end
 
@@ -397,15 +397,23 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
     libdirs { "%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}" }
 
     -- Target Definitions    
-    filter { "configurations:Debug" }
+    filter { "configurations:DevDebug" }
         kind "ConsoleApp"
-        defines { "_DEBUG" }
+        defines { "GUGU_DEBUG", "_DEBUG" }
         symbols "On"
         targetname (TargetName.."-d")
         
-    filter { "configurations:Release" }
+    filter { "configurations:DevRelease" }
         kind "WindowedApp"
-        defines { "NDEBUG" }
+        defines { "GUGU_RELEASE", "NDEBUG" }
+        symbols "On"
+        optimize "On"
+        targetname (TargetName.."-r")
+        
+    filter { "configurations:ProdMaster" }
+        kind "WindowedApp"
+        defines { "GUGU_MASTER", "NDEBUG" }
+        symbols "Off"
         optimize "On"
         targetname (TargetName)
         
@@ -451,13 +459,20 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     libdirs { "%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}" }
 
     -- Target Definitions
-    filter { "configurations:Debug" }
-        defines {"_DEBUG" }
+    filter { "configurations:DevDebug" }
+        defines { "GUGU_DEBUG", "_DEBUG" }
         symbols "On"
         targetname (TargetName.."-s-d")
 
-    filter { "configurations:Release" }
-        defines { "NDEBUG" }
+    filter { "configurations:DevRelease" }
+        defines { "GUGU_RELEASE", "NDEBUG" }
+        symbols "On"
+        optimize "On"
+        targetname (TargetName.."-s-r")
+        
+    filter { "configurations:ProdMaster" }
+        defines { "GUGU_MASTER", "NDEBUG" }
+        symbols "Off"
         optimize "On"
         targetname (TargetName.."-s")
         
@@ -516,22 +531,28 @@ function IncludeLinkerDefinitions(IncludeEngine, IncludeEditor)
         
     -- Link libraries
     if IncludeEditor then
-        filter { "configurations:Debug" }
+        filter { "configurations:DevDebug" }
             links { "GuguEditorLib-s-d" }
-        filter { "configurations:Release" }
+        filter { "configurations:DevRelease" }
+            links { "GuguEditorLib-s-r" }
+        filter { "configurations:ProdMaster" }
             links { "GuguEditorLib-s" }
     end
     
     if IncludeEngine then
-        filter { "configurations:Debug" }
+        filter { "configurations:DevDebug" }
             links { "GuguEngine-s-d", "ImGui-s-d","PugiXml-s-d" }
-        filter { "configurations:Release" }
+        filter { "configurations:DevRelease" }
+            links { "GuguEngine-s-r", "ImGui-s-r", "PugiXml-s-r" }
+        filter { "configurations:ProdMaster" }
             links { "GuguEngine-s", "ImGui-s", "PugiXml-s" }
     end
     
-    filter { "configurations:Debug" }
+    filter { "configurations:DevDebug" }
         links { "SFML-s-d" }
-    filter { "configurations:Release" }
+    filter { "configurations:DevRelease" }
+        links { "SFML-s-r" }
+    filter { "configurations:ProdMaster" }
         links { "SFML-s" }
 
     filter { "system:windows" }

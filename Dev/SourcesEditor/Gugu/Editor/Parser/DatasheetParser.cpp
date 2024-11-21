@@ -343,11 +343,12 @@ VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::strin
     // TODO: Maybe I can use the manager factory delegate instead, along with a datasheet type detection delegate ?
     if (GetResources()->HasResource(resourceID) && !GetResources()->IsResourceLoaded(resourceID))
     {
-        //std::string_view className = GetResources()->GetResourceFileInfo(resourceID).GetExtension();
+        // Ensure the resource is a datasheet, or else it will crash later on.
+        std::string_view className = GetResources()->GetResourceFileInfo(resourceID).GetExtension();
 
-        //DatasheetParser::ClassDefinition* classDefinition;
-        //if (GetClassDefinition(className, classDefinition))
-        //{
+        DatasheetParser::ClassDefinition* classDefinition;
+        if (GetClassDefinition(className, classDefinition))
+        {
             VirtualDatasheet* datasheet = new VirtualDatasheet();
 
             if (GetResources()->InjectResource(resourceID, datasheet))
@@ -359,7 +360,7 @@ VirtualDatasheet* DatasheetParser::InstanciateDatasheetResource(const std::strin
                 // Safety, should not happen, just in case.
                 SafeDelete(datasheet);
             }
-        //}
+        }
     }
 
     return nullptr;

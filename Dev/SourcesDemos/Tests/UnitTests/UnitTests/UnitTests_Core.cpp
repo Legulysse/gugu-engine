@@ -71,14 +71,25 @@ void RunUnitTests_Core(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("Common Macros");
     {
-        int configurationCount = 0;
+        int buildConfigurationCount = 0;
+        int buildTypeCount = 0;
         int operatingSystemCount = 0;
 
-#if defined(GUGU_RELEASE)
-        ++configurationCount;
-#endif
 #if defined(GUGU_DEBUG)
-        ++configurationCount;
+        ++buildConfigurationCount;
+#endif
+#if defined(GUGU_RELEASE)
+        ++buildConfigurationCount;
+#endif
+#if defined(GUGU_MASTER)
+        ++buildConfigurationCount;
+#endif
+
+#if defined(GUGU_DEVELOPMENT_BUILD)
+        ++buildTypeCount;
+#endif
+#if defined(GUGU_PRODUCTION_BUILD)
+        ++buildTypeCount;
 #endif
 
 #if defined(GUGU_OS_WINDOWS)
@@ -91,7 +102,8 @@ void RunUnitTests_Core(UnitTestResults* results)
         ++operatingSystemCount;
 #endif
 
-        GUGU_UTEST_CHECK_EQUAL(configurationCount, 1);
+        GUGU_UTEST_CHECK_EQUAL(buildConfigurationCount, 1);
+        GUGU_UTEST_CHECK_EQUAL(buildTypeCount, 1);
         GUGU_UTEST_CHECK_EQUAL(operatingSystemCount, 1);
     }
 

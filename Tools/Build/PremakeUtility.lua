@@ -364,7 +364,8 @@ function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
     
     -- Base Definition
     location (DirSolution.._ACTION)
-    configurations { "DevDebug", "DevRelease", "ProdMaster" } 	-- "Debug", "Release", "Master"
+
+    configurations { "DevDebug", "DevRelease", "ProdMaster" } 	-- "Debug", "Release", "Master" (Visual sorts configurations alphabetically)
     platforms { "x64" }  	-- "x86", "x64"
     cppdialect "c++17"   	-- "c++14", "c++17", "c++20"
     

@@ -1,6 +1,6 @@
 # Project History
 
-## Version 0.8.1 &nbsp; _(??/??/2024)_  [Update 03/12/2024]
+## Version 0.8.1 &nbsp; _(03/12/2024)_
 - Remplacement des configurations de build "Debug" et "Release" par les configurations "DevDebug", DevRelease" et "ProdMaster".
 - Ajout des macros GUGU_DEVELOPMENT_BUILD (DevDebug et DevRelease) et GUGU_PRODUCTION_BUILD (ProdMaster).
 - Le flag de compilation IMGUI_DISABLE_OBSOLETE_FUNCTIONS est maintenant optionnel (désactivé par défaut).

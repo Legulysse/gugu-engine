@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
     EditorConfig editorConfig;
     editorConfig.LoadFromFile("EditorConfig.xml");
 
-#if 0
+#if defined(GUGU_DEVELOPMENT_BUILD)
     //editorConfig.defaultProjectFilePath = "../../Version/DemoSystems/Editor/ProjectSettings.xml";
     //editorConfig.defaultProjectFilePath = "../../Version/DemoTests/Editor/ProjectSettings.xml";
     //editorConfig.defaultProjectFilePath = "../../Version/DemoGame/Editor/ProjectSettings.xml";

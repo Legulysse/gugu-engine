@@ -1,5 +1,19 @@
 # Project History
 
+## Version 0.8.1 &nbsp; _(??/??/2024)_  [Update 03/12/2024]
+- Remplacement des configurations de build "Debug" et "Release" par les configurations "DevDebug", DevRelease" et "ProdMaster".
+- Ajout des macros GUGU_DEVELOPMENT_BUILD (DevDebug et DevRelease) et GUGU_PRODUCTION_BUILD (ProdMaster).
+- Le flag de compilation IMGUI_DISABLE_OBSOLETE_FUNCTIONS est maintenant optionnel (désactivé par défaut).
+- Update/Clean du fichier premake.
+- Ajout de la méthode RecomputeIfNeeded sur les Element.
+- Utilisation de stable_sort pour l'application du z-index.
+- Imageset Editor : auto-scroll de la liste sur l'item sélectionné via le cadre de rendu.
+- Mise à jour SFML 2.6.2.
+- Mise à jour ImGui 1.91.4 (docking).
+- Mise à jour ImGui-SFML.
+- Mise à jour PugiXml 1.14.
+- Mise à jour premake 5.0.0-beta3.
+
 ## Version 0.8 &nbsp; _(20/10/2024)_
 - Ajout d'un nouveau logo !
 - Ajout de ElementLayoutGroup, ElementCheckbox, ElementSlider.

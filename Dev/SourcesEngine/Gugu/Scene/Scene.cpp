@@ -162,11 +162,17 @@ bool Scene::HasChildScene(Scene* scene) const
     return scene != nullptr && StdVectorContains(m_childScenes, scene);
 }
 
-Scene* Scene::GetChildScene(int index) const
+Scene* Scene::GetChildScene(size_t index) const
 {
-    if (index < 0 || index >= (int)m_childScenes.size())
+    if (index >= m_childScenes.size())
         return nullptr;
+
     return m_childScenes[index];
+}
+
+size_t Scene::GetChildSceneCount() const
+{
+    return m_childScenes.size();
 }
 
 void Scene::AddActor(SceneActor* actor)
@@ -223,16 +229,17 @@ bool Scene::HasActor(SceneActor* actor) const
     return actor != nullptr && StdVectorContains(m_actors, actor);
 }
 
-SceneActor* Scene::GetActor(int index) const
+SceneActor* Scene::GetActor(size_t index) const
 {
-    if (index < 0 || index >= (int)m_actors.size())
+    if (index >= m_actors.size())
         return nullptr;
+
     return m_actors[index];
 }
 
-int Scene::GetActorCount() const
+size_t Scene::GetActorCount() const
 {
-    return (int)m_actors.size();
+    return m_actors.size();
 }
 
 }   // namespace gugu

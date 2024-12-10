@@ -49,4 +49,9 @@ void SceneActor::RemoveFromScene()
     }
 }
 
+Scene* SceneActor::GetScene() const
+{
+    return m_scene;
+}
+
 }   // namespace gugu

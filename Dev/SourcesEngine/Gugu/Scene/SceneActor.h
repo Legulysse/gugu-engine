@@ -36,6 +36,8 @@ public:
 
     void RemoveFromScene();
 
+    Scene* GetScene() const;
+
 protected:
 
     virtual void OnAddedToScene() {}

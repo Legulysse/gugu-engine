@@ -43,7 +43,8 @@ public:
     void DeleteAllChildScenes();
 
     bool HasChildScene(Scene* scene) const;
-    Scene* GetChildScene(int index) const;
+    Scene* GetChildScene(size_t index) const;
+    size_t GetChildSceneCount() const;
 
     //Actors
     void AddActor(SceneActor* actor);
@@ -52,8 +53,8 @@ public:
     void DeleteAllActors();
 
     bool HasActor(SceneActor* actor) const;
-    SceneActor* GetActor(int index) const;
-    int GetActorCount() const;
+    SceneActor* GetActor(size_t index) const;
+    size_t GetActorCount() const;
 
 protected:
 

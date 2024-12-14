@@ -1,6 +1,11 @@
 #pragma once
 
 ////////////////////////////////////////////////////////////////
+// Includes
+
+#include "Gugu/System/Types.h"
+
+////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
@@ -11,8 +16,8 @@ public:
 
     Handle() {}
     explicit Handle(const void* ptr) : m_handleType(EHandleType::Pointer), m_ptr(ptr), m_uint64(0) {}
-    explicit Handle(uint64_t uint64) : m_handleType(EHandleType::Uint64), m_ptr(nullptr), m_uint64(uint64) {}
-    Handle(const void* ptr, uint64_t uint64) : m_handleType(EHandleType::PointerAndUint64), m_ptr(ptr), m_uint64(uint64) {}
+    explicit Handle(uint64 uint64) : m_handleType(EHandleType::Uint64), m_ptr(nullptr), m_uint64(uint64) {}
+    explicit Handle(const void* ptr, uint64 uint64) : m_handleType(EHandleType::PointerAndUint64), m_ptr(ptr), m_uint64(uint64) {}
     Handle(const Handle& right) : m_handleType(right.m_handleType), m_ptr(right.m_ptr), m_uint64(right.m_uint64) {}
 
     bool IsValid() const
@@ -44,7 +49,7 @@ public:
 
 private:
 
-    enum EHandleType : uint8_t
+    enum EHandleType : uint8
     {
         Invalid,
         Pointer,
@@ -54,7 +59,7 @@ private:
 
     EHandleType m_handleType = EHandleType::Invalid;
     const void* m_ptr = nullptr;
-    uint64_t m_uint64 = 0;
+    uint64 m_uint64 = 0;
 };
 
 }   // namespace gugu

@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/Types.h"
+
 #include <string>
 
 ////////////////////////////////////////////////////////////////
@@ -26,8 +28,8 @@ public:
 
 private:
 
-    uint64_t m_data1 = 0;
-    uint64_t m_data2 = 0;
+    uint64 m_data1 = 0;
+    uint64 m_data2 = 0;
 };
 
 UUID GenerateUUID();

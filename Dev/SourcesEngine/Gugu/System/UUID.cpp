@@ -29,15 +29,15 @@ UUID UUID::Generate()
     HRESULT hr = CoCreateGuid(&guid);
     if (SUCCEEDED(hr))
     {
-        uuid.m_data1 = ((uint64_t)guid.Data1) << 32 | ((uint64_t)guid.Data2) << 16 | (uint64_t)guid.Data3;
-        uuid.m_data2 = ((uint64_t)guid.Data4[0]) << 56
-            | ((uint64_t)guid.Data4[1]) << 48
-            | ((uint64_t)guid.Data4[2]) << 40
-            | ((uint64_t)guid.Data4[3]) << 32
-            | ((uint64_t)guid.Data4[4]) << 24
-            | ((uint64_t)guid.Data4[5]) << 16
-            | ((uint64_t)guid.Data4[6]) << 8
-            | (uint64_t)guid.Data4[7];
+        uuid.m_data1 = ((uint64)guid.Data1) << 32 | ((uint64)guid.Data2) << 16 | (uint64)guid.Data3;
+        uuid.m_data2 = ((uint64)guid.Data4[0]) << 56
+            | ((uint64)guid.Data4[1]) << 48
+            | ((uint64)guid.Data4[2]) << 40
+            | ((uint64)guid.Data4[3]) << 32
+            | ((uint64)guid.Data4[4]) << 24
+            | ((uint64)guid.Data4[5]) << 16
+            | ((uint64)guid.Data4[6]) << 8
+            | (uint64)guid.Data4[7];
     }
 
 #endif

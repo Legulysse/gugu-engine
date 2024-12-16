@@ -92,6 +92,10 @@ T Power(T n, int p);
 template <typename T>
 T Power2(T n);
 
+float TruncatedModulof(float value, float modulus);  // Result has the same sign as the value.
+float FlooredModulof(float value, float modulus);    // Result has the same sign as the modulus.
+float EuclideanModulof(float value, float modulus);  // Result is always positive.
+
 template <typename T>
 T TruncatedModulo(T value, T modulus);  // Result has the same sign as the value.
 

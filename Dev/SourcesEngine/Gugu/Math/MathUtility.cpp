@@ -62,6 +62,28 @@ bool ApproxSuperiorOrEqualToZero(float left, float epsilon)
     return left >= -epsilon;
 }
 
+float TruncatedModulof(float value, float modulus)
+{
+    // Truncated : result has the same sign as the value.
+    // - https://en.wikipedia.org/wiki/Modulo
+    return std::fmodf(value, modulus);
+}
+
+float FlooredModulof(float value, float modulus)
+{
+    // Floored : result has the same sign as the modulus.
+    // - https://en.wikipedia.org/wiki/Modulo
+    return std::fmodf(std::fmodf(value, modulus) + modulus, modulus);
+}
+
+float EuclideanModulof(float value, float modulus)
+{
+    // Euclidean : result is always positive.
+    // - https://en.wikipedia.org/wiki/Modulo
+    float temp = std::fmodf(value, modulus);
+    return temp >= 0 ? temp : (modulus >= 0 ? temp + modulus : temp - modulus);
+}
+
 //----------------------------------------------
 // Angles
 

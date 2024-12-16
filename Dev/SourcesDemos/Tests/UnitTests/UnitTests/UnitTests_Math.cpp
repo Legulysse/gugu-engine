@@ -275,6 +275,118 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-19, -10), 1);
             GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(20, -10), 0);
             GUGU_UTEST_CHECK_EQUAL(EuclideanModulo(-20, -10), 0);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(0, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(1, 10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-1, 10), -1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(9, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-9, 10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(10, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-10, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(19, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-19, 10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(20, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-20, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(20, 15.5f), 4.5f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-20, 15.5f), -4.5f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(0, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(1, -10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-1, -10), -1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(9, -10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-9, -10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(10, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-10, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(19, -10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-19, -10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(20, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-20, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(20, -15.5f), 4.5f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(std::fmodf(-20, -15.5f), -4.5f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(0, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(1, 10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-1, 10), -1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(9, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-9, 10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(10, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-10, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(19, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-19, 10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(20, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-20, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(20, 15.5f), 4.5f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-20, 15.5f), -4.5f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(0, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(1, -10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-1, -10), -1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(9, -10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-9, -10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(10, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-10, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(19, -10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-19, -10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(20, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-20, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(20, -15.5f), 4.5f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(TruncatedModulof(-20, -15.5f), -4.5f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(0, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(1, 10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-1, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(9, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-9, 10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(10, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-10, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(19, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-19, 10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(20, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-20, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(20, 15.5f), 4.5f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-20, 15.5f), 11.f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(0, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(1, -10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-1, -10), -1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(9, -10), -1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-9, -10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(10, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-10, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(19, -10), -1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-19, -10), -9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(20, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-20, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(20, -15.5f), -11.f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(FlooredModulof(-20, -15.5f), -4.5f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(0, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(1, 10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-1, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(9, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-9, 10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(10, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-10, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(19, 10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-19, 10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(20, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-20, 10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(20, 15.5f), 4.5f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-20, 15.5f), 11.f, math::Epsilon6);
+
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(0, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(1, -10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-1, -10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(9, -10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-9, -10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(10, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-10, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(19, -10), 9, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-19, -10), 1, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(20, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-20, -10), 0, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(20, -15.5f), 4.5f, math::Epsilon6);
+            GUGU_UTEST_CHECK_APPROX_EQUAL(EuclideanModulof(-20, -15.5f), 11.f, math::Epsilon6);
         }
 
         GUGU_UTEST_SUBSECTION("Distance");

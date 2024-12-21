@@ -240,10 +240,9 @@ function ProjectLibSFML(BuildCfg)
         includedirs {
             DirSfmlHeaders,
             DirSfmlSources,
-            DirSfmlExternals.."headers",
-            DirSfmlExternals.."headers/AL",
-            DirSfmlExternals.."headers/freetype2",
             DirSfmlExternals.."headers/glad/include",
+            DirSfmlExternals.."headers/mingw",
+            DirSfmlExternals.."headers/miniaudio",
             DirSfmlExternals.."headers/minimp3",
             DirSfmlExternals.."headers/stb_image",
             DirSfmlExternals.."headers/vulkan",
@@ -251,7 +250,6 @@ function ProjectLibSFML(BuildCfg)
 
         filter { "system:windows" }
             excludes { 
-                DirSfmlSources.."SFML/Main/SFMLActivity.cpp",
                 DirSfmlSources.."SFML/Main/MainAndroid.cpp",
                 DirSfmlSources.."SFML/Network/Unix/**",
                 DirSfmlSources.."SFML/System/Android/**",
@@ -260,9 +258,9 @@ function ProjectLibSFML(BuildCfg)
                 DirSfmlSources.."SFML/Window/DRM/**",
                 DirSfmlSources.."SFML/Window/FreeBSD/**",
                 DirSfmlSources.."SFML/Window/iOS/**",
+                DirSfmlSources.."SFML/Window/macOS/**",
                 DirSfmlSources.."SFML/Window/NetBSD/**",
                 DirSfmlSources.."SFML/Window/OpenBSD/**",
-                DirSfmlSources.."SFML/Window/OSX/**",
                 DirSfmlSources.."SFML/Window/Unix/**",
             }
         
@@ -276,9 +274,9 @@ function ProjectLibSFML(BuildCfg)
                 DirSfmlSources.."SFML/Window/DRM/**",
                 DirSfmlSources.."SFML/Window/FreeBSD/**",
                 DirSfmlSources.."SFML/Window/iOS/**",
+                DirSfmlSources.."SFML/Window/macOS/**",
                 DirSfmlSources.."SFML/Window/NetBSD/**",
                 DirSfmlSources.."SFML/Window/OpenBSD/**",
-                DirSfmlSources.."SFML/Window/OSX/**",
                 DirSfmlSources.."SFML/Window/Win32/**",
             }
             

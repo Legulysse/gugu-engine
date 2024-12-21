@@ -13,3 +13,12 @@
 [submodule "Externals/Dependencies/Freetype"]
 	path = Externals/Dependencies/Freetype
 	url = https://github.com/freetype/freetype.git
+[submodule "Externals/Dependencies/Ogg"]
+	path = Externals/Dependencies/Ogg
+	url = https://github.com/xiph/ogg.git
+[submodule "Externals/Dependencies/Flac"]
+	path = Externals/Dependencies/Flac
+	url = https://github.com/xiph/flac.git
+[submodule "Externals/Dependencies/Vorbis"]
+	path = Externals/Dependencies/Vorbis
+	url = https://github.com/xiph/vorbis.git

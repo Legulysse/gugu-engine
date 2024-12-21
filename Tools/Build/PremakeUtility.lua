@@ -220,15 +220,25 @@ function ProjectLibSFML(BuildCfg)
     DirSfmlHeaders = BuildCfg.DirSourcesSfml.."include/"
     DirSfmlSources = BuildCfg.DirSourcesSfml.."src/"
     DirSfmlExternals = BuildCfg.DirSourcesSfml.."extlibs/"
+    DirSfmlDependencies = BuildCfg.DirSourcesSfml.."../Dependencies/"
 
     project "SFML"
     
         -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "SFML")
-        
-        defines { "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL" }  -- Avoids warnings in vorbisfile.h
         uuid "936D68B9-FF55-CA40-9A14-7C2D95524D8B"
         
+        defines { "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL" }       -- Avoids warnings in vorbisfile.h
+        defines { "MA_NO_MP3", "MA_NO_FLAC", "MA_NO_ENCODING", 
+                    "MA_NO_RESOURCE_MANAGER", "MA_NO_GENERATION" }      -- Disable miniaudio features we do not use
+        defines { "MA_USE_STDINT" }                                     -- use standard fixed-width integer types
+        defines { "STBI_FAILURE_USERMSG" }                              -- Add preprocessor symbols (Graphics module)
+        defines { "SFML_IS_BIG_ENDIAN=0" }                              -- Detect the endianness as required by Ogg (big endian seems to be used only on systems I wont need)
+        
+        --# define NDEBUG when building FLAC to suppress console debug output
+        --target_compile_definitions(FLAC PRIVATE NDEBUG)
+
+
         -- Files
         files {
             DirSfmlHeaders.."**.hpp",
@@ -246,6 +256,10 @@ function ProjectLibSFML(BuildCfg)
             DirSfmlExternals.."headers/minimp3",
             DirSfmlExternals.."headers/stb_image",
             DirSfmlExternals.."headers/vulkan",
+            DirSfmlDependencies.."Flac/include/",
+            DirSfmlDependencies.."Freetype/include/",
+            DirSfmlDependencies.."Ogg/include/",
+            DirSfmlDependencies.."Vorbis/include/",
         }
 
         filter { "system:windows" }

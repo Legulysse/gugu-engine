@@ -396,8 +396,9 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
     if BuildCfg.ImGui_DisableObsoleteFunctions then
         defines { "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
     end
-    defines { "SFML_STATIC" }
+    defines { "SFML_STATIC" }                                       -- specify if SFML is used as a static lib
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"
@@ -463,8 +464,9 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     if BuildCfg.ImGui_DisableObsoleteFunctions then
         defines { "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
     end
-    defines { "SFML_STATIC" }
+    defines { "SFML_STATIC" }                                       -- specify if SFML is used as a static lib
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"
@@ -594,7 +596,8 @@ function IncludeExtraWarnings()
     -- Options
     filter { "system:windows", "action:vs2013 or vs2015 or vs2017 or vs2019 or vs2022" }
         warnings "Extra"
-        disablewarnings { "4100", "4189" } -- 4100 = unreferenced formal parameter, 4189 = local variable is initialized but not referenced
+        disablewarnings { "4100" } -- unreferenced formal parameter
+        disablewarnings { "4189" } -- local variable is initialized but not referenced
 
     -- Finalize
     filter {}

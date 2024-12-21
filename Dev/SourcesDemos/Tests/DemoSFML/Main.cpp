@@ -99,26 +99,31 @@ int main()
 
     //--------------
     sf::Font font;
-    font.loadFromFile("Assets/Fonts/roboto/Roboto-Regular.ttf");
+    bool fontOk = font.openFromFile("Assets/Fonts/roboto/Roboto-Regular.ttf");
 
-    sf::Text textStats;
-    textStats.setFont(font);
+    sf::Text textStats(font);
 
     //--------------
     sf::ContextSettings settings;
     settings.depthBits = 24;
     settings.stencilBits = 8;
-    settings.antialiasingLevel = 2;
+    settings.antiAliasingLevel = 2;
 
-    sf::RenderWindow window(sf::VideoMode(800, 600, 32), "SFML Test", sf::Style::Resize | sf::Style::Close, settings);
+    sf::RenderWindow window(
+        sf::VideoMode(sf::Vector2u(800, 600), 32),
+        "SFML Test",
+        sf::Style::Resize | sf::Style::Close,
+        sf::State::Windowed,
+        settings);
+    
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(false);
 
     //--------------
     bool pendingThreads = true;
-    sf::Thread t1(std::bind(&func));
-    sf::Thread t2(std::bind(&func));
-    std::vector<sf::Thread*> threads;
+    std::thread t1(std::bind(&func));
+    std::thread t2(std::bind(&func));
+    std::vector<std::thread*> threads;
     threads.push_back(&t1);
     threads.push_back(&t2);
 
@@ -136,10 +141,9 @@ int main()
         }
 
         //---------------
-        sf::Event event;
-        while (window.pollEvent(event))
+        while (std::optional<sf::Event> event = window.pollEvent())
         {
-            if (event.type == sf::Event::Closed)
+            if (event->is<sf::Event::Closed>())
                 window.close();
         }
 
@@ -158,11 +162,11 @@ int main()
 
                 for (size_t t = 0; t < threads.size(); ++t)
                 {
-                    threads[t]->launch();
+                    threads[t]->detach();
                 }
                 for (size_t t = 0; t < threads.size(); ++t)
                 {
-                    threads[t]->wait();
+                    threads[t]->join();
                 }
             }
         }
@@ -178,7 +182,7 @@ int main()
 
         //---------------
         // Note: Switch window state.
-        window.setActive(true);
+        bool activeOk = window.setActive(true);
 
         //---------------
         window.clear(sf::Color::Black);
@@ -197,7 +201,7 @@ int main()
         }
 
         //---------------
-        textStats.setPosition(420.f, 0.f);
+        textStats.setPosition(sf::Vector2f(420.f, 0.f));
         textStats.setString("Loop (ms): " + std::to_string(timeLoop.asMilliseconds()));
         window.draw(textStats);
 
@@ -205,7 +209,7 @@ int main()
         ComputeStatsSummary(statsLoop, summaryLoop);
         DrawHistogram(statsLoop, summaryLoop, curveLoop, sf::Vector2f(420.f, 60.f), &window);
 
-        textStats.setPosition(420.f, 150.f);
+        textStats.setPosition(sf::Vector2f(420.f, 150.f));
         textStats.setString("Render (ms): " + std::to_string(timeRender.asMilliseconds()));
         window.draw(textStats);
 
@@ -213,7 +217,7 @@ int main()
         ComputeStatsSummary(statsRender, summaryRender);
         DrawHistogram(statsRender, summaryRender, curveRender, sf::Vector2f(420.f, 210.f), &window);
 
-        textStats.setPosition(420.f, 300.f);
+        textStats.setPosition(sf::Vector2f(420.f, 300.f));
         if (useThreads)
             textStats.setString("Thread (ms): " + (pendingThreads ? "pending" : std::to_string(timeThread.asMilliseconds())));
         else
@@ -224,7 +228,7 @@ int main()
 
         //---------------
         // Note: Switch window state.
-        window.setActive(false);
+        bool inactiveOk = window.setActive(false);
     }
 
     return 0;

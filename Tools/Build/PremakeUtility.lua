@@ -8,7 +8,6 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
 
         -- Base Definition
         IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirSources, DirVersion)
-
         uuid(ProjectID)
         
         -- Projects dependencies
@@ -48,7 +47,6 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
     
         -- Base Definition
         IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirSources, DirVersion)
-        
         uuid(ProjectID)
         
         -- Projects dependencies
@@ -85,7 +83,6 @@ function ProjectAppGuguEditor(BuildCfg)
     
         -- Base Definition
         IncludeDefaultAppDefinition(BuildCfg, "GuguEditor", BuildCfg.DirSourcesEditorApp, BuildCfg.DirEditorVersion)
-    
         uuid "E4D3697E-E0B5-4343-B000-E895BACF446A"
         
         -- Projects dependencies
@@ -124,7 +121,6 @@ function ProjectLibGuguEditor(BuildCfg)
     
         -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "GuguEditorLib")
-        
         uuid "D56FC1A7-034F-4E7F-9DBB-B615C3C5C070"
         
         -- Projects dependencies
@@ -156,7 +152,6 @@ function ProjectLibGuguEngine(BuildCfg)
     
         -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "GuguEngine")
-        
         uuid "59E650EC-0FD8-4D3C-A9E3-29DFF2AA5096"
         
         -- Projects dependencies
@@ -188,7 +183,6 @@ function ProjectLibImGui(BuildCfg)
     
         -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "ImGui")
-      
         uuid "11A07067-A137-4C3C-B6ED-F2DC8BE3639D"
         
         -- Projects dependencies
@@ -308,7 +302,6 @@ function ProjectLibPugiXml(BuildCfg)
     
         -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "PugiXml")
-        
         uuid "2961203D-3842-4A18-9129-7295D98964CF"
         
         -- Files

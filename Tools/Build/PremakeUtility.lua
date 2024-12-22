@@ -390,7 +390,7 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
         defines { "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
     end
     defines { "SFML_STATIC" }                                       -- specify if SFML is used as a static lib
-    defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_WARNINGS", "UNICODE", "_UNICODE" }
     defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
@@ -458,7 +458,7 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
         defines { "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" }
     end
     defines { "SFML_STATIC" }                                       -- specify if SFML is used as a static lib
-    defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_WARNINGS", "UNICODE", "_UNICODE" }
     defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"

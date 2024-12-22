@@ -57,3 +57,24 @@ solution "GuguEngine"
     ProjectLibSFML(BuildCfg)
     ProjectLibPugiXml(BuildCfg)
     ProjectLibImGui(BuildCfg)
+    
+    group "Externals/Dependencies"
+    ProjectLibFreetype(BuildCfg)
+    
+    
+    -- TODO:
+    --Fix BuildCfg param where missing in method declarations
+    --Reorder external libraries project to match visual studio ?
+    
+    -- TODO:
+    --IncludeEngine(BuildCfg)
+        --group "Engine"
+            --ProjectLibGuguEditor(BuildCfg)
+            --ProjectLibGuguEngine(BuildCfg)
+        --group "Externals"
+            --ProjectLibImGui(BuildCfg)
+            --ProjectLibPugiXml(BuildCfg)
+            --ProjectLibSFML(BuildCfg)
+        --group "Externals/Dependencies"
+        --ProjectLibFreetype(BuildCfg)
+            --IncludeDependencyLibDefinition(BuildCfg, TargetName) ?

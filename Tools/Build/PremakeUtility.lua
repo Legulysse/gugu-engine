@@ -233,6 +233,8 @@ function ProjectLibSFML(BuildCfg)
         --# define NDEBUG when building FLAC to suppress console debug output
         --target_compile_definitions(FLAC PRIVATE NDEBUG)
 
+        -- Projects dependencies
+        dependson { "Freetype" }
 
         -- Files
         files {
@@ -240,67 +242,7 @@ function ProjectLibSFML(BuildCfg)
             DirSfmlHeaders.."**.inl",
             DirSfmlSources.."**.hpp",
             DirSfmlSources.."**.cpp",
-            --DirSfmlDependencies.."Freetype/src/**.h",
-            --DirSfmlDependencies.."Freetype/src/**.c",
         }
-        
-        files {
-            DirSfmlDependencies.."Freetype/src/autofit/autofit.c",
-            DirSfmlDependencies.."Freetype/src/base/ftbase.c",
-            DirSfmlDependencies.."Freetype/src/base/ftbbox.c",
-            DirSfmlDependencies.."Freetype/src/base/ftbdf.c",
-            DirSfmlDependencies.."Freetype/src/base/ftbitmap.c",
-            DirSfmlDependencies.."Freetype/src/base/ftcid.c",
-            DirSfmlDependencies.."Freetype/src/base/ftfstype.c",
-            DirSfmlDependencies.."Freetype/src/base/ftgasp.c",
-            DirSfmlDependencies.."Freetype/src/base/ftglyph.c",
-            DirSfmlDependencies.."Freetype/src/base/ftgxval.c",
-            DirSfmlDependencies.."Freetype/src/base/ftinit.c",
-            DirSfmlDependencies.."Freetype/src/base/ftmm.c",
-            DirSfmlDependencies.."Freetype/src/base/ftotval.c",
-            DirSfmlDependencies.."Freetype/src/base/ftpatent.c",
-            DirSfmlDependencies.."Freetype/src/base/ftpfr.c",
-            DirSfmlDependencies.."Freetype/src/base/ftstroke.c",
-            DirSfmlDependencies.."Freetype/src/base/ftsynth.c",
-            DirSfmlDependencies.."Freetype/src/base/fttype1.c",
-            DirSfmlDependencies.."Freetype/src/base/ftwinfnt.c",
-            DirSfmlDependencies.."Freetype/src/bdf/bdf.c",
-            DirSfmlDependencies.."Freetype/src/bzip2/ftbzip2.c",
-            DirSfmlDependencies.."Freetype/src/cache/ftcache.c",
-            DirSfmlDependencies.."Freetype/src/cff/cff.c",
-            DirSfmlDependencies.."Freetype/src/cid/type1cid.c",
-            DirSfmlDependencies.."Freetype/src/gzip/ftgzip.c",
-            DirSfmlDependencies.."Freetype/src/lzw/ftlzw.c",
-            DirSfmlDependencies.."Freetype/src/pcf/pcf.c",
-            DirSfmlDependencies.."Freetype/src/pfr/pfr.c",
-            DirSfmlDependencies.."Freetype/src/psaux/psaux.c",
-            DirSfmlDependencies.."Freetype/src/pshinter/pshinter.c",
-            DirSfmlDependencies.."Freetype/src/psnames/psnames.c",
-            DirSfmlDependencies.."Freetype/src/raster/raster.c",
-            DirSfmlDependencies.."Freetype/src/sdf/sdf.c",
-            DirSfmlDependencies.."Freetype/src/sfnt/sfnt.c",
-            DirSfmlDependencies.."Freetype/src/smooth/smooth.c",
-            DirSfmlDependencies.."Freetype/src/svg/svg.c",
-            DirSfmlDependencies.."Freetype/src/truetype/truetype.c",
-            DirSfmlDependencies.."Freetype/src/type1/type1.c",
-            DirSfmlDependencies.."Freetype/src/type42/type42.c",
-            DirSfmlDependencies.."Freetype/src/winfonts/winfnt.c",
-        }
-
-        filter { "system:windows" }
-            -- "builds/unix/ftsystem.c"
-            -- "builds/windows/ftsystem.c"
-            -- "src/base/ftsystem.c"
-            files {
-                DirSfmlDependencies.."Freetype/builds/windows/ftsystem.c",
-            }
-        filter { "system:windows" }
-            -- "builds/windows/ftdebug.c"
-            -- "src/base/ftdebug.c"
-            files {
-                DirSfmlDependencies.."Freetype/builds/windows/ftdebug.c",
-            }
-        filter {}
         
         includedirs {
             DirSfmlHeaders,
@@ -374,6 +316,87 @@ function ProjectLibPugiXml(BuildCfg)
         includedirs {
             DirPugiXmlSources,
         }
+end
+
+-- Project Freetype
+function ProjectLibFreetype(BuildCfg)
+
+    DirSfmlDependencies = BuildCfg.DirSourcesSfml.."../Dependencies/"
+
+    project "Freetype"
+    
+        -- Base Definition
+        IncludeDependencyLibDefinition(BuildCfg, "Freetype")
+        uuid "650FEA3C-9149-444B-AE31-89BE7949C919"
+        
+        defines { "FT2_BUILD_LIBRARY" }     -- Freetype setup
+        
+        -- Files
+        files {
+            DirSfmlDependencies.."Freetype/src/autofit/autofit.c",
+            DirSfmlDependencies.."Freetype/src/base/ftbase.c",
+            DirSfmlDependencies.."Freetype/src/base/ftbbox.c",
+            DirSfmlDependencies.."Freetype/src/base/ftbdf.c",
+            DirSfmlDependencies.."Freetype/src/base/ftbitmap.c",
+            DirSfmlDependencies.."Freetype/src/base/ftcid.c",
+            DirSfmlDependencies.."Freetype/src/base/ftfstype.c",
+            DirSfmlDependencies.."Freetype/src/base/ftgasp.c",
+            DirSfmlDependencies.."Freetype/src/base/ftglyph.c",
+            DirSfmlDependencies.."Freetype/src/base/ftgxval.c",
+            DirSfmlDependencies.."Freetype/src/base/ftinit.c",
+            DirSfmlDependencies.."Freetype/src/base/ftmm.c",
+            DirSfmlDependencies.."Freetype/src/base/ftotval.c",
+            DirSfmlDependencies.."Freetype/src/base/ftpatent.c",
+            DirSfmlDependencies.."Freetype/src/base/ftpfr.c",
+            DirSfmlDependencies.."Freetype/src/base/ftstroke.c",
+            DirSfmlDependencies.."Freetype/src/base/ftsynth.c",
+            DirSfmlDependencies.."Freetype/src/base/fttype1.c",
+            DirSfmlDependencies.."Freetype/src/base/ftwinfnt.c",
+            DirSfmlDependencies.."Freetype/src/bdf/bdf.c",
+            DirSfmlDependencies.."Freetype/src/bzip2/ftbzip2.c",
+            DirSfmlDependencies.."Freetype/src/cache/ftcache.c",
+            DirSfmlDependencies.."Freetype/src/cff/cff.c",
+            DirSfmlDependencies.."Freetype/src/cid/type1cid.c",
+            DirSfmlDependencies.."Freetype/src/gzip/ftgzip.c",
+            DirSfmlDependencies.."Freetype/src/lzw/ftlzw.c",
+            DirSfmlDependencies.."Freetype/src/pcf/pcf.c",
+            DirSfmlDependencies.."Freetype/src/pfr/pfr.c",
+            DirSfmlDependencies.."Freetype/src/psaux/psaux.c",
+            DirSfmlDependencies.."Freetype/src/pshinter/pshinter.c",
+            DirSfmlDependencies.."Freetype/src/psnames/psnames.c",
+            DirSfmlDependencies.."Freetype/src/raster/raster.c",
+            DirSfmlDependencies.."Freetype/src/sdf/sdf.c",
+            DirSfmlDependencies.."Freetype/src/sfnt/sfnt.c",
+            DirSfmlDependencies.."Freetype/src/smooth/smooth.c",
+            DirSfmlDependencies.."Freetype/src/svg/svg.c",
+            DirSfmlDependencies.."Freetype/src/truetype/truetype.c",
+            DirSfmlDependencies.."Freetype/src/type1/type1.c",
+            DirSfmlDependencies.."Freetype/src/type42/type42.c",
+            DirSfmlDependencies.."Freetype/src/winfonts/winfnt.c",
+        }
+
+        filter { "system:windows" }
+            -- "builds/unix/ftsystem.c"
+            -- "builds/windows/ftsystem.c"
+            -- "src/base/ftsystem.c"
+            files {
+                DirSfmlDependencies.."Freetype/builds/windows/ftsystem.c",
+            }
+        filter { "system:windows" }
+            -- "builds/windows/ftdebug.c"
+            -- "src/base/ftdebug.c"
+            files {
+                DirSfmlDependencies.."Freetype/builds/windows/ftdebug.c",
+            }
+        filter {}
+        
+        includedirs {
+            DirSfmlDependencies.."Freetype/include/",
+        }
+
+        -- Finalize
+        filter {}
+        
 end
 
 -- Helper for BuildCfg setup
@@ -563,6 +586,57 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     
 end
 
+-- Dependency Lib Project
+function IncludeDependencyLibDefinition(BuildCfg, TargetName)
+
+    -- Base Definition
+    kind "StaticLib"
+    language "C++"
+    defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
+    flags { "MultiProcessorCompile" }   -- /MP
+    systemversion "latest"
+    characterset "Unicode"
+	staticruntime "Off"     -- Use /MD[d] instead of /MT[d]
+    
+    -- Build Directories
+    objdir("%{wks.location}/obj")
+    targetdir("%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}")
+
+    libdirs { "%{wks.location}/bin/%{cfg.platform}_%{cfg.buildcfg}" }
+
+    -- Target Definitions
+    filter { "configurations:DevDebug" }
+        defines { "NDEBUG" }
+        symbols "Off"
+        optimize "On"
+        runtime "Release"   -- /MD
+        targetname (TargetName.."-s-d")
+
+    filter { "configurations:DevRelease" }
+        defines { "NDEBUG" }
+        symbols "Off"
+        optimize "On"
+        runtime "Release"   -- /MD
+        targetname (TargetName.."-s-r")
+        
+    filter { "configurations:ProdMaster" }
+        defines { "NDEBUG" }
+        symbols "Off"
+        optimize "On"
+        runtime "Release"   -- /MD
+        targetname (TargetName.."-s")
+        
+    filter { "platforms:x86" }
+        architecture "x86"
+    filter { "platforms:x64" }
+        architecture "x86_64"
+        
+    -- Finalize
+    filter {}
+    
+end
+
 function IncludeEngineHeadersDefinition()
 
     includedirs {
@@ -626,11 +700,11 @@ function IncludeLinkerDefinitions(IncludeEngine, IncludeEditor)
     end
     
     filter { "configurations:DevDebug" }
-        links { "SFML-s-d" }
+        links { "SFML-s-d", "Freetype-s-d" }
     filter { "configurations:DevRelease" }
-        links { "SFML-s-r" }
+        links { "SFML-s-r", "Freetype-s-r" }
     filter { "configurations:ProdMaster" }
-        links { "SFML-s" }
+        links { "SFML-s", "Freetype-s" }
 
     filter { "system:windows" }
         links { "legacy_stdio_definitions" }  -- fix: error LNK2019: unresolved external symbol _sprintf

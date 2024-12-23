@@ -36,6 +36,9 @@ Vector2f GetRandomPointInCircle(const Vector2f& center, float radius);
 // Return a random point inside an annulus, defined by its center, inner radius and outer radius.
 Vector2f GetRandomPointInAnnulus(const Vector2f& center, float minRadius, float maxRadius);
 
+// Return a random point on a circle edge, defined by its center and radius.
+Vector2f GetRandomPointOnCircleEdge(const Vector2f& center, float radius);
+
 // Return a weighted random index from a list of weights.
 // Weights <= 0 will be ignored by the roll.
 // Return system::InvalidIndex if the list does not contain any weight > 0.

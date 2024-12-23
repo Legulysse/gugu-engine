@@ -68,6 +68,14 @@ Vector2f GetRandomPointInAnnulus(const Vector2f& center, float minRadius, float 
                     center.y + r * std::sin(theta));
 }
 
+Vector2f GetRandomPointOnCircleEdge(const Vector2f& center, float radius)
+{
+	float theta = GetRandf() * 2.f * math::Pi;
+
+	return Vector2f(center.x + radius * std::cos(theta),
+		center.y + radius * std::sin(theta));
+}
+
 size_t GetWeightedRandomIndex(const std::vector<int>& weights)
 {
 	if (weights.size() == 0)

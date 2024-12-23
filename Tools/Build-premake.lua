@@ -59,12 +59,14 @@ solution "GuguEngine"
     ProjectLibImGui(BuildCfg)
     
     group "Externals/Dependencies"
+    ProjectLibFlac(BuildCfg)
     ProjectLibFreetype(BuildCfg)
     
     
     -- TODO:
     --Fix BuildCfg param where missing in method declarations
     --Reorder external libraries project to match visual studio ?
+    --Test cdialect "c11" 
     
     -- TODO:
     --IncludeEngine(BuildCfg)

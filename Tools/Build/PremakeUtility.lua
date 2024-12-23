@@ -222,19 +222,20 @@ function ProjectLibSFML(BuildCfg)
         IncludeDefaultLibDefinition(BuildCfg, "SFML")
         uuid "936D68B9-FF55-CA40-9A14-7C2D95524D8B"
         
-        defines { "OV_EXCLUDE_STATIC_CALLBACKS", "FLAC__NO_DLL" }       -- Avoids warnings in vorbisfile.h
         defines { "MA_NO_MP3", "MA_NO_FLAC", "MA_NO_ENCODING", 
                     "MA_NO_RESOURCE_MANAGER", "MA_NO_GENERATION" }      -- Disable miniaudio features we do not use
         defines { "MA_USE_STDINT" }                                     -- use standard fixed-width integer types
         defines { "STBI_FAILURE_USERMSG" }                              -- Add preprocessor symbols (Graphics module)
         defines { "SFML_IS_BIG_ENDIAN=0" }                              -- Detect the endianness as required by Ogg (big endian seems to be used only on systems I wont need)
         defines { "FT2_BUILD_LIBRARY" }                                 -- Freetype setup
+        defines { "OV_EXCLUDE_STATIC_CALLBACKS" }                       -- Vorbis setup
+        defines { "FLAC__NO_DLL" }                                      -- Flac setup
         
         --# define NDEBUG when building FLAC to suppress console debug output
         --target_compile_definitions(FLAC PRIVATE NDEBUG)
 
         -- Projects dependencies
-        dependson { "Freetype" }
+        dependson { "Flac", "Freetype" }
 
         -- Files
         files {
@@ -399,6 +400,43 @@ function ProjectLibFreetype(BuildCfg)
         
 end
 
+-- Project Flac
+function ProjectLibFlac(BuildCfg)
+
+    DirSfmlDependencies = BuildCfg.DirSourcesSfml.."../Dependencies/"
+
+    project "Flac"
+    
+        -- Base Definition
+        IncludeDependencyLibDefinition(BuildCfg, "Flac")
+        uuid "A299AC35-084D-4B54-A80B-CFE27272503C"
+        
+        defines { "FLAC__NO_DLL" }              -- Flac setup
+        defines { "CPU_IS_BIG_ENDIAN=0" }       -- Detect the endianness as required by Flac (big endian seems to be used only on systems I wont need)
+        defines { "FLAC__HAS_OGG=0" }           -- ???
+        defines { "PACKAGE_VERSION=\"\"" }      -- ???
+        
+        -- Files
+        files {
+            DirSfmlDependencies.."Flac/src/libFLAC/**.c",
+            --DirSfmlDependencies.."Flac/src/libFLAC/**.h",
+        }
+
+        excludes { 
+            DirSfmlDependencies.."Flac/src/libFLAC/deduplication/**",
+        }
+        
+        includedirs {
+            DirSfmlDependencies.."Flac/include/",
+            DirSfmlDependencies.."Flac/src/libFLAC/include/",
+            DirSfmlDependencies.."Ogg/include/",
+        }
+        
+        -- Finalize
+        filter {}
+        
+end
+
 -- Helper for BuildCfg setup
 function SetupBuildCfg(pathEngineRoot)
 
@@ -457,6 +495,7 @@ function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
     configurations { "DevDebug", "DevRelease", "ProdMaster" } 	-- "Debug", "Release", "Master" (Visual sorts configurations alphabetically)
     platforms { "x64" }  	-- "x86", "x64"
     cppdialect "c++17"   	-- "c++14", "c++17", "c++20"
+    cdialect "c11"   	    -- "c99", "c11", "c17"
     
 end
 
@@ -700,18 +739,18 @@ function IncludeLinkerDefinitions(IncludeEngine, IncludeEditor)
     end
     
     filter { "configurations:DevDebug" }
-        links { "SFML-s-d", "Freetype-s-d" }
+        links { "SFML-s-d", "Flac-s-d", "Freetype-s-d" }
     filter { "configurations:DevRelease" }
-        links { "SFML-s-r", "Freetype-s-r" }
+        links { "SFML-s-r", "Flac-s-r", "Freetype-s-r" }
     filter { "configurations:ProdMaster" }
-        links { "SFML-s", "Freetype-s" }
+        links { "SFML-s", "Flac-s", "Freetype-s" }
 
     filter { "system:windows" }
         links { "legacy_stdio_definitions" }  -- fix: error LNK2019: unresolved external symbol _sprintf
         --links { "freetype" }
         links { "gdi32", "opengl32", "winmm" }
-        --links { "openal32" }
-        links { "vorbisenc", "vorbisfile", "vorbis", "ogg", "flac" }
+        --links { "openal32", "flac" }
+        links { "vorbisenc", "vorbisfile", "vorbis", "ogg" }
         links { "ws2_32" }
         
     filter { "system:linux" }

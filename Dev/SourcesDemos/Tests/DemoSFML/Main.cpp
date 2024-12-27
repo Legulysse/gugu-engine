@@ -50,7 +50,7 @@ void DrawHistogram(const std::list<int>& statValues, const StatsSummary& statsSu
 
 void func()
 {
-    sf::sleep(sf::milliseconds(2));
+    sf::sleep(sf::milliseconds(4));
 }
 
 //--------------
@@ -60,7 +60,7 @@ int main()
     //--------------
     // Note: Setup threads usage.
     bool useThreads = true;
-    size_t waitFramesBeforeThreads = 0;
+    size_t waitFramesBeforeThreads = 60;
 
     //--------------
     size_t maxStatCount = 150;
@@ -120,15 +120,9 @@ int main()
     window.setVerticalSyncEnabled(false);
 
     //--------------
-    bool pendingThreads = true;
-    std::thread t1(std::bind(&func));
-    std::thread t2(std::bind(&func));
-    std::vector<std::thread*> threads;
-    threads.push_back(&t1);
-    threads.push_back(&t2);
-
-    //--------------
     size_t frameCount = 0;
+    bool pendingThreads = true;
+
     sf::Clock clockLoop;
     while (window.isOpen())
     {
@@ -160,22 +154,16 @@ int main()
             {
                 pendingThreads = false;
 
-                for (size_t t = 0; t < threads.size(); ++t)
-                {
-                    threads[t]->detach();
-                }
-                for (size_t t = 0; t < threads.size(); ++t)
-                {
-                    threads[t]->join();
-                }
+                std::thread t1(func);
+                std::thread t2(func);
+
+                t1.join();
+                t2.join();
             }
         }
         else
         {
-            for (size_t t = 0; t < threads.size(); ++t)
-            {
-                func();
-            }
+            func();
         }
 
         sf::Time timeThread = clockThread.getElapsedTime();
@@ -221,7 +209,7 @@ int main()
         if (useThreads)
             textStats.setString("Thread (ms): " + (pendingThreads ? "pending" : std::to_string(timeThread.asMilliseconds())));
         else
-            textStats.setString("Fake Threads (ms): " + std::to_string(timeThread.asMilliseconds()));
+            textStats.setString("Fake Thread (ms): " + std::to_string(timeThread.asMilliseconds()));
         window.draw(textStats);
 
         window.display();

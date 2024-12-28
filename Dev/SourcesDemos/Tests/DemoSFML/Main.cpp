@@ -6,7 +6,7 @@
 #include <list>
 #include <thread>
 
-#define DEMO_USE_AUDIO false
+#define DEMO_USE_AUDIO true
 
 //--------------
 
@@ -125,11 +125,14 @@ int main()
     //--------------
 
 #if DEMO_USE_AUDIO
-    // Load a music to play
-    sf::Music music("nice_music.ogg");
-
-    // Play the music
+    sf::Music music("Assets/Audio/Legulysse_Coldwave_Mood.ogg");
+    music.setVolume(40);
     music.play();
+
+    sf::SoundBuffer buffer("Assets/Audio/ding.flac");
+    sf::Sound jingle(buffer);
+    jingle.setVolume(20);
+    jingle.play();
 #endif
 
     //--------------

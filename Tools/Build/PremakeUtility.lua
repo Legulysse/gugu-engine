@@ -231,9 +231,6 @@ function ProjectLibSFML(BuildCfg)
         defines { "OV_EXCLUDE_STATIC_CALLBACKS" }                       -- Vorbis setup
         defines { "FLAC__NO_DLL" }                                      -- Flac setup
         
-        --# define NDEBUG when building FLAC to suppress console debug output
-        --target_compile_definitions(FLAC PRIVATE NDEBUG)
-
         -- Projects dependencies
         dependson { "Freetype", "Flac", "Vorbis", "Ogg" }
 
@@ -413,8 +410,9 @@ function ProjectLibFlac(BuildCfg)
         
         defines { "FLAC__NO_DLL" }              -- Flac setup
         defines { "CPU_IS_BIG_ENDIAN=0" }       -- Detect the endianness as required by Flac (big endian seems to be used only on systems I wont need)
-        defines { "FLAC__HAS_OGG=0" }           -- ???
+        defines { "FLAC__HAS_OGG=1" }           -- ???
         defines { "PACKAGE_VERSION=\"\"" }      -- ???
+        --defines { "NDEBUG" }                    -- define NDEBUG when building FLAC to suppress console debug output
         
         -- Files
         files {
@@ -749,7 +747,7 @@ function IncludeDependencyLibDefinition(BuildCfg, TargetName)
 
     -- Target Definitions
     filter { "configurations:DevDebug" }
-        defines { "NDEBUG" }
+        defines { "_DEBUG" }
         symbols "Off"
         optimize "On"
         runtime "Debug"     -- /MDd

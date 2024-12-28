@@ -235,7 +235,7 @@ function ProjectLibSFML(BuildCfg)
         --target_compile_definitions(FLAC PRIVATE NDEBUG)
 
         -- Projects dependencies
-        dependson { "Flac", "Freetype" }
+        dependson { "Flac", "Freetype", "Ogg" }
 
         -- Files
         files {
@@ -429,6 +429,32 @@ function ProjectLibFlac(BuildCfg)
         includedirs {
             DirSfmlDependencies.."Flac/include/",
             DirSfmlDependencies.."Flac/src/libFLAC/include/",
+            DirSfmlDependencies.."Ogg/include/",
+        }
+        
+        -- Finalize
+        filter {}
+        
+end
+
+-- Project Ogg
+function ProjectLibOgg(BuildCfg)
+
+    DirSfmlDependencies = BuildCfg.DirSourcesSfml.."../Dependencies/"
+
+    project "Ogg"
+    
+        -- Base Definition
+        IncludeDependencyLibDefinition(BuildCfg, "Ogg")
+        uuid "643ED8EB-67B7-473A-BDDE-8CABD9BE12DC"
+        
+        -- Files
+        files {
+            DirSfmlDependencies.."Ogg/src/**.c",
+            DirSfmlDependencies.."Ogg/src/**.h",
+        }
+
+        includedirs {
             DirSfmlDependencies.."Ogg/include/",
         }
         
@@ -739,18 +765,18 @@ function IncludeLinkerDefinitions(BuildCfg, IncludeEngine, IncludeEditor)
     end
     
     filter { "configurations:DevDebug" }
-        links { "SFML-s-d", "Flac-s-d", "Freetype-s-d" }
+        links { "SFML-s-d", "Flac-s-d", "Freetype-s-d", "Ogg-s-d" }
     filter { "configurations:DevRelease" }
-        links { "SFML-s-r", "Flac-s-r", "Freetype-s-r" }
+        links { "SFML-s-r", "Flac-s-r", "Freetype-s-r", "Ogg-s-r" }
     filter { "configurations:ProdMaster" }
-        links { "SFML-s", "Flac-s", "Freetype-s" }
+        links { "SFML-s", "Flac-s", "Freetype-s", "Ogg-s" }
 
     filter { "system:windows" }
         links { "legacy_stdio_definitions" }  -- fix: error LNK2019: unresolved external symbol _sprintf
         --links { "freetype" }
         links { "gdi32", "opengl32", "winmm" }
-        --links { "openal32", "flac" }
-        links { "vorbisenc", "vorbisfile", "vorbis", "ogg" }
+        --links { "openal32", "flac", "ogg" }
+        --links { "vorbisenc", "vorbisfile", "vorbis" }
         links { "ws2_32" }
         
     filter { "system:linux" }

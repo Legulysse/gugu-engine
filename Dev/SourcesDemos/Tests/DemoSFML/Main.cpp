@@ -1,9 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 
 #include <functional>
 #include <list>
 #include <thread>
+
+#define DEMO_USE_AUDIO false
 
 //--------------
 
@@ -118,6 +121,16 @@ int main()
     
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(false);
+
+    //--------------
+
+#if DEMO_USE_AUDIO
+    // Load a music to play
+    sf::Music music("nice_music.ogg");
+
+    // Play the music
+    music.play();
+#endif
 
     //--------------
     size_t frameCount = 0;

@@ -419,7 +419,7 @@ function ProjectLibFlac(BuildCfg)
         -- Files
         files {
             DirSfmlDependencies.."Flac/src/libFLAC/**.c",
-            --DirSfmlDependencies.."Flac/src/libFLAC/**.h",
+            DirSfmlDependencies.."Flac/src/share/win_utf8_io/**.c",
         }
 
         excludes { 

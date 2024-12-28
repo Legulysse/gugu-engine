@@ -14,7 +14,7 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
         dependson { "GuguEngine" }
         
         -- Files
-        IncludeEngineHeadersDefinition()
+        IncludeEngineHeadersDefinition(BuildCfg)
         
         files {
             DirSources.."**.h",
@@ -28,7 +28,7 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
         }
         
         -- Linker
-        IncludeEngineLinkerDefinition()
+        IncludeEngineLinkerDefinition(BuildCfg)
         
         -- Options
         IncludeExtraWarnings()
@@ -66,7 +66,7 @@ function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, Proje
         }
         
         -- Linker
-        IncludeSFMLOnlyLinkerDefinition()
+        IncludeSFMLOnlyLinkerDefinition(BuildCfg)
         
         -- Options
         IncludeExtraWarnings()
@@ -89,7 +89,7 @@ function ProjectAppGuguEditor(BuildCfg)
         dependson { "GuguEditor" }
         
         -- Files
-        IncludeEngineHeadersDefinition()
+        IncludeEngineHeadersDefinition(BuildCfg)
         
         files {
             BuildCfg.DirSourcesEditorApp.."**.h",
@@ -104,7 +104,7 @@ function ProjectAppGuguEditor(BuildCfg)
         }
         
         -- Linker
-        IncludeEngineWithEditorLinkerDefinition()
+        IncludeEngineWithEditorLinkerDefinition(BuildCfg)
         
         -- Options
         IncludeExtraWarnings()
@@ -127,7 +127,7 @@ function ProjectLibGuguEditor(BuildCfg)
         dependson { "GuguEngine", "ImGui", "SFML", "PugiXml" }
 
         -- Files
-        IncludeEngineHeadersDefinition()
+        IncludeEngineHeadersDefinition(BuildCfg)
         
         files {
             BuildCfg.DirSourcesEditor.."**.h",
@@ -158,7 +158,7 @@ function ProjectLibGuguEngine(BuildCfg)
         dependson { "ImGui", "SFML", "PugiXml" }
 
         -- Files
-        IncludeEngineHeadersDefinition()
+        IncludeEngineHeadersDefinition(BuildCfg)
         
         files {
             BuildCfg.DirSourcesEngine.."**.h",
@@ -676,7 +676,7 @@ function IncludeDependencyLibDefinition(BuildCfg, TargetName)
     
 end
 
-function IncludeEngineHeadersDefinition()
+function IncludeEngineHeadersDefinition(BuildCfg)
 
     includedirs {
         BuildCfg.DirSourcesEngine,
@@ -689,19 +689,19 @@ function IncludeEngineHeadersDefinition()
     
 end
 
-function IncludeEngineWithEditorLinkerDefinition()
-    IncludeLinkerDefinitions(true, true)
+function IncludeEngineWithEditorLinkerDefinition(BuildCfg)
+    IncludeLinkerDefinitions(BuildCfg, true, true)
 end
 
-function IncludeEngineLinkerDefinition()
-    IncludeLinkerDefinitions(true, false)
+function IncludeEngineLinkerDefinition(BuildCfg)
+    IncludeLinkerDefinitions(BuildCfg, true, false)
 end
 
-function IncludeSFMLOnlyLinkerDefinition()
-    IncludeLinkerDefinitions(false, false)
+function IncludeSFMLOnlyLinkerDefinition(BuildCfg)
+    IncludeLinkerDefinitions(BuildCfg, false, false)
 end
 
-function IncludeLinkerDefinitions(IncludeEngine, IncludeEditor)
+function IncludeLinkerDefinitions(BuildCfg, IncludeEngine, IncludeEditor)
 
     -- Link directories
     filter { "system:windows", "action:codelite", "platforms:x86" }

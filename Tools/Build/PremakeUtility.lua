@@ -463,6 +463,80 @@ function ProjectLibOgg(BuildCfg)
         
 end
 
+-- Project Vorbis
+function ProjectLibVorbis(BuildCfg)
+
+    DirSfmlDependencies = BuildCfg.DirSourcesSfml.."../Dependencies/"
+
+    project "Vorbis"
+    
+        -- Base Definition
+        IncludeDependencyLibDefinition(BuildCfg, "Vorbis")
+        uuid "58404700-9603-47C1-B0B3-243553F43883"
+        
+        defines { "OV_EXCLUDE_STATIC_CALLBACKS" }                       -- Vorbis setup
+        
+        -- Files
+        files {
+            DirSfmlDependencies.."Vorbis/lib/envelope.h",
+            DirSfmlDependencies.."Vorbis/lib/lpc.h",
+            DirSfmlDependencies.."Vorbis/lib/lsp.h",
+            DirSfmlDependencies.."Vorbis/lib/codebook.h",
+            DirSfmlDependencies.."Vorbis/lib/misc.h",
+            DirSfmlDependencies.."Vorbis/lib/psy.h",
+            DirSfmlDependencies.."Vorbis/lib/masking.h",
+            DirSfmlDependencies.."Vorbis/lib/os.h",
+            DirSfmlDependencies.."Vorbis/lib/mdct.h",
+            DirSfmlDependencies.."Vorbis/lib/smallft.h",
+            DirSfmlDependencies.."Vorbis/lib/highlevel.h",
+            DirSfmlDependencies.."Vorbis/lib/registry.h",
+            DirSfmlDependencies.."Vorbis/lib/scales.h",
+            DirSfmlDependencies.."Vorbis/lib/window.h",
+            DirSfmlDependencies.."Vorbis/lib/lookup.h",
+            DirSfmlDependencies.."Vorbis/lib/lookup_data.h",
+            DirSfmlDependencies.."Vorbis/lib/codec_internal.h",
+            DirSfmlDependencies.."Vorbis/lib/backends.h",
+            DirSfmlDependencies.."Vorbis/lib/bitrate.h",
+        }
+        
+        files {
+            DirSfmlDependencies.."Vorbis/lib/mdct.c",
+            DirSfmlDependencies.."Vorbis/lib/smallft.c",
+            DirSfmlDependencies.."Vorbis/lib/block.c",
+            DirSfmlDependencies.."Vorbis/lib/envelope.c",
+            DirSfmlDependencies.."Vorbis/lib/window.c",
+            DirSfmlDependencies.."Vorbis/lib/lsp.c",
+            DirSfmlDependencies.."Vorbis/lib/lpc.c",
+            DirSfmlDependencies.."Vorbis/lib/analysis.c",
+            DirSfmlDependencies.."Vorbis/lib/synthesis.c",
+            DirSfmlDependencies.."Vorbis/lib/psy.c",
+            DirSfmlDependencies.."Vorbis/lib/info.c",
+            DirSfmlDependencies.."Vorbis/lib/floor1.c",
+            DirSfmlDependencies.."Vorbis/lib/floor0.c",
+            DirSfmlDependencies.."Vorbis/lib/res0.c",
+            DirSfmlDependencies.."Vorbis/lib/mapping0.c",
+            DirSfmlDependencies.."Vorbis/lib/registry.c",
+            DirSfmlDependencies.."Vorbis/lib/codebook.c",
+            DirSfmlDependencies.."Vorbis/lib/sharedbook.c",
+            DirSfmlDependencies.."Vorbis/lib/lookup.c",
+            DirSfmlDependencies.."Vorbis/lib/bitrate.c",
+        }
+        
+        files {
+            DirSfmlDependencies.."Vorbis/lib/vorbisfile.c",
+            DirSfmlDependencies.."Vorbis/lib/vorbisenc.c",
+        }
+
+        includedirs {
+            DirSfmlDependencies.."Vorbis/include/",
+            DirSfmlDependencies.."Ogg/include/",
+        }
+        
+        -- Finalize
+        filter {}
+        
+end
+
 -- Helper for BuildCfg setup
 function SetupBuildCfg(pathEngineRoot)
 
@@ -765,11 +839,11 @@ function IncludeLinkerDefinitions(BuildCfg, IncludeEngine, IncludeEditor)
     end
     
     filter { "configurations:DevDebug" }
-        links { "SFML-s-d", "Flac-s-d", "Freetype-s-d", "Ogg-s-d" }
+        links { "SFML-s-d", "Flac-s-d", "Freetype-s-d", "Ogg-s-d", "Vorbis-s-d" }
     filter { "configurations:DevRelease" }
-        links { "SFML-s-r", "Flac-s-r", "Freetype-s-r", "Ogg-s-r" }
+        links { "SFML-s-r", "Flac-s-r", "Freetype-s-r", "Ogg-s-r", "Vorbis-s-r" }
     filter { "configurations:ProdMaster" }
-        links { "SFML-s", "Flac-s", "Freetype-s", "Ogg-s" }
+        links { "SFML-s", "Flac-s", "Freetype-s", "Ogg-s", "Vorbis-s" }
 
     filter { "system:windows" }
         links { "legacy_stdio_definitions" }  -- fix: error LNK2019: unresolved external symbol _sprintf

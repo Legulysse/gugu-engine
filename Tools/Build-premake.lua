@@ -61,6 +61,8 @@ solution "GuguEngine"
     group "Externals/Dependencies"
     ProjectLibFlac(BuildCfg)
     ProjectLibFreetype(BuildCfg)
+    ProjectLibOgg(BuildCfg)
+    ProjectLibVorbis(BuildCfg)
     
     
     -- TODO:

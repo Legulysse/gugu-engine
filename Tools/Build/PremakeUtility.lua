@@ -235,7 +235,7 @@ function ProjectLibSFML(BuildCfg)
         --target_compile_definitions(FLAC PRIVATE NDEBUG)
 
         -- Projects dependencies
-        dependson { "Flac", "Freetype", "Ogg" }
+        dependson { "Freetype", "Flac", "Vorbis", "Ogg" }
 
         -- Files
         files {
@@ -752,7 +752,7 @@ function IncludeDependencyLibDefinition(BuildCfg, TargetName)
         defines { "NDEBUG" }
         symbols "Off"
         optimize "On"
-        runtime "Release"   -- /MD
+        runtime "Debug"     -- /MDd
         targetname (TargetName.."-s-d")
 
     filter { "configurations:DevRelease" }
@@ -842,19 +842,18 @@ function IncludeLinkerDefinitions(BuildCfg, IncludeEngine, IncludeEditor)
     end
     
     filter { "configurations:DevDebug" }
-        links { "SFML-s-d", "Flac-s-d", "Freetype-s-d", "Ogg-s-d", "Vorbis-s-d" }
+        links { "SFML-s-d", "Freetype-s-d", "Flac-s-d", "Vorbis-s-d", "Ogg-s-d" }
     filter { "configurations:DevRelease" }
-        links { "SFML-s-r", "Flac-s-r", "Freetype-s-r", "Ogg-s-r", "Vorbis-s-r" }
+        links { "SFML-s-r", "Freetype-s-r", "Flac-s-r", "Vorbis-s-r", "Ogg-s-r" }
     filter { "configurations:ProdMaster" }
-        links { "SFML-s", "Flac-s", "Freetype-s", "Ogg-s", "Vorbis-s" }
+        links { "SFML-s", "Freetype-s", "Flac-s", "Vorbis-s", "Ogg-s" }
 
     filter { "system:windows" }
         links { "legacy_stdio_definitions" }  -- fix: error LNK2019: unresolved external symbol _sprintf
-        --links { "freetype" }
-        links { "gdi32", "opengl32", "winmm" }
-        --links { "openal32", "flac", "ogg" }
-        --links { "vorbisenc", "vorbisfile", "vorbis" }
-        links { "ws2_32" }
+        links { "opengl32" }            -- sfml-window, sfml-graphics
+        links { "gdi32" }               -- sfml-window
+        links { "winmm" }               -- sfml-system, sfml-window
+        links { "ws2_32" }              -- sfml-network
         
     filter { "system:linux" }
         links { "pthread", "GL", "X11", "Xrandr", "freetype", "GLEW", "sndfile", "vorbisenc", "vorbisfile", "vorbis", "ogg", "FLAC", "openal", "udev" }

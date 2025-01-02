@@ -319,9 +319,8 @@ function ProjectLibWren(BuildCfg)
     
         -- Base Definition
         IncludeDefaultLibDefinition(BuildCfg, "Wren")
-        
         uuid "B257B74F-7F8A-402B-B20E-BA71D4973343"
-        
+
         -- Files
         files {
             DirWrenSources.."include/**",

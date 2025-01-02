@@ -160,7 +160,7 @@ function ProjectLibGuguEngine(BuildCfg)
         uuid "59E650EC-0FD8-4D3C-A9E3-29DFF2AA5096"
         
         -- Projects dependencies
-        dependson { "ImGui", "SFML", "PugiXml" }
+        dependson { "ImGui", "SFML", "PugiXml", "Wren" }
 
         -- Files
         IncludeEngineHeadersDefinition(BuildCfg)
@@ -310,6 +310,32 @@ function ProjectLibPugiXml(BuildCfg)
         }
 end
 
+-- Project Wren
+function ProjectLibWren(BuildCfg)
+
+    DirWrenSources = BuildCfg.DirSourcesWren.."src/"
+
+    project "Wren"
+    
+        -- Base Definition
+        IncludeDefaultLibDefinition(BuildCfg, "Wren")
+        
+        uuid "B257B74F-7F8A-402B-B20E-BA71D4973343"
+        
+        -- Files
+        files {
+            DirWrenSources.."include/**",
+            DirWrenSources.."vm/**",
+            DirWrenSources.."optional/**",
+        }
+        
+        includedirs {
+            DirWrenSources.."include",
+            DirWrenSources.."vm",
+            DirWrenSources.."optional",
+        }
+end
+
 -- Helper for BuildCfg setup
 function SetupBuildCfg(pathEngineRoot)
 
@@ -326,6 +352,7 @@ function SetupBuildCfg(pathEngineRoot)
         DirSourcesPugiXml   = EnsureSlash(pathEngineRoot.."Externals/PugiXml"),
         DirSourcesImGui     = EnsureSlash(pathEngineRoot.."Externals/ImGui"),
         DirSourcesImGuiSFML = EnsureSlash(pathEngineRoot.."Externals/ImGuiSFML"),
+        DirSourcesWren      = EnsureSlash(pathEngineRoot.."Externals/Wren"),
     }
     
     return BuildCfg
@@ -347,6 +374,7 @@ function SetupBuildCfgWithEditor(pathEngineRoot, pathEditorVersion)
         DirSourcesPugiXml   = EnsureSlash(pathEngineRoot.."Externals/PugiXml"),
         DirSourcesImGui     = EnsureSlash(pathEngineRoot.."Externals/ImGui"),
         DirSourcesImGuiSFML = EnsureSlash(pathEngineRoot.."Externals/ImGuiSFML"),
+        DirSourcesWren      = EnsureSlash(pathEngineRoot.."Externals/Wren"),
         
         -- Editor directories.
         DirEditorVersion    = EnsureSlash(pathEditorVersion),
@@ -504,6 +532,7 @@ function IncludeEngineHeadersDefinition(BuildCfg)
         BuildCfg.DirSourcesImGui,
         BuildCfg.DirSourcesImGuiSFML,
         BuildCfg.DirSourcesImGuiSetup,
+        BuildCfg.DirSourcesWren.."src/include/",
     }
     
 end
@@ -550,11 +579,11 @@ function IncludeLinkerDefinitions(BuildCfg, IncludeEngine, IncludeEditor)
     
     if IncludeEngine then
         filter { "configurations:DevDebug" }
-            links { "GuguEngine-s-d", "ImGui-s-d","PugiXml-s-d" }
+            links { "GuguEngine-s-d", "ImGui-s-d", "PugiXml-s-d", "Wren-s-d" }
         filter { "configurations:DevRelease" }
-            links { "GuguEngine-s-r", "ImGui-s-r", "PugiXml-s-r" }
+            links { "GuguEngine-s-r", "ImGui-s-r", "PugiXml-s-r", "Wren-s-r" }
         filter { "configurations:ProdMaster" }
-            links { "GuguEngine-s", "ImGui-s", "PugiXml-s" }
+            links { "GuguEngine-s", "ImGui-s", "PugiXml-s", "Wren-s" }
     end
     
     filter { "configurations:DevDebug" }

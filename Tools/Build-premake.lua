@@ -57,3 +57,4 @@ solution "GuguEngine"
     ProjectLibSFML(BuildCfg)
     ProjectLibPugiXml(BuildCfg)
     ProjectLibImGui(BuildCfg)
+    ProjectLibWren(BuildCfg)

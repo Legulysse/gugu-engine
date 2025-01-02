@@ -10,3 +10,6 @@
 [submodule "Externals/ImGui"]
 	path = Externals/ImGui
 	url = https://github.com/ocornut/imgui.git
+[submodule "Externals/Wren"]
+	path = Externals/Wren
+	url = https://github.com/wren-lang/wren.git

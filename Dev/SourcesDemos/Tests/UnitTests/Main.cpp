@@ -69,6 +69,7 @@ int main(int argc, char* argv[])
     RunUnitTests_Core(&results);
     RunUnitTests_Element(&results);
     RunUnitTests_DataBinding(&results);
+    RunUnitTests_Wren(&results);
 
     // Finalize Tests.
     GUGU_UTEST_INIT("Finalize", "UnitTests_Finalize.log", &results);

@@ -453,6 +453,7 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     end
     defines { "SFML_STATIC" }
     defines { "_CRT_SECURE_NO_WARNINGS", "UNICODE", "_UNICODE" }
+    --buildoptions { "/Zc:char8_t-" }   -- Disable char8_t (This may help when migrating to c++20) (windows only, should be -fno-char8_t on gcc)
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"

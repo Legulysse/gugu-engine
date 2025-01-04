@@ -238,6 +238,9 @@ function ProjectLibSFML(BuildCfg)
         files {
             DirSfmlHeaders.."**.hpp",
             DirSfmlHeaders.."**.inl",
+        }
+        
+        files {
             DirSfmlSources.."**.hpp",
             DirSfmlSources.."**.cpp",
         }
@@ -331,6 +334,10 @@ function ProjectLibFreetype(BuildCfg)
         
         -- Files
         files {
+            DirSfmlDependencies.."Freetype/include/**",
+        }
+
+        files {
             DirSfmlDependencies.."Freetype/src/autofit/autofit.c",
             DirSfmlDependencies.."Freetype/src/base/ftbase.c",
             DirSfmlDependencies.."Freetype/src/base/ftbbox.c",
@@ -416,6 +423,11 @@ function ProjectLibFlac(BuildCfg)
         
         -- Files
         files {
+            DirSfmlDependencies.."Flac/include/**",
+            DirSfmlDependencies.."Flac/src/libFLAC/include/**",
+        }
+        
+        files {
             DirSfmlDependencies.."Flac/src/libFLAC/**.c",
             DirSfmlDependencies.."Flac/src/share/win_utf8_io/**.c",
         }
@@ -448,6 +460,10 @@ function ProjectLibOgg(BuildCfg)
         
         -- Files
         files {
+            DirSfmlDependencies.."Ogg/include/**",
+        }
+        
+        files {
             DirSfmlDependencies.."Ogg/src/**.c",
             DirSfmlDependencies.."Ogg/src/**.h",
         }
@@ -475,6 +491,10 @@ function ProjectLibVorbis(BuildCfg)
         defines { "OV_EXCLUDE_STATIC_CALLBACKS" }                       -- Vorbis setup
         
         -- Files
+        files {
+            DirSfmlDependencies.."Vorbis/include/**",
+        }
+        
         files {
             DirSfmlDependencies.."Vorbis/lib/envelope.h",
             DirSfmlDependencies.."Vorbis/lib/lpc.h",

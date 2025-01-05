@@ -107,7 +107,6 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
 
         SoundParameters kParameters;
         kParameters.sound = pSound;
-        kParameters.volume = 100.f;
 
         pugi::xml_attribute oAttributeVolume = oNodeFile.attribute("volume");
         if (oAttributeVolume)

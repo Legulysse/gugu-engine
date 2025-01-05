@@ -46,7 +46,7 @@ void Demo::AppStart()
     pButton = m_root->AddChild<ElementButton>();
     pButton->LoadFromWidget("Button_01.widget.xml");
     pButton->SetText("Bubbles");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles));
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubblesFive));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += 20.f;
@@ -85,6 +85,12 @@ void Demo::AppStart()
 
     fPosX = 320.f;
     fPosY = 20.f;
+
+    pButton = m_root->AddChild<ElementButton>();
+    pButton->LoadFromWidget("Button_01.widget.xml");
+    pButton->SetText("Bubbles Pitch");
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubblesPitch));
+    pButton->SetPosition(fPosX, fPosY);
 
     fPosY += 20.f;
 
@@ -126,9 +132,13 @@ void Demo::OnButtonClick(int _eButton)
 {
     //EButton eButton = (EButton)_eButton;
 
-    if (_eButton == EButton::SoundBubbles)
+    if (_eButton == EButton::SoundBubblesFive)
     {
-        GetAudio()->PlaySoundCue("Bubbles.sound");
+        GetAudio()->PlaySoundCue("Bubbles_Five.sound");
+    }
+    else if (_eButton == EButton::SoundBubblesPitch)
+    {
+        GetAudio()->PlaySoundCue("Bubbles_Pitch.sound");
     }
     else if (_eButton == EButton::TrackColors)
     {

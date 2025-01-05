@@ -34,7 +34,8 @@ protected:
     enum EButton
     {
         Exit,
-        SoundBubbles,
+        SoundBubblesFive,
+        SoundBubblesPitch,
         TrackColors,
         TrackAbyss,
         TrackMighty3310Fight,

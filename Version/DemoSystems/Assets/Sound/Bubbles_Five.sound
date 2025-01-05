@@ -1,0 +1,9 @@
+<SoundCue>
+    <Files>
+        <File name="Bulle_01.ogg" volume="1.00" />
+        <File name="Bulle_02.ogg" volume="0.80" />
+        <File name="Bulle_03.ogg" volume="0.75" />
+        <File name="Bulle_04.ogg" />
+        <File name="Bulle_05.ogg" />
+    </Files>
+</SoundCue>

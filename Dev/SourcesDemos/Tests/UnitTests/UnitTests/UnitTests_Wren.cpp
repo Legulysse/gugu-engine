@@ -21,9 +21,7 @@ namespace wren {
 void WriteFn(WrenVM* vm, const char* text)
 {
     // The System.print() methods in wren_core.wren will always make a finalizing call with a single endline char.
-    if (StringEquals(text, "\n"))
-        return;
-
+    // The System.write() methods will not make an additional endline call.
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, StringFormat("[Wren] {0}", text));
 }
 
@@ -62,7 +60,7 @@ void RunUnitTests_Wren(UnitTestResults* results)
         WrenVM* vm = wrenNewVM(&wrenConfig);
 
         const char* module = "main";
-        const char* script = "System.print(\"I am running in a VM!\")";
+        const char* script = "System.write(\"I am running in a VM!\")";
 
         WrenInterpretResult result = wrenInterpret(vm, module, script);
 

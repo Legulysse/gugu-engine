@@ -25,6 +25,8 @@ struct SoundParameters
     gugu::Sound* sound;
     std::string soundID;
     float volume;
+    float pitchLowerOffset;
+    float pitchUpperOffset;
     int group;
 
     SoundParameters();
@@ -40,11 +42,12 @@ public:
 
     void    Reset       ();
 
-    void    SetGroup    (int _iGroup);
+    void    SetGroup    (int group);
     int     GetGroup    () const;
 
-    void    SetSound    (gugu::Sound* _pSound);
-    void    SetVolume   (float _fVolume);
+    void    SetSound    (gugu::Sound* sound);
+    void    SetVolume   (float volume);
+    void    SetPitch    (float pitch);
 
     void    Play        ();
 

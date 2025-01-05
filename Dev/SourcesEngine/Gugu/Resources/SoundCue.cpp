@@ -113,6 +113,14 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
         if (oAttributeVolume)
             kParameters.volume = oAttributeVolume.as_float(kParameters.volume);
 
+        pugi::xml_attribute attributePitchLowerOffset = oNodeFile.attribute("pitchLowerOffset");
+        if (attributePitchLowerOffset)
+            kParameters.pitchLowerOffset = attributePitchLowerOffset.as_float(kParameters.pitchLowerOffset);
+
+        pugi::xml_attribute attributePitchUpperOffset = oNodeFile.attribute("pitchUpperOffset");
+        if (attributePitchUpperOffset)
+            kParameters.pitchUpperOffset = attributePitchUpperOffset.as_float(kParameters.pitchUpperOffset);
+
         m_audioFiles.push_back(kParameters);
     }
 

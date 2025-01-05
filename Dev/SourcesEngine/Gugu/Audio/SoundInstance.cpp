@@ -19,6 +19,8 @@ SoundParameters::SoundParameters()
     sound = nullptr;
     soundID = "";
     volume = 1.f;
+    pitchLowerOffset = 0.f;
+    pitchUpperOffset = 0.f;
     group = 0;
 }
 
@@ -40,12 +42,14 @@ SoundInstance::~SoundInstance()
 void SoundInstance::Reset()
 {
     m_sfSound.stop();
+    m_sfSound.setVolume(100);
+    m_sfSound.setPitch(1);
     m_group = 0;
 }
 
-void SoundInstance::SetGroup(int _iGroup)
+void SoundInstance::SetGroup(int group)
 {
-    m_group = _iGroup;
+    m_group = group;
 }
 
 int SoundInstance::GetGroup() const
@@ -53,17 +57,22 @@ int SoundInstance::GetGroup() const
     return m_group;
 }
 
-void SoundInstance::SetSound(gugu::Sound* _pSound)
+void SoundInstance::SetSound(gugu::Sound* sound)
 {
     Reset();
 
-    if (_pSound)
-        m_sfSound.setBuffer(*_pSound->GetSFSoundBuffer());
+    if (sound)
+        m_sfSound.setBuffer(*sound->GetSFSoundBuffer());
 }
 
-void SoundInstance::SetVolume(float _fVolume)
+void SoundInstance::SetVolume(float volume)
 {
-    m_sfSound.setVolume(_fVolume * 100.f);
+    m_sfSound.setVolume(volume * 100.f);
+}
+
+void SoundInstance::SetPitch(float pitch)
+{
+    m_sfSound.setPitch(pitch);
 }
 
 void SoundInstance::Play()

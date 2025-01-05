@@ -16,6 +16,7 @@
 #include "Gugu/Resources/SoundCue.h"
 
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/Random.h"
 #include "Gugu/Debug/Logger.h"
 
 #include <SFML/Audio/Listener.hpp>
@@ -139,6 +140,15 @@ bool ManagerAudio::PlaySound(const SoundParameters& _kParameters)
         pInstance->SetSound(pSound);
         pInstance->SetVolume(_kParameters.volume);
         pInstance->SetGroup(_kParameters.group);
+
+        if (_kParameters.pitchLowerOffset != 0 || _kParameters.pitchUpperOffset != 0)
+        {
+            // TODO: sanitize parameters when loading the soundcue.
+            float pitchLowerOffset = Absolute(_kParameters.pitchLowerOffset) * -1.f;
+            float pitchUpperOffset = Absolute(_kParameters.pitchUpperOffset);
+            pInstance->SetPitch(1.f + GetRandomf(pitchLowerOffset, pitchUpperOffset));
+        }
+
         pInstance->Play();
 
         ++m_soundIndex;

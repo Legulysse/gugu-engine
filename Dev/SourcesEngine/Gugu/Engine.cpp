@@ -79,8 +79,10 @@ void Engine::Init(const EngineConfig& config)
     m_logEngine->SetConsoleOutput(true, false);
     m_logEngine->SetFilePath("Engine.log");
 
+#if !defined(GUGU_NO_TRACE)
     m_traceGroupMain = new TraceGroup;
     m_traceLifetime = 0;
+#endif
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, "Gugu::Engine Start");
 
@@ -205,6 +207,7 @@ void Engine::RunMainLoop()
     // Loop !
     while (!m_stopLoop)
     {
+#if !defined(GUGU_NO_TRACE)
         if (m_traceLifetime > 0)
         {
             if (!m_traceGroupMain->IsActive())
@@ -223,6 +226,7 @@ void Engine::RunMainLoop()
                 }
             }
         }
+#endif
 
         {
             GUGU_SCOPE_TRACE_MAIN("Engine Loop");
@@ -656,9 +660,11 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
         }
         else if (command == "trace")
         {
+#if !defined(GUGU_NO_TRACE)
             m_traceLifetime = 10;
             if (!tokens.empty())
                 FromString(tokens[0], m_traceLifetime);
+#endif
         }
         else if (command == "speed")
         {

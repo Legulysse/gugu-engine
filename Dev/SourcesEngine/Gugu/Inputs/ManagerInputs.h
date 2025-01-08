@@ -81,9 +81,9 @@ public:
     bool IsKeyDown(sf::Keyboard::Key _eKey) const;
     bool IsButtonDown(sf::Mouse::Button button) const;
 
-    //TODO: RegisterInput handling for mouse buttons
     static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key);
     static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt);
+    static sf::Event BuildMouseEvent(sf::Mouse::Button button);
     static sf::Event BuildJoystickEvent(EPadButton button, int joystickId = 0);
     static sf::Event BuildJoystickEvent(int button, int joystickId = 0);
 

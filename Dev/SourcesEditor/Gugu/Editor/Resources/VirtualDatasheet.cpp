@@ -634,7 +634,7 @@ bool VirtualDatasheet::SortNodes_v2(const FileInfo& fileInfo, pugi::xml_document
         impl::SortObjectData_v2(nodeObject);
     }
 
-    for (auto kvp : instanceObjects)
+    for (const auto& kvp : instanceObjects)
     {
         datasheetNode.append_move(kvp.second);
     }
@@ -653,7 +653,7 @@ bool VirtualDatasheet::SortNodes_v2(const FileInfo& fileInfo, pugi::xml_document
         impl::SortObjectData_v2(nodeObject);
     }
 
-    for (auto kvp : objectOverrides)
+    for (const auto& kvp : objectOverrides)
     {
         datasheetNode.append_move(kvp.second);
     }

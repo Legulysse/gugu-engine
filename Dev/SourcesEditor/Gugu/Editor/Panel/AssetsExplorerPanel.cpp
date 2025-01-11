@@ -30,6 +30,7 @@
 namespace gugu {
 
 AssetsExplorerPanel::TreeNode::TreeNode()
+    : isFolder(false)
 {
 }
 

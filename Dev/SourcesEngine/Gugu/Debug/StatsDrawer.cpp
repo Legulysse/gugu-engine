@@ -26,10 +26,10 @@ namespace gugu {
 
 StatsDrawer::StatsDrawer()
 {
+    m_curveHeight = 50.f;
+
     if (!GetResources()->GetDebugFont())
         return;
-
-    m_curveHeight = 50.f;
 
     // TODO: get the value from a constant, or add a resize mechanism when needed.
     int curvePoints = 150;

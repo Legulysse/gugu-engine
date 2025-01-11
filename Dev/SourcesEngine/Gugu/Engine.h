@@ -44,11 +44,11 @@ namespace gugu {
     
 struct Timer
 {
-    float tickDelay;
-    uint32 maxTicks;
+    float tickDelay = 0.f;
+    uint32 maxTicks = 0;
 
-    float currentTime;
-    uint32 ticks;
+    float currentTime = 0.f;
+    uint32 ticks = 0;
 
     Callback callback;
 };

@@ -9,6 +9,7 @@
 namespace gugu {
     
 State::State()
+    : m_owner(nullptr)
 {
 }
 

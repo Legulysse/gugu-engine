@@ -34,6 +34,7 @@ ManagerNetwork::ManagerNetwork()
     m_clientInfoSelf = nullptr;
 
     m_isListening = false;
+    m_listeningPort = 0;
     m_isRunningMultiplayerGame = false;
     m_lastNetTurnProcessed = 0;
     m_nbTurnsOffset = 2;

@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/System/Callback.h"
+#include "Gugu/System/Handle.h"
 
 #include <SFML/System/Mutex.hpp>
 #include <SFML/System/Lock.hpp>
@@ -97,8 +98,8 @@ public:
     void SetUseTimestamp(bool useTimestamp);
     void IncrementFrameNumber();
 
-    void RegisterDelegate(const void* handle, const DelegateLog& delegateLog);
-    void UnregisterDelegate(const void* handle);
+    void RegisterDelegate(const Handle& handle, const DelegateLog& delegateLog);
+    void UnregisterDelegate(const Handle& handle);
 
 protected:
 
@@ -108,7 +109,7 @@ protected:
     struct DelegateInfos
     {
         DelegateLog delegateLog;
-        const void* handle;
+        Handle handle;
     };
     std::vector<DelegateInfos> m_delegates;
 };

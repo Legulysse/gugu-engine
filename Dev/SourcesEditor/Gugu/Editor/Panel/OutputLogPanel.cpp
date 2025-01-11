@@ -25,12 +25,12 @@ OutputLogPanel::OutputLogPanel()
 {
     m_title = "Output Log";
 
-    GetLogEngine()->RegisterDelegate(this, STD_BIND_4(&OutputLogPanel::PrintLog, this));
+    GetLogEngine()->RegisterDelegate(Handle(this), STD_BIND_4(&OutputLogPanel::PrintLog, this));
 }
 
 OutputLogPanel::~OutputLogPanel()
 {
-    GetLogEngine()->UnregisterDelegate(this);
+    GetLogEngine()->UnregisterDelegate(Handle(this));
 }
 
 void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)

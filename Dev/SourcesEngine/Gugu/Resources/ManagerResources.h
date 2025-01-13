@@ -129,7 +129,8 @@ public:
     //TODO: Editor hack, waiting for ResourceContext to split editor and project resources.
     void        RemoveResourcesFromPath (const std::string& _strPath);
 
-    void        GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const;
+    void GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const;
+    void GetAllDatasheetsByType(std::string_view dataType, std::vector<Datasheet*>& datasheets);
 
     // TODO: Obsolete editor getters ?
     //void        GetLoadedResourceInfos  (std::vector<const ResourceInfo*>& _vecInfos, EResourceType::Type _eType = EResourceType::Unknown) const;
@@ -147,7 +148,7 @@ public:
     Font*           GetDebugFont();
     
     void            RegisterDataObjectFactory  (const DelegateDataObjectFactory& delegateDataObjectFactory);
-    DataObject*     InstanciateDataObject      (std::string_view _strType);
+    DataObject*     InstanciateDataObject      (std::string_view dataType);
 
     void RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum);
     const DataEnumInfos* GetDataEnumInfos(const std::string& _strName);

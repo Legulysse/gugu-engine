@@ -742,6 +742,21 @@ void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _ve
     }
 }
 
+void ManagerResources::GetAllDatasheetsByType(std::string_view dataType, std::vector<Datasheet*>& datasheets)
+{
+    for (const auto& kvp : m_resources)
+    {
+        if (kvp.second->fileInfo.HasExtension(dataType))
+        {
+            Datasheet* datasheet = GetResources()->GetDatasheet(kvp.first);
+            if (datasheet)
+            {
+                datasheets.push_back(datasheet);
+            }
+        }
+    }
+}
+
 //void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType) const
 //{
 //    std::string strPathNormalized = NormalizePath(_strPath, true);
@@ -762,7 +777,7 @@ void ManagerResources::RegisterDataObjectFactory(const DelegateDataObjectFactory
     m_dataObjectFactories.push_back(delegateDataObjectFactory);
 }
 
-DataObject* ManagerResources::InstanciateDataObject(std::string_view _strType)
+DataObject* ManagerResources::InstanciateDataObject(std::string_view dataType)
 {
     if (m_dataObjectFactories.empty())
     {
@@ -772,7 +787,7 @@ DataObject* ManagerResources::InstanciateDataObject(std::string_view _strType)
     {
         for (size_t i = 0; i < m_dataObjectFactories.size(); ++i)
         {
-            DataObject* dataObject = m_dataObjectFactories[i](_strType);
+            DataObject* dataObject = m_dataObjectFactories[i](dataType);
             if (dataObject)
             {
                 return dataObject;

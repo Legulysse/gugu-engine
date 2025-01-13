@@ -293,8 +293,8 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(ToString(42), "42");
             GUGU_UTEST_CHECK_EQUAL(ToString(42.5f), "42.5");
             GUGU_UTEST_CHECK_EQUAL(ToString(42.5), "42.5");
-            GUGU_UTEST_CHECK_EQUAL(ToString(42.5f, 2), "42.50");
-            GUGU_UTEST_CHECK_EQUAL(ToString(42.5, 2), "42.50");
+            GUGU_UTEST_CHECK_EQUAL(ToStringf(42.5f, 2), "42.50");
+            GUGU_UTEST_CHECK_EQUAL(ToStringf(42.5, 2), "42.50");
             GUGU_UTEST_CHECK_EQUAL(ToString(true), "1");
             GUGU_UTEST_CHECK_EQUAL(ToString(false), "0");
             GUGU_UTEST_CHECK_EQUAL(ToString("42"), "42");
@@ -414,7 +414,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(StringFormat("hello {0}, do you have {1} gold ?", "Jean-Jacques"), "hello Jean-Jacques, do you have {1} gold ?");
             GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", 42.5f), "My age is 42.5.");
             GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", ToString(42.555f)), "My age is 42.555.");
-            GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", ToString(42.555f, 1)), "My age is 42.6.");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", ToStringf(42.555f, 1)), "My age is 42.6.");
 
             FormatParameters params;
             params.Add("name", "Jean-Paul");
@@ -424,25 +424,40 @@ void RunUnitTests_System(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("NumberFormat");
         {
-            GUGU_UTEST_CHECK(StringNumberFormat(1) == "1");
-            GUGU_UTEST_CHECK(StringNumberFormat(123, 3) == "123");
-            GUGU_UTEST_CHECK(StringNumberFormat(1, 3) == "001");
-            GUGU_UTEST_CHECK(StringNumberFormat(1, 6) == "000 001");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1, 0), "1");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(123, 3), "123");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1, 3), "001");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1, 6), "000 001");
 
-            GUGU_UTEST_CHECK(StringNumberFormat(-1) == "-1");
-            GUGU_UTEST_CHECK(StringNumberFormat(-123, 3) == "-123");
-            GUGU_UTEST_CHECK(StringNumberFormat(-1, 3) == "-001");
-            GUGU_UTEST_CHECK(StringNumberFormat(-1, 6) == "-000 001");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(-1, 0), "-1");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(-123, 3), "-123");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(-1, 3), "-001");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(-1, 6), "-000 001");
 
-            GUGU_UTEST_CHECK(StringNumberFormat(1.05f) == "1.05");
-            GUGU_UTEST_CHECK(StringNumberFormat(123.05f, 3) == "123.05");
-            GUGU_UTEST_CHECK(StringNumberFormat(1.05f, 3) == "001.05");
-            GUGU_UTEST_CHECK(StringNumberFormat(1.05f, 6) == "000 001.05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1.05f, 0), "1.05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(123.05f, 3), "123.05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1.05f, 3), "001.05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1.05f, 6), "000 001.05");
 
-            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 0, ".") == "1,05");
-            GUGU_UTEST_CHECK(StringNumberFormat("123,05", 3, ".") == "123,05");
-            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 3, ".") == "001,05");
-            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 6, ".") == "000.001,05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat("1,05", 0, "."), "1,05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat("123,05", 3, "."), "123,05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat("1,05", 3, "."), "001,05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat("1,05", 6, "."), "000.001,05");
+
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 0, 2), "1.06");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(123.0572f, 3, 2), "123.06");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 3, 2), "001.06");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 6, 2), "000 001.06");
+
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 0, 3), "1.057");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(123.0572f, 3, 3), "123.057");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 3, 3), "001.057");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 6, 3), "000 001.057");
+
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 0, 4), "1.0572");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(123.0572f, 3, 4), "123.0572");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 3, 4), "001.0572");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 6, 4), "000 001.0572");
         }
 
         GUGU_UTEST_SUBSECTION("Split");

@@ -15,7 +15,7 @@ std::string ToString(const T& _tValue)
 }
 
 template<typename T>
-std::string ToString(const T& _tValue, int precision)
+std::string ToStringf(const T& _tValue, int precision)
 {
     // floats are better displayed this way than with std::to_string
     std::ostringstream os;
@@ -127,6 +127,14 @@ template<typename T>
 std::string StringNumberFormat(const T& value, size_t leadingZeros, const std::string& delimiter)
 {
     std::string formattedValue = ToString(value);
+    StringNumberFormatSelf(formattedValue, leadingZeros, delimiter);
+    return formattedValue;
+}
+
+template<typename T>
+std::string StringNumberFormatf(const T& value, size_t leadingZeros, int precision, const std::string& delimiter)
+{
+    std::string formattedValue = ToStringf(value, precision);
     StringNumberFormatSelf(formattedValue, leadingZeros, delimiter);
     return formattedValue;
 }

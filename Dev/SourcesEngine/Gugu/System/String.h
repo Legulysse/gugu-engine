@@ -17,10 +17,8 @@ bool StringEquals(std::string_view left, std::string_view right);
 
 template<typename T>
 std::string ToString(const T& _tValue);
-
 template<typename T>
-std::string ToString(const T& _tValue, int precision);
-
+std::string ToStringf(const T& _tValue, int precision);
 std::string ToString(int _iValue);
 std::string ToString(const char* _strValue);
 
@@ -75,9 +73,11 @@ private:
 std::string StringFormat(const std::string& _tValue, const FormatParameters& Params);
 
 template<typename T>
-std::string StringNumberFormat(const T& value, size_t leadingZeros = 0, const std::string& delimiter = " ");
-std::string StringNumberFormat(const std::string& value, size_t leadingZeros = 0, const std::string& delimiter = " ");
-void StringNumberFormatSelf(std::string& value, size_t leadingZeros = 0, const std::string& delimiter = " ");
+std::string StringNumberFormat(const T& value, size_t leadingZeros, const std::string& delimiter = " ");
+template<typename T>
+std::string StringNumberFormatf(const T& value, size_t leadingZeros, int precision, const std::string& delimiter = " ");
+std::string StringNumberFormat(const std::string& value, size_t leadingZeros, const std::string& delimiter = " ");
+void StringNumberFormatSelf(std::string& value, size_t leadingZeros, const std::string& delimiter = " ");
 
 }   // namespace gugu
 

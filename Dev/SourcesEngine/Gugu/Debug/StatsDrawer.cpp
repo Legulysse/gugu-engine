@@ -294,19 +294,19 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
 
         // Step Times
         m_statTextStepTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
-        m_statTextStepTime.setString(StringFormat("step: {0} ms,  max: {1} ms", ToString(statsSummarySteps.avg, 2), ToString(statsSummarySteps.max, 2)));
+        m_statTextStepTime.setString(StringFormat("step: {0} ms,  max: {1} ms", ToStringf(statsSummarySteps.avg, 2), ToStringf(statsSummarySteps.max, 2)));
         renderWindow->draw(m_statTextStepTime);
         ++lineCount;
 
         // Update Times
         m_statTextUpdateTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
-        m_statTextUpdateTime.setString(StringFormat("update: {0} ms,  max: {1} ms", ToString(statsSummaryUpdates.avg, 2), ToString(statsSummaryUpdates.max, 2)));
+        m_statTextUpdateTime.setString(StringFormat("update: {0} ms,  max: {1} ms", ToStringf(statsSummaryUpdates.avg, 2), ToStringf(statsSummaryUpdates.max, 2)));
         renderWindow->draw(m_statTextUpdateTime);
         ++lineCount;
 
         // Render Times
         m_statTextRenderTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
-        m_statTextRenderTime.setString(StringFormat("render: {0} ms,  max: {1} ms", ToString(statsSummaryRenders.avg, 2), ToString(statsSummaryRenders.max, 2)));
+        m_statTextRenderTime.setString(StringFormat("render: {0} ms,  max: {1} ms", ToStringf(statsSummaryRenders.avg, 2), ToStringf(statsSummaryRenders.max, 2)));
         renderWindow->draw(m_statTextRenderTime);
         ++lineCount;
 

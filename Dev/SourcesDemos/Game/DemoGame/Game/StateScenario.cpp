@@ -292,7 +292,7 @@ void StateScenario::Update(const DeltaTime& dt)
     if (pCharacter->m_skillCooldown > 0.f)
     {
         m_skillCooldownText1->SetVisible(true);
-        m_skillCooldownText1->SetText(StringFormat("{0}s", ToString(pCharacter->m_skillCooldown, 1)));
+        m_skillCooldownText1->SetText(StringFormat("{0}s", ToStringf(pCharacter->m_skillCooldown, 1)));
         m_skillSprite1->SetColor(sf::Color(110, 110, 110));
     }
     else

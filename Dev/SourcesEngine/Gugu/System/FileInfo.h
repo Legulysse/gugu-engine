@@ -32,7 +32,7 @@ public:
     std::string_view GetPrettyName() const;
     std::string_view GetExtension() const;
     std::string_view GetAllExtensions() const;
-    bool HasExtension(const std::string& extension) const;
+    bool HasExtension(std::string_view extension) const;
 
     bool operator == (const FileInfo& right) const;
     bool operator != (const FileInfo& right) const;

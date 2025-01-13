@@ -50,7 +50,7 @@ public:
 
     void SetFont(const std::string& _strFontPath);
     void SetFont(Font* _pFont);
-    void SetFontSize(uint32 fontSize);
+    void SetFontSize(uint32 fontSize);      // Default font size is 20.
     void SetColor(const sf::Color& _oColor);
     void SetOutlineColor(const sf::Color& color);
     void SetOutlineThickness(float thickness);

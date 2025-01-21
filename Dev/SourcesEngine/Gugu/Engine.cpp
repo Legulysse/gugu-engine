@@ -71,6 +71,9 @@ Engine::~Engine()
 
 void Engine::Init(const EngineConfig& config)
 {
+    //-- Disable the loop by default, to ensure all systems are ready beforehand --//
+    m_stopLoop = true;
+
     //-- Init low-level stuff --//
     ResetRandSeed();
 
@@ -94,23 +97,20 @@ void Engine::Init(const EngineConfig& config)
 
     //-- Init Managers --//
     m_managerResources = new ManagerResources;
-    m_managerResources->Init(m_engineConfig);
-
     m_managerInputs = new ManagerInputs;
-    m_managerInputs->Init(m_engineConfig);
-
     m_managerAudio = new ManagerAudio;
-    m_managerAudio->Init(m_engineConfig);
-
     m_managerNetwork = new ManagerNetwork;
-
     m_managerAnimations = new ManagerAnimations;
-    m_managerAnimations->Init(m_engineConfig);
-
     m_managerVisualEffects = new ManagerVisualEffects;
-    m_managerVisualEffects->Init(m_engineConfig);
-
     m_managerScenes = new ManagerScenes;
+
+    if (!m_managerResources->Init(m_engineConfig))
+        return;
+
+    m_managerInputs->Init(m_engineConfig);
+    m_managerAudio->Init(m_engineConfig);
+    m_managerAnimations->Init(m_engineConfig);
+    m_managerVisualEffects->Init(m_engineConfig);
     m_managerScenes->Init(m_engineConfig);
 
     //-- Init Default Renderer --//
@@ -142,6 +142,9 @@ void Engine::Init(const EngineConfig& config)
             m_showImGui = m_engineConfig.showImGui;
         }
     }
+
+    //-- Enable the loop to be processed --//
+    m_stopLoop = false;
 }
 
 void Engine::Release()
@@ -192,7 +195,8 @@ void Engine::RunApplication(Application* application)
 
 void Engine::RunMainLoop()
 {
-    m_stopLoop = false;
+    if (m_stopLoop)
+        return;
 
     if (m_application)
         m_application->AppStart();

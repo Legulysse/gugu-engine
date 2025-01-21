@@ -74,7 +74,7 @@ public:
     ManagerResources();
     ~ManagerResources();
 
-    void Init(const EngineConfig& config);
+    bool Init(const EngineConfig& config);
     void Release();
 
     const std::string& GetPathAssets() const;
@@ -86,9 +86,9 @@ public:
     bool GetResourceFileInfo(const std::string& _strName, FileInfo& fileInfo) const;
     const FileInfo& GetResourceFileInfo(const std::string& _strName) const;
 
-    void        ParseDirectory  (const std::string& _strPath);
-    void        PreloadAll      ();
-    void        SaveAll         ();
+    bool ParseDirectory(std::string_view rootPath_utf8);
+    void PreloadAll();
+    void SaveAll();
 
     EResourceType::Type GetResourceType(const FileInfo& fileInfo) const;
 

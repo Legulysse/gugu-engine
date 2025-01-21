@@ -52,7 +52,7 @@ ManagerResources::~ManagerResources()
 {
 }
 
-void ManagerResources::Init(const EngineConfig& config)
+bool ManagerResources::Init(const EngineConfig& config)
 {
     m_pathAssets = config.pathAssets;
     m_pathScreenshots = config.pathScreenshots;
@@ -62,7 +62,7 @@ void ManagerResources::Init(const EngineConfig& config)
     m_defaultTextureSmooth = config.defaultTextureSmooth;
     m_handleResourceDependencies = config.handleResourceDependencies;
 
-    ParseDirectory(m_pathAssets);
+    return ParseDirectory(m_pathAssets);
 }
 
 void ManagerResources::Release()
@@ -75,28 +75,35 @@ void ManagerResources::Release()
     ClearStdMap(m_resources);
 }
 
-void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
+bool ManagerResources::ParseDirectory(std::string_view rootPath_utf8)
 {
     //Parse Assets
     GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, "Parsing Resources...");
-    GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Root directory : {0}", _strPathRoot));
+    GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Root directory : {0}", rootPath_utf8));
 
-    std::vector<FileInfo> vecFiles;
-    GetFiles(_strPathRoot, vecFiles, true);
-
-    int iCount = 0;
-    for (size_t i = 0; i < vecFiles.size(); ++i)
+    if (!DirectoryExists(rootPath_utf8))
     {
-        const FileInfo& kFileInfos = vecFiles[i];
-        std::string strResourceID = (!m_useFullPath) ? std::string(kFileInfos.GetFileName_utf8()) : std::string(kFileInfos.GetFilePath_utf8().substr(_strPathRoot.length()));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "The Root directory could not be found");
+        return false;
+    }
 
-        if (RegisterResourceInfo(strResourceID, kFileInfos))
+    std::vector<FileInfo> files;
+    GetFiles(rootPath_utf8, files, true);
+
+    size_t fileCount = 0;
+    for (size_t i = 0; i < files.size(); ++i)
+    {
+        const FileInfo& fileInfos = files[i];
+        std::string resourceID = (!m_useFullPath) ? std::string(fileInfos.GetFileName_utf8()) : std::string(fileInfos.GetFilePath_utf8().substr(rootPath_utf8.length()));
+
+        if (RegisterResourceInfo(resourceID, fileInfos))
         {
-            ++iCount;
+            ++fileCount;
         }
     }
 
-    GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Finished Parsing Resources (Found {0})", iCount));
+    GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Finished Parsing Resources (Found {0})", fileCount));
+    return true;
 }
 
 const std::string& ManagerResources::GetPathAssets() const

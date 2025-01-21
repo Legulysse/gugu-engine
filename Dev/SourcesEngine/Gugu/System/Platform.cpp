@@ -54,24 +54,25 @@ void WriteInFileEndline(const std::string& _strFileName, const std::string& _str
     }
 }
 
-void OpenFileExplorer(const std::string& path)
+void OpenFileExplorer(std::string_view path)
 {
 #if defined(GUGU_OS_WINDOWS)
-    std::string normalizedPath = path;
+    std::string normalizedPath(path);
     StdStringReplaceSelf(normalizedPath, system::PathSeparator, '\\');
 
     ShellExecuteA(nullptr, "open", normalizedPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 #endif
 }
 
-void OpenWebBrowser(const std::string& _strURL)
+void OpenWebBrowser(std::string_view url)
 {
 #if defined(GUGU_OS_WINDOWS)
-    ShellExecuteA(nullptr, "open", _strURL.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
+    std::string normalizedUrl(url);
+    ShellExecuteA(nullptr, "open", normalizedUrl.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 #endif
 }
 
-void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bool recursive)
+void GetFiles(std::string_view rootPath_utf8, std::vector<FileInfo>& files, bool recursive)
 {
     std::string normalizedPath = NormalizePath(rootPath_utf8);
     if (normalizedPath.empty())
@@ -113,7 +114,7 @@ void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bo
     }
 }
 
-void GetDirectories(const std::string& rootPath_utf8, std::vector<std::string>& directories, bool recursive)
+void GetDirectories(std::string_view rootPath_utf8, std::vector<std::string>& directories, bool recursive)
 {
     std::string normalizedPath = NormalizePath(rootPath_utf8);
     if (normalizedPath.empty())

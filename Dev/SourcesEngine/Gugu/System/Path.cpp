@@ -14,9 +14,9 @@
 
 namespace gugu {
 
-std::string NormalizePath(const std::string& path)
+std::string NormalizePath(std::string_view path)
 {
-    std::string resultPath = path;
+    std::string resultPath(path);
     NormalizePathSelf(resultPath);
     return resultPath;
 }
@@ -123,9 +123,9 @@ void CombinePaths(std::string_view pathLeft, std::string_view pathRight, std::st
     }
 }
 
-std::string EnsureTrailingPathSeparator(const std::string& path)
+std::string EnsureTrailingPathSeparator(std::string_view path)
 {
-    std::string resultPath = path;
+    std::string resultPath(path);
     EnsureTrailingPathSeparatorSelf(resultPath);
     return resultPath;
 }
@@ -138,41 +138,41 @@ void EnsureTrailingPathSeparatorSelf(std::string& path)
     }
 }
 
-std::string DirectoryPartFromPath(const std::string& pathFile)
+std::string DirectoryPartFromPath(std::string_view path)
 {
-    std::string resultPath = pathFile;
+    std::string resultPath(path);
     DirectoryPartFromPathSelf(resultPath);
     return resultPath;
 }
 
-void DirectoryPartFromPathSelf(std::string& pathFile)
+void DirectoryPartFromPathSelf(std::string& path)
 {
-    size_t indexSlash = pathFile.rfind(system::PathSeparator);
+    size_t indexSlash = path.rfind(system::PathSeparator);
 
     if (indexSlash != std::string::npos)
     {
-        pathFile.erase(indexSlash);
+        path.erase(indexSlash);
     }
     else
     {
-        pathFile = "";
+        path = "";
     }
 }
 
-std::string NamePartFromPath(const std::string& pathFile)
+std::string NamePartFromPath(std::string_view path)
 {
-    std::string resultFile = pathFile;
+    std::string resultFile(path);
     NamePartFromPathSelf(resultFile);
     return resultFile;
 }
 
-void NamePartFromPathSelf(std::string& pathFile)
+void NamePartFromPathSelf(std::string& path)
 {
-    size_t indexSlash = pathFile.rfind(system::PathSeparator);
+    size_t indexSlash = path.rfind(system::PathSeparator);
 
     if (indexSlash != std::string::npos)
     {
-        pathFile.erase(0, indexSlash + 1);
+        path.erase(0, indexSlash + 1);
     }
 }
 

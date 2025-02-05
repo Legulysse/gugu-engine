@@ -368,14 +368,14 @@ def GitUpdateSubRepositories():
 #---------------------------------------------------------------------------------------------------
 # Zip
 
-def Zip(src):
-    ZipTo(src, src+'.7z')
+def Zip(dirEngineBuildScripts, srcPath):
+    ZipTo(dirEngineBuildScripts, srcPath, srcPath+'.zip')
     
-def ZipTo(src, dst):
-    ShellExecute('"7zip/7za.exe" a "'+ dst +'" "'+ src +'"')
+def ZipTo(dirEngineBuildScripts, srcPath, dstPath):
+    ShellExecute('"' + dirEngineBuildScripts + '/7zip/7za.exe" a "'+ dstPath +'" "'+ srcPath +'"')
 
-def UnzipTo(src, dst):
-    ShellExecute('"7zip/7za.exe" x "'+ src +'" -o"'+ dst +'" -y')
+def UnzipTo(dirEngineBuildScripts, srcPath, dstPath):
+    ShellExecute('"' + dirEngineBuildScripts + '/7zip/7za.exe" x "'+ srcPath +'" -o"'+ dstPath +'" -y')
 
     
 #---------------------------------------------------------------------------------------------------

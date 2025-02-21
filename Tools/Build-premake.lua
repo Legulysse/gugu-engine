@@ -43,6 +43,7 @@ solution "GuguEngine"
     
     group "Demos/Tests"
     ProjectDefaultSFML(BuildCfg, "DemoSFML"     , pathDev.."SourcesDemos/Tests/DemoSFML"            , pathVersion.."DemoTests", "7F2F4292-8762-4C16-AB8B-6CA75D56169D")
+    ProjectDefault(BuildCfg, "DemoImGuiSFML"    , pathDev.."SourcesDemos/Tests/DemoImGuiSFML"       , pathVersion.."DemoTests", "E865F2E3-FCE1-463D-97A9-2208B48951E4")
     ProjectDefault(BuildCfg, "DemoBlackboard"   , pathDev.."SourcesDemos/Tests/DemoBlackboard"      , pathVersion.."DemoTests", "A6F5963E-901A-4CE5-9A56-38F8FE448267")
     ProjectDefault(BuildCfg, "UnitTests"        , pathDev.."SourcesDemos/Tests/UnitTests"           , pathVersion.."DemoTests", "86CC4BC0-7B66-4AA8-9038-0F791FC0A195")
     

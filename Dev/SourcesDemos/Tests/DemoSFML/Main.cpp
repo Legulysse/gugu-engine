@@ -1,3 +1,6 @@
+////////////////////////////////////////////////////////////////
+// Includes
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
@@ -5,7 +8,8 @@
 #include <list>
 #include <thread>
 
-//--------------
+////////////////////////////////////////////////////////////////
+// File Implementation
 
 struct StatsSummary
 {

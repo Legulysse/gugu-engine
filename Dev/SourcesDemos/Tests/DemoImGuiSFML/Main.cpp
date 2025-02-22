@@ -18,22 +18,38 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
-    sf::RenderWindow window(sf::VideoMode(1080, 720), "ImGui + SFML Demo");
+    bool windowHovered = false;
+
+    sf::RenderWindow window(sf::VideoMode(1080, 720), "ImGui + SFML Demo", sf::Style::Default);
     window.setFramerateLimit(60);
 
     ImGui::SFML::Init(window);
 
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    sf::CircleShape greenCircleShape(100.f);
+    greenCircleShape.setFillColor(sf::Color::Green);
+
+    sf::CircleShape cursorShape(4.f);
+    cursorShape.setFillColor(sf::Color::White);
 
     sf::Clock deltaClock;
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event))
+        {
             ImGui::SFML::ProcessEvent(window, event);
 
-            if (event.type == sf::Event::Closed) {
-                window.close();
+            switch (event.type)
+            {
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                case sf::Event::MouseLeft:
+                    windowHovered = false;
+                    break;
+                case sf::Event::MouseEntered:
+                    windowHovered = true;
+                    break;
             }
         }
 
@@ -45,8 +61,21 @@ int main(int argc, char* argv[])
         ImGui::Button("Look at this pretty button");
         ImGui::End();
 
+        //---------------
+        // Tests with mouse cursor visibility.
+
+        if (!ImGui::GetIO().WantCaptureMouse)
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+        }
+
+        cursorShape.setPosition(sf::Vector2f(sf::Mouse::getPosition(window)));
+
+        //---------------
+
         window.clear();
-        window.draw(shape);
+        window.draw(greenCircleShape);
+        window.draw(cursorShape);
         ImGui::SFML::Render(window);
         window.display();
     }

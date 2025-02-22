@@ -19,6 +19,7 @@ int main(int argc, char* argv[])
     //----------------------------------------------
 
     bool windowHovered = false;
+    bool wantSystemCursor = false;
 
     sf::RenderWindow window(sf::VideoMode(1080, 720), "ImGui + SFML Demo", sf::Style::Default);
     window.setFramerateLimit(60);
@@ -66,7 +67,7 @@ int main(int argc, char* argv[])
 
         if (!ImGui::GetIO().WantCaptureMouse)
         {
-            ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+            ImGui::SetMouseCursor(wantSystemCursor ? ImGuiMouseCursor_Arrow : ImGuiMouseCursor_None);
         }
 
         cursorShape.setPosition(sf::Vector2f(sf::Mouse::getPosition(window)));

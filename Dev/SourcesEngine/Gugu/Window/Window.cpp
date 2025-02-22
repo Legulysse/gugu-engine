@@ -376,44 +376,29 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
         GUGU_SCOPE_TRACE_MAIN("UI");
 
         //Handle Mouse visibility
-        bool isSystemMouseWantedVisible = m_systemMouseVisible;
-        bool isMouseWantedVisible = m_mouseVisible;
-        bool allowImGuiMouse = true;
-
-        if (!m_windowHovered || !m_windowFocused)
-        {
-            // It seems like letting the OS take back control avoids the cursor not refreshing correctly.
-            // (displaying an arrow instead of a resize cursor when going on the edge of the window).
-            //isSystemMouseWantedVisible = true;
-            isMouseWantedVisible = false;
-            allowImGuiMouse = false;
-        }
+        bool isMouseWantedVisible = m_mouseVisible && m_windowHovered && m_windowFocused;
 
         if (m_hostImGui)
         {
-            if (ImGui::GetIO().WantCaptureMouse && allowImGuiMouse)
+            if (ImGui::GetIO().WantCaptureMouse)
             {
-                isSystemMouseWantedVisible = false;
                 isMouseWantedVisible = false;
-                ImGui::GetIO().MouseDrawCursor = true;
             }
             else
             {
-                ImGui::GetIO().MouseDrawCursor = false;
+                // The Imgui-Sfml backend will handle the cursor visibility when providing ImGuiMouseCursor_None.
+                ImGui::SetMouseCursor(m_systemMouseVisible ? ImGuiMouseCursor_Arrow : ImGuiMouseCursor_None);
             }
         }
-
-        // Update system mouse.
-        if (isSystemMouseWantedVisible && !m_wasSystemMouseVisible)
+        else
         {
-            m_sfWindow->setMouseCursorVisible(true);
+            bool isSystemMouseWantedVisible = m_systemMouseVisible || !m_windowHovered || !m_windowFocused;
+            if (isSystemMouseWantedVisible != m_wasSystemMouseVisible)
+            {
+                m_sfWindow->setMouseCursorVisible(isSystemMouseWantedVisible);
+                m_wasSystemMouseVisible = isSystemMouseWantedVisible;
+            }
         }
-        else if (!isSystemMouseWantedVisible && m_wasSystemMouseVisible)
-        {
-            m_sfWindow->setMouseCursorVisible(false);
-        }
-
-        m_wasSystemMouseVisible = isSystemMouseWantedVisible;
 
         // Update mouse node.
         m_mouseNode->SetVisible(isMouseWantedVisible);

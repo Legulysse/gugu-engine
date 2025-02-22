@@ -76,7 +76,6 @@ void Editor::Init(const EditorConfig& editorConfig)
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // TODO: Does not seem supported by the SFML backend.
-    io.ConfigWindowsResizeFromEdges = true;
 
     // Create standard Panels.
     m_assetsExplorerPanel = new AssetsExplorerPanel;

@@ -135,10 +135,6 @@ void Engine::Init(const EngineConfig& config)
         {
             ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
 
-            // ImGui config flags :
-            // - ImGuiConfigFlags_NoMouseCursorChange : I handle cursors in Window Update.
-            ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-
             m_showImGui = m_engineConfig.showImGui;
         }
     }

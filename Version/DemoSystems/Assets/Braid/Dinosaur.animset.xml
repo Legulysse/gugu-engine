@@ -1,61 +1,50 @@
 <?xml version="1.0"?>
-<AnimSet imageSet="">
+<AnimSet serializationVersion="2" imageSet="">
+	<DefaultOriginOffset x="12" y="-18" />
 	<Animation name="Walk">
-		<Frame texture="DinosaurWalk_0000.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0001.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0002.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0003.png" duration="0.06" events="step" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0004.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0005.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0006.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0007.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0008.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0009.png" duration="0.06" events="step" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0010.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
-		<Frame texture="DinosaurWalk_0011.png" duration="0.06" events="" >
-            <Origin x="100" y="200" />
-            <Move x="-2" y="0" />
-        </Frame>
+		<Frame texture="DinosaurWalk_0000.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0001.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0002.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0003.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0004.png" duration="0.0599999987" events="step">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0005.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0006.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0007.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0008.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0009.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0010.png" duration="0.0599999987" events="step">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
+		<Frame texture="DinosaurWalk_0011.png" duration="0.0599999987">
+			<MoveOffset x="-2" y="0" />
+		</Frame>
 	</Animation>
 	<Animation name="Idle">
-		<Frame texture="DinosaurIdle_0000.png" duration="0.1" events="" />
-		<Frame texture="DinosaurIdle_0001.png" duration="0.1" events="" />
-		<Frame texture="DinosaurIdle_0002.png" duration="0.1" events="" />
-		<Frame texture="DinosaurIdle_0003.png" duration="0.1" events="" />
-		<Frame texture="DinosaurIdle_0004.png" duration="0.1" events="" />
-		<Frame texture="DinosaurIdle_0005.png" duration="0.1" events="" />
+		<Frame texture="DinosaurIdle_0000.png" duration="0.100000001" />
+		<Frame texture="DinosaurIdle_0001.png" duration="0.100000001" />
+		<Frame texture="DinosaurIdle_0002.png" duration="0.100000001" />
+		<Frame texture="DinosaurIdle_0003.png" duration="0.100000001" />
+		<Frame texture="DinosaurIdle_0004.png" duration="0.100000001" />
+		<Frame texture="DinosaurIdle_0005.png" duration="0.100000001" />
 	</Animation>
 </AnimSet>

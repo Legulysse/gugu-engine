@@ -40,36 +40,45 @@ void Demo::AppStart()
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
     m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
+    // Metrics
+    float animationColumnA = 300.f;
+    float animationColumnB = 800.f;
+    float lineTopA = 20.f;
+    float lineTopB = 150.f;
+    float lineOffset = 150.f;
+    UDim2 detailsPositionOffsetA = UDim2::POSITION_TOP_LEFT + Vector2f(290.f, 0.f);
+    UDim2 detailsPositionOffsetB = UDim2::POSITION_BOTTOM_LEFT + Vector2f(290.f, 0.f);
+
     // Grid
     sf::VertexArray* gridVertices = new sf::VertexArray;
     gridVertices->setPrimitiveType(sf::PrimitiveType::Lines);
 
-    float margin = 10.f;
-    float cellSize = 200.f;
-    int nbCells = 6;
-    float lineSize = margin * 2 + (cellSize * (nbCells - 1));
-    for (int x = 0; x < nbCells; ++x)
-    {
-        gridVertices->append(sf::Vertex(Vector2f(0.f, margin + x * cellSize)));
-        gridVertices->append(sf::Vertex(Vector2f(lineSize, margin + x * cellSize)));
+    gridVertices->append(sf::Vertex(Vector2f(animationColumnA, 0.f)));
+    gridVertices->append(sf::Vertex(Vector2f(animationColumnA, 1000.f)));
+    gridVertices->append(sf::Vertex(Vector2f(animationColumnB, 0.f)));
+    gridVertices->append(sf::Vertex(Vector2f(animationColumnB, 1000.f)));
 
-        gridVertices->append(sf::Vertex(Vector2f(margin + x * cellSize, 0.f)));
-        gridVertices->append(sf::Vertex(Vector2f(margin + x * cellSize, lineSize)));
+    for (int i = 0; i < 4; ++i)
+    {
+        Vector2f position = Vector2f(animationColumnA, lineTopA + lineOffset * i);
+        gridVertices->append(sf::Vertex(position + Vector2f(-20.f, 0.f)));
+        gridVertices->append(sf::Vertex(position + Vector2f(20.f, 0.f)));
+    }
+
+    for (int i = 0; i < 4; ++i)
+    {
+        Vector2f position = Vector2f(animationColumnB, lineTopB + lineOffset * i);
+        gridVertices->append(sf::Vertex(position + Vector2f(-20.f, 0.f)));
+        gridVertices->append(sf::Vertex(position + Vector2f(20.f, 0.f)));
     }
 
     ElementSFDrawable* gridElement = m_root->AddChild<ElementSFDrawable>();
     gridElement->SetSFDrawable(gridVertices);
 
-    float lineA = margin;
-    float lineB = margin + cellSize * 1;
-    float lineC = margin + cellSize * 2;
-    float lineD = margin + cellSize * 3;
-    float lineE = margin + cellSize * 4;
-
-    // Test Animation Idle 1 (no origin set).
+    // Test Animation Idle (no origin set).
     {
         Element* pivot = m_root->AddChild<Element>();
-        pivot->SetPosition(lineA, lineA);
+        pivot->SetPosition(animationColumnA, lineTopA + lineOffset * 0);
 
         ElementSprite* sprite = pivot->AddChild<ElementSprite>();
         sprite->SetScale(0.5f);
@@ -80,31 +89,13 @@ void Demo::AppStart()
 
         ElementText* details = pivot->AddChild<ElementText>();
         details->SetText("Default");
-        details->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
+        details->SetUnifiedOrigin(detailsPositionOffsetA);
     }
 
-    // Test Animation Idle 2 (no origin set) with a flipped texture.
+    // Test Animation Idle (with flip).
     {
         Element* pivot = m_root->AddChild<Element>();
-        pivot->SetPosition(lineB, lineA);
-
-        ElementSprite* sprite = pivot->AddChild<ElementSprite>();
-        sprite->SetScale(0.5f);
-        sprite->SetFlipTextureH(true);
-
-        SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
-        animation->ChangeAnimSet("Dinosaur.animset.xml");
-        animation->StartAnimation("Idle");
-
-        ElementText* details = pivot->AddChild<ElementText>();
-        details->SetText("Texture flip");
-        details->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-    }
-
-    // Test Animation Idle 3 (with flip).
-    {
-        Element* pivot = m_root->AddChild<Element>();
-        pivot->SetPosition(lineC, lineA);
+        pivot->SetPosition(animationColumnA, lineTopA + lineOffset * 1);
 
         ElementSprite* sprite = pivot->AddChild<ElementSprite>();
         sprite->SetScale(0.5f);
@@ -116,13 +107,31 @@ void Demo::AppStart()
 
         ElementText* details = pivot->AddChild<ElementText>();
         details->SetText("Pivot flip");
-        details->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
+        details->SetUnifiedOrigin(detailsPositionOffsetA);
     }
 
-    // Test Animation Idle 4 (with flip) with a flipped texture.
+    // Test Animation Idle (no origin set) with a flipped texture.
     {
         Element* pivot = m_root->AddChild<Element>();
-        pivot->SetPosition(lineD, lineA);
+        pivot->SetPosition(animationColumnA, lineTopA + lineOffset * 2);
+
+        ElementSprite* sprite = pivot->AddChild<ElementSprite>();
+        sprite->SetScale(0.5f);
+        sprite->SetFlipTextureH(true);
+
+        SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
+        animation->ChangeAnimSet("Dinosaur.animset.xml");
+        animation->StartAnimation("Idle");
+
+        ElementText* details = pivot->AddChild<ElementText>();
+        details->SetText("Texture flip");
+        details->SetUnifiedOrigin(detailsPositionOffsetA);
+    }
+
+    // Test Animation Idle (with flip) with a flipped texture.
+    {
+        Element* pivot = m_root->AddChild<Element>();
+        pivot->SetPosition(animationColumnA, lineTopA + lineOffset * 3);
 
         ElementSprite* sprite = pivot->AddChild<ElementSprite>();
         sprite->SetScale(0.5f);
@@ -135,26 +144,51 @@ void Demo::AppStart()
 
         ElementText* details = pivot->AddChild<ElementText>();
         details->SetText("Pivot flip, Texture flip");
-        details->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-    }
-
-    // Test Animation Walk (no origin set : top left).
-    {
-        Element* pivot = m_root->AddChild<Element>();
-        pivot->SetPosition(lineA, lineB);
-
-        ElementSprite* sprite = pivot->AddChild<ElementSprite>();
-        sprite->SetScale(0.5f);
-
-        SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
-        animation->ChangeAnimSet("Dinosaur.animset.xml");
-        animation->StartAnimation("Walk");
+        details->SetUnifiedOrigin(detailsPositionOffsetA);
     }
 
     // Test Animation Walk (origin set manually : bottom center).
     {
         Element* pivot = m_root->AddChild<Element>();
-        pivot->SetPosition(lineB, lineB);
+        pivot->SetPosition(animationColumnB, lineTopB + lineOffset * 0);
+
+        ElementSprite* sprite = pivot->AddChild<ElementSprite>();
+        sprite->SetScale(0.5f);
+        sprite->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
+
+        SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
+        animation->SetOriginFromAnimation(false);
+        animation->ChangeAnimSet("Dinosaur.animset.xml");
+        animation->StartAnimation("Walk");
+
+        ElementText* details = pivot->AddChild<ElementText>();
+        details->SetText("Pivot: BottomCenter");
+        details->SetUnifiedOrigin(detailsPositionOffsetB);
+    }
+
+    // Test Animation Walk (origin set in animation).
+    {
+        Element* pivot = m_root->AddChild<Element>();
+        pivot->SetPosition(animationColumnB, lineTopB + lineOffset * 1);
+
+        ElementSprite* sprite = pivot->AddChild<ElementSprite>();
+        sprite->SetScale(0.5f);
+        sprite->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
+
+        SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
+        animation->SetOriginFromAnimation(true);
+        animation->ChangeAnimSet("Dinosaur.animset.xml");
+        animation->StartAnimation("Walk");
+
+        ElementText* details = pivot->AddChild<ElementText>();
+        details->SetText("Pivot: BottomCenter\nOriginFromAnimation");
+        details->SetUnifiedOrigin(detailsPositionOffsetB);
+    }
+
+    // Test Animation Events (no origin set : top left).
+    {
+        Element* pivot = m_root->AddChild<Element>();
+        pivot->SetPosition(animationColumnB, lineTopB + lineOffset * 2);
 
         ElementSprite* sprite = pivot->AddChild<ElementSprite>();
         sprite->SetScale(0.5f);
@@ -163,37 +197,13 @@ void Demo::AppStart()
         SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
         animation->ChangeAnimSet("Dinosaur.animset.xml");
         animation->StartAnimation("Walk");
-    }
-
-    // Test Animation Walk (origin set in animation).
-    {
-        Element* pivot = m_root->AddChild<Element>();
-        pivot->SetPosition(lineC, lineB);
-
-        ElementSprite* sprite = pivot->AddChild<ElementSprite>();
-        sprite->SetScale(0.5f);
-
-        SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
-        animation->SetOriginFromAnimation(true);
-        animation->ChangeAnimSet("Dinosaur.animset.xml");
-        animation->StartAnimation("Walk");
-    }
-
-    // Test Animation Events (no origin set : top left).
-    {
-        Element* pivot = m_root->AddChild<Element>();
-        pivot->SetPosition(lineD, lineB);
-
-        ElementSprite* sprite = pivot->AddChild<ElementSprite>();
-        sprite->SetScale(0.5f);
-
-        SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
-        animation->ChangeAnimSet("Dinosaur.animset.xml");
-        animation->StartAnimation("Walk");
         animation->AddEventCallback("step", std::bind(&Demo::OnWalkStep, this));
 
+        ElementText* details = pivot->AddChild<ElementText>();
+        details->SetText("Pivot: BottomCenter\nEvents");
+        details->SetUnifiedOrigin(detailsPositionOffsetB);
+
         Element* walkStepTextPivot = pivot->AddChild<Element>();
-        walkStepTextPivot->SetPosition(30.f, 90.f);
 
         m_walkStepText = walkStepTextPivot->AddChild<ElementText>();
         m_walkStepText->SetText("step");
@@ -201,8 +211,14 @@ void Demo::AppStart()
 
     // Test Animation Walk (origin and move set in animation).
     {
-        m_movingSprite1 = m_root->AddChild<ElementSprite>();
-        m_movingSprite1->SetPosition(lineD, lineC);
+        Element* pivot = m_root->AddChild<Element>();
+        pivot->SetPosition(animationColumnB, lineTopB + lineOffset * 3);
+
+        ElementText* details = pivot->AddChild<ElementText>();
+        details->SetText("Pivot: BottomCenter\nMoveFromAnimation");
+        details->SetUnifiedOrigin(detailsPositionOffsetB);
+
+        m_movingSprite1 = pivot->AddChild<ElementSprite>();
         m_movingSprite1->SetScale(0.5f);
         m_movingSprite1->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
 
@@ -211,9 +227,8 @@ void Demo::AppStart()
         m_movingAnimation1->ChangeAnimSet("Dinosaur.animset.xml");
         m_movingAnimation1->StartAnimation("Walk");
 
-        // Test fake shadow (reversed animation).
-        m_movingSprite2 = m_root->AddChild<ElementSprite>();
-        m_movingSprite2->SetPosition(lineD, lineC);
+        // Test fake shadow (reversed animation) (I am not linking the two sprites directly to test that moving a flipped sprite works as intended).
+        m_movingSprite2 = pivot->AddChild<ElementSprite>();
         m_movingSprite2->SetScale(0.5f, 0.25f);
         m_movingSprite2->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
         m_movingSprite2->SetFlipV(true);
@@ -233,20 +248,15 @@ void Demo::AppStop()
 
 void Demo::AppStep(const DeltaTime& dt)
 {
-    float margin = 50.f;
-    float cellSize = 200.f;
-    float lineA = margin;
-    float lineB = margin + cellSize * 1;
-    float lineC = margin + cellSize * 2;
-    float lineD = margin + cellSize * 3;
-    float lineE = margin + cellSize * 4;
-    
-    if (m_movingSprite1->GetPosition().x <= lineB)
+    float animationColumnA = 300.f;
+    float animationColumnB = 800.f;
+
+    if (m_movingSprite1->TransformToGlobal(m_movingSprite1->GetPosition()).x <= animationColumnA)
     {
         m_movingSprite1->SetFlipH(true);
         m_movingSprite2->SetFlipH(true);
     }
-    else if (m_movingSprite1->GetPosition().x >= lineE)
+    else if (m_movingSprite1->TransformToGlobal(m_movingSprite1->GetPosition()).x >= animationColumnB)
     {
         m_movingSprite1->SetFlipH(false);
         m_movingSprite2->SetFlipH(false);
@@ -255,7 +265,7 @@ void Demo::AppStep(const DeltaTime& dt)
 
 void Demo::OnWalkStep()
 {
-    m_walkStepText->SetPositionX(m_walkStepToggle ? 25.f : -25.f);
+    m_walkStepText->SetPositionX(m_walkStepToggle ? 15.f : -35.f);
     m_walkStepToggle = !m_walkStepToggle;
 }
 

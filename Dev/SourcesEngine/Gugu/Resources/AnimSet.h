@@ -49,15 +49,18 @@ public:
     void        SetDuration(float _fDuration);
     float       GetDuration() const;
 
+    // TODO: separate events in at least two groups : 
+    // - Everytime the frame is played.
+    // - Except when the frame is the first frame played in the current animation.
     void RegisterEvents(const std::string& events);
     bool HasEvents() const;
     const std::vector<std::string>& GetEvents() const;
     bool FillEventString(std::string& events) const;
 
-    void            SetOrigin(const Vector2f _kOrigin);
-    const Vector2f& GetOrigin() const;
+    void            SetOriginOffset(const Vector2f& offset);
+    const Vector2f& GetOriginOffset() const;
     
-    void            SetMoveOffset(const Vector2f _kMoveOffset);
+    void            SetMoveOffset(const Vector2f& offset);
     const Vector2f& GetMoveOffset() const;
 
 protected:
@@ -68,8 +71,8 @@ protected:
     SubImage*       m_subImage;
     float           m_duration;
     std::vector<std::string> m_events;
-    Vector2f    m_origin;
-    Vector2f    m_moveOffset;
+    Vector2f m_originOffset;
+    Vector2f m_moveOffset;
 };
 
 //----------------------------------------------
@@ -129,6 +132,9 @@ public:
     void        SetImageSet (ImageSet* _pImageSet);
     ImageSet*   GetImageSet () const;
 
+    void SetDefaultOriginOffset(const Vector2f& offset);
+    const Vector2f& GetDefaultOriginOffset() const;
+
     virtual EResourceType::Type GetResourceType() const override;
 
     virtual void GetDependencies(std::set<Resource*>& dependencies) const override;
@@ -144,6 +150,7 @@ protected:
 
     ImageSet* m_imageSet;
     std::vector<Animation*> m_animations;
+    Vector2f m_defaultOriginOffset;
 };
 
 }   // namespace gugu

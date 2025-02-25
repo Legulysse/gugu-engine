@@ -41,10 +41,10 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     , m_zoomFactor(1.f)
     , m_speedFactor(1.f)
     , m_autoPlay(true)
-    , m_originFromAnimation(false)
+    , m_originFromAnimation(true)
     , m_moveFromAnimation(false)
     , m_flipH(false)
-    , m_showGround(false)
+    , m_showGround(true)
     , m_showPivot(false)
     , m_currentAnimation(nullptr)
     , m_currentFrame(nullptr)
@@ -68,8 +68,6 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
 
     m_spriteAnimation = GetAnimations()->AddAnimation(m_sprite);
     m_spriteAnimation->ChangeAnimSet(m_animSet);
-
-    SelectAnimation(m_animSet->GetAnimation(0));
 
     // Ground decoration
     sf::RectangleShape* groundDrawable = new sf::RectangleShape;
@@ -120,6 +118,12 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
 
     // Dependencies
     GetResources()->RegisterResourceListener(m_animSet, this, STD_BIND_3(&AnimSetPanel::OnResourceEvent, this));
+    
+    // Default settings
+    m_spriteAnimation->SetOriginFromAnimation(m_originFromAnimation);
+    m_spriteAnimation->SetMoveFromAnimation(m_moveFromAnimation);
+
+    SelectAnimation(m_animSet->GetAnimation(0));
 }
 
 AnimSetPanel::~AnimSetPanel()

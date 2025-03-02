@@ -24,6 +24,9 @@ namespace demoproject {
     
 Demo::Demo()
     : m_root(nullptr)
+    , m_movingSprite1(nullptr)
+    , m_movingSprite2(nullptr)
+    , m_walkStepText(nullptr)
     , m_walkStepToggle(false)
 {
 }
@@ -218,26 +221,29 @@ void Demo::AppStart()
         details->SetText("Pivot: BottomCenter\nMoveFromAnimation");
         details->SetUnifiedOrigin(detailsPositionOffsetB);
 
-        m_movingSprite1 = pivot->AddChild<ElementSprite>();
-        m_movingSprite1->SetScale(0.5f);
-        m_movingSprite1->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
+        ElementSprite* movingSprite1 = pivot->AddChild<ElementSprite>();
+        movingSprite1->SetScale(0.5f);
+        movingSprite1->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
 
-        m_movingAnimation1 = GetAnimations()->AddAnimation(m_movingSprite1);
-        m_movingAnimation1->SetMoveFromAnimation(true);
-        m_movingAnimation1->ChangeAnimSet("Dinosaur.animset.xml");
-        m_movingAnimation1->StartAnimation("Walk");
+        SpriteAnimation* movingAnimation1 = GetAnimations()->AddAnimation(movingSprite1);
+        movingAnimation1->SetMoveFromAnimation(true);
+        movingAnimation1->ChangeAnimSet("Dinosaur.animset.xml");
+        movingAnimation1->StartAnimation("Walk");
 
         // Test fake shadow (reversed animation) (I am not linking the two sprites directly to test that moving a flipped sprite works as intended).
-        m_movingSprite2 = pivot->AddChild<ElementSprite>();
-        m_movingSprite2->SetScale(0.5f, 0.25f);
-        m_movingSprite2->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
-        m_movingSprite2->SetFlipV(true);
-        m_movingSprite2->SetColor(sf::Color(80, 80, 80, 128));
+        ElementSprite* movingSprite2 = pivot->AddChild<ElementSprite>();
+        movingSprite2->SetScale(0.5f, 0.25f);
+        movingSprite2->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
+        movingSprite2->SetFlipV(true);
+        movingSprite2->SetColor(sf::Color(80, 80, 80, 128));
 
-        m_movingAnimation2 = GetAnimations()->AddAnimation(m_movingSprite2);
-        m_movingAnimation2->SetMoveFromAnimation(true);
-        m_movingAnimation2->ChangeAnimSet("Dinosaur.animset.xml");
-        m_movingAnimation2->StartAnimation("Walk");
+        SpriteAnimation* movingAnimation2 = GetAnimations()->AddAnimation(movingSprite2);
+        movingAnimation2->SetMoveFromAnimation(true);
+        movingAnimation2->ChangeAnimSet("Dinosaur.animset.xml");
+        movingAnimation2->StartAnimation("Walk");
+
+        m_movingSprite1 = movingSprite1;
+        m_movingSprite2 = movingSprite2;
     }
 }
 

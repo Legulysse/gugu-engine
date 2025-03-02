@@ -254,15 +254,16 @@ void Demo::AppStop()
 
 void Demo::AppStep(const DeltaTime& dt)
 {
-    float animationColumnA = 300.f;
     float animationColumnB = 800.f;
+    float walkOffsetLeft = -100.f;
+    float walkOffsetRight = 100.f;
 
-    if (m_movingSprite1->TransformToGlobal(m_movingSprite1->GetPosition()).x <= animationColumnA)
+    if (m_movingSprite1->TransformToGlobal(m_movingSprite1->GetOrigin()).x <= animationColumnB + walkOffsetLeft)
     {
         m_movingSprite1->SetFlipH(true);
         m_movingSprite2->SetFlipH(true);
     }
-    else if (m_movingSprite1->TransformToGlobal(m_movingSprite1->GetPosition()).x >= animationColumnB)
+    else if (m_movingSprite1->TransformToGlobal(m_movingSprite1->GetOrigin()).x >= animationColumnB + walkOffsetRight)
     {
         m_movingSprite1->SetFlipH(false);
         m_movingSprite2->SetFlipH(false);

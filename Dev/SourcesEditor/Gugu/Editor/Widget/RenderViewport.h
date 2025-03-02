@@ -42,6 +42,7 @@ public:
     float GetZoom() const;
 
     void SetShowBounds(bool showBounds);
+    bool GetShowBounds() const;
 
     Vector2f GetMousePickedPosition() const;
     Vector2f GetPickedPosition(const Vector2i& pixelCoords) const;

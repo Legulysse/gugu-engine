@@ -305,11 +305,22 @@ AnimationFrame* SpriteAnimation::InitCurrentAnimationFrame()
 
         if (m_originFromAnimation)
         {
-            m_sprite->SetOrigin(pCurrentFrame->GetOrigin());
+            // TODO: Should we receive a target pivot element to apply the move ?
+            Vector2f originOffset = m_animSet->GetDefaultOriginOffset() + pCurrentFrame->GetOriginOffset();
+
+            if (m_sprite->GetUseUnifiedOrigin())
+            {
+                m_sprite->SetUnifiedOrigin(UDim2(m_sprite->GetUnifiedOrigin().relative, originOffset));
+            }
+            else
+            {
+                m_sprite->SetOrigin(originOffset);
+            }
         }
 
         if (m_moveFromAnimation)
         {
+            // TODO: How do I handle potential UDim position ? Should we receive a target pivot element to apply the move ?
             Vector2f kMove = pCurrentFrame->GetMoveOffset();
             if (m_sprite->GetFlipH())
                 kMove.x = -kMove.x;

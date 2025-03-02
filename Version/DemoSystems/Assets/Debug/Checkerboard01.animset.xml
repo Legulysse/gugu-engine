@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<AnimSet serializationVersion="2" imageSet="Checkerboard01.imageset.xml">
+	<DefaultOriginOffset x="0" y="-2" />
+	<Animation name="Animation_0">
+		<Frame subImage="x0_y0" duration="0.200000003" />
+	</Animation>
+</AnimSet>

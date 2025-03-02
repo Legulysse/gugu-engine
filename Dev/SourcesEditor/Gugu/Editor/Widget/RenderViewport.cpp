@@ -146,6 +146,11 @@ void RenderViewport::SetShowBounds(bool showBounds)
     m_showBounds = showBounds;
 }
 
+bool RenderViewport::GetShowBounds() const
+{
+    return m_showBounds;
+}
+
 Vector2f RenderViewport::GetMousePickedPosition() const
 {
     // Handle picking (should be used inside a viewport begin/end block).

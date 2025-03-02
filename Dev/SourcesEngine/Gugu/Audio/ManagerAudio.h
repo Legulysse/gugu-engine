@@ -16,9 +16,7 @@
 namespace gugu
 {
     struct EngineConfig;
-    class Sound;
-    class Music;
-    class AudioCue;
+    class SoundCue;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -48,14 +46,15 @@ public:
     //void    SetVolumeGroup  (int _iGroup, float _fVolume);    //TODO
     //float   GetVolumeGroup  (int _iGroup) const;              //TODO
 
-    bool    PlaySoundCue    (const std::string& _strFile);
-    bool    PlaySound       (const std::string& _strFile, float _fVolume = 1.f, int _iGroup = 0);     // Volume range [0, 1]
-    bool    PlaySound       (const SoundParameters& _kParameters);
+    bool PlaySoundCue(const std::string& soundCueID);
+    bool PlaySoundCue(SoundCue* soundCue);
+    bool PlaySound(const std::string& soundID, float volume = 1.f, int group = 0);         // Volume range [0, 1]
+    bool PlaySound(const SoundParameters& parameters);
 
-    bool    PlayMusic       (const std::string& _strFile, float _fVolume = 1.f, float _fFade = 2.f);   // Volume range [0, 1]
-    bool    PlayMusic       (const MusicParameters& _kParameters);
-    bool    PlayMusicList   (const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist, int layer = 0);
-    bool    StopMusic       (float _fFade = 2.f, int layer = 0);
+    bool PlayMusic(const std::string& musicID, float volume = 1.f, float fade = 2.f);      // Volume range [0, 1]
+    bool PlayMusic(const MusicParameters& parameters);
+    bool PlayMusicList(const std::vector<MusicParameters>& playlist, bool loopPlaylist, int layer = 0);
+    bool StopMusic(float fade = 2.f, int layer = 0);
 
     MusicInstance* GetCurrentMusicInstance(int layer) const;
 

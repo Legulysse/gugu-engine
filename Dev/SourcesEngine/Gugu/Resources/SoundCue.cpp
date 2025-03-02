@@ -27,27 +27,27 @@ SoundCue::~SoundCue()
     Unload();
 }
 
-int SoundCue::GetSoundCount() const
+size_t SoundCue::GetSoundCount() const
 {
-    return (int)m_audioFiles.size();
+    return m_audioFiles.size();
 }
 
-bool SoundCue::GetSound(int _iIndex, SoundParameters& _kParameters) const
+bool SoundCue::GetSound(size_t index, SoundParameters& parameters) const
 {
-    if (m_audioFiles.empty() || _iIndex < 0 || _iIndex >= (int)m_audioFiles.size())
+    if (m_audioFiles.empty() || index < 0 || index >= m_audioFiles.size())
         return false;
     
-    _kParameters = m_audioFiles[_iIndex];
+    parameters = m_audioFiles[index];
     return true;
 }
 
-bool SoundCue::GetRandomSound(SoundParameters& _kParameters) const
+bool SoundCue::GetRandomSound(SoundParameters& parameters) const
 {
     if (m_audioFiles.empty())
         return false;
 
-    size_t iIndex = GetRandom(m_audioFiles.size());
-    _kParameters = m_audioFiles[iIndex];
+    size_t index = GetRandom(m_audioFiles.size());
+    parameters = m_audioFiles[index];
     return true;
 }
 
@@ -91,36 +91,28 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
     if (!nodeRoot)
         return false;
 
-    pugi::xml_node oNodeFiles = nodeRoot.child("Files");
-    if (!oNodeFiles)
+    pugi::xml_node nodeFiles = nodeRoot.child("Files");
+    if (!nodeFiles)
         return false;
 
-    for (pugi::xml_node oNodeFile = oNodeFiles.child("File"); oNodeFile; oNodeFile = oNodeFile.next_sibling("File"))
+    for (pugi::xml_node nodeFile = nodeFiles.child("File"); nodeFile; nodeFile = nodeFile.next_sibling("File"))
     {
-        Sound* pSound = nullptr;
-        pugi::xml_attribute oAttributeName = oNodeFile.attribute("name");
-        if (oAttributeName)
-            pSound = GetResources()->GetSound(oAttributeName.as_string());
+        Sound* sound = nullptr;
+        pugi::xml_attribute attributeName = nodeFile.attribute("name");
+        if (attributeName)
+            sound = GetResources()->GetSound(attributeName.as_string());
 
-        if (!pSound)
+        if (!sound)
             continue;
 
-        SoundParameters kParameters;
-        kParameters.sound = pSound;
+        SoundParameters parameters;
+        parameters.soundID = attributeName.as_string();
+        parameters.sound = sound;
+        parameters.volume = nodeFile.attribute("volume").as_float(parameters.volume);
+        parameters.pitchLowerOffset = nodeFile.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
+        parameters.pitchUpperOffset = nodeFile.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);
 
-        pugi::xml_attribute oAttributeVolume = oNodeFile.attribute("volume");
-        if (oAttributeVolume)
-            kParameters.volume = oAttributeVolume.as_float(kParameters.volume);
-
-        pugi::xml_attribute attributePitchLowerOffset = oNodeFile.attribute("pitchLowerOffset");
-        if (attributePitchLowerOffset)
-            kParameters.pitchLowerOffset = attributePitchLowerOffset.as_float(kParameters.pitchLowerOffset);
-
-        pugi::xml_attribute attributePitchUpperOffset = oNodeFile.attribute("pitchUpperOffset");
-        if (attributePitchUpperOffset)
-            kParameters.pitchUpperOffset = attributePitchUpperOffset.as_float(kParameters.pitchUpperOffset);
-
-        m_audioFiles.push_back(kParameters);
+        m_audioFiles.push_back(parameters);
     }
 
     return true;

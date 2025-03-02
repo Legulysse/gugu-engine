@@ -28,9 +28,9 @@ public:
     SoundCue();
     virtual ~SoundCue();
     
-    int     GetSoundCount   () const;
-    bool    GetSound        (int _iIndex, SoundParameters& _kParameters) const;
-    bool    GetRandomSound  (SoundParameters& _kParameters) const;
+    size_t GetSoundCount() const;
+    bool GetSound(size_t index, SoundParameters& parameters) const;
+    bool GetRandomSound(SoundParameters& parameters) const;
 
     virtual EResourceType::Type GetResourceType() const override;
 

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ImageSet texture="Lady.png">
+<ImageSet serializationVersion="1" texture="Lady.png">
 	<SubImage name="x0_y0" x="0" y="0" w="64" h="64" />
 	<SubImage name="x1_y0" x="64" y="0" w="64" h="64" />
 	<SubImage name="x2_y0" x="128" y="0" w="64" h="64" />

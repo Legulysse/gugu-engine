@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
-<ParticleEffect>
+<ParticleEffect serializationVersion="1">
 	<Loop value="true" />
 	<Duration value="5000" />
+	<UseUnscaledTime value="false" />
 	<MaxParticleCount value="150" />
 	<ParticleShape value="Quad" />
+	<SortBuffer value="false" />
 	<LocalSpace value="false" />
 	<EmitterShape value="Point" />
 	<EmitterRadius value="100" />

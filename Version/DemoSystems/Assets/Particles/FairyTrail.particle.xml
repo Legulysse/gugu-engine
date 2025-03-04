@@ -2,6 +2,7 @@
 <ParticleEffect serializationVersion="1">
 	<Loop value="true" />
 	<Duration value="0" />
+	<UseUnscaledTime value="false" />
 	<MaxParticleCount value="5000" />
 	<ParticleShape value="Point" />
 	<SortBuffer value="false" />

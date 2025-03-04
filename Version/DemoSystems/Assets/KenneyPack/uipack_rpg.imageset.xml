@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ImageSet texture="uipack_rpg.png">
+<ImageSet serializationVersion="1" texture="uipack_rpg.png">
 	<SubImage name="arrowBeige_left" x="303" y="486" w="22" h="21" />
 	<SubImage name="arrowBeige_right" x="171" y="486" w="22" h="21" />
 	<SubImage name="arrowBlue_left" x="193" y="486" w="22" h="21" />

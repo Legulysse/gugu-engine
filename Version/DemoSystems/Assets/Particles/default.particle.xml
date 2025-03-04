@@ -1,3 +1,28 @@
 <?xml version="1.0"?>
-<ParticleEffect>
+<ParticleEffect serializationVersion="1">
+	<Loop value="true" />
+	<Duration value="5000" />
+	<UseUnscaledTime value="false" />
+	<MaxParticleCount value="50" />
+	<ParticleShape value="Quad" />
+	<SortBuffer value="false" />
+	<LocalSpace value="false" />
+	<EmitterShape value="Point" />
+	<EmitterRadius value="100" />
+	<EmitterInnerRadius value="50" />
+	<SpawnPerSecond random="false" min="10" max="10" />
+	<ParticlesPerSpawn random="false" min="1" max="1" />
+	<EmissionBehaviour value="RandomDirection" />
+	<EmissionDirection x="0" y="-1" />
+	<EmissionAngle value="90" />
+	<Lifetime random="false" min="500" max="500" />
+	<Velocity random="false" min="50" max="50" />
+	<KeepSizeRatio value="true" />
+	<StartSize random="false" min_x="5" min_y="5" max_x="5" max_y="5" />
+	<UpdateSizeOverLifetime value="false" />
+	<EndSize random="false" min_x="0" min_y="0" max_x="0" max_y="0" />
+	<UpdateColorOverLifetime value="false" />
+	<StartColor r="255" g="255" b="255" a="255" />
+	<EndColor r="0" g="0" b="0" a="255" />
+	<ImageSetID value="" />
 </ParticleEffect>

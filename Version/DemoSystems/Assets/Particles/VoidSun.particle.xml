@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
-<ParticleEffect>
+<ParticleEffect serializationVersion="1">
 	<Loop value="true" />
 	<Duration value="0" />
+	<UseUnscaledTime value="false" />
 	<MaxParticleCount value="20000" />
 	<ParticleShape value="Quad" />
 	<SortBuffer value="true" />

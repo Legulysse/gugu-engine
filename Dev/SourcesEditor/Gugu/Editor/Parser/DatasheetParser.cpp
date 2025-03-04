@@ -150,6 +150,8 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
             for (pugi::xml_node nodeClassData = nodeClass.child("Data"); nodeClassData; nodeClassData = nodeClassData.next_sibling("Data"))
             {
                 DataMemberDefinition* dataDefinition = new DataMemberDefinition;
+                classDefinition->dataMembers.push_back(dataDefinition);
+
                 dataDefinition->name = nodeClassData.attribute("name").value();
 
                 std::string parseType = nodeClassData.attribute("type").value();
@@ -233,6 +235,12 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                     }
                 }
 
+                if (dataType == DataMemberDefinition::Unknown)
+                {
+                    GetLogEngine()->Print(ELog::Error, ELogEngine::Databinding, StringFormat("No definition found for data type \"{0}\" in class \"{1}\" (did you forget an instance: prefix ?)", deducedType, classDefinition->m_name));
+                    continue;
+                }
+
                 dataDefinition->type = dataType;
 
                 if (!dataDefinition->isArray)
@@ -272,8 +280,6 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                         }
                     }
                 }
-
-                classDefinition->dataMembers.push_back(dataDefinition);
             }
         }
     }

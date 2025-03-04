@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
     editorConfig.LoadFromFile("EditorConfig.xml");
 
 #if defined(GUGU_DEVELOPMENT_BUILD)
+    //editorConfig.defaultProjectFilePath = "../../../Version/Editor/ProjectSettings.xml";
     //editorConfig.defaultProjectFilePath = "../../Version/DemoSystems/Editor/ProjectSettings.xml";
     //editorConfig.defaultProjectFilePath = "../../Version/DemoTests/Editor/ProjectSettings.xml";
     //editorConfig.defaultProjectFilePath = "../../Version/DemoGame/Editor/ProjectSettings.xml";

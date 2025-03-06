@@ -14,6 +14,7 @@
 #include "Gugu/Editor/Modal/AboutDialog.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
+#include "Gugu/Editor/Modal/ImportImageSetDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/OutputLogPanel.h"
 #include "Gugu/Editor/Panel/DependenciesPanel.h"
@@ -339,6 +340,12 @@ void Editor::Update(const DeltaTime& dt)
             if (ImGui::MenuItem("Migrate Resources"))
             {
                 MigrateResources();
+            }
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("Import ImageSet"))
+            {
+                GetEditor()->OpenModalDialog(new ImportImageSetDialog());
             }
 
             ImGui::EndMenu();

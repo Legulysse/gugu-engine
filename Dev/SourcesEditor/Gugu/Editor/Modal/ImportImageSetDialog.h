@@ -28,6 +28,8 @@ protected:
     std::string m_sourceDirectory;
     std::string m_targetDirectory;
     std::string m_targetTextureName;
+    float m_resizeScale;
+    size_t m_filterIndex;
 };
 
 }   //namespace gugu

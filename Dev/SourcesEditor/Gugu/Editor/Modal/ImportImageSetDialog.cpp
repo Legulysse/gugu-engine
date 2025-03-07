@@ -88,7 +88,7 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
         FileInfo targetPackingFile = FileInfo::FromString_utf8(CombinePaths(targetPackingDirectory, m_targetTextureName));
 
         // Prepare Image data.
-        std::vector<sf::Image*> sourceImages;
+        std::vector<sf::Image*> frameImages;
         std::vector<int> frameCountPerAnimation;
 
         // Clear target directory.
@@ -103,8 +103,8 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
             std::vector<FileInfo> parsedFiles;
             GetFiles(parsedDirectory, parsedFiles, false);
 
-            std::string targetAnimationDirectory = CombinePaths(targetResizeDirectory, NamePartFromPath(parsedDirectory));
-            EnsureDirectoryExists(targetAnimationDirectory);
+            std::string targettResizedAnimationDirectory = CombinePaths(targetResizeDirectory, NamePartFromPath(parsedDirectory));
+            EnsureDirectoryExists(targettResizedAnimationDirectory);
 
             int frameCount = 0;
             for (const auto& parsedFile : parsedFiles)
@@ -112,20 +112,20 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
                 if (!parsedFile.HasExtension("png"))
                     continue;
 
-                FileInfo targetFilePath = FileInfo::FromString_utf8(CombinePaths(targetAnimationDirectory, parsedFile.GetFileName_utf8()));
+                FileInfo targetResizedFile = FileInfo::FromString_utf8(CombinePaths(targettResizedAnimationDirectory, parsedFile.GetFileName_utf8()));
 
                 std::string arguments = StringFormat("\"{0}\" -filter {2} -resize {3}% -unsharp 0x1 \"{1}\""
                     , parsedFile.GetFilePath_utf8()
-                    , targetFilePath.GetFilePath_utf8()
+                    , targetResizedFile.GetFilePath_utf8()
                     , resizeFilter
                     , m_resizeScale
                 );
 
                 if (ExecuteCommand(imageMagickPath, arguments))
                 {
-                    sf::Image* sourceImage = new sf::Image;
-                    sourceImage->loadFromFile(targetFilePath.GetFileSystemPath());
-                    sourceImages.push_back(sourceImage);
+                    sf::Image* frameImage = new sf::Image;
+                    frameImage->loadFromFile(targetResizedFile.GetFileSystemPath());
+                    frameImages.push_back(frameImage);
 
                     ++frameCount;
                 }
@@ -138,7 +138,7 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
         }
 
         // Parse packing source files.
-        if (!sourceImages.empty())
+        if (!frameImages.empty())
         {
             EnsureDirectoryExists(targetPackingFile.GetDirectoryPath_utf8());
 
@@ -147,10 +147,9 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
             // Compute minimum width with trim for source images.
             // This is meant to handle frames with varying size.
             // All frames greater than this size can be trimmed.
-            Vector2i maxFrameImageSize = Vector2::Zero_i;
-            int maxTrimmedWidth = 0;
+            Vector2i maxFrameSize = Vector2::Zero_i;
 
-            for (const auto& sourceImage : sourceImages)
+            for (const auto& sourceImage : frameImages)
             {
                 int width = sourceImage->getSize().x;
                 int height = sourceImage->getSize().y;
@@ -172,10 +171,9 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
                 }
 
                 int trimmedWidth = width - horizontalTrim * 2;
-                maxTrimmedWidth = Max(maxTrimmedWidth, trimmedWidth);
 
-                maxFrameImageSize.x = Max(maxFrameImageSize.x, maxTrimmedWidth);
-                maxFrameImageSize.y = Max(maxFrameImageSize.y, height);
+                maxFrameSize.x = Max(maxFrameSize.x, trimmedWidth);
+                maxFrameSize.y = Max(maxFrameSize.y, height);
             }
 
             // Compute target size (align to the nearest power of 2).
@@ -185,8 +183,8 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
                 maxFrameCount = Max(frameCount, maxFrameCount);
             }
 
-            int width = maxFrameCount * maxFrameImageSize.x;
-            int height = (int)frameCountPerAnimation.size() * maxFrameImageSize.y;
+            int width = maxFrameCount * maxFrameSize.x;
+            int height = (int)frameCountPerAnimation.size() * maxFrameSize.y;
             Vector2u minTargetImageSize = Vector2u(width, height);
             Vector2u targetImageSize = Vector2u(2, 2);
 
@@ -207,30 +205,30 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
             // Fill target image with all subImages.
             int animationIndex = 0;
             int frameIndex = 0;
-            for (size_t i = 0; i < sourceImages.size(); ++i)
+            for (size_t i = 0; i < frameImages.size(); ++i)
             {
                 // If offset < 0 then the source is larger than the target destination.
                 // If offset > 0 then the source is smaller than the target destination.
                 int frameOffsetX = 0;
-                if ((int)sourceImages[i]->getSize().x != maxFrameImageSize.x)
-                    frameOffsetX = RoundNearestInt(RoundCeil((maxFrameImageSize.x - (int)sourceImages[i]->getSize().x) * 0.5f));
+                if ((int)frameImages[i]->getSize().x != maxFrameSize.x)
+                    frameOffsetX = RoundNearestInt(RoundCeil((maxFrameSize.x - (int)frameImages[i]->getSize().x) * 0.5f));
 
                 int frameOffsetY = 0;
-                if ((int)sourceImages[i]->getSize().y != maxFrameImageSize.y)
-                    frameOffsetY = RoundNearestInt(RoundCeil((maxFrameImageSize.y - (int)sourceImages[i]->getSize().y) * 0.5f));
+                if ((int)frameImages[i]->getSize().y != maxFrameSize.y)
+                    frameOffsetY = RoundNearestInt(RoundCeil((maxFrameSize.y - (int)frameImages[i]->getSize().y) * 0.5f));
 
                 int frameDestOffsetX = Max<int>(0, frameOffsetX);
                 int frameDestOffsetY = Max<int>(0, frameOffsetY);
                 Vector2u frameRectOffset = Vector2u(Absolute(Min<int>(0, frameOffsetX)), Absolute(Min<int>(0, frameOffsetY)));
-                Vector2u frameRectSize = sourceImages[i]->getSize() - Vector2u(frameRectOffset.x * 2, frameRectOffset.y * 2);
+                Vector2u frameRectSize = frameImages[i]->getSize() - Vector2u(frameRectOffset.x * 2, frameRectOffset.y * 2);
                 sf::IntRect frameRect = sf::IntRect(Vector2i(frameRectOffset), Vector2i(frameRectSize));
 
-                targetImage->copy(*sourceImages[i],
-                    frameIndex * maxFrameImageSize.x + frameDestOffsetX,
-                    animationIndex * maxFrameImageSize.y + frameDestOffsetY,
+                targetImage->copy(*frameImages[i],
+                    frameIndex * maxFrameSize.x + frameDestOffsetX,
+                    animationIndex * maxFrameSize.y + frameDestOffsetY,
                     frameRect);
-                ++frameIndex;
 
+                ++frameIndex;
                 if (frameIndex >= frameCountPerAnimation[animationIndex])
                 {
                     ++animationIndex;
@@ -242,18 +240,18 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
             targetImage->saveToFile(targetPackingFile.GetFileSystemPath());
 
             // Release data.
-            ClearStdVector(sourceImages);
+            ClearStdVector(frameImages);
             SafeDelete(targetImage);
 
             // Generate Notes file.
             FileInfo resultNotesPath = FileInfo::FromString_utf8(StringFormat("{0}.txt", CombinePaths(targetPackingFile.GetDirectoryPath_utf8(), targetPackingFile.GetPrettyName())));
             
             RemoveFile(resultNotesPath.GetFileSystemPath());
-            WriteInFileEndline(resultNotesPath.GetFileSystemPath(), StringFormat("Frame Size: {0} x {1}", maxFrameImageSize.x, maxFrameImageSize.y));
+            WriteInFileEndline(resultNotesPath.GetFileSystemPath(), StringFormat("Frame Size: {0} x {1}", maxFrameSize.x, maxFrameSize.y));
             WriteInFileEndline(resultNotesPath.GetFileSystemPath(), StringFormat("Scale: {0}%", m_resizeScale));
             WriteInFileEndline(resultNotesPath.GetFileSystemPath(), StringFormat("Filter: {0}", resizeFilter));
 
-            GetLogEngine()->Print(ELog::Info, ELogEngine::Editor, StringFormat("Imported ImageSet Succesful, frame size = {0}", maxFrameImageSize));
+            GetLogEngine()->Print(ELog::Info, ELogEngine::Editor, StringFormat("Imported ImageSet Succesful, frame size = {0}", maxFrameSize));
         }
     }
 

@@ -154,7 +154,9 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
                 int width = sourceImage->getSize().x;
                 int height = sourceImage->getSize().y;
                 bool canTrimHorizontally = true;
+                bool canTrimVertically = true;
                 int horizontalTrim = 0;
+                int verticalTrim = 0;
 
                 while (canTrimHorizontally && horizontalTrim * 2 < width)
                 {
@@ -170,13 +172,29 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
                     }
                 }
 
+                while (canTrimVertically && verticalTrim * 2 < height)
+                {
+                    for (int x = 0; x < width; ++x)
+                    {
+                        canTrimVertically &= sourceImage->getPixel(x, verticalTrim) == sf::Color::Transparent;
+                        canTrimVertically &= sourceImage->getPixel(x, height - 1 - verticalTrim) == sf::Color::Transparent;
+                    }
+
+                    if (canTrimVertically)
+                    {
+                        ++verticalTrim;
+                    }
+                }
+
                 // Trimmed size is the minimum size we could use after a trim.
                 // Ideal size will ensure we add 1 transparent pixel around each frame.
                 int trimmedWidth = width - horizontalTrim * 2;
+                int trimmedHeight = height - verticalTrim * 2;
                 int idealWidth = trimmedWidth + 2;
+                int idealHeight = trimmedHeight + 2;
 
                 maxFrameSize.x = Max(maxFrameSize.x, idealWidth);
-                maxFrameSize.y = Max(maxFrameSize.y, height);
+                maxFrameSize.y = Max(maxFrameSize.y, idealHeight);
             }
 
             // Force a multiple of 2.

@@ -176,6 +176,10 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
                 maxFrameSize.y = Max(maxFrameSize.y, height);
             }
 
+            // Force a multiple of 2.
+            maxFrameSize.x = maxFrameSize.x % 2 == 1 ? maxFrameSize.x + 1 : maxFrameSize.x;
+            maxFrameSize.y = maxFrameSize.y % 2 == 1 ? maxFrameSize.y + 1 : maxFrameSize.y;
+
             // Compute target size (align to the nearest power of 2).
             int maxFrameCount = 0;
             for (const auto& frameCount : frameCountPerAnimation)
@@ -211,11 +215,11 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
                 // If offset > 0 then the source is smaller than the target destination.
                 int frameOffsetX = 0;
                 if ((int)frameImages[i]->getSize().x != maxFrameSize.x)
-                    frameOffsetX = RoundNearestInt(RoundCeil((maxFrameSize.x - (int)frameImages[i]->getSize().x) * 0.5f));
+                    frameOffsetX = RoundNearestInt(RoundFloor((maxFrameSize.x - (int)frameImages[i]->getSize().x) * 0.5f));
 
                 int frameOffsetY = 0;
                 if ((int)frameImages[i]->getSize().y != maxFrameSize.y)
-                    frameOffsetY = RoundNearestInt(RoundCeil((maxFrameSize.y - (int)frameImages[i]->getSize().y) * 0.5f));
+                    frameOffsetY = RoundNearestInt(RoundFloor((maxFrameSize.y - (int)frameImages[i]->getSize().y) * 0.5f));
 
                 int frameDestOffsetX = Max<int>(0, frameOffsetX);
                 int frameDestOffsetY = Max<int>(0, frameOffsetY);

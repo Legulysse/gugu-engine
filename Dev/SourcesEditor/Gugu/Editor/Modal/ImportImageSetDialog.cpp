@@ -170,9 +170,12 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
                     }
                 }
 
+                // Trimmed size is the minimum size we could use after a trim.
+                // Ideal size will ensure we add 1 transparent pixel around each frame.
                 int trimmedWidth = width - horizontalTrim * 2;
+                int idealWidth = trimmedWidth + 2;
 
-                maxFrameSize.x = Max(maxFrameSize.x, trimmedWidth);
+                maxFrameSize.x = Max(maxFrameSize.x, idealWidth);
                 maxFrameSize.y = Max(maxFrameSize.y, height);
             }
 

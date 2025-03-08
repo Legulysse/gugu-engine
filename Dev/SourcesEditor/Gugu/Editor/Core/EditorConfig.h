@@ -12,8 +12,10 @@ namespace gugu {
 
 struct EditorConfig
 {
-    std::string defaultProjectFilePath = "";
+    std::string defaultProjectFilePath;
     size_t maxUndoStateCount = 100;
+
+    std::string imageMagickDirectoryPath;
 
 public:
 

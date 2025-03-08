@@ -103,7 +103,14 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
     // - We always apply an unsharp pass after the resize.
 
     // Constants
-    std::string imageMagickPath = "../ImageMagick/magick.exe";
+#ifdef GUGU_OS_WINDOWS
+    std::string imageMagickPath = CombinePaths(GetEditor()->GetEditorConfig().imageMagickDirectoryPath, "magick.exe");
+#endif
+    if (!FileExists(imageMagickPath))
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Editor, StringFormat("ImageMagick executable not found : {0}", imageMagickPath));
+        return;
+    }
 
     unsigned int maxTextureUnitSize = sf::Texture::getMaximumSize();
     Vector2u maxTextureSize = Vector2u(maxTextureUnitSize, maxTextureUnitSize);

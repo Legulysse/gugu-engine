@@ -29,6 +29,8 @@ bool EditorConfig::LoadFromFile(const std::string& pathFile)
     defaultProjectFilePath = rootNode.child("DefaultProjectFilePath").attribute("value").as_string(defaultProjectFilePath.c_str());
     maxUndoStateCount = Max<size_t>(1, rootNode.child("MaxUndoStateCount").attribute("value").as_ullong(maxUndoStateCount));
 
+    imageMagickDirectoryPath = rootNode.child("ImageMagickDirectoryPath").attribute("value").as_string(imageMagickDirectoryPath.c_str());
+
     return true;
 }
 

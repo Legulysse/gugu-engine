@@ -33,8 +33,8 @@ int main(int argc, char* argv[])
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
     config.pathAssets = "Assets";
-    config.defaultFont = "Roboto-Regular.ttf";
-    config.debugFont = "Roboto-Regular.ttf";
+    config.defaultFont = "Editor-Roboto-Regular.ttf";
+    config.debugFont = "Editor-Roboto-Regular.ttf";
     config.windowWidth = 1440;
     config.windowHeight = 900;
     config.maximizeWindow = true;

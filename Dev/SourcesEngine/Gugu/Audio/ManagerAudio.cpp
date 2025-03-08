@@ -104,52 +104,56 @@ int ManagerAudio::GetMasterVolume100() const
     return (int)(m_masterVolume * 100.f);
 }
 
-bool ManagerAudio::PlaySoundCue(const std::string& _strFile)
+bool ManagerAudio::PlaySoundCue(const std::string& soundCueID)
 {
-    SoundCue* pSoundCue = GetResources()->GetSoundCue(_strFile);
-    if (!pSoundCue)
-        return false;
-
-    SoundParameters kParameters;
-    if (!pSoundCue->GetRandomSound(kParameters))
-        return false;
-
-    return PlaySound(kParameters);
+    return PlaySoundCue(GetResources()->GetSoundCue(soundCueID));
 }
 
-bool ManagerAudio::PlaySound(const std::string& _strFile, float _fVolume, int _iGroup)
+bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
 {
-    SoundParameters kParameters;
-    kParameters.sound = GetResources()->GetSound(_strFile);
-    kParameters.volume = _fVolume;
-    kParameters.group = _iGroup;
+    if (!soundCue)
+        return false;
 
-    return PlaySound(kParameters);
+    SoundParameters parameters;
+    if (!soundCue->GetRandomSound(parameters))
+        return false;
+
+    return PlaySound(parameters);
 }
 
-bool ManagerAudio::PlaySound(const SoundParameters& _kParameters)
+bool ManagerAudio::PlaySound(const std::string& soundID, float volume, int group)
 {
-    Sound* pSound = _kParameters.sound;
-    if (!pSound)
-        pSound = GetResources()->GetSound(_kParameters.soundID);
+    SoundParameters parameters;
+    parameters.sound = GetResources()->GetSound(soundID);
+    parameters.volume = volume;
+    parameters.group = group;
 
-    if (pSound)
+    return PlaySound(parameters);
+}
+
+bool ManagerAudio::PlaySound(const SoundParameters& parameters)
+{
+    Sound* sound = parameters.sound;
+    if (!sound)
+        sound = GetResources()->GetSound(parameters.soundID);
+
+    if (sound)
     {
-        SoundInstance* pInstance = &m_soundInstances[m_soundIndex];
-        pInstance->Reset();
-        pInstance->SetSound(pSound);
-        pInstance->SetVolume(_kParameters.volume);
-        pInstance->SetGroup(_kParameters.group);
+        SoundInstance* soundInstance = &m_soundInstances[m_soundIndex];
+        soundInstance->Reset();
+        soundInstance->SetSound(sound);
+        soundInstance->SetVolume(parameters.volume);
+        soundInstance->SetGroup(parameters.group);
 
-        if (_kParameters.pitchLowerOffset != 0 || _kParameters.pitchUpperOffset != 0)
+        if (parameters.pitchLowerOffset != 0 || parameters.pitchUpperOffset != 0)
         {
             // TODO: sanitize parameters when loading the soundcue.
-            float pitchLowerOffset = Absolute(_kParameters.pitchLowerOffset) * -1.f;
-            float pitchUpperOffset = Absolute(_kParameters.pitchUpperOffset);
-            pInstance->SetPitch(1.f + GetRandomf(pitchLowerOffset, pitchUpperOffset));
+            float pitchLowerOffset = Absolute(parameters.pitchLowerOffset) * -1.f;
+            float pitchUpperOffset = Absolute(parameters.pitchUpperOffset);
+            soundInstance->SetPitch(1.f + GetRandomf(pitchLowerOffset, pitchUpperOffset));
         }
 
-        pInstance->Play();
+        soundInstance->Play();
 
         ++m_soundIndex;
         if (m_soundIndex == m_soundInstances.size())
@@ -161,27 +165,27 @@ bool ManagerAudio::PlaySound(const SoundParameters& _kParameters)
     return false;
 }
 
-bool ManagerAudio::PlayMusic(const std::string& _strFile, float _fVolume, float _fFade)
+bool ManagerAudio::PlayMusic(const std::string& musicID, float volume, float fade)
 {
-    MusicParameters kParameters;
-    kParameters.music = GetResources()->GetMusic(_strFile);
-    kParameters.volume = _fVolume;
-    kParameters.fadeOut = _fFade;
-    kParameters.fadeIn = _fFade;
+    MusicParameters parameters;
+    parameters.music = GetResources()->GetMusic(musicID);
+    parameters.volume = volume;
+    parameters.fadeOut = fade;
+    parameters.fadeIn = fade;
 
-    return PlayMusic(kParameters);
+    return PlayMusic(parameters);
 }
 
-bool ManagerAudio::PlayMusic(const MusicParameters& _kParameters)
+bool ManagerAudio::PlayMusic(const MusicParameters& parameters)
 {
-    if (_kParameters.layer < 0 || _kParameters.layer >= (int)m_musicLayers.size())
+    if (parameters.layer < 0 || parameters.layer >= (int)m_musicLayers.size())
         return false;
 
-    if (_kParameters.music || GetResources()->HasResource(_kParameters.musicID))
+    if (parameters.music || GetResources()->HasResource(parameters.musicID))
     {
-        MusicLayer* pLayer = &m_musicLayers[_kParameters.layer];
-        pLayer->SetNext(_kParameters);
-        pLayer->FadeToNext();
+        MusicLayer* musicLayer = &m_musicLayers[parameters.layer];
+        musicLayer->SetNext(parameters);
+        musicLayer->FadeToNext();
 
         return true;
     }
@@ -189,38 +193,38 @@ bool ManagerAudio::PlayMusic(const MusicParameters& _kParameters)
     return false;
 }
 
-bool ManagerAudio::PlayMusicList(const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist, int layer)
+bool ManagerAudio::PlayMusicList(const std::vector<MusicParameters>& playlist, bool loopPlaylist, int layer)
 {
     if (layer < 0 || layer >= (int)m_musicLayers.size())
         return false;
 
-    MusicLayer* pLayer = &m_musicLayers[layer];
-    pLayer->SetPlayList(_vecPlaylist, loopPlaylist);
-    pLayer->FadeToNext();
+    MusicLayer* musicLayer = &m_musicLayers[layer];
+    musicLayer->SetPlayList(playlist, loopPlaylist);
+    musicLayer->FadeToNext();
 
     return true;
 }
 
-bool ManagerAudio::StopMusic(float _fFade, int layer)
+bool ManagerAudio::StopMusic(float fade, int layer)
 {
     if (layer < 0 || layer >= (int)m_musicLayers.size())
         return false;
 
-    MusicLayer* pLayer = &m_musicLayers[layer];
-    if (_fFade > 0.f)
+    MusicLayer* musicLayer = &m_musicLayers[layer];
+    if (fade > 0.f)
     {
-        MusicParameters kParameters;
-        kParameters.music = nullptr;
-        kParameters.volume = 0.f;
-        kParameters.fadeOut = _fFade;
-        kParameters.fadeIn = _fFade;
+        MusicParameters parameters;
+        parameters.music = nullptr;
+        parameters.volume = 0.f;
+        parameters.fadeOut = fade;
+        parameters.fadeIn = fade;
 
-        pLayer->SetNext(kParameters);
-        pLayer->FadeToNext();
+        musicLayer->SetNext(parameters);
+        musicLayer->FadeToNext();
     }
     else
     {
-        pLayer->Reset();
+        musicLayer->Reset();
     }
 
     return true;

@@ -22,6 +22,7 @@
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ParticleEffectPanel.h"
 #include "Gugu/Editor/Panel/Document/TexturePanel.h"
+#include "Gugu/Editor/Panel/Document/SoundCuePanel.h"
 #include "Gugu/Editor/Panel/Document/ElementWidgetPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
@@ -567,7 +568,7 @@ void Editor::Update(const DeltaTime& dt)
     ImGui::End();
 
     // Update Properties panel.
-    if (ImGui::Begin("Properties", nullptr))
+    if (ImGui::Begin("Properties", nullptr))    // Note: If I use NoSavedSettings here, the panel itself will lose its docking/size properties.
     {
         if (m_lastActiveDocument)
         {
@@ -628,6 +629,10 @@ bool Editor::OpenDocument(const std::string& resourceID)
     else if (resourceType == EResourceType::Texture)
     {
         newDocument = new TexturePanel(GetResources()->GetTexture(resourceID));
+    }
+    else if (resourceType == EResourceType::SoundCue)
+    {
+        newDocument = new SoundCuePanel(GetResources()->GetSoundCue(resourceID));
     }
     else if (resourceType == EResourceType::ElementWidget)
     {

@@ -201,7 +201,8 @@ EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) 
     //{
     //    return EResourceType::Music;
     //}
-    else if (fileInfo.HasExtension("sound.xml") || fileInfo.HasExtension("sound"))
+    else if (fileInfo.HasExtension("soundcue.xml") || fileInfo.HasExtension("soundcue")
+        || fileInfo.HasExtension("sound.xml") || fileInfo.HasExtension("sound"))
     {
         return EResourceType::SoundCue;
     }

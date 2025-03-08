@@ -23,6 +23,8 @@ protected:
 
     virtual void UpdateModalImpl(const DeltaTime& dt) override;
 
+    void ImportImageSet(const std::string& resizeFilter);
+
 protected:
 
     std::string m_sourceDirectory;

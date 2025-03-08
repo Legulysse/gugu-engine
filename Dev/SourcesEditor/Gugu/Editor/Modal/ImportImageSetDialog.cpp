@@ -7,6 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Editor/Editor.h"
+
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Platform.h"
@@ -28,10 +30,21 @@ ImportImageSetDialog::ImportImageSetDialog()
     , m_resizeScale(100.f)
     , m_filterIndex(0)
 {
-    // TODO: default directories
-    m_sourceDirectory = "../ImportTest/warrior_source";
-    m_targetDirectory = "../ImportTest/warrior_source_packed";
+    // Default settings.
+    m_sourceDirectory = "../PlaceholderSourceDirectory";
+    m_targetDirectory = "../PlaceholderTargetDirectory";
     m_targetTextureName = "ImageSetTexture.png";
+
+    // User settings.
+    if (!GetEditor()->GetUserSettings().importImageSetSourceDirectoryPath.empty())
+    {
+        m_sourceDirectory = GetEditor()->GetUserSettings().importImageSetSourceDirectoryPath;
+    }
+
+    if (!GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath.empty())
+    {
+        m_targetDirectory = GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath;
+    }
 }
 
 ImportImageSetDialog::~ImportImageSetDialog()
@@ -277,6 +290,11 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
             WriteInFileEndline(resultNotesPath.GetFileSystemPath(), StringFormat("Filter: {0}", resizeFilter));
 
             GetLogEngine()->Print(ELog::Info, ELogEngine::Editor, StringFormat("Imported ImageSet Succesful, frame size = {0}", maxFrameSize));
+
+            // Save settings.
+            GetEditor()->GetUserSettings().importImageSetSourceDirectoryPath = m_sourceDirectory;
+            GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath = m_targetDirectory;
+            GetEditor()->SaveUserSettings();
         }
     }
 

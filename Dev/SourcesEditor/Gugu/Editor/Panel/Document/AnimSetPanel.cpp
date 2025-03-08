@@ -327,14 +327,14 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     }
 
     // Animations list.
-    ImGuiTableFlags animationTableflags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /*| ImGuiTableFlags_NoPadInnerX */;
+    ImGuiTableFlags animationTableflags = ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /*| ImGuiTableFlags_NoPadInnerX */;
     if (ImGui::BeginTable("_ANIMATIONS_TABLE", 5, animationTableflags))
     {
         ImGuiTableColumnFlags animationColumnFlags = ImGuiTableColumnFlags_WidthFixed;
-        ImGui::TableSetupColumn("name", animationColumnFlags, 120.f);
+        ImGui::TableSetupColumn("name", animationColumnFlags, 160.f);
         ImGui::TableSetupColumn("play", animationColumnFlags, 30.f);
-        ImGui::TableSetupColumn("duration", animationColumnFlags, 50.f);
-        ImGui::TableSetupColumn("actions", animationColumnFlags, 40.f);
+        ImGui::TableSetupColumn("duration", animationColumnFlags, 60.f);
+        ImGui::TableSetupColumn("actions", animationColumnFlags, 50.f);
         ImGui::TableSetupColumn("remove", animationColumnFlags, 40.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
@@ -346,23 +346,6 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
             float row_min_height = ImGui::GetFrameHeight();
             ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
-
-            if (animationIndex == 0)
-            {
-                // Setup ItemWidth once.
-                int headerIndex = 0;
-
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-            }
 
             Animation* animation = animations[animationIndex];
 

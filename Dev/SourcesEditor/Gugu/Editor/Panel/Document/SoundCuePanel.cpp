@@ -35,8 +35,9 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
         GetAudio()->PlaySoundCue(m_soundCue);
     }
 
-    ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY;
-    if (ImGui::BeginTable("_SOUND_TABLE", 5, tableFlags))
+    // Note: NoSavedSettings is already applied on the whole document panel, but I keep it here to match property tables.
+    ImGuiTableFlags tableFlags = ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY;
+    if (ImGui::BeginTable("_SOUNDS_TABLE", 5, tableFlags))
     {
         ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
         ImGui::TableSetupColumn("#", columnFlags, 30.f);

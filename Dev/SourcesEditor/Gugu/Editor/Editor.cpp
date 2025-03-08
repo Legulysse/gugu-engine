@@ -568,7 +568,7 @@ void Editor::Update(const DeltaTime& dt)
     ImGui::End();
 
     // Update Properties panel.
-    if (ImGui::Begin("Properties", nullptr))
+    if (ImGui::Begin("Properties", nullptr))    // Note: If I use NoSavedSettings here, the panel itself will lose its docking/size properties.
     {
         if (m_lastActiveDocument)
         {

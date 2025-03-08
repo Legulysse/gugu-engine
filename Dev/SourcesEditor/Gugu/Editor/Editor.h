@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Editor/Core/EditorConfig.h"
+#include "Gugu/Editor/Core/UserSettings.h"
 
 #include "Gugu/Misc/Pattern/Singleton.h"
 
@@ -57,6 +58,9 @@ public:
     bool IsProjectOpen() const;
     const ProjectSettings* GetProjectSettings() const;
 
+    bool SaveUserSettings() const;
+    UserSettings& GetUserSettings();
+
     bool OpenModalDialog(BaseModalDialog* modalDialog);
     bool OpenDocument(const std::string& resourceID);
     bool CloseDocument(const std::string& resourceID, bool forceIgnoreDirty);
@@ -72,6 +76,8 @@ public:
     EditorClipboard* GetEditorClipboard() const;
 
 private:
+
+    bool LoadUserSettings();
 
     bool RaiseCheckDirtyDocuments();
     void CancelClosingDirtyDocuments();
@@ -97,6 +103,8 @@ private:
 
     ProjectSettings* m_project;
     std::string m_pendingOpenProjectFilePath;
+
+    UserSettings m_userSettings;
 
     bool m_checkDirtyDocuments;
     bool m_pendingCloseEditor;

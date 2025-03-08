@@ -134,11 +134,11 @@ void Demo::OnButtonClick(int _eButton)
 
     if (_eButton == EButton::SoundBubblesFive)
     {
-        GetAudio()->PlaySoundCue("Bubbles_Five.sound");
+        GetAudio()->PlaySoundCue("Bubbles_Five.soundcue.xml");
     }
     else if (_eButton == EButton::SoundBubblesPitch)
     {
-        GetAudio()->PlaySoundCue("Bubbles_Pitch.sound");
+        GetAudio()->PlaySoundCue("Bubbles_Pitch.soundcue.xml");
     }
     else if (_eButton == EButton::TrackColors)
     {

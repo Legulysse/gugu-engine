@@ -25,10 +25,23 @@
 
 namespace gugu {
 
+namespace impl {
+
+enum EResizeFilter
+{
+    RobidouxSharp,
+    Jinc,
+    Triangle,
+};
+
+static const std::vector<std::string> ResizeFilters = { "RobidouxSharp", "Jinc", "Triangle" };
+
+}   // namespace impl
+
 ImportImageSetDialog::ImportImageSetDialog()
     : BaseModalDialog("Import ImageSet")
     , m_resizeScale(100.f)
-    , m_filterIndex(0)
+    , m_resizeFilterIndex(0)
 {
     // Default settings.
     m_sourceDirectory = "../PlaceholderSourceDirectory";
@@ -44,6 +57,17 @@ ImportImageSetDialog::ImportImageSetDialog()
     if (!GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath.empty())
     {
         m_targetDirectory = GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath;
+    }
+
+    if (ApproxSuperiorToZero(GetEditor()->GetUserSettings().importImageSetResizeScale, math::Epsilon3))
+    {
+        m_resizeScale = GetEditor()->GetUserSettings().importImageSetResizeScale;
+    }
+
+    if (!GetEditor()->GetUserSettings().importImageSetResizeFilter.empty())
+    {
+        m_resizeFilterIndex = StdVectorIndexOf(impl::ResizeFilters, GetEditor()->GetUserSettings().importImageSetResizeFilter);
+        m_resizeFilterIndex = m_resizeFilterIndex == system::InvalidIndex ? 0 : m_resizeFilterIndex;
     }
 }
 
@@ -61,18 +85,11 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
 
     ImGui::InputFloat("Scale (%)", &m_resizeScale);
 
-    enum EFilter
-    {
-        RobidouxSharp,
-        Jinc,
-        Triangle,
-    };
-    static const std::vector<std::string> filters = { "RobidouxSharp", "Jinc", "Triangle" };
 
-    size_t dummyIndex = static_cast<size_t>(m_filterIndex);
-    if (ImGui::Combo("Filter", filters, &dummyIndex))
+    size_t dummyIndex = static_cast<size_t>(m_resizeFilterIndex);
+    if (ImGui::Combo("Filter", impl::ResizeFilters, &dummyIndex))
     {
-        m_filterIndex = static_cast<EFilter>(dummyIndex);
+        m_resizeFilterIndex = static_cast<impl::EResizeFilter>(dummyIndex);
     }
 
     ImGui::Spacing();
@@ -84,7 +101,7 @@ void ImportImageSetDialog::UpdateModalImpl(const DeltaTime& dt)
     ImGui::SameLine();
     if (ImGui::Button("Import"))
     {
-        ImportImageSet(filters[m_filterIndex]);
+        ImportImageSet(impl::ResizeFilters[m_resizeFilterIndex]);
         CloseModalImpl();
     }
 }
@@ -101,6 +118,13 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
     // - We want a final texture size aligned on a power of 2 (not necessarily squared).
     // - ImageMagick has been setup in a predefined directory.
     // - We always apply an unsharp pass after the resize.
+
+    // Save settings.
+    GetEditor()->GetUserSettings().importImageSetSourceDirectoryPath = m_sourceDirectory;
+    GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath = m_targetDirectory;
+    GetEditor()->GetUserSettings().importImageSetResizeScale = m_resizeScale;
+    GetEditor()->GetUserSettings().importImageSetResizeFilter = resizeFilter;
+    GetEditor()->SaveUserSettings();
 
     // Constants
 #ifdef GUGU_OS_WINDOWS
@@ -319,12 +343,7 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
         WriteInFileEndline(resultNotesPath.GetFileSystemPath(), StringFormat("Filter: {0}", resizeFilter));
 
         GetLogEngine()->Print(ELog::Info, ELogEngine::Editor, StringFormat("Imported ImageSet Succesful, frame size = {0}", maxFrameSize));
-
-        // Save settings.
-        GetEditor()->GetUserSettings().importImageSetSourceDirectoryPath = m_sourceDirectory;
-        GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath = m_targetDirectory;
-        GetEditor()->SaveUserSettings();
     }
 }
 
-}   //namespace gugu
+}   // namespace gugu

@@ -26,9 +26,11 @@ bool UserSettings::LoadFromFile(const std::string& pathFile)
     if (!rootNode)
         return false;
 
-    lastProjectFilePath = rootNode.child("LastProjectFilePath").attribute("value").value();
-    importImageSetSourceDirectoryPath = rootNode.child("ImportImageSetSourceDirectoryPath").attribute("value").value();
-    importImageSetTargetDirectoryPath = rootNode.child("ImportImageSetTargetDirectoryPath").attribute("value").value();
+    lastProjectFilePath = rootNode.child("LastProjectFilePath").attribute("value").as_string();
+    importImageSetSourceDirectoryPath = rootNode.child("ImportImageSetSourceDirectoryPath").attribute("value").as_string();
+    importImageSetTargetDirectoryPath = rootNode.child("ImportImageSetTargetDirectoryPath").attribute("value").as_string();
+    importImageSetResizeScale = rootNode.child("ImportImageSetResizeScale").attribute("value").as_float();
+    importImageSetResizeFilter = rootNode.child("ImportImageSetResizeFilter").attribute("value").as_string();
 
     return true;
 }
@@ -37,10 +39,13 @@ bool UserSettings::SaveToFile(const std::string& pathFile) const
 {
     pugi::xml_document document;
     pugi::xml_node rootNode = document.append_child("UserSettings");
+    rootNode.append_attribute("serializationVersion").set_value(1);
 
     rootNode.append_child("LastProjectFilePath").append_attribute("value").set_value(lastProjectFilePath.c_str());
     rootNode.append_child("ImportImageSetSourceDirectoryPath").append_attribute("value").set_value(importImageSetSourceDirectoryPath.c_str());
     rootNode.append_child("ImportImageSetTargetDirectoryPath").append_attribute("value").set_value(importImageSetTargetDirectoryPath.c_str());
+    rootNode.append_child("ImportImageSetResizeScale").append_attribute("value").set_value(importImageSetResizeScale);
+    rootNode.append_child("ImportImageSetResizeFilter").append_attribute("value").set_value(importImageSetResizeFilter.c_str());
 
     return document.save_file(FileInfo::FromString_utf8(pathFile).GetFileSystemPath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
 }

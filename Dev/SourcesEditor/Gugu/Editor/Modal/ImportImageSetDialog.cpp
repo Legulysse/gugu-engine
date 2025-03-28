@@ -136,6 +136,12 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
         return;
     }
 
+    if (m_sourceDirectory == m_targetDirectory || m_sourceDirectory.empty() || m_targetDirectory.empty())
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Editor, StringFormat("Source and target directories must be different and not empty : source=\"{0}\" target=\"{1}\"", m_sourceDirectory, m_targetDirectory));
+        return;
+    }
+
     unsigned int maxTextureUnitSize = sf::Texture::getMaximumSize();
     Vector2u maxTextureSize = Vector2u(maxTextureUnitSize, maxTextureUnitSize);
 

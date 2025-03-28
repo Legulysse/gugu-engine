@@ -54,6 +54,21 @@ void WriteInFileEndline(const std::string& _strFileName, const std::string& _str
     }
 }
 
+bool ExecuteCommand(std::string_view executablePath, std::string_view arguments)
+{
+#if defined(GUGU_OS_WINDOWS)
+    std::string normalizedExecutablePath(executablePath);
+    StdStringReplaceSelf(normalizedExecutablePath, system::PathSeparator, '\\');
+
+    // Executable path should be wrapped with quotes, and the whole commandline should be wrapped in quotes.
+    std::string normalizedCommand = "\"\"" + normalizedExecutablePath + "\" " + std::string(arguments) + "\"";
+
+    // Note: system() is a blocking call, whereas ShellExecute is not.
+    int result = ::system(normalizedCommand.c_str());
+    return result == 0;
+#endif
+}
+
 void OpenFileExplorer(std::string_view path)
 {
 #if defined(GUGU_OS_WINDOWS)

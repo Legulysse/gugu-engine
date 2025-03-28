@@ -14,6 +14,7 @@ void WriteInConsole(const std::string& _strLine, bool printInIDE);
 void WriteInConsoleEndline(const std::string& _strLine, bool printInIDE);
 void WriteInFileEndline(const std::string& _strFileName, const std::string& _strLine);
 
+bool ExecuteCommand(std::string_view executablePath, std::string_view arguments);
 void OpenFileExplorer(std::string_view path);
 void OpenWebBrowser(std::string_view url);
 

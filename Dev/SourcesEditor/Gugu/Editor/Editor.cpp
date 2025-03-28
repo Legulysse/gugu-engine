@@ -14,6 +14,7 @@
 #include "Gugu/Editor/Modal/AboutDialog.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
+#include "Gugu/Editor/Modal/ImportImageSetDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/OutputLogPanel.h"
 #include "Gugu/Editor/Panel/DependenciesPanel.h"
@@ -35,6 +36,7 @@
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Container.h"
+#include "Gugu/System/Platform.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -100,17 +102,15 @@ void Editor::Init(const EditorConfig& editorConfig)
     inputs->RegisterInput("Undo", inputs->BuildKeyboardEvent(sf::Keyboard::Z, true, false, false));
     inputs->RegisterInput("Redo", inputs->BuildKeyboardEvent(sf::Keyboard::Y, true, false, false));
 
-    // TODO: Save UserSettings
-    // TODO: FileExists utility.
-    // Open last project if available.
-    UserSettings m_userSettings;
-    bool hasUserSettings = m_userSettings.LoadFromFile("User/UserSettings.xml");
+    // Load user settings.
+    LoadUserSettings();
 
-    if (hasUserSettings && !m_userSettings.lastProjectFilePath.empty())
+    // Open last project if available.
+    if ( FileExists(m_userSettings.lastProjectFilePath))
     {
         OpenProject(m_userSettings.lastProjectFilePath);
     }
-    else if (m_editorConfig.defaultProjectFilePath != "")
+    else if (FileExists(m_editorConfig.defaultProjectFilePath))
     {
         OpenProject(m_editorConfig.defaultProjectFilePath);
     }
@@ -118,6 +118,7 @@ void Editor::Init(const EditorConfig& editorConfig)
 
 void Editor::Release()
 {
+    SaveUserSettings();
     CloseProjectImpl();
 
     ClearStdVector(m_modalDialogs);
@@ -148,6 +149,8 @@ void Editor::OpenProjectImpl(const std::string& projectPathFile)
 
         if (m_project->LoadFromFile(projectPathFile))
         {
+            m_userSettings.lastProjectFilePath = projectPathFile;
+
             // Parse assets.
             GetResources()->ParseDirectory(m_project->projectAssetsPath);
 
@@ -209,6 +212,22 @@ bool Editor::IsProjectOpen() const
 const ProjectSettings* Editor::GetProjectSettings() const
 {
     return m_project;
+}
+
+bool Editor::LoadUserSettings()
+{
+    return m_userSettings.LoadFromFile("User/UserSettings.xml");
+}
+
+bool Editor::SaveUserSettings() const
+{
+    EnsureDirectoryExists("User");
+    return m_userSettings.SaveToFile("User/UserSettings.xml");
+}
+
+UserSettings& Editor::GetUserSettings()
+{
+    return m_userSettings;
 }
 
 bool Editor::OnSFEvent(const sf::Event& event)
@@ -340,6 +359,12 @@ void Editor::Update(const DeltaTime& dt)
             if (ImGui::MenuItem("Migrate Resources"))
             {
                 MigrateResources();
+            }
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("Import ImageSet"))
+            {
+                GetEditor()->OpenModalDialog(new ImportImageSetDialog());
             }
 
             ImGui::EndMenu();

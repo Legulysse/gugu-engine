@@ -110,16 +110,29 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     Settings.antialiasingLevel = 2;  // Request 2 levels of antialiasing
 
     //Create main window
-    m_sfWindow->create(sf::VideoMode(config.windowWidth, config.windowHeight, 32), config.applicationName, sf::Style::Default, Settings);
+    sf::Uint32 windowStyle = sf::Style::Default;
+    int windowWidth = config.windowWidth;
+    int windowHeight = config.windowHeight;
+
+    if (config.fullscreen)
+    {
+        // sf::VideoMode::getDesktopMode() gives the current desktop resolution (ignoring potential scaling so its safe to use as-is).
+        // sf::VideoMode::getFullscreenModes() could be used to provide a settings menu with a resolution selection.
+        windowStyle = sf::Style::Fullscreen;
+        windowWidth = sf::VideoMode::getDesktopMode().width;
+        windowHeight = sf::VideoMode::getDesktopMode().height;
+    }
+
+    m_sfWindow->create(sf::VideoMode(windowWidth, windowHeight, 32), config.applicationName, windowStyle, Settings);
     m_sfWindow->setFramerateLimit(config.framerateLimit);
     m_sfWindow->setVerticalSyncEnabled(config.enableVerticalSync);
 
-#if defined(GUGU_OS_WINDOWS)
-    if (config.maximizeWindow)
+    if (config.maximizeWindow && !config.fullscreen)
     {
+#if defined(GUGU_OS_WINDOWS)
         ::ShowWindow(m_sfWindow->getSystemHandle(), SW_MAXIMIZE);
-    }
 #endif
+    }
 
     if (GetResources()->HasResource(config.applicationIcon))
     {

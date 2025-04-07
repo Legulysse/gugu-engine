@@ -7,11 +7,11 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Resources/ManagerResources.h"
 //#include "Gugu/System/Memory.h"
 //#include "Gugu/System/String.h"
 //#include "Gugu/Debug/Logger.h"
-
-//#include <SFML/Audio/SoundBuffer.hpp>
+#include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -45,11 +45,29 @@ const std::vector<AudioMixerGroup*>& AudioMixerGroup::GetChildGroups() const
 
 void AudioMixerGroup::Unload()
 {
+    m_volumeAttenuation = 1.f;
+    m_childGroups.clear();
 }
 
 bool AudioMixerGroup::LoadFromXml(const pugi::xml_document& document)
 {
     Unload();
+
+    pugi::xml_node rootNode = document.child("AudioMixerGroup");
+    if (!rootNode)
+        return false;
+
+    m_volumeAttenuation = rootNode.child("VolumeAttenuation").attribute("value").as_float(m_volumeAttenuation);
+
+    for (pugi::xml_node childMixerGroupNode = rootNode.child("ChildMixerGroups").child("ChildMixerGroup"); childMixerGroupNode; childMixerGroupNode = childMixerGroupNode.next_sibling("ChildMixerGroup"))
+    {
+        auto childMixerGroup = GetResources()->GetAudioMixerGroup(childMixerGroupNode.attribute("source").as_string());
+        if (childMixerGroup)
+        {
+            m_childGroups.push_back(childMixerGroup);
+        }
+    }
+
     return true;
 }
 

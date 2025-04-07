@@ -18,14 +18,14 @@ namespace gugu {
 
 AudioMixerGroupInstance::AudioMixerGroupInstance(AudioMixerGroup* mixerGroup)
     : m_mixerGroup(mixerGroup)
-    , m_parentGroup(nullptr)
+    , m_parentMixerGroupInstance(nullptr)
     , m_volume(1.f)
 {
 }
 
 AudioMixerGroupInstance::~AudioMixerGroupInstance()
 {
-    ClearStdVector(m_childGroups);
+    ClearStdVector(m_childMixerGroupInstances);
 }
 
 void AudioMixerGroupInstance::SetVolume(float volume)
@@ -42,28 +42,28 @@ float AudioMixerGroupInstance::ComputeMixedVolume(float volume) const
 {
     volume = volume * m_mixerGroup->GetVolumeAttenuation() * m_volume;
 
-    if (m_parentGroup)
+    if (m_parentMixerGroupInstance)
     {
-        volume = m_parentGroup->ComputeMixedVolume(volume);
+        volume = m_parentMixerGroupInstance->ComputeMixedVolume(volume);
     }
 
     return volume;
 }
 
-void AudioMixerGroupInstance::LoadGroupHierarchy(AudioMixerGroupInstance* parentGroup)
+void AudioMixerGroupInstance::LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance)
 {
-    m_parentGroup = parentGroup;
+    m_parentMixerGroupInstance = parentMixerGroupInstance;
 
-    for (const auto& childGroup : m_mixerGroup->GetChildGroups())
+    for (const auto& childMixerGroup : m_mixerGroup->GetChildMixerGroups())
     {
         // TODO: check recursive loops.
 
-        AudioMixerGroupInstance* childGroupInstance = new AudioMixerGroupInstance(childGroup);
-        m_childGroups.push_back(childGroupInstance);
+        AudioMixerGroupInstance* childMixerGroupInstance = new AudioMixerGroupInstance(childMixerGroup);
+        m_childMixerGroupInstances.push_back(childMixerGroupInstance);
 
-        childGroupInstance->LoadGroupHierarchy(this);
+        childMixerGroupInstance->LoadMixerGroupHierarchy(this);
 
-        GetAudio()->RegisterAudioMixerGroupInstance(childGroup, childGroupInstance);
+        GetAudio()->RegisterMixerGroupInstance(childMixerGroup, childMixerGroupInstance);
     }
 }
 

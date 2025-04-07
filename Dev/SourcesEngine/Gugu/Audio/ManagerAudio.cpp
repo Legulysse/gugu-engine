@@ -29,7 +29,7 @@
 namespace gugu {
 
 ManagerAudio::ManagerAudio()
-    : m_masterGroupInstance(nullptr)
+    : m_rootMixerGroupInstance(nullptr)
     , m_soundIndex(0)
     , m_masterMuted(false)
     , m_masterVolume(1.f)
@@ -38,7 +38,7 @@ ManagerAudio::ManagerAudio()
 
 ManagerAudio::~ManagerAudio()
 {
-    SafeDelete(m_masterGroupInstance);
+    SafeDelete(m_rootMixerGroupInstance);
     m_mixerGroupInstances.clear();
 }
 
@@ -109,25 +109,25 @@ int ManagerAudio::GetMasterVolume100() const
     return (int)(m_masterVolume * 100.f);
 }
 
-void ManagerAudio::SetAudioMixer(AudioMixerGroup* masterGroup)
+void ManagerAudio::SetAudioMixer(AudioMixerGroup* rootMixerGroup)
 {
-    if (!masterGroup)
+    if (!rootMixerGroup)
         return;
 
-    assert(m_masterGroupInstance == nullptr);     // Replacing the master mixer group is not supported.
+    assert(m_rootMixerGroupInstance == nullptr);     // Replacing the root mixer group is not supported.
 
-    m_masterGroupInstance = new AudioMixerGroupInstance(masterGroup);
-    m_masterGroupInstance->LoadGroupHierarchy(nullptr);
+    m_rootMixerGroupInstance = new AudioMixerGroupInstance(rootMixerGroup);
+    m_rootMixerGroupInstance->LoadMixerGroupHierarchy(nullptr);
 
-    RegisterAudioMixerGroupInstance(masterGroup, m_masterGroupInstance);
+    RegisterMixerGroupInstance(rootMixerGroup, m_rootMixerGroupInstance);
 }
 
-void ManagerAudio::RegisterAudioMixerGroupInstance(AudioMixerGroup* mixerGroup, AudioMixerGroupInstance* mixerGroupInstance)
+void ManagerAudio::RegisterMixerGroupInstance(AudioMixerGroup* mixerGroup, AudioMixerGroupInstance* mixerGroupInstance)
 {
     m_mixerGroupInstances.insert(std::make_pair(mixerGroup, mixerGroupInstance));
 }
 
-AudioMixerGroupInstance* ManagerAudio::GetAudioMixerGroupInstance(AudioMixerGroup* mixerGroup) const
+AudioMixerGroupInstance* ManagerAudio::GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const
 {
     auto mixerGroupInstance = m_mixerGroupInstances.find(mixerGroup);
     if (mixerGroupInstance != m_mixerGroupInstances.end())
@@ -176,7 +176,7 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
     AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
     if (!mixerGroupInstance)
     {
-        mixerGroupInstance = GetAudioMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
+        mixerGroupInstance = GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
     }
 
     if (sound)

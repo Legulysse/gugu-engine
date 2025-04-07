@@ -30,13 +30,13 @@ public:
 
     float ComputeMixedVolume(float volume) const;
 
-    void LoadGroupHierarchy(AudioMixerGroupInstance* parentGroup);
+    void LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance);
 
 protected:
 
     AudioMixerGroup* m_mixerGroup;
-    AudioMixerGroupInstance* m_parentGroup;
-    std::vector<AudioMixerGroupInstance*> m_childGroups;
+    AudioMixerGroupInstance* m_parentMixerGroupInstance;
+    std::vector<AudioMixerGroupInstance*> m_childMixerGroupInstances;
     float m_volume;
 };
 

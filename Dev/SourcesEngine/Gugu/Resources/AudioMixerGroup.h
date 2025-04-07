@@ -21,7 +21,7 @@ public:
 
     float GetVolumeAttenuation() const;
 
-    const std::vector<AudioMixerGroup*>& GetChildGroups() const;
+    const std::vector<AudioMixerGroup*>& GetChildMixerGroups() const;
 
     virtual EResourceType::Type GetResourceType() const override;
 
@@ -34,7 +34,7 @@ protected:
 protected:
 
     float m_volumeAttenuation;
-    std::vector<AudioMixerGroup*> m_childGroups;
+    std::vector<AudioMixerGroup*> m_childMixerGroups;
 };
 
 }   // namespace gugu

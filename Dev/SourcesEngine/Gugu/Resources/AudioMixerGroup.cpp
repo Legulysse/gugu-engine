@@ -38,15 +38,15 @@ float AudioMixerGroup::GetVolumeAttenuation() const
     return m_volumeAttenuation;
 }
 
-const std::vector<AudioMixerGroup*>& AudioMixerGroup::GetChildGroups() const
+const std::vector<AudioMixerGroup*>& AudioMixerGroup::GetChildMixerGroups() const
 {
-    return m_childGroups;
+    return m_childMixerGroups;
 }
 
 void AudioMixerGroup::Unload()
 {
     m_volumeAttenuation = 1.f;
-    m_childGroups.clear();
+    m_childMixerGroups.clear();
 }
 
 bool AudioMixerGroup::LoadFromXml(const pugi::xml_document& document)
@@ -64,7 +64,7 @@ bool AudioMixerGroup::LoadFromXml(const pugi::xml_document& document)
         auto childMixerGroup = GetResources()->GetAudioMixerGroup(childMixerGroupNode.attribute("source").as_string());
         if (childMixerGroup)
         {
-            m_childGroups.push_back(childMixerGroup);
+            m_childMixerGroups.push_back(childMixerGroup);
         }
     }
 

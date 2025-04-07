@@ -45,9 +45,9 @@ public:
     float GetMasterVolume() const;
     int GetMasterVolume100() const;
 
-    void SetAudioMixer(AudioMixerGroup* masterGroup);
-    void RegisterAudioMixerGroupInstance(AudioMixerGroup* mixerGroup, AudioMixerGroupInstance* mixerGroupInstance);
-    AudioMixerGroupInstance* GetAudioMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
+    void SetAudioMixer(AudioMixerGroup* rootMixerGroup);
+    void RegisterMixerGroupInstance(AudioMixerGroup* mixerGroup, AudioMixerGroupInstance* mixerGroupInstance);
+    AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
 
     bool PlaySoundCue(const std::string& soundCueID);
     bool PlaySoundCue(SoundCue* soundCue);
@@ -63,7 +63,7 @@ public:
 
 private:
 
-    AudioMixerGroupInstance* m_masterGroupInstance;
+    AudioMixerGroupInstance* m_rootMixerGroupInstance;
     std::map<AudioMixerGroup*, AudioMixerGroupInstance*> m_mixerGroupInstances;
 
     std::vector<SoundInstance> m_soundInstances;

@@ -12,6 +12,7 @@
 namespace gugu
 {
     class Element;
+    class ElementSlider;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -45,7 +46,13 @@ protected:
         StopAll,
     };
 
+    enum ESlider
+    {
+        MasterVolume,
+    };
+
     void OnButtonClick(int _eButton);
+    void OnSliderChanged(int sliderId, gugu::ElementSlider* slider);
 
 protected:
 

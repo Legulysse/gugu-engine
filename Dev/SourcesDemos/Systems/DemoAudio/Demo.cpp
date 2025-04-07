@@ -11,6 +11,7 @@
 #include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/UI/ElementButton.h"
+#include "Gugu/Element/UI/ElementSlider.h"
 #include "Gugu/System/Memory.h"
 
 using namespace gugu;
@@ -33,12 +34,13 @@ void Demo::AppStart()
 {
     RegisterEventHandler(GetGameWindow());
 
-    //Root
+    // Root.
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
     m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
-    //Menu Left
+    // Column 1.
     ElementButton* pButton;
+    ElementSlider* slider;
     float fPosX = 20.f;
     float fPosY = 20.f;
     float fGapY = 64.f;
@@ -72,7 +74,7 @@ void Demo::AppStart()
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::StopAll));
     pButton->SetPosition(fPosX, fPosY);
 
-    fPosY += 20.f;
+    fPosY += 100.f;
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
@@ -81,8 +83,7 @@ void Demo::AppStart()
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::Exit));
     pButton->SetPosition(fPosX, fPosY);
 
-    //Second column
-
+    // Column 2.
     fPosX = 320.f;
     fPosY = 20.f;
 
@@ -121,6 +122,17 @@ void Demo::AppStart()
     pButton->SetText("Playlist Mighty 3310");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::PlaylistMighty3310));
     pButton->SetPosition(fPosX, fPosY);
+
+    // Column 3.
+    fPosX = 640.f;
+    fPosY = 20.f;
+
+    slider = m_root->AddChild<ElementSlider>();
+    slider->LoadFromWidget("Slider_01.widget.xml");
+    slider->SetValueLimits(0, 200);
+    slider->SetValue(100);
+    slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::MasterVolume, slider));
+    slider->SetPosition(fPosX, fPosY);
 }
 
 void Demo::AppStop()
@@ -217,6 +229,14 @@ void Demo::OnButtonClick(int _eButton)
     else if (_eButton == EButton::Exit)
     {
         GetEngine()->StopMainLoop();
+    }
+}
+
+void Demo::OnSliderChanged(int sliderId, ElementSlider* slider)
+{
+    if (sliderId == ESlider::MasterVolume)
+    {
+        GetAudio()->SetMasterVolume100(slider->GetValue());
     }
 }
 

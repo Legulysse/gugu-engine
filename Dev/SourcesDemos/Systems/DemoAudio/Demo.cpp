@@ -9,6 +9,7 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Audio/ManagerAudio.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/Element/UI/ElementSlider.h"
@@ -34,6 +35,9 @@ void Demo::AppStart()
 {
     RegisterEventHandler(GetGameWindow());
 
+    // Setup Audio.
+    GetAudio()->SetAudioMixer(GetResources()->GetAudioMixerGroup("Master.audiomixergroup.xml"));
+
     // Root.
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
     m_root->SetUnifiedSize(UDim2::SIZE_FULL);
@@ -43,35 +47,27 @@ void Demo::AppStart()
     ElementSlider* slider;
     float fPosX = 20.f;
     float fPosY = 20.f;
-    float fGapY = 64.f;
+    float fGapY = 48.f;
+    float fSpacingY = 30.f;
 
     pButton = m_root->AddChild<ElementButton>();
     pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Bubbles");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubblesFive));
-    pButton->SetPosition(fPosX, fPosY);
-
-    fPosY += 20.f;
-
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Track Colors");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackColors));
+    pButton->SetText("Bubbles 01");
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles01));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Track Abyss");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackAbyss));
+    pButton->SetText("Bubbles (Five)");
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesFive));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Stop Music");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::StopAll));
+    pButton->SetText("Bubbles (Pitch)");
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesPitch));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += 100.f;
@@ -89,8 +85,15 @@ void Demo::AppStart()
 
     pButton = m_root->AddChild<ElementButton>();
     pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Bubbles Pitch");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubblesPitch));
+    pButton->SetText("Track Colors");
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackColors));
+    pButton->SetPosition(fPosX, fPosY);
+
+    fPosY += fGapY;
+    pButton = m_root->AddChild<ElementButton>();
+    pButton->LoadFromWidget("Button_01.widget.xml");
+    pButton->SetText("Track Abyss");
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackAbyss));
     pButton->SetPosition(fPosX, fPosY);
 
     fPosY += 20.f;
@@ -116,11 +119,22 @@ void Demo::AppStart()
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Final));
     pButton->SetPosition(fPosX, fPosY);
 
+    fPosY += 20.f;
+
     fPosY += fGapY;
     pButton = m_root->AddChild<ElementButton>();
     pButton->LoadFromWidget("Button_01.widget.xml");
     pButton->SetText("Playlist Mighty 3310");
     pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::PlaylistMighty3310));
+    pButton->SetPosition(fPosX, fPosY);
+
+    fPosY += 50.f;
+
+    fPosY += fGapY;
+    pButton = m_root->AddChild<ElementButton>();
+    pButton->LoadFromWidget("Button_01.widget.xml");
+    pButton->SetText("Stop Music");
+    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::StopAll));
     pButton->SetPosition(fPosX, fPosY);
 
     // Column 3.
@@ -142,13 +156,19 @@ void Demo::AppStop()
 
 void Demo::OnButtonClick(int _eButton)
 {
-    //EButton eButton = (EButton)_eButton;
-
-    if (_eButton == EButton::SoundBubblesFive)
+    if (_eButton == EButton::SoundBubbles01)
+    {
+        SoundParameters parameters;
+        parameters.soundID = "Bulle_01.ogg";
+        parameters.mixerGroupID = "Gameplay.audiomixergroup.xml";
+        parameters.volume = 0.5f;
+        GetAudio()->PlaySound(parameters);
+    }
+    else if (_eButton == EButton::SoundCueBubblesFive)
     {
         GetAudio()->PlaySoundCue("Bubbles_Five.soundcue.xml");
     }
-    else if (_eButton == EButton::SoundBubblesPitch)
+    else if (_eButton == EButton::SoundCueBubblesPitch)
     {
         GetAudio()->PlaySoundCue("Bubbles_Pitch.soundcue.xml");
     }

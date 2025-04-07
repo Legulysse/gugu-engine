@@ -19,6 +19,7 @@
 namespace gugu {
 
 AudioMixerGroup::AudioMixerGroup()
+    : m_volumeAttenuation(1.f)
 {
 }
 
@@ -32,14 +33,28 @@ EResourceType::Type AudioMixerGroup::GetResourceType() const
     return EResourceType::AudioMixerGroup;
 }
 
+float AudioMixerGroup::GetVolumeAttenuation() const
+{
+    return m_volumeAttenuation;
+}
+
+const std::vector<AudioMixerGroup*>& AudioMixerGroup::GetChildGroups() const
+{
+    return m_childGroups;
+}
+
 void AudioMixerGroup::Unload()
 {
 }
 
-bool AudioMixerGroup::LoadFromFile()
+bool AudioMixerGroup::LoadFromXml(const pugi::xml_document& document)
 {
     Unload();
+    return true;
+}
 
+bool AudioMixerGroup::SaveToXml(pugi::xml_document& document) const
+{
     return true;
 }
 

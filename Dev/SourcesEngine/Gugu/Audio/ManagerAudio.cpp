@@ -8,18 +8,20 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Core/EngineConfig.h"
+#include "Gugu/Audio/AudioMixerGroupInstance.h"
 #include "Gugu/Resources/ManagerResources.h"
-
 #include "Gugu/Resources/Sound.h"
 #include "Gugu/Resources/Music.h"
 #include "Gugu/Resources/SoundCue.h"
-
+#include "Gugu/Resources/AudioMixerGroup.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/Debug/Logger.h"
 
 #include <SFML/Audio/Listener.hpp>
+
+#include <assert.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -27,7 +29,8 @@
 namespace gugu {
 
 ManagerAudio::ManagerAudio()
-    : m_soundIndex(0)
+    : m_masterGroupInstance(nullptr)
+    , m_soundIndex(0)
     , m_masterMuted(false)
     , m_masterVolume(1.f)
 {
@@ -35,6 +38,8 @@ ManagerAudio::ManagerAudio()
 
 ManagerAudio::~ManagerAudio()
 {
+    SafeDelete(m_masterGroupInstance);
+    m_mixerGroupInstances.clear();
 }
 
 void ManagerAudio::Init(const EngineConfig& config)
@@ -102,6 +107,32 @@ float ManagerAudio::GetMasterVolume() const
 int ManagerAudio::GetMasterVolume100() const
 {
     return (int)(m_masterVolume * 100.f);
+}
+
+void ManagerAudio::SetAudioMixer(AudioMixerGroup* masterGroup)
+{
+    assert(masterGroup == nullptr);     // Replacing the master mixer group is not supported.
+
+    m_masterGroupInstance = new AudioMixerGroupInstance(masterGroup);
+    m_masterGroupInstance->LoadGroupHierarchy(nullptr);
+
+    RegisterAudioMixerGroupInstance(masterGroup, m_masterGroupInstance);
+}
+
+void ManagerAudio::RegisterAudioMixerGroupInstance(AudioMixerGroup* mixerGroup, AudioMixerGroupInstance* mixerGroupInstance)
+{
+    m_mixerGroupInstances.insert(std::make_pair(mixerGroup, mixerGroupInstance));
+}
+
+AudioMixerGroupInstance* ManagerAudio::GetAudioMixerGroupInstance(AudioMixerGroup* mixerGroup) const
+{
+    auto mixerGroupInstance = m_mixerGroupInstances.find(mixerGroup);
+    if (mixerGroupInstance != m_mixerGroupInstances.end())
+    {
+        return mixerGroupInstance->second;
+    }
+
+    return nullptr;
 }
 
 bool ManagerAudio::PlaySoundCue(const std::string& soundCueID)

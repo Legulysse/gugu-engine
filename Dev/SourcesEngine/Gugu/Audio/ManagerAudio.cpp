@@ -166,13 +166,22 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
 {
     Sound* sound = parameters.sound;
     if (!sound)
+    {
         sound = GetResources()->GetSound(parameters.soundID);
+    }
+
+    AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
+    if (!mixerGroupInstance)
+    {
+        mixerGroupInstance = GetAudioMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
+    }
 
     if (sound)
     {
         SoundInstance* soundInstance = &m_soundInstances[m_soundIndex];
         soundInstance->Reset();
         soundInstance->SetSound(sound);
+        soundInstance->SetMixerGroupInstance(mixerGroupInstance);   // Note: I currently allow a null group instance.
         soundInstance->SetVolume(parameters.volume);
         soundInstance->SetGroup(parameters.group);
 

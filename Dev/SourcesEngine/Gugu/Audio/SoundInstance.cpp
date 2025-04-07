@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Audio/AudioMixerGroupInstance.h"
 #include "Gugu/Resources/Sound.h"
 
 ////////////////////////////////////////////////////////////////
@@ -18,6 +19,8 @@ SoundParameters::SoundParameters()
 {
     sound = nullptr;
     soundID = "";
+    mixerGroupInstance = nullptr;
+    mixerGroupID = "";
     volume = 1.f;
     pitchLowerOffset = 0.f;
     pitchUpperOffset = 0.f;
@@ -25,14 +28,12 @@ SoundParameters::SoundParameters()
 }
 
 SoundInstance::SoundInstance()
+    : m_mixerGroupInstance(nullptr)
+    , m_volume(1.f)
+    , m_group(0)
 {
     Reset();
 }
-/*
-SoundInstance::SoundInstance(const SoundInstance&)
-{
-    Reset();
-}*/
 
 SoundInstance::~SoundInstance()
 {
@@ -44,6 +45,7 @@ void SoundInstance::Reset()
     m_sfSound.stop();
     m_sfSound.setVolume(100);
     m_sfSound.setPitch(1);
+    m_volume = 1.f;
     m_group = 0;
 }
 
@@ -65,14 +67,27 @@ void SoundInstance::SetSound(gugu::Sound* sound)
         m_sfSound.setBuffer(*sound->GetSFSoundBuffer());
 }
 
+void SoundInstance::SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance)
+{
+    m_mixerGroupInstance = mixerGroupInstance;
+    RecomputeMixedVolume();
+}
+
 void SoundInstance::SetVolume(float volume)
 {
-    m_sfSound.setVolume(volume * 100.f);
+    m_volume = volume;
+    RecomputeMixedVolume();
 }
 
 void SoundInstance::SetPitch(float pitch)
 {
     m_sfSound.setPitch(pitch);
+}
+
+void SoundInstance::RecomputeMixedVolume()
+{
+    float volume = m_mixerGroupInstance == nullptr ? m_volume : m_mixerGroupInstance->ComputeMixedVolume(m_volume);
+    m_sfSound.setVolume(volume * 100.f);
 }
 
 void SoundInstance::Play()

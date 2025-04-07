@@ -24,6 +24,8 @@ namespace gugu
     class Font;
     class Sound;
     class Music;
+    class AudioClip;
+    class AudioMixerGroup;
     class SoundCue;
     class ImageSet;
     class AnimSet;
@@ -96,6 +98,8 @@ public:
     Font*       GetFont         (const std::string& _strName);
     Sound*      GetSound        (const std::string& _strName);
     Music*      GetMusic        (const std::string& _strName);
+    AudioClip* GetAudioClip(const std::string& _strName);
+    AudioMixerGroup* GetAudioMixerGroup(const std::string& _strName);
     SoundCue*   GetSoundCue     (const std::string& _strName);
     ImageSet*   GetImageSet     (const std::string& _strName);
     AnimSet*    GetAnimSet      (const std::string& _strName);

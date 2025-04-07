@@ -16,6 +16,8 @@
 #include "Gugu/Resources/Font.h"
 #include "Gugu/Resources/Sound.h"
 #include "Gugu/Resources/Music.h"
+#include "Gugu/Resources/AudioClip.h"
+#include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/Resources/SoundCue.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/AnimSet.h"
@@ -193,14 +195,17 @@ EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) 
     {
         return EResourceType::Font;
     }
-    //else if (fileInfo.HasExtension("sound.xml"))  // TODO: sound and music files are basically the same thing, I cant deduce them from file extension alone.
-    //{
-    //    return EResourceType::Sound;
-    //}
-    //else if (fileInfo.HasExtension("music.xml"))
-    //{
-    //    return EResourceType::Music;
-    //}
+    else if (fileInfo.HasExtension("wav")
+        || fileInfo.HasExtension("ogg")
+        || fileInfo.HasExtension("flac")
+        || fileInfo.HasExtension("mp3"))
+    {
+        return EResourceType::AudioClip;
+    }
+    else if (fileInfo.HasExtension("audiomixergroup.xml") || fileInfo.HasExtension("audiomixergroup"))
+    {
+        return EResourceType::AudioMixerGroup;
+    }
     else if (fileInfo.HasExtension("soundcue.xml") || fileInfo.HasExtension("soundcue")
         || fileInfo.HasExtension("sound.xml") || fileInfo.HasExtension("sound"))
     {
@@ -250,6 +255,16 @@ Sound* ManagerResources::GetSound(const std::string& _strName)
 Music* ManagerResources::GetMusic(const std::string& _strName)
 {
     return dynamic_cast<Music*>(GetResource(_strName, EResourceType::Music));
+}
+
+AudioClip* ManagerResources::GetAudioClip(const std::string& _strName)
+{
+    return dynamic_cast<AudioClip*>(GetResource(_strName, EResourceType::AudioClip));
+}
+
+AudioMixerGroup* ManagerResources::GetAudioMixerGroup(const std::string& _strName)
+{
+    return dynamic_cast<AudioMixerGroup*>(GetResource(_strName, EResourceType::AudioMixerGroup));
 }
 
 SoundCue* ManagerResources::GetSoundCue(const std::string& _strName)
@@ -357,6 +372,14 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     else if (_eExplicitType == EResourceType::Music)
     {
         pResource = new Music;
+    }
+    else if (_eExplicitType == EResourceType::AudioClip)
+    {
+        pResource = new AudioClip;
+    }
+    else if (_eExplicitType == EResourceType::AudioMixerGroup)
+    {
+        pResource = new AudioMixerGroup;
     }
     else if (_eExplicitType == EResourceType::SoundCue)
     {

@@ -20,6 +20,8 @@ namespace EResourceType
         Font,
         Sound,
         Music,
+        AudioClip,
+        AudioMixerGroup,
         SoundCue,
         ImageSet,
         AnimSet,

@@ -111,7 +111,10 @@ int ManagerAudio::GetMasterVolume100() const
 
 void ManagerAudio::SetAudioMixer(AudioMixerGroup* masterGroup)
 {
-    assert(masterGroup == nullptr);     // Replacing the master mixer group is not supported.
+    if (!masterGroup)
+        return;
+
+    assert(m_masterGroupInstance == nullptr);     // Replacing the master mixer group is not supported.
 
     m_masterGroupInstance = new AudioMixerGroupInstance(masterGroup);
     m_masterGroupInstance->LoadGroupHierarchy(nullptr);

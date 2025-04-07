@@ -9,6 +9,7 @@
 
 #include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Resources/AudioMixerGroup.h"
+#include "Gugu/System/Container.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -24,6 +25,7 @@ AudioMixerGroupInstance::AudioMixerGroupInstance(AudioMixerGroup* mixerGroup)
 
 AudioMixerGroupInstance::~AudioMixerGroupInstance()
 {
+    ClearStdVector(m_childGroups);
 }
 
 void AudioMixerGroupInstance::SetVolume(float volume)

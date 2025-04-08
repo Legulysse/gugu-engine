@@ -8,10 +8,11 @@
 // Includes
 
 #include "Gugu/Core/DeltaTime.h"
-#include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Audio/MusicInstance.h"
-#include "Gugu/Math/MathUtility.h"
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Music.h"
+#include "Gugu/Math/MathUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -22,6 +23,8 @@ MusicParameters::MusicParameters()
 {
     music = nullptr;
     musicID = "";
+    mixerGroupInstance = nullptr;
+    mixerGroupID = "";
     volume = 1.f;
     fadeIn = 2.f;
     fadeOut = 2.f;
@@ -40,16 +43,6 @@ MusicLayer::MusicLayer()
     m_playlistIndex = -1;
     m_loopPlaylist = false;
 }
-/*
-MusicLayer::MusicLayer(const MusicLayer&)
-{
-    m_currentInstance = nullptr;
-    m_nextInstance = nullptr;
-    m_fadeIn = 2.f;
-    m_fadeOut = 2.f;
-    m_currentFadeTime = 0.f;
-    m_isFading = false;
-}*/
 
 MusicLayer::~MusicLayer()
 {
@@ -86,12 +79,21 @@ void MusicLayer::SetNext(const MusicParameters& _kParameters)
     m_playlist.clear();
     m_playlistIndex = -1;
 
-    Music* pMusic = _kParameters.music;
-    if (!pMusic && !_kParameters.musicID.empty())
-        pMusic = GetResources()->GetMusic(_kParameters.musicID);
+    Music* music = _kParameters.music;
+    if (!music)
+    {
+        music = GetResources()->GetMusic(_kParameters.musicID);
+    }
+
+    AudioMixerGroupInstance* mixerGroupInstance = _kParameters.mixerGroupInstance;
+    if (!mixerGroupInstance)
+    {
+        mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(_kParameters.mixerGroupID));
+    }
 
     m_nextInstance->Reset();
-    m_nextInstance->SetMusic(pMusic, _kParameters.loop);
+    m_nextInstance->SetMusic(music, _kParameters.loop);
+    m_nextInstance->SetMixerGroupInstance(mixerGroupInstance);
     m_nextInstance->SetVolume(_kParameters.volume);
 
     m_fadeIn = Max(0.f, _kParameters.fadeIn);
@@ -121,12 +123,21 @@ void MusicLayer::FadeToNext()
         {
             const MusicParameters kParameters = m_playlist[m_playlistIndex];
 
-            Music* pMusic = kParameters.music;
-            if (!pMusic && !kParameters.musicID.empty())
-                pMusic = GetResources()->GetMusic(kParameters.musicID);
+            Music* music = kParameters.music;
+            if (!music)
+            {
+                music = GetResources()->GetMusic(kParameters.musicID);
+            }
+
+            AudioMixerGroupInstance* mixerGroupInstance = kParameters.mixerGroupInstance;
+            if (!mixerGroupInstance)
+            {
+                mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(kParameters.mixerGroupID));
+            }
 
             m_nextInstance->Reset();
-            m_nextInstance->SetMusic(pMusic, kParameters.loop);
+            m_nextInstance->SetMusic(music, kParameters.loop);
+            m_nextInstance->SetMixerGroupInstance(mixerGroupInstance);
             m_nextInstance->SetVolume(kParameters.volume);
 
             m_fadeIn = Max(0.f, kParameters.fadeIn);

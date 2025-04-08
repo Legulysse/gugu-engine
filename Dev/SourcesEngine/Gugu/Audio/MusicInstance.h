@@ -11,6 +11,7 @@
 namespace gugu
 {
     class Music;
+    class AudioMixerGroupInstance;
 }
 
 namespace sf
@@ -36,10 +37,13 @@ public:
     bool    IsSet() const;
     Music*  GetMusic() const;
 
+    void    SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
     void    SetVolume       (float _fVolume);
 
     void    SetFadeCoeff    (float _fFadeCoeff);
     float   GetFadeCoeff    () const;
+
+    void RecomputeMixedVolume();
 
     void    Play            ();
     void    Pause           ();
@@ -56,6 +60,7 @@ public:
 private:
 
     Music*      m_music;
+    AudioMixerGroupInstance* m_mixerGroupInstance;
     sf::Music*  m_sfMusic;
     float       m_volume;
 

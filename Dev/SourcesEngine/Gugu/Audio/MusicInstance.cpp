@@ -7,8 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/System/Memory.h"
+#include "Gugu/Audio/AudioMixerGroupInstance.h"
 #include "Gugu/Resources/Music.h"
+#include "Gugu/System/Memory.h"
 
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Audio/Sound.hpp>
@@ -21,6 +22,7 @@ namespace gugu {
 MusicInstance::MusicInstance()
 {
     m_music = nullptr;
+    m_mixerGroupInstance = nullptr;
     m_sfMusic = nullptr;
     m_volume = 1.f;
     m_fadeCoeff = 1.f;
@@ -54,7 +56,7 @@ void MusicInstance::SetMusic(Music* _pMusic, bool _bLoop)
         if (m_music->LoadSFMusic(m_sfMusic))
         {
             m_sfMusic->setLoop(_bLoop);
-            m_sfMusic->setVolume(m_volume * m_fadeCoeff * 100.f);
+            RecomputeMixedVolume();
         }
         else
         {
@@ -73,25 +75,38 @@ Music* MusicInstance::GetMusic() const
     return m_music;
 }
 
+void MusicInstance::SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance)
+{
+    m_mixerGroupInstance = mixerGroupInstance;
+    RecomputeMixedVolume();
+}
+
 void MusicInstance::SetVolume(float _fVolume)
 {
     m_volume = _fVolume;
-
-    if (m_sfMusic)
-        m_sfMusic->setVolume(m_volume * m_fadeCoeff * 100.f);
+    RecomputeMixedVolume();
 }
 
 void MusicInstance::SetFadeCoeff(float _fFadeCoeff)
 {
     m_fadeCoeff = _fFadeCoeff;
-
-    if (m_sfMusic)
-        m_sfMusic->setVolume(m_volume * m_fadeCoeff * 100.f);
+    RecomputeMixedVolume();
 }
 
 float MusicInstance::GetFadeCoeff() const
 {
     return m_fadeCoeff;
+}
+
+void MusicInstance::RecomputeMixedVolume()
+{
+    float volume = m_mixerGroupInstance == nullptr ? m_volume : m_mixerGroupInstance->ComputeMixedVolume(m_volume);
+    volume *= m_fadeCoeff;
+
+    if (m_sfMusic)
+    {
+        m_sfMusic->setVolume(volume * 100.f);
+    }
 }
 
 void MusicInstance::Play()

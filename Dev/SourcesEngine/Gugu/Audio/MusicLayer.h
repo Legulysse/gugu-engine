@@ -13,6 +13,7 @@ namespace gugu
 {
     class DeltaTime;
     class Music;
+    class AudioMixerGroupInstance;
     class MusicInstance;
 }
 
@@ -25,6 +26,8 @@ struct MusicParameters
 {
     Music*      music;      // Music resource to play
     std::string musicID;    // If music is null, the system will try to load the resource specified by musicID
+    AudioMixerGroupInstance* mixerGroupInstance;
+    std::string mixerGroupID;
     float       volume;     // Volume range [0, 1]
     float       fadeIn;
     float       fadeOut;
@@ -39,7 +42,6 @@ class MusicLayer
 public:
 
     MusicLayer();
-    //MusicLayer(const MusicLayer&);
     ~MusicLayer();
 
     void SetInstances(MusicInstance* _pInstanceA, MusicInstance* _pInstanceB);

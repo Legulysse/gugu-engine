@@ -42,20 +42,20 @@ void MusicInstance::Reset()
     m_fadeCoeff = 1.f;
 }
 
-void MusicInstance::SetMusic(Music* _pMusic, bool _bLoop)
+void MusicInstance::SetMusic(Music* music, bool loop)
 {
     Reset();
 
-    if (_pMusic)
+    if (music)
     {
-        m_music = _pMusic;
+        m_music = music;
 
         if (!m_sfMusic)
             m_sfMusic = new sf::Music;
 
         if (m_music->LoadSFMusic(m_sfMusic))
         {
-            m_sfMusic->setLoop(_bLoop);
+            m_sfMusic->setLoop(loop);
             RecomputeMixedVolume();
         }
         else
@@ -81,15 +81,15 @@ void MusicInstance::SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupIns
     RecomputeMixedVolume();
 }
 
-void MusicInstance::SetVolume(float _fVolume)
+void MusicInstance::SetVolume(float volume)
 {
-    m_volume = _fVolume;
+    m_volume = volume;
     RecomputeMixedVolume();
 }
 
-void MusicInstance::SetFadeCoeff(float _fFadeCoeff)
+void MusicInstance::SetFadeCoeff(float fadeCoeff)
 {
-    m_fadeCoeff = _fFadeCoeff;
+    m_fadeCoeff = fadeCoeff;
     RecomputeMixedVolume();
 }
 

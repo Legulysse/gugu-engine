@@ -44,11 +44,11 @@ public:
     MusicLayer();
     ~MusicLayer();
 
-    void SetInstances(MusicInstance* _pInstanceA, MusicInstance* _pInstanceB);
+    void SetInstances(MusicInstance* instanceA, MusicInstance* instanceB);
     void Reset();
 
-    void SetNext(const MusicParameters& _kParameters);
-    void SetPlayList(const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist);
+    void SetNext(const MusicParameters& parameters);
+    void SetPlayList(const std::vector<MusicParameters>& playlist, bool loopPlaylist);
 
     void FadeToNext();
     void PurgeFade();

@@ -48,10 +48,10 @@ MusicLayer::~MusicLayer()
 {
 }
 
-void MusicLayer::SetInstances(MusicInstance* _pInstanceA, MusicInstance* _pInstanceB)
+void MusicLayer::SetInstances(MusicInstance* instanceA, MusicInstance* instanceB)
 {
-    m_currentInstance = _pInstanceA;
-    m_nextInstance = _pInstanceB;
+    m_currentInstance = instanceA;
+    m_nextInstance = instanceB;
 }
 
 void MusicLayer::PurgeFade()
@@ -72,32 +72,32 @@ void MusicLayer::PurgeFade()
     }
 }
 
-void MusicLayer::SetNext(const MusicParameters& _kParameters)
+void MusicLayer::SetNext(const MusicParameters& parameters)
 {
     PurgeFade();
 
     m_playlist.clear();
     m_playlistIndex = -1;
 
-    Music* music = _kParameters.music;
+    Music* music = parameters.music;
     if (!music)
     {
-        music = GetResources()->GetMusic(_kParameters.musicID);
+        music = GetResources()->GetMusic(parameters.musicID);
     }
 
-    AudioMixerGroupInstance* mixerGroupInstance = _kParameters.mixerGroupInstance;
+    AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
     if (!mixerGroupInstance)
     {
-        mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(_kParameters.mixerGroupID));
+        mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
     }
 
     m_nextInstance->Reset();
-    m_nextInstance->SetMusic(music, _kParameters.loop);
+    m_nextInstance->SetMusic(music, parameters.loop);
     m_nextInstance->SetMixerGroupInstance(mixerGroupInstance);
-    m_nextInstance->SetVolume(_kParameters.volume);
+    m_nextInstance->SetVolume(parameters.volume);
 
-    m_fadeIn = Max(0.f, _kParameters.fadeIn);
-    m_fadeOut = Max(0.f, _kParameters.fadeOut);
+    m_fadeIn = Max(0.f, parameters.fadeIn);
+    m_fadeOut = Max(0.f, parameters.fadeOut);
 }
 
 void MusicLayer::FadeToNext()
@@ -121,27 +121,27 @@ void MusicLayer::FadeToNext()
 
         if (m_playlistIndex >= 0)
         {
-            const MusicParameters kParameters = m_playlist[m_playlistIndex];
+            const MusicParameters parameters = m_playlist[m_playlistIndex];
 
-            Music* music = kParameters.music;
+            Music* music = parameters.music;
             if (!music)
             {
-                music = GetResources()->GetMusic(kParameters.musicID);
+                music = GetResources()->GetMusic(parameters.musicID);
             }
 
-            AudioMixerGroupInstance* mixerGroupInstance = kParameters.mixerGroupInstance;
+            AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
             if (!mixerGroupInstance)
             {
-                mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(kParameters.mixerGroupID));
+                mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
             }
 
             m_nextInstance->Reset();
-            m_nextInstance->SetMusic(music, kParameters.loop);
+            m_nextInstance->SetMusic(music, parameters.loop);
             m_nextInstance->SetMixerGroupInstance(mixerGroupInstance);
-            m_nextInstance->SetVolume(kParameters.volume);
+            m_nextInstance->SetVolume(parameters.volume);
 
-            m_fadeIn = Max(0.f, kParameters.fadeIn);
-            m_fadeOut = Max(0.f, kParameters.fadeOut);
+            m_fadeIn = Max(0.f, parameters.fadeIn);
+            m_fadeOut = Max(0.f, parameters.fadeOut);
         }
         else
         {
@@ -165,11 +165,11 @@ void MusicLayer::FadeToNext()
     }
 }
 
-void MusicLayer::SetPlayList(const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist)
+void MusicLayer::SetPlayList(const std::vector<MusicParameters>& playlist, bool loopPlaylist)
 {
     PurgeFade();
 
-    m_playlist = _vecPlaylist;
+    m_playlist = playlist;
     m_playlistIndex = -1;
     m_loopPlaylist = loopPlaylist;
 }
@@ -199,47 +199,47 @@ void MusicLayer::Update(const DeltaTime& dt)
 {
     if (m_isFading)
     {
-        bool bFadeOutFinished = true;
+        bool fadeOutFinished = true;
         if (m_currentInstance->IsSet())
         {
             if (m_fadeOut > 0.f)
             {
-                float fFadeCoeff = m_currentInstance->GetFadeCoeff();
-                fFadeCoeff -= (dt.s() / m_fadeOut);
-                if (fFadeCoeff > 0.f)
+                float fadeCoeff = m_currentInstance->GetFadeCoeff();
+                fadeCoeff -= (dt.s() / m_fadeOut);
+                if (fadeCoeff > 0.f)
                 {
-                    m_currentInstance->SetFadeCoeff(fFadeCoeff);
-                    bFadeOutFinished = false;
+                    m_currentInstance->SetFadeCoeff(fadeCoeff);
+                    fadeOutFinished = false;
                 }
             }
             
-            if (bFadeOutFinished)
+            if (fadeOutFinished)
             {
                 m_currentInstance->Reset();
             }
         }
 
-        bool bFadeInFinished = true;
+        bool fadeInFinished = true;
         if (m_nextInstance->IsSet())
         {
             if (m_fadeIn > 0.f)
             {
-                float fFadeCoeff = m_nextInstance->GetFadeCoeff();
-                fFadeCoeff += (dt.s() / m_fadeIn);
-                if (fFadeCoeff - 1.f < math::Epsilon3)
+                float fadeCoeff = m_nextInstance->GetFadeCoeff();
+                fadeCoeff += (dt.s() / m_fadeIn);
+                if (fadeCoeff - 1.f < math::Epsilon3)
                 {
-                    m_nextInstance->SetFadeCoeff(fFadeCoeff);
-                    bFadeInFinished = false;
+                    m_nextInstance->SetFadeCoeff(fadeCoeff);
+                    fadeInFinished = false;
                 }
             }
 
-            if (bFadeInFinished)
+            if (fadeInFinished)
             {
                 m_nextInstance->SetFadeCoeff(1.f);
             }
         }
         
-        if (bFadeOutFinished && bFadeInFinished)
+        if (fadeOutFinished && fadeInFinished)
         {
             PurgeFade();
         }

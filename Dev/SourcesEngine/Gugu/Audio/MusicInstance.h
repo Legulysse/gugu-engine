@@ -33,14 +33,14 @@ public:
 
     void    Reset           ();
 
-    void    SetMusic        (Music* _pMusic, bool _bLoop);
+    void    SetMusic        (Music* music, bool loop);
     bool    IsSet() const;
     Music*  GetMusic() const;
 
     void    SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
-    void    SetVolume       (float _fVolume);
+    void    SetVolume       (float volume);
 
-    void    SetFadeCoeff    (float _fFadeCoeff);
+    void    SetFadeCoeff    (float fadeCoeff);
     float   GetFadeCoeff    () const;
 
     void RecomputeMixedVolume();

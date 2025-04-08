@@ -25,11 +25,6 @@ AudioMixerGroup::~AudioMixerGroup()
     Unload();
 }
 
-EResourceType::Type AudioMixerGroup::GetResourceType() const
-{
-    return EResourceType::AudioMixerGroup;
-}
-
 float AudioMixerGroup::GetVolumeAttenuation() const
 {
     return m_volumeAttenuation;
@@ -38,6 +33,33 @@ float AudioMixerGroup::GetVolumeAttenuation() const
 const std::vector<AudioMixerGroup*>& AudioMixerGroup::GetChildMixerGroups() const
 {
     return m_childMixerGroups;
+}
+
+EResourceType::Type AudioMixerGroup::GetResourceType() const
+{
+    return EResourceType::AudioMixerGroup;
+}
+
+void AudioMixerGroup::GetDependencies(std::set<Resource*>& dependencies) const
+{
+    for (auto& childMixerGroup : m_childMixerGroups)
+    {
+        if (childMixerGroup)
+        {
+            dependencies.insert(childMixerGroup);
+        }
+    }
+}
+
+void AudioMixerGroup::OnDependencyRemoved(const Resource* removedDependency)
+{
+    for (auto& childMixerGroup : m_childMixerGroups)
+    {
+        if (childMixerGroup == removedDependency)
+        {
+            childMixerGroup = nullptr;
+        }
+    }
 }
 
 void AudioMixerGroup::Unload()

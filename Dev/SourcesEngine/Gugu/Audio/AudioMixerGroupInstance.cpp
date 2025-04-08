@@ -58,6 +58,9 @@ void AudioMixerGroupInstance::LoadMixerGroupHierarchy(AudioMixerGroupInstance* p
 
     for (const auto& childMixerGroup : m_mixerGroup->GetChildMixerGroups())
     {
+        if (childMixerGroup == nullptr)
+            continue;
+
         // Check redundancy and recursive loops.
         if (StdMapContainsKey(registeredMixerGroupInstances, childMixerGroup))
         {

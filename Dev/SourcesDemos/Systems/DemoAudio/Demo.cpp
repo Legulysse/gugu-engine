@@ -176,6 +176,7 @@ void Demo::OnButtonClick(int _eButton)
     {
         MusicParameters kParameters;
         kParameters.musicID = "Legulysse_Colors.ogg";
+        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
         kParameters.volume = 0.5f;
         kParameters.fadeOut = 1.f;
         kParameters.fadeIn = 2.f;
@@ -186,6 +187,7 @@ void Demo::OnButtonClick(int _eButton)
     {
         MusicParameters kParameters;
         kParameters.musicID = "Legulysse_Abyss.ogg";
+        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
         kParameters.volume = 0.5f;
         kParameters.fadeOut = 2.f;
         kParameters.fadeIn = 4.f;
@@ -196,6 +198,7 @@ void Demo::OnButtonClick(int _eButton)
     {
         MusicParameters kParameters;
         kParameters.musicID = "Legulysse_Mighty3310_Fight.ogg";
+        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
         kParameters.fadeOut = 0.f;
         kParameters.fadeIn = 0.f;
         kParameters.loop = true;
@@ -205,6 +208,7 @@ void Demo::OnButtonClick(int _eButton)
     {
         MusicParameters kParameters;
         kParameters.musicID = "Legulysse_Mighty3310_Boss.ogg";
+        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
         kParameters.fadeOut = 0.f;
         kParameters.fadeIn = 0.f;
         kParameters.loop = true;
@@ -214,6 +218,7 @@ void Demo::OnButtonClick(int _eButton)
     {
         MusicParameters kParameters;
         kParameters.musicID = "Legulysse_Mighty3310_Final.ogg";
+        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
         kParameters.fadeOut = 0.f;
         kParameters.fadeIn = 0.f;
         kParameters.loop = true;
@@ -223,16 +228,19 @@ void Demo::OnButtonClick(int _eButton)
     {
         MusicParameters kParametersA;
         kParametersA.musicID = "Legulysse_Mighty3310_Fight.ogg";
+        kParametersA.mixerGroupID = "Music.audiomixergroup.xml";
         kParametersA.fadeOut = 0.f;
         kParametersA.fadeIn = 0.f;
 
         MusicParameters kParametersB;
         kParametersB.musicID = "Legulysse_Mighty3310_Boss.ogg";
+        kParametersB.mixerGroupID = "Music.audiomixergroup.xml";
         kParametersB.fadeOut = 0.f;
         kParametersB.fadeIn = 0.f;
 
         MusicParameters kParametersC;
         kParametersC.musicID = "Legulysse_Mighty3310_Final.ogg";
+        kParametersC.mixerGroupID = "Music.audiomixergroup.xml";
         kParametersC.fadeOut = 0.f;
         kParametersC.fadeIn = 0.f;
 

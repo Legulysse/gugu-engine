@@ -297,6 +297,7 @@ void AnimSet::GetDependencies(std::set<Resource*>& dependencies) const
         dependencies.insert(m_imageSet);
 
         // TODO: Do I need an option to retrieve or not indirect dependencies ?
+        // This recursion could be handled outside of this method as a second pass.
         m_imageSet->GetDependencies(dependencies);
     }
 

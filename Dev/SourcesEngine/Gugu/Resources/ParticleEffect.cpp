@@ -168,6 +168,7 @@ bool ParticleEffect::LoadFromXml(const pugi::xml_document& document)
     xml::ParseColor(nodeParticleEffect.child("StartColor"), m_particleSettings.startColor, m_particleSettings.startColor);
     xml::ParseColor(nodeParticleEffect.child("EndColor"), m_particleSettings.endColor, m_particleSettings.endColor);
 
+    // TODO: Rename as ImageSet + source.
     m_particleSettings.imageSet = GetResources()->GetImageSet(nodeParticleEffect.child("ImageSetID").attribute("value").as_string());
 
     // Finalize
@@ -274,10 +275,12 @@ bool ParticleEffect::SaveToXml(pugi::xml_document& document) const
 
     if (m_particleSettings.imageSet)
     {
+        // TODO: Rename as ImageSet + source.
         nodeParticleEffect.append_child("ImageSetID").append_attribute("value").set_value(m_particleSettings.imageSet->GetID().c_str());
     }
     else
     {
+        // TODO: Rename as ImageSet + source.
         nodeParticleEffect.append_child("ImageSetID").append_attribute("value");
     }
 

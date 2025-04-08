@@ -33,10 +33,10 @@ public:
     ManagerAudio();
     ~ManagerAudio();
 
-    void    Init    (const EngineConfig& config);
-    void    Release ();
+    void Init(const EngineConfig& config);
+    void Release();
     
-    void    Update  (const DeltaTime& dt);
+    void Update(const DeltaTime& dt);
 
     void SetMasterMuted(bool muted);
     bool IsMasterMuted() const;

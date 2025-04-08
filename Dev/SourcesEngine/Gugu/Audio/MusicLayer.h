@@ -24,15 +24,15 @@ namespace gugu {
 
 struct MusicParameters
 {
-    Music*      music;      // Music resource to play
-    std::string musicID;    // If music is null, the system will try to load the resource specified by musicID
+    Music* music;                   // Music resource to play
+    std::string musicID;            // If music is null, the system will try to load the resource specified by musicID
     AudioMixerGroupInstance* mixerGroupInstance;
     std::string mixerGroupID;
-    float       volume;     // Volume range [0, 1]
-    float       fadeIn;
-    float       fadeOut;
-    int         layer;
-    bool        loop;
+    float volume;                   // Volume range [0, 1]
+    float fadeIn;
+    float fadeOut;
+    int layer;
+    bool loop;
 
     MusicParameters();
 };

@@ -8,9 +8,6 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
-//#include "Gugu/System/Memory.h"
-//#include "Gugu/System/String.h"
-//#include "Gugu/Debug/Logger.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////

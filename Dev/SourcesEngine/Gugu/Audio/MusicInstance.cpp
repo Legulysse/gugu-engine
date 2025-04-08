@@ -20,12 +20,12 @@
 namespace gugu {
     
 MusicInstance::MusicInstance()
+    : m_music(nullptr)
+    , m_mixerGroupInstance(nullptr)
+    , m_sfMusic(nullptr)
+    , m_volume(1.f)
+    , m_fadeCoeff(1.f)
 {
-    m_music = nullptr;
-    m_mixerGroupInstance = nullptr;
-    m_sfMusic = nullptr;
-    m_volume = 1.f;
-    m_fadeCoeff = 1.f;
 }
 
 MusicInstance::~MusicInstance()

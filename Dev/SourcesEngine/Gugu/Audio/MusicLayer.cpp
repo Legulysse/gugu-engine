@@ -20,28 +20,28 @@
 namespace gugu {
 
 MusicParameters::MusicParameters()
+    : music(nullptr)
+    , musicID("")
+    , mixerGroupInstance(nullptr)
+    , mixerGroupID("")
+    , volume(1.f)
+    , fadeIn(2.f)
+    , fadeOut(2.f)
+    , layer(0)
+    , loop(false)
 {
-    music = nullptr;
-    musicID = "";
-    mixerGroupInstance = nullptr;
-    mixerGroupID = "";
-    volume = 1.f;
-    fadeIn = 2.f;
-    fadeOut = 2.f;
-	layer = 0;
-    loop = false;
 }
 
 MusicLayer::MusicLayer()
+    : m_currentInstance(nullptr)
+    , m_nextInstance(nullptr)
+    , m_fadeIn(2.f)
+    , m_fadeOut(2.f)
+    , m_currentFadeTime(0.f)
+    , m_isFading(false)
+    , m_playlistIndex(-1)
+    , m_loopPlaylist(false)
 {
-    m_currentInstance = nullptr;
-    m_nextInstance = nullptr;
-    m_fadeIn = 2.f;
-    m_fadeOut = 2.f;
-    m_currentFadeTime = 0.f;
-    m_isFading = false;
-    m_playlistIndex = -1;
-    m_loopPlaylist = false;
 }
 
 MusicLayer::~MusicLayer()

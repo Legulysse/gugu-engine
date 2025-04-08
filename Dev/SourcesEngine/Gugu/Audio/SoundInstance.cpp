@@ -16,15 +16,15 @@
 namespace gugu {
     
 SoundParameters::SoundParameters()
+    : sound(nullptr)
+    , soundID("")
+    , mixerGroupInstance(nullptr)
+    , mixerGroupID("")
+    , volume(1.f)
+    , pitchLowerOffset(0.f)
+    , pitchUpperOffset(0.f)
+    , group(0)
 {
-    sound = nullptr;
-    soundID = "";
-    mixerGroupInstance = nullptr;
-    mixerGroupID = "";
-    volume = 1.f;
-    pitchLowerOffset = 0.f;
-    pitchUpperOffset = 0.f;
-    group = 0;
 }
 
 SoundInstance::SoundInstance()

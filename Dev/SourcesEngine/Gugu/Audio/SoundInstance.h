@@ -42,15 +42,15 @@ public:
     SoundInstance();
     ~SoundInstance();
 
-    void    Reset       ();
+    void Reset();
 
-    void    SetGroup    (int group);
-    int     GetGroup    () const;
+    void SetGroup(int group);
+    int GetGroup() const;
 
-    void    SetSound    (gugu::Sound* sound);
-    void    SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
-    void    SetVolume   (float volume);
-    void    SetPitch    (float pitch);
+    void SetSound(gugu::Sound* sound);
+    void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
+    void SetVolume(float volume);
+    void SetPitch(float pitch);
 
     void RecomputeMixedVolume();
 

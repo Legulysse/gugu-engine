@@ -43,110 +43,109 @@ void Demo::AppStart()
     m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
     // Column 1.
-    ElementButton* pButton;
+    ElementButton* button;
     ElementSlider* slider;
-    float fPosX = 20.f;
-    float fPosY = 20.f;
-    float fGapY = 48.f;
-    float fSpacingY = 30.f;
+    float posX = 20.f;
+    float posY = 20.f;
+    float gapY = 48.f;
 
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Bubbles 01");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles01));
-    pButton->SetPosition(fPosX, fPosY);
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Bubbles 01");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles01));
+    button->SetPosition(posX, posY);
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Bubbles (Five)");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesFive));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Bubbles (Five)");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesFive));
+    button->SetPosition(posX, posY);
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Bubbles (Pitch)");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesPitch));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Bubbles (Pitch)");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesPitch));
+    button->SetPosition(posX, posY);
 
-    fPosY += 100.f;
+    posY += 100.f;
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Quit");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::Exit));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Quit");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::Exit));
+    button->SetPosition(posX, posY);
 
     // Column 2.
-    fPosX = 320.f;
-    fPosY = 20.f;
+    posX = 320.f;
+    posY = 20.f;
 
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Track Colors");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackColors));
-    pButton->SetPosition(fPosX, fPosY);
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Track Colors");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackColors));
+    button->SetPosition(posX, posY);
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Track Abyss");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackAbyss));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Track Abyss");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackAbyss));
+    button->SetPosition(posX, posY);
 
-    fPosY += 20.f;
+    posY += 20.f;
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Track Mighty 3310 Fight");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Fight));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Track Mighty 3310 Fight");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Fight));
+    button->SetPosition(posX, posY);
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Track Mighty 3310 Boss");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Boss));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Track Mighty 3310 Boss");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Boss));
+    button->SetPosition(posX, posY);
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Track Mighty 3310 Final");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Final));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Track Mighty 3310 Final");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::TrackMighty3310Final));
+    button->SetPosition(posX, posY);
 
-    fPosY += 20.f;
+    posY += 20.f;
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Playlist Mighty 3310");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::PlaylistMighty3310));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Playlist Mighty 3310");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::PlaylistMighty3310));
+    button->SetPosition(posX, posY);
 
-    fPosY += 50.f;
+    posY += 50.f;
 
-    fPosY += fGapY;
-    pButton = m_root->AddChild<ElementButton>();
-    pButton->LoadFromWidget("Button_01.widget.xml");
-    pButton->SetText("Stop Music");
-    pButton->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::StopAll));
-    pButton->SetPosition(fPosX, fPosY);
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("Stop Music");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::StopAll));
+    button->SetPosition(posX, posY);
 
     // Column 3.
-    fPosX = 640.f;
-    fPosY = 20.f;
+    posX = 640.f;
+    posY = 20.f;
 
     slider = m_root->AddChild<ElementSlider>();
     slider->LoadFromWidget("Slider_01.widget.xml");
     slider->SetValueLimits(0, 200);
     slider->SetValue(100);
     slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::MasterVolume, slider));
-    slider->SetPosition(fPosX, fPosY);
+    slider->SetPosition(posX, posY);
 }
 
 void Demo::AppStop()
@@ -154,9 +153,9 @@ void Demo::AppStop()
     SafeDelete(m_root);
 }
 
-void Demo::OnButtonClick(int _eButton)
+void Demo::OnButtonClick(int buttonId)
 {
-    if (_eButton == EButton::SoundBubbles01)
+    if (buttonId == EButton::SoundBubbles01)
     {
         SoundParameters parameters;
         parameters.soundID = "Bulle_01.ogg";
@@ -164,97 +163,97 @@ void Demo::OnButtonClick(int _eButton)
         parameters.volume = 0.5f;
         GetAudio()->PlaySound(parameters);
     }
-    else if (_eButton == EButton::SoundCueBubblesFive)
+    else if (buttonId == EButton::SoundCueBubblesFive)
     {
         GetAudio()->PlaySoundCue("Bubbles_Five.soundcue.xml");
     }
-    else if (_eButton == EButton::SoundCueBubblesPitch)
+    else if (buttonId == EButton::SoundCueBubblesPitch)
     {
         GetAudio()->PlaySoundCue("Bubbles_Pitch.soundcue.xml");
     }
-    else if (_eButton == EButton::TrackColors)
+    else if (buttonId == EButton::TrackColors)
     {
-        MusicParameters kParameters;
-        kParameters.musicID = "Legulysse_Colors.ogg";
-        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
-        kParameters.volume = 0.5f;
-        kParameters.fadeOut = 1.f;
-        kParameters.fadeIn = 2.f;
-        kParameters.loop = true;
-        GetAudio()->PlayMusic(kParameters);
+        MusicParameters parameters;
+        parameters.musicID = "Legulysse_Colors.ogg";
+        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.volume = 0.5f;
+        parameters.fadeOut = 1.f;
+        parameters.fadeIn = 2.f;
+        parameters.loop = true;
+        GetAudio()->PlayMusic(parameters);
     }
-    else if (_eButton == EButton::TrackAbyss)
+    else if (buttonId == EButton::TrackAbyss)
     {
-        MusicParameters kParameters;
-        kParameters.musicID = "Legulysse_Abyss.ogg";
-        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
-        kParameters.volume = 0.5f;
-        kParameters.fadeOut = 2.f;
-        kParameters.fadeIn = 4.f;
-        kParameters.loop = true;
-        GetAudio()->PlayMusic(kParameters);
+        MusicParameters parameters;
+        parameters.musicID = "Legulysse_Abyss.ogg";
+        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.volume = 0.5f;
+        parameters.fadeOut = 2.f;
+        parameters.fadeIn = 4.f;
+        parameters.loop = true;
+        GetAudio()->PlayMusic(parameters);
     }
-    else if (_eButton == EButton::TrackMighty3310Fight)
+    else if (buttonId == EButton::TrackMighty3310Fight)
     {
-        MusicParameters kParameters;
-        kParameters.musicID = "Legulysse_Mighty3310_Fight.ogg";
-        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
-        kParameters.fadeOut = 0.f;
-        kParameters.fadeIn = 0.f;
-        kParameters.loop = true;
-        GetAudio()->PlayMusic(kParameters);
+        MusicParameters parameters;
+        parameters.musicID = "Legulysse_Mighty3310_Fight.ogg";
+        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.fadeOut = 0.f;
+        parameters.fadeIn = 0.f;
+        parameters.loop = true;
+        GetAudio()->PlayMusic(parameters);
     }
-    else if (_eButton == EButton::TrackMighty3310Boss)
+    else if (buttonId == EButton::TrackMighty3310Boss)
     {
-        MusicParameters kParameters;
-        kParameters.musicID = "Legulysse_Mighty3310_Boss.ogg";
-        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
-        kParameters.fadeOut = 0.f;
-        kParameters.fadeIn = 0.f;
-        kParameters.loop = true;
-        GetAudio()->PlayMusic(kParameters);
+        MusicParameters parameters;
+        parameters.musicID = "Legulysse_Mighty3310_Boss.ogg";
+        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.fadeOut = 0.f;
+        parameters.fadeIn = 0.f;
+        parameters.loop = true;
+        GetAudio()->PlayMusic(parameters);
     }
-    else if (_eButton == EButton::TrackMighty3310Final)
+    else if (buttonId == EButton::TrackMighty3310Final)
     {
-        MusicParameters kParameters;
-        kParameters.musicID = "Legulysse_Mighty3310_Final.ogg";
-        kParameters.mixerGroupID = "Music.audiomixergroup.xml";
-        kParameters.fadeOut = 0.f;
-        kParameters.fadeIn = 0.f;
-        kParameters.loop = true;
-        GetAudio()->PlayMusic(kParameters);
+        MusicParameters parameters;
+        parameters.musicID = "Legulysse_Mighty3310_Final.ogg";
+        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.fadeOut = 0.f;
+        parameters.fadeIn = 0.f;
+        parameters.loop = true;
+        GetAudio()->PlayMusic(parameters);
     }
-    else if (_eButton == EButton::PlaylistMighty3310)
+    else if (buttonId == EButton::PlaylistMighty3310)
     {
-        MusicParameters kParametersA;
-        kParametersA.musicID = "Legulysse_Mighty3310_Fight.ogg";
-        kParametersA.mixerGroupID = "Music.audiomixergroup.xml";
-        kParametersA.fadeOut = 0.f;
-        kParametersA.fadeIn = 0.f;
+        MusicParameters parametersA;
+        parametersA.musicID = "Legulysse_Mighty3310_Fight.ogg";
+        parametersA.mixerGroupID = "Music.audiomixergroup.xml";
+        parametersA.fadeOut = 0.f;
+        parametersA.fadeIn = 0.f;
 
-        MusicParameters kParametersB;
-        kParametersB.musicID = "Legulysse_Mighty3310_Boss.ogg";
-        kParametersB.mixerGroupID = "Music.audiomixergroup.xml";
-        kParametersB.fadeOut = 0.f;
-        kParametersB.fadeIn = 0.f;
+        MusicParameters parametersB;
+        parametersB.musicID = "Legulysse_Mighty3310_Boss.ogg";
+        parametersB.mixerGroupID = "Music.audiomixergroup.xml";
+        parametersB.fadeOut = 0.f;
+        parametersB.fadeIn = 0.f;
 
-        MusicParameters kParametersC;
-        kParametersC.musicID = "Legulysse_Mighty3310_Final.ogg";
-        kParametersC.mixerGroupID = "Music.audiomixergroup.xml";
-        kParametersC.fadeOut = 0.f;
-        kParametersC.fadeIn = 0.f;
+        MusicParameters parametersC;
+        parametersC.musicID = "Legulysse_Mighty3310_Final.ogg";
+        parametersC.mixerGroupID = "Music.audiomixergroup.xml";
+        parametersC.fadeOut = 0.f;
+        parametersC.fadeIn = 0.f;
 
-        std::vector<MusicParameters> vecPlaylist;
-        vecPlaylist.push_back(kParametersA);
-        vecPlaylist.push_back(kParametersB);
-        vecPlaylist.push_back(kParametersC);
-        GetAudio()->PlayMusicList(vecPlaylist, true);
+        std::vector<MusicParameters> playlist;
+        playlist.push_back(parametersA);
+        playlist.push_back(parametersB);
+        playlist.push_back(parametersC);
+        GetAudio()->PlayMusicList(playlist, true);
     }
-    else if (_eButton == EButton::StopAll)
+    else if (buttonId == EButton::StopAll)
     {
         GetAudio()->StopMusic();
     }
-    else if (_eButton == EButton::Exit)
+    else if (buttonId == EButton::Exit)
     {
         GetEngine()->StopMainLoop();
     }

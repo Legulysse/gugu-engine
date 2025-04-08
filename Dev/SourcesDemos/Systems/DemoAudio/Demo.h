@@ -52,7 +52,7 @@ protected:
         MasterVolume,
     };
 
-    void OnButtonClick(int _eButton);
+    void OnButtonClick(int buttonId);
     void OnSliderChanged(int sliderId, gugu::ElementSlider* slider);
 
 protected:

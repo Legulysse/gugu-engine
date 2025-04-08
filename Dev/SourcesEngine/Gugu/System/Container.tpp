@@ -164,16 +164,48 @@ void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vect
 template<typename T>
 bool StdSetContains(const std::set<T>& container, const T& value)
 {
-    return std::find(container.begin(), container.end(), value) != container.end();
+    return container.find(value) != container.end();
 }
 
 template<typename TKey, typename TValue>
-bool StdMapTryGet(const std::map<TKey, TValue>& container, const TKey& key, TValue& value)
+bool StdMapContainsKey(const std::map<TKey, TValue>& container, const TKey& key)
+{
+    return container.find(key) != container.end();
+}
+
+template<typename TKey, typename TValue>
+bool StdMapTryGetValue(const std::map<TKey, TValue>& container, const TKey& key, TValue& value)
 {
     auto it = container.find(key);
     if (it != container.end())
     {
         value = it->second;
+        return true;
+    }
+
+    return false;
+}
+
+template<typename TKey, typename TValue>
+bool StdMapTryGetValueConstRef(const std::map<TKey, TValue>& container, const TKey& key, const TValue*& valueRef)
+{
+    auto it = container.find(key);
+    if (it != container.end())
+    {
+        valueRef = &it->second;
+        return true;
+    }
+
+    return false;
+}
+
+template<typename TKey, typename TValue>
+bool StdMapTryGetValueRef(std::map<TKey, TValue>& container, const TKey& key, TValue*& valueRef)
+{
+    auto it = container.find(key);
+    if (it != container.end())
+    {
+        valueRef = &it->second;
         return true;
     }
 

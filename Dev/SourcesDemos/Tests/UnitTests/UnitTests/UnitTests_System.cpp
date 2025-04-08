@@ -692,26 +692,79 @@ void RunUnitTests_System(UnitTestResults* results)
             containerA["B"] = 20;
             containerA["C"] = 30;
 
-            int result = 0;
-
-            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("A"), result)))
             {
-                GUGU_UTEST_CHECK_EQUAL(result, 10);
+                int result = 0;
+                GUGU_UTEST_CHECK_EQUAL(result, 0);
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValue(containerA, std::string("A"), result)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(result, 10);
+                }
+
+                if (GUGU_UTEST_CHECK_FALSE(StdMapTryGetValue(containerA, std::string("AA"), result)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(result, 10); // The result value will be unchanged through the call to TryGet.
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValue(containerA, std::string("B"), result)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(result, 20);
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValue(containerA, std::string("C"), result)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(result, 30);
+                }
             }
 
-            if (GUGU_UTEST_CHECK_FALSE(StdMapTryGet(containerA, std::string("AA"), result)))
             {
-                GUGU_UTEST_CHECK_EQUAL(result, 10); // The result value will be unchanged through the call to TryGet.
+                const int* resultRef = nullptr;
+                GUGU_UTEST_CHECK_EQUAL(resultRef, nullptr);
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueConstRef(containerA, std::string("A"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 10);
+                }
+
+                if (GUGU_UTEST_CHECK_FALSE(StdMapTryGetValueConstRef(containerA, std::string("AA"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 10); // The result value will be unchanged through the call to TryGet.
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueConstRef(containerA, std::string("B"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 20);
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueConstRef(containerA, std::string("C"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 30);
+                }
             }
 
-            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("B"), result)))
             {
-                GUGU_UTEST_CHECK_EQUAL(result, 20);
-            }
+                int* resultRef = nullptr;
+                GUGU_UTEST_CHECK_EQUAL(resultRef, nullptr);
 
-            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("C"), result)))
-            {
-                GUGU_UTEST_CHECK_EQUAL(result, 30);
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueRef(containerA, std::string("A"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 10);
+                }
+
+                if (GUGU_UTEST_CHECK_FALSE(StdMapTryGetValueRef(containerA, std::string("AA"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 10); // The result value will be unchanged through the call to TryGet.
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueRef(containerA, std::string("B"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 20);
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueRef(containerA, std::string("C"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 30);
+                }
             }
         }
     }

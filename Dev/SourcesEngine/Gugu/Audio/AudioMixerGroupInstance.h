@@ -4,6 +4,7 @@
 // Includes
 
 #include <vector>
+#include <map>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -30,7 +31,7 @@ public:
 
     float ComputeMixedVolume(float volume) const;
 
-    void LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance);
+    void LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance, std::map<AudioMixerGroup*, AudioMixerGroupInstance*>& registeredMixerGroupInstances);
 
 protected:
 

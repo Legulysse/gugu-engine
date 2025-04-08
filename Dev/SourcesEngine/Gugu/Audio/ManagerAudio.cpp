@@ -117,14 +117,9 @@ void ManagerAudio::SetAudioMixer(AudioMixerGroup* rootMixerGroup)
     assert(m_rootMixerGroupInstance == nullptr);     // Replacing the root mixer group is not supported.
 
     m_rootMixerGroupInstance = new AudioMixerGroupInstance(rootMixerGroup);
-    m_rootMixerGroupInstance->LoadMixerGroupHierarchy(nullptr);
+    m_mixerGroupInstances.insert(std::make_pair(rootMixerGroup, m_rootMixerGroupInstance));
 
-    RegisterMixerGroupInstance(rootMixerGroup, m_rootMixerGroupInstance);
-}
-
-void ManagerAudio::RegisterMixerGroupInstance(AudioMixerGroup* mixerGroup, AudioMixerGroupInstance* mixerGroupInstance)
-{
-    m_mixerGroupInstances.insert(std::make_pair(mixerGroup, mixerGroupInstance));
+    m_rootMixerGroupInstance->LoadMixerGroupHierarchy(nullptr, m_mixerGroupInstances);
 }
 
 AudioMixerGroupInstance* ManagerAudio::GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const

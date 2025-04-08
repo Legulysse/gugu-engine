@@ -46,7 +46,6 @@ public:
     int GetMasterVolume100() const;
 
     void SetAudioMixer(AudioMixerGroup* rootMixerGroup);
-    void RegisterMixerGroupInstance(AudioMixerGroup* mixerGroup, AudioMixerGroupInstance* mixerGroupInstance);
     AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
 
     bool PlaySoundCue(const std::string& soundCueID);

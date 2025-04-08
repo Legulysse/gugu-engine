@@ -11,6 +11,8 @@
 #include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/System/Container.h"
 
+#include <assert.h>
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -50,20 +52,24 @@ float AudioMixerGroupInstance::ComputeMixedVolume(float volume) const
     return volume;
 }
 
-void AudioMixerGroupInstance::LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance)
+void AudioMixerGroupInstance::LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance, std::map<AudioMixerGroup*, AudioMixerGroupInstance*>& registeredMixerGroupInstances)
 {
     m_parentMixerGroupInstance = parentMixerGroupInstance;
 
     for (const auto& childMixerGroup : m_mixerGroup->GetChildMixerGroups())
     {
-        // TODO: check recursive loops.
+        // Check redundancy and recursive loops.
+        if (StdMapContainsKey(registeredMixerGroupInstances, childMixerGroup))
+        {
+            assert(false);   // An AudioMixerGroup should appear only once in the AudioMixer hierarchy.
+            continue;
+        }
 
         AudioMixerGroupInstance* childMixerGroupInstance = new AudioMixerGroupInstance(childMixerGroup);
+        registeredMixerGroupInstances.insert(std::make_pair(childMixerGroup, childMixerGroupInstance));
         m_childMixerGroupInstances.push_back(childMixerGroupInstance);
 
-        childMixerGroupInstance->LoadMixerGroupHierarchy(this);
-
-        GetAudio()->RegisterMixerGroupInstance(childMixerGroup, childMixerGroupInstance);
+        childMixerGroupInstance->LoadMixerGroupHierarchy(this, registeredMixerGroupInstances);
     }
 }
 

@@ -122,6 +122,19 @@ void ManagerAudio::SetAudioMixer(AudioMixerGroup* rootMixerGroup)
     m_rootMixerGroupInstance->LoadMixerGroupHierarchy(nullptr, m_mixerGroupInstances);
 }
 
+AudioMixerGroupInstance* ManagerAudio::GetMixerGroupInstance(const std::string& mixerGroupId) const
+{
+    for (const auto& kvp : m_mixerGroupInstances)
+    {
+        if (kvp.first->GetID() == mixerGroupId)
+        {
+            return kvp.second;
+        }
+    }
+
+    return nullptr;
+}
+
 AudioMixerGroupInstance* ManagerAudio::GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const
 {
     auto mixerGroupInstance = m_mixerGroupInstances.find(mixerGroup);

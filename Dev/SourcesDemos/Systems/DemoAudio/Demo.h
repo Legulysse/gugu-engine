@@ -49,7 +49,11 @@ protected:
 
     enum ESlider
     {
+        GlobalVolume,
         MasterVolume,
+        MusicVolume,
+        UIVolume,
+        GameplayVolume,
     };
 
     void OnButtonClick(int buttonId);

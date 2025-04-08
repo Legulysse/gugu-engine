@@ -9,10 +9,12 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Audio/ManagerAudio.h"
+#include "Gugu/Audio/AudioMixerGroupInstance.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Element/UI/ElementButton.h"
 #include "Gugu/Element/UI/ElementSlider.h"
+#include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/System/Memory.h"
 
 using namespace gugu;
@@ -43,8 +45,9 @@ void Demo::AppStart()
     m_root->SetUnifiedSize(UDim2::SIZE_FULL);
 
     // Column 1.
-    ElementButton* button;
-    ElementSlider* slider;
+    ElementButton* button = nullptr;
+    ElementSlider* slider = nullptr;
+    ElementText* text = nullptr;
     float posX = 20.f;
     float posY = 20.f;
     float gapY = 48.f;
@@ -144,8 +147,60 @@ void Demo::AppStart()
     slider->LoadFromWidget("Slider_01.widget.xml");
     slider->SetValueLimits(0, 200);
     slider->SetValue(100);
+    slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::GlobalVolume, slider));
+    slider->SetPosition(posX, posY);
+
+    text = slider->AddChild<ElementText>();
+    text->SetText("Global");
+    text->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT + Vector2f(20, 0));
+
+    posY += gapY;
+    slider = m_root->AddChild<ElementSlider>();
+    slider->LoadFromWidget("Slider_01.widget.xml");
+    slider->SetValueLimits(0, 200);
+    slider->SetValue(100);
     slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::MasterVolume, slider));
     slider->SetPosition(posX, posY);
+
+    text = slider->AddChild<ElementText>();
+    text->SetText("Master");
+    text->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT + Vector2f(20, 0));
+
+    posY += gapY;
+    slider = m_root->AddChild<ElementSlider>();
+    slider->LoadFromWidget("Slider_01.widget.xml");
+    slider->SetValueLimits(0, 200);
+    slider->SetValue(100);
+    slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::MusicVolume, slider));
+    slider->SetPosition(posX, posY);
+
+    text = slider->AddChild<ElementText>();
+    text->SetText("Music");
+    text->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT + Vector2f(20, 0));
+
+    posY += gapY;
+    slider = m_root->AddChild<ElementSlider>();
+    slider->LoadFromWidget("Slider_01.widget.xml");
+    slider->SetValueLimits(0, 200);
+    slider->SetValue(100);
+    slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::UIVolume, slider));
+    slider->SetPosition(posX, posY);
+
+    text = slider->AddChild<ElementText>();
+    text->SetText("UI");
+    text->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT + Vector2f(20, 0));
+
+    posY += gapY;
+    slider = m_root->AddChild<ElementSlider>();
+    slider->LoadFromWidget("Slider_01.widget.xml");
+    slider->SetValueLimits(0, 200);
+    slider->SetValue(100);
+    slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::GameplayVolume, slider));
+    slider->SetPosition(posX, posY);
+
+    text = slider->AddChild<ElementText>();
+    text->SetText("Gameplay");
+    text->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT + Vector2f(20, 0));
 }
 
 void Demo::AppStop()
@@ -261,9 +316,25 @@ void Demo::OnButtonClick(int buttonId)
 
 void Demo::OnSliderChanged(int sliderId, ElementSlider* slider)
 {
-    if (sliderId == ESlider::MasterVolume)
+    if (sliderId == ESlider::GlobalVolume)
     {
-        GetAudio()->SetMasterVolume100(slider->GetValue());
+        GetAudio()->SetMasterVolume(slider->GetValue() * 0.01f);
+    }
+    else if (sliderId == ESlider::MasterVolume)
+    {
+        GetAudio()->GetMixerGroupInstance("Master.audiomixergroup.xml")->SetVolume(slider->GetValue() * 0.01f);
+    }
+    else if (sliderId == ESlider::MusicVolume)
+    {
+        GetAudio()->GetMixerGroupInstance("Music.audiomixergroup.xml")->SetVolume(slider->GetValue() * 0.01f);
+    }
+    else if (sliderId == ESlider::UIVolume)
+    {
+        GetAudio()->GetMixerGroupInstance("UI.audiomixergroup.xml")->SetVolume(slider->GetValue() * 0.01f);
+    }
+    else if (sliderId == ESlider::GameplayVolume)
+    {
+        GetAudio()->GetMixerGroupInstance("Gameplay.audiomixergroup.xml")->SetVolume(slider->GetValue() * 0.01f);
     }
 }
 

@@ -48,6 +48,7 @@ public:
     void SetAudioMixer(AudioMixerGroup* rootMixerGroup);
     AudioMixerGroupInstance* GetMixerGroupInstance(const std::string& mixerGroupId) const;
     AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
+    void RecomputeAllMixedVolumes();
 
     bool PlaySoundCue(const std::string& soundCueID);
     bool PlaySoundCue(SoundCue* soundCue);

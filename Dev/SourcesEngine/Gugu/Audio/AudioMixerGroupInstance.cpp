@@ -33,6 +33,8 @@ AudioMixerGroupInstance::~AudioMixerGroupInstance()
 void AudioMixerGroupInstance::SetVolume(float volume)
 {
     m_volume = volume;
+
+    GetAudio()->RecomputeAllMixedVolumes();
 }
 
 float AudioMixerGroupInstance::GetVolume() const

@@ -146,6 +146,19 @@ AudioMixerGroupInstance* ManagerAudio::GetMixerGroupInstance(AudioMixerGroup* mi
     return nullptr;
 }
 
+void ManagerAudio::RecomputeAllMixedVolumes()
+{
+    for (auto& soundInstance : m_soundInstances)
+    {
+        soundInstance.RecomputeMixedVolume();
+    }
+
+    for (auto& musicInstance : m_musicInstances)
+    {
+        musicInstance.RecomputeMixedVolume();
+    }
+}
+
 bool ManagerAudio::PlaySoundCue(const std::string& soundCueID)
 {
     return PlaySoundCue(GetResources()->GetSoundCue(soundCueID));

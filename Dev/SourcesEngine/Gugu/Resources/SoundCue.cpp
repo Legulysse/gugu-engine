@@ -9,6 +9,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Sound.h"
+#include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/External/PugiXmlUtility.h"
 #include "Gugu/Debug/Logger.h"
@@ -19,6 +20,7 @@
 namespace gugu {
 
 SoundCue::SoundCue()
+    : m_mixerGroup(nullptr)
 {
 }
 
@@ -34,7 +36,7 @@ size_t SoundCue::GetSoundCount() const
 
 bool SoundCue::GetSound(size_t index, SoundParameters& parameters) const
 {
-    if (m_audioFiles.empty() || index < 0 || index >= m_audioFiles.size())
+    if (index < 0 || index >= m_audioFiles.size())
         return false;
     
     parameters = m_audioFiles[index];
@@ -58,6 +60,8 @@ EResourceType::Type SoundCue::GetResourceType() const
 
 void SoundCue::GetDependencies(std::set<Resource*>& dependencies) const
 {
+    dependencies.insert(m_mixerGroup);
+
     for (auto& audioFile : m_audioFiles)
     {
         if (audioFile.sound)
@@ -69,11 +73,23 @@ void SoundCue::GetDependencies(std::set<Resource*>& dependencies) const
 
 void SoundCue::OnDependencyRemoved(const Resource* removedDependency)
 {
+    if (m_mixerGroup == removedDependency)
+    {
+        m_mixerGroup = nullptr;
+
+        for (auto& audioFile : m_audioFiles)
+        {
+            audioFile.mixerGroupInstance = nullptr;
+            audioFile.mixerGroupID = "";
+        }
+    }
+
     for (auto& audioFile : m_audioFiles)
     {
         if (audioFile.sound == removedDependency)
         {
             audioFile.sound = nullptr;
+            audioFile.soundID = "";
         }
     }
 }
@@ -81,6 +97,7 @@ void SoundCue::OnDependencyRemoved(const Resource* removedDependency)
 void SoundCue::Unload()
 {
     m_audioFiles.clear();
+    m_mixerGroup = nullptr;
 }
 
 bool SoundCue::LoadFromXml(const pugi::xml_document& document)
@@ -91,28 +108,22 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
     if (!nodeRoot)
         return false;
 
-    pugi::xml_node nodeFiles = nodeRoot.child("Files");
-    if (!nodeFiles)
-        return false;
+    AudioMixerGroup* mixerGroup = GetResources()->GetAudioMixerGroup(nodeRoot.child("MixerGroup").attribute("source").as_string());
 
-    for (pugi::xml_node nodeFile = nodeFiles.child("File"); nodeFile; nodeFile = nodeFile.next_sibling("File"))
+    for (pugi::xml_node nodeFile = nodeRoot.child("Clips").child("Clip"); nodeFile; nodeFile = nodeFile.next_sibling("File"))
     {
-        Sound* sound = nullptr;
-        pugi::xml_attribute attributeName = nodeFile.attribute("name");
-        if (attributeName)
-            sound = GetResources()->GetSound(attributeName.as_string());
+        if (Sound* sound = GetResources()->GetSound(nodeFile.attribute("source").as_string()))
+        {
+            SoundParameters parameters;
+            parameters.sound = sound;
+            parameters.soundID = sound->GetID();
+            parameters.mixerGroupID = mixerGroup->GetID();
+            parameters.volume = nodeFile.attribute("volume").as_float(parameters.volume);
+            parameters.pitchLowerOffset = nodeFile.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
+            parameters.pitchUpperOffset = nodeFile.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);
 
-        if (!sound)
-            continue;
-
-        SoundParameters parameters;
-        parameters.soundID = attributeName.as_string();
-        parameters.sound = sound;
-        parameters.volume = nodeFile.attribute("volume").as_float(parameters.volume);
-        parameters.pitchLowerOffset = nodeFile.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
-        parameters.pitchUpperOffset = nodeFile.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);
-
-        m_audioFiles.push_back(parameters);
+            m_audioFiles.push_back(parameters);
+        }
     }
 
     return true;

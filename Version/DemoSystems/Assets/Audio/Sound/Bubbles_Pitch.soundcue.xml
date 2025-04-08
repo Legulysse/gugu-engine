@@ -1,5 +1,6 @@
 <SoundCue>
-    <Files>
-        <File name="Bulle_01.ogg" pitchLowerOffset="0.2" pitchUpperOffset="0.8" />
-    </Files>
+    <MixerGroup source="Gameplay.audiomixergroup.xml" />
+    <Clips>
+        <Clip source="Bulle_01.ogg" pitchLowerOffset="0.2" pitchUpperOffset="0.8" />
+    </Clips>
 </SoundCue>

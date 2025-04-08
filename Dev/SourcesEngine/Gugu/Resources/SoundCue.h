@@ -14,6 +14,7 @@
 namespace gugu
 {
     class Sound;
+    class AudioMixerGroup;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -45,6 +46,7 @@ protected:
 protected:
 
     std::vector<SoundParameters> m_audioFiles;
+    AudioMixerGroup* m_mixerGroup;
 };
 
 }   // namespace gugu

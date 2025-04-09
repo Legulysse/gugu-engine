@@ -60,7 +60,10 @@ EResourceType::Type SoundCue::GetResourceType() const
 
 void SoundCue::GetDependencies(std::set<Resource*>& dependencies) const
 {
-    dependencies.insert(m_mixerGroup);
+    if (m_mixerGroup)
+    {
+        dependencies.insert(m_mixerGroup);
+    }
 
     for (auto& parameters : m_audioClips)
     {

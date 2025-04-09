@@ -96,8 +96,6 @@ public:
 
     Texture*    GetTexture      (const std::string& _strName);
     Font*       GetFont         (const std::string& _strName);
-    Sound*      GetSound        (const std::string& _strName);
-    Music*      GetMusic        (const std::string& _strName);
     AudioClip* GetAudioClip(const std::string& _strName);
     AudioMixerGroup* GetAudioMixerGroup(const std::string& _strName);
     SoundCue*   GetSoundCue     (const std::string& _strName);

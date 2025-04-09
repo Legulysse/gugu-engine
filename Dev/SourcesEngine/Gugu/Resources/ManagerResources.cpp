@@ -14,8 +14,6 @@
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/Font.h"
-#include "Gugu/Resources/Sound.h"
-#include "Gugu/Resources/Music.h"
 #include "Gugu/Resources/AudioClip.h"
 #include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/Resources/SoundCue.h"
@@ -247,16 +245,6 @@ Font* ManagerResources::GetFont(const std::string& _strName)
     return dynamic_cast<Font*>(GetResource(_strName, EResourceType::Font));
 }
 
-Sound* ManagerResources::GetSound(const std::string& _strName)
-{
-    return dynamic_cast<Sound*>(GetResource(_strName, EResourceType::Sound));
-}
-
-Music* ManagerResources::GetMusic(const std::string& _strName)
-{
-    return dynamic_cast<Music*>(GetResource(_strName, EResourceType::Music));
-}
-
 AudioClip* ManagerResources::GetAudioClip(const std::string& _strName)
 {
     return dynamic_cast<AudioClip*>(GetResource(_strName, EResourceType::AudioClip));
@@ -364,14 +352,6 @@ Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResource
     else if (_eExplicitType == EResourceType::Font)
     {
         pResource = new Font;
-    }
-    else if (_eExplicitType == EResourceType::Sound)
-    {
-        pResource = new Sound;
-    }
-    else if (_eExplicitType == EResourceType::Music)
-    {
-        pResource = new Music;
     }
     else if (_eExplicitType == EResourceType::AudioClip)
     {

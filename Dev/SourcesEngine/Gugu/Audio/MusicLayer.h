@@ -25,9 +25,9 @@ namespace gugu {
 struct MusicParameters
 {
     AudioClip* audioClip;           // AudioClip resource to play.
-    std::string audioClipID;        // If audioClip is null, the system will try to load the resource specified by audioClipID.
+    std::string audioClipId;        // If audioClip is null, the system will try to load the resource specified by audioClipId.
     AudioMixerGroupInstance* mixerGroupInstance;
-    std::string mixerGroupID;
+    std::string mixerGroupId;
     float volume;                   // Volume range [0, 1].
     float fadeIn;
     float fadeOut;

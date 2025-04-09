@@ -17,9 +17,9 @@ namespace gugu {
     
 SoundParameters::SoundParameters()
     : audioClip(nullptr)
-    , audioClipID("")
+    , audioClipId("")
     , mixerGroupInstance(nullptr)
-    , mixerGroupID("")
+    , mixerGroupId("")
     , volume(1.f)
     , pitchLowerOffset(0.f)
     , pitchUpperOffset(0.f)

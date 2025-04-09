@@ -80,7 +80,7 @@ void SoundCue::OnDependencyRemoved(const Resource* removedDependency)
         for (auto& parameters : m_audioClips)
         {
             parameters.mixerGroupInstance = nullptr;
-            parameters.mixerGroupID = "";
+            parameters.mixerGroupId = "";
         }
     }
 
@@ -89,7 +89,7 @@ void SoundCue::OnDependencyRemoved(const Resource* removedDependency)
         if (parameters.audioClip == removedDependency)
         {
             parameters.audioClip = nullptr;
-            parameters.audioClipID = "";
+            parameters.audioClipId = "";
         }
     }
 }
@@ -119,8 +119,8 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
 
             SoundParameters parameters;
             parameters.audioClip = audioClip;
-            parameters.audioClipID = audioClip->GetID();
-            parameters.mixerGroupID = mixerGroup->GetID();
+            parameters.audioClipId = audioClip->GetID();
+            parameters.mixerGroupId = mixerGroup->GetID();
             parameters.volume = nodeClip.attribute("volume").as_float(parameters.volume);
             parameters.pitchLowerOffset = nodeClip.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
             parameters.pitchUpperOffset = nodeClip.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);

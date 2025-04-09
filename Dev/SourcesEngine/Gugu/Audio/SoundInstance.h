@@ -24,9 +24,9 @@ namespace gugu {
 struct SoundParameters
 {
     AudioClip* audioClip;
-    std::string audioClipID;
+    std::string audioClipId;
     AudioMixerGroupInstance* mixerGroupInstance;
-    std::string mixerGroupID;
+    std::string mixerGroupId;
     float volume;
     float pitchLowerOffset;
     float pitchUpperOffset;

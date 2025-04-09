@@ -21,9 +21,9 @@ namespace gugu {
 
 MusicParameters::MusicParameters()
     : audioClip(nullptr)
-    , audioClipID("")
+    , audioClipId("")
     , mixerGroupInstance(nullptr)
-    , mixerGroupID("")
+    , mixerGroupId("")
     , volume(1.f)
     , fadeIn(2.f)
     , fadeOut(2.f)
@@ -82,13 +82,13 @@ void MusicLayer::SetNext(const MusicParameters& parameters)
     AudioClip* audioClip = parameters.audioClip;
     if (!audioClip)
     {
-        audioClip = GetResources()->GetAudioClip(parameters.audioClipID);
+        audioClip = GetResources()->GetAudioClip(parameters.audioClipId);
     }
 
     AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
     if (!mixerGroupInstance)
     {
-        mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
+        mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupId));
     }
 
     m_nextInstance->Reset();
@@ -126,13 +126,13 @@ void MusicLayer::FadeToNext()
             AudioClip* audioClip = parameters.audioClip;
             if (!audioClip)
             {
-                audioClip = GetResources()->GetAudioClip(parameters.audioClipID);
+                audioClip = GetResources()->GetAudioClip(parameters.audioClipId);
             }
 
             AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
             if (!mixerGroupInstance)
             {
-                mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
+                mixerGroupInstance = GetAudio()->GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupId));
             }
 
             m_nextInstance->Reset();

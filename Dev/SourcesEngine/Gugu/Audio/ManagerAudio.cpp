@@ -157,9 +157,9 @@ void ManagerAudio::RecomputeAllMixedVolumes()
     }
 }
 
-bool ManagerAudio::PlaySoundCue(const std::string& soundCueID)
+bool ManagerAudio::PlaySoundCue(const std::string& soundCueId)
 {
-    return PlaySoundCue(GetResources()->GetSoundCue(soundCueID));
+    return PlaySoundCue(GetResources()->GetSoundCue(soundCueId));
 }
 
 bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
@@ -174,11 +174,11 @@ bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
     return PlaySound(parameters);
 }
 
-bool ManagerAudio::PlaySound(const std::string& audioClipID, float volume, int group)
+bool ManagerAudio::PlaySound(const std::string& audioClipId, float volume, int group)
 {
     SoundParameters parameters;
-    parameters.audioClip = GetResources()->GetAudioClip(audioClipID);
-    parameters.audioClipID = audioClipID;
+    parameters.audioClip = GetResources()->GetAudioClip(audioClipId);
+    parameters.audioClipId = audioClipId;
     parameters.volume = volume;
     parameters.group = group;
 
@@ -190,13 +190,13 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
     AudioClip* audioClip = parameters.audioClip;
     if (!audioClip)
     {
-        audioClip = GetResources()->GetAudioClip(parameters.audioClipID);
+        audioClip = GetResources()->GetAudioClip(parameters.audioClipId);
     }
 
     AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
     if (!mixerGroupInstance)
     {
-        mixerGroupInstance = GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
+        mixerGroupInstance = GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupId));
     }
 
     if (audioClip)
@@ -228,11 +228,11 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
     return false;
 }
 
-bool ManagerAudio::PlayMusic(const std::string& audioClipID, float volume, float fade)
+bool ManagerAudio::PlayMusic(const std::string& audioClipId, float volume, float fade)
 {
     MusicParameters parameters;
-    parameters.audioClip = GetResources()->GetAudioClip(audioClipID);
-    parameters.audioClipID = audioClipID;
+    parameters.audioClip = GetResources()->GetAudioClip(audioClipId);
+    parameters.audioClipId = audioClipId;
     parameters.volume = volume;
     parameters.fadeOut = fade;
     parameters.fadeIn = fade;
@@ -245,7 +245,7 @@ bool ManagerAudio::PlayMusic(const MusicParameters& parameters)
     if (parameters.layer < 0 || parameters.layer >= (int)m_musicLayers.size())
         return false;
 
-    if (parameters.audioClip || GetResources()->HasResource(parameters.audioClipID))
+    if (parameters.audioClip || GetResources()->HasResource(parameters.audioClipId))
     {
         MusicLayer* musicLayer = &m_musicLayers[parameters.layer];
         musicLayer->SetNext(parameters);
@@ -279,7 +279,7 @@ bool ManagerAudio::StopMusic(float fade, int layer)
     {
         MusicParameters parameters;
         parameters.audioClip = nullptr;
-        parameters.audioClipID = "";
+        parameters.audioClipId = "";
         parameters.volume = 0.f;
         parameters.fadeOut = fade;
         parameters.fadeIn = fade;

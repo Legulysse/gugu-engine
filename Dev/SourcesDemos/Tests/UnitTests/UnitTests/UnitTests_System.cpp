@@ -12,6 +12,7 @@
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/UUID.h"
 #include "Gugu/System/Hash.h"
+#include "Gugu/System/Memory.h"
 
 using namespace gugu;
 
@@ -26,7 +27,40 @@ void RunUnitTests_System(UnitTestResults* results)
 
     //----------------------------------------------
 
-    GUGU_UTEST_SECTION("Path Utility");
+    GUGU_UTEST_SECTION("Memory");
+    {
+        {
+            int* ptr = nullptr;
+            GUGU_UTEST_CHECK_NULL(ptr);
+
+            SafeDelete(ptr);
+            GUGU_UTEST_CHECK_NULL(ptr);
+
+            ptr = new int;
+            GUGU_UTEST_CHECK_NOT_NULL(ptr);
+
+            SafeDelete(ptr);
+            GUGU_UTEST_CHECK_NULL(ptr);
+        }
+
+        {
+            int* ptr = nullptr;
+            GUGU_UTEST_CHECK_NULL(ptr);
+
+            SafeDeleteArray(ptr);
+            GUGU_UTEST_CHECK_NULL(ptr);
+
+            ptr = new int[10];
+            GUGU_UTEST_CHECK_NOT_NULL(ptr);
+
+            SafeDeleteArray(ptr);
+            GUGU_UTEST_CHECK_NULL(ptr);
+        }
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Path");
     {
         GUGU_UTEST_SUBSECTION("NormalizePath");
         {

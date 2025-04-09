@@ -42,7 +42,6 @@ namespace gugu
 
 namespace gugu {
 
-// TODO: unit tests
 class ManagerResources
 {
 public:
@@ -140,7 +139,6 @@ public:
     void RegisterDataEnumInfos(const std::string& name, const DataEnumInfos* enumInfos);
     const DataEnumInfos* GetDataEnumInfos(const std::string& name);
 
-    // TODO: handles
     bool RegisterResourceListener(const Resource* resource, const Handle& handle, const DelegateResourceEvent& delegateResourceEvent);
     void UnregisterResourceListeners(const Resource* resource, const Handle& handle);
     void UnregisterResourceListeners(const Handle& handle);

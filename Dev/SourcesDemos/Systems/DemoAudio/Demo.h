@@ -12,6 +12,7 @@
 namespace gugu
 {
     class Element;
+    class ElementCheckbox;
     class ElementSlider;
 }
 
@@ -58,6 +59,7 @@ protected:
 
     void OnButtonClick(int buttonId);
     void OnSliderChanged(int sliderId, gugu::ElementSlider* slider);
+    void OnCheckboxChanged(int sliderId, gugu::ElementCheckbox* checkbox);
 
 protected:
 

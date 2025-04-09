@@ -82,11 +82,11 @@ public:
     const std::string& GetPathAssets() const;
     const std::string& GetPathScreenshots() const;
     
-    bool HasResource(const std::string& _strName) const;
-    bool IsResourceLoaded(const std::string& _strName) const;
+    bool HasResource(const std::string& resourceId) const;
+    bool IsResourceLoaded(const std::string& resourceId) const;
 
-    bool GetResourceFileInfo(const std::string& _strName, FileInfo& fileInfo) const;
-    const FileInfo& GetResourceFileInfo(const std::string& _strName) const;
+    bool GetResourceFileInfo(const std::string& resourceId, FileInfo& fileInfo) const;
+    const FileInfo& GetResourceFileInfo(const std::string& resourceId) const;
 
     bool ParseDirectory(std::string_view rootPath_utf8);
     void PreloadAll();
@@ -94,48 +94,48 @@ public:
 
     EResourceType::Type GetResourceType(const FileInfo& fileInfo) const;
 
-    Texture* GetTexture(const std::string& _strName);
-    Font* GetFont(const std::string& _strName);
-    AudioClip* GetAudioClip(const std::string& _strName);
-    AudioMixerGroup* GetAudioMixerGroup(const std::string& _strName);
-    SoundCue* GetSoundCue(const std::string& _strName);
-    ImageSet* GetImageSet(const std::string& _strName);
-    AnimSet* GetAnimSet(const std::string& _strName);
-    ParticleEffect* GetParticleEffect(const std::string& _strName);
-    Datasheet* GetDatasheet(const std::string& _strName);
-    ElementWidget* GetElementWidget(const std::string& _strName);
+    Texture* GetTexture(const std::string& resourceId);
+    Font* GetFont(const std::string& resourceId);
+    AudioClip* GetAudioClip(const std::string& resourceId);
+    AudioMixerGroup* GetAudioMixerGroup(const std::string& resourceId);
+    SoundCue* GetSoundCue(const std::string& resourceId);
+    ImageSet* GetImageSet(const std::string& resourceId);
+    AnimSet* GetAnimSet(const std::string& resourceId);
+    ParticleEffect* GetParticleEffect(const std::string& resourceId);
+    Datasheet* GetDatasheet(const std::string& resourceId);
+    ElementWidget* GetElementWidget(const std::string& resourceId);
 
     template<typename T>
-    const T* GetDatasheetObject(const std::string& _strName)
+    const T* GetDatasheetObject(const std::string& resourceId)
     {
-        return dynamic_cast<const T*>(GetDatasheetRootObject(_strName));
+        return dynamic_cast<const T*>(GetDatasheetRootObject(resourceId));
     }
 
-    Resource* GetResource(const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
-    bool LoadResource(const std::string& _strName, EResourceType::Type _eExplicitType = EResourceType::Unknown);
-    bool InjectResource(const std::string& _strName, Resource* _pResource);
+    Resource* GetResource(const std::string& resourceId, EResourceType::Type explicitType = EResourceType::Unknown);
+    bool LoadResource(const std::string& resourceId, EResourceType::Type explicitType = EResourceType::Unknown);
+    bool InjectResource(const std::string& resourceId, Resource* resource);
 
     // TODO: Obsolete editor getters ?
-    const std::string& GetResourceID(const Resource* _pResource) const;
-    const std::string& GetResourceID(const FileInfo& _oFileInfo) const;
+    const std::string& GetResourceID(const Resource* resource) const;
+    const std::string& GetResourceID(const FileInfo& fileInfo) const;
 
-    bool RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos);
-    bool AddResource(Resource* _pNewResource, const FileInfo& _oFileInfo);
-    bool MoveResource(Resource* _pResource, const FileInfo& _oFileInfo);
+    bool RegisterResourceInfo(const std::string& resourceID, const FileInfo& fileInfo);
+    bool AddResource(Resource* resource, const FileInfo& fileInfo);
+    bool MoveResource(Resource* resource, const FileInfo& fileInfo);
 
-    bool RemoveResource(Resource* _pResource);
+    bool RemoveResource(Resource* resource);
     bool RemoveResource(const std::string& resourceID);
-    bool DeleteResource(Resource* _pResource);
+    bool DeleteResource(Resource* resource);
     bool DeleteResource(const std::string& resourceID);
 
     //TODO: Editor hack, waiting for ResourceContext to split editor and project resources.
-    void RemoveResourcesFromPath(const std::string& _strPath);
+    void RemoveResourcesFromPath(const std::string& path);
 
-    void GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const;
+    void GetAllResourceInfos(std::vector<const ResourceInfo*>& resourceInfos) const;
     void GetAllDatasheetsByType(std::string_view dataType, std::vector<Datasheet*>& datasheets);
 
     //TODO: Refactor with ResourceContext
-    Texture* GetCustomTexture(const std::string& _strName);
+    Texture* GetCustomTexture(const std::string& name);
 
     bool IsDefaultTextureSmooth() const;
 
@@ -145,8 +145,8 @@ public:
     void RegisterDataObjectFactory(const DelegateDataObjectFactory& delegateDataObjectFactory);
     DataObject* InstanciateDataObject(std::string_view dataType);
 
-    void RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum);
-    const DataEnumInfos* GetDataEnumInfos(const std::string& _strName);
+    void RegisterDataEnumInfos(const std::string& name, const DataEnumInfos* enumInfos);
+    const DataEnumInfos* GetDataEnumInfos(const std::string& name);
 
     bool RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceEvent& delegateResourceEvent);
     void UnregisterResourceListeners(const Resource* resource, const void* handle);
@@ -159,7 +159,7 @@ public:
 
 private:
 
-    Resource* LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType = EResourceType::Unknown);
+    Resource* LoadResource(ResourceInfo* resourceInfo, EResourceType::Type explicitType = EResourceType::Unknown);
 
     const DatasheetObject* GetDatasheetRootObject(const std::string& _strName);
 

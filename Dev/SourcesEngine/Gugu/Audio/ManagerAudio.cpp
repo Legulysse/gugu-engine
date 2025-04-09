@@ -44,8 +44,8 @@ void ManagerAudio::Init(const EngineConfig& config)
 {
     GetLogEngine()->Print(ELog::Info, ELogEngine::Audio, "Init Manager Audio...");
 
-    m_soundInstances.resize(Max(12, config.maxSoundTracks));
-    m_musicInstances.resize(Max(4, config.maxMusicTracks));
+    m_soundInstances.resize(Max(12, config.maxSoundSourceCount));
+    m_musicInstances.resize(Max(4, config.maxMusicSourceCount));
     m_musicLayers.resize(Max(2, (int)m_musicInstances.size() / 2));
 
     for (size_t i = 0; i < m_musicLayers.size(); ++i)

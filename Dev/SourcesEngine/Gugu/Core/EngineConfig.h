@@ -54,8 +54,8 @@ struct EngineConfig
     sf::Color backgroundColor;
 
     // Audio
-    int maxSoundTracks;     // Total tracks should not exceed 256
-    int maxMusicTracks;     // Total tracks should not exceed 256
+    int maxSoundSourceCount;     // Total sources should not exceed 256.
+    int maxMusicSourceCount;     // Total sources should not exceed 256.
 
     // Debug
     bool showStats;
@@ -90,8 +90,8 @@ struct EngineConfig
         framerateLimit = 60;
         backgroundColor = sf::Color(128, 128, 128, 255);
 
-        maxSoundTracks = 240;   // Total tracks should not exceed 256
-        maxMusicTracks = 16;    // Total tracks should not exceed 256
+        maxSoundSourceCount = 240;   // Total tracks should not exceed 256
+        maxMusicSourceCount = 16;    // Total tracks should not exceed 256
 
         showStats = false;
         showFPS = false;

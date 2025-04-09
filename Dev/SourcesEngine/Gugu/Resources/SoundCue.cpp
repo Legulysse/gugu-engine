@@ -120,7 +120,7 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
             SoundParameters parameters;
             parameters.audioClip = audioClip;
             parameters.audioClipId = audioClip->GetID();
-            parameters.mixerGroupId = mixerGroup->GetID();
+            parameters.mixerGroupId = mixerGroup == nullptr ? "" : mixerGroup->GetID();
             parameters.volume = clipNode.attribute("volume").as_float(parameters.volume);
             parameters.pitchLowerOffset = clipNode.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
             parameters.pitchUpperOffset = clipNode.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);

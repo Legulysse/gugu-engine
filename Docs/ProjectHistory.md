@@ -1,5 +1,9 @@
 # Project History
 
+## Version 0.9 &nbsp; _(??/??/????)_ &nbsp; [Update ??/??/????]
+- Mise à jour ImGui 1.91.6 (docking).
+- Mise à jour ImGui-SFML 2.6.1.
+
 ## Version 0.8.1 &nbsp; _(03/12/2024)_
 - Remplacement des configurations de build "Debug" et "Release" par les configurations "DevDebug", DevRelease" et "ProdMaster".
 - Ajout des macros GUGU_DEVELOPMENT_BUILD (DevDebug et DevRelease) et GUGU_PRODUCTION_BUILD (ProdMaster).

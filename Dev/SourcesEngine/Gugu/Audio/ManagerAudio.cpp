@@ -53,6 +53,8 @@ void ManagerAudio::Init(const EngineConfig& config)
         m_musicLayers[i].SetInstances(&m_musicInstances[i*2], &m_musicInstances[i*2 + 1]);
     }
 
+    SetRootAudioMixerGroup(GetResources()->GetAudioMixerGroup(config.rootAudioMixerGroup));
+
     GetLogEngine()->Print(ELog::Info, ELogEngine::Audio, "Manager Audio Ready");
 }
 
@@ -107,7 +109,7 @@ int ManagerAudio::GetMasterVolume100() const
     return (int)(m_masterVolume * 100.f);
 }
 
-void ManagerAudio::SetAudioMixer(AudioMixerGroup* rootMixerGroup)
+void ManagerAudio::SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup)
 {
     if (!rootMixerGroup)
         return;

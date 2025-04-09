@@ -45,7 +45,7 @@ public:
     float GetMasterVolume() const;
     int GetMasterVolume100() const;
 
-    void SetAudioMixer(AudioMixerGroup* rootMixerGroup);
+    void SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup);
     AudioMixerGroupInstance* GetMixerGroupInstance(const std::string& mixerGroupId) const;
     AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
     void RecomputeAllMixedVolumes();

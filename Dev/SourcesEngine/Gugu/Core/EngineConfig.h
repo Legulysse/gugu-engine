@@ -54,6 +54,7 @@ struct EngineConfig
     sf::Color backgroundColor;
 
     // Audio
+    std::string rootAudioMixerGroup;
     int maxSoundSourceCount;     // Total sources should not exceed 256.
     int maxMusicSourceCount;     // Total sources should not exceed 256.
 
@@ -90,6 +91,7 @@ struct EngineConfig
         framerateLimit = 60;
         backgroundColor = sf::Color(128, 128, 128, 255);
 
+        rootAudioMixerGroup = "";
         maxSoundSourceCount = 240;   // Total tracks should not exceed 256
         maxMusicSourceCount = 16;    // Total tracks should not exceed 256
 

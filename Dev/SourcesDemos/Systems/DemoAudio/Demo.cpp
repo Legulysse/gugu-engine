@@ -37,9 +37,6 @@ void Demo::AppStart()
 {
     RegisterEventHandler(GetGameWindow());
 
-    // Setup Audio.
-    GetAudio()->SetAudioMixer(GetResources()->GetAudioMixerGroup("Master.audiomixergroup.xml"));
-
     // Root.
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
     m_root->SetUnifiedSize(UDim2::SIZE_FULL);

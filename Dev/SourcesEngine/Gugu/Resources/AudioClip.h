@@ -5,16 +5,19 @@
 
 #include "Gugu/Resources/Resource.h"
 
+#include <SFML/System/Time.hpp>
+
 namespace sf
 {
     class SoundBuffer;
+    class Music;
 }
 
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
-    
+
 class AudioClip : public Resource
 {
 public:
@@ -22,8 +25,10 @@ public:
     AudioClip();
     virtual ~AudioClip();
 
-    // TODO: Get as Buffer and/or Stream.
-    sf::SoundBuffer* GetSFSoundBuffer() const;
+    sf::SoundBuffer* GetOrLoadSFSoundBuffer();
+    sf::Music* OpenSFMusicStream();
+
+    sf::Time GetOrReadDuration();
     
     virtual EResourceType::Type GetResourceType() const override;
 
@@ -36,6 +41,7 @@ protected:
 protected:
 
     sf::SoundBuffer* m_sfSoundBuffer;
+    sf::Time m_duration;
 };
 
 }   // namespace gugu

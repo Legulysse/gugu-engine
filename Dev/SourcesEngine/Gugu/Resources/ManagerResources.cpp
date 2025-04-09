@@ -712,34 +712,6 @@ Font* ManagerResources::GetDebugFont()
     return GetFont(m_debugFont);
 }
 
-//void ManagerResources::GetLoadedTextureInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-//{
-//    GetLoadedResourceInfos(_vecInfos, EResourceType::Texture);
-//}
-//
-//void ManagerResources::GetLoadedImageSetInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-//{
-//    GetLoadedResourceInfos(_vecInfos, EResourceType::ImageSet);
-//}
-//
-//void ManagerResources::GetLoadedAnimSetInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-//{
-//    GetLoadedResourceInfos(_vecInfos, EResourceType::AnimSet);
-//}
-//
-//void ManagerResources::GetLoadedResourceInfos(std::vector<const ResourceInfo*>& _vecInfos, EResourceType::Type _eType) const
-//{
-//    auto iteCurrent = m_resources.begin();
-//    while (iteCurrent != m_resources.end())
-//    {
-//        if (iteCurrent->second->resource && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
-//            _vecInfos.push_back(iteCurrent->second);
-//        ++iteCurrent;
-//    }
-//
-//    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
-//}
-
 void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const
 {
     _vecInfos.clear();
@@ -767,21 +739,6 @@ void ManagerResources::GetAllDatasheetsByType(std::string_view dataType, std::ve
         }
     }
 }
-
-//void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType) const
-//{
-//    std::string strPathNormalized = NormalizePath(_strPath, true);
-//
-//    auto iteCurrent = m_resources.begin();
-//    while (iteCurrent != m_resources.end())
-//    {
-//        if (iteCurrent->second->resource && iteCurrent->second->fileInfo.IsPathEnd(strPathNormalized) && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
-//            _vecInfos.push_back(iteCurrent->second);
-//        ++iteCurrent;
-//    }
-//
-//    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
-//}
 
 void ManagerResources::RegisterDataObjectFactory(const DelegateDataObjectFactory& delegateDataObjectFactory)
 {

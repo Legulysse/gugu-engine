@@ -94,15 +94,15 @@ public:
 
     EResourceType::Type GetResourceType(const FileInfo& fileInfo) const;
 
-    Texture*    GetTexture      (const std::string& _strName);
-    Font*       GetFont         (const std::string& _strName);
+    Texture* GetTexture(const std::string& _strName);
+    Font* GetFont(const std::string& _strName);
     AudioClip* GetAudioClip(const std::string& _strName);
     AudioMixerGroup* GetAudioMixerGroup(const std::string& _strName);
-    SoundCue*   GetSoundCue     (const std::string& _strName);
-    ImageSet*   GetImageSet     (const std::string& _strName);
-    AnimSet*    GetAnimSet      (const std::string& _strName);
+    SoundCue* GetSoundCue(const std::string& _strName);
+    ImageSet* GetImageSet(const std::string& _strName);
+    AnimSet* GetAnimSet(const std::string& _strName);
     ParticleEffect* GetParticleEffect(const std::string& _strName);
-    Datasheet*  GetDatasheet    (const std::string& _strName);
+    Datasheet* GetDatasheet(const std::string& _strName);
     ElementWidget* GetElementWidget(const std::string& _strName);
 
     template<typename T>
@@ -119,38 +119,31 @@ public:
     const std::string& GetResourceID(const Resource* _pResource) const;
     const std::string& GetResourceID(const FileInfo& _oFileInfo) const;
 
-    bool        RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos);
-    bool        AddResource     (Resource* _pNewResource, const FileInfo& _oFileInfo);
-    bool        MoveResource    (Resource* _pResource, const FileInfo& _oFileInfo);
+    bool RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos);
+    bool AddResource(Resource* _pNewResource, const FileInfo& _oFileInfo);
+    bool MoveResource(Resource* _pResource, const FileInfo& _oFileInfo);
 
-    bool        RemoveResource  (Resource* _pResource);
-    bool        RemoveResource  (const std::string& resourceID);
-    bool        DeleteResource  (Resource* _pResource);
-    bool        DeleteResource  (const std::string& resourceID);
+    bool RemoveResource(Resource* _pResource);
+    bool RemoveResource(const std::string& resourceID);
+    bool DeleteResource(Resource* _pResource);
+    bool DeleteResource(const std::string& resourceID);
 
     //TODO: Editor hack, waiting for ResourceContext to split editor and project resources.
-    void        RemoveResourcesFromPath (const std::string& _strPath);
+    void RemoveResourcesFromPath(const std::string& _strPath);
 
     void GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const;
     void GetAllDatasheetsByType(std::string_view dataType, std::vector<Datasheet*>& datasheets);
 
-    // TODO: Obsolete editor getters ?
-    //void        GetLoadedResourceInfos  (std::vector<const ResourceInfo*>& _vecInfos, EResourceType::Type _eType = EResourceType::Unknown) const;
-    //void        GetLoadedImageSetInfos  (std::vector<const ResourceInfo*>& _vecInfos) const;
-    //void        GetLoadedAnimSetInfos   (std::vector<const ResourceInfo*>& _vecInfos) const;
-    //void        GetLoadedTextureInfos   (std::vector<const ResourceInfo*>& _vecInfos) const;
-    //void        GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType = EResourceType::Unknown) const;
-
     //TODO: Refactor with ResourceContext
-    Texture*        GetCustomTexture(const std::string& _strName);
+    Texture* GetCustomTexture(const std::string& _strName);
 
-    bool            IsDefaultTextureSmooth() const;
+    bool IsDefaultTextureSmooth() const;
 
-    Font*           GetDefaultFont();
-    Font*           GetDebugFont();
+    Font* GetDefaultFont();
+    Font* GetDebugFont();
     
-    void            RegisterDataObjectFactory  (const DelegateDataObjectFactory& delegateDataObjectFactory);
-    DataObject*     InstanciateDataObject      (std::string_view dataType);
+    void RegisterDataObjectFactory(const DelegateDataObjectFactory& delegateDataObjectFactory);
+    DataObject* InstanciateDataObject(std::string_view dataType);
 
     void RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum);
     const DataEnumInfos* GetDataEnumInfos(const std::string& _strName);

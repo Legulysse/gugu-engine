@@ -29,6 +29,9 @@ public:
     void SetVolume(float volume);
     float GetVolume() const;
 
+    void SetMuted(bool muted);
+    bool IsMuted() const;
+
     float ComputeMixedVolume(float volume) const;
 
     void LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance, std::map<AudioMixerGroup*, AudioMixerGroupInstance*>& registeredMixerGroupInstances);
@@ -39,6 +42,7 @@ protected:
     AudioMixerGroupInstance* m_parentMixerGroupInstance;
     std::vector<AudioMixerGroupInstance*> m_childMixerGroupInstances;
     float m_volume;
+    bool m_muted;
 };
 
 }   // namespace gugu

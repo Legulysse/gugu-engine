@@ -22,6 +22,7 @@ AudioMixerGroupInstance::AudioMixerGroupInstance(AudioMixerGroup* mixerGroup)
     : m_mixerGroup(mixerGroup)
     , m_parentMixerGroupInstance(nullptr)
     , m_volume(1.f)
+    , m_muted(false)
 {
 }
 
@@ -42,8 +43,23 @@ float AudioMixerGroupInstance::GetVolume() const
     return m_volume;
 }
 
+void AudioMixerGroupInstance::SetMuted(bool muted)
+{
+    m_muted = muted;
+
+    GetAudio()->RecomputeAllMixedVolumes();
+}
+
+bool AudioMixerGroupInstance::IsMuted() const
+{
+    return m_muted;
+}
+
 float AudioMixerGroupInstance::ComputeMixedVolume(float volume) const
 {
+    if (m_muted)
+        return 0.f;
+
     volume = volume * m_mixerGroup->GetVolumeAttenuation() * m_volume;
 
     if (m_parentMixerGroupInstance)

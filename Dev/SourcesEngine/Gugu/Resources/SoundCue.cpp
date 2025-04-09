@@ -104,15 +104,15 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
 {
     Unload();
 
-    pugi::xml_node nodeRoot = document.child("SoundCue");
-    if (!nodeRoot)
+    pugi::xml_node rootNode = document.child("SoundCue");
+    if (!rootNode)
         return false;
 
-    AudioMixerGroup* mixerGroup = GetResources()->GetAudioMixerGroup(nodeRoot.child("MixerGroup").attribute("source").as_string());
+    AudioMixerGroup* mixerGroup = GetResources()->GetAudioMixerGroup(rootNode.child("MixerGroup").attribute("source").as_string());
 
-    for (pugi::xml_node nodeClip = nodeRoot.child("Clips").child("Clip"); nodeClip; nodeClip = nodeClip.next_sibling("Clip"))
+    for (pugi::xml_node clipNode = rootNode.child("Clips").child("Clip"); clipNode; clipNode = clipNode.next_sibling("Clip"))
     {
-        if (AudioClip* audioClip = GetResources()->GetAudioClip(nodeClip.attribute("source").as_string()))
+        if (AudioClip* audioClip = GetResources()->GetAudioClip(clipNode.attribute("source").as_string()))
         {
             // Warmup file for later use.
             audioClip->GetOrLoadSFSoundBuffer();
@@ -121,9 +121,9 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
             parameters.audioClip = audioClip;
             parameters.audioClipId = audioClip->GetID();
             parameters.mixerGroupId = mixerGroup->GetID();
-            parameters.volume = nodeClip.attribute("volume").as_float(parameters.volume);
-            parameters.pitchLowerOffset = nodeClip.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
-            parameters.pitchUpperOffset = nodeClip.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);
+            parameters.volume = clipNode.attribute("volume").as_float(parameters.volume);
+            parameters.pitchLowerOffset = clipNode.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
+            parameters.pitchUpperOffset = clipNode.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);
 
             m_audioClips.push_back(parameters);
         }

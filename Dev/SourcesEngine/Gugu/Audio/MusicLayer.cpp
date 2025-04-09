@@ -11,7 +11,7 @@
 #include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/Audio/MusicInstance.h"
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Resources/Music.h"
+#include "Gugu/Resources/AudioClip.h"
 #include "Gugu/Math/MathUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -20,8 +20,8 @@
 namespace gugu {
 
 MusicParameters::MusicParameters()
-    : music(nullptr)
-    , musicID("")
+    : audioClip(nullptr)
+    , audioClipID("")
     , mixerGroupInstance(nullptr)
     , mixerGroupID("")
     , volume(1.f)
@@ -79,10 +79,10 @@ void MusicLayer::SetNext(const MusicParameters& parameters)
     m_playlist.clear();
     m_playlistIndex = -1;
 
-    Music* music = parameters.music;
-    if (!music)
+    AudioClip* audioClip = parameters.audioClip;
+    if (!audioClip)
     {
-        music = GetResources()->GetMusic(parameters.musicID);
+        audioClip = GetResources()->GetAudioClip(parameters.audioClipID);
     }
 
     AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
@@ -92,7 +92,7 @@ void MusicLayer::SetNext(const MusicParameters& parameters)
     }
 
     m_nextInstance->Reset();
-    m_nextInstance->SetMusic(music, parameters.loop);
+    m_nextInstance->SetAudioClip(audioClip, parameters.loop);
     m_nextInstance->SetMixerGroupInstance(mixerGroupInstance);
     m_nextInstance->SetVolume(parameters.volume);
 
@@ -123,10 +123,10 @@ void MusicLayer::FadeToNext()
         {
             const MusicParameters parameters = m_playlist[m_playlistIndex];
 
-            Music* music = parameters.music;
-            if (!music)
+            AudioClip* audioClip = parameters.audioClip;
+            if (!audioClip)
             {
-                music = GetResources()->GetMusic(parameters.musicID);
+                audioClip = GetResources()->GetAudioClip(parameters.audioClipID);
             }
 
             AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
@@ -136,7 +136,7 @@ void MusicLayer::FadeToNext()
             }
 
             m_nextInstance->Reset();
-            m_nextInstance->SetMusic(music, parameters.loop);
+            m_nextInstance->SetAudioClip(audioClip, parameters.loop);
             m_nextInstance->SetMixerGroupInstance(mixerGroupInstance);
             m_nextInstance->SetVolume(parameters.volume);
 

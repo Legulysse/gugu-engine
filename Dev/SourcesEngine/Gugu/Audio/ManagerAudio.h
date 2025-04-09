@@ -52,10 +52,10 @@ public:
 
     bool PlaySoundCue(const std::string& soundCueID);
     bool PlaySoundCue(SoundCue* soundCue);
-    bool PlaySound(const std::string& soundID, float volume = 1.f, int group = 0);         // Volume range [0, 1]
+    bool PlaySound(const std::string& audioClipID, float volume = 1.f, int group = 0);         // Volume range [0, 1]
     bool PlaySound(const SoundParameters& parameters);
 
-    bool PlayMusic(const std::string& musicID, float volume = 1.f, float fade = 2.f);      // Volume range [0, 1]
+    bool PlayMusic(const std::string& audioClipID, float volume = 1.f, float fade = 2.f);      // Volume range [0, 1]
     bool PlayMusic(const MusicParameters& parameters);
     bool PlayMusicList(const std::vector<MusicParameters>& playlist, bool loopPlaylist, int layer = 0);
     bool StopMusic(float fade = 2.f, int layer = 0);

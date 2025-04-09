@@ -12,7 +12,7 @@
 
 namespace gugu
 {
-    class Sound;
+    class AudioClip;
     class AudioMixerGroupInstance;
 }
 
@@ -23,8 +23,8 @@ namespace gugu {
 
 struct SoundParameters
 {
-    gugu::Sound* sound;
-    std::string soundID;
+    AudioClip* audioClip;
+    std::string audioClipID;
     AudioMixerGroupInstance* mixerGroupInstance;
     std::string mixerGroupID;
     float volume;
@@ -47,7 +47,7 @@ public:
     void SetGroup(int group);
     int GetGroup() const;
 
-    void SetSound(gugu::Sound* sound);
+    void SetAudioClip(AudioClip* audioClip);
     void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
     void SetVolume(float volume);
     void SetPitch(float pitch);

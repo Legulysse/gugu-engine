@@ -10,8 +10,6 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Audio/AudioMixerGroupInstance.h"
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Resources/Sound.h"
-#include "Gugu/Resources/Music.h"
 #include "Gugu/Resources/SoundCue.h"
 #include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/System/Memory.h"
@@ -176,10 +174,11 @@ bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
     return PlaySound(parameters);
 }
 
-bool ManagerAudio::PlaySound(const std::string& soundID, float volume, int group)
+bool ManagerAudio::PlaySound(const std::string& audioClipID, float volume, int group)
 {
     SoundParameters parameters;
-    parameters.sound = GetResources()->GetSound(soundID);
+    parameters.audioClip = GetResources()->GetAudioClip(audioClipID);
+    parameters.audioClipID = audioClipID;
     parameters.volume = volume;
     parameters.group = group;
 
@@ -188,10 +187,10 @@ bool ManagerAudio::PlaySound(const std::string& soundID, float volume, int group
 
 bool ManagerAudio::PlaySound(const SoundParameters& parameters)
 {
-    Sound* sound = parameters.sound;
-    if (!sound)
+    AudioClip* audioClip = parameters.audioClip;
+    if (!audioClip)
     {
-        sound = GetResources()->GetSound(parameters.soundID);
+        audioClip = GetResources()->GetAudioClip(parameters.audioClipID);
     }
 
     AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
@@ -200,11 +199,11 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
         mixerGroupInstance = GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupID));
     }
 
-    if (sound)
+    if (audioClip)
     {
         SoundInstance* soundInstance = &m_soundInstances[m_soundIndex];
         soundInstance->Reset();
-        soundInstance->SetSound(sound);
+        soundInstance->SetAudioClip(audioClip);
         soundInstance->SetMixerGroupInstance(mixerGroupInstance);   // Note: I currently allow a null group instance.
         soundInstance->SetVolume(parameters.volume);
         soundInstance->SetGroup(parameters.group);
@@ -229,10 +228,11 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
     return false;
 }
 
-bool ManagerAudio::PlayMusic(const std::string& musicID, float volume, float fade)
+bool ManagerAudio::PlayMusic(const std::string& audioClipID, float volume, float fade)
 {
     MusicParameters parameters;
-    parameters.music = GetResources()->GetMusic(musicID);
+    parameters.audioClip = GetResources()->GetAudioClip(audioClipID);
+    parameters.audioClipID = audioClipID;
     parameters.volume = volume;
     parameters.fadeOut = fade;
     parameters.fadeIn = fade;
@@ -245,7 +245,7 @@ bool ManagerAudio::PlayMusic(const MusicParameters& parameters)
     if (parameters.layer < 0 || parameters.layer >= (int)m_musicLayers.size())
         return false;
 
-    if (parameters.music || GetResources()->HasResource(parameters.musicID))
+    if (parameters.audioClip || GetResources()->HasResource(parameters.audioClipID))
     {
         MusicLayer* musicLayer = &m_musicLayers[parameters.layer];
         musicLayer->SetNext(parameters);
@@ -278,7 +278,8 @@ bool ManagerAudio::StopMusic(float fade, int layer)
     if (fade > 0.f)
     {
         MusicParameters parameters;
-        parameters.music = nullptr;
+        parameters.audioClip = nullptr;
+        parameters.audioClipID = "";
         parameters.volume = 0.f;
         parameters.fadeOut = fade;
         parameters.fadeIn = fade;

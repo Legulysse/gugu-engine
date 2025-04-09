@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
-#include "Gugu/Resources/Sound.h"
+#include "Gugu/Resources/AudioClip.h"
 #include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/External/PugiXmlUtility.h"
@@ -31,25 +31,25 @@ SoundCue::~SoundCue()
 
 size_t SoundCue::GetSoundCount() const
 {
-    return m_audioFiles.size();
+    return m_audioClips.size();
 }
 
 bool SoundCue::GetSound(size_t index, SoundParameters& parameters) const
 {
-    if (index < 0 || index >= m_audioFiles.size())
+    if (index < 0 || index >= m_audioClips.size())
         return false;
     
-    parameters = m_audioFiles[index];
+    parameters = m_audioClips[index];
     return true;
 }
 
 bool SoundCue::GetRandomSound(SoundParameters& parameters) const
 {
-    if (m_audioFiles.empty())
+    if (m_audioClips.empty())
         return false;
 
-    size_t index = GetRandom(m_audioFiles.size());
-    parameters = m_audioFiles[index];
+    size_t index = GetRandom(m_audioClips.size());
+    parameters = m_audioClips[index];
     return true;
 }
 
@@ -62,11 +62,11 @@ void SoundCue::GetDependencies(std::set<Resource*>& dependencies) const
 {
     dependencies.insert(m_mixerGroup);
 
-    for (auto& audioFile : m_audioFiles)
+    for (auto& parameters : m_audioClips)
     {
-        if (audioFile.sound)
+        if (parameters.audioClip)
         {
-            dependencies.insert(audioFile.sound);
+            dependencies.insert(parameters.audioClip);
         }
     }
 }
@@ -77,26 +77,26 @@ void SoundCue::OnDependencyRemoved(const Resource* removedDependency)
     {
         m_mixerGroup = nullptr;
 
-        for (auto& audioFile : m_audioFiles)
+        for (auto& parameters : m_audioClips)
         {
-            audioFile.mixerGroupInstance = nullptr;
-            audioFile.mixerGroupID = "";
+            parameters.mixerGroupInstance = nullptr;
+            parameters.mixerGroupID = "";
         }
     }
 
-    for (auto& audioFile : m_audioFiles)
+    for (auto& parameters : m_audioClips)
     {
-        if (audioFile.sound == removedDependency)
+        if (parameters.audioClip == removedDependency)
         {
-            audioFile.sound = nullptr;
-            audioFile.soundID = "";
+            parameters.audioClip = nullptr;
+            parameters.audioClipID = "";
         }
     }
 }
 
 void SoundCue::Unload()
 {
-    m_audioFiles.clear();
+    m_audioClips.clear();
     m_mixerGroup = nullptr;
 }
 
@@ -110,19 +110,22 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
 
     AudioMixerGroup* mixerGroup = GetResources()->GetAudioMixerGroup(nodeRoot.child("MixerGroup").attribute("source").as_string());
 
-    for (pugi::xml_node nodeFile = nodeRoot.child("Clips").child("Clip"); nodeFile; nodeFile = nodeFile.next_sibling("File"))
+    for (pugi::xml_node nodeClip = nodeRoot.child("Clips").child("Clip"); nodeClip; nodeClip = nodeClip.next_sibling("Clip"))
     {
-        if (Sound* sound = GetResources()->GetSound(nodeFile.attribute("source").as_string()))
+        if (AudioClip* audioClip = GetResources()->GetAudioClip(nodeClip.attribute("source").as_string()))
         {
-            SoundParameters parameters;
-            parameters.sound = sound;
-            parameters.soundID = sound->GetID();
-            parameters.mixerGroupID = mixerGroup->GetID();
-            parameters.volume = nodeFile.attribute("volume").as_float(parameters.volume);
-            parameters.pitchLowerOffset = nodeFile.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
-            parameters.pitchUpperOffset = nodeFile.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);
+            // Warmup file for later use.
+            audioClip->GetOrLoadSFSoundBuffer();
 
-            m_audioFiles.push_back(parameters);
+            SoundParameters parameters;
+            parameters.audioClip = audioClip;
+            parameters.audioClipID = audioClip->GetID();
+            parameters.mixerGroupID = mixerGroup->GetID();
+            parameters.volume = nodeClip.attribute("volume").as_float(parameters.volume);
+            parameters.pitchLowerOffset = nodeClip.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
+            parameters.pitchUpperOffset = nodeClip.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);
+
+            m_audioClips.push_back(parameters);
         }
     }
 

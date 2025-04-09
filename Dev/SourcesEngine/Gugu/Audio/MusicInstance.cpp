@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Audio/AudioMixerGroupInstance.h"
-#include "Gugu/Resources/Music.h"
+#include "Gugu/Resources/AudioClip.h"
 #include "Gugu/System/Memory.h"
 
 #include <SFML/Audio/Music.hpp>
@@ -20,7 +20,7 @@
 namespace gugu {
     
 MusicInstance::MusicInstance()
-    : m_music(nullptr)
+    : m_audioClip(nullptr)
     , m_mixerGroupInstance(nullptr)
     , m_sfMusic(nullptr)
     , m_volume(1.f)
@@ -37,23 +37,21 @@ void MusicInstance::Reset()
 {
     SafeDelete(m_sfMusic);
 
-    m_music = nullptr;
+    m_audioClip = nullptr;
     m_volume = 1.f;
     m_fadeCoeff = 1.f;
 }
 
-void MusicInstance::SetMusic(Music* music, bool loop)
+void MusicInstance::SetAudioClip(AudioClip* audioClip, bool loop)
 {
     Reset();
 
-    if (music)
+    if (audioClip)
     {
-        m_music = music;
+        m_audioClip = audioClip;
+        m_sfMusic = m_audioClip->OpenSFMusicStream();
 
-        if (!m_sfMusic)
-            m_sfMusic = new sf::Music;
-
-        if (m_music->LoadSFMusic(m_sfMusic))
+        if (m_sfMusic)
         {
             m_sfMusic->setLoop(loop);
             RecomputeMixedVolume();
@@ -70,9 +68,9 @@ bool MusicInstance::IsSet() const
     return (m_sfMusic != nullptr);
 }
 
-Music* MusicInstance::GetMusic() const
+AudioClip* MusicInstance::GetAudioClip() const
 {
-    return m_music;
+    return m_audioClip;
 }
 
 void MusicInstance::SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance)

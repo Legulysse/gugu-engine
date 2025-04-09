@@ -10,7 +10,7 @@
 
 namespace gugu
 {
-    class Music;
+    class AudioClip;
     class AudioMixerGroupInstance;
 }
 
@@ -33,9 +33,9 @@ public:
 
     void Reset();
 
-    void SetMusic(Music* music, bool loop);
+    void SetAudioClip(AudioClip* audioClip, bool loop);
     bool IsSet() const;
-    Music* GetMusic() const;
+    AudioClip* GetAudioClip() const;
 
     void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
     void SetVolume(float volume);
@@ -59,7 +59,7 @@ public:
 
 private:
 
-    Music* m_music;
+    AudioClip* m_audioClip;
     AudioMixerGroupInstance* m_mixerGroupInstance;
     sf::Music* m_sfMusic;
     float m_volume;

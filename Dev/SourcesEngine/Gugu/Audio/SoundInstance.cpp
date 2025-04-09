@@ -8,7 +8,7 @@
 // Includes
 
 #include "Gugu/Audio/AudioMixerGroupInstance.h"
-#include "Gugu/Resources/Sound.h"
+#include "Gugu/Resources/AudioClip.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -16,8 +16,8 @@
 namespace gugu {
     
 SoundParameters::SoundParameters()
-    : sound(nullptr)
-    , soundID("")
+    : audioClip(nullptr)
+    , audioClipID("")
     , mixerGroupInstance(nullptr)
     , mixerGroupID("")
     , volume(1.f)
@@ -59,12 +59,12 @@ int SoundInstance::GetGroup() const
     return m_group;
 }
 
-void SoundInstance::SetSound(gugu::Sound* sound)
+void SoundInstance::SetAudioClip(AudioClip* audioClip)
 {
     Reset();
 
-    if (sound)
-        m_sfSound.setBuffer(*sound->GetSFSoundBuffer());
+    if (audioClip)
+        m_sfSound.setBuffer(*audioClip->GetOrLoadSFSoundBuffer());
 }
 
 void SoundInstance::SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance)

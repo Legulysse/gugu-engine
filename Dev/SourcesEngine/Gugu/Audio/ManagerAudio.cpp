@@ -92,21 +92,9 @@ void ManagerAudio::SetMasterVolume(float volume)
     sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
 }
 
-void ManagerAudio::SetMasterVolume100(int volume)
-{
-    m_masterVolume = volume * 0.01f;
-
-    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
-}
-
 float ManagerAudio::GetMasterVolume() const
 {
     return m_masterVolume;
-}
-
-int ManagerAudio::GetMasterVolume100() const
-{
-    return (int)(m_masterVolume * 100.f);
 }
 
 void ManagerAudio::SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup)

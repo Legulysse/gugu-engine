@@ -41,9 +41,7 @@ public:
     void SetMasterMuted(bool muted);
     bool IsMasterMuted() const;
     void SetMasterVolume(float volume);     // Volume range [0, 1]
-    void SetMasterVolume100(int volume);    // Volume range [0, 100]
     float GetMasterVolume() const;
-    int GetMasterVolume100() const;
 
     void SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup);
     AudioMixerGroupInstance* GetMixerGroupInstance(const std::string& mixerGroupId) const;

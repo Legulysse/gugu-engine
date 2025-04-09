@@ -119,14 +119,14 @@ public:
     const std::string& GetResourceID(const Resource* resource) const;
     const std::string& GetResourceID(const FileInfo& fileInfo) const;
 
-    bool RegisterResourceInfo(const std::string& resourceID, const FileInfo& fileInfo);
+    bool RegisterResourceInfo(const std::string& resourceId, const FileInfo& fileInfo);
     bool AddResource(Resource* resource, const FileInfo& fileInfo);
     bool MoveResource(Resource* resource, const FileInfo& fileInfo);
 
     bool RemoveResource(Resource* resource);
-    bool RemoveResource(const std::string& resourceID);
+    bool RemoveResource(const std::string& resourceId);
     bool DeleteResource(Resource* resource);
-    bool DeleteResource(const std::string& resourceID);
+    bool DeleteResource(const std::string& resourceId);
 
     //TODO: Editor hack, waiting for ResourceContext to split editor and project resources.
     void RemoveResourcesFromPath(const std::string& path);
@@ -161,7 +161,7 @@ private:
 
     Resource* LoadResource(ResourceInfo* resourceInfo, EResourceType::Type explicitType = EResourceType::Unknown);
 
-    const DatasheetObject* GetDatasheetRootObject(const std::string& _strName);
+    const DatasheetObject* GetDatasheetRootObject(const std::string& resourceId);
 
     void RegisterResourceDependencies(Resource* resource);
     void UnregisterResourceDependencies(Resource* resource);

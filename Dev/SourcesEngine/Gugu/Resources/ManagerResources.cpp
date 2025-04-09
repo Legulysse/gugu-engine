@@ -94,9 +94,9 @@ bool ManagerResources::ParseDirectory(std::string_view rootPath_utf8)
     for (size_t i = 0; i < files.size(); ++i)
     {
         const FileInfo& fileInfos = files[i];
-        std::string resourceID = (!m_useFullPath) ? std::string(fileInfos.GetFileName_utf8()) : std::string(fileInfos.GetFilePath_utf8().substr(rootPath_utf8.length()));
+        std::string resourceId = (!m_useFullPath) ? std::string(fileInfos.GetFileName_utf8()) : std::string(fileInfos.GetFilePath_utf8().substr(rootPath_utf8.length()));
 
-        if (RegisterResourceInfo(resourceID, fileInfos))
+        if (RegisterResourceInfo(resourceId, fileInfos))
         {
             ++fileCount;
         }
@@ -474,18 +474,18 @@ const std::string& ManagerResources::GetResourceID(const FileInfo& fileInfo) con
     return defaultValue;
 }
 
-bool ManagerResources::RegisterResourceInfo(const std::string& resourceID, const FileInfo& fileInfo)
+bool ManagerResources::RegisterResourceInfo(const std::string& resourceId, const FileInfo& fileInfo)
 {
-    if (resourceID.empty())
+    if (resourceId.empty())
         return false;
 
-    ResourceMapKey mapKey(resourceID);
+    ResourceMapKey mapKey(resourceId);
 
     auto iteAsset = m_resources.find(mapKey);
     if (iteAsset == m_resources.end())
     {
         ResourceInfo* resourceInfo = new ResourceInfo;
-        resourceInfo->resourceID = resourceID;
+        resourceInfo->resourceID = resourceId;
         resourceInfo->fileInfo = fileInfo;
         resourceInfo->resource = nullptr;
 
@@ -493,14 +493,14 @@ bool ManagerResources::RegisterResourceInfo(const std::string& resourceID, const
         m_resources.insert(iteAsset, std::make_pair(mapKey, resourceInfo));
         
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Registered Resource : ID = {0}, Path = {1}"
-            , resourceID
+            , resourceId
             , fileInfo.GetFilePath_utf8()));
         
         return true;
     }
     
     GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("A Resource ID is already registered : ID = {0}, New Path = {1}, Registered Path = {2}"
-        , resourceID
+        , resourceId
         , fileInfo.GetFilePath_utf8()
         , iteAsset->second->fileInfo.GetFilePath_utf8()));
         
@@ -565,11 +565,11 @@ bool ManagerResources::MoveResource(Resource* resource, const FileInfo& fileInfo
         return false;
     }
 
-    std::string resourceID = resourceName;
+    std::string resourceId = resourceName;
     if (m_useFullPath)
-        resourceID = resourcePath.substr(m_pathAssets.length());
+        resourceId = resourcePath.substr(m_pathAssets.length());
 
-    auto iteNewResource = m_resources.find(resourceID);
+    auto iteNewResource = m_resources.find(resourceId);
     if (iteNewResource != m_resources.end())
     {
         GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource already exists : {0}", resourceName));
@@ -588,10 +588,10 @@ bool ManagerResources::MoveResource(Resource* resource, const FileInfo& fileInfo
     ResourceInfo* resourceInfo = itePreviousResource->second;
     m_resources.erase(itePreviousResource);
 
-    resourceInfo->resourceID = resourceID;
+    resourceInfo->resourceID = resourceId;
     resourceInfo->fileInfo = fileInfo;
 
-    m_resources.insert(iteNewResource, std::make_pair(resourceID, resourceInfo));
+    m_resources.insert(iteNewResource, std::make_pair(resourceId, resourceInfo));
 
     //Delete old file, save new file
     if (resource->SaveToFile())
@@ -601,7 +601,7 @@ bool ManagerResources::MoveResource(Resource* resource, const FileInfo& fileInfo
     }
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Moved Resource : ID = {0}, Path = {1}"
-        , resourceID
+        , resourceId
         , fileInfo.GetFilePath_utf8()));
 
     return false;
@@ -615,9 +615,9 @@ bool ManagerResources::RemoveResource(Resource* resource)
     return RemoveResource(resource->GetID());
 }
 
-bool ManagerResources::RemoveResource(const std::string& resourceID)
+bool ManagerResources::RemoveResource(const std::string& resourceId)
 {
-    auto iteResource = m_resources.find(resourceID);
+    auto iteResource = m_resources.find(resourceId);
     if (iteResource != m_resources.end())
     {
         Resource* removedResource = iteResource->second->resource;
@@ -645,12 +645,12 @@ bool ManagerResources::DeleteResource(Resource* resource)
     return DeleteResource(resource->GetID());
 }
 
-bool ManagerResources::DeleteResource(const std::string& resourceID)
+bool ManagerResources::DeleteResource(const std::string& resourceId)
 {
     FileInfo fileInfo;
-    if (GetResourceFileInfo(resourceID, fileInfo))
+    if (GetResourceFileInfo(resourceId, fileInfo))
     {
-        if (RemoveResource(resourceID))
+        if (RemoveResource(resourceId))
         {
             return RemoveFile(fileInfo.GetFilePath_utf8());
         }

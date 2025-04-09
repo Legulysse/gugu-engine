@@ -117,7 +117,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     m_pivot = pivotLines;
 
     // Dependencies
-    GetResources()->RegisterResourceListener(m_animSet, this, STD_BIND_3(&AnimSetPanel::OnResourceEvent, this));
+    GetResources()->RegisterResourceListener(m_animSet, Handle(this), STD_BIND_3(&AnimSetPanel::OnResourceEvent, this));
     
     // Default settings
     m_spriteAnimation->SetOriginFromAnimation(m_originFromAnimation);
@@ -129,7 +129,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
 AnimSetPanel::~AnimSetPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(m_animSet, this);
+    GetResources()->UnregisterResourceListeners(m_animSet, Handle(this));
 
     SafeDelete(m_renderViewport);
 }

@@ -27,13 +27,13 @@ DatasheetPanel::DatasheetPanel(VirtualDatasheet* resource)
     , m_datasheet(resource)
 {
     // Dependencies
-    GetResources()->RegisterResourceListener(m_datasheet, this, STD_BIND_3(&DatasheetPanel::OnResourceEvent, this));
+    GetResources()->RegisterResourceListener(m_datasheet, Handle(this), STD_BIND_3(&DatasheetPanel::OnResourceEvent, this));
 }
 
 DatasheetPanel::~DatasheetPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(m_datasheet, this);
+    GetResources()->UnregisterResourceListeners(m_datasheet, Handle(this));
 }
 
 void DatasheetPanel::UpdatePanelImpl(const DeltaTime& dt)

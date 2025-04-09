@@ -7,6 +7,7 @@
 #include "Gugu/System/Types.h"
 //#include "Gugu/System/Hash.h"
 #include "Gugu/System/FileInfo.h"
+#include "Gugu/System/Handle.h"
 #include "Gugu/Resources/EnumsResources.h"
 
 #include <map>
@@ -22,8 +23,6 @@ namespace gugu
     class Resource;
     class Texture;
     class Font;
-    class Sound;
-    class Music;
     class AudioClip;
     class AudioMixerGroup;
     class SoundCue;
@@ -38,19 +37,12 @@ namespace gugu
     struct EngineConfig;
 }
 
-namespace sf
-{
-    class Texture;
-    class Font;
-    class SoundBuffer;
-    class Music;
-}
-
 ////////////////////////////////////////////////////////////////
 // File Declarations
 
 namespace gugu {
 
+// TODO: unit tests
 class ManagerResources
 {
 public:
@@ -60,7 +52,7 @@ public:
 
     struct ResourceListener
     {
-        const void* handle = nullptr;
+        Handle handle;
         DelegateResourceEvent delegateResourceEvent = nullptr;
     };
 
@@ -148,9 +140,10 @@ public:
     void RegisterDataEnumInfos(const std::string& name, const DataEnumInfos* enumInfos);
     const DataEnumInfos* GetDataEnumInfos(const std::string& name);
 
-    bool RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceEvent& delegateResourceEvent);
-    void UnregisterResourceListeners(const Resource* resource, const void* handle);
-    void UnregisterResourceListeners(const void* handle);
+    // TODO: handles
+    bool RegisterResourceListener(const Resource* resource, const Handle& handle, const DelegateResourceEvent& delegateResourceEvent);
+    void UnregisterResourceListeners(const Resource* resource, const Handle& handle);
+    void UnregisterResourceListeners(const Handle& handle);
 
     void UpdateResourceDependencies(Resource* resource);
     const std::map<const Resource*, ResourceDependencies>& GetResourceDependencies() const;

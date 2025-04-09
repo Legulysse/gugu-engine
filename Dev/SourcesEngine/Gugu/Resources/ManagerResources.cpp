@@ -9,7 +9,6 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Core/EngineConfig.h"
-
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/Resources/Texture.h"
@@ -22,14 +21,11 @@
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/Datasheet.h"
 #include "Gugu/Resources/ElementWidget.h"
-
 #include "Gugu/Data/DataBindingUtility.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/String.h"
-
-#include "Gugu/Core/Application.h"
 #include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////
@@ -903,9 +899,9 @@ void ManagerResources::UnregisterResourceDependencies(Resource* resource)
     }
 }
 
-bool ManagerResources::RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceEvent& delegateResourceEvent)
+bool ManagerResources::RegisterResourceListener(const Resource* resource, const Handle& handle, const DelegateResourceEvent& delegateResourceEvent)
 {
-    if (!resource || !handle)
+    if (!resource || !handle.IsValid())
         return false;
 
     auto it = m_resourceDependencies.find(resource);
@@ -925,7 +921,7 @@ bool ManagerResources::RegisterResourceListener(const Resource* resource, const 
     }
 }
 
-void ManagerResources::UnregisterResourceListeners(const Resource* resource, const void* handle)
+void ManagerResources::UnregisterResourceListeners(const Resource* resource, const Handle& handle)
 {
     auto it = m_resourceDependencies.find(resource);
     if (it != m_resourceDependencies.end())
@@ -945,7 +941,7 @@ void ManagerResources::UnregisterResourceListeners(const Resource* resource, con
     }
 }
 
-void ManagerResources::UnregisterResourceListeners(const void* handle)
+void ManagerResources::UnregisterResourceListeners(const Handle& handle)
 {
     // Remove all listeners originating from this handle.
     for (auto& kvp : m_resourceDependencies)

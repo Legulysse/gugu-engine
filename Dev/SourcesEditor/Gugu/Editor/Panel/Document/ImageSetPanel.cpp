@@ -56,13 +56,13 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     CreateGizmo();
 
     // Dependencies
-    GetResources()->RegisterResourceListener(m_imageSet, this, STD_BIND_3(&ImageSetPanel::OnResourceEvent, this));
+    GetResources()->RegisterResourceListener(m_imageSet, Handle(this), STD_BIND_3(&ImageSetPanel::OnResourceEvent, this));
 }
 
 ImageSetPanel::~ImageSetPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(m_imageSet, this);
+    GetResources()->UnregisterResourceListeners(m_imageSet, Handle(this));
 
     SafeDelete(m_renderViewport);
 }

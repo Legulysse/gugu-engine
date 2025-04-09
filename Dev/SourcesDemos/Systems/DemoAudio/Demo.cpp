@@ -213,8 +213,8 @@ void Demo::OnButtonClick(int buttonId)
     if (buttonId == EButton::SoundBubbles01)
     {
         SoundParameters parameters;
-        parameters.soundID = "Bulle_01.ogg";
-        parameters.mixerGroupID = "Gameplay.audiomixergroup.xml";
+        parameters.audioClipId = "Bulle_01.ogg";
+        parameters.mixerGroupId = "Gameplay.audiomixergroup.xml";
         parameters.volume = 0.5f;
         GetAudio()->PlaySound(parameters);
     }
@@ -229,8 +229,8 @@ void Demo::OnButtonClick(int buttonId)
     else if (buttonId == EButton::TrackColors)
     {
         MusicParameters parameters;
-        parameters.musicID = "Legulysse_Colors.ogg";
-        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.audioClipId = "Legulysse_Colors.ogg";
+        parameters.mixerGroupId = "Music.audiomixergroup.xml";
         parameters.volume = 0.5f;
         parameters.fadeOut = 1.f;
         parameters.fadeIn = 2.f;
@@ -240,8 +240,8 @@ void Demo::OnButtonClick(int buttonId)
     else if (buttonId == EButton::TrackAbyss)
     {
         MusicParameters parameters;
-        parameters.musicID = "Legulysse_Abyss.ogg";
-        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.audioClipId = "Legulysse_Abyss.ogg";
+        parameters.mixerGroupId = "Music.audiomixergroup.xml";
         parameters.volume = 0.5f;
         parameters.fadeOut = 2.f;
         parameters.fadeIn = 4.f;
@@ -251,8 +251,8 @@ void Demo::OnButtonClick(int buttonId)
     else if (buttonId == EButton::TrackMighty3310Fight)
     {
         MusicParameters parameters;
-        parameters.musicID = "Legulysse_Mighty3310_Fight.ogg";
-        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.audioClipId = "Legulysse_Mighty3310_Fight.ogg";
+        parameters.mixerGroupId = "Music.audiomixergroup.xml";
         parameters.fadeOut = 0.f;
         parameters.fadeIn = 0.f;
         parameters.loop = true;
@@ -261,8 +261,8 @@ void Demo::OnButtonClick(int buttonId)
     else if (buttonId == EButton::TrackMighty3310Boss)
     {
         MusicParameters parameters;
-        parameters.musicID = "Legulysse_Mighty3310_Boss.ogg";
-        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.audioClipId = "Legulysse_Mighty3310_Boss.ogg";
+        parameters.mixerGroupId = "Music.audiomixergroup.xml";
         parameters.fadeOut = 0.f;
         parameters.fadeIn = 0.f;
         parameters.loop = true;
@@ -271,8 +271,8 @@ void Demo::OnButtonClick(int buttonId)
     else if (buttonId == EButton::TrackMighty3310Final)
     {
         MusicParameters parameters;
-        parameters.musicID = "Legulysse_Mighty3310_Final.ogg";
-        parameters.mixerGroupID = "Music.audiomixergroup.xml";
+        parameters.audioClipId = "Legulysse_Mighty3310_Final.ogg";
+        parameters.mixerGroupId = "Music.audiomixergroup.xml";
         parameters.fadeOut = 0.f;
         parameters.fadeIn = 0.f;
         parameters.loop = true;
@@ -281,20 +281,20 @@ void Demo::OnButtonClick(int buttonId)
     else if (buttonId == EButton::PlaylistMighty3310)
     {
         MusicParameters parametersA;
-        parametersA.musicID = "Legulysse_Mighty3310_Fight.ogg";
-        parametersA.mixerGroupID = "Music.audiomixergroup.xml";
+        parametersA.audioClipId = "Legulysse_Mighty3310_Fight.ogg";
+        parametersA.mixerGroupId = "Music.audiomixergroup.xml";
         parametersA.fadeOut = 0.f;
         parametersA.fadeIn = 0.f;
 
         MusicParameters parametersB;
-        parametersB.musicID = "Legulysse_Mighty3310_Boss.ogg";
-        parametersB.mixerGroupID = "Music.audiomixergroup.xml";
+        parametersB.audioClipId = "Legulysse_Mighty3310_Boss.ogg";
+        parametersB.mixerGroupId = "Music.audiomixergroup.xml";
         parametersB.fadeOut = 0.f;
         parametersB.fadeIn = 0.f;
 
         MusicParameters parametersC;
-        parametersC.musicID = "Legulysse_Mighty3310_Final.ogg";
-        parametersC.mixerGroupID = "Music.audiomixergroup.xml";
+        parametersC.audioClipId = "Legulysse_Mighty3310_Final.ogg";
+        parametersC.mixerGroupId = "Music.audiomixergroup.xml";
         parametersC.fadeOut = 0.f;
         parametersC.fadeIn = 0.f;
 

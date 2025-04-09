@@ -41,7 +41,7 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
     {
         ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
         ImGui::TableSetupColumn("#", columnFlags, 30.f);
-        ImGui::TableSetupColumn("sound", columnFlags, 200.f);
+        ImGui::TableSetupColumn("audio clip", columnFlags, 200.f);
         ImGui::TableSetupColumn("volume", columnFlags, 70.f);
         ImGui::TableSetupColumn("pitch offset-", columnFlags, 0.f);
         ImGui::TableSetupColumn("pitch offset+", columnFlags, 0.f);
@@ -73,7 +73,7 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
             //}
 
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text(parameters.soundID.c_str());
+            ImGui::Text(parameters.audioClipId.c_str());
 
             ImGui::TableSetColumnIndex(columnIndex++);
             ImGui::Text("%.03f", parameters.volume);

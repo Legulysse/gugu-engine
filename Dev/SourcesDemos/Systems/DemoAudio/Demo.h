@@ -49,7 +49,7 @@ protected:
 
     enum ESlider
     {
-        GlobalVolume,
+        ListenerVolume,
         MasterVolume,
         MusicVolume,
         UIVolume,

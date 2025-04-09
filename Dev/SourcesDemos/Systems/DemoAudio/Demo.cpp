@@ -144,12 +144,14 @@ void Demo::AppStart()
     slider->LoadFromWidget("Slider_01.widget.xml");
     slider->SetValueLimits(0, 200);
     slider->SetValue(100);
-    slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::GlobalVolume, slider));
+    slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::ListenerVolume, slider));
     slider->SetPosition(posX, posY);
 
     text = slider->AddChild<ElementText>();
-    text->SetText("Global");
+    text->SetText("Listener");
     text->SetUnifiedPosition(UDim2::POSITION_TOP_RIGHT + Vector2f(20, 0));
+
+    posY += 20.f;
 
     posY += gapY;
     slider = m_root->AddChild<ElementSlider>();
@@ -313,9 +315,9 @@ void Demo::OnButtonClick(int buttonId)
 
 void Demo::OnSliderChanged(int sliderId, ElementSlider* slider)
 {
-    if (sliderId == ESlider::GlobalVolume)
+    if (sliderId == ESlider::ListenerVolume)
     {
-        GetAudio()->SetMasterVolume(slider->GetValue() * 0.01f);
+        GetAudio()->SetListenerVolume(slider->GetValue() * 0.01f);
     }
     else if (sliderId == ESlider::MasterVolume)
     {

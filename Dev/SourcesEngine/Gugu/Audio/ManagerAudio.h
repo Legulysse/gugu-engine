@@ -38,10 +38,10 @@ public:
     
     void Update(const DeltaTime& dt);
 
-    void SetMasterMuted(bool muted);
-    bool IsMasterMuted() const;
-    void SetMasterVolume(float volume);     // Volume range [0, 1]
-    float GetMasterVolume() const;
+    void SetListenerMuted(bool muted);
+    bool IsListenerMuted() const;
+    void SetListenerVolume(float volume);     // Volume range [0, 1]
+    float GetListenerVolume() const;
 
     void SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup);
     AudioMixerGroupInstance* GetMixerGroupInstance(const std::string& mixerGroupId) const;
@@ -71,8 +71,8 @@ private:
 
     size_t m_soundIndex;
 
-    bool m_masterMuted;
-    float m_masterVolume;
+    bool m_listenerMuted;
+    float m_listenerVolume;
 };
 
 

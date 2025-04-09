@@ -29,8 +29,8 @@ namespace gugu {
 ManagerAudio::ManagerAudio()
     : m_rootMixerGroupInstance(nullptr)
     , m_soundIndex(0)
-    , m_masterMuted(false)
-    , m_masterVolume(1.f)
+    , m_listenerMuted(false)
+    , m_listenerVolume(1.f)
 {
 }
 
@@ -73,28 +73,28 @@ void ManagerAudio::Update(const DeltaTime& dt)
     }
 }
 
-void ManagerAudio::SetMasterMuted(bool muted)
+void ManagerAudio::SetListenerMuted(bool muted)
 {
-    m_masterMuted = muted;
+    m_listenerMuted = muted;
 
-    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
+    sf::Listener::setGlobalVolume(m_listenerMuted ? 0.f : m_listenerVolume * 100.f);
 }
 
-bool ManagerAudio::IsMasterMuted() const
+bool ManagerAudio::IsListenerMuted() const
 {
-    return m_masterMuted;
+    return m_listenerMuted;
 }
 
-void ManagerAudio::SetMasterVolume(float volume)
+void ManagerAudio::SetListenerVolume(float volume)
 {
-    m_masterVolume = volume;
+    m_listenerVolume = volume;
 
-    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
+    sf::Listener::setGlobalVolume(m_listenerMuted ? 0.f : m_listenerVolume * 100.f);
 }
 
-float ManagerAudio::GetMasterVolume() const
+float ManagerAudio::GetListenerVolume() const
 {
-    return m_masterVolume;
+    return m_listenerVolume;
 }
 
 void ManagerAudio::SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup)

@@ -603,28 +603,33 @@ bool ManagerResources::MoveResource(Resource* resource, const FileInfo& fileInfo
     return false;
 }
 
-bool ManagerResources::RemoveResource(Resource* resource)
+bool ManagerResources::RemoveResource(Resource* resource, bool unloadResource)
 {
     if (!resource)
         return false;
 
-    return RemoveResource(resource->GetID());
+    return RemoveResource(resource->GetID(), unloadResource);
 }
 
-bool ManagerResources::RemoveResource(const std::string& resourceId)
+bool ManagerResources::RemoveResource(const std::string& resourceId, bool unloadResource)
 {
     auto iteResource = m_resources.find(resourceId);
     if (iteResource != m_resources.end())
     {
-        Resource* removedResource = iteResource->second->resource;
+        Resource* resource = iteResource->second->resource;
 
         ResourceInfo* resourceInfo = iteResource->second;
         m_resources.erase(iteResource);
 
-        if (removedResource)
+        if (resource)
         {
-            NotifyResourceRemoved(removedResource);
-            UnregisterResourceDependencies(removedResource);
+            NotifyResourceRemoved(resource);
+            UnregisterResourceDependencies(resource);
+        }
+
+        if (!unloadResource)
+        {
+            resourceInfo->resource = nullptr;   // We want to keep the loaded resource in memory.
         }
 
         SafeDelete(resourceInfo);
@@ -643,10 +648,12 @@ bool ManagerResources::DeleteResource(Resource* resource)
 
 bool ManagerResources::DeleteResource(const std::string& resourceId)
 {
-    FileInfo fileInfo;
-    if (GetResourceFileInfo(resourceId, fileInfo))
+    auto iteResource = m_resources.find(resourceId);
+    if (iteResource != m_resources.end())
     {
-        if (RemoveResource(resourceId))
+        FileInfo fileInfo = iteResource->second->fileInfo;
+
+        if (RemoveResource(resourceId, true))
         {
             return RemoveFile(fileInfo.GetFilePath_utf8());
         }
@@ -655,7 +662,7 @@ bool ManagerResources::DeleteResource(const std::string& resourceId)
     return false;
 }
 
-void ManagerResources::RemoveResourcesFromPath(const std::string& path)
+void ManagerResources::RemoveResourcesFromPath(const std::string& path, bool unloadResources)
 {
     if (path.empty())
         return;
@@ -668,7 +675,7 @@ void ManagerResources::RemoveResourcesFromPath(const std::string& path)
 
         if (PathStartsWith(iteResource->second->fileInfo.GetDirectoryPath_utf8(), path))
         {
-            RemoveResource(iteResource->first);
+            RemoveResource(iteResource->first, unloadResources);
         }
     }
 }

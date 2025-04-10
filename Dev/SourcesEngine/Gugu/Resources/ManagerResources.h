@@ -114,13 +114,13 @@ public:
     bool AddResource(Resource* resource, const FileInfo& fileInfo);
     bool MoveResource(Resource* resource, const FileInfo& fileInfo);
 
-    bool RemoveResource(Resource* resource);
-    bool RemoveResource(const std::string& resourceId);
+    bool RemoveResource(Resource* resource, bool unloadResource);
+    bool RemoveResource(const std::string& resourceId, bool unloadResource);     // Remove resource (unloadResource will delete it from memory).
     bool DeleteResource(Resource* resource);
-    bool DeleteResource(const std::string& resourceId);
+    bool DeleteResource(const std::string& resourceId);   // Remove resource, delete it from memory, erase file on disk.
 
     //TODO: Editor hack, waiting for ResourceContext to split editor and project resources.
-    void RemoveResourcesFromPath(const std::string& path);
+    void RemoveResourcesFromPath(const std::string& path, bool unloadResources);
 
     void GetAllResourceInfos(std::vector<const ResourceInfo*>& resourceInfos) const;
     void GetAllDatasheetsByType(std::string_view dataType, std::vector<Datasheet*>& datasheets);

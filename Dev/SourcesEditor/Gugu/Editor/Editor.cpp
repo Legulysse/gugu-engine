@@ -198,7 +198,7 @@ void Editor::CloseProjectImpl()
 
         SafeDelete(m_datasheetParser);
 
-        GetResources()->RemoveResourcesFromPath(m_project->projectAssetsPath);
+        GetResources()->RemoveResourcesFromPath(m_project->projectAssetsPath, true);
 
         SafeDelete(m_project);
     }

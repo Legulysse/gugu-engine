@@ -49,6 +49,12 @@ EResourceType::Type Resource::GetResourceType() const
 
 bool Resource::LoadFromFile()
 {
+    if (!m_resourceInfos)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Resource cannot be loaded without ResourceInfos"));
+        return false;
+    }
+
     return LoadFromXmlFile();
 }
 
@@ -59,6 +65,12 @@ bool Resource::LoadFromString(const std::string& source)
 
 bool Resource::SaveToFile() const
 {
+    if (!m_resourceInfos)
+    {
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Resource cannot be saved without ResourceInfos"));
+        return false;
+    }
+
     return SaveToXmlFile();
 }
 

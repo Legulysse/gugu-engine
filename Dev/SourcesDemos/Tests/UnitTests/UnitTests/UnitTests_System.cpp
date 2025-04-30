@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/System/Container.h"
+#include "Gugu/System/EnumFlag.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/UUID.h"
@@ -915,6 +916,63 @@ void RunUnitTests_System(UnitTestResults* results)
         map_uuid.insert(std::make_pair(GenerateUUID(), ""));
         map_uuid[GenerateUUID()] = "";
         std::sort(vector_uuid.begin(), vector_uuid.end());
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("EnumFlag");
+    {
+        enum class EBitFlag : uint8
+        {
+            Flag_None = 0,
+            Flag_A = 1 << 0,
+            Flag_B = 1 << 1,
+            Flag_C = 1 << 2,
+            Flag_D = 1 << 3,
+            Flag_E = 1 << 4,
+            Flag_F = 1 << 5,
+            //Flag_G = 1 << 6,
+            //Flag_H = 1 << 7,
+        };
+
+        EBitFlag flags = CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C);
+
+        GUGU_UTEST_CHECK_EQUAL((uint8)flags, 7);
+        GUGU_UTEST_CHECK_EQUAL(flags, (EBitFlag)7);
+
+        GUGU_UTEST_CHECK_EQUAL(CombineFlags(flags, EBitFlag::Flag_D), CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C, EBitFlag::Flag_D));
+        GUGU_UTEST_CHECK_NOT_EQUAL(CombineFlags(flags, EBitFlag::Flag_D), flags);
+
+        GUGU_UTEST_CHECK_NOT_EQUAL(UnsetFlag(flags, EBitFlag::Flag_A), flags);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UnsetFlag(flags, EBitFlag::Flag_B), flags);
+        GUGU_UTEST_CHECK_NOT_EQUAL(UnsetFlag(flags, EBitFlag::Flag_C), flags);
+        GUGU_UTEST_CHECK_EQUAL(UnsetFlag(flags, EBitFlag::Flag_A), CombineFlags(EBitFlag::Flag_B, EBitFlag::Flag_C));
+        GUGU_UTEST_CHECK_EQUAL(UnsetFlag(flags, EBitFlag::Flag_B), CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_C));
+        GUGU_UTEST_CHECK_EQUAL(UnsetFlag(flags, EBitFlag::Flag_C), CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B));
+        GUGU_UTEST_CHECK_EQUAL(UnsetFlag(flags, EBitFlag::Flag_D), flags);
+
+        GUGU_UTEST_CHECK_EQUAL(SetFlag(flags, EBitFlag::Flag_A), flags);
+        GUGU_UTEST_CHECK_EQUAL(SetFlag(flags, EBitFlag::Flag_B), flags);
+        GUGU_UTEST_CHECK_EQUAL(SetFlag(flags, EBitFlag::Flag_C), flags);
+        GUGU_UTEST_CHECK_EQUAL(SetFlag(flags, EBitFlag::Flag_D), CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C, EBitFlag::Flag_D));
+
+        GUGU_UTEST_CHECK_TRUE(HasFlag(flags, EBitFlag::Flag_A));
+        GUGU_UTEST_CHECK_TRUE(HasFlag(flags, EBitFlag::Flag_B));
+        GUGU_UTEST_CHECK_TRUE(HasFlag(flags, EBitFlag::Flag_C));
+        GUGU_UTEST_CHECK_FALSE(HasFlag(flags, EBitFlag::Flag_D));
+
+        GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C)));
+        GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B)));
+        GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_C)));
+        GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(EBitFlag::Flag_B, EBitFlag::Flag_C)));
+        GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C, EBitFlag::Flag_D)));
+        GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_D)));
+        GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(EBitFlag::Flag_B, EBitFlag::Flag_D)));
+        GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(EBitFlag::Flag_C, EBitFlag::Flag_D)));
+
+        GUGU_UTEST_CHECK_TRUE(HasAnyFlag(flags, CombineFlags(EBitFlag::Flag_C, EBitFlag::Flag_D)));
+        GUGU_UTEST_CHECK_TRUE(HasAnyFlag(flags, EBitFlag::Flag_C));
+        GUGU_UTEST_CHECK_FALSE(HasAnyFlag(flags, EBitFlag::Flag_D));
     }
 
     //----------------------------------------------

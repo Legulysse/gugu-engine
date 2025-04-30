@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/TypeTraits.h"
+
 #include <string>
 #include <vector>
 #include <map>

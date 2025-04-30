@@ -4,13 +4,23 @@
 // File Implementation
 
 namespace gugu {
-    
+
 template<typename T>
 std::string ToString(const T& _tValue)
 {
     // floats are better displayed this way than with std::to_string
     std::ostringstream os;
-    os << _tValue;
+
+    if constexpr (Constexpr_IsEnumClass<T>)
+    {
+        // Specialization for enum-class types.
+        os << (uint64)std::underlying_type_t<T>(_tValue);
+    }
+    else
+    {
+        os << _tValue;
+    }
+
     return os.str();
 }
 

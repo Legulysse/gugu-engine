@@ -137,6 +137,8 @@ void Demo::AppStop()
 
 void Demo::RefreshGrids()
 {
+    int dummyAgent = 0;
+
     // Square-4 grid.
     for (int y = 0; y < m_grid4->GetHeight(); ++y)
     {
@@ -149,7 +151,7 @@ void Demo::RefreshGrids()
     m_pTileMapA->UpdateTileTextureCoords(m_referenceCoords4.x, m_referenceCoords4.y, m_grid4->GetWidth(), sf::IntRect(32, 32, 32, 32));
 
     std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeA;
-    BreadthFirstSearchNeighboursByWalkableRange(*m_grid4, *m_gridData4, m_referenceCoords4, m_neighboursRange, neighboursRangeA);
+    BFSNeighboursByTraversableRange(*m_grid4, *m_gridData4, dummyAgent, m_referenceCoords4, m_neighboursRange, neighboursRangeA);
 
     for (const auto& neighbour : neighboursRangeA)
     {
@@ -168,7 +170,7 @@ void Demo::RefreshGrids()
     m_pTileMapB->UpdateTileTextureCoords(m_referenceCoords8.x, m_referenceCoords8.y, m_grid8->GetWidth(), sf::IntRect(32, 32, 32, 32));
 
     std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeB;
-    BreadthFirstSearchNeighboursByWalkableRange(*m_grid8, *m_gridData8, m_referenceCoords8, m_neighboursRange, neighboursRangeB);
+    BFSNeighboursByTraversableRange(*m_grid8, *m_gridData8, dummyAgent, m_referenceCoords8, m_neighboursRange, neighboursRangeB);
 
     for (const auto& neighbour : neighboursRangeB)
     {
@@ -187,7 +189,7 @@ void Demo::RefreshGrids()
     m_pTileMapC->UpdateTileTextureCoords(m_referenceCoords6.x, m_referenceCoords6.y, m_grid6->GetWidth(), sf::IntRect(32, 37, 32, 37));
 
     std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeC;
-    BreadthFirstSearchNeighboursByWalkableRange(*m_grid6, *m_gridData6, m_referenceCoords6, m_neighboursRange, neighboursRangeC);
+    BFSNeighboursByTraversableRange(*m_grid6, *m_gridData6, dummyAgent, m_referenceCoords6, m_neighboursRange, neighboursRangeC);
 
     for (const auto& neighbour : neighboursRangeC)
     {

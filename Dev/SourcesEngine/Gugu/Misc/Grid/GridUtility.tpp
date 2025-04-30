@@ -12,7 +12,7 @@
 namespace gugu {
 
 template<typename TGrid, typename TCoords>
-void BreadthFirstSearchNeighboursByRange(const TGrid& grid, const TCoords& coordsFrom, int range, std::vector<BFSNeighbourInfos<TCoords>>& neighbours)
+void BFSNeighboursByCellRange(const TGrid& grid, const TCoords& coordsFrom, int range, std::vector<BFSNeighbourInfos<TCoords>>& neighbours)
 {
     std::queue<TCoords> currentQueue;
     std::queue<TCoords> pendingQueue;
@@ -55,8 +55,8 @@ void BreadthFirstSearchNeighboursByRange(const TGrid& grid, const TCoords& coord
     }
 }
 
-template<typename TGrid, typename TGridData, typename TCoords>
-void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridData& gridData, const TCoords& coordsFrom, int range, std::vector<BFSNeighbourInfos<TCoords>>& neighbours)
+template<typename TGrid, typename TGridData, typename TAgent, typename TCoords>
+void BFSNeighboursByTraversableRange(const TGrid& grid, const TGridData& gridData, const TAgent& agent, const TCoords& coordsFrom, int range, std::vector<BFSNeighbourInfos<TCoords>>& neighbours)
 {
     std::queue<TCoords> currentQueue;
     std::queue<TCoords> pendingQueue;
@@ -86,7 +86,7 @@ void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridD
             {
                 if (explored.find(neighbour) == explored.end())
                 {
-                    if (gridData.IsWalkable(currentCoords, neighbour))
+                    if (gridData.IsTraversable(agent, currentCoords, neighbour))
                     {
                         explored.insert(neighbour);
                         pendingQueue.push(neighbour);
@@ -103,7 +103,7 @@ void BreadthFirstSearchNeighboursByWalkableRange(const TGrid& grid, const TGridD
 }
 
 //template<typename TGrid, typename TGridData, typename TCoords, typename TCost>
-//void BreadthFirstSearchNeighboursByWalkableCost(const TGrid& grid, const TGridData& gridData, const TCoords& coordsFrom, TCost cost, std::vector<TCoords>& neighbours)
+//void BFSNeighboursByTraversableCost(const TGrid& grid, const TGridData& gridData, const TAgent& agent, const TCoords& coordsFrom, TCost cost, std::vector<TCoords>& neighbours)
 //{
 //}
 

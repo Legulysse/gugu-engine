@@ -28,8 +28,8 @@ public:
     bool AreDiagonalsRestricted() const;
     void SetDiagonalsRestricted(bool restrictDiagonals);
 
-    bool IsWalkable(const gugu::Vector2i& coordsFrom, const gugu::Vector2i& coordsTo) const;
-    bool IsWalkable(const gugu::Vector2i& coordsFrom, const gugu::Vector2i& coordsTo, float& cost) const;
+    bool IsTraversable(const int& agent, const gugu::Vector2i& coordsFrom, const gugu::Vector2i& coordsTo) const;
+    //bool IsTraversable(const int& agent, const gugu::Vector2i& coordsFrom, const gugu::Vector2i& coordsTo, float& cost) const;
 
 private:
 

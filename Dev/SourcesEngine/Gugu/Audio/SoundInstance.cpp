@@ -23,14 +23,12 @@ SoundParameters::SoundParameters()
     , volume(1.f)
     , pitchLowerOffset(0.f)
     , pitchUpperOffset(0.f)
-    , group(0)
 {
 }
 
 SoundInstance::SoundInstance()
     : m_mixerGroupInstance(nullptr)
     , m_volume(1.f)
-    , m_group(0)
 {
     Reset();
 }
@@ -46,17 +44,6 @@ void SoundInstance::Reset()
     m_sfSound.setVolume(100);
     m_sfSound.setPitch(1);
     m_volume = 1.f;
-    m_group = 0;
-}
-
-void SoundInstance::SetGroup(int group)
-{
-    m_group = group;
-}
-
-int SoundInstance::GetGroup() const
-{
-    return m_group;
 }
 
 void SoundInstance::SetAudioClip(AudioClip* audioClip)

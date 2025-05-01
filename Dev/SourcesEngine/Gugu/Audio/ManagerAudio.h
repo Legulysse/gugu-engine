@@ -50,7 +50,7 @@ public:
 
     bool PlaySoundCue(const std::string& soundCueId);
     bool PlaySoundCue(SoundCue* soundCue);
-    bool PlaySound(const std::string& audioClipId, float volume = 1.f, int group = 0);         // Volume range [0, 1]
+    bool PlaySound(const std::string& audioClipId, float volume = 1.f);         // Volume range [0, 1]
     bool PlaySound(const SoundParameters& parameters);
 
     bool PlayMusic(const std::string& audioClipId, float volume = 1.f, float fade = 2.f);      // Volume range [0, 1]

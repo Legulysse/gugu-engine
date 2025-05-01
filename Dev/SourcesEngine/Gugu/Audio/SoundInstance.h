@@ -30,7 +30,6 @@ struct SoundParameters
     float volume;
     float pitchLowerOffset;
     float pitchUpperOffset;
-    int group;
 
     SoundParameters();
 };
@@ -43,9 +42,6 @@ public:
     ~SoundInstance();
 
     void Reset();
-
-    void SetGroup(int group);
-    int GetGroup() const;
 
     void SetAudioClip(AudioClip* audioClip);
     void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
@@ -61,7 +57,6 @@ protected:
     AudioMixerGroupInstance* m_mixerGroupInstance;
     sf::Sound m_sfSound;
     float m_volume;
-    int m_group;
 };
 
 }   // namespace gugu

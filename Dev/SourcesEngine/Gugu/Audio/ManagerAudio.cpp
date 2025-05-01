@@ -164,13 +164,12 @@ bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
     return PlaySound(parameters);
 }
 
-bool ManagerAudio::PlaySound(const std::string& audioClipId, float volume, int group)
+bool ManagerAudio::PlaySound(const std::string& audioClipId, float volume)
 {
     SoundParameters parameters;
     parameters.audioClip = GetResources()->GetAudioClip(audioClipId);
     parameters.audioClipId = audioClipId;
     parameters.volume = volume;
-    parameters.group = group;
 
     return PlaySound(parameters);
 }
@@ -196,7 +195,6 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
         soundInstance->SetAudioClip(audioClip);
         soundInstance->SetMixerGroupInstance(mixerGroupInstance);   // Note: I currently allow a null group instance.
         soundInstance->SetVolume(parameters.volume);
-        soundInstance->SetGroup(parameters.group);
 
         if (parameters.pitchLowerOffset != 0 || parameters.pitchUpperOffset != 0)
         {

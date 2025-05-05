@@ -17,13 +17,13 @@ template<typename TEnumFlag, typename... TFlagArgs>
 TEnumFlag CombineFlags(TEnumFlag left, TEnumFlag right, TFlagArgs... args);
 
 template<typename TEnumFlag>
-TEnumFlag SetFlag(TEnumFlag reference, TEnumFlag flag);
+void SetFlag(TEnumFlag& reference, TEnumFlag flag);
 
 template<typename TEnumFlag>
-TEnumFlag UnsetFlag(TEnumFlag reference, TEnumFlag flag);
+void UnsetFlag(TEnumFlag& reference, TEnumFlag flag);
 
 template<typename TEnumFlag>
-TEnumFlag ToggleFlag(TEnumFlag reference, TEnumFlag flag);
+void ToggleFlag(TEnumFlag& reference, TEnumFlag flag);
 
 template<typename TEnumFlag>
 bool HasFlag(TEnumFlag reference, TEnumFlag flag);

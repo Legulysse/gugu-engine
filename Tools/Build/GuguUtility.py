@@ -423,7 +423,8 @@ def GitUpdateSubRepositories():
 
 def Zip(dirEngineBuildScripts, srcPath):
     ZipTo(dirEngineBuildScripts, srcPath, srcPath+'.zip')
-    
+
+# Using './sourcePath/*' as source instead of './sourcePath' will include all files inside the directory without adding the directory itself (useful for zipping contents, instead of zipping the directory).
 def ZipTo(dirEngineBuildScripts, srcPath, dstPath):
     ShellExecute('"' + dirEngineBuildScripts + '/7zip/7za.exe" a "'+ dstPath +'" "'+ srcPath +'"')
 

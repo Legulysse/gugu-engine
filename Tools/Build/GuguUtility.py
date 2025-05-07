@@ -237,15 +237,11 @@ def RecursiveCopyAllFilesWithExtension(src, dst, ext, ignore=None):
     RecursiveCopyAllFilesWithExtensions(src, dst, [ext], ignore)
 
 
-# Remove "srcFilename" file located into "src" directory.
-def RemoveFile(src, srcFilename):
-    if not os.path.isdir(src):
-        return
-        
-    srcname = os.path.join(src, srcFilename)
-    if os.path.isfile(srcname):
-        os.chmod(srcname, stat.S_IWUSR)
-        os.remove(srcname)
+# Remove "src" file.
+def RemoveFile(src):
+    if os.path.isfile(src):
+        os.chmod(src, stat.S_IWUSR)
+        os.remove(src)
 
 # Remove each file with extension in "exts" from "src" ("exts" can be like ['h','cpp']).
 def RemoveAllFilesWithExtensions(src, exts):

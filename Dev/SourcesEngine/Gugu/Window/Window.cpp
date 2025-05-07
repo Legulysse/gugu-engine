@@ -10,29 +10,24 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Core/EngineConfig.h"
 #include "Gugu/Resources/ManagerResources.h"
-
+#include "Gugu/Resources/Texture.h"
+#include "Gugu/Resources/Font.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Window/Camera.h"
-
+#include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/UI/ElementEditableText.h"
-
 #include "Gugu/Scene/Scene.h"
-
 #include "Gugu/System/Memory.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Platform.h"
+#include "Gugu/System/Path.h"
 #include "Gugu/System/String.h"
 #include "Gugu/System/Time.h"
 #include "Gugu/Math/MathUtility.h"
-
 #include "Gugu/Debug/Trace.h"
 #include "Gugu/Debug/StatsDrawer.h"
-
-#include "Gugu/Resources/Texture.h"
-#include "Gugu/Resources/Font.h"
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -735,7 +730,7 @@ bool Window::Screenshot() const
         sf::Image kImage = kTexture.copyToImage();
 
         std::thread kThreadSaveFile([kImage]() {
-            kImage.saveToFile(GetResources()->GetPathScreenshots() + StringFormat("Screenshot_{0}.png", GetTimestamp()));
+            kImage.saveToFile(CombinePaths(GetResources()->GetPathScreenshots(), StringFormat("Screenshot_{0}.png", GetTimestamp())));
         });
         kThreadSaveFile.detach();
 

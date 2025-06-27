@@ -43,13 +43,13 @@ bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon)
     return gugu::ApproxEqual(left.x, right.x, epsilon) && gugu::ApproxEqual(left.y, right.y, epsilon);
 }
 
-bool ApproxIsInBounds(const sf::Vector2f& value, const sf::Vector2f& min, const sf::Vector2f& max, float epsilon)
+bool ApproxIsInBounds(const Vector2f& value, const Vector2f& min, const Vector2f& max, float epsilon)
 {
     return ApproxSuperiorOrEqual(value.x, min.x, epsilon) && ApproxInferiorOrEqual(value.x, max.x, epsilon)
         && ApproxSuperiorOrEqual(value.y, min.y, epsilon) && ApproxInferiorOrEqual(value.y, max.y, epsilon);
 }
 
-bool ApproxDistanceCheck(const sf::Vector2f& left, const sf::Vector2f& right, float distance, float epsilon)
+bool ApproxDistanceCheck(const Vector2f& left, const Vector2f& right, float distance, float epsilon)
 {
     if (ApproxInferiorOrEqual(std::abs(left.x - right.x), distance, epsilon) && ApproxInferiorOrEqual(std::abs(left.y - right.y), distance, epsilon))
     {

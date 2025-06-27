@@ -438,8 +438,8 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
                 float graduationSize = static_cast<float>(m_rulerSize);
                 int graduations = RoundNearestInt(Max(GetSize().x, GetSize().y)) / m_rulerSize;
 
-                Vector2f position = sf::Vector2f(0.5f, 0.5f);
-                Vector2f size = sf::Vector2f(GetSize());
+                Vector2f position = Vector2f(0.5f, 0.5f);
+                Vector2f size = Vector2f(GetSize());
                 sf::Color rulerColor = sf::Color(255, 0, 255, 200);
                 m_ruler = sf::VertexArray(sf::PrimitiveType::Lines, 4 + graduations * 8);
 
@@ -463,7 +463,7 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
                 }
             }
 
-            Vector2f position = sf::Vector2f(GetMousePixelCoords());
+            Vector2f position = Vector2f(GetMousePixelCoords());
             sf::Transform rulerTransform;
             rulerTransform.translate(position);
             m_sfWindow->draw(m_ruler, sf::RenderStates(rulerTransform));

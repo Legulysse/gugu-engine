@@ -492,7 +492,7 @@ void ReadVector2(DataParseContext& context, const std::string& name, Vector2f& v
     }
 }
 
-void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<sf::Vector2i>& values)
+void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<Vector2i>& values)
 {
     if (pugi::xml_node node = impl::FindNodeData(context, name))
     {
@@ -505,7 +505,7 @@ void ReadVector2Array(DataParseContext& context, const std::string& name, std::v
     }
 }
 
-void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<sf::Vector2f>& values)
+void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<Vector2f>& values)
 {
     if (pugi::xml_node node = impl::FindNodeData(context, name))
     {

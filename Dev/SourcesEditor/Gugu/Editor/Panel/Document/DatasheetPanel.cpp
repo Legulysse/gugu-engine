@@ -16,6 +16,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/String.h"
 #include "Gugu/System/Container.h"
+#include "Gugu/Debug/Logger.h"
 #include "Gugu/External/ImGuiUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
@@ -756,7 +757,7 @@ void DatasheetPanel::HandleContextMenu(DatasheetParser::DataMemberDefinition* da
             bool savedRoot = dataValue->value_objectInstance->SaveToXml(xmlDocument, "ClipboardRootObject");
 
             std::set<UUID> instanceUuids;
-            dataValue->value_objectInstance->GatherInstanceUuids(instanceUuids);
+            dataValue->value_objectInstance->GatherInstanceUuidsRecursively(instanceUuids);
 
             for (const auto& uuid : instanceUuids)
             {
@@ -780,30 +781,63 @@ void DatasheetPanel::HandleContextMenu(DatasheetParser::DataMemberDefinition* da
             {
                 pugi::xml_document xmlDocument;
                 bool parseResult = xml::ParseDocumentFromString(GetEditorClipboard()->stringContent, xmlDocument);
-
-                pugi::xml_node rootClipboadObjectNode = xmlDocument.child("ClipboardRootObject");
+                pugi::xml_node clipboardRootNode = xmlDocument.child("ClipboardRootObject");
                 
                 bool isNewData = InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
-
                 if (m_datasheet->DeleteInstanceObject(dataValue->value_objectInstance))
                 {
-                    // Load xml data.
-                    VirtualDatasheetObject* newObject = new VirtualDatasheetObject;
-                    newObject->LoadFromXml(rootClipboadObjectNode, m_datasheet);
+                    VirtualDatasheetObject* newRootObject = nullptr;
+                    std::map<UUID, VirtualDatasheetObject*> newInstanceObjects;
+                    std::set<UUID> orphanObjectUuids;
 
-                    // Regenerate uuid.
-                    newObject->m_uuid = UUID::Generate();
-
-                    // TODO: use a method like InstanciateNewObject ?
-                    m_datasheet->m_instanceObjects.insert(std::make_pair(newObject->m_uuid, newObject));
-
-                    dataValue->value_objectInstanceDefinition = newObject->m_classDefinition;
-                    dataValue->value_objectInstance = newObject;
-                    dataValue->value_string = newObject->m_uuid.ToString();
-
-                    // TODO: other nodes.
-                    // TODO: regenerate new uuids for every new node while maintaining references.
                     {
+                        VirtualDatasheetObject* newObject = new VirtualDatasheetObject;
+                        newObject->LoadFromXml(clipboardRootNode, m_datasheet);
+
+                        newRootObject = newObject;
+                    }
+
+                    for (pugi::xml_node clipboardNode = xmlDocument.child("ClipboardObject"); clipboardNode; clipboardNode = clipboardNode.next_sibling("ClipboardObject"))
+                    {
+                        VirtualDatasheetObject* newObject = new VirtualDatasheetObject;
+                        newObject->LoadFromXml(clipboardNode, m_datasheet);
+
+                        newInstanceObjects.insert(std::make_pair(newObject->m_uuid, newObject));
+                        orphanObjectUuids.insert(newObject->m_uuid);
+                    }
+
+                    // Override the target dataValue with this new object.
+                    dataValue->value_objectInstanceDefinition = newRootObject->m_classDefinition;
+                    dataValue->value_objectInstance = newRootObject;
+                    dataValue->value_string = newRootObject->m_uuid.ToString();
+
+                    // Rebuild references between data objects.
+                    newRootObject->ResolveInstances(newInstanceObjects, orphanObjectUuids);
+
+                    for (const auto& kvp : newInstanceObjects)
+                    {
+                        kvp.second->ResolveInstances(newInstanceObjects, orphanObjectUuids);
+                    }
+
+                    if (!orphanObjectUuids.empty())
+                    {
+                        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet contains {0} orphan instanced objects : {1}", orphanObjectUuids.size(), m_datasheet->GetFileInfo().GetFilePath_utf8()));
+                    }
+
+                    // Generate new uuids for every new node.
+                    UUID uuid = UUID::Generate();
+                    dataValue->value_string = uuid.ToString();
+                    dataValue->value_objectInstance->m_uuid = uuid;
+
+                    newRootObject->RegenerateInstanceUuidsRecursively();
+
+                    // Register new instance objects.
+                    m_datasheet->m_instanceObjects.insert(std::make_pair(newRootObject->m_uuid, newRootObject));
+
+                    for (const auto& kvp : newInstanceObjects)
+                    {
+                        VirtualDatasheetObject* newObject = kvp.second;
+                        m_datasheet->m_instanceObjects.insert(std::make_pair(newObject->m_uuid, newObject));
                     }
                 }
 

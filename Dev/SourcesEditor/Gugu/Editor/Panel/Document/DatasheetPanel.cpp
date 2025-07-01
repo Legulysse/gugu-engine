@@ -747,13 +747,10 @@ void DatasheetPanel::HandleContextMenu(DatasheetParser::DataMemberDefinition* da
     if (dataMemberDefinition->type != DatasheetParser::DataMemberDefinition::ObjectInstance)
         return;
 
-    if (dataValue == nullptr)
-        return;
-
     // TODO: Handle copy of object overrides.
     // TODO: Ensure the copy will retrieve ALL override and instance data from its parent object.
 
-    bool canCopy = dataValue->value_objectInstance->m_datasheet == m_datasheet;  // Disable for object overrides.
+    bool canCopy = dataValue && dataValue->value_objectInstance && dataValue->value_objectInstance->m_datasheet == m_datasheet;  // Disable for object overrides.
     bool canPaste = GetEditorClipboard()->contentType == impl::ClipboardContentType_DatasheetObjectData;   // Disable if clipboard type does not match.
 
     // TODO: To handle disabled items, I should use my own variation of BeginPopupContextItem.

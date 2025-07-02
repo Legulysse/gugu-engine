@@ -29,6 +29,7 @@ bool UserSettings::LoadFromFile(const std::string& pathFile)
     lastProjectFilePath = rootNode.child("LastProjectFilePath").attribute("value").as_string();
     importImageSetSourceDirectoryPath = rootNode.child("ImportImageSetSourceDirectoryPath").attribute("value").as_string();
     importImageSetTargetDirectoryPath = rootNode.child("ImportImageSetTargetDirectoryPath").attribute("value").as_string();
+    importImageSetTargetTextureName = rootNode.child("ImportImageSetTargetTextureName").attribute("value").as_string();
     importImageSetResizeScale = rootNode.child("ImportImageSetResizeScale").attribute("value").as_float();
     importImageSetResizeFilter = rootNode.child("ImportImageSetResizeFilter").attribute("value").as_string();
 
@@ -44,6 +45,7 @@ bool UserSettings::SaveToFile(const std::string& pathFile) const
     rootNode.append_child("LastProjectFilePath").append_attribute("value").set_value(lastProjectFilePath.c_str());
     rootNode.append_child("ImportImageSetSourceDirectoryPath").append_attribute("value").set_value(importImageSetSourceDirectoryPath.c_str());
     rootNode.append_child("ImportImageSetTargetDirectoryPath").append_attribute("value").set_value(importImageSetTargetDirectoryPath.c_str());
+    rootNode.append_child("ImportImageSetTargetTextureName").append_attribute("value").set_value(importImageSetTargetTextureName.c_str());
     rootNode.append_child("ImportImageSetResizeScale").append_attribute("value").set_value(importImageSetResizeScale);
     rootNode.append_child("ImportImageSetResizeFilter").append_attribute("value").set_value(importImageSetResizeFilter.c_str());
 

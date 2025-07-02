@@ -59,4 +59,9 @@ bool ApproxDistanceCheck(const Vector2f& left, const Vector2f& right, float dist
     return false;
 }
 
+Vector2f VectorFromAngle(float radians, float length)
+{
+    return Vector2f(length * std::cos(radians), length * std::sin(radians));
+}
+
 }   // namespace gugu

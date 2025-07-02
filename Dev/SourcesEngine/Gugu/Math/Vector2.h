@@ -45,6 +45,8 @@ Vector2_t<T> Normalize(const Vector2_t<T>& _kVector);
 template <typename T>
 Vector2_t<T> Rotate(const Vector2_t<T>& _kVector, float _fRadians);
 
+Vector2f VectorFromAngle(float radians, float length);  // Zero angle is the +x axis, Pi/2 angle is the +y axis.
+
 template <typename T>
 bool IsInBounds(const Vector2_t<T>& value, const Vector2_t<T>& min, const Vector2_t<T>& max);
 

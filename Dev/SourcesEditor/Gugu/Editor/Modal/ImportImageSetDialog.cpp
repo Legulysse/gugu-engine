@@ -162,8 +162,9 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
 
     if (parsedDirectories.empty())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Editor, "The source directory has no animation subdirectories");
-        return;
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Editor, "The source directory has no animation subdirectories, fallback on source directory itself");
+        
+        parsedDirectories.push_back(m_sourceDirectory);
     }
 
     for (const auto& parsedDirectory : parsedDirectories)

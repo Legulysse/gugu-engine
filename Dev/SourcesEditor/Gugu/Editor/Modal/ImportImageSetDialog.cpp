@@ -179,8 +179,8 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
         std::vector<FileInfo> parsedFiles;
         GetFiles(parsedDirectory, parsedFiles, false);
 
-        std::string targettResizedAnimationDirectory = CombinePaths(targetResizeDirectory, NamePartFromPath(parsedDirectory));
-        EnsureDirectoryExists(targettResizedAnimationDirectory);
+        std::string targetResizedAnimationDirectory = CombinePaths(targetResizeDirectory, NamePartFromPath(parsedDirectory));
+        EnsureDirectoryExists(targetResizedAnimationDirectory);
 
         int frameCount = 0;
         for (const auto& parsedFile : parsedFiles)
@@ -188,7 +188,7 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
             if (!parsedFile.HasExtension("png"))
                 continue;
 
-            FileInfo targetResizedFile = FileInfo::FromString_utf8(CombinePaths(targettResizedAnimationDirectory, parsedFile.GetFileName_utf8()));
+            FileInfo targetResizedFile = FileInfo::FromString_utf8(CombinePaths(targetResizedAnimationDirectory, parsedFile.GetFileName_utf8()));
 
             std::string arguments = StringFormat("\"{0}\" -filter {2} -resize {3}% -unsharp 0x1 \"{1}\""
                 , parsedFile.GetFilePath_utf8()

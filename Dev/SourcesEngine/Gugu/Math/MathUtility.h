@@ -117,13 +117,25 @@ template <typename T>
 T RoundNearest(const T& n);
 
 template <typename T>
+int RoundFloorInt(const T& n);
+
+template <typename T>
 T RoundFloor(const T& n);
+
+template <typename T>
+int RoundCeilInt(const T& n);
 
 template <typename T>
 T RoundCeil(const T& n);
 
 template <typename T>
+int RoundTowardZeroInt(const T& n);
+
+template <typename T>
 T RoundTowardZero(const T& n);
+
+template <typename T>
+int RoundAwayFromZeroInt(const T& n);
 
 template <typename T>
 T RoundAwayFromZero(const T& n);

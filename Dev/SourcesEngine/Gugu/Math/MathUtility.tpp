@@ -138,7 +138,7 @@ T EuclideanModulo(T value, T modulus)
 template <typename T>
 int RoundNearestInt(const T& n)
 {
-    return static_cast<int>(std::lround(n));
+    return std::lround(n);
 }
 
 template <typename T>
@@ -148,9 +148,21 @@ T RoundNearest(const T& n)
 }
 
 template <typename T>
+int RoundFloorInt(const T& n)
+{
+    return std::lround(std::floor(n));
+}
+
+template <typename T>
 T RoundFloor(const T& n)
 {
     return std::floor(n);
+}
+
+template <typename T>
+int RoundCeilInt(const T& n)
+{
+    return std::lround(std::ceil(n));
 }
 
 template <typename T>
@@ -160,9 +172,21 @@ T RoundCeil(const T& n)
 }
 
 template <typename T>
+int RoundTowardZeroInt(const T& n)
+{
+    return std::lround(std::trunc(n));
+}
+
+template <typename T>
 T RoundTowardZero(const T& n)
 {
     return std::trunc(n);
+}
+
+template <typename T>
+int RoundAwayFromZeroInt(const T& n)
+{
+    return std::lround((n >= (T)0) ? std::ceil(n) : std::floor(n));
 }
 
 template <typename T>

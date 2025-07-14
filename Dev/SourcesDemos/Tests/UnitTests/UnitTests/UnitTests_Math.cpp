@@ -149,7 +149,6 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(-10.2f), -10.f);
             GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(10.8f), 11.f);
             GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(-10.8f), -11.f);
-
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.5f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(-10.5f), -11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.2f), 10.f, math::Epsilon6);
@@ -157,21 +156,37 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.8f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(-10.8f), -11.f, math::Epsilon6);
 
+            GUGU_UTEST_CHECK_EQUAL(RoundFloorInt(10.2f), 10);
+            GUGU_UTEST_CHECK_EQUAL(RoundFloorInt(-10.2f), -11);
+            GUGU_UTEST_CHECK_EQUAL(RoundFloorInt(10.8f), 10);
+            GUGU_UTEST_CHECK_EQUAL(RoundFloorInt(-10.8f), -11);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(10.2f), 10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(-10.2f), -11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(10.8f), 10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(-10.8f), -11.f, math::Epsilon6);
 
+            GUGU_UTEST_CHECK_EQUAL(RoundCeilInt(10.2f), 11);
+            GUGU_UTEST_CHECK_EQUAL(RoundCeilInt(-10.2f), -10);
+            GUGU_UTEST_CHECK_EQUAL(RoundCeilInt(10.8f), 11);
+            GUGU_UTEST_CHECK_EQUAL(RoundCeilInt(-10.8f), -10);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(10.2f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(-10.2f), -10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(10.8f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(-10.8f), -10.f, math::Epsilon6);
 
+            GUGU_UTEST_CHECK_EQUAL(RoundTowardZeroInt(10.2f), 10);
+            GUGU_UTEST_CHECK_EQUAL(RoundTowardZeroInt(-10.2f), -10);
+            GUGU_UTEST_CHECK_EQUAL(RoundTowardZeroInt(10.8f), 10);
+            GUGU_UTEST_CHECK_EQUAL(RoundTowardZeroInt(-10.8f), -10);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(10.2f), 10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(-10.2f), -10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(10.8f), 10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(-10.8f), -10.f, math::Epsilon6);
 
+            GUGU_UTEST_CHECK_EQUAL(RoundAwayFromZeroInt(10.2f), 11);
+            GUGU_UTEST_CHECK_EQUAL(RoundAwayFromZeroInt(-10.2f), -11);
+            GUGU_UTEST_CHECK_EQUAL(RoundAwayFromZeroInt(10.8f), 11);
+            GUGU_UTEST_CHECK_EQUAL(RoundAwayFromZeroInt(-10.8f), -11);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(10.2f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(-10.2f), -11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(10.8f), 11.f, math::Epsilon6);

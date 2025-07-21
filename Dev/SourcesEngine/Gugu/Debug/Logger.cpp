@@ -107,6 +107,7 @@ void Logger::PrintImpl_End()
 
 void Logger::FlushImpl()
 {
+#if !defined(GUGU_PRODUCTION_BUILD)
     if (m_consoleOutput)
     {
         WriteInConsole(m_buffer.str());
@@ -116,6 +117,7 @@ void Logger::FlushImpl()
     {
         WriteInIDEConsole(m_buffer.str());
     }
+#endif
 
     if (!m_filePath.empty())
     {

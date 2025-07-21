@@ -79,7 +79,7 @@ void Engine::Init(const EngineConfig& config)
 
     //-- Init engine log and trace group --//
     m_logEngine = new LoggerEngine();
-    m_logEngine->SetConsoleOutput(true, false);
+    m_logEngine->SetIDEConsoleOutput(true);
     m_logEngine->SetFilePath("Engine.log");
 
 #if !defined(GUGU_NO_TRACE)

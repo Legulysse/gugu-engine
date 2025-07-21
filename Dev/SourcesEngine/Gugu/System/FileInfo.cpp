@@ -36,7 +36,7 @@ FileInfo::FileInfo(const std::filesystem::path& path)
     }
     catch (const std::system_error& e)
     {
-        WriteInConsoleEndline(e.what(), true);
+        WriteInIDEConsoleEndline(e.what());
     }
 }
 

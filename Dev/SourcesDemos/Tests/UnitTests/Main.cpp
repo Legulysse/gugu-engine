@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 
     // TODO: Move log setup before Engine setup (need a way to provide the engine with an existing logger).
     // TODO: Setup the logger to ignore Debug/Log levels, only keep warnings and errors (Or handle the output directly in the delegate).
-    GetLogEngine()->SetConsoleOutput(true, true);
+    GetLogEngine()->SetIDEConsoleOutput(true);
     GetLogEngine()->RegisterDelegate(Handle(nullptr), logDelegate);
 
     //----------------------------------------------

@@ -20,7 +20,7 @@ namespace gugu {
 UnitTestResults::UnitTestResults(const std::string& logPathFile)
 {
     m_logger.SetFilePath(logPathFile);
-    m_logger.SetConsoleOutput(true, true);
+    m_logger.SetIDEConsoleOutput(true);
     m_logger.SetAutoflush(true);
 
     m_logger.Print("");
@@ -29,9 +29,9 @@ UnitTestResults::UnitTestResults(const std::string& logPathFile)
 
 void UnitTestResults::AddTestResults(const std::string& testHeader, size_t testCount, size_t successCount)
 {
-    m_logger.SetConsoleOutput(false, false);
+    m_logger.SetIDEConsoleOutput(false);
     m_logger.Print(StringFormat("Tests : {0} ({1}/{2})", testHeader, successCount, testCount));
-    m_logger.SetConsoleOutput(true, true);
+    m_logger.SetIDEConsoleOutput(true);
 
     m_testCount += testCount;
     m_successCount += successCount;
@@ -67,7 +67,7 @@ UnitTestHandler::UnitTestHandler(const std::string& header, const std::string& l
     m_subSectionSuccessCount = 0;
 
     m_logger.SetFilePath(logPathFile);
-    m_logger.SetConsoleOutput(true, true);
+    m_logger.SetIDEConsoleOutput(true);
     m_logger.SetAutoflush(true);
 
     m_logger.Print("");
@@ -90,7 +90,7 @@ void UnitTestHandler::PrintResults()
 {
     if (m_testResults)
     {
-        m_logger.SetConsoleOutput(false, false);
+        m_logger.SetIDEConsoleOutput(false);
     }
 
     m_logger.Print("");
@@ -108,7 +108,7 @@ void UnitTestHandler::PrintResults()
 
     if (m_testResults)
     {
-        m_logger.SetConsoleOutput(true, true);
+        m_logger.SetIDEConsoleOutput(true);
     }
 }
 

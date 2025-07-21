@@ -25,31 +25,39 @@ namespace fs = std::filesystem;
 
 namespace gugu {
 
-void WriteInConsole(const std::string& _strLine, bool printInIDE)
+void WriteInConsole(const std::string& value)
 {
-    std::cout << _strLine;
+    std::cout << value;
+}
 
+void WriteInConsoleEndline(const std::string& value)
+{
+    std::cout << value << std::endl;
+}
+
+void WriteInIDEConsole(const std::string& value)
+{
 #if defined(GUGU_OS_WINDOWS) && defined(GUGU_ENV_VISUAL)
-    if (printInIDE)
-    {
-        OutputDebugStringA(_strLine.c_str());
-    }
+    OutputDebugStringA(value.c_str());
 #endif
 }
 
-void WriteInConsoleEndline(const std::string& _strLine, bool printInIDE)
+void WriteInIDEConsoleEndline(const std::string& value)
 {
-    WriteInConsole(_strLine + "\n", printInIDE);
+#if defined(GUGU_OS_WINDOWS) && defined(GUGU_ENV_VISUAL)
+     OutputDebugStringA(value.c_str());
+     OutputDebugStringA("\n");
+#endif
 }
 
-void WriteInFileEndline(const std::string& _strFileName, const std::string& _strLine)
+void WriteInFileEndline(const std::string& fileName, const std::string& value)
 {
     std::ofstream oFile;
-    oFile.open(_strFileName.c_str(), std::ios::out | std::ios::app);
+    oFile.open(fileName.c_str(), std::ios::out | std::ios::app);
 
     if (oFile)
     {
-        oFile << _strLine << std::endl;
+        oFile << value << std::endl;
         oFile.close();
     }
 }

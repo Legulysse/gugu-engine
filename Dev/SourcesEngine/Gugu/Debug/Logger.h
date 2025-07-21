@@ -30,7 +30,8 @@ public:
     
     void SetFilePath(const std::string& filePath);
     void SetAutoflush(bool autoFlush);
-    void SetConsoleOutput(bool output, bool outputInIDE);
+    void SetConsoleOutput(bool output);
+    void SetIDEConsoleOutput(bool output);
     void SetActive(bool active);
 
     void Print(const std::string& text);
@@ -48,7 +49,7 @@ protected:
     std::string m_filePath;
     bool m_autoFlush;
     bool m_consoleOutput;
-    bool m_consoleOutputIDE;
+    bool m_ideConsoleOutput;
     bool m_isActive;
 
     std::ostringstream m_buffer;

@@ -10,9 +10,11 @@
 
 namespace gugu {
 
-void WriteInConsole(const std::string& _strLine, bool printInIDE);
-void WriteInConsoleEndline(const std::string& _strLine, bool printInIDE);
-void WriteInFileEndline(const std::string& _strFileName, const std::string& _strLine);
+void WriteInConsole(const std::string& value);
+void WriteInConsoleEndline(const std::string& value);
+void WriteInIDEConsole(const std::string& value);
+void WriteInIDEConsoleEndline(const std::string& value);
+void WriteInFileEndline(const std::string& fileName, const std::string& value);
 
 bool ExecuteCommand(std::string_view executablePath, std::string_view arguments);
 void OpenFileExplorer(std::string_view path);

@@ -60,7 +60,16 @@ template<typename T>
 void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex, size_t count);
 
 template<typename T, typename P>
-void StdVectorRemoveIf(std::vector<T>& _vecContainer, P _tPredicate);
+void StdVectorRemoveIf(std::vector<T>& container, const P& predicate);
+
+template<typename T>
+void StdVectorRemoveIfNull(std::vector<T>& container);
+
+template<typename T, typename P>
+void StdVectorDeleteIf(std::vector<T>& container, const P& predicate);
+
+template<typename T, typename P>
+void StdVectorDeleteAndRemoveIf(std::vector<T>& container, const P& predicate);
 
 template<typename T1, typename T2>
 void StdVectorAppend(const std::vector<T1>& _vecFrom, std::vector<T2>& _vecTo);

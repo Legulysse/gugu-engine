@@ -126,9 +126,34 @@ void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex, size_t cou
 }
 
 template<typename T, typename P>
-void StdVectorRemoveIf(std::vector<T>& _vecContainer, P _tPredicate)
+void StdVectorRemoveIf(std::vector<T>& container, const P& predicate)
 {
-    _vecContainer.erase(std::remove_if(_vecContainer.begin(), _vecContainer.end(), _tPredicate), _vecContainer.end());
+    container.erase(std::remove_if(container.begin(), container.end(), predicate), container.end());
+}
+
+template<typename T>
+void StdVectorRemoveIfNull(std::vector<T>& container)
+{
+    container.erase(std::remove(container.begin(), container.end(), nullptr), container.end());
+}
+
+template<typename T, typename P>
+void StdVectorDeleteIf(std::vector<T>& container, const P& predicate)
+{
+    for (auto it = container.begin(); it != container.end(); ++it)
+    {
+        if (predicate(*it))
+        {
+            SafeDelete(*it);
+        }
+    }
+}
+
+template<typename T, typename P>
+void StdVectorDeleteAndRemoveIf(std::vector<T>& container, const P& predicate)
+{
+    StdVectorDeleteIf(container, predicate);
+    StdVectorRemoveIfNull(container);
 }
 
 template<typename T1, typename T2>

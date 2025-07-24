@@ -86,7 +86,6 @@ void StdVectorRemove(std::vector<T>& container, const T& value)
     container.erase(std::remove(container.begin(), container.end(), value), container.end());
 }
 
-//TODO: why const ?
 template<typename T>
 void StdVectorRemoveFirst(std::vector<T>& container, const T& value)
 {

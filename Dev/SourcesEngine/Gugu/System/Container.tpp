@@ -42,69 +42,71 @@ void ClearStdMap(std::map<TKey, TValue*>& container)
 }
 
 template<typename T>
-size_t StdVectorIndexOf(const std::vector<T>& _vecContainer, const T& _tValue)
+size_t StdVectorIndexOf(const std::vector<T>& container, const T& value)
 {
-    auto it = std::find(_vecContainer.begin(), _vecContainer.end(), _tValue);
-    if (it == _vecContainer.end())
+    auto it = std::find(container.begin(), container.end(), value);
+    if (it == container.end())
     {
         return system::InvalidIndex;
     }
     else
     {
-        return it - _vecContainer.begin();
+        return it - container.begin();
     }
 }
 
 template<typename T>
-typename std::vector<T>::const_iterator StdVectorFind(const std::vector<T>& _vecContainer, const T& _tValue)
+typename std::vector<T>::const_iterator StdVectorFind(const std::vector<T>& container, const T& value)
 {
-    return std::find(_vecContainer.cbegin(), _vecContainer.cend(), _tValue);
+    // const_iterator is mandatory because we receive the container as a const ref.
+    return std::find(container.begin(), container.end(), value);
 }
 
 template<typename T>
-bool StdVectorContains(const std::vector<T>& _vecContainer, const T& _tValue)
+bool StdVectorContains(const std::vector<T>& container, const T& value)
 {
-    return std::find(_vecContainer.begin(), _vecContainer.end(), _tValue) != _vecContainer.end();
+    return std::find(container.begin(), container.end(), value) != container.end();
 }
 
 template<typename T>
-void StdVectorPushFront(std::vector<T>& _vecContainer, const T& _tValue)
+void StdVectorPushFront(std::vector<T>& container, const T& value)
 {
-    _vecContainer.insert(_vecContainer.begin(), _tValue);
+    container.insert(container.begin(), value);
 }
 
 template<typename T>
-void StdVectorInsertAt(std::vector<T>& _vecContainer, size_t _iIndex, const T& _tValue)
+void StdVectorInsertAt(std::vector<T>& container, size_t index, const T& value)
 {
-    _vecContainer.insert(_vecContainer.begin() + _iIndex, _tValue);
+    container.insert(container.begin() + index, value);
 }
 
 template<typename T>
-void StdVectorRemove(std::vector<T>& _vecContainer, const T& _tValue)
+void StdVectorRemove(std::vector<T>& container, const T& value)
 {
-    _vecContainer.erase(std::remove(_vecContainer.begin(), _vecContainer.end(), _tValue), _vecContainer.end());
+    container.erase(std::remove(container.begin(), container.end(), value), container.end());
 }
 
+//TODO: why const ?
 template<typename T>
-void StdVectorRemoveFirst(std::vector<T>& _vecContainer, const T& _tValue)
+void StdVectorRemoveFirst(std::vector<T>& container, const T& value)
 {
-    typename std::vector<T>::const_iterator it = std::find(_vecContainer.cbegin(), _vecContainer.cend(), _tValue);
-    if (it != _vecContainer.cend())
+    auto it = std::find(container.begin(), container.end(), value);
+    if (it != container.end())
     {
-        _vecContainer.erase(it);
+        container.erase(it);
     }
 }
 
 template<typename T>
-void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex)
+void StdVectorRemoveAt(std::vector<T>& container, size_t index)
 {
-    _vecContainer.erase(_vecContainer.begin() + _iIndex);
+    container.erase(container.begin() + index);
 }
 
 template<typename T>
-void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex, size_t count)
+void StdVectorRemoveAt(std::vector<T>& container, size_t index, size_t count)
 {
-    _vecContainer.erase(_vecContainer.begin() + _iIndex, _vecContainer.begin() + _iIndex + count);
+    container.erase(container.begin() + index, container.begin() + index + count);
 }
 
 template<typename T, typename P>
@@ -140,33 +142,33 @@ void StdVectorDeleteAndRemoveIf(std::vector<T>& container, const P& predicate)
 }
 
 template<typename T1, typename T2>
-void StdVectorAppend(const std::vector<T1>& _vecFrom, std::vector<T2>& _vecTo)
+void StdVectorAppend(const std::vector<T1>& containerFrom, std::vector<T2>& containerTo)
 {
-    _vecTo.insert(_vecTo.end(), _vecFrom.begin(), _vecFrom.end());
+    containerTo.insert(containerTo.end(), containerFrom.begin(), containerFrom.end());
 }
 
 template<typename T>
-void StdVectorDifference(const std::vector<T>& _vecFrom, const std::vector<T>& _vecSubset, std::vector<T>& _vecTo)
+void StdVectorDifference(const std::vector<T>& containerFrom, const std::vector<T>& containerSubset, std::vector<T>& containerTo)
 {
     //This will sort the containers and remove the duplicates
-    std::set<T> setContainer(_vecFrom.begin(), _vecFrom.end());
-    std::set<T> setSubset(_vecSubset.begin(), _vecSubset.end());
+    std::set<T> setContainer(containerFrom.begin(), containerFrom.end());
+    std::set<T> setSubset(containerSubset.begin(), containerSubset.end());
 
     //Compute the difference
-    _vecTo.clear();
-    std::set_difference(setContainer.begin(), setContainer.end(), setSubset.begin(), setSubset.end(), std::back_inserter(_vecTo));
+    containerTo.clear();    // TODO: remove ?
+    std::set_difference(setContainer.begin(), setContainer.end(), setSubset.begin(), setSubset.end(), std::back_inserter(containerTo));
 }
 
 template<typename T>
-void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vector<T>& _vecContainerB, std::vector<T>& _vecIntersection)
+void StdVectorIntersection(const std::vector<T>& containerA, const std::vector<T>& containerB, std::vector<T>& intersection)
 {
     //This will sort the containers and remove the duplicates
-    std::set<T> setContainerA(_vecContainerA.begin(), _vecContainerA.end());
-    std::set<T> setContainerB(_vecContainerB.begin(), _vecContainerB.end());
+    std::set<T> setContainerA(containerA.begin(), containerA.end());
+    std::set<T> setContainerB(containerB.begin(), containerB.end());
 
     //Compute the difference
-    _vecIntersection.clear();
-    std::set_intersection(setContainerA.begin(), setContainerA.end(), setContainerB.begin(), setContainerB.end(), std::back_inserter(_vecIntersection));
+    intersection.clear();    // TODO: remove ?
+    std::set_intersection(setContainerA.begin(), setContainerA.end(), setContainerB.begin(), setContainerB.end(), std::back_inserter(intersection));
 }
 
 template<typename T>

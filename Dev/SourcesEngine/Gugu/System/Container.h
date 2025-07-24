@@ -33,31 +33,31 @@ template<typename TKey, typename TValue>
 void ClearStdMap(std::map<TKey, TValue*>& container);
 
 template<typename T>
-size_t StdVectorIndexOf(const std::vector<T>& _vecContainer, const T& _tValue);
+size_t StdVectorIndexOf(const std::vector<T>& container, const T& value);
 
 template<typename T>
-typename std::vector<T>::const_iterator StdVectorFind(const std::vector<T>& _vecContainer, const T& _tValue);
+typename std::vector<T>::const_iterator StdVectorFind(const std::vector<T>& container, const T& value);
 
 template<typename T>
-bool StdVectorContains(const std::vector<T>& _vecContainer, const T& _tValue);
+bool StdVectorContains(const std::vector<T>& container, const T& value);
 
 template<typename T>
-void StdVectorPushFront(std::vector<T>& _vecContainer, const T& _tValue);
+void StdVectorPushFront(std::vector<T>& container, const T& value);
 
 template<typename T>
-void StdVectorInsertAt(std::vector<T>& _vecContainer, size_t _iIndex, const T& _tValue);
+void StdVectorInsertAt(std::vector<T>& container, size_t index, const T& value);
 
 template<typename T>
-void StdVectorRemove(std::vector<T>& _vecContainer, const T& _tValue);
+void StdVectorRemove(std::vector<T>& container, const T& value);
 
 template<typename T>
-void StdVectorRemoveFirst(std::vector<T>& _vecContainer, const T& _tValue);
+void StdVectorRemoveFirst(std::vector<T>& container, const T& value);
 
 template<typename T>
-void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex);
+void StdVectorRemoveAt(std::vector<T>& container, size_t index);
 
 template<typename T>
-void StdVectorRemoveAt(std::vector<T>& _vecContainer, size_t _iIndex, size_t count);
+void StdVectorRemoveAt(std::vector<T>& container, size_t index, size_t count);
 
 template<typename T, typename P>
 void StdVectorRemoveIf(std::vector<T>& container, const P& predicate);
@@ -75,13 +75,13 @@ template<typename T, typename P>
 void StdVectorDeleteAndRemoveIf(std::vector<T>& container, const P& predicate);
 
 template<typename T1, typename T2>
-void StdVectorAppend(const std::vector<T1>& _vecFrom, std::vector<T2>& _vecTo);
+void StdVectorAppend(const std::vector<T1>& containerFrom, std::vector<T2>& containerTo);
 
 template<typename T>
-void StdVectorDifference(const std::vector<T>& _vecFrom, const std::vector<T>& _vecSubset, std::vector<T>& _vecTo);
+void StdVectorDifference(const std::vector<T>& containerFrom, const std::vector<T>& containerSubset, std::vector<T>& containerTo);
 
 template<typename T>
-void StdVectorIntersection(const std::vector<T>& _vecContainerA, const std::vector<T>& _vecContainerB, std::vector<T>& _vecIntersection);
+void StdVectorIntersection(const std::vector<T>& containerA, const std::vector<T>& containerB, std::vector<T>& intersection);
 
 template<typename T>
 bool StdSetContains(const std::set<T>& container, const T& value);

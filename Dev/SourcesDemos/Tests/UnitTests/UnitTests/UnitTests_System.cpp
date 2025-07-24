@@ -718,6 +718,13 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) == containerB.end());
             GUGU_UTEST_CHECK(StdVectorFind(containerB, valueD) != containerB.end());
 
+            containerB.push_back(valueD);
+            containerB.push_back(valueD);
+            containerB.push_back(valueD);
+            GUGU_UTEST_CHECK_EQUAL(containerB.size(), 4);
+            StdVectorRemoveFirst(containerB, valueD);
+            GUGU_UTEST_CHECK_EQUAL(containerB.size(), 3);
+
             std::vector<int*> containerC;
             containerC.push_back(new int(1));
             containerC.push_back(new int(2));
@@ -753,7 +760,6 @@ void RunUnitTests_System(UnitTestResults* results)
             ClearStdVector(containerC);
 
             // TODO:
-            // StdVectorRemoveFirst
             // StdVectorRemoveAt variant
             // StdVectorAppend
             // StdVectorDifference

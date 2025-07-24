@@ -141,8 +141,8 @@ void StdVectorDeleteAndRemoveIf(std::vector<T>& container, const P& predicate)
     StdVectorRemoveIfNull(container);
 }
 
-template<typename T1, typename T2>
-void StdVectorAppend(const std::vector<T1>& containerFrom, std::vector<T2>& containerTo)
+template<typename T>
+void StdVectorAppend(const std::vector<T>& containerFrom, std::vector<T>& containerTo)
 {
     containerTo.insert(containerTo.end(), containerFrom.begin(), containerFrom.end());
 }

@@ -74,8 +74,8 @@ void StdVectorDeleteIf(std::vector<T>& container, const P& predicate);
 template<typename T, typename P>
 void StdVectorDeleteAndRemoveIf(std::vector<T>& container, const P& predicate);
 
-template<typename T1, typename T2>
-void StdVectorAppend(const std::vector<T1>& containerFrom, std::vector<T2>& containerTo);
+template<typename T>
+void StdVectorAppend(const std::vector<T>& containerFrom, std::vector<T>& containerTo);
 
 template<typename T>
 void StdVectorDifference(const std::vector<T>& containerFrom, const std::vector<T>& containerSubset, std::vector<T>& containerTo);

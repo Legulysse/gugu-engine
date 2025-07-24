@@ -669,16 +669,17 @@ void RunUnitTests_System(UnitTestResults* results)
     {
         GUGU_UTEST_SUBSECTION("Vector");
         {
-            std::vector<int> container = { 10, 20, 30, 40, 50 };
+            std::vector<int> containerA = { 10, 20, 30, 40, 50 };
 
-            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 10) == 0);
-            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 30) == 2);
-            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 50) == 4);
-            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 0) == system::InvalidIndex);
+            GUGU_UTEST_CHECK(StdVectorIndexOf(containerA, 10) == 0);
+            GUGU_UTEST_CHECK(StdVectorIndexOf(containerA, 30) == 2);
+            GUGU_UTEST_CHECK(StdVectorIndexOf(containerA, 50) == 4);
+            GUGU_UTEST_CHECK(StdVectorIndexOf(containerA, 0) == system::InvalidIndex);
 
             std::string valueA = "AAA";
             std::string valueB = "BBB";
             std::string valueC = "CCC";
+            std::string valueD = "DDD";
             std::vector<std::string> containerB { valueC };
             GUGU_UTEST_CHECK_EQUAL(containerB[0], "CCC");
 
@@ -691,21 +692,65 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(containerB[1], "BBB");
             GUGU_UTEST_CHECK_EQUAL(containerB[2], "CCC");
 
-            GUGU_UTEST_CHECK(StdVectorContains(containerB, valueC));
+            GUGU_UTEST_CHECK_TRUE(StdVectorContains(containerB, valueC));
+            GUGU_UTEST_CHECK_FALSE(StdVectorContains(containerB, valueD));
             GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) != containerB.end());
+            GUGU_UTEST_CHECK(StdVectorFind(containerB, valueD) == containerB.end());
 
+            containerB.push_back(valueD);
             StdVectorRemove(containerB, valueC);
+            GUGU_UTEST_CHECK_EQUAL(containerB.size(), 3);
             GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
             GUGU_UTEST_CHECK_EQUAL(containerB[1], "BBB");
+            GUGU_UTEST_CHECK_EQUAL(containerB[2], "DDD");
 
             StdVectorRemoveAt(containerB, 0);
+            GUGU_UTEST_CHECK_EQUAL(containerB.size(), 2);
             GUGU_UTEST_CHECK_EQUAL(containerB[0], "BBB");
+            GUGU_UTEST_CHECK_EQUAL(containerB[1], "DDD");
 
             StdVectorRemoveIf(containerB, [&](const std::string& item) { return item == valueB; });
-            GUGU_UTEST_CHECK(containerB.empty());
+            GUGU_UTEST_CHECK_EQUAL(containerB.size(), 1);
+            GUGU_UTEST_CHECK_EQUAL(containerB[0], "DDD");
 
             GUGU_UTEST_CHECK_FALSE(StdVectorContains(containerB, valueC));
+            GUGU_UTEST_CHECK_TRUE(StdVectorContains(containerB, valueD));
             GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) == containerB.end());
+            GUGU_UTEST_CHECK(StdVectorFind(containerB, valueD) != containerB.end());
+
+            std::vector<int*> containerC;
+            containerC.push_back(new int(1));
+            containerC.push_back(new int(2));
+            containerC.push_back(new int(3));
+            containerC.push_back(new int(4));
+            GUGU_UTEST_CHECK_EQUAL(containerC.size(),4);
+            ClearStdVector(containerC);
+            GUGU_UTEST_CHECK_TRUE(containerC.empty());
+
+            containerC.push_back(new int(1));
+            containerC.push_back(new int(2));
+            containerC.push_back(new int(3));
+            containerC.push_back(new int(4));
+
+            StdVectorDeleteIf(containerC, [](int* item) { return item != nullptr && *item == 3; });
+            GUGU_UTEST_CHECK_EQUAL(containerC.size(), 4);
+            GUGU_UTEST_CHECK_EQUAL(*containerC[0], 1);
+            GUGU_UTEST_CHECK_EQUAL(*containerC[1], 2);
+            GUGU_UTEST_CHECK_EQUAL(containerC[2], nullptr);
+            GUGU_UTEST_CHECK_EQUAL(*containerC[3], 4);
+
+            StdVectorDeleteAndRemoveIf(containerC, [](int* item) { return item != nullptr && *item == 1; });
+            GUGU_UTEST_CHECK_EQUAL(containerC.size(), 2);
+            GUGU_UTEST_CHECK_EQUAL(*containerC[0], 2);
+            GUGU_UTEST_CHECK_EQUAL(*containerC[1], 4);
+
+            SafeDelete(containerC[1]);
+            StdVectorRemoveIfNull(containerC);
+            GUGU_UTEST_CHECK_EQUAL(containerC.size(), 1);
+            GUGU_UTEST_CHECK_EQUAL(*containerC[0], 2);
+
+            // Finalize.
+            ClearStdVector(containerC);
 
             // TODO:
             // StdVectorRemoveFirst
@@ -726,6 +771,18 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_TRUE(StdSetContains(containerA, 20));
             GUGU_UTEST_CHECK_TRUE(StdSetContains(containerA, 30));
             GUGU_UTEST_CHECK_FALSE(StdSetContains(containerA, 40));
+        }
+
+        GUGU_UTEST_SUBSECTION("List");
+        {
+            std::list<int*> containerC;
+            containerC.push_back(new int(1));
+            containerC.push_back(new int(2));
+            containerC.push_back(new int(3));
+            containerC.push_back(new int(4));
+            GUGU_UTEST_CHECK_EQUAL(containerC.size(), 4);
+            ClearStdList(containerC);
+            GUGU_UTEST_CHECK_TRUE(containerC.empty());
         }
 
         GUGU_UTEST_SUBSECTION("Map");
@@ -809,6 +866,15 @@ void RunUnitTests_System(UnitTestResults* results)
                     GUGU_UTEST_CHECK_EQUAL(*resultRef, 30);
                 }
             }
+
+            std::map<int, int*> containerC;
+            containerC.insert(std::make_pair(1, new int(1)));
+            containerC.insert(std::make_pair(2, new int(2)));
+            containerC.insert(std::make_pair(3, new int(3)));
+            containerC.insert(std::make_pair(4, new int(4)));
+            GUGU_UTEST_CHECK_EQUAL(containerC.size(), 4);
+            ClearStdMap(containerC);
+            GUGU_UTEST_CHECK_TRUE(containerC.empty());
         }
     }
 

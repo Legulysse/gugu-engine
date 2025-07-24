@@ -140,7 +140,8 @@ void StdVectorRemoveIfNull(std::vector<T>& container)
 template<typename T, typename P>
 void StdVectorDeleteIf(std::vector<T>& container, const P& predicate)
 {
-    for (auto it = container.begin(); it != container.end(); ++it)
+    auto end = container.end();
+    for (auto it = container.begin(); it != end; ++it)
     {
         if (predicate(*it))
         {

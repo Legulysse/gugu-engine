@@ -24,13 +24,13 @@ namespace system
 }
 
 template<typename T>
-void ClearStdVector(std::vector<T*>& _oVector);
+void ClearStdVector(std::vector<T*>& container);
 
 template<typename T>
-void ClearStdList(std::list<T*>& _oList);
+void ClearStdList(std::list<T*>& container);
 
 template<typename TKey, typename TValue>
-void ClearStdMap(std::map<TKey, TValue*>& _oMap);
+void ClearStdMap(std::map<TKey, TValue*>& container);
 
 template<typename T>
 size_t StdVectorIndexOf(const std::vector<T>& _vecContainer, const T& _tValue);

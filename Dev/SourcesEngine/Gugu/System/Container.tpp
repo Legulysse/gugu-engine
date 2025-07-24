@@ -6,57 +6,39 @@
 namespace gugu {
     
 template<typename T>
-void ClearStdVector(std::vector<T*>& _oVector)
+void ClearStdVector(std::vector<T*>& container)
 {
-    auto iteCurrent = _oVector.begin();
-    auto iteEnd = _oVector.end();
-    T* pElem = nullptr;
-
-    while(iteCurrent != iteEnd)
+    auto end = container.end();
+    for (auto it = container.begin(); it != end; ++it)
     {
-        pElem = *iteCurrent;
-        ++iteCurrent;
-
-        SafeDelete(pElem);
+        SafeDelete(*it);
     }
 
-    _oVector.clear();
+    container.clear();
 }
 
 template<typename T>
-void ClearStdList(std::list<T*>& _oList)
+void ClearStdList(std::list<T*>& container)
 {
-    auto iteCurrent = _oList.begin();
-    auto iteEnd = _oList.end();
-    T* pElem = nullptr;
-
-    while(iteCurrent != iteEnd)
+    auto end = container.end();
+    for (auto it = container.begin(); it != end; ++it)
     {
-        pElem = *iteCurrent;
-        ++iteCurrent;
-
-        SafeDelete(pElem);
+        SafeDelete(*it);
     }
 
-    _oList.clear();
+    container.clear();
 }
 
 template<typename TKey, typename TValue>
-void ClearStdMap(std::map<TKey, TValue*>& _oMap)
+void ClearStdMap(std::map<TKey, TValue*>& container)
 {
-    auto iteCurrent = _oMap.begin();
-    auto iteEnd = _oMap.end();
-    TValue* pElem = nullptr;
-
-    while(iteCurrent != iteEnd)
+    auto end = container.end();
+    for (auto it = container.begin(); it != end; ++it)
     {
-        pElem = iteCurrent->second;
-        ++iteCurrent;
-
-        SafeDelete(pElem);
+        SafeDelete(it->second);
     }
 
-    _oMap.clear();
+    container.clear();
 }
 
 template<typename T>

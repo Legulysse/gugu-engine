@@ -38,7 +38,11 @@ public:
     void    ChangeAnimSet           (const std::string& _strFilePath);
     void    ChangeAnimSet           (AnimSet* _pAnimSet);
 
-    bool    HasAnimation            (const std::string& _strNameAnim) const;
+    bool HasAnimation(const std::string& animationName) const;
+    bool HasAnimationEvent(const std::string& animationName, const std::string& eventName) const;
+
+    float GetAnimationDuration(const std::string& animationName) const;
+    float GetAnimationEventDelay(const std::string& animationName, const std::string& eventName);
 
     void    StartAnimation          (const std::string& _strNameAnim);
     void    StartAnimation          (Animation* animation);

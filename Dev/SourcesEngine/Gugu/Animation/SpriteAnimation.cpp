@@ -12,6 +12,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/System/Container.h"
 #include "Gugu/Math/MathUtility.h"
 
 #include <sstream>
@@ -69,9 +70,73 @@ void SpriteAnimation::ChangeAnimSet(AnimSet* _pAnimSet)
     OnAnimsetChanged();
 }
 
-bool SpriteAnimation::HasAnimation(const std::string& _strNameAnim) const
+bool SpriteAnimation::HasAnimation(const std::string& animationName) const
 {
-    return (m_animSet && m_animSet->GetAnimation(_strNameAnim));
+    return (m_animSet && m_animSet->GetAnimation(animationName));
+}
+
+bool SpriteAnimation::HasAnimationEvent(const std::string& animationName, const std::string& eventName) const
+{
+    if (m_animSet)
+    {
+        if (Animation* animation = m_animSet->GetAnimation(animationName))
+        {
+            const std::vector<AnimationFrame*>& frames = animation->GetFrames();
+            for (const auto& frame : frames)
+            {
+                if (StdVectorContains(frame->GetEvents(), eventName))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+float SpriteAnimation::GetAnimationDuration(const std::string& animationName) const
+{
+    float duration = 0.f;
+
+    if (m_animSet)
+    {
+        if (Animation* animation = m_animSet->GetAnimation(animationName))
+        {
+            const std::vector<AnimationFrame*>& frames = animation->GetFrames();
+            for (const auto& frame : frames)
+            {
+                duration += frame->GetDuration();
+            }
+        }
+    }
+
+    return duration;
+}
+
+float SpriteAnimation::GetAnimationEventDelay(const std::string& animationName, const std::string& eventName)
+{
+    if (m_animSet)
+    {
+        if (Animation* animation = m_animSet->GetAnimation(animationName))
+        {
+            float delay = 0.f;
+            const std::vector<AnimationFrame*>& frames = animation->GetFrames();
+            for (const auto& frame : frames)
+            {
+                if (StdVectorContains(frame->GetEvents(), eventName))
+                {
+                    return delay;
+                }
+                else
+                {
+                    delay += frame->GetDuration();
+                }
+            }
+        }
+    }
+
+    return 0.f;
 }
 
 void SpriteAnimation::StartAnimation(const std::string& _strNameAnim)

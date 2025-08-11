@@ -64,6 +64,8 @@ void SpriteAnimation::ChangeAnimSet(const std::string& _strFilePath)
 
 void SpriteAnimation::ChangeAnimSet(AnimSet* _pAnimSet)
 {
+    // TODO: purge events ? Provide ClearEvents method and let user do its stuff ?
+
     StopAnimation();
 
     m_animSet = _pAnimSet;
@@ -172,6 +174,8 @@ void SpriteAnimation::RestartAnimation()
 
 void SpriteAnimation::StopAnimation()
 {
+    // TODO: option to call the finished callback ? (same question applies for any entry point where an animation can be interrupted)
+
     m_animation = nullptr;
     m_animIndexCurrent  = 0;
     m_animDurationCurrent  = 0.f;
@@ -238,9 +242,14 @@ void SpriteAnimation::SetMoveFromAnimation(bool _bMoveFromAnimation)
     m_moveFromAnimation = _bMoveFromAnimation;
 }
 
-void SpriteAnimation::AddEventCallback(const std::string& _strEvent, const Callback& callbackEvent)
+void SpriteAnimation::SetFinishedCallback(const Callback& callback)
 {
-    m_events[_strEvent] = callbackEvent;
+    m_finishedCallback = callback;
+}
+
+void SpriteAnimation::SetEventCallback(const std::string& eventName, const Callback& callback)
+{
+    m_events[eventName] = callback;
 }
 
 void SpriteAnimation::SetCurrentFrame(size_t _uiIndex)
@@ -305,6 +314,11 @@ void SpriteAnimation::InjectDuration(float seconds)
             }
             else
             {
+                // Only trigger when the animation properly finishes.
+                if (m_finishedCallback)
+                    m_finishedCallback();
+
+                // We want the frame following the last one : loop or stop.
                 if (m_animLoop)
                 {
                     m_animIndexCurrent = 0;

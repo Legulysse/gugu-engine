@@ -65,7 +65,11 @@ public:
     void    SetOriginFromAnimation  (bool _bOriginFromAnimation);
     void    SetMoveFromAnimation    (bool _bMoveFromAnimation);
 
-    void    AddEventCallback(const std::string& _strEvent, const Callback& callbackEvent);
+    // Set a callback for when any animation properly finishes, applied accross all animations.
+    void SetFinishedCallback(const Callback& callback);
+
+    // Set a callback for a named frame event, applied accross all animations.
+    void SetEventCallback(const std::string& eventName, const Callback& callback);
 
     void    StepAnimation           (const DeltaTime& dt);
     void    InjectDuration          (float seconds);
@@ -100,6 +104,7 @@ protected:
     float       m_animDurationCurrent;
 
     std::map<std::string, Callback> m_events;
+    Callback m_finishedCallback;
 };
 
 }   // namespace gugu

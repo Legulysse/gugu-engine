@@ -95,6 +95,7 @@ public:
     virtual ~LoggerEngine();
 
     void Print(ELog::Type level, ELogEngine::Type category, const std::string& text);
+    //using Logger::Print;  // Explicitely use Name Hiding on the base Print method.
 
     void SetUseTimestamp(bool useTimestamp);
     void IncrementFrameNumber();

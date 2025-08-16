@@ -149,24 +149,22 @@ void StdVectorAppend(const std::vector<T>& containerFrom, std::vector<T>& contai
 template<typename T>
 void StdVectorDifference(const std::vector<T>& containerFrom, const std::vector<T>& containerSubset, std::vector<T>& containerTo)
 {
-    //This will sort the containers and remove the duplicates
-    std::set<T> setContainer(containerFrom.begin(), containerFrom.end());
+    // This will copy all values in sorted containers and remove the duplicates.
+    std::set<T> setFrom(containerFrom.begin(), containerFrom.end());
     std::set<T> setSubset(containerSubset.begin(), containerSubset.end());
 
-    //Compute the difference
-    containerTo.clear();    // TODO: remove ?
-    std::set_difference(setContainer.begin(), setContainer.end(), setSubset.begin(), setSubset.end(), std::back_inserter(containerTo));
+    // Compute the difference (the target container may already contain entries).
+    std::set_difference(setFrom.begin(), setFrom.end(), setSubset.begin(), setSubset.end(), std::back_inserter(containerTo));
 }
 
 template<typename T>
 void StdVectorIntersection(const std::vector<T>& containerA, const std::vector<T>& containerB, std::vector<T>& intersection)
 {
-    //This will sort the containers and remove the duplicates
+    // This will copy all values in sorted containers and remove the duplicates.
     std::set<T> setContainerA(containerA.begin(), containerA.end());
     std::set<T> setContainerB(containerB.begin(), containerB.end());
 
-    //Compute the difference
-    intersection.clear();    // TODO: remove ?
+    // Compute the intersection (the target container may already contain entries).
     std::set_intersection(setContainerA.begin(), setContainerA.end(), setContainerB.begin(), setContainerB.end(), std::back_inserter(intersection));
 }
 

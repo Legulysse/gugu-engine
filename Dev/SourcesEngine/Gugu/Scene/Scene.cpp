@@ -44,6 +44,9 @@ void Scene::Step(const DeltaTime& dt)
     StdVectorRemove<Scene*>(m_childScenes, nullptr);
     StdVectorRemove<SceneActor*>(m_actors, nullptr);
 
+    // TODO: keep track of added actors to ignore the ones spawned during the loop ?
+    // - I could use either a flag on actors, a dedicated container, or a simple index to track new additions.
+    // - Add an awake/start entry point ?
     for (size_t i = 0; i < m_childScenes.size(); ++i)
     {
         if (m_childScenes[i])
@@ -129,8 +132,13 @@ void Scene::RemoveChildScene(Scene* scene)
 {
     if (scene->m_parentScene == this)
     {
-        StdVectorRemove(m_childScenes, scene);
         scene->m_parentScene = nullptr;
+
+        size_t index = StdVectorIndexOf(m_childScenes, scene);
+        if (index != system::InvalidIndex)
+        {
+            m_childScenes[index] = nullptr;
+        }
     }
 }
 
@@ -172,6 +180,7 @@ Scene* Scene::GetChildScene(size_t index) const
 
 size_t Scene::GetChildSceneCount() const
 {
+    // TODO: Consider null entries ?
     return m_childScenes.size();
 }
 
@@ -193,9 +202,13 @@ void Scene::RemoveActor(SceneActor* actor)
     if (actor->m_scene == this)
     {
         actor->OnRemovedFromScene();
-
-        StdVectorRemove(m_actors, actor);
         actor->m_scene = nullptr;
+
+        size_t index = StdVectorIndexOf(m_actors, actor);
+        if (index != system::InvalidIndex)
+        {
+            m_actors[index] = nullptr;
+        }
     }
 }
 
@@ -215,7 +228,6 @@ void Scene::DeleteAllActors()
         if (m_actors[i])
         {
             m_actors[i]->OnRemovedFromScene();
-
             m_actors[i]->m_scene = nullptr;
             SafeDelete(m_actors[i]);
         }
@@ -239,6 +251,7 @@ SceneActor* Scene::GetActor(size_t index) const
 
 size_t Scene::GetActorCount() const
 {
+    // TODO: Consider null entries ?
     return m_actors.size();
 }
 

@@ -106,7 +106,7 @@ void Editor::Init(const EditorConfig& editorConfig)
     LoadUserSettings();
 
     // Open last project if available.
-    if ( FileExists(m_userSettings.lastProjectFilePath))
+    if (FileExists(m_userSettings.lastProjectFilePath))
     {
         OpenProject(m_userSettings.lastProjectFilePath);
     }

@@ -552,22 +552,22 @@ void AssetsExplorerPanel::HandleFileContextMenu(TreeNode* node)
     }
 }
 
-void AssetsExplorerPanel::GenerateImageSetAndAnimSet(const std::string& resourceID)
+void AssetsExplorerPanel::GenerateImageSetAndAnimSet(const std::string& textureId)
 {
-    FileInfo textureFileInfo = GetResources()->GetResourceFileInfo(resourceID);
+    FileInfo textureFileInfo = GetResources()->GetResourceFileInfo(textureId);
     std::string baseFilename(textureFileInfo.GetPrettyName());
 
     FileInfo imagesetFileInfo = FileInfo::FromString_utf8(CombinePaths(textureFileInfo.GetDirectoryPath_utf8(), baseFilename + system::ExtensionSeparator + "imageset.xml"));
     FileInfo animsetFileInfo = FileInfo::FromString_utf8(CombinePaths(textureFileInfo.GetDirectoryPath_utf8(), baseFilename + system::ExtensionSeparator + "animset.xml"));
 
-    // Ensure imageset exists.
+    // Check if imageset already exists, or try to create it.
     ImageSet* imageSet = GetResources()->GetImageSet(GetResources()->GetResourceID(imagesetFileInfo));
     if (!imageSet)
     {
         imageSet = new ImageSet;
         if (GetResources()->AddResource(imageSet, imagesetFileInfo))
         {
-            imageSet->SetTexture(GetResources()->GetTexture(resourceID));
+            imageSet->SetTexture(GetResources()->GetTexture(textureId));
             imageSet->SaveToFile();
         }
         else
@@ -576,23 +576,33 @@ void AssetsExplorerPanel::GenerateImageSetAndAnimSet(const std::string& resource
         }
     }
 
-    AnimSet* animSet = GetResources()->GetAnimSet(GetResources()->GetResourceID(animsetFileInfo));
-    if (!animSet)
+    if (imageSet)
     {
-        animSet = new AnimSet;
-        if (GetResources()->AddResource(animSet, animsetFileInfo))
+        GetEditor()->OpenDocument(imageSet->GetID());
+
+        // Check if animSet already exists, or try to create it.
+        AnimSet* animSet = GetResources()->GetAnimSet(GetResources()->GetResourceID(animsetFileInfo));
+        if (!animSet)
         {
-            animSet->SetImageSet(imageSet);
-            animSet->SaveToFile();
+            animSet = new AnimSet;
+            if (GetResources()->AddResource(animSet, animsetFileInfo))
+            {
+                animSet->SetImageSet(imageSet);
+                animSet->SaveToFile();
+            }
+            else
+            {
+                SafeDelete(animSet);
+            }
         }
-        else
+
+        if (animSet)
         {
-            SafeDelete(animSet);
+            GetEditor()->OpenDocument(animSet->GetID());
         }
     }
 
-    GetEditor()->OpenDocument(imageSet->GetID());
-    GetEditor()->OpenDocument(animSet->GetID());
+    // Finalize.
     GetEditor()->RefreshAssets();
 }
 

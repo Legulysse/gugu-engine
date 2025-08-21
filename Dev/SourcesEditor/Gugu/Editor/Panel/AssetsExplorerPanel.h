@@ -62,7 +62,7 @@ private:
     void HandleDirectoryContextMenu(TreeNode* node, bool* collapseAll, bool* collapseChildren, bool* expandAll);
     void HandleFileContextMenu(TreeNode* node);
 
-    void GenerateImageSetAndAnimSet(const std::string& resourceID);
+    void GenerateImageSetAndAnimSet(const std::string& textureId);
 
     static bool CompareTreeNodes(const TreeNode* left, const TreeNode* right);
 

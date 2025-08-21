@@ -342,6 +342,9 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(ToString(ETestEnumFlag::ValueA), "1");
             GUGU_UTEST_CHECK_EQUAL(ToString(ETestEnumFlag::ValueC), "4");
             GUGU_UTEST_CHECK_EQUAL(ToString((int)ETestEnumFlag::ValueA | (int)ETestEnumFlag::ValueC), "5");
+
+            int* fakePtr = (int*)0x00000ff123456789;
+            GUGU_UTEST_CHECK_EQUAL(ToString(fakePtr), "00000FF123456789");
         }
 
         GUGU_UTEST_SUBSECTION("FromString");

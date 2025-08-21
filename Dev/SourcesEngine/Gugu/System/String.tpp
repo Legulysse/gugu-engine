@@ -8,7 +8,8 @@ namespace gugu {
 template<typename T>
 std::string ToString(const T& _tValue)
 {
-    // floats are better displayed this way than with std::to_string
+    // Note: floats are better displayed this way than with std::to_string.
+    // Note: pointer types seem to be displayed by default as uppercase hex with fixed length.
     std::ostringstream os;
 
     if constexpr (Constexpr_IsEnumClass<T>)
@@ -27,7 +28,7 @@ std::string ToString(const T& _tValue)
 template<typename T>
 std::string ToStringf(const T& _tValue, int precision)
 {
-    // floats are better displayed this way than with std::to_string
+    // Note: floats are better displayed this way than with std::to_string.
     std::ostringstream os;
     os.precision(precision);
     os << std::fixed;

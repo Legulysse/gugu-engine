@@ -47,6 +47,8 @@ protected:
 
     bool InstanciateDataObjectAndValueIfNeeded(VirtualDatasheetObject*& dataObject, VirtualDatasheetObject::DataValue*& dataValue, DatasheetParser::DataMemberDefinition* dataMemberDefinition);
 
+    void HandleContextMenu(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue* dataValue);
+
     void OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency);
 
 protected:

@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Editor/Editor.h"
+#include "Gugu/Editor/Core/EditorClipboard.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
 #include "Gugu/Editor/Resources/VirtualDatasheetObject.h"
@@ -15,7 +16,20 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/String.h"
 #include "Gugu/System/Container.h"
+#include "Gugu/Debug/Logger.h"
 #include "Gugu/External/ImGuiUtility.h"
+#include "Gugu/External/PugiXmlUtility.h"
+
+////////////////////////////////////////////////////////////////
+// Constants
+
+namespace gugu
+{
+    namespace impl
+    {
+        const std::string ClipboardContentType_DatasheetObjectData = "DatasheetObjectData";
+    }
+}
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -176,10 +190,15 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
     if (!dataMemberDefinition->isArray)
     {
+        // Name column.
         ImGui::TableNextColumn();
         ImGuiTreeNodeFlags nodeFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && dataValue && dataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
         bool nodeOpen = ImGui::TreeNodeEx("##_NODE", nodeFlags, dataMemberDefinition->name.c_str());
 
+        // Context menu.
+        HandleContextMenu(dataMemberDefinition, dataObject, dataValue);
+
+        // Value column.
         ImGui::TableNextColumn();
 
         // The PushItemWidth will hide the label of the next widget.
@@ -196,6 +215,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
         ImGui::PopItemWidth();
 
+        // Depth column.
         DisplayDepthColumn(dataMemberDefinition, dataObject, dataValue);
 
         if (nodeOpen)
@@ -260,10 +280,15 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
 
                     ImGui::BeginDisabled(dataValue->owner->m_datasheet != m_datasheet);
 
+                    // Name column.
                     ImGui::TableNextColumn();
                     ImGuiTreeNodeFlags nodeChildFlags = dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance && childDataValue && childDataValue->value_objectInstanceDefinition ? nodeIndentFlags : nodeLeafFlags;
                     bool nodeChildOpen = ImGui::TreeNodeEx("##_ARRAY_ITEM", nodeChildFlags, "%s [%d]", dataMemberDefinition->name.c_str(), childIndex);
 
+                    // Context menu.
+                    HandleContextMenu(dataMemberDefinition, dataObject, childDataValue);
+
+                    // Value column.
                     ImGui::TableNextColumn();
 
                     // The double PushItemWidth will hide the label of the next widget then force its size.
@@ -320,6 +345,7 @@ void DatasheetPanel::DisplayDataMember(DatasheetParser::DataMemberDefinition* da
                     }
                     ImGui::PopStyleColor(3);
 
+                    // Depth column.
                     DisplayEmptyDepthColumn();
 
                     ImGui::EndDisabled();
@@ -698,6 +724,7 @@ bool DatasheetPanel::InstanciateDataObjectAndValueIfNeeded(VirtualDatasheetObjec
 {
     bool isNewData = false;
 
+    // TODO: Should I check that the dataObject actually comes from a parent datasheet ?
     if (dataObject->m_datasheet != m_datasheet)
     {
         VirtualDatasheetObject* parentObject = dataObject;
@@ -713,6 +740,124 @@ bool DatasheetPanel::InstanciateDataObjectAndValueIfNeeded(VirtualDatasheetObjec
     }
 
     return isNewData;
+}
+
+void DatasheetPanel::HandleContextMenu(DatasheetParser::DataMemberDefinition* dataMemberDefinition, VirtualDatasheetObject* dataObject, VirtualDatasheetObject::DataValue* dataValue)
+{
+    if (dataMemberDefinition->type != DatasheetParser::DataMemberDefinition::ObjectInstance)
+        return;
+
+    // TODO: Handle copy of object overrides.
+    // TODO: Ensure the copy will retrieve ALL override and instance data from its parent object.
+
+    bool canCopy = dataValue && dataValue->value_objectInstance && dataValue->value_objectInstance->m_datasheet == m_datasheet;  // Disable for object overrides.
+    bool canPaste = GetEditorClipboard()->contentType == impl::ClipboardContentType_DatasheetObjectData;   // Disable if clipboard type does not match.
+
+    // TODO: To handle disabled items, I should use my own variation of BeginPopupContextItem.
+    if (ImGui::BeginPopupContextItem())
+    {
+        ImGui::BeginDisabled(!canCopy);
+        if (ImGui::MenuItem("Copy"))
+        {
+            pugi::xml_document xmlDocument;
+
+            bool savedRoot = dataValue->value_objectInstance->SaveToXml(xmlDocument, "ClipboardRootObject");
+
+            std::set<UUID> instanceUuids;
+            dataValue->value_objectInstance->GatherInstanceUuidsRecursively(instanceUuids);
+
+            for (const auto& uuid : instanceUuids)
+            {
+                VirtualDatasheetObject* referencedObject = m_datasheet->GetInstanceObjectFromUuid(uuid);
+                if (!referencedObject)
+                    referencedObject = m_datasheet->GetObjectOverrideFromUuid(uuid);
+                if (referencedObject)
+                {
+                    bool savedObject = referencedObject->SaveToXml(xmlDocument, "ClipboardObject");
+                }
+            }
+
+            std::string stringContent = xml::SaveDocumentToString(xmlDocument);
+
+            GetEditorClipboard()->SetStringContent(impl::ClipboardContentType_DatasheetObjectData, stringContent);
+        }
+        ImGui::EndDisabled();
+
+        ImGui::BeginDisabled(!canPaste);
+        if (ImGui::MenuItem("Paste"))
+        {
+            if (StringEquals(GetEditorClipboard()->contentType, impl::ClipboardContentType_DatasheetObjectData))
+            {
+                pugi::xml_document xmlDocument;
+                bool parseResult = xml::ParseDocumentFromString(GetEditorClipboard()->stringContent, xmlDocument);
+                pugi::xml_node clipboardRootNode = xmlDocument.child("ClipboardRootObject");
+                
+                bool isNewData = InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
+                if (m_datasheet->DeleteInstanceObject(dataValue->value_objectInstance))
+                {
+                    VirtualDatasheetObject* newRootObject = nullptr;
+                    std::map<UUID, VirtualDatasheetObject*> newInstanceObjects;
+                    std::set<UUID> orphanObjectUuids;
+
+                    {
+                        VirtualDatasheetObject* newObject = new VirtualDatasheetObject;
+                        newObject->LoadFromXml(clipboardRootNode, m_datasheet);
+
+                        newRootObject = newObject;
+                    }
+
+                    for (pugi::xml_node clipboardNode = xmlDocument.child("ClipboardObject"); clipboardNode; clipboardNode = clipboardNode.next_sibling("ClipboardObject"))
+                    {
+                        VirtualDatasheetObject* newObject = new VirtualDatasheetObject;
+                        newObject->LoadFromXml(clipboardNode, m_datasheet);
+
+                        newInstanceObjects.insert(std::make_pair(newObject->m_uuid, newObject));
+                        orphanObjectUuids.insert(newObject->m_uuid);
+                    }
+
+                    // Override the target dataValue with this new object.
+                    dataValue->value_objectInstanceDefinition = newRootObject->m_classDefinition;
+                    dataValue->value_objectInstance = newRootObject;
+                    dataValue->value_string = newRootObject->m_uuid.ToString();
+
+                    // Rebuild references between data objects.
+                    newRootObject->ResolveInstances(newInstanceObjects, orphanObjectUuids);
+
+                    for (const auto& kvp : newInstanceObjects)
+                    {
+                        kvp.second->ResolveInstances(newInstanceObjects, orphanObjectUuids);
+                    }
+
+                    if (!orphanObjectUuids.empty())
+                    {
+                        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("Datasheet contains {0} orphan instanced objects : {1}", orphanObjectUuids.size(), m_datasheet->GetFileInfo().GetFilePath_utf8()));
+                    }
+
+                    // Generate new uuids for every new node.
+                    UUID uuid = UUID::Generate();
+                    dataValue->value_string = uuid.ToString();
+                    dataValue->value_objectInstance->m_uuid = uuid;
+
+                    newRootObject->RegenerateInstanceUuidsRecursively();
+
+                    // Register new instance objects.
+                    m_datasheet->m_instanceObjects.insert(std::make_pair(newRootObject->m_uuid, newRootObject));
+
+                    for (const auto& kvp : newInstanceObjects)
+                    {
+                        VirtualDatasheetObject* newObject = kvp.second;
+                        m_datasheet->m_instanceObjects.insert(std::make_pair(newObject->m_uuid, newObject));
+                    }
+                }
+
+                m_datasheet->DeleteOrphanedInstanceObjects();
+                RaiseDirty();
+            }
+        }
+        ImGui::EndDisabled();
+
+        ImGui::EndPopup();
+    }
 }
 
 void DatasheetPanel::OnResourceEvent(const Resource* resource, EResourceEvent event, const Resource* dependency)

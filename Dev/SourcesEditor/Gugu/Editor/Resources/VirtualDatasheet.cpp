@@ -138,14 +138,16 @@ VirtualDatasheetObject* VirtualDatasheet::InstanciateNewObjectOverride(Datasheet
 
 bool VirtualDatasheet::DeleteOrphanedInstanceObjects()
 {
+    // TODO: Handle local object overrides, when a parent instance object has disappeared.
+
     // Recursively retrieve all used instance uuids.
     // We dont need to check overrides in parent sheet, because we only care about instances from the current sheet.
     std::set<UUID> instanceUuids;
-    m_rootObject->GatherInstanceUuids(instanceUuids);
+    m_rootObject->GatherInstanceUuidsRecursively(instanceUuids);
 
     for (const auto& kvp : m_objectOverrides)
     {
-        kvp.second->GatherInstanceUuids(instanceUuids);
+        kvp.second->GatherInstanceUuidsRecursively(instanceUuids);
     }
 
     // Delete all orphaned instance objects.

@@ -59,6 +59,11 @@ ImportImageSetDialog::ImportImageSetDialog()
         m_targetDirectory = GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath;
     }
 
+    if (!GetEditor()->GetUserSettings().importImageSetTargetTextureName.empty())
+    {
+        m_targetTextureName = GetEditor()->GetUserSettings().importImageSetTargetTextureName;
+    }
+
     if (ApproxSuperiorToZero(GetEditor()->GetUserSettings().importImageSetResizeScale, math::Epsilon3))
     {
         m_resizeScale = GetEditor()->GetUserSettings().importImageSetResizeScale;
@@ -113,7 +118,8 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
     // - No other texture will be present in the source directory.
     // - Target directory will be outside of the source directory.
     // - We want one row per animation in the final texture.
-    // - We want all individual frames to have the same size.
+    // - We want all individual frames to have the same size, with dimensions as multiples of 2.
+    // - We want all individual frames to have an outline of 1 transparent pixel.
     // - We want to trim empty spacings between frames, but with a symmetrical rule (keep all frames centered).
     // - We want a final texture size aligned on a power of 2 (not necessarily squared).
     // - ImageMagick has been setup in a predefined directory.
@@ -122,6 +128,7 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
     // Save settings.
     GetEditor()->GetUserSettings().importImageSetSourceDirectoryPath = m_sourceDirectory;
     GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath = m_targetDirectory;
+    GetEditor()->GetUserSettings().importImageSetTargetTextureName = m_targetTextureName;
     GetEditor()->GetUserSettings().importImageSetResizeScale = m_resizeScale;
     GetEditor()->GetUserSettings().importImageSetResizeFilter = resizeFilter;
     GetEditor()->SaveUserSettings();
@@ -162,8 +169,9 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
 
     if (parsedDirectories.empty())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Editor, "The source directory has no animation subdirectories");
-        return;
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Editor, "The source directory has no animation subdirectories, fallback on source directory itself");
+        
+        parsedDirectories.push_back(m_sourceDirectory);
     }
 
     for (const auto& parsedDirectory : parsedDirectories)
@@ -171,8 +179,8 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
         std::vector<FileInfo> parsedFiles;
         GetFiles(parsedDirectory, parsedFiles, false);
 
-        std::string targettResizedAnimationDirectory = CombinePaths(targetResizeDirectory, NamePartFromPath(parsedDirectory));
-        EnsureDirectoryExists(targettResizedAnimationDirectory);
+        std::string targetResizedAnimationDirectory = CombinePaths(targetResizeDirectory, NamePartFromPath(parsedDirectory));
+        EnsureDirectoryExists(targetResizedAnimationDirectory);
 
         int frameCount = 0;
         for (const auto& parsedFile : parsedFiles)
@@ -180,7 +188,7 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
             if (!parsedFile.HasExtension("png"))
                 continue;
 
-            FileInfo targetResizedFile = FileInfo::FromString_utf8(CombinePaths(targettResizedAnimationDirectory, parsedFile.GetFileName_utf8()));
+            FileInfo targetResizedFile = FileInfo::FromString_utf8(CombinePaths(targetResizedAnimationDirectory, parsedFile.GetFileName_utf8()));
 
             std::string arguments = StringFormat("\"{0}\" -filter {2} -resize {3}% -unsharp 0x1 \"{1}\""
                 , parsedFile.GetFilePath_utf8()

@@ -16,6 +16,7 @@ struct UserSettings
 
     std::string importImageSetSourceDirectoryPath;
     std::string importImageSetTargetDirectoryPath;
+    std::string importImageSetTargetTextureName;
     float importImageSetResizeScale = 0.f;
     std::string importImageSetResizeFilter;
 

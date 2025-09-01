@@ -111,7 +111,7 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
     if (!rootNode)
         return false;
 
-    AudioMixerGroup* mixerGroup = GetResources()->GetAudioMixerGroup(rootNode.child("MixerGroup").attribute("source").as_string());
+    m_mixerGroup = GetResources()->GetAudioMixerGroup(rootNode.child("MixerGroup").attribute("source").as_string());
 
     for (pugi::xml_node clipNode = rootNode.child("Clips").child("Clip"); clipNode; clipNode = clipNode.next_sibling("Clip"))
     {
@@ -123,12 +123,38 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
             SoundParameters parameters;
             parameters.audioClip = audioClip;
             parameters.audioClipId = audioClip->GetID();
-            parameters.mixerGroupId = mixerGroup == nullptr ? "" : mixerGroup->GetID();
+            parameters.mixerGroupId = m_mixerGroup == nullptr ? "" : m_mixerGroup->GetID();
             parameters.volume = clipNode.attribute("volume").as_float(parameters.volume);
             parameters.pitchLowerOffset = clipNode.attribute("pitchLowerOffset").as_float(parameters.pitchLowerOffset);
             parameters.pitchUpperOffset = clipNode.attribute("pitchUpperOffset").as_float(parameters.pitchUpperOffset);
 
             m_audioClips.push_back(parameters);
+        }
+    }
+
+    return true;
+}
+
+bool SoundCue::SaveToXml(pugi::xml_document& document) const
+{
+    pugi::xml_node rootNode = document.append_child("SoundCue");
+    rootNode.append_attribute("serializationVersion") = 1;
+
+    rootNode.append_child("MixerGroup").append_attribute("source").set_value((!m_mixerGroup) ? "" : m_mixerGroup->GetID().c_str());
+
+    if (!m_audioClips.empty())
+    {
+        pugi::xml_node clipsNode = rootNode.append_child("Clips");
+        for (const auto& audioClip : m_audioClips)
+        {
+            if (audioClip.audioClip)
+            {
+                pugi::xml_node clipNode = clipsNode.append_child("Clip");
+                clipNode.append_attribute("source").set_value(audioClip.audioClipId.c_str());
+                clipNode.append_attribute("volume").set_value(audioClip.volume);
+                clipNode.append_attribute("pitchLowerOffset").set_value(audioClip.pitchLowerOffset);
+                clipNode.append_attribute("pitchUpperOffset").set_value(audioClip.pitchUpperOffset);
+            }
         }
     }
 

@@ -41,6 +41,7 @@ protected:
 
     virtual void Unload() override;
     virtual bool LoadFromXml(const pugi::xml_document& document) override;
+    virtual bool SaveToXml(pugi::xml_document& document) const override;
 
 protected:
 

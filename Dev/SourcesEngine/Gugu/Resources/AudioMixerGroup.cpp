@@ -92,6 +92,23 @@ bool AudioMixerGroup::LoadFromXml(const pugi::xml_document& document)
 
 bool AudioMixerGroup::SaveToXml(pugi::xml_document& document) const
 {
+    pugi::xml_node rootNode = document.append_child("AudioMixerGroup");
+    rootNode.append_attribute("serializationVersion") = 1;
+
+    rootNode.append_child("VolumeAttenuation").append_attribute("value").set_value(m_volumeAttenuation);
+
+    if (!m_childMixerGroups.empty())
+    {
+        pugi::xml_node ChildMixerGroupsNode = rootNode.append_child("ChildMixerGroups");
+        for (const auto* childMixerGroup : m_childMixerGroups)
+        {
+            if (childMixerGroup)
+            {
+                ChildMixerGroupsNode.append_child("ChildMixerGroup").append_attribute("source").set_value(childMixerGroup->GetID().c_str());
+            }
+        }
+    }
+
     return true;
 }
 

@@ -39,7 +39,7 @@ sf::SoundBuffer* AudioClip::GetOrLoadSFSoundBuffer()
         if (!m_sfSoundBuffer->loadFromFile(GetFileInfo().GetFileSystemPath()))
         {
             GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("AudioClip file not found : {0}", GetFileInfo().GetFilePath_utf8()));
-            return false;
+            return nullptr;
         }
 
         if (m_duration == sf::Time::Zero)

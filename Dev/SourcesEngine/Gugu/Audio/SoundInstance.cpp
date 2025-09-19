@@ -51,7 +51,13 @@ void SoundInstance::SetAudioClip(AudioClip* audioClip)
     Reset();
 
     if (audioClip)
-        m_sfSound.setBuffer(*audioClip->GetOrLoadSFSoundBuffer());
+    {
+        sf::SoundBuffer* soundBuffer = audioClip->GetOrLoadSFSoundBuffer();
+        if (soundBuffer)
+        {
+            m_sfSound.setBuffer(*soundBuffer);
+        }
+    }
 }
 
 void SoundInstance::SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance)

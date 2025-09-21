@@ -703,6 +703,7 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_WARNINGS" }
     defines { "UNICODE", "_UNICODE" }
     defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
+    --buildoptions { "/Zc:char8_t-" }   -- Disable char8_t (This may help when migrating to c++20) (windows only, should be -fno-char8_t on gcc)
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"

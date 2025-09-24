@@ -1,6 +1,8 @@
-<SoundCue>
-    <MixerGroup source="Gameplay.audiomixergroup.xml" />
-    <Clips>
-        <Clip source="Bulle_01.ogg" pitchLowerOffset="0.2" pitchUpperOffset="0.8" />
-    </Clips>
+<?xml version="1.0"?>
+<SoundCue serializationVersion="1">
+	<MixerGroup source="Gameplay.audiomixergroup.xml" />
+	<VolumeAttenuation value="1" />
+	<Clips>
+		<Clip source="Bulle_01.ogg" volume="1" pitchLowerOffset="0.200000003" pitchUpperOffset="0.800000012" />
+	</Clips>
 </SoundCue>

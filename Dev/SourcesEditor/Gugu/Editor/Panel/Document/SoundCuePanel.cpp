@@ -7,7 +7,9 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/SoundCue.h"
+#include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/Audio/ManagerAudio.h"
 #include "Gugu/System/Memory.h"
 #include "Gugu/System/String.h"
@@ -30,10 +32,32 @@ SoundCuePanel::~SoundCuePanel()
 
 void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
 {
+    bool updated = false;
+
     if (ImGui::Button("Play"))
     {
         GetAudio()->PlaySoundCue(m_soundCue);
     }
+
+    ImGui::Spacing();
+
+    std::string mixerGroupID = m_soundCue->GetMixerGroup() == nullptr ? "" : m_soundCue->GetMixerGroup()->GetID();
+    if (ImGui::InputText("MixerGroup", &mixerGroupID, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        m_soundCue->SetMixerGroup((mixerGroupID == "") ? nullptr : GetResources()->GetAudioMixerGroup(mixerGroupID));
+        updated |= true;
+    }
+
+    ImGui::Spacing();
+
+    float volumeAttenuation = m_soundCue->GetVolumeAttenuation();
+    if (ImGui::SliderFloat("Volume Attenuation", &volumeAttenuation, 0.f, 1.f))
+    {
+        m_soundCue->SetVolumeAttenuation(volumeAttenuation);
+        updated |= true;
+    }
+
+    ImGui::Spacing();
 
     // Note: NoSavedSettings is already applied on the whole document panel, but I keep it here to match property tables.
     ImGuiTableFlags tableFlags = ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY;
@@ -56,8 +80,8 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
             float row_min_height = ImGui::GetFrameHeight();
             ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
 
-            SoundParameters parameters;
-            m_soundCue->GetSound(i, parameters);
+            SoundCue::ClipEntry clip;
+            m_soundCue->GetClip(i, clip);
 
             int columnIndex = 0;
             ImGui::TableSetColumnIndex(columnIndex++);
@@ -73,21 +97,27 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
             //}
 
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text(parameters.audioClipId.c_str());
+            ImGui::Text(clip.audioClipId.c_str());
 
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%.03f", parameters.volume);
+            ImGui::Text("%.03f", clip.volume);
 
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%.03f", parameters.pitchLowerOffset);
+            ImGui::Text("%.03f", clip.pitchLowerOffset);
 
             ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%.03f", parameters.pitchUpperOffset);
+            ImGui::Text("%.03f", clip.pitchUpperOffset);
 
             ImGui::PopID();
         }
 
         ImGui::EndTable();
+    }
+
+    // Finalize
+    if (updated)
+    {
+        RaiseDirty();
     }
 }
 

@@ -125,10 +125,4 @@ void SoundCuePanel::UpdatePropertiesImpl(const DeltaTime& dt)
 {
 }
 
-bool SoundCuePanel::SaveStateImpl(std::string& result)
-{
-    // Currently soundcue edition is not handled.
-    return false;
-}
-
 }   //namespace gugu

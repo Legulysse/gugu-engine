@@ -3,8 +3,6 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include <SFML/Audio/Sound.hpp>
-
 #include <string>
 
 ////////////////////////////////////////////////////////////////
@@ -14,6 +12,11 @@ namespace gugu
 {
     class AudioClip;
     class AudioMixerGroupInstance;
+}
+
+namespace sf
+{
+    class Sound;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -55,7 +58,7 @@ public:
 protected:
 
     AudioMixerGroupInstance* m_mixerGroupInstance;
-    sf::Sound m_sfSound;
+    sf::Sound* m_sfSound;
     float m_volume;
 };
 

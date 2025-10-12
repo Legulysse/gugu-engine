@@ -9,6 +9,10 @@
 
 #include "Gugu/Audio/AudioMixerGroupInstance.h"
 #include "Gugu/Resources/AudioClip.h"
+#include "Gugu/System/Memory.h"
+
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -26,23 +30,30 @@ SoundParameters::SoundParameters()
 {
 }
 
+
 SoundInstance::SoundInstance()
     : m_mixerGroupInstance(nullptr)
+    , m_sfSound(nullptr)
     , m_volume(1.f)
 {
+    // Default empty buffer.
+    static const sf::SoundBuffer defaultEmptyBuffer;
+    m_sfSound = new sf::Sound(defaultEmptyBuffer);
+
     Reset();
 }
 
 SoundInstance::~SoundInstance()
 {
-    Reset();
+    SafeDelete(m_sfSound);  // This will call stop() in the sf::Sound destructor.
 }
 
 void SoundInstance::Reset()
 {
-    m_sfSound.stop();
-    m_sfSound.setVolume(100);
-    m_sfSound.setPitch(1);
+    m_sfSound->stop();
+    m_sfSound->setVolume(100.f);
+    m_sfSound->setPitch(1.f);
+
     m_volume = 1.f;
 }
 
@@ -55,7 +66,7 @@ void SoundInstance::SetAudioClip(AudioClip* audioClip)
         sf::SoundBuffer* soundBuffer = audioClip->GetOrLoadSFSoundBuffer();
         if (soundBuffer)
         {
-            m_sfSound.setBuffer(*soundBuffer);
+            m_sfSound->setBuffer(*soundBuffer);
         }
     }
 }
@@ -74,18 +85,18 @@ void SoundInstance::SetVolume(float volume)
 
 void SoundInstance::SetPitch(float pitch)
 {
-    m_sfSound.setPitch(pitch);
+    m_sfSound->setPitch(pitch);
 }
 
 void SoundInstance::RecomputeMixedVolume()
 {
     float volume = m_mixerGroupInstance == nullptr ? m_volume : m_mixerGroupInstance->ComputeMixedVolume(m_volume);
-    m_sfSound.setVolume(volume * 100.f);
+    m_sfSound->setVolume(volume * 100.f);
 }
 
 void SoundInstance::Play()
 {
-    m_sfSound.play();
+    m_sfSound->play();
 }
 
 }   // namespace gugu

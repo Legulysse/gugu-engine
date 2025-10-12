@@ -13,6 +13,7 @@
 
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Music.hpp>
+#include <SFML/Audio/InputSoundFile.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

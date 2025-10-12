@@ -319,10 +319,10 @@ void ManagerInputs::FillListKeyCodes()
     m_keyCodes["Semicolon"] = sf::Keyboard::Key::Semicolon;  ///< The ; key
     m_keyCodes["Comma"]     = sf::Keyboard::Key::Comma;      ///< The , key
     m_keyCodes["Period"]    = sf::Keyboard::Key::Period;     ///< The . key
-    m_keyCodes["Quote"]     = sf::Keyboard::Key::Apostrophe; ///< The ' key
+    m_keyCodes["Apostrophe"] = sf::Keyboard::Key::Apostrophe; ///< The ' key
     m_keyCodes["Slash"]     = sf::Keyboard::Key::Slash;      ///< The / key
     m_keyCodes["Backslash"] = sf::Keyboard::Key::Backslash;  ///< The \ key
-    m_keyCodes["Tilde"]     = sf::Keyboard::Key::Grave;      ///< The ~ key
+    m_keyCodes["Grave"]     = sf::Keyboard::Key::Grave;      ///< The ~ key
     m_keyCodes["Equal"]     = sf::Keyboard::Key::Equal;      ///< The = key
     m_keyCodes["Hyphen"]    = sf::Keyboard::Key::Hyphen;     ///< The - key
     m_keyCodes["Space"]     = sf::Keyboard::Key::Space;      ///< The Space key

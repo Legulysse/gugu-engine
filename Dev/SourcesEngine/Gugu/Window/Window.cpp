@@ -133,9 +133,10 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     if (GetResources()->HasResource(config.applicationIcon))
     {
         sf::Image oImgIcon;
-        oImgIcon.loadFromFile(GetResources()->GetResourceFileInfo(config.applicationIcon).GetFileSystemPath());
-
-        m_sfWindow->setIcon(oImgIcon.getSize().x, oImgIcon.getSize().y, oImgIcon.getPixelsPtr());
+        if (oImgIcon.loadFromFile(GetResources()->GetResourceFileInfo(config.applicationIcon).GetFileSystemPath()))
+        {
+            m_sfWindow->setIcon(Vector2u(oImgIcon.getSize().x, oImgIcon.getSize().y), oImgIcon.getPixelsPtr());
+        }
     }
 
     Init(m_sfWindow, config);
@@ -365,7 +366,7 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
     {
         GUGU_SCOPE_TRACE_MAIN("Clear");
 
-        m_sfWindow->setActive(true);
+        bool activationResult = m_sfWindow->setActive(true);
         m_sfWindow->clear(m_backgroundColor);
     }
 
@@ -731,7 +732,7 @@ bool Window::Screenshot() const
         sf::Image kImage = kTexture.copyToImage();
 
         std::thread kThreadSaveFile([kImage]() {
-            kImage.saveToFile(CombinePaths(GetResources()->GetPathScreenshots(), StringFormat("Screenshot_{0}.png", GetTimestamp())));
+            bool saveResult = kImage.saveToFile(CombinePaths(GetResources()->GetPathScreenshots(), StringFormat("Screenshot_{0}.png", GetTimestamp())));
         });
         kThreadSaveFile.detach();
 

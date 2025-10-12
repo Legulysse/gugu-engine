@@ -40,7 +40,7 @@ Logger::~Logger()
 
 void Logger::SetFilePath(const std::string& filePath)
 {
-    sf::Lock lock(m_mutex);
+    std::lock_guard lock(m_mutex);
 
     m_filePath = filePath;
 
@@ -78,7 +78,7 @@ void Logger::SetActive(bool active)
 
 void Logger::Flush()
 {
-    sf::Lock lock(m_mutex);
+    std::lock_guard lock(m_mutex);
 
     FlushImpl();
 }
@@ -88,7 +88,7 @@ void Logger::Print(const std::string& text)
     if (!m_isActive)
         return;
 
-    sf::Lock lock(m_mutex);
+    std::lock_guard lock(m_mutex);
 
     m_buffer << text;
 
@@ -153,7 +153,7 @@ void LoggerEngine::Print(ELog::Type level, ELogEngine::Type category, const std:
     if (!m_isActive)
         return;
 
-    sf::Lock lock(m_mutex);
+    std::lock_guard lock(m_mutex);
 
     // Timestamp
     std::string timestamp = GetTimestampAsString();

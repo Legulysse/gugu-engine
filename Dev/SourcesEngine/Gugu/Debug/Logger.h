@@ -6,9 +6,7 @@
 #include "Gugu/System/Callback.h"
 #include "Gugu/System/Handle.h"
 
-#include <SFML/System/Mutex.hpp>
-#include <SFML/System/Lock.hpp>
-
+#include <mutex>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -54,7 +52,7 @@ protected:
 
     std::ostringstream m_buffer;
 
-    sf::Mutex m_mutex;
+    std::mutex m_mutex;
 };
 
 //----------------------------------------------

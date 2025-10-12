@@ -5,6 +5,11 @@
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
+// Includes
+
+#include "Gugu/System/Types.h"
+
+////////////////////////////////////////////////////////////////
 // File Implementation
 
 namespace ImGui {
@@ -47,15 +52,15 @@ bool InputInt2(const char* label, gugu::Vector2u* v, ImGuiInputTextFlags flags)
 
 bool InputInt4(const char* label, sf::IntRect* v, ImGuiInputTextFlags flags)
 {
-    int temp[4] = { v->left, v->top, v->width, v->height };
+    int temp[4] = { v->position.x, v->position.y, v->size.x, v->size.y };
 
     bool updated = ImGui::InputInt4(label, temp, flags);
     if (updated)
     {
-        v->left = temp[0];
-        v->top = temp[1];
-        v->width = temp[2];
-        v->height = temp[3];
+        v->position.x = temp[0];
+        v->position.y = temp[1];
+        v->size.x = temp[2];
+        v->size.y = temp[3];
     }
 
     return updated;
@@ -121,12 +126,12 @@ ImVec4 ColorConvertSfmlToFloat4(const sf::Color& color)
 
 sf::Color ColorConvertFloat4ToSfml(const ImVec4& color)
 {
-    sf::Uint32 colorU32 = ImGui::ColorConvertFloat4ToU32(color);
+    gugu::uint32 colorU32 = ImGui::ColorConvertFloat4ToU32(color);
     return sf::Color(
-        (sf::Uint8)((colorU32 & 0x000000ff) >> 0),
-        (sf::Uint8)((colorU32 & 0x0000ff00) >> 8),
-        (sf::Uint8)((colorU32 & 0x00ff0000) >> 16),
-        (sf::Uint8)((colorU32 & 0xff000000) >> 24)
+        (gugu::uint8)((colorU32 & 0x000000ff) >> 0),
+        (gugu::uint8)((colorU32 & 0x0000ff00) >> 8),
+        (gugu::uint8)((colorU32 & 0x00ff0000) >> 16),
+        (gugu::uint8)((colorU32 & 0xff000000) >> 24)
     );
 }
 

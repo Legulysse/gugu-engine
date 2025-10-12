@@ -21,10 +21,10 @@ int main(int argc, char* argv[])
     bool windowHovered = false;
     bool wantSystemCursor = false;
 
-    sf::RenderWindow window(sf::VideoMode(1080, 720), "ImGui + SFML Demo", sf::Style::Default);
+    sf::RenderWindow window(sf::VideoMode({ 1080, 720 }), "ImGui + SFML Demo", sf::Style::Default);
     window.setFramerateLimit(60);
 
-    ImGui::SFML::Init(window);
+    bool sfmlInitResult = ImGui::SFML::Init(window);
 
     sf::CircleShape greenCircleShape(100.f);
     greenCircleShape.setFillColor(sf::Color::Green);
@@ -35,22 +35,21 @@ int main(int argc, char* argv[])
     sf::Clock deltaClock;
     while (window.isOpen())
     {
-        sf::Event event;
-        while (window.pollEvent(event))
+        while (const std::optional event = window.pollEvent())
         {
-            ImGui::SFML::ProcessEvent(window, event);
+            ImGui::SFML::ProcessEvent(window, *event);
 
-            switch (event.type)
+            if (event->is<sf::Event::Closed>())
             {
-                case sf::Event::Closed:
-                    window.close();
-                    break;
-                case sf::Event::MouseLeft:
-                    windowHovered = false;
-                    break;
-                case sf::Event::MouseEntered:
-                    windowHovered = true;
-                    break;
+                window.close();
+            }
+            else if (event->is<sf::Event::MouseLeft>())
+            {
+                windowHovered = false;
+            }
+            else if (event->is<sf::Event::MouseEntered>())
+            {
+                windowHovered = true;
             }
         }
 

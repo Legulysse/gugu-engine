@@ -38,6 +38,47 @@ function ProjectDefault(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID
         
 end
 
+-- Template for a default SFML + ImGui project
+function ProjectDefaultSFMLImGui(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID)
+    
+    DirSources = EnsureSlash(DirSources)
+    
+    project (ProjectName)
+    
+        -- Base Definition
+        IncludeDefaultAppDefinition(BuildCfg, ProjectName, DirSources, DirVersion)
+        uuid(ProjectID)
+        
+        -- Projects dependencies
+        dependson { "ImGui", "SFML" }
+            
+        -- Files
+        files {
+            DirSources.."**.h",
+            DirSources.."**.hpp",
+            DirSources.."**.cpp",
+            DirSources.."**.tpp",
+        }
+        
+        includedirs {
+            DirSources,
+            BuildCfg.DirSourcesSfml.."include/",
+            BuildCfg.DirSourcesImGui,
+            BuildCfg.DirSourcesImGuiSFML,
+            BuildCfg.DirSourcesImGuiSetup,
+        }
+        
+        -- Linker
+        IncludeSFMLImGuiLinkerDefinition(BuildCfg)
+        
+        -- Options
+        IncludeExtraWarnings()
+        
+        -- Finalize
+        filter {}
+    
+end
+
 -- Template for a default SFML project
 function ProjectDefaultSFML(BuildCfg, ProjectName, DirSources, DirVersion, ProjectID)
     
@@ -809,18 +850,22 @@ function IncludeEngineHeadersDefinition(BuildCfg)
 end
 
 function IncludeEngineWithEditorLinkerDefinition(BuildCfg)
-    IncludeLinkerDefinitions(BuildCfg, true, true)
+    IncludeLinkerDefinitions(BuildCfg, true, true, true)
 end
 
 function IncludeEngineLinkerDefinition(BuildCfg)
-    IncludeLinkerDefinitions(BuildCfg, true, false)
+    IncludeLinkerDefinitions(BuildCfg, true, true, false)
+end
+
+function IncludeSFMLImGuiLinkerDefinition(BuildCfg)
+    IncludeLinkerDefinitions(BuildCfg, true, false, false)
 end
 
 function IncludeSFMLOnlyLinkerDefinition(BuildCfg)
-    IncludeLinkerDefinitions(BuildCfg, false, false)
+    IncludeLinkerDefinitions(BuildCfg, false, false, false)
 end
 
-function IncludeLinkerDefinitions(BuildCfg, IncludeEngine, IncludeEditor)
+function IncludeLinkerDefinitions(BuildCfg, IncludeImGui, IncludeEngine, IncludeEditor)
 
     -- Link directories
     filter { "system:windows", "action:codelite", "platforms:x86" }
@@ -850,11 +895,20 @@ function IncludeLinkerDefinitions(BuildCfg, IncludeEngine, IncludeEditor)
     
     if IncludeEngine then
         filter { "configurations:DevDebug" }
-            links { "GuguEngine-s-d", "ImGui-s-d","PugiXml-s-d" }
+            links { "GuguEngine-s-d", "PugiXml-s-d" }
         filter { "configurations:DevRelease" }
-            links { "GuguEngine-s-r", "ImGui-s-r", "PugiXml-s-r" }
+            links { "GuguEngine-s-r", "PugiXml-s-r" }
         filter { "configurations:ProdMaster" }
-            links { "GuguEngine-s", "ImGui-s", "PugiXml-s" }
+            links { "GuguEngine-s", "PugiXml-s" }
+    end
+    
+    if IncludeImGui then
+        filter { "configurations:DevDebug" }
+            links { "ImGui-s-d" }
+        filter { "configurations:DevRelease" }
+            links { "ImGui-s-r" }
+        filter { "configurations:ProdMaster" }
+            links { "ImGui-s" }
     end
     
     filter { "configurations:DevDebug" }

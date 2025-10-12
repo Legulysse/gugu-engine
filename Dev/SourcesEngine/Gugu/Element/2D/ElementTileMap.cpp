@@ -56,7 +56,7 @@ void ElementTileMap::BuildFromSquareGrid(SquareGrid* grid)
     size_t height = (size_t)grid->GetHeight();
 
     // Reset vertices.
-    m_vertices.setPrimitiveType(sf::Triangles);
+    m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     m_vertices.resize(width * height * 6);
 
     // Compute all tiles position and size.
@@ -79,7 +79,7 @@ void ElementTileMap::BuildFromHexGrid(HexGrid* grid)
     size_t height = (size_t)grid->GetHeight();
 
     // Reset vertices.
-    m_vertices.setPrimitiveType(sf::Triangles);
+    m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     m_vertices.resize(width * height * 6);
 
     // Compute all tiles position and size.
@@ -99,7 +99,7 @@ void ElementTileMap::BuildFromHexGrid(HexGrid* grid)
 void ElementTileMap::BuildFromTileDimensions(size_t width, size_t height, const Vector2f& tileSize)
 {
     // Reset vertices.
-    m_vertices.setPrimitiveType(sf::Triangles);
+    m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     m_vertices.resize(width * height * 6);
 
     // Compute all tiles position and size.
@@ -117,7 +117,7 @@ void ElementTileMap::BuildFromTileDimensions(size_t width, size_t height, const 
 void ElementTileMap::BuildFromTileCount(size_t count, const Vector2f& mapSize)
 {
     // Reset vertices.
-    m_vertices.setPrimitiveType(sf::Triangles);
+    m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     m_vertices.resize(count * 6);
 
     SetSize(mapSize);

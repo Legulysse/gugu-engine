@@ -121,7 +121,7 @@ void ElementSprite::RecomputeVerticesPositionAndTextureCoords()
     size_t count = GetRequiredVertexCount();
 
     // Reset vertices
-    m_vertices.setPrimitiveType(sf::Triangles);
+    m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     m_vertices.resize(count);
 
     ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(&m_vertices[0]);

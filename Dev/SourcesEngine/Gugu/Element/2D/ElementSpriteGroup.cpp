@@ -219,7 +219,7 @@ void ElementSpriteGroup::RecomputeImpl()
     }
 
     // Reset vertices
-    m_vertices.setPrimitiveType(sf::Triangles);
+    m_vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
     m_vertices.resize(totalVertexCount);
 
     if (totalVertexCount > 0)

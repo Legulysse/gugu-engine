@@ -137,7 +137,7 @@ void Camera::ComputeViewSize()
 {
     const sf::FloatRect& kViewport = m_sfView.getViewport();
 
-    Vector2f adjustedSize(RoundFloor(m_size.x * kViewport.width * m_zoomMultiplier), RoundFloor(m_size.y * kViewport.height * m_zoomMultiplier));
+    Vector2f adjustedSize(RoundFloor(m_size.x * kViewport.size.x * m_zoomMultiplier), RoundFloor(m_size.y * kViewport.size.y * m_zoomMultiplier));
     m_sfView.setSize(adjustedSize);
 
     ComputeViewCenter();

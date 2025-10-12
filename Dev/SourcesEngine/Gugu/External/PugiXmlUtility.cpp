@@ -166,10 +166,10 @@ bool TryParseVector2f(const pugi::xml_node& node, Vector2f& value)
 
 sf::IntRect ReadRect(const pugi::xml_node& node, const sf::IntRect& defaultValue)
 {
-    return sf::Rect(node.attribute("x").as_int(defaultValue.left)
-                    , node.attribute("y").as_int(defaultValue.top)
-                    , node.attribute("w").as_int(defaultValue.width)
-                    , node.attribute("h").as_int(defaultValue.height));
+    return sf::IntRect(
+        { node.attribute("x").as_int(defaultValue.left), node.attribute("y").as_int(defaultValue.top) },
+        { node.attribute("w").as_int(defaultValue.width), node.attribute("h").as_int(defaultValue.height) }
+    );
 }
 
 void ParseRect(const pugi::xml_node& node, sf::IntRect& value, const sf::IntRect& defaultValue)

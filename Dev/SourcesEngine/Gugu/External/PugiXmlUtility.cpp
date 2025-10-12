@@ -167,15 +167,15 @@ bool TryParseVector2f(const pugi::xml_node& node, Vector2f& value)
 sf::IntRect ReadRect(const pugi::xml_node& node, const sf::IntRect& defaultValue)
 {
     return sf::IntRect(
-        { node.attribute("x").as_int(defaultValue.left), node.attribute("y").as_int(defaultValue.top) },
+        { node.attribute("x").as_int(defaultValue.position.x), node.attribute("y").as_int(defaultValue.position.y) },
         { node.attribute("w").as_int(defaultValue.width), node.attribute("h").as_int(defaultValue.height) }
     );
 }
 
 void ParseRect(const pugi::xml_node& node, sf::IntRect& value, const sf::IntRect& defaultValue)
 {
-    value.left = node.attribute("x").as_int(defaultValue.left);
-    value.top = node.attribute("y").as_int(defaultValue.top);
+    value.position.x = node.attribute("x").as_int(defaultValue.position.x);
+    value.position.y = node.attribute("y").as_int(defaultValue.position.y);
     value.width = node.attribute("w").as_int(defaultValue.width);
     value.height = node.attribute("h").as_int(defaultValue.height);
 }
@@ -237,8 +237,8 @@ void WriteVector2f(pugi::xml_node node, const Vector2f& value)
 
 void WriteRect(pugi::xml_node node, const sf::IntRect& value)
 {
-    node.append_attribute("x").set_value(value.left);
-    node.append_attribute("y").set_value(value.top);
+    node.append_attribute("x").set_value(value.position.x);
+    node.append_attribute("y").set_value(value.position.y);
     node.append_attribute("w").set_value(value.width);
     node.append_attribute("h").set_value(value.height);
 }

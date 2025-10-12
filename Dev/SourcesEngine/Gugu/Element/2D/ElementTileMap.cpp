@@ -130,8 +130,8 @@ void ElementTileMap::UpdateTilePositionAndSize(size_t x, size_t y, size_t width,
 
 void ElementTileMap::UpdateTilePositionAndSize(size_t index, const sf::FloatRect& rect)
 {
-    float left = rect.left;
-    float top = rect.top;
+    float left = rect.position.x;
+    float top = rect.position.y;
     float right = left + rect.width;
     float bottom = top + rect.height;
 
@@ -153,8 +153,8 @@ void ElementTileMap::UpdateTileTextureCoords(size_t x, size_t y, size_t width, c
 
 void ElementTileMap::UpdateTileTextureCoords(size_t index, const sf::IntRect& rect)
 {
-    float left = (float)rect.left;
-    float top = (float)rect.top;
+    float left = (float)rect.position.x;
+    float top = (float)rect.position.y;
     float right = left + (float)rect.width;
     float bottom = top + (float)rect.height;
 

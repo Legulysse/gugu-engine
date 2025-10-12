@@ -36,13 +36,13 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect, bool updateSize)
 
     if (m_flipTextureV)
     {
-        m_subRect.top += m_subRect.height;
+        m_subRect.position.y += m_subRect.height;
         m_subRect.height = -m_subRect.height;
     }
 
     if (m_flipTextureH)
     {
-        m_subRect.left += m_subRect.width;
+        m_subRect.position.x += m_subRect.width;
         m_subRect.width = -m_subRect.width;
     }
 
@@ -60,13 +60,13 @@ sf::IntRect ElementSpriteBase::GetSubRect() const
 
     if (m_flipTextureV)
     {
-        kRect.top += kRect.height;
+        kRect.position.y += kRect.height;
         kRect.height = -kRect.height;
     }
 
     if (m_flipTextureH)
     {
-        kRect.left += kRect.width;
+        kRect.position.x += kRect.width;
         kRect.width = -kRect.width;
     }
 
@@ -103,13 +103,13 @@ void ElementSpriteBase::SetFlipTexture(bool _bFlipTextureV, bool _bFlipTextureH)
     {
         if (_bFlipTextureV != m_flipTextureV)
         {
-            m_subRect.top += m_subRect.height;
+            m_subRect.position.y += m_subRect.height;
             m_subRect.height = -m_subRect.height;
         }
 
         if (_bFlipTextureH != m_flipTextureH)
         {
-            m_subRect.left += m_subRect.width;
+            m_subRect.position.x += m_subRect.width;
             m_subRect.width = -m_subRect.width;
         }
 
@@ -204,8 +204,8 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
         vertices[5].position = Vector2f(kAreaSize.x, kAreaSize.y);
 
         // Recompute texture coords.
-        float fLeft = (float)m_subRect.left;
-        float fTop = (float)m_subRect.top;
+        float fLeft = (float)m_subRect.position.x;
+        float fTop = (float)m_subRect.position.y;
         float fRight = fLeft + m_subRect.width;
         float fBottom = fTop + m_subRect.height;
 
@@ -233,8 +233,8 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
         int iNbTilesY = iNbFullTilesY + 1;
 
         // Targeted texture coordinates (can be flipped)
-        float fLeft = (float)m_subRect.left;
-        float fTop = (float)m_subRect.top;
+        float fLeft = (float)m_subRect.position.x;
+        float fTop = (float)m_subRect.position.y;
         float fRight = fLeft + m_subRect.width;
         float fBottom = fTop + m_subRect.height;
 

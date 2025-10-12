@@ -316,8 +316,8 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
         SubImage* subImage = m_imageSet->GetSubImage(GetRandom(m_imageSet->GetSubImageCount()));
 
         sf::IntRect subRect = subImage->GetRect();
-        float fLeft = (float)subRect.left;
-        float fTop = (float)subRect.top;
+        float fLeft = (float)subRect.position.x;
+        float fTop = (float)subRect.position.y;
         float fRight = fLeft + subRect.width;
         float fBottom = fTop + subRect.height;
 

@@ -13,6 +13,7 @@
 #include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

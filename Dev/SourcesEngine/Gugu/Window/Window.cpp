@@ -31,6 +31,7 @@
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Image.hpp>
 
 #include <imgui-SFML.h>
 #include <imgui.h>

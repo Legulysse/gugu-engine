@@ -4,20 +4,31 @@
 // File Implementation
 
 namespace gugu {
-    
+
 template<typename T>
 std::string ToString(const T& _tValue)
 {
-    // floats are better displayed this way than with std::to_string
+    // Note: floats are better displayed this way than with std::to_string.
+    // Note: pointer types seem to be displayed by default as uppercase hex with fixed length.
     std::ostringstream os;
-    os << _tValue;
+
+    if constexpr (Constexpr_IsEnumClass<T>)
+    {
+        // Specialization for enum-class types.
+        os << (uint64)std::underlying_type_t<T>(_tValue);
+    }
+    else
+    {
+        os << _tValue;
+    }
+
     return os.str();
 }
 
 template<typename T>
-std::string ToString(const T& _tValue, int precision)
+std::string ToStringf(const T& _tValue, int precision)
 {
-    // floats are better displayed this way than with std::to_string
+    // Note: floats are better displayed this way than with std::to_string.
     std::ostringstream os;
     os.precision(precision);
     os << std::fixed;
@@ -127,6 +138,14 @@ template<typename T>
 std::string StringNumberFormat(const T& value, size_t leadingZeros, const std::string& delimiter)
 {
     std::string formattedValue = ToString(value);
+    StringNumberFormatSelf(formattedValue, leadingZeros, delimiter);
+    return formattedValue;
+}
+
+template<typename T>
+std::string StringNumberFormatf(const T& value, size_t leadingZeros, int precision, const std::string& delimiter)
+{
+    std::string formattedValue = ToStringf(value, precision);
     StringNumberFormatSelf(formattedValue, leadingZeros, delimiter);
     return formattedValue;
 }

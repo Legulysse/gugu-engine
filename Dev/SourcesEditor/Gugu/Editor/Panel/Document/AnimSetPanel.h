@@ -21,6 +21,7 @@ namespace gugu
     class Animation;
     class AnimationFrame;
     class SpriteAnimation;
+    class Element;
     class ElementSprite;
 }
 
@@ -67,6 +68,8 @@ private:
     bool m_originFromAnimation;
     bool m_moveFromAnimation;
     bool m_flipH;
+    bool m_showGround;
+    bool m_showPivot;
 
     AnimSet* m_animSet;
     Animation* m_currentAnimation;
@@ -76,6 +79,8 @@ private:
 
     SpriteAnimation* m_spriteAnimation;
     ElementSprite* m_sprite;
+    Element* m_ground;
+    Element* m_pivot;
 
     //std::set<std::string> m_openedAnimations;
 };

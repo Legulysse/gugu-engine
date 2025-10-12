@@ -51,13 +51,13 @@ ParticleEffectPanel::ParticleEffectPanel(ParticleEffect* resource)
     m_particleSystem = m_elementParticle->CreateParticleSystem(m_particleEffect, true);
 
     // Dependencies
-    GetResources()->RegisterResourceListener(m_particleEffect, this, STD_BIND_3(&ParticleEffectPanel::OnResourceEvent, this));
+    GetResources()->RegisterResourceListener(m_particleEffect, Handle(this), STD_BIND_3(&ParticleEffectPanel::OnResourceEvent, this));
 }
 
 ParticleEffectPanel::~ParticleEffectPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(m_particleEffect, this);
+    GetResources()->UnregisterResourceListeners(m_particleEffect, Handle(this));
 
     m_particleSystem = nullptr;
     SafeDelete(m_renderViewport);

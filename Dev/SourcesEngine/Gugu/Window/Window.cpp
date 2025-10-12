@@ -10,29 +10,24 @@
 #include "Gugu/Engine.h"
 #include "Gugu/Core/EngineConfig.h"
 #include "Gugu/Resources/ManagerResources.h"
-
+#include "Gugu/Resources/Texture.h"
+#include "Gugu/Resources/Font.h"
 #include "Gugu/Window/Renderer.h"
-#include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Window/Camera.h"
-
+#include "Gugu/Events/WindowEventHandler.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/UI/ElementEditableText.h"
-
 #include "Gugu/Scene/Scene.h"
-
 #include "Gugu/System/Memory.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Platform.h"
+#include "Gugu/System/Path.h"
 #include "Gugu/System/String.h"
 #include "Gugu/System/Time.h"
 #include "Gugu/Math/MathUtility.h"
-
 #include "Gugu/Debug/Trace.h"
 #include "Gugu/Debug/StatsDrawer.h"
-
-#include "Gugu/Resources/Texture.h"
-#include "Gugu/Resources/Font.h"
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -110,16 +105,29 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     Settings.antialiasingLevel = 2;  // Request 2 levels of antialiasing
 
     //Create main window
-    m_sfWindow->create(sf::VideoMode(config.windowWidth, config.windowHeight, 32), config.applicationName, sf::Style::Default, Settings);
+    sf::Uint32 windowStyle = sf::Style::Default;
+    int windowWidth = config.windowWidth;
+    int windowHeight = config.windowHeight;
+
+    if (config.fullscreen)
+    {
+        // sf::VideoMode::getDesktopMode() gives the current desktop resolution (ignoring potential scaling so its safe to use as-is).
+        // sf::VideoMode::getFullscreenModes() could be used to provide a settings menu with a resolution selection.
+        windowStyle = sf::Style::Fullscreen;
+        windowWidth = sf::VideoMode::getDesktopMode().width;
+        windowHeight = sf::VideoMode::getDesktopMode().height;
+    }
+
+    m_sfWindow->create(sf::VideoMode(windowWidth, windowHeight, 32), config.applicationName, windowStyle, Settings);
     m_sfWindow->setFramerateLimit(config.framerateLimit);
     m_sfWindow->setVerticalSyncEnabled(config.enableVerticalSync);
 
-#if defined(GUGU_OS_WINDOWS)
-    if (config.maximizeWindow)
+    if (config.maximizeWindow && !config.fullscreen)
     {
+#if defined(GUGU_OS_WINDOWS)
         ::ShowWindow(m_sfWindow->getSystemHandle(), SW_MAXIMIZE);
-    }
 #endif
+    }
 
     if (GetResources()->HasResource(config.applicationIcon))
     {
@@ -376,44 +384,29 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
         GUGU_SCOPE_TRACE_MAIN("UI");
 
         //Handle Mouse visibility
-        bool isSystemMouseWantedVisible = m_systemMouseVisible;
-        bool isMouseWantedVisible = m_mouseVisible;
-        bool allowImGuiMouse = true;
-
-        if (!m_windowHovered || !m_windowFocused)
-        {
-            // It seems like letting the OS take back control avoids the cursor not refreshing correctly.
-            // (displaying an arrow instead of a resize cursor when going on the edge of the window).
-            //isSystemMouseWantedVisible = true;
-            isMouseWantedVisible = false;
-            allowImGuiMouse = false;
-        }
+        bool isMouseWantedVisible = m_mouseVisible && m_windowHovered && m_windowFocused;
 
         if (m_hostImGui)
         {
-            if (ImGui::GetIO().WantCaptureMouse && allowImGuiMouse)
+            if (ImGui::GetIO().WantCaptureMouse)
             {
-                isSystemMouseWantedVisible = false;
                 isMouseWantedVisible = false;
-                ImGui::GetIO().MouseDrawCursor = true;
             }
             else
             {
-                ImGui::GetIO().MouseDrawCursor = false;
+                // The Imgui-Sfml backend will handle the cursor visibility when providing ImGuiMouseCursor_None.
+                ImGui::SetMouseCursor(m_systemMouseVisible ? ImGuiMouseCursor_Arrow : ImGuiMouseCursor_None);
             }
         }
-
-        // Update system mouse.
-        if (isSystemMouseWantedVisible && !m_wasSystemMouseVisible)
+        else
         {
-            m_sfWindow->setMouseCursorVisible(true);
+            bool isSystemMouseWantedVisible = m_systemMouseVisible || !m_windowHovered || !m_windowFocused;
+            if (isSystemMouseWantedVisible != m_wasSystemMouseVisible)
+            {
+                m_sfWindow->setMouseCursorVisible(isSystemMouseWantedVisible);
+                m_wasSystemMouseVisible = isSystemMouseWantedVisible;
+            }
         }
-        else if (!isSystemMouseWantedVisible && m_wasSystemMouseVisible)
-        {
-            m_sfWindow->setMouseCursorVisible(false);
-        }
-
-        m_wasSystemMouseVisible = isSystemMouseWantedVisible;
 
         // Update mouse node.
         m_mouseNode->SetVisible(isMouseWantedVisible);
@@ -445,8 +438,8 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
                 float graduationSize = static_cast<float>(m_rulerSize);
                 int graduations = RoundNearestInt(Max(GetSize().x, GetSize().y)) / m_rulerSize;
 
-                Vector2f position = sf::Vector2f(0.5f, 0.5f);
-                Vector2f size = sf::Vector2f(GetSize());
+                Vector2f position = Vector2f(0.5f, 0.5f);
+                Vector2f size = Vector2f(GetSize());
                 sf::Color rulerColor = sf::Color(255, 0, 255, 200);
                 m_ruler = sf::VertexArray(sf::PrimitiveType::Lines, 4 + graduations * 8);
 
@@ -470,7 +463,7 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
                 }
             }
 
-            Vector2f position = sf::Vector2f(GetMousePixelCoords());
+            Vector2f position = Vector2f(GetMousePixelCoords());
             sf::Transform rulerTransform;
             rulerTransform.translate(position);
             m_sfWindow->draw(m_ruler, sf::RenderStates(rulerTransform));
@@ -737,7 +730,7 @@ bool Window::Screenshot() const
         sf::Image kImage = kTexture.copyToImage();
 
         std::thread kThreadSaveFile([kImage]() {
-            kImage.saveToFile(GetResources()->GetPathScreenshots() + StringFormat("Screenshot_{0}.png", GetTimestamp()));
+            kImage.saveToFile(CombinePaths(GetResources()->GetPathScreenshots(), StringFormat("Screenshot_{0}.png", GetTimestamp())));
         });
         kThreadSaveFile.detach();
 

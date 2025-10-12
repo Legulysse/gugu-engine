@@ -297,7 +297,7 @@ void Game::SpawnFloor()
         CharacterEnemy* pEnemy = new CharacterEnemy;
         m_scene->AddActor(pEnemy);
 
-        sf::Vector2f position = GetRandomPointInCircle(Vector2::Zero_f, 500.f);
+        Vector2f position = GetRandomPointInCircle(Vector2::Zero_f, 500.f);
 
         pEnemy->InitEnemy(sheetEnemy, position, 100.f, m_grid, m_charactersNode);
         pControllerAI->m_character = pEnemy;

@@ -25,12 +25,12 @@ OutputLogPanel::OutputLogPanel()
 {
     m_title = "Output Log";
 
-    GetLogEngine()->RegisterDelegate(this, STD_BIND_4(&OutputLogPanel::PrintLog, this));
+    GetLogEngine()->RegisterDelegate(Handle(this), STD_BIND_4(&OutputLogPanel::PrintLog, this));
 }
 
 OutputLogPanel::~OutputLogPanel()
 {
-    GetLogEngine()->UnregisterDelegate(this);
+    GetLogEngine()->UnregisterDelegate(Handle(this));
 }
 
 void OutputLogPanel::PrintLog(const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)
@@ -145,7 +145,7 @@ void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
             }
         }
 
-        ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollX /* | ImGuiTableFlags_NoPadInnerX */;
+        ImGuiTableFlags flags = ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollX /* | ImGuiTableFlags_NoPadInnerX */;
         if (ImGui::BeginTable("_LOGS_TABLE", 4, flags))
         {
             ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
@@ -168,21 +168,6 @@ void OutputLogPanel::UpdatePanel(const DeltaTime& dt)
 
                     float row_min_height = 0.f;
                     ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
-
-                    if (rowIndex == 0)
-                    {
-                        // Setup ItemWidth once.
-                        int headerIndex = 0;
-
-                        ImGui::TableSetColumnIndex(headerIndex++);
-                        ImGui::PushItemWidth(-1);
-                        ImGui::TableSetColumnIndex(headerIndex++);
-                        ImGui::PushItemWidth(-1);
-                        ImGui::TableSetColumnIndex(headerIndex++);
-                        ImGui::PushItemWidth(-1);
-                        ImGui::TableSetColumnIndex(headerIndex++);
-                        ImGui::PushItemWidth(-1);
-                    }
 
                     ELog::Type logLevel = m_logs[logIndex].level;
                     ImVec4 color = logColorPerLevel.at(logLevel);

@@ -45,7 +45,6 @@ void SceneActor::RemoveFromScene()
     if (m_scene)
     {
         m_scene->RemoveActor(this);
-        m_scene = nullptr;
     }
 }
 

@@ -71,16 +71,21 @@ Engine::~Engine()
 
 void Engine::Init(const EngineConfig& config)
 {
+    //-- Disable the loop by default, to ensure all systems are ready beforehand --//
+    m_stopLoop = true;
+
     //-- Init low-level stuff --//
     ResetRandSeed();
 
     //-- Init engine log and trace group --//
     m_logEngine = new LoggerEngine();
-    m_logEngine->SetConsoleOutput(true, false);
+    m_logEngine->SetIDEConsoleOutput(true);
     m_logEngine->SetFilePath("Engine.log");
 
+#if !defined(GUGU_NO_TRACE)
     m_traceGroupMain = new TraceGroup;
     m_traceLifetime = 0;
+#endif
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Engine, "Gugu::Engine Start");
 
@@ -92,23 +97,20 @@ void Engine::Init(const EngineConfig& config)
 
     //-- Init Managers --//
     m_managerResources = new ManagerResources;
-    m_managerResources->Init(m_engineConfig);
-
     m_managerInputs = new ManagerInputs;
-    m_managerInputs->Init(m_engineConfig);
-
     m_managerAudio = new ManagerAudio;
-    m_managerAudio->Init(m_engineConfig);
-
     m_managerNetwork = new ManagerNetwork;
-
     m_managerAnimations = new ManagerAnimations;
-    m_managerAnimations->Init(m_engineConfig);
-
     m_managerVisualEffects = new ManagerVisualEffects;
-    m_managerVisualEffects->Init(m_engineConfig);
-
     m_managerScenes = new ManagerScenes;
+
+    if (!m_managerResources->Init(m_engineConfig))
+        return;
+
+    m_managerInputs->Init(m_engineConfig);
+    m_managerAudio->Init(m_engineConfig);
+    m_managerAnimations->Init(m_engineConfig);
+    m_managerVisualEffects->Init(m_engineConfig);
     m_managerScenes->Init(m_engineConfig);
 
     //-- Init Default Renderer --//
@@ -133,13 +135,12 @@ void Engine::Init(const EngineConfig& config)
         {
             ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
 
-            // ImGui config flags :
-            // - ImGuiConfigFlags_NoMouseCursorChange : I handle cursors in Window Update.
-            ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-
             m_showImGui = m_engineConfig.showImGui;
         }
     }
+
+    //-- Enable the loop to be processed --//
+    m_stopLoop = false;
 }
 
 void Engine::Release()
@@ -190,7 +191,8 @@ void Engine::RunApplication(Application* application)
 
 void Engine::RunMainLoop()
 {
-    m_stopLoop = false;
+    if (m_stopLoop)
+        return;
 
     if (m_application)
         m_application->AppStart();
@@ -205,6 +207,7 @@ void Engine::RunMainLoop()
     // Loop !
     while (!m_stopLoop)
     {
+#if !defined(GUGU_NO_TRACE)
         if (m_traceLifetime > 0)
         {
             if (!m_traceGroupMain->IsActive())
@@ -223,6 +226,7 @@ void Engine::RunMainLoop()
                 }
             }
         }
+#endif
 
         {
             GUGU_SCOPE_TRACE_MAIN("Engine Loop");
@@ -656,9 +660,11 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
         }
         else if (command == "trace")
         {
+#if !defined(GUGU_NO_TRACE)
             m_traceLifetime = 10;
             if (!tokens.empty())
                 FromString(tokens[0], m_traceLifetime);
+#endif
         }
         else if (command == "speed")
         {

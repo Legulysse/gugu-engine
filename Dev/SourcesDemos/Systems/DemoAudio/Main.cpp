@@ -28,8 +28,9 @@ int main(int argc, char* argv[])
     config.pathAssets = "Assets";
     config.defaultFont = "Roboto-Regular.ttf";
     config.debugFont = "Roboto-Regular.ttf";
-    config.windowWidth = 800;
-    config.windowHeight = 600;
+    config.windowWidth = 1280;
+    config.windowHeight = 720;
+    config.rootAudioMixerGroup = "Master.audiomixergroup.xml";
     
     GetEngine()->Init(config);
 

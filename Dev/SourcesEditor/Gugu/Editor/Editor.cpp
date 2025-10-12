@@ -14,6 +14,7 @@
 #include "Gugu/Editor/Modal/AboutDialog.h"
 #include "Gugu/Editor/Modal/BaseModalDialog.h"
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
+#include "Gugu/Editor/Modal/ImportImageSetDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/OutputLogPanel.h"
 #include "Gugu/Editor/Panel/DependenciesPanel.h"
@@ -22,6 +23,7 @@
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ParticleEffectPanel.h"
 #include "Gugu/Editor/Panel/Document/TexturePanel.h"
+#include "Gugu/Editor/Panel/Document/SoundCuePanel.h"
 #include "Gugu/Editor/Panel/Document/ElementWidgetPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
 #include "Gugu/Editor/Resources/VirtualDatasheet.h"
@@ -34,6 +36,7 @@
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Container.h"
+#include "Gugu/System/Platform.h"
 #include "Gugu/External/ImGuiUtility.h"
 
 ////////////////////////////////////////////////////////////////
@@ -76,7 +79,6 @@ void Editor::Init(const EditorConfig& editorConfig)
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   // TODO: Does not seem supported by the SFML backend.
-    io.ConfigWindowsResizeFromEdges = true;
 
     // Create standard Panels.
     m_assetsExplorerPanel = new AssetsExplorerPanel;
@@ -100,17 +102,15 @@ void Editor::Init(const EditorConfig& editorConfig)
     inputs->RegisterInput("Undo", inputs->BuildKeyboardEvent(sf::Keyboard::Z, true, false, false));
     inputs->RegisterInput("Redo", inputs->BuildKeyboardEvent(sf::Keyboard::Y, true, false, false));
 
-    // TODO: Save UserSettings
-    // TODO: FileExists utility.
-    // Open last project if available.
-    UserSettings m_userSettings;
-    bool hasUserSettings = m_userSettings.LoadFromFile("User/UserSettings.xml");
+    // Load user settings.
+    LoadUserSettings();
 
-    if (hasUserSettings && !m_userSettings.lastProjectFilePath.empty())
+    // Open last project if available.
+    if (FileExists(m_userSettings.lastProjectFilePath))
     {
         OpenProject(m_userSettings.lastProjectFilePath);
     }
-    else if (m_editorConfig.defaultProjectFilePath != "")
+    else if (FileExists(m_editorConfig.defaultProjectFilePath))
     {
         OpenProject(m_editorConfig.defaultProjectFilePath);
     }
@@ -118,6 +118,7 @@ void Editor::Init(const EditorConfig& editorConfig)
 
 void Editor::Release()
 {
+    SaveUserSettings();
     CloseProjectImpl();
 
     ClearStdVector(m_modalDialogs);
@@ -148,6 +149,8 @@ void Editor::OpenProjectImpl(const std::string& projectPathFile)
 
         if (m_project->LoadFromFile(projectPathFile))
         {
+            m_userSettings.lastProjectFilePath = projectPathFile;
+
             // Parse assets.
             GetResources()->ParseDirectory(m_project->projectAssetsPath);
 
@@ -195,7 +198,7 @@ void Editor::CloseProjectImpl()
 
         SafeDelete(m_datasheetParser);
 
-        GetResources()->RemoveResourcesFromPath(m_project->projectAssetsPath);
+        GetResources()->RemoveResourcesFromPath(m_project->projectAssetsPath, true);
 
         SafeDelete(m_project);
     }
@@ -209,6 +212,22 @@ bool Editor::IsProjectOpen() const
 const ProjectSettings* Editor::GetProjectSettings() const
 {
     return m_project;
+}
+
+bool Editor::LoadUserSettings()
+{
+    return m_userSettings.LoadFromFile("User/UserSettings.xml");
+}
+
+bool Editor::SaveUserSettings() const
+{
+    EnsureDirectoryExists("User");
+    return m_userSettings.SaveToFile("User/UserSettings.xml");
+}
+
+UserSettings& Editor::GetUserSettings()
+{
+    return m_userSettings;
 }
 
 bool Editor::OnSFEvent(const sf::Event& event)
@@ -340,6 +359,12 @@ void Editor::Update(const DeltaTime& dt)
             if (ImGui::MenuItem("Migrate Resources"))
             {
                 MigrateResources();
+            }
+
+            ImGui::Separator();
+            if (ImGui::MenuItem("Import ImageSet"))
+            {
+                GetEditor()->OpenModalDialog(new ImportImageSetDialog());
             }
 
             ImGui::EndMenu();
@@ -568,7 +593,7 @@ void Editor::Update(const DeltaTime& dt)
     ImGui::End();
 
     // Update Properties panel.
-    if (ImGui::Begin("Properties", nullptr))
+    if (ImGui::Begin("Properties", nullptr))    // Note: If I use NoSavedSettings here, the panel itself will lose its docking/size properties.
     {
         if (m_lastActiveDocument)
         {
@@ -629,6 +654,10 @@ bool Editor::OpenDocument(const std::string& resourceID)
     else if (resourceType == EResourceType::Texture)
     {
         newDocument = new TexturePanel(GetResources()->GetTexture(resourceID));
+    }
+    else if (resourceType == EResourceType::SoundCue)
+    {
+        newDocument = new SoundCuePanel(GetResources()->GetSoundCue(resourceID));
     }
     else if (resourceType == EResourceType::ElementWidget)
     {

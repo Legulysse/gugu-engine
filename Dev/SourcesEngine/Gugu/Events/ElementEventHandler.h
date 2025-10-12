@@ -141,14 +141,14 @@ private:
 
     struct InteractionCallbackInfos
     {
-        EInteractionEvent::Type event;
+        EInteractionEvent::Type event = EInteractionEvent::None;
         DelegateInteractionEvent callback;
     };
     std::vector<InteractionCallbackInfos> m_interactionCallbacks;
 
     struct ElementCallbackInfos
     {
-        EElementEvent::Type event;
+        EElementEvent::Type event = EElementEvent::None;
         Callback callback;
         Handle handle;
     };

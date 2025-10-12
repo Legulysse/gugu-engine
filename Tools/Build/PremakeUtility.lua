@@ -625,6 +625,7 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
     SubDirBinaries  = EnsureSlash("Build_%{cfg.platform}_".._ACTION)
     
     -- Base Definition
+    kind "WindowedApp"
     language "C++"
     defines { "IMGUI_USER_CONFIG=\"gugu-imconfig.h\"" }
     if BuildCfg.ImGui_DisableObsoleteFunctions then
@@ -648,14 +649,12 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
 
     -- Target Definitions    
     filter { "configurations:DevDebug" }
-        kind "ConsoleApp"
         defines { "GUGU_DEBUG", "_DEBUG" }
         symbols "On"
         runtime "Debug"     -- /MDd
         targetname (TargetName.."-d")
         
     filter { "configurations:DevRelease" }
-        kind "WindowedApp"
         defines { "GUGU_RELEASE", "NDEBUG" }
         symbols "On"
         optimize "On"
@@ -663,7 +662,6 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
         targetname (TargetName.."-r")
         
     filter { "configurations:ProdMaster" }
-        kind "WindowedApp"
         defines { "GUGU_MASTER", "NDEBUG" }
         symbols "Off"
         optimize "On"
@@ -674,7 +672,6 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
         architecture "x86"
     filter { "platforms:x64" }
         architecture "x86_64"
-
 
     -- Resources (Icon)
     filter { 'system:windows' }

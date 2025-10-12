@@ -149,7 +149,6 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(-10.2f), -10.f);
             GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(10.8f), 11.f);
             GUGU_UTEST_CHECK_EQUAL(RoundNearestInt(-10.8f), -11.f);
-
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.5f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(-10.5f), -11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.2f), 10.f, math::Epsilon6);
@@ -157,21 +156,37 @@ void RunUnitTests_Math(UnitTestResults* results)
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(10.8f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundNearest(-10.8f), -11.f, math::Epsilon6);
 
+            GUGU_UTEST_CHECK_EQUAL(RoundFloorInt(10.2f), 10);
+            GUGU_UTEST_CHECK_EQUAL(RoundFloorInt(-10.2f), -11);
+            GUGU_UTEST_CHECK_EQUAL(RoundFloorInt(10.8f), 10);
+            GUGU_UTEST_CHECK_EQUAL(RoundFloorInt(-10.8f), -11);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(10.2f), 10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(-10.2f), -11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(10.8f), 10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundFloor(-10.8f), -11.f, math::Epsilon6);
 
+            GUGU_UTEST_CHECK_EQUAL(RoundCeilInt(10.2f), 11);
+            GUGU_UTEST_CHECK_EQUAL(RoundCeilInt(-10.2f), -10);
+            GUGU_UTEST_CHECK_EQUAL(RoundCeilInt(10.8f), 11);
+            GUGU_UTEST_CHECK_EQUAL(RoundCeilInt(-10.8f), -10);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(10.2f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(-10.2f), -10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(10.8f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundCeil(-10.8f), -10.f, math::Epsilon6);
 
+            GUGU_UTEST_CHECK_EQUAL(RoundTowardZeroInt(10.2f), 10);
+            GUGU_UTEST_CHECK_EQUAL(RoundTowardZeroInt(-10.2f), -10);
+            GUGU_UTEST_CHECK_EQUAL(RoundTowardZeroInt(10.8f), 10);
+            GUGU_UTEST_CHECK_EQUAL(RoundTowardZeroInt(-10.8f), -10);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(10.2f), 10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(-10.2f), -10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(10.8f), 10.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundTowardZero(-10.8f), -10.f, math::Epsilon6);
 
+            GUGU_UTEST_CHECK_EQUAL(RoundAwayFromZeroInt(10.2f), 11);
+            GUGU_UTEST_CHECK_EQUAL(RoundAwayFromZeroInt(-10.2f), -11);
+            GUGU_UTEST_CHECK_EQUAL(RoundAwayFromZeroInt(10.8f), 11);
+            GUGU_UTEST_CHECK_EQUAL(RoundAwayFromZeroInt(-10.8f), -11);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(10.2f), 11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(-10.2f), -11.f, math::Epsilon6);
             GUGU_UTEST_CHECK_APPROX_EQUAL(RoundAwayFromZero(10.8f), 11.f, math::Epsilon6);
@@ -494,6 +509,14 @@ void RunUnitTests_Math(UnitTestResults* results)
         GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(direction), 500.f, math::Epsilon3);
         GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(rotated), 500.f, math::Epsilon3);
         GUGU_UTEST_CHECK_APPROX_EQUAL(LengthSquare(normalized), 1.f, math::Epsilon3);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(VectorFromAngle(0.f, 10.f), Vector2f(10.f, 0.f), math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(VectorFromAngle(math::PiDivTwo, 10.f), Vector2f(0.f, 10.f), math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(VectorFromAngle(-math::PiDivTwo, 10.f), Vector2f(0.f, -10.f), math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(VectorFromAngle(math::Pi, 10.f), Vector2f(-10.f, 0.f), math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(VectorFromAngle(-math::Pi, 10.f), Vector2f(-10.f, 0.f), math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(VectorFromAngle(math::TwoPi, 10.f), Vector2f(10.f, 0.f), math::Epsilon3);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(VectorFromAngle(-math::TwoPi, 10.f), Vector2f(10.f, 0.f), math::Epsilon3);
 
         GUGU_UTEST_CHECK_TRUE(IsInBounds(Vector2i(5, 5), Vector2i(0, 0), Vector2i(10, 10)));
         GUGU_UTEST_CHECK_TRUE(IsInBounds(Vector2i(0, 0), Vector2i(0, 0), Vector2i(10, 10)));

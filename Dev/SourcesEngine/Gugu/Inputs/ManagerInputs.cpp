@@ -76,6 +76,7 @@ void ManagerInputs::LoadInputFile(const std::string& _strPath)
         if (!oAttributeName)
             continue;
 
+        // TODO: Joystick and Mouse buttons.
         for (pugi::xml_node oNodeKey = oNodeInput.child("Key"); oNodeKey; oNodeKey = oNodeKey.next_sibling("Key"))
         {
             pugi::xml_attribute oAttributeValue = oNodeKey.attribute("value");
@@ -110,6 +111,15 @@ bool ManagerInputs::IsInputEvent(const std::string& _strInputName, const sf::Eve
                         && (oStoredEvent.key.control == IsControlDown())
                         && (oStoredEvent.key.shift == IsShiftDown())
                         && (oStoredEvent.key.alt == IsAltDown()))
+                        return true;
+                }
+            }
+            // Mouse
+            else if (oStoredEvent.type == sf::Event::MouseButtonPressed)
+            {
+                if (_oSFEvent.type == sf::Event::MouseButtonPressed || _oSFEvent.type == sf::Event::MouseButtonReleased)
+                {
+                    if (oStoredEvent.mouseButton.button == _oSFEvent.mouseButton.button)
                         return true;
                 }
             }
@@ -152,6 +162,12 @@ bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
                     && (oStoredEvent.key.alt == IsAltDown()))
                     return true;
             }
+            // Mouse
+            else if (oStoredEvent.type == sf::Event::MouseButtonPressed)
+            {
+                if (sf::Mouse::isButtonPressed(oStoredEvent.mouseButton.button))
+                    return true;
+            }
             // Joystick
             else if (oStoredEvent.type == sf::Event::JoystickButtonPressed)
             {
@@ -166,37 +182,46 @@ bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
 
 bool ManagerInputs::IsInputEventPressed(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
-    return IsInputAllowed() && ((_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::JoystickButtonPressed) && IsInputEvent(_strInputName, _oSFEvent));
+    return IsInputAllowed()
+        && (_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::MouseButtonPressed || _oSFEvent.type == sf::Event::JoystickButtonPressed)
+        && IsInputEvent(_strInputName, _oSFEvent);
 }
 
 bool ManagerInputs::IsInputEventReleased(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
-    return IsInputAllowed() && ((_oSFEvent.type == sf::Event::KeyReleased || _oSFEvent.type == sf::Event::JoystickButtonReleased) && IsInputEvent(_strInputName, _oSFEvent));
+    return IsInputAllowed()
+        && (_oSFEvent.type == sf::Event::KeyReleased || _oSFEvent.type == sf::Event::MouseButtonPressed || _oSFEvent.type == sf::Event::JoystickButtonReleased)
+        && IsInputEvent(_strInputName, _oSFEvent);
 }
 
 bool ManagerInputs::IsControlDown() const
 {
-    return IsInputAllowed() && (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl));
+    return IsInputAllowed()
+        && (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl));
 }
 
 bool ManagerInputs::IsShiftDown() const
 {
-    return IsInputAllowed() && (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift));
+    return IsInputAllowed()
+        && (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift));
 }
 
 bool ManagerInputs::IsAltDown() const
 {
-    return IsInputAllowed() && (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt));
+    return IsInputAllowed()
+        && (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt));
 }
 
 bool ManagerInputs::IsKeyDown(sf::Keyboard::Key _eKey) const
 {
-    return IsInputAllowed() && sf::Keyboard::isKeyPressed(_eKey);
+    return IsInputAllowed()
+        && sf::Keyboard::isKeyPressed(_eKey);
 }
 
 bool ManagerInputs::IsButtonDown(sf::Mouse::Button button) const
 {
-    return IsInputAllowed() && sf::Mouse::isButtonPressed(button);
+    return IsInputAllowed()
+        && sf::Mouse::isButtonPressed(button);
 }
 
 sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key)
@@ -213,6 +238,14 @@ sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key, bool control,
     event.key.shift = shift;
     event.key.control = control;
     event.key.system = false;
+    return event;
+}
+
+sf::Event ManagerInputs::BuildMouseEvent(sf::Mouse::Button button)
+{
+    sf::Event event;
+    event.type = sf::Event::MouseButtonPressed;
+    event.mouseButton.button = button;
     return event;
 }
 

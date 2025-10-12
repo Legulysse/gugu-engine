@@ -25,53 +25,77 @@ namespace fs = std::filesystem;
 
 namespace gugu {
 
-void WriteInConsole(const std::string& _strLine, bool printInIDE)
+void WriteInConsole(const std::string& value)
 {
-    std::cout << _strLine;
+    std::cout << value;
+}
 
+void WriteInConsoleEndline(const std::string& value)
+{
+    std::cout << value << std::endl;
+}
+
+void WriteInIDEConsole(const std::string& value)
+{
 #if defined(GUGU_OS_WINDOWS) && defined(GUGU_ENV_VISUAL)
-    if (printInIDE)
-    {
-        OutputDebugStringA(_strLine.c_str());
-    }
+    OutputDebugStringA(value.c_str());
 #endif
 }
 
-void WriteInConsoleEndline(const std::string& _strLine, bool printInIDE)
+void WriteInIDEConsoleEndline(const std::string& value)
 {
-    WriteInConsole(_strLine + "\n", printInIDE);
+#if defined(GUGU_OS_WINDOWS) && defined(GUGU_ENV_VISUAL)
+     OutputDebugStringA(value.c_str());
+     OutputDebugStringA("\n");
+#endif
 }
 
-void WriteInFileEndline(const std::string& _strFileName, const std::string& _strLine)
+void WriteInFileEndline(const std::string& fileName, const std::string& value)
 {
     std::ofstream oFile;
-    oFile.open(_strFileName.c_str(), std::ios::out | std::ios::app);
+    oFile.open(fileName.c_str(), std::ios::out | std::ios::app);
 
     if (oFile)
     {
-        oFile << _strLine << std::endl;
+        oFile << value << std::endl;
         oFile.close();
     }
 }
 
-void OpenFileExplorer(const std::string& path)
+bool ExecuteCommand(std::string_view executablePath, std::string_view arguments)
 {
 #if defined(GUGU_OS_WINDOWS)
-    std::string normalizedPath = path;
+    std::string normalizedExecutablePath(executablePath);
+    StdStringReplaceSelf(normalizedExecutablePath, system::PathSeparator, '\\');
+
+    // Executable path should be wrapped with quotes, and the whole commandline should be wrapped in quotes.
+    std::string normalizedCommand = "\"\"" + normalizedExecutablePath + "\" " + std::string(arguments) + "\"";
+
+    // Note: system() is a blocking call, whereas ShellExecute is not.
+    int result = ::system(normalizedCommand.c_str());
+    return result == 0;
+#endif
+}
+
+void OpenFileExplorer(std::string_view path)
+{
+#if defined(GUGU_OS_WINDOWS)
+    std::string normalizedPath(path);
     StdStringReplaceSelf(normalizedPath, system::PathSeparator, '\\');
 
     ShellExecuteA(nullptr, "open", normalizedPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 #endif
 }
 
-void OpenWebBrowser(const std::string& _strURL)
+void OpenWebBrowser(std::string_view url)
 {
 #if defined(GUGU_OS_WINDOWS)
-    ShellExecuteA(nullptr, "open", _strURL.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
+    std::string normalizedUrl(url);
+    ShellExecuteA(nullptr, "open", normalizedUrl.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
 #endif
 }
 
-void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bool recursive)
+void GetFiles(std::string_view rootPath_utf8, std::vector<FileInfo>& files, bool recursive)
 {
     std::string normalizedPath = NormalizePath(rootPath_utf8);
     if (normalizedPath.empty())
@@ -113,7 +137,7 @@ void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bo
     }
 }
 
-void GetDirectories(const std::string& rootPath_utf8, std::vector<std::string>& directories, bool recursive)
+void GetDirectories(std::string_view rootPath_utf8, std::vector<std::string>& directories, bool recursive)
 {
     std::string normalizedPath = NormalizePath(rootPath_utf8);
     if (normalizedPath.empty())

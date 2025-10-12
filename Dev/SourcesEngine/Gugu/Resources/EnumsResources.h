@@ -18,8 +18,8 @@ namespace EResourceType
 
         Texture,
         Font,
-        Sound,
-        Music,
+        AudioClip,
+        AudioMixerGroup,
         SoundCue,
         ImageSet,
         AnimSet,

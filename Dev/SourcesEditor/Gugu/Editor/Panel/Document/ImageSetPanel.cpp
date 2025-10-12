@@ -56,13 +56,13 @@ ImageSetPanel::ImageSetPanel(ImageSet* resource)
     CreateGizmo();
 
     // Dependencies
-    GetResources()->RegisterResourceListener(m_imageSet, this, STD_BIND_3(&ImageSetPanel::OnResourceEvent, this));
+    GetResources()->RegisterResourceListener(m_imageSet, Handle(this), STD_BIND_3(&ImageSetPanel::OnResourceEvent, this));
 }
 
 ImageSetPanel::~ImageSetPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(m_imageSet, this);
+    GetResources()->UnregisterResourceListeners(m_imageSet, Handle(this));
 
     SafeDelete(m_renderViewport);
 }
@@ -190,8 +190,8 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     }
 
     // SubImages list.
-    ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /* | ImGuiTableFlags_NoPadInnerX */;
-    if (ImGui::BeginTable("SubImages Table", 6, flags))
+    ImGuiTableFlags flags = ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /* | ImGuiTableFlags_NoPadInnerX */;
+    if (ImGui::BeginTable("_SUBIMAGES_TABLE", 6, flags))
     {
         ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
         ImGui::TableSetupColumn("#", columnFlags, 30.f);
@@ -232,25 +232,6 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
                 float row_min_height = 0.f;
                 ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
-
-                if (rowIndex == 0)
-                {
-                    // Setup ItemWidth once.
-                    int headerIndex = 0;
-
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                    ImGui::TableSetColumnIndex(headerIndex++);
-                    ImGui::PushItemWidth(-1);
-                }
 
                 std::string name = subImages[rowIndex]->GetName();
                 sf::IntRect rect = subImages[rowIndex]->GetRect();

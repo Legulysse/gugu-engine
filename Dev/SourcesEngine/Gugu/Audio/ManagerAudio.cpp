@@ -8,17 +8,18 @@
 // Includes
 
 #include "Gugu/Engine.h"
-#include "Gugu/Core/EngineConfig.h"
+#include "Gugu/Audio/AudioMixerGroupInstance.h"
 #include "Gugu/Resources/ManagerResources.h"
-
-#include "Gugu/Resources/Sound.h"
-#include "Gugu/Resources/Music.h"
 #include "Gugu/Resources/SoundCue.h"
-
+#include "Gugu/Resources/AudioMixerGroup.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/Random.h"
 #include "Gugu/Debug/Logger.h"
 
 #include <SFML/Audio/Listener.hpp>
+
+#include <assert.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -26,28 +27,33 @@
 namespace gugu {
 
 ManagerAudio::ManagerAudio()
-    : m_soundIndex(0)
-    , m_masterMuted(false)
-    , m_masterVolume(1.f)
+    : m_rootMixerGroupInstance(nullptr)
+    , m_soundIndex(0)
+    , m_listenerMuted(false)
+    , m_listenerVolume(1.f)
 {
 }
 
 ManagerAudio::~ManagerAudio()
 {
+    SafeDelete(m_rootMixerGroupInstance);
+    m_mixerGroupInstances.clear();
 }
 
 void ManagerAudio::Init(const EngineConfig& config)
 {
     GetLogEngine()->Print(ELog::Info, ELogEngine::Audio, "Init Manager Audio...");
 
-    m_soundInstances.resize(Max(12, config.maxSoundTracks));
-    m_musicInstances.resize(Max(4, config.maxMusicTracks));
+    m_soundInstances.resize(Max(12, config.maxSoundSourceCount));
+    m_musicInstances.resize(Max(4, config.maxMusicSourceCount));
     m_musicLayers.resize(Max(2, (int)m_musicInstances.size() / 2));
 
     for (size_t i = 0; i < m_musicLayers.size(); ++i)
     {
         m_musicLayers[i].SetInstances(&m_musicInstances[i*2], &m_musicInstances[i*2 + 1]);
     }
+
+    SetRootAudioMixerGroup(GetResources()->GetAudioMixerGroup(config.rootAudioMixerGroup));
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Audio, "Manager Audio Ready");
 }
@@ -67,79 +73,138 @@ void ManagerAudio::Update(const DeltaTime& dt)
     }
 }
 
-void ManagerAudio::SetMasterMuted(bool muted)
+void ManagerAudio::SetListenerMuted(bool muted)
 {
-    m_masterMuted = muted;
+    m_listenerMuted = muted;
 
-    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
+    sf::Listener::setGlobalVolume(m_listenerMuted ? 0.f : m_listenerVolume * 100.f);
 }
 
-bool ManagerAudio::IsMasterMuted() const
+bool ManagerAudio::IsListenerMuted() const
 {
-    return m_masterMuted;
+    return m_listenerMuted;
 }
 
-void ManagerAudio::SetMasterVolume(float volume)
+void ManagerAudio::SetListenerVolume(float volume)
 {
-    m_masterVolume = volume;
+    m_listenerVolume = volume;
 
-    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
+    sf::Listener::setGlobalVolume(m_listenerMuted ? 0.f : m_listenerVolume * 100.f);
 }
 
-void ManagerAudio::SetMasterVolume100(int volume)
+float ManagerAudio::GetListenerVolume() const
 {
-    m_masterVolume = volume * 0.01f;
-
-    sf::Listener::setGlobalVolume(m_masterMuted ? 0.f : m_masterVolume * 100.f);
+    return m_listenerVolume;
 }
 
-float ManagerAudio::GetMasterVolume() const
+void ManagerAudio::SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup)
 {
-    return m_masterVolume;
+    if (!rootMixerGroup)
+        return;
+
+    assert(m_rootMixerGroupInstance == nullptr);     // Replacing the root mixer group is not supported.
+
+    m_rootMixerGroupInstance = new AudioMixerGroupInstance(rootMixerGroup);
+    m_mixerGroupInstances.insert(std::make_pair(rootMixerGroup, m_rootMixerGroupInstance));
+
+    m_rootMixerGroupInstance->LoadMixerGroupHierarchy(nullptr, m_mixerGroupInstances);
 }
 
-int ManagerAudio::GetMasterVolume100() const
+AudioMixerGroupInstance* ManagerAudio::GetMixerGroupInstance(const std::string& mixerGroupId) const
 {
-    return (int)(m_masterVolume * 100.f);
-}
-
-bool ManagerAudio::PlaySoundCue(const std::string& _strFile)
-{
-    SoundCue* pSoundCue = GetResources()->GetSoundCue(_strFile);
-    if (!pSoundCue)
-        return false;
-
-    SoundParameters kParameters;
-    if (!pSoundCue->GetRandomSound(kParameters))
-        return false;
-
-    return PlaySound(kParameters);
-}
-
-bool ManagerAudio::PlaySound(const std::string& _strFile, float _fVolume, int _iGroup)
-{
-    SoundParameters kParameters;
-    kParameters.sound = GetResources()->GetSound(_strFile);
-    kParameters.volume = _fVolume;
-    kParameters.group = _iGroup;
-
-    return PlaySound(kParameters);
-}
-
-bool ManagerAudio::PlaySound(const SoundParameters& _kParameters)
-{
-    Sound* pSound = _kParameters.sound;
-    if (!pSound)
-        pSound = GetResources()->GetSound(_kParameters.soundID);
-
-    if (pSound)
+    for (const auto& kvp : m_mixerGroupInstances)
     {
-        SoundInstance* pInstance = &m_soundInstances[m_soundIndex];
-        pInstance->Reset();
-        pInstance->SetSound(pSound);
-        pInstance->SetVolume(_kParameters.volume);
-        pInstance->SetGroup(_kParameters.group);
-        pInstance->Play();
+        if (kvp.first->GetID() == mixerGroupId)
+        {
+            return kvp.second;
+        }
+    }
+
+    return nullptr;
+}
+
+AudioMixerGroupInstance* ManagerAudio::GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const
+{
+    auto mixerGroupInstance = m_mixerGroupInstances.find(mixerGroup);
+    if (mixerGroupInstance != m_mixerGroupInstances.end())
+    {
+        return mixerGroupInstance->second;
+    }
+
+    return nullptr;
+}
+
+void ManagerAudio::RecomputeAllMixedVolumes()
+{
+    for (auto& soundInstance : m_soundInstances)
+    {
+        soundInstance.RecomputeMixedVolume();
+    }
+
+    for (auto& musicInstance : m_musicInstances)
+    {
+        musicInstance.RecomputeMixedVolume();
+    }
+}
+
+bool ManagerAudio::PlaySoundCue(const std::string& soundCueId)
+{
+    return PlaySoundCue(GetResources()->GetSoundCue(soundCueId));
+}
+
+bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
+{
+    if (!soundCue)
+        return false;
+
+    SoundParameters parameters;
+    if (!soundCue->GetRandomSound(parameters))
+        return false;
+
+    return PlaySound(parameters);
+}
+
+bool ManagerAudio::PlaySound(const std::string& audioClipId, float volume)
+{
+    SoundParameters parameters;
+    parameters.audioClip = GetResources()->GetAudioClip(audioClipId);
+    parameters.audioClipId = audioClipId;
+    parameters.volume = volume;
+
+    return PlaySound(parameters);
+}
+
+bool ManagerAudio::PlaySound(const SoundParameters& parameters)
+{
+    AudioClip* audioClip = parameters.audioClip;
+    if (!audioClip)
+    {
+        audioClip = GetResources()->GetAudioClip(parameters.audioClipId);
+    }
+
+    AudioMixerGroupInstance* mixerGroupInstance = parameters.mixerGroupInstance;
+    if (!mixerGroupInstance)
+    {
+        mixerGroupInstance = GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupId));
+    }
+
+    if (audioClip)
+    {
+        SoundInstance* soundInstance = &m_soundInstances[m_soundIndex];
+        soundInstance->Reset();
+        soundInstance->SetAudioClip(audioClip);
+        soundInstance->SetMixerGroupInstance(mixerGroupInstance);   // Note: I currently allow a null group instance.
+        soundInstance->SetVolume(parameters.volume);
+
+        if (parameters.pitchLowerOffset != 0 || parameters.pitchUpperOffset != 0)
+        {
+            // TODO: sanitize parameters when loading the soundcue.
+            float pitchLowerOffset = Absolute(parameters.pitchLowerOffset) * -1.f;
+            float pitchUpperOffset = Absolute(parameters.pitchUpperOffset);
+            soundInstance->SetPitch(1.f + GetRandomf(pitchLowerOffset, pitchUpperOffset));
+        }
+
+        soundInstance->Play();
 
         ++m_soundIndex;
         if (m_soundIndex == m_soundInstances.size())
@@ -151,27 +216,28 @@ bool ManagerAudio::PlaySound(const SoundParameters& _kParameters)
     return false;
 }
 
-bool ManagerAudio::PlayMusic(const std::string& _strFile, float _fVolume, float _fFade)
+bool ManagerAudio::PlayMusic(const std::string& audioClipId, float volume, float fade)
 {
-    MusicParameters kParameters;
-    kParameters.music = GetResources()->GetMusic(_strFile);
-    kParameters.volume = _fVolume;
-    kParameters.fadeOut = _fFade;
-    kParameters.fadeIn = _fFade;
+    MusicParameters parameters;
+    parameters.audioClip = GetResources()->GetAudioClip(audioClipId);
+    parameters.audioClipId = audioClipId;
+    parameters.volume = volume;
+    parameters.fadeOut = fade;
+    parameters.fadeIn = fade;
 
-    return PlayMusic(kParameters);
+    return PlayMusic(parameters);
 }
 
-bool ManagerAudio::PlayMusic(const MusicParameters& _kParameters)
+bool ManagerAudio::PlayMusic(const MusicParameters& parameters)
 {
-    if (_kParameters.layer < 0 || _kParameters.layer >= (int)m_musicLayers.size())
+    if (parameters.layer < 0 || parameters.layer >= (int)m_musicLayers.size())
         return false;
 
-    if (_kParameters.music || GetResources()->HasResource(_kParameters.musicID))
+    if (parameters.audioClip || GetResources()->HasResource(parameters.audioClipId))
     {
-        MusicLayer* pLayer = &m_musicLayers[_kParameters.layer];
-        pLayer->SetNext(_kParameters);
-        pLayer->FadeToNext();
+        MusicLayer* musicLayer = &m_musicLayers[parameters.layer];
+        musicLayer->SetNext(parameters);
+        musicLayer->FadeToNext();
 
         return true;
     }
@@ -179,38 +245,39 @@ bool ManagerAudio::PlayMusic(const MusicParameters& _kParameters)
     return false;
 }
 
-bool ManagerAudio::PlayMusicList(const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist, int layer)
+bool ManagerAudio::PlayMusicList(const std::vector<MusicParameters>& playlist, bool loopPlaylist, int layer)
 {
     if (layer < 0 || layer >= (int)m_musicLayers.size())
         return false;
 
-    MusicLayer* pLayer = &m_musicLayers[layer];
-    pLayer->SetPlayList(_vecPlaylist, loopPlaylist);
-    pLayer->FadeToNext();
+    MusicLayer* musicLayer = &m_musicLayers[layer];
+    musicLayer->SetPlayList(playlist, loopPlaylist);
+    musicLayer->FadeToNext();
 
     return true;
 }
 
-bool ManagerAudio::StopMusic(float _fFade, int layer)
+bool ManagerAudio::StopMusic(float fade, int layer)
 {
     if (layer < 0 || layer >= (int)m_musicLayers.size())
         return false;
 
-    MusicLayer* pLayer = &m_musicLayers[layer];
-    if (_fFade > 0.f)
+    MusicLayer* musicLayer = &m_musicLayers[layer];
+    if (fade > 0.f)
     {
-        MusicParameters kParameters;
-        kParameters.music = nullptr;
-        kParameters.volume = 0.f;
-        kParameters.fadeOut = _fFade;
-        kParameters.fadeIn = _fFade;
+        MusicParameters parameters;
+        parameters.audioClip = nullptr;
+        parameters.audioClipId = "";
+        parameters.volume = 0.f;
+        parameters.fadeOut = fade;
+        parameters.fadeIn = fade;
 
-        pLayer->SetNext(kParameters);
-        pLayer->FadeToNext();
+        musicLayer->SetNext(parameters);
+        musicLayer->FadeToNext();
     }
     else
     {
-        pLayer->Reset();
+        musicLayer->Reset();
     }
 
     return true;

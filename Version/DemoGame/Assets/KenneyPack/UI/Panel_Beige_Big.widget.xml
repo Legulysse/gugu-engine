@@ -2,7 +2,6 @@
 <ElementWidget serializationVersion="1">
 	<Element type="ElementSpriteGroup">
 		<Size x="128" y="128" />
-		<Texture source="panel_beige_big.png" />
 		<Components>
 			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
@@ -54,5 +53,6 @@
 				<TextureRect x="184" y="184" w="16" h="16" />
 			</Element>
 		</Components>
+		<Texture source="panel_beige_big.png" />
 	</Element>
 </ElementWidget>

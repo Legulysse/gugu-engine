@@ -9,27 +9,23 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Core/EngineConfig.h"
-
 #include "Gugu/Resources/ResourceInfo.h"
 #include "Gugu/Resources/Resource.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/Font.h"
-#include "Gugu/Resources/Sound.h"
-#include "Gugu/Resources/Music.h"
+#include "Gugu/Resources/AudioClip.h"
+#include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/Resources/SoundCue.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/Datasheet.h"
 #include "Gugu/Resources/ElementWidget.h"
-
 #include "Gugu/Data/DataBindingUtility.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/String.h"
-
-#include "Gugu/Core/Application.h"
 #include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////
@@ -52,7 +48,7 @@ ManagerResources::~ManagerResources()
 {
 }
 
-void ManagerResources::Init(const EngineConfig& config)
+bool ManagerResources::Init(const EngineConfig& config)
 {
     m_pathAssets = config.pathAssets;
     m_pathScreenshots = config.pathScreenshots;
@@ -62,7 +58,7 @@ void ManagerResources::Init(const EngineConfig& config)
     m_defaultTextureSmooth = config.defaultTextureSmooth;
     m_handleResourceDependencies = config.handleResourceDependencies;
 
-    ParseDirectory(m_pathAssets);
+    return ParseDirectory(m_pathAssets);
 }
 
 void ManagerResources::Release()
@@ -75,28 +71,35 @@ void ManagerResources::Release()
     ClearStdMap(m_resources);
 }
 
-void ManagerResources::ParseDirectory(const std::string& _strPathRoot)
+bool ManagerResources::ParseDirectory(std::string_view rootPath_utf8)
 {
     //Parse Assets
     GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, "Parsing Resources...");
-    GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Root directory : {0}", _strPathRoot));
+    GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Root directory : {0}", rootPath_utf8));
 
-    std::vector<FileInfo> vecFiles;
-    GetFiles(_strPathRoot, vecFiles, true);
-
-    int iCount = 0;
-    for (size_t i = 0; i < vecFiles.size(); ++i)
+    if (!DirectoryExists(rootPath_utf8))
     {
-        const FileInfo& kFileInfos = vecFiles[i];
-        std::string strResourceID = (!m_useFullPath) ? std::string(kFileInfos.GetFileName_utf8()) : std::string(kFileInfos.GetFilePath_utf8().substr(_strPathRoot.length()));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "The Root directory could not be found");
+        return false;
+    }
 
-        if (RegisterResourceInfo(strResourceID, kFileInfos))
+    std::vector<FileInfo> files;
+    GetFiles(rootPath_utf8, files, true);
+
+    size_t fileCount = 0;
+    for (size_t i = 0; i < files.size(); ++i)
+    {
+        const FileInfo& fileInfos = files[i];
+        std::string resourceId = (!m_useFullPath) ? std::string(fileInfos.GetFileName_utf8()) : std::string(fileInfos.GetFilePath_utf8().substr(rootPath_utf8.length()));
+
+        if (RegisterResourceInfo(resourceId, fileInfos))
         {
-            ++iCount;
+            ++fileCount;
         }
     }
 
-    GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Finished Parsing Resources (Found {0})", iCount));
+    GetLogEngine()->Print(ELog::Info, ELogEngine::Resources, StringFormat("Finished Parsing Resources (Found {0})", fileCount));
+    return true;
 }
 
 const std::string& ManagerResources::GetPathAssets() const
@@ -109,15 +112,15 @@ const std::string& ManagerResources::GetPathScreenshots() const
     return m_pathScreenshots;
 }
 
-bool ManagerResources::HasResource(const std::string& _strName) const
+bool ManagerResources::HasResource(const std::string& resourceId) const
 {
-    auto iteElement = m_resources.find(_strName);
+    auto iteElement = m_resources.find(resourceId);
     return (iteElement != m_resources.end());
 }
 
-bool ManagerResources::IsResourceLoaded(const std::string& _strName) const
+bool ManagerResources::IsResourceLoaded(const std::string& resourceId) const
 {
-    auto iteElement = m_resources.find(_strName);
+    auto iteElement = m_resources.find(resourceId);
     if (iteElement != m_resources.end())
     {
         return (*iteElement).second->resource != nullptr;
@@ -126,9 +129,9 @@ bool ManagerResources::IsResourceLoaded(const std::string& _strName) const
     return false;
 }
 
-bool ManagerResources::GetResourceFileInfo(const std::string& _strName, FileInfo& fileInfo) const
+bool ManagerResources::GetResourceFileInfo(const std::string& resourceId, FileInfo& fileInfo) const
 {
-    auto iteElement = m_resources.find(_strName);
+    auto iteElement = m_resources.find(resourceId);
     if (iteElement != m_resources.end())
     {
         // This will return a copy.
@@ -139,9 +142,9 @@ bool ManagerResources::GetResourceFileInfo(const std::string& _strName, FileInfo
     return false;
 }
 
-const FileInfo& ManagerResources::GetResourceFileInfo(const std::string& _strName) const
+const FileInfo& ManagerResources::GetResourceFileInfo(const std::string& resourceId) const
 {
-    auto iteElement = m_resources.find(_strName);
+    auto iteElement = m_resources.find(resourceId);
     if (iteElement != m_resources.end())
     {
         return (*iteElement).second->fileInfo;
@@ -186,15 +189,19 @@ EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) 
     {
         return EResourceType::Font;
     }
-    //else if (fileInfo.HasExtension("sound.xml"))  // TODO: sound and music files are basically the same thing, I cant deduce them from file extension alone.
-    //{
-    //    return EResourceType::Sound;
-    //}
-    //else if (fileInfo.HasExtension("music.xml"))
-    //{
-    //    return EResourceType::Music;
-    //}
-    else if (fileInfo.HasExtension("sound.xml") || fileInfo.HasExtension("sound"))
+    else if (fileInfo.HasExtension("wav")
+        || fileInfo.HasExtension("ogg")
+        || fileInfo.HasExtension("flac")
+        || fileInfo.HasExtension("mp3"))
+    {
+        return EResourceType::AudioClip;
+    }
+    else if (fileInfo.HasExtension("audiomixergroup.xml") || fileInfo.HasExtension("audiomixergroup"))
+    {
+        return EResourceType::AudioMixerGroup;
+    }
+    else if (fileInfo.HasExtension("soundcue.xml") || fileInfo.HasExtension("soundcue")
+        || fileInfo.HasExtension("sound.xml") || fileInfo.HasExtension("sound"))
     {
         return EResourceType::SoundCue;
     }
@@ -224,221 +231,221 @@ EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) 
     }
 }
 
-Texture* ManagerResources::GetTexture(const std::string& _strName)
+Texture* ManagerResources::GetTexture(const std::string& resourceId)
 {
-    return dynamic_cast<Texture*>(GetResource(_strName, EResourceType::Texture));
+    return dynamic_cast<Texture*>(GetResource(resourceId, EResourceType::Texture));
 }
 
-Font* ManagerResources::GetFont(const std::string& _strName)
+Font* ManagerResources::GetFont(const std::string& resourceId)
 {
-    return dynamic_cast<Font*>(GetResource(_strName, EResourceType::Font));
+    return dynamic_cast<Font*>(GetResource(resourceId, EResourceType::Font));
 }
 
-Sound* ManagerResources::GetSound(const std::string& _strName)
+AudioClip* ManagerResources::GetAudioClip(const std::string& resourceId)
 {
-    return dynamic_cast<Sound*>(GetResource(_strName, EResourceType::Sound));
+    return dynamic_cast<AudioClip*>(GetResource(resourceId, EResourceType::AudioClip));
 }
 
-Music* ManagerResources::GetMusic(const std::string& _strName)
+AudioMixerGroup* ManagerResources::GetAudioMixerGroup(const std::string& resourceId)
 {
-    return dynamic_cast<Music*>(GetResource(_strName, EResourceType::Music));
+    return dynamic_cast<AudioMixerGroup*>(GetResource(resourceId, EResourceType::AudioMixerGroup));
 }
 
-SoundCue* ManagerResources::GetSoundCue(const std::string& _strName)
+SoundCue* ManagerResources::GetSoundCue(const std::string& resourceId)
 {
-    return dynamic_cast<SoundCue*>(GetResource(_strName, EResourceType::SoundCue));
+    return dynamic_cast<SoundCue*>(GetResource(resourceId, EResourceType::SoundCue));
 }
 
-ImageSet* ManagerResources::GetImageSet(const std::string& _strName)
+ImageSet* ManagerResources::GetImageSet(const std::string& resourceId)
 {
-    return dynamic_cast<ImageSet*>(GetResource(_strName, EResourceType::ImageSet));
+    return dynamic_cast<ImageSet*>(GetResource(resourceId, EResourceType::ImageSet));
 }
 
-AnimSet* ManagerResources::GetAnimSet(const std::string& _strName)
+AnimSet* ManagerResources::GetAnimSet(const std::string& resourceId)
 {
-    return dynamic_cast<AnimSet*>(GetResource(_strName, EResourceType::AnimSet));
+    return dynamic_cast<AnimSet*>(GetResource(resourceId, EResourceType::AnimSet));
 }
 
-ParticleEffect* ManagerResources::GetParticleEffect(const std::string& _strName)
+ParticleEffect* ManagerResources::GetParticleEffect(const std::string& resourceId)
 {
-    return dynamic_cast<ParticleEffect*>(GetResource(_strName, EResourceType::ParticleEffect));
+    return dynamic_cast<ParticleEffect*>(GetResource(resourceId, EResourceType::ParticleEffect));
 }
 
-Datasheet* ManagerResources::GetDatasheet(const std::string& _strName)
+Datasheet* ManagerResources::GetDatasheet(const std::string& resourceId)
 {
-    return dynamic_cast<Datasheet*>(GetResource(_strName, EResourceType::Datasheet));
+    return dynamic_cast<Datasheet*>(GetResource(resourceId, EResourceType::Datasheet));
 }
 
-const DatasheetObject* ManagerResources::GetDatasheetRootObject(const std::string& _strName)
+const DatasheetObject* ManagerResources::GetDatasheetRootObject(const std::string& resourceId)
 {
-    Datasheet* sheet = GetDatasheet(_strName);
+    Datasheet* sheet = GetDatasheet(resourceId);
     return sheet == nullptr ? nullptr : sheet->GetRootObject();
 }
 
-ElementWidget* ManagerResources::GetElementWidget(const std::string& _strName)
+ElementWidget* ManagerResources::GetElementWidget(const std::string& resourceId)
 {
-    return dynamic_cast<ElementWidget*>(GetResource(_strName, EResourceType::ElementWidget));
+    return dynamic_cast<ElementWidget*>(GetResource(resourceId, EResourceType::ElementWidget));
 }
 
-Resource* ManagerResources::GetResource(const std::string& _strName, EResourceType::Type _eExplicitType)
+Resource* ManagerResources::GetResource(const std::string& resourceId, EResourceType::Type explicitType)
 {
-    if (_strName.empty())
+    if (resourceId.empty())
         return nullptr;
 
     //Check Resource already loaded
-    auto iteResource = m_resources.find(_strName);
+    auto iteResource = m_resources.find(resourceId);
     if (iteResource != m_resources.end())
     {
         if (iteResource->second->resource)
             return iteResource->second->resource;
 
-        Resource* pResource = LoadResource(iteResource->second, _eExplicitType);
-        return pResource;
+        Resource* resource = LoadResource(iteResource->second, explicitType);
+        return resource;
     }
 
-    GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("GetResource failed, unknown resource : {0}", _strName));
+    GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("GetResource failed, unknown resource : {0}", resourceId));
     return nullptr;
 }
 
-bool ManagerResources::LoadResource(const std::string& _strName, EResourceType::Type _eExplicitType)
+bool ManagerResources::LoadResource(const std::string& resourceId, EResourceType::Type explicitType)
 {
-    if (_strName.empty())
+    if (resourceId.empty())
         return false;
 
-    auto iteElement = m_resources.find(_strName);
+    auto iteElement = m_resources.find(resourceId);
     if (iteElement == m_resources.end())
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource : {0}", _strName));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource : {0}", resourceId));
         return false;
     }
 
-    return LoadResource(iteElement->second, _eExplicitType) != nullptr;
+    return LoadResource(iteElement->second, explicitType) != nullptr;
 }
 
-Resource* ManagerResources::LoadResource(ResourceInfo* _pResourceInfo, EResourceType::Type _eExplicitType)
+Resource* ManagerResources::LoadResource(ResourceInfo* resourceInfo, EResourceType::Type explicitType)
 {
-    if (!_pResourceInfo)
+    if (!resourceInfo)
         return nullptr;
 
-    if (_pResourceInfo->resource)
+    if (resourceInfo->resource)
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource ignored, resource already loaded : {0}", _pResourceInfo->resourceID));
-        return _pResourceInfo->resource;
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource ignored, resource already loaded : {0}", resourceInfo->resourceID));
+        return resourceInfo->resource;
     }
 
-    FileInfo oFileInfo = _pResourceInfo->fileInfo;
-    Resource* pResource = nullptr;
+    FileInfo fileInfo = resourceInfo->fileInfo;
+    Resource* resource = nullptr;
 
-    if (_eExplicitType == EResourceType::Unknown)
+    if (explicitType == EResourceType::Unknown)
     {
-        _eExplicitType = GetResourceType(oFileInfo);
+        explicitType = GetResourceType(fileInfo);
     }
 
-    if (_eExplicitType == EResourceType::Texture)
+    if (explicitType == EResourceType::Texture)
     {
-        pResource = new Texture;
+        resource = new Texture;
     }
-    else if (_eExplicitType == EResourceType::Font)
+    else if (explicitType == EResourceType::Font)
     {
-        pResource = new Font;
+        resource = new Font;
     }
-    else if (_eExplicitType == EResourceType::Sound)
+    else if (explicitType == EResourceType::AudioClip)
     {
-        pResource = new Sound;
+        resource = new AudioClip;
     }
-    else if (_eExplicitType == EResourceType::Music)
+    else if (explicitType == EResourceType::AudioMixerGroup)
     {
-        pResource = new Music;
+        resource = new AudioMixerGroup;
     }
-    else if (_eExplicitType == EResourceType::SoundCue)
+    else if (explicitType == EResourceType::SoundCue)
     {
-        pResource = new SoundCue;
+        resource = new SoundCue;
     }
-    else if (_eExplicitType == EResourceType::ImageSet)
+    else if (explicitType == EResourceType::ImageSet)
     {
-        pResource = new ImageSet;
+        resource = new ImageSet;
     }
-    else if (_eExplicitType == EResourceType::AnimSet)
+    else if (explicitType == EResourceType::AnimSet)
     {
-        pResource = new AnimSet;
+        resource = new AnimSet;
     }
-    else if (_eExplicitType == EResourceType::ParticleEffect)
+    else if (explicitType == EResourceType::ParticleEffect)
     {
-        pResource = new ParticleEffect;
+        resource = new ParticleEffect;
     }
-    else if (_eExplicitType == EResourceType::Datasheet)
+    else if (explicitType == EResourceType::Datasheet)
     {
-        pResource = new Datasheet;
+        resource = new Datasheet;
     }
-    else if (_eExplicitType == EResourceType::ElementWidget)
+    else if (explicitType == EResourceType::ElementWidget)
     {
-        pResource = new ElementWidget;
+        resource = new ElementWidget;
     }
     else
     {
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource extension : {0}", oFileInfo.GetFilePath_utf8()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource extension : {0}", fileInfo.GetFilePath_utf8()));
     }
 
-    if (pResource)
+    if (resource)
     {
-        _pResourceInfo->resource = pResource;
-        RegisterResourceDependencies(pResource);
+        resourceInfo->resource = resource;
+        RegisterResourceDependencies(resource);
 
-        pResource->Init(_pResourceInfo);
-        pResource->LoadFromFile();
+        resource->Init(resourceInfo);
+        resource->LoadFromFile();
 
-        UpdateResourceDependencies(pResource);
+        UpdateResourceDependencies(resource);
 
-        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", _pResourceInfo->resourceID));
+        GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Resource loaded : {0}", resourceInfo->resourceID));
     }
 
-    return pResource;
+    return resource;
 }
 
-bool ManagerResources::InjectResource(const std::string& _strResourceID, Resource* _pResource)
+bool ManagerResources::InjectResource(const std::string& resourceId, Resource* resource)
 {
-    if (_strResourceID.empty())
+    if (resourceId.empty())
         return false;
 
-    ResourceMapKey mapKey(_strResourceID);
+    ResourceMapKey mapKey(resourceId);
 
     auto iteAsset = m_resources.find(mapKey);
     if (iteAsset != m_resources.end())
     {
         if (iteAsset->second->resource == nullptr)
         {
-            iteAsset->second->resource = _pResource;
-            RegisterResourceDependencies(_pResource);
+            iteAsset->second->resource = resource;
+            RegisterResourceDependencies(resource);
 
-            _pResource->Init(iteAsset->second);
-            _pResource->LoadFromFile();
+            resource->Init(iteAsset->second);
+            resource->LoadFromFile();
 
-            UpdateResourceDependencies(_pResource);
+            UpdateResourceDependencies(resource);
 
-            GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Injected Resource : {0}", _strResourceID));
+            GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Injected Resource : {0}", resourceId));
             return true;
         }
         else
         {
-            GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("InjectResource failed, the resource is already loaded : {0}", _strResourceID));
+            GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("InjectResource failed, the resource is already loaded : {0}", resourceId));
         }
     }
     else
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("InjectResource failed, the resource is unknown : {0}", _strResourceID));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("InjectResource failed, the resource is unknown : {0}", resourceId));
     }
 
     return false;
 }
 
-const std::string& ManagerResources::GetResourceID(const Resource* _pResource) const
+const std::string& ManagerResources::GetResourceID(const Resource* resource) const
 {
-    if (_pResource)
+    if (resource)
     {
         auto iteCurrent = m_resources.begin();
         while (iteCurrent != m_resources.end())
         {
-            if (iteCurrent->second->resource == _pResource)
+            if (iteCurrent->second->resource == resource)
                 return iteCurrent->second->resourceID;
             ++iteCurrent;
         }
@@ -448,13 +455,13 @@ const std::string& ManagerResources::GetResourceID(const Resource* _pResource) c
     return defaultValue;
 }
 
-const std::string& ManagerResources::GetResourceID(const FileInfo& _oFileInfo) const
+const std::string& ManagerResources::GetResourceID(const FileInfo& fileInfo) const
 {
     // TODO: I should be able to deduce an ID from a FileInfo.
     auto iteCurrent = m_resources.begin();
     while (iteCurrent != m_resources.end())
     {
-        if (iteCurrent->second->fileInfo == _oFileInfo)
+        if (iteCurrent->second->fileInfo == fileInfo)
             return iteCurrent->second->resourceID;
         ++iteCurrent;
     }
@@ -463,183 +470,190 @@ const std::string& ManagerResources::GetResourceID(const FileInfo& _oFileInfo) c
     return defaultValue;
 }
 
-bool ManagerResources::RegisterResourceInfo(const std::string& _strResourceID, const FileInfo& _kFileInfos)
+bool ManagerResources::RegisterResourceInfo(const std::string& resourceId, const FileInfo& fileInfo)
 {
-    if (_strResourceID.empty())
+    if (resourceId.empty())
         return false;
 
-    ResourceMapKey mapKey(_strResourceID);
+    ResourceMapKey mapKey(resourceId);
 
     auto iteAsset = m_resources.find(mapKey);
     if (iteAsset == m_resources.end())
     {
-        ResourceInfo* pInfo = new ResourceInfo;
-        pInfo->resourceID = _strResourceID;
-        pInfo->fileInfo = _kFileInfos;
-        pInfo->resource = nullptr;
+        ResourceInfo* resourceInfo = new ResourceInfo;
+        resourceInfo->resourceID = resourceId;
+        resourceInfo->fileInfo = fileInfo;
+        resourceInfo->resource = nullptr;
 
         // TODO: investigate the use of hint iterator here, seems like a bad usage.
-        m_resources.insert(iteAsset, std::make_pair(mapKey, pInfo));
+        m_resources.insert(iteAsset, std::make_pair(mapKey, resourceInfo));
         
         GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Registered Resource : ID = {0}, Path = {1}"
-            , _strResourceID
-            , _kFileInfos.GetFilePath_utf8()));
+            , resourceId
+            , fileInfo.GetFilePath_utf8()));
         
         return true;
     }
     
     GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("A Resource ID is already registered : ID = {0}, New Path = {1}, Registered Path = {2}"
-        , _strResourceID
-        , _kFileInfos.GetFilePath_utf8()
+        , resourceId
+        , fileInfo.GetFilePath_utf8()
         , iteAsset->second->fileInfo.GetFilePath_utf8()));
         
     return false;
 }
 
-bool ManagerResources::AddResource(Resource* _pNewResource, const FileInfo& _oFileInfo)
+bool ManagerResources::AddResource(Resource* resource, const FileInfo& fileInfo)
 {
-    if (!_pNewResource)
+    if (!resource)
         return false;
 
-    std::string strPathName = std::string(_oFileInfo.GetFilePath_utf8());
-    std::string strName     = std::string(_oFileInfo.GetFileName_utf8());
+    std::string resourcePath = std::string(fileInfo.GetFilePath_utf8());
+    std::string resourceName = std::string(fileInfo.GetFileName_utf8());
 
-    if (strName.empty())
+    if (resourceName.empty())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("AddResource failed, name invalid : {0}", strName));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("AddResource failed, name invalid : {0}", resourceName));
         return false;
     }
 
-    std::string strResourceID = strName;
+    std::string resourceId = resourceName;
     if (m_useFullPath)
-        strResourceID = strPathName.substr(m_pathAssets.length());
+        resourceId = resourcePath.substr(m_pathAssets.length());
 
-    auto iteResource = m_resources.find(strResourceID);
+    auto iteResource = m_resources.find(resourceId);
     if (iteResource != m_resources.end())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("AddResource failed, Resource already exists : {0}", strName));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("AddResource failed, Resource already exists : {0}", resourceName));
         return false;
     }
 
-    ResourceInfo* pInfo = new ResourceInfo;
-    pInfo->resourceID = strResourceID;
-    pInfo->fileInfo = _oFileInfo;
-    pInfo->resource = _pNewResource;
+    ResourceInfo* resourceInfo = new ResourceInfo;
+    resourceInfo->resourceID = resourceId;
+    resourceInfo->fileInfo = fileInfo;
+    resourceInfo->resource = resource;
 
-    m_resources.insert(iteResource, std::make_pair(strResourceID, pInfo));
-    RegisterResourceDependencies(_pNewResource);
+    m_resources.insert(iteResource, std::make_pair(resourceId, resourceInfo));
+    RegisterResourceDependencies(resource);
 
-    _pNewResource->Init(pInfo);
+    resource->Init(resourceInfo);
 
-    UpdateResourceDependencies(_pNewResource);
+    UpdateResourceDependencies(resource);
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Added Resource : ID = {0}, Path = {1}"
-        , strResourceID
-        , _oFileInfo.GetFilePath_utf8()));
+        , resourceId
+        , fileInfo.GetFilePath_utf8()));
 
     return true;
 }
 
-bool ManagerResources::MoveResource(Resource* _pResource, const FileInfo& _oFileInfo)
+bool ManagerResources::MoveResource(Resource* resource, const FileInfo& fileInfo)
 {
-    if (!_pResource)
+    if (!resource)
         return false;
 
-    std::string strNewPathName = std::string(_oFileInfo.GetFilePath_utf8());
-    std::string strNewName     = std::string(_oFileInfo.GetFileName_utf8());
+    std::string resourcePath = std::string(fileInfo.GetFilePath_utf8());
+    std::string resourceName = std::string(fileInfo.GetFileName_utf8());
 
-    if (strNewName.empty())
+    if (resourceName.empty())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, new name invalid : {0}", strNewName));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, new name invalid : {0}", resourceName));
         return false;
     }
 
-    std::string strResourceID = strNewName;
+    std::string resourceId = resourceName;
     if (m_useFullPath)
-        strResourceID = strNewPathName.substr(m_pathAssets.length());
+        resourceId = resourcePath.substr(m_pathAssets.length());
 
-    auto iteNewResource = m_resources.find(strResourceID);
+    auto iteNewResource = m_resources.find(resourceId);
     if (iteNewResource != m_resources.end())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource already exists : {0}", strNewName));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource already exists : {0}", resourceName));
         return false;
     }
 
-    FileInfo oFileInfoOld = _pResource->GetFileInfo();
+    FileInfo previousFileInfo = resource->GetFileInfo();
 
-    auto iteOldResource = m_resources.find(_pResource->GetID());
-    if (iteOldResource == m_resources.end())
+    auto itePreviousResource = m_resources.find(resource->GetID());
+    if (itePreviousResource == m_resources.end())
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource not found : {0}", oFileInfoOld.GetFilePath_utf8()));
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("RenameResource failed, Resource not found : {0}", previousFileInfo.GetFilePath_utf8()));
         return false;
     }
 
-    ResourceInfo* pInfo = iteOldResource->second;
-    m_resources.erase(iteOldResource);
+    ResourceInfo* resourceInfo = itePreviousResource->second;
+    m_resources.erase(itePreviousResource);
 
-    pInfo->resourceID = strResourceID;
-    pInfo->fileInfo = _oFileInfo;
+    resourceInfo->resourceID = resourceId;
+    resourceInfo->fileInfo = fileInfo;
 
-    m_resources.insert(iteNewResource, std::make_pair(strResourceID, pInfo));
+    m_resources.insert(iteNewResource, std::make_pair(resourceId, resourceInfo));
 
     //Delete old file, save new file
-    if (_pResource->SaveToFile())
+    if (resource->SaveToFile())
     {
-        RemoveFile(oFileInfoOld.GetFilePath_utf8());
+        RemoveFile(previousFileInfo.GetFilePath_utf8());
         return true;
     }
 
     GetLogEngine()->Print(ELog::Debug, ELogEngine::Resources, StringFormat("Moved Resource : ID = {0}, Path = {1}"
-        , strResourceID
-        , _oFileInfo.GetFilePath_utf8()));
+        , resourceId
+        , fileInfo.GetFilePath_utf8()));
 
     return false;
 }
 
-bool ManagerResources::RemoveResource(Resource* _pResource)
+bool ManagerResources::RemoveResource(Resource* resource, bool unloadResource)
 {
-    if (!_pResource)
+    if (!resource)
         return false;
 
-    return RemoveResource(_pResource->GetID());
+    return RemoveResource(resource->GetID(), unloadResource);
 }
 
-bool ManagerResources::RemoveResource(const std::string& resourceID)
+bool ManagerResources::RemoveResource(const std::string& resourceId, bool unloadResource)
 {
-    auto iteResource = m_resources.find(resourceID);
+    auto iteResource = m_resources.find(resourceId);
     if (iteResource != m_resources.end())
     {
-        Resource* removedResource = iteResource->second->resource;
+        Resource* resource = iteResource->second->resource;
 
-        ResourceInfo* pInfo = iteResource->second;
+        ResourceInfo* resourceInfo = iteResource->second;
         m_resources.erase(iteResource);
 
-        if (removedResource)
+        if (resource)
         {
-            NotifyResourceRemoved(removedResource);
-            UnregisterResourceDependencies(removedResource);
+            NotifyResourceRemoved(resource);
+            UnregisterResourceDependencies(resource);
         }
 
-        SafeDelete(pInfo);
+        if (!unloadResource)
+        {
+            resourceInfo->resource = nullptr;   // We want to keep the loaded resource in memory.
+        }
+
+        SafeDelete(resourceInfo);
     }
 
     return true;
 }
 
-bool ManagerResources::DeleteResource(Resource* _pResource)
+bool ManagerResources::DeleteResource(Resource* resource)
 {
-    if (!_pResource)
+    if (!resource)
         return false;
 
-    return DeleteResource(_pResource->GetID());
+    return DeleteResource(resource->GetID());
 }
 
-bool ManagerResources::DeleteResource(const std::string& resourceID)
+bool ManagerResources::DeleteResource(const std::string& resourceId)
 {
-    FileInfo fileInfo;
-    if (GetResourceFileInfo(resourceID, fileInfo))
+    auto iteResource = m_resources.find(resourceId);
+    if (iteResource != m_resources.end())
     {
-        if (RemoveResource(resourceID))
+        FileInfo fileInfo = iteResource->second->fileInfo;
+
+        if (RemoveResource(resourceId, true))
         {
             return RemoveFile(fileInfo.GetFilePath_utf8());
         }
@@ -648,9 +662,9 @@ bool ManagerResources::DeleteResource(const std::string& resourceID)
     return false;
 }
 
-void ManagerResources::RemoveResourcesFromPath(const std::string& _strPath)
+void ManagerResources::RemoveResourcesFromPath(const std::string& path, bool unloadResources)
 {
-    if (_strPath.empty())
+    if (path.empty())
         return;
 
     auto it = m_resources.begin();
@@ -659,31 +673,31 @@ void ManagerResources::RemoveResourcesFromPath(const std::string& _strPath)
         auto iteResource = it;
         ++it;
 
-        if (PathStartsWith(iteResource->second->fileInfo.GetDirectoryPath_utf8(), _strPath))
+        if (PathStartsWith(iteResource->second->fileInfo.GetDirectoryPath_utf8(), path))
         {
-            RemoveResource(iteResource->first);
+            RemoveResource(iteResource->first, unloadResources);
         }
     }
 }
 
-Texture* ManagerResources::GetCustomTexture(const std::string& _strName)
+Texture* ManagerResources::GetCustomTexture(const std::string& name)
 {
-    if (_strName.empty())
+    if (name.empty())
         return nullptr;
 
-    auto iteElement = m_customTextures.find(_strName);
+    auto iteElement = m_customTextures.find(name);
     if (iteElement != m_customTextures.end())
     {
         return (iteElement->second);
     }
 
-    sf::Texture* pNewSFTexture = new sf::Texture;
+    sf::Texture* newSFTexture = new sf::Texture;
 
-    Texture* pNewTexture = new Texture;
-    pNewTexture->SetSFTexture(pNewSFTexture);
+    Texture* newTexture = new Texture;
+    newTexture->SetSFTexture(newSFTexture);
 
-    iteElement = m_customTextures.insert(iteElement, std::make_pair(_strName, pNewTexture));
-    return pNewTexture;
+    iteElement = m_customTextures.insert(iteElement, std::make_pair(name, newTexture));
+    return newTexture;
 }
 
 bool ManagerResources::IsDefaultTextureSmooth() const
@@ -701,68 +715,40 @@ Font* ManagerResources::GetDebugFont()
     return GetFont(m_debugFont);
 }
 
-//void ManagerResources::GetLoadedTextureInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-//{
-//    GetLoadedResourceInfos(_vecInfos, EResourceType::Texture);
-//}
-//
-//void ManagerResources::GetLoadedImageSetInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-//{
-//    GetLoadedResourceInfos(_vecInfos, EResourceType::ImageSet);
-//}
-//
-//void ManagerResources::GetLoadedAnimSetInfos(std::vector<const ResourceInfo*>& _vecInfos) const
-//{
-//    GetLoadedResourceInfos(_vecInfos, EResourceType::AnimSet);
-//}
-//
-//void ManagerResources::GetLoadedResourceInfos(std::vector<const ResourceInfo*>& _vecInfos, EResourceType::Type _eType) const
-//{
-//    auto iteCurrent = m_resources.begin();
-//    while (iteCurrent != m_resources.end())
-//    {
-//        if (iteCurrent->second->resource && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
-//            _vecInfos.push_back(iteCurrent->second);
-//        ++iteCurrent;
-//    }
-//
-//    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
-//}
-
-void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& _vecInfos) const
+void ManagerResources::GetAllResourceInfos(std::vector<const ResourceInfo*>& resourceInfos) const
 {
-    _vecInfos.clear();
-    _vecInfos.reserve(m_resources.size());
+    resourceInfos.clear();
+    resourceInfos.reserve(m_resources.size());
 
     auto iteCurrent = m_resources.begin();
     while (iteCurrent != m_resources.end())
     {
-        _vecInfos.push_back(iteCurrent->second);
+        resourceInfos.push_back(iteCurrent->second);
         ++iteCurrent;
     }
 }
 
-//void ManagerResources::GetResourceInfosFromPath(std::vector<const ResourceInfo*>& _vecInfos, const std::string& _strPath, EResourceType::Type _eType) const
-//{
-//    std::string strPathNormalized = NormalizePath(_strPath, true);
-//
-//    auto iteCurrent = m_resources.begin();
-//    while (iteCurrent != m_resources.end())
-//    {
-//        if (iteCurrent->second->resource && iteCurrent->second->fileInfo.IsPathEnd(strPathNormalized) && (_eType == EResourceType::Unknown || _eType == iteCurrent->second->resource->GetResourceType()))
-//            _vecInfos.push_back(iteCurrent->second);
-//        ++iteCurrent;
-//    }
-//
-//    std::sort(_vecInfos.begin(), _vecInfos.end(), ResourceInfo::CompareID);
-//}
+void ManagerResources::GetAllDatasheetsByType(std::string_view dataType, std::vector<Datasheet*>& datasheets)
+{
+    for (const auto& kvp : m_resources)
+    {
+        if (kvp.second->fileInfo.HasExtension(dataType))
+        {
+            Datasheet* datasheet = GetResources()->GetDatasheet(kvp.first);
+            if (datasheet)
+            {
+                datasheets.push_back(datasheet);
+            }
+        }
+    }
+}
 
 void ManagerResources::RegisterDataObjectFactory(const DelegateDataObjectFactory& delegateDataObjectFactory)
 {
     m_dataObjectFactories.push_back(delegateDataObjectFactory);
 }
 
-DataObject* ManagerResources::InstanciateDataObject(std::string_view _strType)
+DataObject* ManagerResources::InstanciateDataObject(std::string_view dataType)
 {
     if (m_dataObjectFactories.empty())
     {
@@ -772,7 +758,7 @@ DataObject* ManagerResources::InstanciateDataObject(std::string_view _strType)
     {
         for (size_t i = 0; i < m_dataObjectFactories.size(); ++i)
         {
-            DataObject* dataObject = m_dataObjectFactories[i](_strType);
+            DataObject* dataObject = m_dataObjectFactories[i](dataType);
             if (dataObject)
             {
                 return dataObject;
@@ -783,23 +769,23 @@ DataObject* ManagerResources::InstanciateDataObject(std::string_view _strType)
     return nullptr;
 }
 
-void ManagerResources::RegisterDataEnumInfos(const std::string& _strName, const DataEnumInfos* _pEnum)
+void ManagerResources::RegisterDataEnumInfos(const std::string& name, const DataEnumInfos* enumInfos)
 {
-    auto iteElement = m_dataEnumInfos.find(_strName);
+    auto iteElement = m_dataEnumInfos.find(name);
     if (iteElement != m_dataEnumInfos.end())
     {
         GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "Data Enum already registered");
-        SafeDelete(_pEnum);
+        SafeDelete(enumInfos);
     }
     else
     {
-        m_dataEnumInfos[_strName] = _pEnum;
+        m_dataEnumInfos[name] = enumInfos;
     }
 }
 
-const DataEnumInfos* ManagerResources::GetDataEnumInfos(const std::string& _strName)
+const DataEnumInfos* ManagerResources::GetDataEnumInfos(const std::string& name)
 {
-    auto iteElement = m_dataEnumInfos.find(_strName);
+    auto iteElement = m_dataEnumInfos.find(name);
     if (iteElement != m_dataEnumInfos.end())
     {
         return (iteElement->second);
@@ -920,9 +906,9 @@ void ManagerResources::UnregisterResourceDependencies(Resource* resource)
     }
 }
 
-bool ManagerResources::RegisterResourceListener(const Resource* resource, const void* handle, const DelegateResourceEvent& delegateResourceEvent)
+bool ManagerResources::RegisterResourceListener(const Resource* resource, const Handle& handle, const DelegateResourceEvent& delegateResourceEvent)
 {
-    if (!resource || !handle)
+    if (!resource || !handle.IsValid())
         return false;
 
     auto it = m_resourceDependencies.find(resource);
@@ -942,7 +928,7 @@ bool ManagerResources::RegisterResourceListener(const Resource* resource, const 
     }
 }
 
-void ManagerResources::UnregisterResourceListeners(const Resource* resource, const void* handle)
+void ManagerResources::UnregisterResourceListeners(const Resource* resource, const Handle& handle)
 {
     auto it = m_resourceDependencies.find(resource);
     if (it != m_resourceDependencies.end())
@@ -962,7 +948,7 @@ void ManagerResources::UnregisterResourceListeners(const Resource* resource, con
     }
 }
 
-void ManagerResources::UnregisterResourceListeners(const void* handle)
+void ManagerResources::UnregisterResourceListeners(const Handle& handle)
 {
     // Remove all listeners originating from this handle.
     for (auto& kvp : m_resourceDependencies)

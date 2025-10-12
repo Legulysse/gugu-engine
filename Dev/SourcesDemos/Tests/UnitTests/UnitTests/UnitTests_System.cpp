@@ -8,10 +8,12 @@
 // Includes
 
 #include "Gugu/System/Container.h"
+#include "Gugu/System/EnumFlag.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/UUID.h"
 #include "Gugu/System/Hash.h"
+#include "Gugu/System/Memory.h"
 
 using namespace gugu;
 
@@ -26,7 +28,40 @@ void RunUnitTests_System(UnitTestResults* results)
 
     //----------------------------------------------
 
-    GUGU_UTEST_SECTION("Path Utility");
+    GUGU_UTEST_SECTION("Memory");
+    {
+        {
+            int* ptr = nullptr;
+            GUGU_UTEST_CHECK_NULL(ptr);
+
+            SafeDelete(ptr);
+            GUGU_UTEST_CHECK_NULL(ptr);
+
+            ptr = new int;
+            GUGU_UTEST_CHECK_NOT_NULL(ptr);
+
+            SafeDelete(ptr);
+            GUGU_UTEST_CHECK_NULL(ptr);
+        }
+
+        {
+            int* ptr = nullptr;
+            GUGU_UTEST_CHECK_NULL(ptr);
+
+            SafeDeleteArray(ptr);
+            GUGU_UTEST_CHECK_NULL(ptr);
+
+            ptr = new int[10];
+            GUGU_UTEST_CHECK_NOT_NULL(ptr);
+
+            SafeDeleteArray(ptr);
+            GUGU_UTEST_CHECK_NULL(ptr);
+        }
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Path");
     {
         GUGU_UTEST_SUBSECTION("NormalizePath");
         {
@@ -290,15 +325,26 @@ void RunUnitTests_System(UnitTestResults* results)
     {
         GUGU_UTEST_SUBSECTION("ToString");
         {
+            enum class ETestEnum { Value1 = 1, Value10 = 10, };
+            enum class ETestEnumFlag { ValueA = 1 << 0, ValueB = 1 << 1, ValueC = 1 << 2, };
+
             GUGU_UTEST_CHECK_EQUAL(ToString(42), "42");
             GUGU_UTEST_CHECK_EQUAL(ToString(42.5f), "42.5");
             GUGU_UTEST_CHECK_EQUAL(ToString(42.5), "42.5");
-            GUGU_UTEST_CHECK_EQUAL(ToString(42.5f, 2), "42.50");
-            GUGU_UTEST_CHECK_EQUAL(ToString(42.5, 2), "42.50");
+            GUGU_UTEST_CHECK_EQUAL(ToStringf(42.5f, 2), "42.50");
+            GUGU_UTEST_CHECK_EQUAL(ToStringf(42.5, 2), "42.50");
             GUGU_UTEST_CHECK_EQUAL(ToString(true), "1");
             GUGU_UTEST_CHECK_EQUAL(ToString(false), "0");
             GUGU_UTEST_CHECK_EQUAL(ToString("42"), "42");
             GUGU_UTEST_CHECK_EQUAL(ToString(std::string("42")), "42");
+            GUGU_UTEST_CHECK_EQUAL(ToString(ETestEnum::Value1), "1");
+            GUGU_UTEST_CHECK_EQUAL(ToString(ETestEnum::Value10), "10");
+            GUGU_UTEST_CHECK_EQUAL(ToString(ETestEnumFlag::ValueA), "1");
+            GUGU_UTEST_CHECK_EQUAL(ToString(ETestEnumFlag::ValueC), "4");
+            GUGU_UTEST_CHECK_EQUAL(ToString((int)ETestEnumFlag::ValueA | (int)ETestEnumFlag::ValueC), "5");
+
+            int* fakePtr = (int*)0x00000ff123456789;
+            GUGU_UTEST_CHECK_EQUAL(ToString(fakePtr), "00000FF123456789");
         }
 
         GUGU_UTEST_SUBSECTION("FromString");
@@ -414,7 +460,7 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(StringFormat("hello {0}, do you have {1} gold ?", "Jean-Jacques"), "hello Jean-Jacques, do you have {1} gold ?");
             GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", 42.5f), "My age is 42.5.");
             GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", ToString(42.555f)), "My age is 42.555.");
-            GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", ToString(42.555f, 1)), "My age is 42.6.");
+            GUGU_UTEST_CHECK_EQUAL(StringFormat("My age is {0}.", ToStringf(42.555f, 1)), "My age is 42.6.");
 
             FormatParameters params;
             params.Add("name", "Jean-Paul");
@@ -424,25 +470,40 @@ void RunUnitTests_System(UnitTestResults* results)
 
         GUGU_UTEST_SUBSECTION("NumberFormat");
         {
-            GUGU_UTEST_CHECK(StringNumberFormat(1) == "1");
-            GUGU_UTEST_CHECK(StringNumberFormat(123, 3) == "123");
-            GUGU_UTEST_CHECK(StringNumberFormat(1, 3) == "001");
-            GUGU_UTEST_CHECK(StringNumberFormat(1, 6) == "000 001");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1, 0), "1");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(123, 3), "123");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1, 3), "001");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1, 6), "000 001");
 
-            GUGU_UTEST_CHECK(StringNumberFormat(-1) == "-1");
-            GUGU_UTEST_CHECK(StringNumberFormat(-123, 3) == "-123");
-            GUGU_UTEST_CHECK(StringNumberFormat(-1, 3) == "-001");
-            GUGU_UTEST_CHECK(StringNumberFormat(-1, 6) == "-000 001");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(-1, 0), "-1");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(-123, 3), "-123");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(-1, 3), "-001");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(-1, 6), "-000 001");
 
-            GUGU_UTEST_CHECK(StringNumberFormat(1.05f) == "1.05");
-            GUGU_UTEST_CHECK(StringNumberFormat(123.05f, 3) == "123.05");
-            GUGU_UTEST_CHECK(StringNumberFormat(1.05f, 3) == "001.05");
-            GUGU_UTEST_CHECK(StringNumberFormat(1.05f, 6) == "000 001.05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1.05f, 0), "1.05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(123.05f, 3), "123.05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1.05f, 3), "001.05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat(1.05f, 6), "000 001.05");
 
-            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 0, ".") == "1,05");
-            GUGU_UTEST_CHECK(StringNumberFormat("123,05", 3, ".") == "123,05");
-            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 3, ".") == "001,05");
-            GUGU_UTEST_CHECK(StringNumberFormat("1,05", 6, ".") == "000.001,05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat("1,05", 0, "."), "1,05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat("123,05", 3, "."), "123,05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat("1,05", 3, "."), "001,05");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormat("1,05", 6, "."), "000.001,05");
+
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 0, 2), "1.06");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(123.0572f, 3, 2), "123.06");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 3, 2), "001.06");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 6, 2), "000 001.06");
+
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 0, 3), "1.057");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(123.0572f, 3, 3), "123.057");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 3, 3), "001.057");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 6, 3), "000 001.057");
+
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 0, 4), "1.0572");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(123.0572f, 3, 4), "123.0572");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 3, 4), "001.0572");
+            GUGU_UTEST_CHECK_EQUAL(StringNumberFormatf(1.0572f, 6, 4), "000 001.0572");
         }
 
         GUGU_UTEST_SUBSECTION("Split");
@@ -611,50 +672,146 @@ void RunUnitTests_System(UnitTestResults* results)
     {
         GUGU_UTEST_SUBSECTION("Vector");
         {
-            std::vector<int> container = { 10, 20, 30, 40, 50 };
+            // Manipulations on single values.
+            {
+                std::vector<int> containerA = { 10, 20, 30, 40, 50 };
 
-            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 10) == 0);
-            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 30) == 2);
-            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 50) == 4);
-            GUGU_UTEST_CHECK(StdVectorIndexOf(container, 0) == system::InvalidIndex);
+                GUGU_UTEST_CHECK(StdVectorIndexOf(containerA, 10) == 0);
+                GUGU_UTEST_CHECK(StdVectorIndexOf(containerA, 30) == 2);
+                GUGU_UTEST_CHECK(StdVectorIndexOf(containerA, 50) == 4);
+                GUGU_UTEST_CHECK(StdVectorIndexOf(containerA, 0) == system::InvalidIndex);
 
-            std::string valueA = "AAA";
-            std::string valueB = "BBB";
-            std::string valueC = "CCC";
-            std::vector<std::string> containerB { valueC };
-            GUGU_UTEST_CHECK_EQUAL(containerB[0], "CCC");
+                std::string valueA = "AAA";
+                std::string valueB = "BBB";
+                std::string valueC = "CCC";
+                std::string valueD = "DDD";
+                std::vector<std::string> containerB{ valueC };
+                GUGU_UTEST_CHECK_EQUAL(containerB[0], "CCC");
 
-            StdVectorPushFront(containerB, valueA);
-            GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
-            GUGU_UTEST_CHECK_EQUAL(containerB[1], "CCC");
+                StdVectorPushFront(containerB, valueA);
+                GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
+                GUGU_UTEST_CHECK_EQUAL(containerB[1], "CCC");
 
-            StdVectorInsertAt(containerB, 1, valueB);
-            GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
-            GUGU_UTEST_CHECK_EQUAL(containerB[1], "BBB");
-            GUGU_UTEST_CHECK_EQUAL(containerB[2], "CCC");
+                StdVectorInsertAt(containerB, 1, valueB);
+                GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
+                GUGU_UTEST_CHECK_EQUAL(containerB[1], "BBB");
+                GUGU_UTEST_CHECK_EQUAL(containerB[2], "CCC");
 
-            GUGU_UTEST_CHECK(StdVectorContains(containerB, valueC));
-            GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) != containerB.end());
+                GUGU_UTEST_CHECK_TRUE(StdVectorContains(containerB, valueC));
+                GUGU_UTEST_CHECK_FALSE(StdVectorContains(containerB, valueD));
+                GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) != containerB.end());
+                GUGU_UTEST_CHECK(StdVectorFind(containerB, valueD) == containerB.end());
 
-            StdVectorRemove(containerB, valueC);
-            GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
-            GUGU_UTEST_CHECK_EQUAL(containerB[1], "BBB");
+                containerB.push_back(valueD);
+                GUGU_UTEST_CHECK_EQUAL(containerB.size(), 4);
+                StdVectorRemove(containerB, valueC);
+                GUGU_UTEST_CHECK_EQUAL(containerB.size(), 3);
+                GUGU_UTEST_CHECK_EQUAL(containerB[0], "AAA");
+                GUGU_UTEST_CHECK_EQUAL(containerB[1], "BBB");
+                GUGU_UTEST_CHECK_EQUAL(containerB[2], "DDD");
 
-            StdVectorRemoveAt(containerB, 0);
-            GUGU_UTEST_CHECK_EQUAL(containerB[0], "BBB");
+                StdVectorRemoveAt(containerB, 0);
+                GUGU_UTEST_CHECK_EQUAL(containerB.size(), 2);
+                GUGU_UTEST_CHECK_EQUAL(containerB[0], "BBB");
+                GUGU_UTEST_CHECK_EQUAL(containerB[1], "DDD");
 
-            StdVectorRemoveIf(containerB, [&](const std::string& item) { return item == valueB; });
-            GUGU_UTEST_CHECK(containerB.empty());
+                containerB.push_back(valueA);
+                containerB.push_back(valueC);
+                GUGU_UTEST_CHECK_EQUAL(containerB.size(), 4);
+                StdVectorRemoveAt(containerB, 2, 2);
+                GUGU_UTEST_CHECK_EQUAL(containerB.size(), 2);
+                GUGU_UTEST_CHECK_EQUAL(containerB[0], "BBB");
+                GUGU_UTEST_CHECK_EQUAL(containerB[1], "DDD");
 
-            GUGU_UTEST_CHECK_FALSE(StdVectorContains(containerB, valueC));
-            GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) == containerB.end());
+                StdVectorRemoveIf(containerB, [&](const std::string& item) { return item == valueB; });
+                GUGU_UTEST_CHECK_EQUAL(containerB.size(), 1);
+                GUGU_UTEST_CHECK_EQUAL(containerB[0], "DDD");
 
-            // TODO:
-            // StdVectorRemoveFirst
-            // StdVectorRemoveAt variant
-            // StdVectorAppend
-            // StdVectorDifference
-            // StdVectorIntersection
+                GUGU_UTEST_CHECK_FALSE(StdVectorContains(containerB, valueC));
+                GUGU_UTEST_CHECK_TRUE(StdVectorContains(containerB, valueD));
+                GUGU_UTEST_CHECK(StdVectorFind(containerB, valueC) == containerB.end());
+                GUGU_UTEST_CHECK(StdVectorFind(containerB, valueD) != containerB.end());
+
+                containerB.push_back(valueD);
+                containerB.push_back(valueD);
+                containerB.push_back(valueD);
+                GUGU_UTEST_CHECK_EQUAL(containerB.size(), 4);
+                StdVectorRemoveFirst(containerB, valueD);
+                GUGU_UTEST_CHECK_EQUAL(containerB.size(), 3);
+            }
+
+            // Manipulations on pointers.
+            {
+                std::vector<int*> containerC;
+                containerC.push_back(new int(1));
+                containerC.push_back(new int(2));
+                containerC.push_back(new int(3));
+                containerC.push_back(new int(4));
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 4);
+                ClearStdVector(containerC);
+                GUGU_UTEST_CHECK_TRUE(containerC.empty());
+
+                containerC.push_back(new int(1));
+                containerC.push_back(new int(2));
+                containerC.push_back(new int(3));
+                containerC.push_back(new int(4));
+
+                StdVectorDeleteIf(containerC, [](int* item) { return item != nullptr && *item == 3; });
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 4);
+                GUGU_UTEST_CHECK_EQUAL(*containerC[0], 1);
+                GUGU_UTEST_CHECK_EQUAL(*containerC[1], 2);
+                GUGU_UTEST_CHECK_EQUAL(containerC[2], nullptr);
+                GUGU_UTEST_CHECK_EQUAL(*containerC[3], 4);
+
+                StdVectorDeleteAndRemoveIf(containerC, [](int* item) { return item != nullptr && *item == 1; });
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 2);
+                GUGU_UTEST_CHECK_EQUAL(*containerC[0], 2);
+                GUGU_UTEST_CHECK_EQUAL(*containerC[1], 4);
+
+                SafeDelete(containerC[1]);
+                StdVectorRemoveIfNull(containerC);
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 1);
+                GUGU_UTEST_CHECK_EQUAL(*containerC[0], 2);
+
+                // Finalize.
+                ClearStdVector(containerC);
+            }
+
+            // Manipulations on multiple containers.
+            {
+                std::vector<int> containerA = { 1, 2, 3, 4, 5 };
+                std::vector<int> containerB = { 2, 4, 6, 8, 10 };
+                std::vector<int> containerC;
+                StdVectorDifference(containerA, containerB, containerC);
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 3);
+                GUGU_UTEST_CHECK_EQUAL(containerC[0], 1);
+                GUGU_UTEST_CHECK_EQUAL(containerC[1], 3);
+                GUGU_UTEST_CHECK_EQUAL(containerC[2], 5);
+
+                containerC.clear();
+                StdVectorDifference(containerB, containerA, containerC);
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 3);
+                GUGU_UTEST_CHECK_EQUAL(containerC[0], 6);
+                GUGU_UTEST_CHECK_EQUAL(containerC[1], 8);
+                GUGU_UTEST_CHECK_EQUAL(containerC[2], 10);
+
+                containerC.clear();
+                StdVectorIntersection(containerA, containerB, containerC);
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 2);
+                GUGU_UTEST_CHECK_EQUAL(containerC[0], 2);
+                GUGU_UTEST_CHECK_EQUAL(containerC[1], 4);
+
+                containerC.clear();
+                StdVectorAppend({ 1, 2, 3 }, containerC);
+                StdVectorAppend({ 4, 5, 6 }, containerC);
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 6);
+                GUGU_UTEST_CHECK_EQUAL(containerC[0], 1);
+                GUGU_UTEST_CHECK_EQUAL(containerC[1], 2);
+                GUGU_UTEST_CHECK_EQUAL(containerC[2], 3);
+                GUGU_UTEST_CHECK_EQUAL(containerC[3], 4);
+                GUGU_UTEST_CHECK_EQUAL(containerC[4], 5);
+                GUGU_UTEST_CHECK_EQUAL(containerC[5], 6);
+            }
         }
 
         GUGU_UTEST_SUBSECTION("Set");
@@ -670,6 +827,18 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_FALSE(StdSetContains(containerA, 40));
         }
 
+        GUGU_UTEST_SUBSECTION("List");
+        {
+            std::list<int*> containerC;
+            containerC.push_back(new int(1));
+            containerC.push_back(new int(2));
+            containerC.push_back(new int(3));
+            containerC.push_back(new int(4));
+            GUGU_UTEST_CHECK_EQUAL(containerC.size(), 4);
+            ClearStdList(containerC);
+            GUGU_UTEST_CHECK_TRUE(containerC.empty());
+        }
+
         GUGU_UTEST_SUBSECTION("Map");
         {
             std::map<std::string, int> containerA;
@@ -677,27 +846,89 @@ void RunUnitTests_System(UnitTestResults* results)
             containerA["B"] = 20;
             containerA["C"] = 30;
 
-            int result = 0;
-
-            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("A"), result)))
             {
-                GUGU_UTEST_CHECK_EQUAL(result, 10);
+                int result = 0;
+                GUGU_UTEST_CHECK_EQUAL(result, 0);
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValue(containerA, std::string("A"), result)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(result, 10);
+                }
+
+                if (GUGU_UTEST_CHECK_FALSE(StdMapTryGetValue(containerA, std::string("AA"), result)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(result, 10); // The result value will be unchanged through the call to TryGet.
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValue(containerA, std::string("B"), result)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(result, 20);
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValue(containerA, std::string("C"), result)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(result, 30);
+                }
             }
 
-            if (GUGU_UTEST_CHECK_FALSE(StdMapTryGet(containerA, std::string("AA"), result)))
             {
-                GUGU_UTEST_CHECK_EQUAL(result, 10); // The result value will be unchanged through the call to TryGet.
+                const int* resultRef = nullptr;
+                GUGU_UTEST_CHECK_EQUAL(resultRef, nullptr);
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueConstRef(containerA, std::string("A"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 10);
+                }
+
+                if (GUGU_UTEST_CHECK_FALSE(StdMapTryGetValueConstRef(containerA, std::string("AA"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 10); // The result value will be unchanged through the call to TryGet.
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueConstRef(containerA, std::string("B"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 20);
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueConstRef(containerA, std::string("C"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 30);
+                }
             }
 
-            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("B"), result)))
             {
-                GUGU_UTEST_CHECK_EQUAL(result, 20);
+                int* resultRef = nullptr;
+                GUGU_UTEST_CHECK_EQUAL(resultRef, nullptr);
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueRef(containerA, std::string("A"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 10);
+                }
+
+                if (GUGU_UTEST_CHECK_FALSE(StdMapTryGetValueRef(containerA, std::string("AA"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 10); // The result value will be unchanged through the call to TryGet.
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueRef(containerA, std::string("B"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 20);
+                }
+
+                if (GUGU_UTEST_CHECK_TRUE(StdMapTryGetValueRef(containerA, std::string("C"), resultRef)))
+                {
+                    GUGU_UTEST_CHECK_EQUAL(*resultRef, 30);
+                }
             }
 
-            if (GUGU_UTEST_CHECK_TRUE(StdMapTryGet(containerA, std::string("C"), result)))
-            {
-                GUGU_UTEST_CHECK_EQUAL(result, 30);
-            }
+            std::map<int, int*> containerC;
+            containerC.insert(std::make_pair(1, new int(1)));
+            containerC.insert(std::make_pair(2, new int(2)));
+            containerC.insert(std::make_pair(3, new int(3)));
+            containerC.insert(std::make_pair(4, new int(4)));
+            GUGU_UTEST_CHECK_EQUAL(containerC.size(), 4);
+            ClearStdMap(containerC);
+            GUGU_UTEST_CHECK_TRUE(containerC.empty());
         }
     }
 
@@ -813,6 +1044,132 @@ void RunUnitTests_System(UnitTestResults* results)
         map_uuid.insert(std::make_pair(GenerateUUID(), ""));
         map_uuid[GenerateUUID()] = "";
         std::sort(vector_uuid.begin(), vector_uuid.end());
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("BitFlag");
+    {
+        GUGU_UTEST_SUBSECTION("EnumClass");
+        {
+            enum class EBitFlag : uint8
+            {
+                Flag_None = 0,
+                Flag_A = 1 << 0,
+                Flag_B = 1 << 1,
+                Flag_C = 1 << 2,
+                Flag_D = 1 << 3,
+                Flag_E = 1 << 4,
+                Flag_F = 1 << 5,
+                //Flag_G = 1 << 6,
+                //Flag_H = 1 << 7,
+            };
+
+            EBitFlag flags = CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C);
+
+            GUGU_UTEST_CHECK_EQUAL((uint8)flags, 7);
+            GUGU_UTEST_CHECK_EQUAL(flags, (EBitFlag)7);
+            GUGU_UTEST_CHECK_EQUAL(CombineFlags(flags, EBitFlag::Flag_D), CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C, EBitFlag::Flag_D));
+            GUGU_UTEST_CHECK_NOT_EQUAL(CombineFlags(flags, EBitFlag::Flag_D), flags);
+
+            UnsetFlag(flags, EBitFlag::Flag_A);
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(EBitFlag::Flag_B, EBitFlag::Flag_C));
+            UnsetFlag(flags, EBitFlag::Flag_B);
+            GUGU_UTEST_CHECK_EQUAL(flags, EBitFlag::Flag_C);
+            UnsetFlag(flags, EBitFlag::Flag_C);
+            GUGU_UTEST_CHECK_EQUAL(flags, EBitFlag::Flag_None);
+
+            SetFlag(flags, EBitFlag::Flag_A);
+            GUGU_UTEST_CHECK_EQUAL(flags, EBitFlag::Flag_A);
+            SetFlag(flags, EBitFlag::Flag_B);
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B));
+            SetFlag(flags, EBitFlag::Flag_C);
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C));
+
+            ToggleFlag(flags, EBitFlag::Flag_D);
+            GUGU_UTEST_CHECK_NOT_EQUAL(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C));
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C, EBitFlag::Flag_D));
+
+            ToggleFlag(flags, EBitFlag::Flag_D);
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C));
+            GUGU_UTEST_CHECK_NOT_EQUAL(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C, EBitFlag::Flag_D));
+
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, EBitFlag::Flag_A));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, EBitFlag::Flag_B));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, EBitFlag::Flag_C));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, EBitFlag::Flag_D));
+
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C)));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B)));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_C)));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(EBitFlag::Flag_B, EBitFlag::Flag_C)));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_B, EBitFlag::Flag_C, EBitFlag::Flag_D)));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(EBitFlag::Flag_A, EBitFlag::Flag_D)));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(EBitFlag::Flag_B, EBitFlag::Flag_D)));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(EBitFlag::Flag_C, EBitFlag::Flag_D)));
+
+            GUGU_UTEST_CHECK_TRUE(HasAnyFlag(flags, CombineFlags(EBitFlag::Flag_C, EBitFlag::Flag_D)));
+            GUGU_UTEST_CHECK_TRUE(HasAnyFlag(flags, EBitFlag::Flag_C));
+            GUGU_UTEST_CHECK_FALSE(HasAnyFlag(flags, EBitFlag::Flag_D));
+        }
+
+        GUGU_UTEST_SUBSECTION("Integer");
+        {
+            int Flag_None = 0;
+            int Flag_A = 1 << 0;
+            int Flag_B = 1 << 1;
+            int Flag_C = 1 << 2;
+            int Flag_D = 1 << 3;
+            int Flag_E = 1 << 4;
+            int Flag_F = 1 << 5;
+
+            int flags = CombineFlags(Flag_A, Flag_B, Flag_C);
+
+            GUGU_UTEST_CHECK_EQUAL(flags, 7);
+            GUGU_UTEST_CHECK_EQUAL(flags, (Flag_A | Flag_B | Flag_C));
+            GUGU_UTEST_CHECK_EQUAL(CombineFlags(flags, Flag_D), CombineFlags(Flag_A, Flag_B, Flag_C, Flag_D));
+            GUGU_UTEST_CHECK_NOT_EQUAL(CombineFlags(flags, Flag_D), flags);
+
+            UnsetFlag(flags, Flag_A);
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(Flag_B, Flag_C));
+            UnsetFlag(flags, Flag_B);
+            GUGU_UTEST_CHECK_EQUAL(flags, Flag_C);
+            UnsetFlag(flags, Flag_C);
+            GUGU_UTEST_CHECK_EQUAL(flags, Flag_None);
+
+            SetFlag(flags, Flag_A);
+            GUGU_UTEST_CHECK_EQUAL(flags, Flag_A);
+            SetFlag(flags, Flag_B);
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(Flag_A, Flag_B));
+            SetFlag(flags, Flag_C);
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(Flag_A, Flag_B, Flag_C));
+
+            ToggleFlag(flags, Flag_D);
+            GUGU_UTEST_CHECK_NOT_EQUAL(flags, CombineFlags(Flag_A, Flag_B, Flag_C));
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(Flag_A, Flag_B, Flag_C, Flag_D));
+
+            ToggleFlag(flags, Flag_D);
+            GUGU_UTEST_CHECK_EQUAL(flags, CombineFlags(Flag_A, Flag_B, Flag_C));
+            GUGU_UTEST_CHECK_NOT_EQUAL(flags, CombineFlags(Flag_A, Flag_B, Flag_C, Flag_D));
+
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, Flag_A));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, Flag_B));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, Flag_C));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, Flag_D));
+
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(Flag_A, Flag_B, Flag_C)));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(Flag_A, Flag_B)));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(Flag_A, Flag_C)));
+            GUGU_UTEST_CHECK_TRUE(HasFlag(flags, CombineFlags(Flag_B, Flag_C)));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(Flag_A, Flag_B, Flag_C, Flag_D)));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(Flag_A, Flag_D)));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(Flag_B, Flag_D)));
+            GUGU_UTEST_CHECK_FALSE(HasFlag(flags, CombineFlags(Flag_C, Flag_D)));
+
+            GUGU_UTEST_CHECK_TRUE(HasAnyFlag(flags, CombineFlags(Flag_C, Flag_D)));
+            GUGU_UTEST_CHECK_TRUE(HasAnyFlag(flags, Flag_C));
+            GUGU_UTEST_CHECK_FALSE(HasAnyFlag(flags, Flag_D));
+        }
     }
 
     //----------------------------------------------

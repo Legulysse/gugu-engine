@@ -33,8 +33,8 @@ int main(int argc, char* argv[])
     EngineConfig config;
     config.applicationName = "Gugu::Editor";
     config.pathAssets = "Assets";
-    config.defaultFont = "Roboto-Regular.ttf";
-    config.debugFont = "Roboto-Regular.ttf";
+    config.defaultFont = "Editor-Roboto-Regular.ttf";
+    config.debugFont = "Editor-Roboto-Regular.ttf";
     config.windowWidth = 1440;
     config.windowHeight = 900;
     config.maximizeWindow = true;
@@ -49,13 +49,21 @@ int main(int argc, char* argv[])
     EditorConfig editorConfig;
     editorConfig.LoadFromFile("EditorConfig.xml");
 
-#if defined(GUGU_DEVELOPMENT_BUILD)
-    //editorConfig.defaultProjectFilePath = "../../Version/DemoSystems/Editor/ProjectSettings.xml";
-    //editorConfig.defaultProjectFilePath = "../../Version/DemoTests/Editor/ProjectSettings.xml";
-    //editorConfig.defaultProjectFilePath = "../../Version/DemoGame/Editor/ProjectSettings.xml";
-#endif
-
     GetEditor()->Init(editorConfig);
+
+#if defined(GUGU_DEVELOPMENT_BUILD)
+    std::string forceProjectFilePath;
+
+    //forceProjectFilePath = "../../../Version/Editor/ProjectSettings.xml";
+    //forceProjectFilePath = "../../Version/DemoSystems/Editor/ProjectSettings.xml";
+    //forceProjectFilePath = "../../Version/DemoTests/Editor/ProjectSettings.xml";
+    //forceProjectFilePath = "../../Version/DemoGame/Editor/ProjectSettings.xml";
+
+    if (!forceProjectFilePath.empty())
+    {
+        GetEditor()->OpenProject(forceProjectFilePath);
+    }
+#endif
 
     //----------------------------------------------
 

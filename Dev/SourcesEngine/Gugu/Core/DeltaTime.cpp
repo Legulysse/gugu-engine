@@ -66,4 +66,11 @@ int64 DeltaTime::unscaled_micro() const
     return m_unscaledTime.asMicroseconds();
 }
 
+bool DeltaTime::IsZero() const
+{
+    return m_time.asMicroseconds() == 0;
+}
+
+const DeltaTime DeltaTime::Zero = DeltaTime(sf::Time::Zero, sf::Time::Zero, 1.f);
+
 }   // namespace gugu

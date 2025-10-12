@@ -54,8 +54,8 @@ int main(int argc, char* argv[])
 
     // TODO: Move log setup before Engine setup (need a way to provide the engine with an existing logger).
     // TODO: Setup the logger to ignore Debug/Log levels, only keep warnings and errors (Or handle the output directly in the delegate).
-    GetLogEngine()->SetConsoleOutput(true, true);
-    GetLogEngine()->RegisterDelegate(nullptr, logDelegate);
+    GetLogEngine()->SetIDEConsoleOutput(true);
+    GetLogEngine()->RegisterDelegate(Handle(nullptr), logDelegate);
 
     //----------------------------------------------
 
@@ -69,6 +69,7 @@ int main(int argc, char* argv[])
     RunUnitTests_Core(&results);
     RunUnitTests_Element(&results);
     RunUnitTests_DataBinding(&results);
+    RunUnitTests_Resources(&results);
 
     // Finalize Tests.
     GUGU_UTEST_INIT("Finalize", "UnitTests_Finalize.log", &results);

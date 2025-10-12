@@ -36,7 +36,7 @@ FileInfo::FileInfo(const std::filesystem::path& path)
     }
     catch (const std::system_error& e)
     {
-        WriteInConsoleEndline(e.what(), true);
+        WriteInIDEConsoleEndline(e.what());
     }
 }
 
@@ -108,7 +108,7 @@ std::string_view FileInfo::GetAllExtensions() const
     return std::string_view();
 }
 
-bool FileInfo::HasExtension(const std::string& extension) const
+bool FileInfo::HasExtension(std::string_view extension) const
 {
     std::string_view fileName = GetFileName_utf8();
     return fileName.size() >= extension.size() + 1

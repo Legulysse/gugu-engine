@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<SoundCue serializationVersion="1">
+	<MixerGroup source="Gameplay.audiomixergroup.xml" />
+	<VolumeAttenuation value="1" />
+	<Clips>
+		<Clip source="Bulle_01.ogg" volume="1" />
+		<Clip source="Bulle_02.ogg" volume="0.800000012" />
+		<Clip source="Bulle_03.ogg" volume="0.75" />
+		<Clip source="Bulle_04.ogg" volume="1" />
+		<Clip source="Bulle_05.ogg" volume="1" />
+	</Clips>
+</SoundCue>

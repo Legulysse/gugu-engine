@@ -37,6 +37,13 @@ std::string StdStringReplace(const std::string& value, const std::string& from, 
     return result;
 }
 
+std::string StdStringReplace(const std::string& value, const char& from, const char& to)
+{
+    std::string result = value;
+    StdStringReplaceSelf(result, from, to);
+    return result;
+}
+
 void StdStringReplaceSelf(std::string& value, const std::string& from, const std::string& to)
  {
     size_t lengthFrom = from.length();
@@ -48,13 +55,6 @@ void StdStringReplaceSelf(std::string& value, const std::string& from, const std
         value.replace(pos, lengthFrom, to);
         pos += lengthTo;
     }
-}
-
-std::string StdStringReplace(const std::string& value, const char& from, const char& to)
-{
-    std::string result = value;
-    StdStringReplaceSelf(result, from, to);
-    return result;
 }
 
 void StdStringReplaceSelf(std::string& _strValue, const char& from, const char& to)

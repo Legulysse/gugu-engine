@@ -90,8 +90,51 @@ def ConvertBytes(value):
 #---------------------------------------------------------------------------------------------------
 # Files and Folders handling
 
-# Copy each file from "src" to "dst". If bMove, files will be moved instead of copied.
-def CopyFiles(src, dst, bMove=False):
+# Copy a specified file from "src" to "dst" with a new name. If move=True, the file will be moved instead of copied.
+def CopyAndRenameFile(src, dst, srcFilename, dstFilename, move=False):
+    if not os.path.isdir(src):
+        return
+
+    srcname = os.path.join(src, srcFilename)
+    dstname = os.path.join(dst, dstFilename)
+    if os.path.isfile(srcname):
+        if not os.path.lexists(dst):
+            os.makedirs(dst)
+
+        if os.path.isfile(dstname):
+            os.chmod(dstname, stat.S_IWUSR)
+            os.remove(dstname)
+            
+        if move:
+            shutil.move(srcname, dstname)
+        else:
+            shutil.copy2(srcname, dstname)
+
+# Copy a specified list of files from "src" to "dst". If move=True, files will be moved instead of copied.
+def CopyFiles(src, dst, filenames, move=False):
+    if not os.path.isdir(src):
+        return
+
+    names = os.listdir(src)
+    for name in names:
+        if name in filenames:
+            srcname = os.path.join(src, name)
+            dstname = os.path.join(dst, name)
+            if os.path.isfile(srcname):
+                if not os.path.lexists(dst):
+                    os.makedirs(dst)
+                    
+                if os.path.isfile(dstname):
+                    os.chmod(dstname, stat.S_IWUSR)
+                    os.remove(dstname)
+                    
+                if move:
+                    shutil.move(srcname, dst)
+                else:
+                    shutil.copy2(srcname, dst)
+
+# Copy each file from "src" to "dst". If move=True, files will be moved instead of copied.
+def CopyAllFiles(src, dst, move=False):
     if not os.path.isdir(src):
         return
         
@@ -107,19 +150,19 @@ def CopyFiles(src, dst, bMove=False):
                 os.chmod(dstname, stat.S_IWUSR)
                 os.remove(dstname)
                 
-            if bMove:
+            if move:
                 shutil.move(srcname, dst)
             else:
                 shutil.copy2(srcname, dst)
 
 # Copy (recursively) each files from "src" to "dst", ignoring "ignore" folders (like shutil.ignore_patterns('*.svn')).
-def RecursiveCopyFiles(src, dst, ignore=None):
+def RecursiveCopyAllFiles(src, dst, ignore=None):
     if not os.path.isdir(src):
         return
     if not os.path.lexists(dst):
         os.makedirs(dst)
 
-    CopyFiles(src, dst)
+    CopyAllFiles(src, dst)
 
     names = os.listdir(src)
     if ignore is not None:
@@ -134,10 +177,10 @@ def RecursiveCopyFiles(src, dst, ignore=None):
         dstname = os.path.join(dst, name)
 
         if os.path.isdir(srcname):
-            RecursiveCopyFiles(srcname, dstname, ignore)
+            RecursiveCopyAllFiles(srcname, dstname, ignore)
 
-# Copy each file with extension in "exts" from "src" to "dst" ("exts" can be like ['h','cpp']). If bMove, files will be moved instead of copied.
-def CopyFilesFromExtensions(src, dst, exts, bMove=False):
+# Copy each file with extension in "exts" from "src" to "dst" ("exts" can be like ['h','cpp']). If move=True, files will be moved instead of copied.
+def CopyAllFilesWithExtensions(src, dst, exts, move=False):
     if not os.path.isdir(src):
         return
         
@@ -156,23 +199,23 @@ def CopyFilesFromExtensions(src, dst, exts, bMove=False):
                         os.chmod(dstname, stat.S_IWUSR)
                         os.remove(dstname)
                         
-                    if bMove:
+                    if move:
                         shutil.move(srcname, dst)
                     else:
                         shutil.copy2(srcname, dst)
 
-# Call CopyFilesFromExtensions with a single extension.
-def CopyFilesFromExtension(src, dst, ext, bMove=False):
-    CopyFilesFromExtensions(src, dst, [ext], bMove)
+# Call CopyAllFilesWithExtensions with a single extension.
+def CopyAllFilesWithExtension(src, dst, ext, bMove=False):
+    CopyAllFilesWithExtensions(src, dst, [ext], bMove)
 
 # Copy (recursively) each files with "ext" extension from "src" to "dst", ignoring "ignore" folders (like shutil.ignore_patterns('*.svn')).
-def RecursiveCopyFilesFromExtensions(src, dst, exts, ignore=None):
+def RecursiveCopyAllFilesWithExtensions(src, dst, exts, ignore=None):
     if not os.path.isdir(src):
         return
     if not os.path.lexists(dst):
         os.makedirs(dst)
 
-    CopyFilesFromExtensions(src, dst, exts)
+    CopyAllFilesWithExtensions(src, dst, exts)
 
     names = os.listdir(src)
     if ignore is not None:
@@ -187,15 +230,21 @@ def RecursiveCopyFilesFromExtensions(src, dst, exts, ignore=None):
         dstname = os.path.join(dst, name)
 
         if os.path.isdir(srcname):
-            RecursiveCopyFilesFromExtensions(srcname, dstname, exts, ignore)
+            RecursiveCopyAllFilesWithExtensions(srcname, dstname, exts, ignore)
             
-# Call CopyFilesFromExtensionRecursive with a single extension.
-def RecursiveCopyFilesFromExtension(src, dst, ext, ignore=None):
-    RecursiveCopyFilesFromExtensions(src, dst, [ext], ignore)
+# Call RecursiveCopyAllFilesWithExtensions with a single extension.
+def RecursiveCopyAllFilesWithExtension(src, dst, ext, ignore=None):
+    RecursiveCopyAllFilesWithExtensions(src, dst, [ext], ignore)
 
+
+# Remove "src" file.
+def RemoveFile(src):
+    if os.path.isfile(src):
+        os.chmod(src, stat.S_IWUSR)
+        os.remove(src)
 
 # Remove each file with extension in "exts" from "src" ("exts" can be like ['h','cpp']).
-def RemoveFilesFromExtensions(src, exts):
+def RemoveAllFilesWithExtensions(src, exts):
     if not os.path.isdir(src):
         return
         
@@ -209,16 +258,16 @@ def RemoveFilesFromExtensions(src, exts):
                         os.chmod(srcname, stat.S_IWUSR)
                         os.remove(srcname)
 
-# Call RemoveFilesFromExtensions with a single extension.
-def RemoveFilesFromExtension(src, ext):
-    RemoveFilesFromExtensions(src, [ext])
+# Call RemoveAllFilesWithExtensions with a single extension.
+def RemoveAllFilesWithExtension(src, ext):
+    RemoveAllFilesWithExtensions(src, [ext])
 
 # Remove (recursively) each files with "ext" extension from "src", ignoring "ignore" folders (like shutil.ignore_patterns('*.svn')).
-def RecursiveRemoveFilesFromExtensions(src, exts, ignore=None):
+def RecursiveRemoveAllFilesWithExtensions(src, exts, ignore=None):
     if not os.path.isdir(src):
         return
 
-    RemoveFilesFromExtensions(src, exts)
+    RemoveAllFilesWithExtensions(src, exts)
 
     names = os.listdir(src)
     if ignore is not None:
@@ -232,11 +281,11 @@ def RecursiveRemoveFilesFromExtensions(src, exts, ignore=None):
         srcname = os.path.join(src, name)
 
         if os.path.isdir(srcname):
-            RecursiveRemoveFilesFromExtensions(srcname, exts, ignore)
+            RecursiveRemoveAllFilesWithExtensions(srcname, exts, ignore)
             
-# Call RecursiveRemoveFilesFromExtensions with a single extension.
-def RecursiveRemoveFilesFromExtension(src, ext, ignore=None):
-    RecursiveRemoveFilesFromExtensions(src, [ext], ignore)
+# Call RecursiveRemoveAllFilesWithExtensions with a single extension.
+def RecursiveRemoveAllFilesWithExtension(src, ext, ignore=None):
+    RecursiveRemoveAllFilesWithExtensions(src, [ext], ignore)
     
 
 # Delete a directory recursively. Will delete itself.
@@ -368,14 +417,15 @@ def GitUpdateSubRepositories():
 #---------------------------------------------------------------------------------------------------
 # Zip
 
-def Zip(src):
-    ZipTo(src, src+'.7z')
-    
-def ZipTo(src, dst):
-    ShellExecute('"7zip/7za.exe" a "'+ dst +'" "'+ src +'"')
+def Zip(dirEngineBuildScripts, srcPath):
+    ZipTo(dirEngineBuildScripts, srcPath, srcPath+'.zip')
 
-def UnzipTo(src, dst):
-    ShellExecute('"7zip/7za.exe" x "'+ src +'" -o"'+ dst +'" -y')
+# Using './sourcePath/*' as source instead of './sourcePath' will include all files inside the directory without adding the directory itself (useful for zipping contents, instead of zipping the directory).
+def ZipTo(dirEngineBuildScripts, srcPath, dstPath):
+    ShellExecute('"' + dirEngineBuildScripts + '/7zip/7za.exe" a "'+ dstPath +'" "'+ srcPath +'"')
+
+def UnzipTo(dirEngineBuildScripts, srcPath, dstPath):
+    ShellExecute('"' + dirEngineBuildScripts + '/7zip/7za.exe" x "'+ srcPath +'" -o"'+ dstPath +'" -y')
 
     
 #---------------------------------------------------------------------------------------------------

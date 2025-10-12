@@ -2,7 +2,6 @@
 <ElementWidget serializationVersion="1">
 	<Element type="ElementSpriteGroup">
 		<Size x="100" y="100" />
-		<ImageSet source="Box9_Default.imageset.xml" />
 		<Components>
 			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
@@ -50,5 +49,6 @@
 				<SubImage name="BottomRight_01" />
 			</Element>
 		</Components>
+		<ImageSet source="Box9_Default.imageset.xml" />
 	</Element>
 </ElementWidget>

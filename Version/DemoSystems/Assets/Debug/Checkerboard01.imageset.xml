@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<ImageSet serializationVersion="1" texture="Checkerboard01.png">
+	<SubImage name="x0_y0" x="0" y="0" w="32" h="32" />
+</ImageSet>

@@ -98,8 +98,8 @@ void WriteEnumArray(DataSaveContext& _kContext, const std::string& _strName, con
 void ReadVector2(DataParseContext& context, const std::string& name, Vector2i& value);
 void ReadVector2(DataParseContext& context, const std::string& name, Vector2f& value);
 
-void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<sf::Vector2i>& values);
-void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<sf::Vector2f>& values);
+void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<Vector2i>& values);
+void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<Vector2f>& values);
 
 //----------------------------------------------
 // Write Vector2

@@ -30,6 +30,10 @@ public:
     float unscaled_ms() const;
     int64 unscaled_micro() const;
 
+    bool IsZero() const;
+
+    static const DeltaTime Zero;
+
 private:
 
     sf::Time m_time;

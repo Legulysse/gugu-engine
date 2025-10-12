@@ -12,7 +12,8 @@
 
 namespace gugu
 {
-    class Sound;
+    class AudioClip;
+    class AudioMixerGroupInstance;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -22,10 +23,13 @@ namespace gugu {
 
 struct SoundParameters
 {
-    gugu::Sound* sound;
-    std::string soundID;
+    AudioClip* audioClip;
+    std::string audioClipId;
+    AudioMixerGroupInstance* mixerGroupInstance;
+    std::string mixerGroupId;
     float volume;
-    int group;
+    float pitchLowerOffset;
+    float pitchUpperOffset;
 
     SoundParameters();
 };
@@ -35,23 +39,24 @@ class SoundInstance
 public:
 
     SoundInstance();
-    //SoundInstance(const SoundInstance&);
     ~SoundInstance();
 
-    void    Reset       ();
+    void Reset();
 
-    void    SetGroup    (int _iGroup);
-    int     GetGroup    () const;
+    void SetAudioClip(AudioClip* audioClip);
+    void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
+    void SetVolume(float volume);
+    void SetPitch(float pitch);
 
-    void    SetSound    (gugu::Sound* _pSound);
-    void    SetVolume   (float _fVolume);
+    void RecomputeMixedVolume();
 
-    void    Play        ();
+    void Play();
 
 protected:
 
+    AudioMixerGroupInstance* m_mixerGroupInstance;
     sf::Sound m_sfSound;
-    int m_group;
+    float m_volume;
 };
 
 }   // namespace gugu

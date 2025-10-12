@@ -18,13 +18,12 @@ namespace gugu {
 
 namespace xml {
 
-// Helpers for string serialization.
-struct StringWriter : pugi::xml_writer
+// Helper for string serialization.
+class StringWriter : public pugi::xml_writer
 {
 public:
 
     StringWriter(std::string* target);
-
     virtual void write(const void* data, size_t size) override;
 
 private:

@@ -7,7 +7,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Resources/Sound.h"
+#include "Gugu/Audio/AudioMixerGroupInstance.h"
+#include "Gugu/Resources/AudioClip.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -15,22 +16,22 @@
 namespace gugu {
     
 SoundParameters::SoundParameters()
+    : audioClip(nullptr)
+    , audioClipId("")
+    , mixerGroupInstance(nullptr)
+    , mixerGroupId("")
+    , volume(1.f)
+    , pitchLowerOffset(0.f)
+    , pitchUpperOffset(0.f)
 {
-    sound = nullptr;
-    soundID = "";
-    volume = 1.f;
-    group = 0;
 }
 
 SoundInstance::SoundInstance()
+    : m_mixerGroupInstance(nullptr)
+    , m_volume(1.f)
 {
     Reset();
 }
-/*
-SoundInstance::SoundInstance(const SoundInstance&)
-{
-    Reset();
-}*/
 
 SoundInstance::~SoundInstance()
 {
@@ -40,30 +41,46 @@ SoundInstance::~SoundInstance()
 void SoundInstance::Reset()
 {
     m_sfSound.stop();
-    m_group = 0;
+    m_sfSound.setVolume(100);
+    m_sfSound.setPitch(1);
+    m_volume = 1.f;
 }
 
-void SoundInstance::SetGroup(int _iGroup)
-{
-    m_group = _iGroup;
-}
-
-int SoundInstance::GetGroup() const
-{
-    return m_group;
-}
-
-void SoundInstance::SetSound(gugu::Sound* _pSound)
+void SoundInstance::SetAudioClip(AudioClip* audioClip)
 {
     Reset();
 
-    if (_pSound)
-        m_sfSound.setBuffer(*_pSound->GetSFSoundBuffer());
+    if (audioClip)
+    {
+        sf::SoundBuffer* soundBuffer = audioClip->GetOrLoadSFSoundBuffer();
+        if (soundBuffer)
+        {
+            m_sfSound.setBuffer(*soundBuffer);
+        }
+    }
 }
 
-void SoundInstance::SetVolume(float _fVolume)
+void SoundInstance::SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance)
 {
-    m_sfSound.setVolume(_fVolume * 100.f);
+    m_mixerGroupInstance = mixerGroupInstance;
+    RecomputeMixedVolume();
+}
+
+void SoundInstance::SetVolume(float volume)
+{
+    m_volume = volume;
+    RecomputeMixedVolume();
+}
+
+void SoundInstance::SetPitch(float pitch)
+{
+    m_sfSound.setPitch(pitch);
+}
+
+void SoundInstance::RecomputeMixedVolume()
+{
+    float volume = m_mixerGroupInstance == nullptr ? m_volume : m_mixerGroupInstance->ComputeMixedVolume(m_volume);
+    m_sfSound.setVolume(volume * 100.f);
 }
 
 void SoundInstance::Play()

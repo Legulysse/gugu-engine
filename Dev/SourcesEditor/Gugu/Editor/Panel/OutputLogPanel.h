@@ -29,7 +29,7 @@ private:
 
     struct LogEntry
     {
-        ELog::Type level;
+        ELog::Type level = ELog::Debug;
         std::string timestamp;
         std::string levelStr;
         std::string categoryStr;

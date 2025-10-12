@@ -12,6 +12,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/AnimSet.h"
 #include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/System/Container.h"
 #include "Gugu/Math/MathUtility.h"
 
 #include <sstream>
@@ -63,15 +64,81 @@ void SpriteAnimation::ChangeAnimSet(const std::string& _strFilePath)
 
 void SpriteAnimation::ChangeAnimSet(AnimSet* _pAnimSet)
 {
+    // TODO: purge events ? Provide ClearEvents method and let user do its stuff ?
+
     StopAnimation();
 
     m_animSet = _pAnimSet;
     OnAnimsetChanged();
 }
 
-bool SpriteAnimation::HasAnimation(const std::string& _strNameAnim) const
+bool SpriteAnimation::HasAnimation(const std::string& animationName) const
 {
-    return (m_animSet && m_animSet->GetAnimation(_strNameAnim));
+    return (m_animSet && m_animSet->GetAnimation(animationName));
+}
+
+bool SpriteAnimation::HasAnimationEvent(const std::string& animationName, const std::string& eventName) const
+{
+    if (m_animSet)
+    {
+        if (Animation* animation = m_animSet->GetAnimation(animationName))
+        {
+            const std::vector<AnimationFrame*>& frames = animation->GetFrames();
+            for (const auto& frame : frames)
+            {
+                if (StdVectorContains(frame->GetEvents(), eventName))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+float SpriteAnimation::GetAnimationDuration(const std::string& animationName) const
+{
+    float duration = 0.f;
+
+    if (m_animSet)
+    {
+        if (Animation* animation = m_animSet->GetAnimation(animationName))
+        {
+            const std::vector<AnimationFrame*>& frames = animation->GetFrames();
+            for (const auto& frame : frames)
+            {
+                duration += frame->GetDuration();
+            }
+        }
+    }
+
+    return duration;
+}
+
+float SpriteAnimation::GetAnimationEventDelay(const std::string& animationName, const std::string& eventName)
+{
+    if (m_animSet)
+    {
+        if (Animation* animation = m_animSet->GetAnimation(animationName))
+        {
+            float delay = 0.f;
+            const std::vector<AnimationFrame*>& frames = animation->GetFrames();
+            for (const auto& frame : frames)
+            {
+                if (StdVectorContains(frame->GetEvents(), eventName))
+                {
+                    return delay;
+                }
+                else
+                {
+                    delay += frame->GetDuration();
+                }
+            }
+        }
+    }
+
+    return 0.f;
 }
 
 void SpriteAnimation::StartAnimation(const std::string& _strNameAnim)
@@ -107,6 +174,8 @@ void SpriteAnimation::RestartAnimation()
 
 void SpriteAnimation::StopAnimation()
 {
+    // TODO: option to call the finished callback ? (same question applies for any entry point where an animation can be interrupted)
+
     m_animation = nullptr;
     m_animIndexCurrent  = 0;
     m_animDurationCurrent  = 0.f;
@@ -173,9 +242,14 @@ void SpriteAnimation::SetMoveFromAnimation(bool _bMoveFromAnimation)
     m_moveFromAnimation = _bMoveFromAnimation;
 }
 
-void SpriteAnimation::AddEventCallback(const std::string& _strEvent, const Callback& callbackEvent)
+void SpriteAnimation::SetFinishedCallback(const Callback& callback)
 {
-    m_events[_strEvent] = callbackEvent;
+    m_finishedCallback = callback;
+}
+
+void SpriteAnimation::SetEventCallback(const std::string& eventName, const Callback& callback)
+{
+    m_events[eventName] = callback;
 }
 
 void SpriteAnimation::SetCurrentFrame(size_t _uiIndex)
@@ -240,6 +314,11 @@ void SpriteAnimation::InjectDuration(float seconds)
             }
             else
             {
+                // Only trigger when the animation properly finishes.
+                if (m_finishedCallback)
+                    m_finishedCallback();
+
+                // We want the frame following the last one : loop or stop.
                 if (m_animLoop)
                 {
                     m_animIndexCurrent = 0;
@@ -305,11 +384,22 @@ AnimationFrame* SpriteAnimation::InitCurrentAnimationFrame()
 
         if (m_originFromAnimation)
         {
-            m_sprite->SetOrigin(pCurrentFrame->GetOrigin());
+            // TODO: Should we receive a target pivot element to apply the move ?
+            Vector2f originOffset = m_animSet->GetDefaultOriginOffset() + pCurrentFrame->GetOriginOffset();
+
+            if (m_sprite->GetUseUnifiedOrigin())
+            {
+                m_sprite->SetUnifiedOrigin(UDim2(m_sprite->GetUnifiedOrigin().relative, originOffset));
+            }
+            else
+            {
+                m_sprite->SetOrigin(originOffset);
+            }
         }
 
         if (m_moveFromAnimation)
         {
+            // TODO: How do I handle potential UDim position ? Should we receive a target pivot element to apply the move ?
             Vector2f kMove = pCurrentFrame->GetMoveOffset();
             if (m_sprite->GetFlipH())
                 kMove.x = -kMove.x;

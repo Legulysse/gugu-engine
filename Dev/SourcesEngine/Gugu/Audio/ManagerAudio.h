@@ -16,9 +16,9 @@
 namespace gugu
 {
     struct EngineConfig;
-    class Sound;
-    class Music;
-    class AudioCue;
+    class SoundCue;
+    class AudioMixerGroup;
+    class AudioMixerGroupInstance;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -33,42 +33,46 @@ public:
     ManagerAudio();
     ~ManagerAudio();
 
-    void    Init    (const EngineConfig& config);
-    void    Release ();
+    void Init(const EngineConfig& config);
+    void Release();
     
-    void    Update  (const DeltaTime& dt);
+    void Update(const DeltaTime& dt);
 
-    void SetMasterMuted(bool muted);
-    bool IsMasterMuted() const;
-    void SetMasterVolume(float volume);     // Volume range [0, 1]
-    void SetMasterVolume100(int volume);    // Volume range [0, 100]
-    float GetMasterVolume() const;
-    int GetMasterVolume100() const;
+    void SetListenerMuted(bool muted);
+    bool IsListenerMuted() const;
+    void SetListenerVolume(float volume);     // Volume range [0, 1]
+    float GetListenerVolume() const;
 
-    //void    SetVolumeGroup  (int _iGroup, float _fVolume);    //TODO
-    //float   GetVolumeGroup  (int _iGroup) const;              //TODO
+    void SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup);
+    AudioMixerGroupInstance* GetMixerGroupInstance(const std::string& mixerGroupId) const;
+    AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
+    void RecomputeAllMixedVolumes();
 
-    bool    PlaySoundCue    (const std::string& _strFile);
-    bool    PlaySound       (const std::string& _strFile, float _fVolume = 1.f, int _iGroup = 0);     // Volume range [0, 1]
-    bool    PlaySound       (const SoundParameters& _kParameters);
+    bool PlaySoundCue(const std::string& soundCueId);
+    bool PlaySoundCue(SoundCue* soundCue);
+    bool PlaySound(const std::string& audioClipId, float volume = 1.f);         // Volume range [0, 1]
+    bool PlaySound(const SoundParameters& parameters);
 
-    bool    PlayMusic       (const std::string& _strFile, float _fVolume = 1.f, float _fFade = 2.f);   // Volume range [0, 1]
-    bool    PlayMusic       (const MusicParameters& _kParameters);
-    bool    PlayMusicList   (const std::vector<MusicParameters>& _vecPlaylist, bool loopPlaylist, int layer = 0);
-    bool    StopMusic       (float _fFade = 2.f, int layer = 0);
+    bool PlayMusic(const std::string& audioClipId, float volume = 1.f, float fade = 2.f);      // Volume range [0, 1]
+    bool PlayMusic(const MusicParameters& parameters);
+    bool PlayMusicList(const std::vector<MusicParameters>& playlist, bool loopPlaylist, int layer = 0);
+    bool StopMusic(float fade = 2.f, int layer = 0);
 
     MusicInstance* GetCurrentMusicInstance(int layer) const;
 
 private:
 
-    std::vector<SoundInstance>  m_soundInstances;
-    std::vector<MusicInstance>  m_musicInstances;
-    std::vector<MusicLayer>     m_musicLayers;
+    AudioMixerGroupInstance* m_rootMixerGroupInstance;
+    std::map<AudioMixerGroup*, AudioMixerGroupInstance*> m_mixerGroupInstances;
 
-    size_t                      m_soundIndex;
+    std::vector<SoundInstance> m_soundInstances;
+    std::vector<MusicInstance> m_musicInstances;
+    std::vector<MusicLayer> m_musicLayers;
 
-    bool m_masterMuted;
-    float m_masterVolume;
+    size_t m_soundIndex;
+
+    bool m_listenerMuted;
+    float m_listenerVolume;
 };
 
 

@@ -2,7 +2,6 @@
 <ElementWidget serializationVersion="1">
 	<Element type="ElementSpriteGroup">
 		<Size x="200" y="20" />
-		<ImageSet source="uipack_rpg.imageset.xml" />
 		<Components>
 			<Element type="ElementSpriteGroupItem">
 				<UPosition xRel="0" yRel="0" xAbs="0" yAbs="0" />
@@ -35,5 +34,6 @@
 				<SubImage name="barYellow_horizontalRight" />
 			</Element>
 		</Components>
+		<ImageSet source="uipack_rpg.imageset.xml" />
 	</Element>
 </ElementWidget>

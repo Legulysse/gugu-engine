@@ -10,15 +10,18 @@
 
 namespace gugu {
 
-void WriteInConsole(const std::string& _strLine, bool printInIDE);
-void WriteInConsoleEndline(const std::string& _strLine, bool printInIDE);
-void WriteInFileEndline(const std::string& _strFileName, const std::string& _strLine);
+void WriteInConsole(const std::string& value);
+void WriteInConsoleEndline(const std::string& value);
+void WriteInIDEConsole(const std::string& value);
+void WriteInIDEConsoleEndline(const std::string& value);
+void WriteInFileEndline(const std::string& fileName, const std::string& value);
 
-void OpenFileExplorer(const std::string& path);
-void OpenWebBrowser(const std::string& _strURL);
+bool ExecuteCommand(std::string_view executablePath, std::string_view arguments);
+void OpenFileExplorer(std::string_view path);
+void OpenWebBrowser(std::string_view url);
 
-void GetFiles(const std::string& rootPath_utf8, std::vector<FileInfo>& files, bool recursive);
-void GetDirectories(const std::string& rootPath_utf8, std::vector<std::string>& directories, bool recursive);
+void GetFiles(std::string_view rootPath_utf8, std::vector<FileInfo>& files, bool recursive);
+void GetDirectories(std::string_view rootPath_utf8, std::vector<std::string>& directories, bool recursive);
 
 bool DirectoryExists(std::string_view path_utf8);
 bool FileExists(std::string_view path_utf8);

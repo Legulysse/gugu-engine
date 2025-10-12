@@ -38,7 +38,11 @@ public:
     void    ChangeAnimSet           (const std::string& _strFilePath);
     void    ChangeAnimSet           (AnimSet* _pAnimSet);
 
-    bool    HasAnimation            (const std::string& _strNameAnim) const;
+    bool HasAnimation(const std::string& animationName) const;
+    bool HasAnimationEvent(const std::string& animationName, const std::string& eventName) const;
+
+    float GetAnimationDuration(const std::string& animationName) const;
+    float GetAnimationEventDelay(const std::string& animationName, const std::string& eventName);
 
     void    StartAnimation          (const std::string& _strNameAnim);
     void    StartAnimation          (Animation* animation);
@@ -61,7 +65,11 @@ public:
     void    SetOriginFromAnimation  (bool _bOriginFromAnimation);
     void    SetMoveFromAnimation    (bool _bMoveFromAnimation);
 
-    void    AddEventCallback(const std::string& _strEvent, const Callback& callbackEvent);
+    // Set a callback for when any animation properly finishes, applied accross all animations.
+    void SetFinishedCallback(const Callback& callback);
+
+    // Set a callback for a named frame event, applied accross all animations.
+    void SetEventCallback(const std::string& eventName, const Callback& callback);
 
     void    StepAnimation           (const DeltaTime& dt);
     void    InjectDuration          (float seconds);
@@ -96,6 +104,7 @@ protected:
     float       m_animDurationCurrent;
 
     std::map<std::string, Callback> m_events;
+    Callback m_finishedCallback;
 };
 
 }   // namespace gugu

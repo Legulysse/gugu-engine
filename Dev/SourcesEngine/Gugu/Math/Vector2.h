@@ -14,6 +14,8 @@
 
 namespace gugu {
 
+template<typename T>
+using Vector2_t = sf::Vector2<T>;
 using Vector2i = sf::Vector2i;
 using Vector2u = sf::Vector2u;
 using Vector2f = sf::Vector2f;
@@ -32,26 +34,28 @@ std::string ToString(const Vector2u& value);
 bool ApproxEqual(const Vector2f& left, const Vector2f& right, float epsilon);
 
 template <typename T>
-float LengthSquare(const sf::Vector2<T>& _kVector);
+float LengthSquare(const Vector2_t<T>& vector);
 
 template <typename T>
-float Length(const sf::Vector2<T>& _kVector);
+float Length(const Vector2_t<T>& vector);
 
 template <typename T>
-sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector);
+Vector2_t<T> Normalize(const Vector2_t<T>& _kVector);
 
 template <typename T>
-sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians);
+Vector2_t<T> Rotate(const Vector2_t<T>& _kVector, float _fRadians);
+
+Vector2f VectorFromAngle(float radians, float length);  // Zero angle is the +x axis, Pi/2 angle is the +y axis.
 
 template <typename T>
-bool IsInBounds(const sf::Vector2<T>& value, const sf::Vector2<T>& min, const sf::Vector2<T>& max);
+bool IsInBounds(const Vector2_t<T>& value, const Vector2_t<T>& min, const Vector2_t<T>& max);
 
-bool ApproxIsInBounds(const sf::Vector2f& value, const sf::Vector2f& min, const sf::Vector2f& max, float epsilon);
+bool ApproxIsInBounds(const Vector2f& value, const Vector2f& min, const Vector2f& max, float epsilon);
 
 template <typename T>
-bool DistanceCheck(const sf::Vector2<T>& left, const sf::Vector2<T>& right, float distance);
+bool DistanceCheck(const Vector2_t<T>& left, const Vector2_t<T>& right, float distance);
 
-bool ApproxDistanceCheck(const sf::Vector2f& left, const sf::Vector2f& right, float distance, float epsilon);
+bool ApproxDistanceCheck(const Vector2f& left, const Vector2f& right, float distance, float epsilon);
 
 }   // namespace gugu
 
@@ -86,29 +90,29 @@ struct less<gugu::Vector2u>
 namespace gugu {
 
 template <typename T>
-float LengthSquare(const sf::Vector2<T>& _kVector)
+float LengthSquare(const Vector2_t<T>& vector)
 {
-    return (float)(_kVector.x * _kVector.x + _kVector.y * _kVector.y);
+    return (float)(vector.x * vector.x + vector.y * vector.y);
 }
 
 template <typename T>
-float Length(const sf::Vector2<T>& _kVector)
+float Length(const Vector2_t<T>& vector)
 {
-    return std::sqrt(LengthSquare(_kVector));
+    return std::sqrt(LengthSquare(vector));
 }
 
 template <typename T>
-sf::Vector2<T> Normalize(const sf::Vector2<T>& _kVector)
+Vector2_t<T> Normalize(const Vector2_t<T>& _kVector)
 {
-    if (_kVector != sf::Vector2<T>(0, 0))
+    if (_kVector != Vector2_t<T>(0, 0))
         return _kVector / (Length(_kVector));
-    return sf::Vector2<T>(0, 0);
+    return Vector2_t<T>(0, 0);
 }
 
 template <typename T>
-sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians)
+Vector2_t<T> Rotate(const Vector2_t<T>& _kVector, float _fRadians)
 {
-    sf::Vector2<T> kResult;
+    Vector2_t<T> kResult;
     float fCos = std::cos(_fRadians);
     float fSin = std::sin(_fRadians);
     kResult.x = _kVector.x * fCos - _kVector.y * fSin;
@@ -117,13 +121,13 @@ sf::Vector2<T> Rotate(const sf::Vector2<T>& _kVector, float _fRadians)
 }
 
 template <typename T>
-bool IsInBounds(const sf::Vector2<T>& value, const sf::Vector2<T>& min, const sf::Vector2<T>& max)
+bool IsInBounds(const Vector2_t<T>& value, const Vector2_t<T>& min, const Vector2_t<T>& max)
 {
     return (value.x >= min.x && value.x <= max.x) && (value.y >= min.y && value.y <= max.y);
 }
 
 template <typename T>
-bool DistanceCheck(const sf::Vector2<T>& left, const sf::Vector2<T>& right, float distance)
+bool DistanceCheck(const Vector2_t<T>& left, const Vector2_t<T>& right, float distance)
 {
     if (std::abs(left.x - right.x) <= distance && std::abs(left.y - right.y) <= distance)
     {

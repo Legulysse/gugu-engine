@@ -1,46 +1,46 @@
 <?xml version="1.0"?>
-<AnimSet imageSet="Lady.imageset.xml">
+<AnimSet serializationVersion="2" imageSet="Lady.imageset.xml">
 	<Animation name="IdleDown">
-		<Frame subImage="x0_y10" duration="0.2" events="" />
+		<Frame subImage="x0_y10" duration="0.200000003" />
 	</Animation>
 	<Animation name="WalkDown">
-		<Frame subImage="x1_y10" duration="0.08" events="" />
-		<Frame subImage="x2_y10" duration="0.08" events="" />
-		<Frame subImage="x3_y10" duration="0.08" events="" />
-		<Frame subImage="x4_y10" duration="0.08" events="" />
-		<Frame subImage="x5_y10" duration="0.08" events="" />
-		<Frame subImage="x6_y10" duration="0.08" events="" />
-		<Frame subImage="x7_y10" duration="0.08" events="" />
-		<Frame subImage="x8_y10" duration="0.08" events="" />
+		<Frame subImage="x1_y10" duration="0.0799999982" />
+		<Frame subImage="x2_y10" duration="0.0799999982" />
+		<Frame subImage="x3_y10" duration="0.0799999982" />
+		<Frame subImage="x4_y10" duration="0.0799999982" />
+		<Frame subImage="x5_y10" duration="0.0799999982" />
+		<Frame subImage="x6_y10" duration="0.0799999982" />
+		<Frame subImage="x7_y10" duration="0.0799999982" />
+		<Frame subImage="x8_y10" duration="0.0799999982" />
 	</Animation>
 	<Animation name="WalkLeft">
-		<Frame subImage="x1_y9" duration="0.08" events="" />
-		<Frame subImage="x2_y9" duration="0.08" events="" />
-		<Frame subImage="x3_y9" duration="0.08" events="" />
-		<Frame subImage="x4_y9" duration="0.08" events="" />
-		<Frame subImage="x5_y9" duration="0.08" events="" />
-		<Frame subImage="x6_y9" duration="0.08" events="" />
-		<Frame subImage="x7_y9" duration="0.08" events="" />
-		<Frame subImage="x8_y9" duration="0.08" events="" />
+		<Frame subImage="x1_y9" duration="0.0799999982" />
+		<Frame subImage="x2_y9" duration="0.0799999982" />
+		<Frame subImage="x3_y9" duration="0.0799999982" />
+		<Frame subImage="x4_y9" duration="0.0799999982" />
+		<Frame subImage="x5_y9" duration="0.0799999982" />
+		<Frame subImage="x6_y9" duration="0.0799999982" />
+		<Frame subImage="x7_y9" duration="0.0799999982" />
+		<Frame subImage="x8_y9" duration="0.0799999982" />
 	</Animation>
 	<Animation name="WalkRight">
-		<Frame subImage="x1_y11" duration="0.08" events="" />
-		<Frame subImage="x2_y11" duration="0.08" events="" />
-		<Frame subImage="x3_y11" duration="0.08" events="" />
-		<Frame subImage="x4_y11" duration="0.08" events="" />
-		<Frame subImage="x5_y11" duration="0.08" events="" />
-		<Frame subImage="x6_y11" duration="0.08" events="" />
-		<Frame subImage="x7_y11" duration="0.08" events="" />
-		<Frame subImage="x8_y11" duration="0.08" events="" />
+		<Frame subImage="x1_y11" duration="0.0799999982" />
+		<Frame subImage="x2_y11" duration="0.0799999982" />
+		<Frame subImage="x3_y11" duration="0.0799999982" />
+		<Frame subImage="x4_y11" duration="0.0799999982" />
+		<Frame subImage="x5_y11" duration="0.0799999982" />
+		<Frame subImage="x6_y11" duration="0.0799999982" />
+		<Frame subImage="x7_y11" duration="0.0799999982" />
+		<Frame subImage="x8_y11" duration="0.0799999982" />
 	</Animation>
 	<Animation name="WalkUp">
-		<Frame subImage="x1_y8" duration="0.08" events="" />
-		<Frame subImage="x2_y8" duration="0.08" events="" />
-		<Frame subImage="x3_y8" duration="0.08" events="" />
-		<Frame subImage="x4_y8" duration="0.08" events="" />
-		<Frame subImage="x5_y8" duration="0.08" events="" />
-		<Frame subImage="x6_y8" duration="0.08" events="" />
-		<Frame subImage="x7_y8" duration="0.08" events="" />
-		<Frame subImage="x8_y8" duration="0.08" events="" />
+		<Frame subImage="x1_y8" duration="0.0799999982" />
+		<Frame subImage="x2_y8" duration="0.0799999982" />
+		<Frame subImage="x3_y8" duration="0.0799999982" />
+		<Frame subImage="x4_y8" duration="0.0799999982" />
+		<Frame subImage="x5_y8" duration="0.0799999982" />
+		<Frame subImage="x6_y8" duration="0.0799999982" />
+		<Frame subImage="x7_y8" duration="0.0799999982" />
+		<Frame subImage="x8_y8" duration="0.0799999982" />
 	</Animation>
 </AnimSet>

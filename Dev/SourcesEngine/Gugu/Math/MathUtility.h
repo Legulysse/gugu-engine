@@ -19,11 +19,13 @@ namespace gugu {
 
 namespace math
 {
+    // Values mostly taken from math.h alongside the M_PI constant.
     const float Pi          = 3.14159265358979323846f;      // Pi
     const float PiDivTwo    = 1.57079632679489661923f;      // Pi / 2
     const float PiDivFour   = 0.785398163397448309616f;     // Pi / 4
     const float OneDivPi    = 0.318309886183790671538f;     // 1 / Pi
     const float TwoDivPi    = 0.636619772367581343076f;     // 2 / Pi
+    const float TwoPi       = 6.283185307179586476925f;     // Pi * 2
 
     const float DegreesToRadians = 0.0174532925199f;    // Pi / 180
     const float RadiansToDegrees = 57.2957795131f;      // 180 / Pi
@@ -115,13 +117,25 @@ template <typename T>
 T RoundNearest(const T& n);
 
 template <typename T>
+int RoundFloorInt(const T& n);
+
+template <typename T>
 T RoundFloor(const T& n);
+
+template <typename T>
+int RoundCeilInt(const T& n);
 
 template <typename T>
 T RoundCeil(const T& n);
 
 template <typename T>
+int RoundTowardZeroInt(const T& n);
+
+template <typename T>
 T RoundTowardZero(const T& n);
+
+template <typename T>
+int RoundAwayFromZeroInt(const T& n);
 
 template <typename T>
 T RoundAwayFromZero(const T& n);

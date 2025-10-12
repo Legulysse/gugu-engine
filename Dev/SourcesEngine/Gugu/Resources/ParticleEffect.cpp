@@ -165,19 +165,10 @@ bool ParticleEffect::LoadFromXml(const pugi::xml_document& document)
     m_particleSettings.maxEndSize.y = nodeEndSize.attribute("max_y").as_float(m_particleSettings.maxEndSize.y);
 
     m_particleSettings.updateColorOverLifetime = nodeParticleEffect.child("UpdateColorOverLifetime").attribute("value").as_bool(m_particleSettings.updateColorOverLifetime);
+    xml::ParseColor(nodeParticleEffect.child("StartColor"), m_particleSettings.startColor, m_particleSettings.startColor);
+    xml::ParseColor(nodeParticleEffect.child("EndColor"), m_particleSettings.endColor, m_particleSettings.endColor);
 
-    pugi::xml_node nodeStartColor = nodeParticleEffect.child("StartColor");
-    m_particleSettings.startColor.r = (sf::Uint8)nodeStartColor.attribute("r").as_uint(m_particleSettings.startColor.r);
-    m_particleSettings.startColor.g = (sf::Uint8)nodeStartColor.attribute("g").as_uint(m_particleSettings.startColor.g);
-    m_particleSettings.startColor.b = (sf::Uint8)nodeStartColor.attribute("b").as_uint(m_particleSettings.startColor.b);
-    m_particleSettings.startColor.a = (sf::Uint8)nodeStartColor.attribute("a").as_uint(m_particleSettings.startColor.a);
-
-    pugi::xml_node nodeEndColor = nodeParticleEffect.child("EndColor");
-    m_particleSettings.endColor.r = (sf::Uint8)nodeEndColor.attribute("r").as_uint(m_particleSettings.endColor.r);
-    m_particleSettings.endColor.g = (sf::Uint8)nodeEndColor.attribute("g").as_uint(m_particleSettings.endColor.g);
-    m_particleSettings.endColor.b = (sf::Uint8)nodeEndColor.attribute("b").as_uint(m_particleSettings.endColor.b);
-    m_particleSettings.endColor.a = (sf::Uint8)nodeEndColor.attribute("a").as_uint(m_particleSettings.endColor.a);
-
+    // TODO: Rename as ImageSet + source.
     m_particleSettings.imageSet = GetResources()->GetImageSet(nodeParticleEffect.child("ImageSetID").attribute("value").as_string());
 
     // Finalize
@@ -279,24 +270,17 @@ bool ParticleEffect::SaveToXml(pugi::xml_document& document) const
 
     nodeParticleEffect.append_child("UpdateColorOverLifetime").append_attribute("value").set_value(m_particleSettings.updateColorOverLifetime);
 
-    pugi::xml_node nodeStartColor = nodeParticleEffect.append_child("StartColor");
-    nodeStartColor.append_attribute("r").set_value(m_particleSettings.startColor.r);
-    nodeStartColor.append_attribute("g").set_value(m_particleSettings.startColor.g);
-    nodeStartColor.append_attribute("b").set_value(m_particleSettings.startColor.b);
-    nodeStartColor.append_attribute("a").set_value(m_particleSettings.startColor.a);
-
-    pugi::xml_node nodeEndColor = nodeParticleEffect.append_child("EndColor");
-    nodeEndColor.append_attribute("r").set_value(m_particleSettings.endColor.r);
-    nodeEndColor.append_attribute("g").set_value(m_particleSettings.endColor.g);
-    nodeEndColor.append_attribute("b").set_value(m_particleSettings.endColor.b);
-    nodeEndColor.append_attribute("a").set_value(m_particleSettings.endColor.a);
+    xml::WriteColor(nodeParticleEffect.append_child("StartColor"), m_particleSettings.startColor);
+    xml::WriteColor(nodeParticleEffect.append_child("EndColor"), m_particleSettings.endColor);
 
     if (m_particleSettings.imageSet)
     {
+        // TODO: Rename as ImageSet + source.
         nodeParticleEffect.append_child("ImageSetID").append_attribute("value").set_value(m_particleSettings.imageSet->GetID().c_str());
     }
     else
     {
+        // TODO: Rename as ImageSet + source.
         nodeParticleEffect.append_child("ImageSetID").append_attribute("value");
     }
 

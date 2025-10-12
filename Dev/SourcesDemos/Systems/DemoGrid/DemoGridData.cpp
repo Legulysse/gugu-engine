@@ -55,7 +55,7 @@ void DemoGridData::SetDiagonalsRestricted(bool restrictDiagonals)
     m_restrictDiagonals = restrictDiagonals;
 }
 
-bool DemoGridData::IsWalkable(const Vector2i& coordsFrom, const Vector2i& coordsTo) const
+bool DemoGridData::IsTraversable(const int& agent, const Vector2i& coordsFrom, const Vector2i& coordsTo) const
 {
     // Check diagonal move (only works for square-8 grids).
     if (m_restrictDiagonals)
@@ -75,10 +75,10 @@ bool DemoGridData::IsWalkable(const Vector2i& coordsFrom, const Vector2i& coords
     return !m_cells[coordsTo.x + m_width * coordsTo.y].blocked;
 }
 
-bool DemoGridData::IsWalkable(const Vector2i& coordsFrom, const Vector2i& coordsTo, float& cost) const
-{
-    cost = 1.f;
-    return !m_cells[coordsTo.x + m_width * coordsTo.y].blocked;
-}
+//bool DemoGridData::IsTraversable(const int& agent, const Vector2i& coordsFrom, const Vector2i& coordsTo, float& cost) const
+//{
+//    cost = 1.f;
+//    return !m_cells[coordsTo.x + m_width * coordsTo.y].blocked;
+//}
 
 }   //namespace demoproject

@@ -44,7 +44,7 @@ private:
 
 void TestFunction1(int value)
 {
-    gugu::WriteInConsoleEndline(gugu::ToString(value), true);
+    gugu::WriteInIDEConsoleEndline(gugu::ToString(value));
 }
 
 int TestFactoryFunction(int a, bool b)
@@ -70,7 +70,7 @@ public:
 
     void ComputeTest(const std::string& value)
     {
-        gugu::WriteInConsoleEndline(value, true);
+        gugu::WriteInIDEConsoleEndline(value);
     }
 
     bool ReturnTest(int a, int b)
@@ -94,18 +94,18 @@ void RunTestCallback()
 
 #if 1
 
-    WriteInConsoleEndline("--------------------------------", true);
+    WriteInIDEConsoleEndline("--------------------------------");
 
     auto functor1 = []() {
-        WriteInConsoleEndline(ToString(22), true);
+        WriteInIDEConsoleEndline(ToString(22));
     };
 
     std::function<void()> functor2 = []() {
-        WriteInConsoleEndline(ToString(33), true);
+        WriteInIDEConsoleEndline(ToString(33));
     };
 
     std::function<void(int)> functor3 = [](int value) {
-        WriteInConsoleEndline(ToString(value), true);
+        WriteInIDEConsoleEndline(ToString(value));
     };
 
     std::function<int(int)> functor4 = [](int value) {
@@ -125,33 +125,33 @@ void RunTestCallback()
     functor1();
     functor2();
     functor3(44);
-    WriteInConsoleEndline(ToString(functor4(55)), true);
+    WriteInIDEConsoleEndline(ToString(functor4(55)));
     object->m_Action();
-    WriteInConsoleEndline(ToString(object->m_Delegate(77, false)), true);
+    WriteInIDEConsoleEndline(ToString(object->m_Delegate(77, false)));
     object->m_ActionType();
-    WriteInConsoleEndline(ToString(object->m_DelegateType(99)), true);
+    WriteInIDEConsoleEndline(ToString(object->m_DelegateType(99)));
     object->m_ActionType2();
-    WriteInConsoleEndline(ToString(object->m_Factory(42, false)), true);
-    WriteInConsoleEndline(ToString(object->m_Factory2(42, true)), true);
-    WriteInConsoleEndline(object->m_actionType3() ? "true" : "false", true);
+    WriteInIDEConsoleEndline(ToString(object->m_Factory(42, false)));
+    WriteInIDEConsoleEndline(ToString(object->m_Factory2(42, true)));
+    WriteInIDEConsoleEndline(object->m_actionType3() ? "true" : "false");
 
     SafeDelete(object);
 
-    WriteInConsoleEndline("--------------------------------", true);
+    WriteInIDEConsoleEndline("--------------------------------");
 
     Signal<> signal0;
-    signal0.Register([]() { WriteInConsoleEndline("Signal 0", true); });
+    signal0.Register([]() { WriteInIDEConsoleEndline("Signal 0"); });
     signal0.Fire();
 
     Signal<int> signal1;
-    signal1.Register([](int a) { WriteInConsoleEndline(StringFormat("Signal 1 : {0}", a), true); });
+    signal1.Register([](int a) { WriteInIDEConsoleEndline(StringFormat("Signal 1 : {0}", a)); });
     signal1.Fire(16);
 
     Signal<bool, float> signal2;
-    signal2.Register([](bool a, float b) { WriteInConsoleEndline(StringFormat("Signal 2 : {0} {1}", a, b), true); });
+    signal2.Register([](bool a, float b) { WriteInIDEConsoleEndline(StringFormat("Signal 2 : {0} {1}", a, b)); });
     signal2.Fire(false, 32.f);
 
-    WriteInConsoleEndline("--------------------------------", true);
+    WriteInIDEConsoleEndline("--------------------------------");
 
 #endif
 }

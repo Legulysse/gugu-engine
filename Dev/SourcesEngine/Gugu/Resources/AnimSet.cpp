@@ -99,19 +99,19 @@ bool AnimationFrame::FillEventString(std::string& events) const
     return true;
 }
 
-void AnimationFrame::SetOrigin(const Vector2f _kOrigin)
+void AnimationFrame::SetOriginOffset(const Vector2f& offset)
 {
-    m_origin = _kOrigin;
+    m_originOffset = offset;
 }
 
-const Vector2f& AnimationFrame::GetOrigin() const
+const Vector2f& AnimationFrame::GetOriginOffset() const
 {
-    return m_origin;
+    return m_originOffset;
 }
 
-void AnimationFrame::SetMoveOffset(const Vector2f _kMoveOffset)
+void AnimationFrame::SetMoveOffset(const Vector2f& offset)
 {
-    m_moveOffset = _kMoveOffset;
+    m_moveOffset = offset;
 }
 
 const Vector2f& AnimationFrame::GetMoveOffset() const
@@ -275,6 +275,16 @@ void AnimSet::SetImageSet(ImageSet* _pImageSet)
     m_imageSet = _pImageSet;
 }
 
+void AnimSet::SetDefaultOriginOffset(const Vector2f& offset)
+{
+    m_defaultOriginOffset = offset;
+}
+
+const Vector2f& AnimSet::GetDefaultOriginOffset() const
+{
+    return m_defaultOriginOffset;
+}
+
 EResourceType::Type AnimSet::GetResourceType() const
 {
     return EResourceType::AnimSet;
@@ -287,6 +297,7 @@ void AnimSet::GetDependencies(std::set<Resource*>& dependencies) const
         dependencies.insert(m_imageSet);
 
         // TODO: Do I need an option to retrieve or not indirect dependencies ?
+        // This recursion could be handled outside of this method as a second pass.
         m_imageSet->GetDependencies(dependencies);
     }
 
@@ -341,6 +352,12 @@ bool AnimSet::LoadFromXml(const pugi::xml_document& document)
     if (oAttributeMainImageSet)
         m_imageSet = GetResources()->GetImageSet(oAttributeMainImageSet.as_string());
 
+    Vector2f defaultOriginOffset;
+    if (xml::TryParseVector2f(oNodeAnimSet.child("DefaultOriginOffset"), defaultOriginOffset))
+    {
+        m_defaultOriginOffset = defaultOriginOffset;
+    }
+
     for (pugi::xml_node oNodeAnimation = oNodeAnimSet.child("Animation"); oNodeAnimation; oNodeAnimation = oNodeAnimation.next_sibling("Animation"))
     {
         pugi::xml_attribute oAttributeAnimName = oNodeAnimation.attribute("name");
@@ -385,11 +402,11 @@ bool AnimSet::LoadFromXml(const pugi::xml_document& document)
                     pNewFrame->RegisterEvents(oAttributeEvents.as_string());
 
                 Vector2f kOrigin;
-                if (xml::TryParseVector2f(oNodeFrame.child("Origin"), kOrigin))
-                    pNewFrame->SetOrigin(kOrigin);
+                if (xml::TryParseVector2f(oNodeFrame.child("OriginOffset"), kOrigin))
+                    pNewFrame->SetOriginOffset(kOrigin);
 
                 Vector2f kMove;
-                if (xml::TryParseVector2f(oNodeFrame.child("Move"), kMove))
+                if (xml::TryParseVector2f(oNodeFrame.child("MoveOffset"), kMove))
                     pNewFrame->SetMoveOffset(kMove);
             }
         }
@@ -401,9 +418,14 @@ bool AnimSet::LoadFromXml(const pugi::xml_document& document)
 bool AnimSet::SaveToXml(pugi::xml_document& document) const
 {
     pugi::xml_node nodeAnimSet = document.append_child("AnimSet");
-    nodeAnimSet.append_attribute("serializationVersion") = 1;
+    nodeAnimSet.append_attribute("serializationVersion") = 2;
 
     nodeAnimSet.append_attribute("imageSet") = (!m_imageSet) ? "" : m_imageSet->GetID().c_str();
+
+    if (m_defaultOriginOffset != Vector2::Zero_f)
+    {
+        xml::WriteVector2f(nodeAnimSet.append_child("DefaultOriginOffset"), m_defaultOriginOffset);
+    }
 
     for (Animation* animation : m_animations)
     {
@@ -434,14 +456,14 @@ bool AnimSet::SaveToXml(pugi::xml_document& document) const
                 nodeFrame.append_attribute("events") = events.c_str();
             }
 
-            if (frame->GetOrigin() != Vector2::Zero_f)
+            if (frame->GetOriginOffset() != Vector2::Zero_f)
             {
-                xml::WriteVector2f(nodeFrame.append_child("Origin"), frame->GetOrigin());
+                xml::WriteVector2f(nodeFrame.append_child("OriginOffset"), frame->GetOriginOffset());
             }
 
             if (frame->GetMoveOffset() != Vector2::Zero_f)
             {
-                xml::WriteVector2f(nodeFrame.append_child("Move"), frame->GetMoveOffset());
+                xml::WriteVector2f(nodeFrame.append_child("MoveOffset"), frame->GetMoveOffset());
             }
         }
     }

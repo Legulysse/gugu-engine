@@ -220,7 +220,42 @@ void VirtualDatasheetObject::ResolveInstances(const std::map<UUID, VirtualDatash
     }
 }
 
-void VirtualDatasheetObject::GatherInstanceUuids(std::set<UUID>& instanceUuids) const
+void VirtualDatasheetObject::RegenerateInstanceUuidsRecursively()
+{
+    for (const auto& dataValue : m_dataValues)
+    {
+        if (dataValue->dataMemberDefinition->type == DatasheetParser::DataMemberDefinition::ObjectInstance)
+        {
+            if (dataValue->dataMemberDefinition->isArray)
+            {
+                for (const auto& childDataValue : dataValue->value_children)
+                {
+                    if (childDataValue->value_objectInstance)
+                    {
+                        UUID uuid = UUID::Generate();
+                        childDataValue->value_string = uuid.ToString();
+                        childDataValue->value_objectInstance->m_uuid = uuid;
+
+                        childDataValue->value_objectInstance->RegenerateInstanceUuidsRecursively();
+                    }
+                }
+            }
+            else
+            {
+                if (dataValue->value_objectInstance)
+                {
+                    UUID uuid = UUID::Generate();
+                    dataValue->value_string = uuid.ToString();
+                    dataValue->value_objectInstance->m_uuid = uuid;
+
+                    dataValue->value_objectInstance->RegenerateInstanceUuidsRecursively();
+                }
+            }
+        }
+    }
+}
+
+void VirtualDatasheetObject::GatherInstanceUuidsRecursively(std::set<UUID>& instanceUuids) const
 {
     for (const auto& dataValue : m_dataValues)
     {
@@ -233,7 +268,7 @@ void VirtualDatasheetObject::GatherInstanceUuids(std::set<UUID>& instanceUuids) 
                     if (childDataValue->value_objectInstance)
                     {
                         instanceUuids.insert(childDataValue->value_objectInstance->m_uuid);
-                        childDataValue->value_objectInstance->GatherInstanceUuids(instanceUuids);
+                        childDataValue->value_objectInstance->GatherInstanceUuidsRecursively(instanceUuids);
                     }
                 }
             }
@@ -242,7 +277,7 @@ void VirtualDatasheetObject::GatherInstanceUuids(std::set<UUID>& instanceUuids) 
                 if (dataValue->value_objectInstance)
                 {
                     instanceUuids.insert(dataValue->value_objectInstance->m_uuid);
-                    dataValue->value_objectInstance->GatherInstanceUuids(instanceUuids);
+                    dataValue->value_objectInstance->GatherInstanceUuidsRecursively(instanceUuids);
                 }
             }
         }

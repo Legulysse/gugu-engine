@@ -1,3 +1,6 @@
+////////////////////////////////////////////////////////////////
+// Includes
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
@@ -8,7 +11,8 @@
 
 #define DEMO_USE_AUDIO true
 
-//--------------
+////////////////////////////////////////////////////////////////
+// File Implementation
 
 struct StatsSummary
 {

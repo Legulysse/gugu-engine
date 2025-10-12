@@ -19,12 +19,15 @@
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Element/2D/ElementSFDrawable.h"
 #include "Gugu/System/Memory.h"
 #include "Gugu/System/String.h"
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/External/ImGuiUtility.h"
+
+#include <SFML/Graphics/RectangleShape.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -38,37 +41,95 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     , m_zoomFactor(1.f)
     , m_speedFactor(1.f)
     , m_autoPlay(true)
-    , m_originFromAnimation(false)
+    , m_originFromAnimation(true)
     , m_moveFromAnimation(false)
     , m_flipH(false)
+    , m_showGround(true)
+    , m_showPivot(false)
     , m_currentAnimation(nullptr)
     , m_currentFrame(nullptr)
     , m_defaultDuration(0.1f)
     , m_spriteAnimation(nullptr)
     , m_sprite(nullptr)
+    , m_pivot(nullptr)
+    , m_ground(nullptr)
 {
     // Setup RenderViewport and Sprite.
     m_renderViewport = new RenderViewport(true);
-    m_renderViewport->SetSize(Vector2u(500, 500));
+    m_renderViewport->SetSize(Vector2u(512, 512));
+
+    // Pivot
+    Element* pivot = m_renderViewport->GetRoot()->AddChild<Element>();
+    pivot->SetUnifiedPosition(UDim2::POSITION_BOTTOM_CENTER + Vector2f(0, -128));
 
     // Setup animation
-    m_sprite = m_renderViewport->GetRoot()->AddChild<ElementSprite>();
-    m_sprite->SetUnifiedPosition(UDim2::POSITION_CENTER);
-    m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+    m_sprite = pivot->AddChild<ElementSprite>();
+    m_sprite->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_CENTER);
 
     m_spriteAnimation = GetAnimations()->AddAnimation(m_sprite);
     m_spriteAnimation->ChangeAnimSet(m_animSet);
 
-    SelectAnimation(m_animSet->GetAnimation(0));
+    // Ground decoration
+    sf::RectangleShape* groundDrawable = new sf::RectangleShape;
+    groundDrawable->setFillColor(sf::Color(0, 0, 0, 128));
+
+    ElementSFDrawable* ground = pivot->AddChild<ElementSFDrawable>();
+    ground->SetSFDrawable(groundDrawable);
+    ground->SetCallbackOnSizeChanged([&ground, &groundDrawable](ElementSFDrawable*) {
+        groundDrawable->setSize(ground->GetSize());
+    });
+    ground->SetSize(2048, 2048);
+    ground->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
+    ground->SetVisible(m_showGround);
+
+    m_ground = ground;
+
+    // Pivot decoration
+    sf::VertexArray* pivotDrawable = new sf::VertexArray;
+    pivotDrawable->setPrimitiveType(sf::PrimitiveType::Triangles);
+    pivotDrawable->append(sf::Vertex(Vector2f(-1024, -1024)));
+    pivotDrawable->append(sf::Vertex(Vector2f(0, -1024)));
+    pivotDrawable->append(sf::Vertex(Vector2f(0, 0)));
+    pivotDrawable->append(sf::Vertex(Vector2f(0, 0)));
+    pivotDrawable->append(sf::Vertex(Vector2f(-1024, 0)));
+    pivotDrawable->append(sf::Vertex(Vector2f(-1024, -1024)));
+    pivotDrawable->append(sf::Vertex(Vector2f(0, -1024)));
+    pivotDrawable->append(sf::Vertex(Vector2f(1024, -1024)));
+    pivotDrawable->append(sf::Vertex(Vector2f(1024, 0)));
+    pivotDrawable->append(sf::Vertex(Vector2f(1024, 0)));
+    pivotDrawable->append(sf::Vertex(Vector2f(0, 0)));
+    pivotDrawable->append(sf::Vertex(Vector2f(0, -1024)));
+
+    for (size_t i = 0; i < 6; ++i)
+    {
+        (*pivotDrawable)[i].color = sf::Color(0, 0, 0, 64);
+    }
+
+    for (size_t i = 6; i < 12; ++i)
+    {
+        (*pivotDrawable)[i].color = sf::Color(0, 0, 0, 32);
+    }
+
+    ElementSFDrawable* pivotLines = pivot->AddChild<ElementSFDrawable>();
+    pivotLines->SetSFDrawable(pivotDrawable);
+    pivotLines->SetVisible(m_showPivot);
+
+    m_pivot = pivotLines;
 
     // Dependencies
-    GetResources()->RegisterResourceListener(m_animSet, this, STD_BIND_3(&AnimSetPanel::OnResourceEvent, this));
+    GetResources()->RegisterResourceListener(m_animSet, Handle(this), STD_BIND_3(&AnimSetPanel::OnResourceEvent, this));
+    
+    // Default settings
+    m_spriteAnimation->SetOriginFromAnimation(m_originFromAnimation);
+    m_spriteAnimation->SetMoveFromAnimation(m_moveFromAnimation);
+
+    SelectAnimation(m_animSet->GetAnimation(0));
 }
 
 AnimSetPanel::~AnimSetPanel()
 {
     // Dependencies
-    GetResources()->UnregisterResourceListeners(m_animSet, this);
+    GetResources()->UnregisterResourceListeners(m_animSet, Handle(this));
 
     SafeDelete(m_renderViewport);
 }
@@ -109,7 +170,14 @@ void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 
         if (!m_originFromAnimation)
         {
-            m_sprite->SetUnifiedOrigin(UDim2::POSITION_CENTER);
+            if (m_sprite->GetUseUnifiedOrigin())
+            {
+                m_sprite->SetUnifiedOrigin(UDim2(m_sprite->GetUnifiedOrigin().relative));
+            }
+            else
+            {
+                m_sprite->SetOrigin(Vector2::Zero_f);
+            }
         }
     }
 
@@ -120,7 +188,7 @@ void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
 
         if (!m_moveFromAnimation)
         {
-            m_sprite->SetUnifiedPosition(UDim2::POSITION_CENTER);
+            m_sprite->SetPosition(Vector2::Zero_f);
         }
     }
 
@@ -128,6 +196,25 @@ void AnimSetPanel::UpdatePanelImpl(const DeltaTime& dt)
     if (ImGui::Checkbox("Flip H", &m_flipH))
     {
         m_sprite->SetFlipH(m_flipH);
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Show Ground", &m_showGround))
+    {
+        m_ground->SetVisible(m_showGround);
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Pivot", &m_showPivot))
+    {
+        m_pivot->SetVisible(m_showPivot);
+    }
+
+    ImGui::SameLine();
+    bool showBounds = m_renderViewport->GetShowBounds();
+    if (ImGui::Checkbox("Bounds", &showBounds))
+    {
+        m_renderViewport->SetShowBounds(showBounds);
     }
 
     // Viewport.
@@ -143,6 +230,13 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     if (ImGui::InputText("ImageSet", &mainImageSetID, ImGuiInputTextFlags_EnterReturnsTrue))
     {
         ChangeMainImageSet(GetResources()->GetImageSet(mainImageSetID));
+    }
+
+    Vector2f defaultOriginOffset = m_animSet->GetDefaultOriginOffset();
+    if (ImGui::InputFloat2("Default Origin Offset", &defaultOriginOffset))
+    {
+        m_animSet->SetDefaultOriginOffset(defaultOriginOffset);
+        RaiseDirty();
     }
 
     ImGui::Spacing();
@@ -182,10 +276,10 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             RaiseDirty();
         }
 
-        Vector2f frameOrigin = m_currentFrame->GetOrigin();
-        if (ImGui::InputFloat2("Origin", &frameOrigin))
+        Vector2f frameOriginOffset = m_currentFrame->GetOriginOffset();
+        if (ImGui::InputFloat2("Origin Offset", &frameOriginOffset))
         {
-            m_currentFrame->SetOrigin(frameOrigin);
+            m_currentFrame->SetOriginOffset(frameOriginOffset);
             RaiseDirty();
         }
 
@@ -195,6 +289,8 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             m_currentFrame->SetMoveOffset(frameMoveOffset);
             RaiseDirty();
         }
+
+        // TODO: Events.
     }
     else
     {
@@ -231,14 +327,14 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     }
 
     // Animations list.
-    ImGuiTableFlags animationTableflags = ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /*| ImGuiTableFlags_NoPadInnerX */;
+    ImGuiTableFlags animationTableflags = ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY /*| ImGuiTableFlags_NoPadInnerX */;
     if (ImGui::BeginTable("_ANIMATIONS_TABLE", 5, animationTableflags))
     {
         ImGuiTableColumnFlags animationColumnFlags = ImGuiTableColumnFlags_WidthFixed;
-        ImGui::TableSetupColumn("name", animationColumnFlags, 120.f);
+        ImGui::TableSetupColumn("name", animationColumnFlags, 160.f);
         ImGui::TableSetupColumn("play", animationColumnFlags, 30.f);
-        ImGui::TableSetupColumn("duration", animationColumnFlags, 50.f);
-        ImGui::TableSetupColumn("actions", animationColumnFlags, 40.f);
+        ImGui::TableSetupColumn("duration", animationColumnFlags, 60.f);
+        ImGui::TableSetupColumn("actions", animationColumnFlags, 50.f);
         ImGui::TableSetupColumn("remove", animationColumnFlags, 40.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
@@ -250,23 +346,6 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
             float row_min_height = ImGui::GetFrameHeight();
             ImGui::TableNextRow(ImGuiTableRowFlags_None, row_min_height);
-
-            if (animationIndex == 0)
-            {
-                // Setup ItemWidth once.
-                int headerIndex = 0;
-
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-                ImGui::TableSetColumnIndex(headerIndex++);
-                ImGui::PushItemWidth(-1);
-            }
 
             Animation* animation = animations[animationIndex];
 
@@ -567,7 +646,7 @@ void AnimSetPanel::CopyFrame(AnimationFrame* targetFrame, const AnimationFrame* 
         targetFrame->SetDuration(referenceFrame->GetDuration());
         targetFrame->SetTexture(referenceFrame->GetTexture());
         targetFrame->SetSubImage(referenceFrame->GetSubImage());
-        targetFrame->SetOrigin(referenceFrame->GetOrigin());
+        targetFrame->SetOriginOffset(referenceFrame->GetOriginOffset());
         targetFrame->SetMoveOffset(referenceFrame->GetMoveOffset());
     }
 }

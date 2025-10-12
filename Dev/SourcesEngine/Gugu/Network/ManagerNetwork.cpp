@@ -34,6 +34,7 @@ ManagerNetwork::ManagerNetwork()
     m_clientInfoSelf = nullptr;
 
     m_isListening = false;
+    m_listeningPort = 0;
     m_isRunningMultiplayerGame = false;
     m_lastNetTurnProcessed = 0;
     m_nbTurnsOffset = 2;
@@ -62,7 +63,7 @@ void ManagerNetwork::StartListening(sf::Uint16 _uiPort)
     if (!m_logNetwork)
     {
         m_logNetwork = new LoggerEngine();
-        m_logNetwork->SetConsoleOutput(true, false);
+        m_logNetwork->SetIDEConsoleOutput(false);
         m_logNetwork->SetFilePath("Network.log");
     }
 

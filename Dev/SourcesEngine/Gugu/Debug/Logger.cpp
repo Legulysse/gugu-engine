@@ -29,7 +29,7 @@ Logger::Logger()
     m_filePath = "";
     m_autoFlush = true;
     m_consoleOutput = false;
-    m_consoleOutputIDE = false;
+    m_ideConsoleOutput = false;
     m_isActive = true;
 }
 
@@ -61,10 +61,14 @@ void Logger::SetAutoflush(bool autoFlush)
     m_autoFlush = autoFlush;
 }
 
-void Logger::SetConsoleOutput(bool output, bool outputInIDE)
+void Logger::SetConsoleOutput(bool output)
 {
     m_consoleOutput = output;
-    m_consoleOutputIDE = outputInIDE;
+}
+
+void Logger::SetIDEConsoleOutput(bool output)
+{
+    m_ideConsoleOutput = output;
 }
 
 void Logger::SetActive(bool active)
@@ -103,11 +107,17 @@ void Logger::PrintImpl_End()
 
 void Logger::FlushImpl()
 {
+#if !defined(GUGU_PRODUCTION_BUILD)
     if (m_consoleOutput)
     {
-        // TODO: disable in release builds ?
-        WriteInConsole(m_buffer.str(), m_consoleOutputIDE);
+        WriteInConsole(m_buffer.str());
     }
+
+    if (m_ideConsoleOutput)
+    {
+        WriteInIDEConsole(m_buffer.str());
+    }
+#endif
 
     if (!m_filePath.empty())
     {
@@ -207,7 +217,7 @@ void LoggerEngine::IncrementFrameNumber()
     m_frameNumber = m_frameNumber == 999 ? 1 : m_frameNumber + 1;
 }
 
-void LoggerEngine::RegisterDelegate(const void* handle, const DelegateLog& delegateLog)
+void LoggerEngine::RegisterDelegate(const Handle& handle, const DelegateLog& delegateLog)
 {
     DelegateInfos infos;
     infos.delegateLog = delegateLog;
@@ -216,7 +226,7 @@ void LoggerEngine::RegisterDelegate(const void* handle, const DelegateLog& deleg
     m_delegates.push_back(infos);
 }
 
-void LoggerEngine::UnregisterDelegate(const void* handle)
+void LoggerEngine::UnregisterDelegate(const Handle& handle)
 {
     StdVectorRemoveIf(m_delegates, [&](const auto& item) { return item.handle == handle; });
 }

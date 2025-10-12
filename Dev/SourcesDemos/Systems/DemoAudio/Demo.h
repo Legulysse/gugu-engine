@@ -12,6 +12,8 @@
 namespace gugu
 {
     class Element;
+    class ElementCheckbox;
+    class ElementSlider;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -34,7 +36,9 @@ protected:
     enum EButton
     {
         Exit,
-        SoundBubbles,
+        SoundBubbles01,
+        SoundCueBubblesFive,
+        SoundCueBubblesPitch,
         TrackColors,
         TrackAbyss,
         TrackMighty3310Fight,
@@ -44,7 +48,18 @@ protected:
         StopAll,
     };
 
-    void OnButtonClick(int _eButton);
+    enum ESlider
+    {
+        ListenerVolume,
+        MasterVolume,
+        MusicVolume,
+        UIVolume,
+        GameplayVolume,
+    };
+
+    void OnButtonClick(int buttonId);
+    void OnSliderChanged(int sliderId, gugu::ElementSlider* slider);
+    void OnCheckboxChanged(int sliderId, gugu::ElementCheckbox* checkbox);
 
 protected:
 

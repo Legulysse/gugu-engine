@@ -10,7 +10,8 @@
 
 namespace gugu
 {
-    class Music;
+    class AudioClip;
+    class AudioMixerGroupInstance;
 }
 
 namespace sf
@@ -27,39 +28,42 @@ class MusicInstance
 {
 public:
 
-    MusicInstance   ();
-    ~MusicInstance  ();
+    MusicInstance();
+    ~MusicInstance();
 
-    void    Reset           ();
+    void Reset();
 
-    void    SetMusic        (Music* _pMusic, bool _bLoop);
-    bool    IsSet() const;
-    Music*  GetMusic() const;
+    void SetAudioClip(AudioClip* audioClip, bool loop);
+    bool IsSet() const;
+    AudioClip* GetAudioClip() const;
 
-    void    SetVolume       (float _fVolume);
+    void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
+    void SetVolume(float volume);
 
-    void    SetFadeCoeff    (float _fFadeCoeff);
-    float   GetFadeCoeff    () const;
+    void SetFadeCoeff(float fadeCoeff);
+    float GetFadeCoeff() const;
 
-    void    Play            ();
-    void    Pause           ();
-    void    Stop            ();
+    void RecomputeMixedVolume();
+
+    void Play();
+    void Pause();
+    void Stop();
 
     sf::Time GetDuration() const;
     sf::Time GetPlayOffset() const;
     void SetPlayOffset(const sf::Time& offset);
     //TODO: Investigate loop points feature
 
-    bool    IsPaused() const;
-    bool    IsFinished() const;
+    bool IsPaused() const;
+    bool IsFinished() const;
 
 private:
 
-    Music*      m_music;
-    sf::Music*  m_sfMusic;
-    float       m_volume;
-
-    float       m_fadeCoeff;
+    AudioClip* m_audioClip;
+    AudioMixerGroupInstance* m_mixerGroupInstance;
+    sf::Music* m_sfMusic;
+    float m_volume;
+    float m_fadeCoeff;
 };
 
 }   // namespace gugu

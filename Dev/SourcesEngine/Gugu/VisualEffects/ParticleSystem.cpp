@@ -485,10 +485,10 @@ void ParticleSystem::Update(const DeltaTime& updateDt)
             if (m_settings.updateColorOverLifetime)
             {
                 sf::Color color = sf::Color(
-                    Lerp<sf::Uint8>(m_settings.endColor.r, m_settings.startColor.r, lerpValue),
-                    Lerp<sf::Uint8>(m_settings.endColor.g, m_settings.startColor.g, lerpValue),
-                    Lerp<sf::Uint8>(m_settings.endColor.b, m_settings.startColor.b, lerpValue),
-                    Lerp<sf::Uint8>(m_settings.endColor.a, m_settings.startColor.a, lerpValue));
+                    Lerp<uint8>(m_settings.endColor.r, m_settings.startColor.r, lerpValue),
+                    Lerp<uint8>(m_settings.endColor.g, m_settings.startColor.g, lerpValue),
+                    Lerp<uint8>(m_settings.endColor.b, m_settings.startColor.b, lerpValue),
+                    Lerp<uint8>(m_settings.endColor.a, m_settings.startColor.a, lerpValue));
 
                 sf::Vertex* vertices = &m_dataVertices[i * m_verticesPerParticle];
                 for (size_t ii = 0; ii < m_verticesPerParticle; ++ii)

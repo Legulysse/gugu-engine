@@ -106,7 +106,7 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     Settings.antialiasingLevel = 2;  // Request 2 levels of antialiasing
 
     //Create main window
-    sf::Uint32 windowStyle = sf::Style::Default;
+    uint32 windowStyle = sf::Style::Default;
     int windowWidth = config.windowWidth;
     int windowHeight = config.windowHeight;
 

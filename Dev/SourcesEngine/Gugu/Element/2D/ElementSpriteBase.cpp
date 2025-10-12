@@ -36,19 +36,19 @@ void ElementSpriteBase::SetSubRect(const sf::IntRect& _oRect, bool updateSize)
 
     if (m_flipTextureV)
     {
-        m_subRect.position.y += m_subRect.height;
-        m_subRect.height = -m_subRect.height;
+        m_subRect.position.y += m_subRect.size.y;
+        m_subRect.size.y = -m_subRect.size.y;
     }
 
     if (m_flipTextureH)
     {
-        m_subRect.position.x += m_subRect.width;
-        m_subRect.width = -m_subRect.width;
+        m_subRect.position.x += m_subRect.size.x;
+        m_subRect.size.x = -m_subRect.size.x;
     }
 
     if (updateSize)
     {
-        SetSize(Vector2f((float)Absolute(m_subRect.width), (float)Absolute(m_subRect.height)));
+        SetSize(Vector2f((float)Absolute(m_subRect.size.x), (float)Absolute(m_subRect.size.y)));
     }
 
     RaiseDirtyVertices();
@@ -60,14 +60,14 @@ sf::IntRect ElementSpriteBase::GetSubRect() const
 
     if (m_flipTextureV)
     {
-        kRect.position.y += kRect.height;
-        kRect.height = -kRect.height;
+        kRect.position.y += kRect.size.y;
+        kRect.size.y = -kRect.size.y;
     }
 
     if (m_flipTextureH)
     {
-        kRect.position.x += kRect.width;
-        kRect.width = -kRect.width;
+        kRect.position.x += kRect.size.x;
+        kRect.size.x = -kRect.size.x;
     }
 
     return kRect;
@@ -103,14 +103,14 @@ void ElementSpriteBase::SetFlipTexture(bool _bFlipTextureV, bool _bFlipTextureH)
     {
         if (_bFlipTextureV != m_flipTextureV)
         {
-            m_subRect.position.y += m_subRect.height;
-            m_subRect.height = -m_subRect.height;
+            m_subRect.position.y += m_subRect.size.y;
+            m_subRect.size.y = -m_subRect.size.y;
         }
 
         if (_bFlipTextureH != m_flipTextureH)
         {
-            m_subRect.position.x += m_subRect.width;
-            m_subRect.width = -m_subRect.width;
+            m_subRect.position.x += m_subRect.size.x;
+            m_subRect.size.x = -m_subRect.size.x;
         }
 
         m_flipTextureV = _bFlipTextureV;
@@ -174,8 +174,8 @@ size_t ElementSpriteBase::GetRequiredVertexCount() const
         Vector2f kAreaSize = GetSize();
 
         // Actual subrect size (= used texture size)
-        int iTextureSizeX = Absolute(m_subRect.width);
-        int iTextureSizeY = Absolute(m_subRect.height);
+        int iTextureSizeX = Absolute(m_subRect.size.x);
+        int iTextureSizeY = Absolute(m_subRect.size.y);
 
         // Nb tiles we can fully render
         int iNbFullTilesX = iTextureSizeX == 0 ? 0 : ((int)kAreaSize.x) / iTextureSizeX;
@@ -206,8 +206,8 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
         // Recompute texture coords.
         float fLeft = (float)m_subRect.position.x;
         float fTop = (float)m_subRect.position.y;
-        float fRight = fLeft + m_subRect.width;
-        float fBottom = fTop + m_subRect.height;
+        float fRight = fLeft + m_subRect.size.x;
+        float fBottom = fTop + m_subRect.size.y;
 
         vertices[0].texCoords = Vector2f(fLeft, fTop);
         vertices[1].texCoords = Vector2f(fRight, fTop);
@@ -221,8 +221,8 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
         Vector2f kAreaSize = GetSize();
 
         // Actual subrect size (= used texture size)
-        int iTextureSizeX = Absolute(m_subRect.width);
-        int iTextureSizeY = Absolute(m_subRect.height);
+        int iTextureSizeX = Absolute(m_subRect.size.x);
+        int iTextureSizeY = Absolute(m_subRect.size.y);
 
         // Nb tiles we can fully render
         int iNbFullTilesX = iTextureSizeX == 0 ? 0 : ((int)kAreaSize.x) / iTextureSizeX;
@@ -235,14 +235,14 @@ void ElementSpriteBase::RecomputeVerticesPositionAndTextureCoords(sf::Vertex* ve
         // Targeted texture coordinates (can be flipped)
         float fLeft = (float)m_subRect.position.x;
         float fTop = (float)m_subRect.position.y;
-        float fRight = fLeft + m_subRect.width;
-        float fBottom = fTop + m_subRect.height;
+        float fRight = fLeft + m_subRect.size.x;
+        float fBottom = fTop + m_subRect.size.y;
 
         // Remaining margins for truncated tiles
         float fRemainingAreaX = kAreaSize.x - (iNbFullTilesX * iTextureSizeX);
         float fRemainingAreaY = kAreaSize.y - (iNbFullTilesY * iTextureSizeY);
-        float fRemainingTextureX = iTextureSizeX == 0 ? 0 : fLeft + (float)m_subRect.width * (fRemainingAreaX / (float)iTextureSizeX);
-        float fRemainingTextureY = iTextureSizeY == 0 ? 0 : fTop + (float)m_subRect.height * (fRemainingAreaY / (float)iTextureSizeY);
+        float fRemainingTextureX = iTextureSizeX == 0 ? 0 : fLeft + (float)m_subRect.size.x * (fRemainingAreaX / (float)iTextureSizeX);
+        float fRemainingTextureY = iTextureSizeY == 0 ? 0 : fTop + (float)m_subRect.size.y * (fRemainingAreaY / (float)iTextureSizeY);
 
         // Convenience cast
         float fTextureSizeX = (float)iTextureSizeX;

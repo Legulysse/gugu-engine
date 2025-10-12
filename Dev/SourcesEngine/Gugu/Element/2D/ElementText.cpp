@@ -214,7 +214,7 @@ void ElementText::RecomputeImpl()
 
                 //Step 2:2 : compute new size. if size is too big, skip this chunk and go to step 3
                 oSFText.setString(strLineTest);
-                if (oSFText.getLocalBounds().width > GetSize().x)
+                if (oSFText.getLocalBounds().size.x > GetSize().x)
                 {
                     if (!strNewLine.empty())
                     {
@@ -264,25 +264,25 @@ void ElementText::RecomputeImpl()
     //TODO: if the string is empty, we cant select it for edition since the size is (0,0).
     if (m_resizeRule == ETextResizeRule::FitScale)
     {
-        if (m_size.x > 0 && m_size.y > 0 && m_sfText->getLocalBounds().width > 0 && m_sfText->getLocalBounds().height > 0)
+        if (m_size.x > 0 && m_size.y > 0 && m_sfText->getLocalBounds().size.x > 0 && m_sfText->getLocalBounds().size.y > 0)
         {
-            m_sfText->setScale(m_size.x / (m_sfText->getLocalBounds().position.x + m_sfText->getLocalBounds().width), m_size.y / (m_sfText->getLocalBounds().position.y + m_sfText->getLocalBounds().height));
+            m_sfText->setScale(m_size.x / (m_sfText->getLocalBounds().position.x + m_sfText->getLocalBounds().size.x), m_size.y / (m_sfText->getLocalBounds().position.y + m_sfText->getLocalBounds().size.y));
         }
     }
     else if (m_resizeRule == ETextResizeRule::FitSize)
     {
         m_skipRecomputeOnResize = true;
-        SetSize(m_sfText->getLocalBounds().position.x + m_sfText->getLocalBounds().width, m_sfText->getLocalBounds().position.y + m_sfText->getLocalBounds().height);
+        SetSize(m_sfText->getLocalBounds().position.x + m_sfText->getLocalBounds().size.x, m_sfText->getLocalBounds().position.y + m_sfText->getLocalBounds().size.y);
     }
     else if (m_resizeRule == ETextResizeRule::FitWidth)
     {
         m_skipRecomputeOnResize = true;
-        SetSizeX(m_sfText->getLocalBounds().position.x + m_sfText->getLocalBounds().width);
+        SetSizeX(m_sfText->getLocalBounds().position.x + m_sfText->getLocalBounds().size.x);
     }
     else if (m_resizeRule == ETextResizeRule::FitHeight)
     {
         m_skipRecomputeOnResize = true;
-        SetSizeY(m_sfText->getLocalBounds().position.y + m_sfText->getLocalBounds().height);
+        SetSizeY(m_sfText->getLocalBounds().position.y + m_sfText->getLocalBounds().size.y);
     }
 }
 

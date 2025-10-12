@@ -64,8 +64,8 @@ sf::FloatRect Renderer::ComputeViewport(const sf::View& view)
     // Pre-compute viewport's rect (real size, not a [0, 1] range) (will be used by Elements to check if they should be drawn or not)
     viewport.position.x = view.getCenter().x - view.getSize().x / 2.f;
     viewport.position.y = view.getCenter().y - view.getSize().y / 2.f;
-    viewport.width = view.getSize().x;
-    viewport.height = view.getSize().y;
+    viewport.size.x = view.getSize().x;
+    viewport.size.y = view.getSize().y;
 
     return viewport;
 }
@@ -91,8 +91,8 @@ void Renderer::RenderElementHierarchy(RenderPass& renderPass, Element* root, Cam
     // Debug off-screen rendering.
     renderPass.rectViewport.position.x += 50.f;
     renderPass.rectViewport.position.y += 50.f;
-    renderPass.rectViewport.width -= 100.f;
-    renderPass.rectViewport.height -= 100.f;
+    renderPass.rectViewport.size.x -= 100.f;
+    renderPass.rectViewport.size.y -= 100.f;
 #endif
 
     // Render hierarchy.

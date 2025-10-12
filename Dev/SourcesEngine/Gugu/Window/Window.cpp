@@ -115,8 +115,8 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
         // sf::VideoMode::getDesktopMode() gives the current desktop resolution (ignoring potential scaling so its safe to use as-is).
         // sf::VideoMode::getFullscreenModes() could be used to provide a settings menu with a resolution selection.
         windowStyle = sf::Style::Fullscreen;
-        windowWidth = sf::VideoMode::getDesktopMode().width;
-        windowHeight = sf::VideoMode::getDesktopMode().height;
+        windowWidth = sf::VideoMode::getDesktopMode().size.x;
+        windowHeight = sf::VideoMode::getDesktopMode().size.y;
     }
 
     m_sfWindow->create(sf::VideoMode(windowWidth, windowHeight, 32), config.applicationName, windowStyle, Settings);
@@ -563,7 +563,7 @@ bool Window::ProcessEvents()
         }
         else if (event.type == sf::Event::Resized)
         {
-            ComputeSize(event.size.width, event.size.height);
+            ComputeSize(event.size.size.x, event.size.size.y);
         }
         else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Quote)
         {

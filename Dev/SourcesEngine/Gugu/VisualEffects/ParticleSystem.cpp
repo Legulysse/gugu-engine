@@ -318,8 +318,8 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
         sf::IntRect subRect = subImage->GetRect();
         float fLeft = (float)subRect.position.x;
         float fTop = (float)subRect.position.y;
-        float fRight = fLeft + subRect.width;
-        float fBottom = fTop + subRect.height;
+        float fRight = fLeft + subRect.size.x;
+        float fBottom = fTop + subRect.size.y;
 
         sf::Vertex* vertices = &m_dataVertices[particleIndex * 6];
         vertices->texCoords = Vector2f(fLeft, fTop); ++vertices;

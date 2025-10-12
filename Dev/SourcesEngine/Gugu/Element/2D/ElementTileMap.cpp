@@ -132,8 +132,8 @@ void ElementTileMap::UpdateTilePositionAndSize(size_t index, const sf::FloatRect
 {
     float left = rect.position.x;
     float top = rect.position.y;
-    float right = left + rect.width;
-    float bottom = top + rect.height;
+    float right = left + rect.size.x;
+    float bottom = top + rect.size.y;
 
     sf::Vertex* quad = &m_vertices[index * 6];
 
@@ -155,8 +155,8 @@ void ElementTileMap::UpdateTileTextureCoords(size_t index, const sf::IntRect& re
 {
     float left = (float)rect.position.x;
     float top = (float)rect.position.y;
-    float right = left + (float)rect.width;
-    float bottom = top + (float)rect.height;
+    float right = left + (float)rect.size.x;
+    float bottom = top + (float)rect.size.y;
 
     sf::Vertex* quad = &m_vertices[index * 6];
 

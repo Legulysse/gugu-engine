@@ -8,9 +8,9 @@
 #include "Gugu/Network/ClientInfo.h"
 #include "Gugu/Network/NetworkPacket.h"
 
-#include <SFML/System/Mutex.hpp>
 #include <SFML/Network/IpAddress.hpp>
 
+#include <mutex>
 #include <list>
 #include <map>
 #include <queue>
@@ -49,7 +49,7 @@ public:
     ManagerNetwork();
     ~ManagerNetwork();
 
-    void StartListening(sf::Uint16 _uiPort);
+    void StartListening(uint16 _uiPort);
     void StopListening();
     bool IsListening() const;
 
@@ -60,14 +60,14 @@ public:
     void Unlock();
     void ProcessWaitingPackets();
 
-    void ConnectToClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort);
+    void ConnectToClient(sf::IpAddress _oIPAddress, uint16 _uiPort);
 
     //void Disconnect(sf::TcpSocket* _pSocket);
     void Disconnect(ClientInfo* _pClient);
     void DisconnectAll();
 
     //ClientInfo* FindClient(sf::TcpSocket* _pSocket) const;
-    ClientInfo* FindClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort) const;
+    ClientInfo* FindClient(uint32 _oIPAddress, uint16 _uiPort) const;
 
     void SendNetPacketToAll         (NetPacket* _pPacket, bool _bIncludeSelf);
     void SendNetPacketToAllPlayers  (NetPacket* _pPacket, bool _bIncludeSelf);
@@ -79,10 +79,10 @@ public:
     void StoreGamePacket(NetPacketGame* _pPacket);
 
     void HostGame(bool _bJoin);
-    void JoinGame(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort);
+    void JoinGame(sf::IpAddress _oIPAddress, uint16 _uiPort);
 
-    bool        IsHost() const;
-    sf::Int32   GetPlayerID() const;
+    bool IsHost() const;
+    int32 GetPlayerID() const;
 
     void StartMultiplayerGame();
     bool IsRunningMultiplayerGame() const;
@@ -104,16 +104,16 @@ private:
     sf::TcpListener*    m_listener;
 
     sf::Thread*         m_receptionThread;
-    sf::Mutex           m_mutexReception;
+    std::mutex          m_mutexReception;
 
     bool                m_isListening;
-    sf::Uint16          m_listeningPort;
+    uint16              m_listeningPort;
 
     ClientInfo*         m_clientInfoSelf;
 
     bool                m_isRunningMultiplayerGame;
-    sf::Uint32          m_lastNetTurnProcessed;
-    sf::Uint32          m_nbTurnsOffset;              //Nb turns used as an offset for sync-games
+    uint32              m_lastNetTurnProcessed;
+    uint32              m_nbTurnsOffset;              //Nb turns used as an offset for sync-games
 
     std::list<ClientInfo*>  m_clients;
     std::map<uint32, std::list<NetPacketGame*>>    m_gamePackets;  //map <turn, packets>

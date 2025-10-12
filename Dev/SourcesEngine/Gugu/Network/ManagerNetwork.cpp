@@ -14,7 +14,6 @@
 #include "Gugu/Core/Application.h"
 #include "Gugu/Debug/Logger.h"
 
-#include <SFML/System/Thread.hpp>
 #include <SFML/Network/TcpSocket.hpp>
 #include <SFML/Network/TcpListener.hpp>
 #include <SFML/Network/SocketSelector.hpp>
@@ -58,7 +57,7 @@ ManagerNetwork::~ManagerNetwork()
     SafeDelete(m_logNetwork);
 }
 
-void ManagerNetwork::StartListening(sf::Uint16 _uiPort)
+void ManagerNetwork::StartListening(uint16 _uiPort)
 {
     if (!m_logNetwork)
     {
@@ -70,11 +69,11 @@ void ManagerNetwork::StartListening(sf::Uint16 _uiPort)
     if(!m_isListening)
     {
         SafeDelete(m_clientInfoSelf);
-        m_clientInfoSelf = new ClientInfo(sf::IpAddress::getLocalAddress(), _uiPort);
+        m_clientInfoSelf = new ClientInfo(sf::IpAddress::getLocalAddress()->toInteger(), _uiPort);  // TODO: check IpAddress optional result.
 
         m_listeningPort = _uiPort;
 
-        if (m_listener->listen(m_listeningPort) == sf::Socket::Done)
+        if (m_listener->listen(m_listeningPort) == sf::Socket::Status::Done)
         {
             m_selector->add(*m_listener);
 
@@ -198,13 +197,13 @@ void ManagerNetwork::StepReception()
     {
         //Accept him
         sf::TcpSocket* pSocketNewClient = new sf::TcpSocket;
-        m_listener->accept(*pSocketNewClient);
+        sf::Socket::Status result = m_listener->accept(*pSocketNewClient);  // TODO: check result.
 
-        sf::IpAddress Address = pSocketNewClient->getRemoteAddress();
+        sf::IpAddress Address = *pSocketNewClient->getRemoteAddress();  // TODO: check IpAddress optional result.
         GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("New client : {0}", Address.toString()));
 
         //Add him to clients list & selector
-        ClientInfo* pClient = new ClientInfo(Address, 0);
+        ClientInfo* pClient = new ClientInfo(Address.toInteger(), 0);
         pClient->m_socket = pSocketNewClient;
         m_clients.push_back(pClient);
 
@@ -224,9 +223,9 @@ void ManagerNetwork::StepReception()
             continue;
 
         sf::Packet oSFPacket;
-        if (oSocket.receive(oSFPacket) == sf::Socket::Done)
+        if (oSocket.receive(oSFPacket) == sf::Socket::Status::Done)
         {
-            sf::Uint32 iType;
+            uint32 iType;
             oSFPacket >> iType;
 
             ENetPacket::Type eType;
@@ -287,7 +286,7 @@ void ManagerNetwork::StepReception()
     }
 }
 
-void ManagerNetwork::ConnectToClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort)
+void ManagerNetwork::ConnectToClient(sf::IpAddress _oIPAddress, uint16 _uiPort)
 {
     if((sf::IpAddress::LocalHost == _oIPAddress || sf::IpAddress::getLocalAddress() == _oIPAddress) && m_listeningPort == _uiPort)
     {
@@ -295,25 +294,25 @@ void ManagerNetwork::ConnectToClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPo
         return;
     }
 
-    if(FindClient(_oIPAddress, _uiPort))
+    if(FindClient(_oIPAddress.toInteger(), _uiPort))
     {
         GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Already connected");
         return;
     }
 
-    ClientInfo* pClient = new ClientInfo(_oIPAddress, _uiPort);
+    ClientInfo* pClient = new ClientInfo(_oIPAddress.toInteger(), _uiPort);
     pClient->m_socket = new sf::TcpSocket;
 
-    GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("Try connection to {0}:{1}", pClient->m_ipAddress.toString(), pClient->m_port));
+    GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("Try connection to {0}:{1}", pClient->m_ipAddress, pClient->m_port));
 
-    if (pClient->m_socket->connect(pClient->m_ipAddress, pClient->m_port, sf::milliseconds(100)) == sf::Socket::Done)
+    if (pClient->m_socket->connect(sf::IpAddress(pClient->m_ipAddress), pClient->m_port, sf::milliseconds(100)) == sf::Socket::Status::Done)
     {
         m_clients.push_back(pClient);
         m_selector->add(*pClient->m_socket);
 
-        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("Connected to {0}:{1}", pClient->m_ipAddress.toString(), pClient->m_port));
+        GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, StringFormat("Connected to {0}:{1}", pClient->m_ipAddress, pClient->m_port));
 
-        NetPacketClientConnection oPacket(sf::IpAddress::getLocalAddress(), m_listeningPort);
+        NetPacketClientConnection oPacket(sf::IpAddress::getLocalAddress()->toInteger(), m_listeningPort);  // TODO: check IpAddress optional result.
         SendNetPacket(pClient, oPacket);
 
         GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Sent Connection Infos");
@@ -379,7 +378,7 @@ void ManagerNetwork::Disconnect(ClientInfo* _pClient)
     return nullptr;
 }*/
 
-ClientInfo* ManagerNetwork::FindClient(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort) const
+ClientInfo* ManagerNetwork::FindClient(uint32 _oIPAddress, uint16 _uiPort) const
 {
     for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
     {
@@ -445,7 +444,7 @@ bool ManagerNetwork::SendNetPacket(ClientInfo* _pClient, NetPacket& _oPacket)
     sf::Packet oSFPacket;
     _oPacket.FillSFPacket(oSFPacket);
 
-    if(_pClient && _pClient->m_socket && _pClient->m_socket->send(oSFPacket) != sf::Socket::Done)
+    if(_pClient && _pClient->m_socket && _pClient->m_socket->send(oSFPacket) != sf::Socket::Status::Done)
     {
         GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "Could not send a packet !");
         return false;
@@ -482,7 +481,7 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
 
         if(pPacket)
         {
-            GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> got : client connection infos !! (" + pPacket->m_ipAddress.toString() + ":" + ToString(pPacket->m_port) + ")");
+            GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> got : client connection infos !! (" + ToString(pPacket->m_ipAddress) + ":" + ToString(pPacket->m_port) + ")");
             _pSender->m_port = pPacket->m_port;
         }
     }
@@ -493,7 +492,7 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
         if (_pSender != m_clientInfoSelf && _pSender->m_playerID == -1 && IsHost())
         {
             //Store used IDs
-            std::set<sf::Int32> oSetIDs;
+            std::set<int32> oSetIDs;
             for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
             {
                 ClientInfo* pClient = *iteCurrent;
@@ -504,7 +503,7 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
             }
 
             //Parse IDs to get the first available one
-            sf::Int32 iNewID = 1;
+            int32 iNewID = 1;
             for (auto iteID = oSetIDs.begin(); iteID != oSetIDs.end(); ++iteID)
             {
                 if (*iteID > iNewID)
@@ -547,7 +546,7 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
         }
         else
         {
-            ConnectToClient(pPacket->m_ipAddress, pPacket->m_port); //Ensure connection
+            ConnectToClient(sf::IpAddress(pPacket->m_ipAddress), pPacket->m_port); //Ensure connection
 
             for (auto iteCurrent = m_clients.begin(); iteCurrent != m_clients.end(); ++iteCurrent)
             {
@@ -559,7 +558,7 @@ bool ManagerNetwork::ReceiveNetPacket(NetPacket* _pPacketReceived, ClientInfo* _
                     if (pClient->m_playerID == 0)
                         pClient->m_isHost = true;
 
-                    GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> Client " + pClient->m_ipAddress.toString() + ":" + ToString(pClient->m_port) + " is now player " + ToString(pClient->m_playerID));
+                    GetLogNetwork()->Print(ELog::Info, ELogEngine::Network, "> Client " + ToString(pClient->m_ipAddress) + ":" + ToString(pClient->m_port) + " is now player " + ToString(pClient->m_playerID));
 
                     if (GetApplication())
                         GetApplication()->PlayerAddedToGame(pClient);
@@ -605,14 +604,14 @@ void ManagerNetwork::HostGame(bool _bJoin)
     }
 }
 
-void ManagerNetwork::JoinGame(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort)
+void ManagerNetwork::JoinGame(sf::IpAddress _oIPAddress, uint16 _uiPort)
 {
     //Ask potential host if he is hosting a game
     //send a request to join game
     //ask/receive a game id
     //ask/receive the list of other players
 
-    ClientInfo* pClient = FindClient(_oIPAddress, _uiPort);
+    ClientInfo* pClient = FindClient(_oIPAddress.toInteger(), _uiPort);
     if(pClient)
     {
         NetPacket oPacket(ENetPacket::JoinGame);
@@ -627,7 +626,7 @@ bool ManagerNetwork::IsHost() const
     return false;
 }
 
-sf::Int32 ManagerNetwork::GetPlayerID() const
+int32 ManagerNetwork::GetPlayerID() const
 {
     if(m_clientInfoSelf)
         return m_clientInfoSelf->m_playerID;

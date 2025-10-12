@@ -4,6 +4,9 @@
 #include "Gugu/Common.h"
 #include "Gugu/Network/ClientInfo.h"
 
+////////////////////////////////////////////////////////////////
+// Includes
+
 #include <SFML/Network/TcpSocket.hpp>
 
 ////////////////////////////////////////////////////////////////
@@ -21,7 +24,7 @@ ClientInfo::ClientInfo()
     m_lastTurnReceived = 0;
 }
 
-ClientInfo::ClientInfo(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort)
+ClientInfo::ClientInfo(uint32 _oIPAddress, uint16 _uiPort)
 {
     m_socket = nullptr;
     m_ipAddress = _oIPAddress;

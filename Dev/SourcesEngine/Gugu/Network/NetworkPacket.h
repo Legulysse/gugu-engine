@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/Types.h"
 #include "Gugu/Network/EnumsNetwork.h"
 
 #include <SFML/Network/IpAddress.hpp>
@@ -40,7 +41,7 @@ class NetPacketClientConnection : public NetPacket
 {
 public:
 
-    NetPacketClientConnection(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort);
+    NetPacketClientConnection(uint32 _oIPAddress, uint16 _uiPort);
     NetPacketClientConnection(sf::Packet& _oSFPacket);
     virtual ~NetPacketClientConnection();
 
@@ -49,15 +50,15 @@ public:
     
 public:
 
-    sf::IpAddress m_ipAddress;
-    sf::Uint16 m_port;
+    uint32 m_ipAddress;
+    uint16 m_port;
 };
 
 class NetPacketAddPlayer : public NetPacket
 {
 public:
 
-    NetPacketAddPlayer(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort, sf::Int32 _iPlayerID);
+    NetPacketAddPlayer(uint32 _oIPAddress, uint16 _uiPort, int32 _iPlayerID);
     NetPacketAddPlayer(sf::Packet& _oSFPacket);
     virtual ~NetPacketAddPlayer();
 
@@ -66,16 +67,16 @@ public:
 
 public:
 
-    sf::IpAddress m_ipAddress;
-    sf::Uint16 m_port;
-    sf::Int32 m_playerID;
+    uint32 m_ipAddress;
+    uint16 m_port;
+    int32 m_playerID;
 };
 
 class NetPacketTurnReady : public NetPacket
 {
 public:
 
-    NetPacketTurnReady(sf::Uint32 _uiNetTurn);
+    NetPacketTurnReady(uint32 _uiNetTurn);
     NetPacketTurnReady(sf::Packet& _oSFPacket);
     virtual ~NetPacketTurnReady();
 
@@ -84,7 +85,7 @@ public:
     
 public:
 
-    sf::Uint32 m_turn;
+    uint32 m_turn;
 };
 
 class NetPacketGame : public NetPacket
@@ -100,7 +101,7 @@ public:
     
 public:
 
-    sf::Uint32  m_turn;
+    uint32  m_turn;
 };
 
 }   // namespace gugu

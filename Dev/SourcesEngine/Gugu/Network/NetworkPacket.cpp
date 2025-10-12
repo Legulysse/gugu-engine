@@ -30,14 +30,14 @@ NetPacket::~NetPacket()
 
 void NetPacket::FillSFPacket(sf::Packet& _oSFPacket)
 {
-    _oSFPacket << static_cast<sf::Uint32>(m_type);
+    _oSFPacket << static_cast<uint32>(m_type);
 }
 
 void NetPacket::ReadSFPacket(sf::Packet& _oSFPacket)
 {
 }
 
-NetPacketClientConnection::NetPacketClientConnection(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort)
+NetPacketClientConnection::NetPacketClientConnection(uint32 _oIPAddress, uint16 _uiPort)
 {
     m_type = ENetPacket::ClientInfos;
 
@@ -60,21 +60,17 @@ void NetPacketClientConnection::FillSFPacket(sf::Packet& _oSFPacket)
 {
     NetPacket::FillSFPacket(_oSFPacket);
 
-    _oSFPacket << m_ipAddress.toInteger() << m_port;
+    _oSFPacket << m_ipAddress << m_port;
 }
 
 void NetPacketClientConnection::ReadSFPacket(sf::Packet& _oSFPacket)
 {
     NetPacket::ReadSFPacket(_oSFPacket);
 
-    sf::Uint32 uiAddress;
-    _oSFPacket >> uiAddress >> m_port;
-
-    sf::IpAddress oIPAddress( uiAddress );
-    m_ipAddress = oIPAddress;
+    _oSFPacket >> m_ipAddress >> m_port;
 }
 
-NetPacketAddPlayer::NetPacketAddPlayer(sf::IpAddress _oIPAddress, sf::Uint16 _uiPort, sf::Int32 _iPlayerID)
+NetPacketAddPlayer::NetPacketAddPlayer(uint32 _oIPAddress, uint16 _uiPort, int32 _iPlayerID)
 {
     m_type = ENetPacket::AddPlayer;
 
@@ -98,21 +94,17 @@ void NetPacketAddPlayer::FillSFPacket(sf::Packet& _oSFPacket)
 {
     NetPacket::FillSFPacket(_oSFPacket);
 
-    _oSFPacket << m_ipAddress.toInteger() << m_port << m_playerID;
+    _oSFPacket << m_ipAddress << m_port << m_playerID;
 }
 
 void NetPacketAddPlayer::ReadSFPacket(sf::Packet& _oSFPacket)
 {
     NetPacket::ReadSFPacket(_oSFPacket);
 
-    sf::Uint32 uiAddress;
-    _oSFPacket >> uiAddress >> m_port >> m_playerID;
-
-    sf::IpAddress oIPAddress( uiAddress );
-    m_ipAddress = oIPAddress;
+    _oSFPacket >> m_ipAddress >> m_port >> m_playerID;
 }
 
-NetPacketTurnReady::NetPacketTurnReady(sf::Uint32 _uiNetTurn)
+NetPacketTurnReady::NetPacketTurnReady(uint32 _uiNetTurn)
 {
     m_type = ENetPacket::TurnReady;
 

@@ -9,6 +9,7 @@
 
 #include "Gugu/Window/Renderer.h"
 #include "Gugu/Window/Window.h"
+#include "Gugu/Window/Vertex2.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/Font.h"
@@ -276,12 +277,12 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
             Vector2f pointOffsetBorderRight = Vector2f(1.f + curveWidth, pointOffset + 1.f);
 
             m_borders.resize(6);
-            m_borders[0] = sf::Vertex(positionCurves + Vector2f(0.f, curveHeight) + pointOffsetBorderLeft, colorBorders);
-            m_borders[1] = sf::Vertex(positionCurves + Vector2f(0.f, curveHeight) + pointOffsetBorderRight, colorBorders);
-            m_borders[2] = sf::Vertex(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f)) + pointOffsetBorderLeft, colorBorders);
-            m_borders[3] = sf::Vertex(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f)) + pointOffsetBorderRight, colorBorders);
-            m_borders[4] = sf::Vertex(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f) * 2) + pointOffsetBorderLeft, colorBorders);
-            m_borders[5] = sf::Vertex(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f) * 2) + pointOffsetBorderRight, colorBorders);
+            m_borders[0] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight) + pointOffsetBorderLeft, colorBorders);
+            m_borders[1] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight) + pointOffsetBorderRight, colorBorders);
+            m_borders[2] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f)) + pointOffsetBorderLeft, colorBorders);
+            m_borders[3] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f)) + pointOffsetBorderRight, colorBorders);
+            m_borders[4] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f) * 2) + pointOffsetBorderLeft, colorBorders);
+            m_borders[5] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f) * 2) + pointOffsetBorderRight, colorBorders);
         }
 
         renderWindow->draw(m_borders);

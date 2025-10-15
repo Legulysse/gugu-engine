@@ -14,6 +14,7 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/Element.h"
 #include "Gugu/Window/Renderer.h"
+#include "Gugu/Window/Vertex2.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/Math/MathUtility.h"
 
@@ -143,7 +144,7 @@ void ParticleSystem::Start()
 
     // Reset all particles.
     std::fill(m_dataLifetime.begin(), m_dataLifetime.end(), 0.f);
-    std::fill(m_dataVertices.begin(), m_dataVertices.end(), sf::Vertex(Vector2f(), sf::Color::Transparent, Vector2f()));
+    std::fill(m_dataVertices.begin(), m_dataVertices.end(), BuildVertex2(Vector2f(), sf::Color::Transparent, Vector2f()));
 
     m_running = true;
     m_paused = false;

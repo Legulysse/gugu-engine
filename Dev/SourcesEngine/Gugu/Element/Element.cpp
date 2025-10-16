@@ -376,7 +376,7 @@ void Element::Move(const Vector2f& _kOffset)
     OnTransformChanged();
 }
 
-const Vector2f& Element::GetPosition() const
+Vector2f Element::GetPosition() const
 {
     return m_transform.getPosition();
 }
@@ -467,7 +467,7 @@ void Element::SetOrigin(const Vector2f& _kOrigin)
     OnTransformChanged();
 }
 
-const Vector2f& Element::GetOrigin() const
+Vector2f Element::GetOrigin() const
 {
     return m_transform.getOrigin();
 }
@@ -542,7 +542,7 @@ void Element::SetSize(const Vector2f& _kNewSize)
     }
 }
 
-const Vector2f& Element::GetSize() const
+Vector2f Element::GetSize() const
 {
     return m_size;
 }

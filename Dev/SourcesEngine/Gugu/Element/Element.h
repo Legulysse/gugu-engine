@@ -75,7 +75,7 @@ public:
     void Move(float _fOffsetX, float _fOffsetY);
     void Move(const Vector2f& _kOffset);
 
-    const Vector2f& GetPosition() const;
+    Vector2f GetPosition() const;
 
     //----------------------------------------------
     // Rotation
@@ -107,7 +107,7 @@ public:
     void SetOrigin(float _fOriginX, float _fOriginY);
     void SetOrigin(const Vector2f& _kOrigin);
 
-    const Vector2f& GetOrigin() const;
+    Vector2f GetOrigin() const;
 
     //----------------------------------------------
     // Size
@@ -117,7 +117,7 @@ public:
     void SetSize(float _fNewSizeX, float _fNewSizeY);
     void SetSize(const Vector2f& _kNewSize);
 
-    const Vector2f& GetSize() const;       // Get Element Size
+    Vector2f GetSize() const;
 
     //----------------------------------------------
     // Flip

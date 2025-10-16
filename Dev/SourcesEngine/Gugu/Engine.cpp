@@ -133,7 +133,8 @@ void Engine::Init(const EngineConfig& config)
 
         if (hostImGui)
         {
-            ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
+            // TODO: check result.
+            bool initResult = ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
 
             m_showImGui = m_engineConfig.showImGui;
         }

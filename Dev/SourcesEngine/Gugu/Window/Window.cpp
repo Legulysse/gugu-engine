@@ -593,7 +593,7 @@ bool Window::ProcessEvents()
             // This will help disabling imgui text entries, but not the mouse events, they are handled in ImGui::SFML::Update.
             if (!m_consoleNode->IsVisible())
             {
-                ImGui::SFML::ProcessEvent(event);
+                ImGui::SFML::ProcessEvent(*m_sfWindow, event);
             }
         }
 

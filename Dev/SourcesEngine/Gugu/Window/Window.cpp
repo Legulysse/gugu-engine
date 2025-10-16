@@ -513,15 +513,14 @@ Vector2u Window::GetSize() const
 
 void Window::ComputeSize(int _iWidth, int _iHeight)
 {
-    sf::View kView;
-    kView.setSize((float)_iWidth, (float)_iHeight);
-    kView.setCenter((float)_iWidth / 2.f, (float)_iHeight / 2.f);
+    Vector2f floatSize = Vector2f((float)_iWidth, (float)_iHeight);
 
-    m_sfWindow->setView(kView);
+    sf::View mainView;
+    mainView.setSize(floatSize);
+    mainView.setCenter(floatSize / 2.f);
+    m_sfWindow->setView(mainView);
 
-    m_rootNode->SetSize((float)_iWidth, (float)_iHeight);
-    //m_pMouseNode->SetSize((float)_iWidth, (float)_iHeight);
-    //m_pConsoleNode->SetSize((float)_iWidth, (float)_iHeight);
+    m_rootNode->SetSize(floatSize);
 
     m_mainCamera->RecomputeSizeFromWindow();
     for (size_t i = 0; i < m_cameras.size(); ++i)

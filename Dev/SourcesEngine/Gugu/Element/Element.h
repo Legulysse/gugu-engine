@@ -80,8 +80,8 @@ public:
     //----------------------------------------------
     // Rotation
 
-    void SetRotation(float _fAngle);
-    void Rotate(float _fAngle);
+    void SetRotation(float degrees);
+    void Rotate(float degrees);
 
     float GetRotation() const;
 

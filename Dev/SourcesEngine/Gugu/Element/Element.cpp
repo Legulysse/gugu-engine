@@ -385,21 +385,21 @@ const Vector2f& Element::GetPosition() const
     return m_transform.getPosition();
 }
 
-void Element::SetRotation(float _fAngle)
+void Element::SetRotation(float degrees)
 {
-    m_transform.setRotation(_fAngle);
+    m_transform.setRotation(sf::degrees(degrees));
     OnTransformChanged();
 }
 
-void Element::Rotate(float _fAngle)
+void Element::Rotate(float degrees)
 {
-    m_transform.rotate(_fAngle);
+    m_transform.rotate(sf::degrees(degrees));
     OnTransformChanged();
 }
 
 float Element::GetRotation() const
 {
-    return m_transform.getRotation();
+    return m_transform.getRotation().asDegrees();
 }
 
 void Element::SetScaleX(float _fScaleX)

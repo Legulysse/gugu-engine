@@ -101,13 +101,12 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     m_hostImGui = hostImGui;
 
     //Windows Settings
-    sf::ContextSettings Settings;
-    Settings.depthBits         = 24; // Request a 24 bits depth buffer
-    Settings.stencilBits       = 8;  // Request a 8 bits stencil buffer
-    Settings.antialiasingLevel = 2;  // Request 2 levels of antialiasing
+    sf::ContextSettings contextSettings;
+    //contextSettings.antiAliasingLevel = 2;  // Request 2 levels of antialiasing
 
     //Create main window
     uint32 windowStyle = sf::Style::Default;
+    sf::State windowState = sf::State::Windowed;
     int windowWidth = config.windowWidth;
     int windowHeight = config.windowHeight;
 
@@ -115,19 +114,19 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     {
         // sf::VideoMode::getDesktopMode() gives the current desktop resolution (ignoring potential scaling so its safe to use as-is).
         // sf::VideoMode::getFullscreenModes() could be used to provide a settings menu with a resolution selection.
-        windowStyle = sf::Style::Fullscreen;
+        windowState = sf::State::Fullscreen;
         windowWidth = sf::VideoMode::getDesktopMode().size.x;
         windowHeight = sf::VideoMode::getDesktopMode().size.y;
     }
 
-    m_sfWindow->create(sf::VideoMode(windowWidth, windowHeight, 32), config.applicationName, windowStyle, Settings);
+    m_sfWindow->create(sf::VideoMode(Vector2u(windowWidth, windowHeight)), config.applicationName, windowStyle, windowState, contextSettings);
     m_sfWindow->setFramerateLimit(config.framerateLimit);
     m_sfWindow->setVerticalSyncEnabled(config.enableVerticalSync);
 
     if (config.maximizeWindow && !config.fullscreen)
     {
 #if defined(GUGU_OS_WINDOWS)
-        ::ShowWindow(m_sfWindow->getSystemHandle(), SW_MAXIMIZE);
+        ::ShowWindow(m_sfWindow->getNativeHandle(), SW_MAXIMIZE);
 #endif
     }
 

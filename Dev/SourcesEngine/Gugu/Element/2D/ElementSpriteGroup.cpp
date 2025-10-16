@@ -175,7 +175,7 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
 
     //TODO: maybe need a parameter to bypass this check ?
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
-    if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
+    if (_kRenderPass.rectViewport.findIntersection(kGlobalTransformed))
     {
         if (m_vertices.getVertexCount() > 0)
         {

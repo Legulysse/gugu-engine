@@ -170,7 +170,7 @@ void ElementSlider::RecomputeImpl()
 void ElementSlider::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
-    if (_kRenderPass.rectViewport.intersects(kGlobalTransformed))
+    if (_kRenderPass.rectViewport.findIntersection(kGlobalTransformed))
     {
         if (m_currentStateComponent)
         {

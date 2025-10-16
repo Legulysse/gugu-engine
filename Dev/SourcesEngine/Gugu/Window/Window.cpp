@@ -182,13 +182,11 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_consoleNode->SetUnifiedSize(UDim2::SIZE_FULL);
     m_consoleNode->SetVisible(false);
 
-    sf::Image oImgConsole;
-    oImgConsole.create(8, 8, sf::Color(0, 0, 0, 150));
+    sf::Image consoleImage(Vector2u(8, 8), sf::Color(0, 0, 0, 150));
 
     Texture* pTextureConsole = GetResources()->GetCustomTexture("GuguConsoleBackground");   //TODO: Prepare custom textures in the manager beforehand
     sf::Texture* pSFTextureConsole = pTextureConsole->GetSFTexture();
-    pSFTextureConsole->create(8, 8);
-    pSFTextureConsole->update(oImgConsole);
+    bool loadResult = pSFTextureConsole->loadFromImage(consoleImage);
 
     Font* pFont = GetResources()->GetDebugFont();
 
@@ -726,16 +724,15 @@ bool Window::Screenshot() const
 {
     if (EnsureDirectoryExists(GetResources()->GetPathScreenshots()))
     {
-        sf::Texture kTexture;
-        kTexture.create(m_sfWindow->getSize().x, m_sfWindow->getSize().y);
-        kTexture.update(*m_sfWindow);
+        sf::Texture captureTexture(m_sfWindow->getSize());
+        captureTexture.update(*m_sfWindow);
 
-        sf::Image kImage = kTexture.copyToImage();
+        sf::Image captureImage = captureTexture.copyToImage();
 
-        std::thread kThreadSaveFile([kImage]() {
-            bool saveResult = kImage.saveToFile(CombinePaths(GetResources()->GetPathScreenshots(), StringFormat("Screenshot_{0}.png", GetTimestamp())));
+        std::thread saveThread([captureImage]() {
+            bool saveResult = captureImage.saveToFile(CombinePaths(GetResources()->GetPathScreenshots(), StringFormat("Screenshot_{0}.png", GetTimestamp())));
         });
-        kThreadSaveFile.detach();
+        saveThread.detach();
 
         //TODO: If the application exits before the thread has finished its execution, the screenshot will be lost and there will be a memory leak.
 

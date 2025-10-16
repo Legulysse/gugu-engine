@@ -14,6 +14,7 @@
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Image.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -104,10 +105,9 @@ bool Texture::LoadFromFile()
     if (!m_sfTexture->loadFromFile(GetFileInfo().GetFileSystemPath()))
     {
         //Use a purple square
-        sf::Image oSFImage;
-        oSFImage.create(200, 200, sf::Color(255, 0, 255));
-        m_sfTexture->create(200, 200);
-        m_sfTexture->update(oSFImage);
+        sf::Image oSFImage(Vector2u(200, 200), sf::Color(255, 0, 255));
+
+        bool loadResult = m_sfTexture->loadFromImage(oSFImage);
 
         m_sfTexture->setSmooth(GetResources()->IsDefaultTextureSmooth());
         m_sfTexture->setRepeated(false);

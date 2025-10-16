@@ -198,7 +198,7 @@ void StatsDrawer::DrawFPS(const sf::Time& loopTime, Window* window)
     float loopTimeMs = static_cast<float>(static_cast<double>(loopTime.asMicroseconds()) / 1000.0);
     int fps = static_cast<int>(1000 / ((loopTimeMs > 0) ? loopTimeMs : 1));
 
-    m_statTextStandaloneFPS.setPosition(2.f, 2.f);
+    m_statTextStandaloneFPS.setPosition(Vector2f(2.f, 2.f));
     m_statTextStandaloneFPS.setString("fps: " + ToString(fps));
     window->GetSFRenderWindow()->draw(m_statTextStandaloneFPS);
 }
@@ -259,7 +259,7 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
         // Background
         Texture* textureBackground = GetResources()->GetCustomTexture("GuguConsoleBackground");
         m_statsBackground.setTexture(*textureBackground->GetSFTexture());
-        m_statsBackground.setScale(backgroundSize.x / textureBackground->GetSize().x, backgroundSize.y / textureBackground->GetSize().y);
+        m_statsBackground.setScale(Vector2f(backgroundSize.x / textureBackground->GetSize().x, backgroundSize.y / textureBackground->GetSize().y));
         renderWindow->draw(m_statsBackground);
 
         // Curves
@@ -294,43 +294,43 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
         int lineCount = 0;
 
         // Step Times
-        m_statTextStepTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+        m_statTextStepTime.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
         m_statTextStepTime.setString(StringFormat("step: {0} ms,  max: {1} ms", ToStringf(statsSummarySteps.avg, 2), ToStringf(statsSummarySteps.max, 2)));
         renderWindow->draw(m_statTextStepTime);
         ++lineCount;
 
         // Update Times
-        m_statTextUpdateTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+        m_statTextUpdateTime.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
         m_statTextUpdateTime.setString(StringFormat("update: {0} ms,  max: {1} ms", ToStringf(statsSummaryUpdates.avg, 2), ToStringf(statsSummaryUpdates.max, 2)));
         renderWindow->draw(m_statTextUpdateTime);
         ++lineCount;
 
         // Render Times
-        m_statTextRenderTime.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+        m_statTextRenderTime.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
         m_statTextRenderTime.setString(StringFormat("render: {0} ms,  max: {1} ms", ToStringf(statsSummaryRenders.avg, 2), ToStringf(statsSummaryRenders.max, 2)));
         renderWindow->draw(m_statTextRenderTime);
         ++lineCount;
 
         // Draw Calls
-        m_statTextDrawCalls.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+        m_statTextDrawCalls.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
         m_statTextDrawCalls.setString(StringFormat("draw calls: {0}  tris: {1}", frameInfos.statDrawCalls, frameInfos.statTriangles));
         renderWindow->draw(m_statTextDrawCalls);
         ++lineCount;
 
         // Fps
-        m_statTextFPS.setPosition(positionTextLines.x, positionTextLines.y + (textLineOffset) * lineCount);
+        m_statTextFPS.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + (textLineOffset) * lineCount));
         m_statTextFPS.setString(StringFormat("fps: {0}", fps));
         renderWindow->draw(m_statTextFPS);
         ++lineCount;
 
         // Animation Count
-        m_statTextAnimations.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+        m_statTextAnimations.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
         m_statTextAnimations.setString(StringFormat("animations: {0}", engineStats.animationCount));
         renderWindow->draw(m_statTextAnimations);
         ++lineCount;
 
         // Particle System Count
-        m_statTextParticleSystems.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+        m_statTextParticleSystems.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
         m_statTextParticleSystems.setString(StringFormat("particle systems: {0}", engineStats.particleSystemCount));
         renderWindow->draw(m_statTextParticleSystems);
         ++lineCount;
@@ -346,7 +346,7 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
         // Is Tracing
         if (engineStats.isTracing)
         {
-            m_statTextIsTracing.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+            m_statTextIsTracing.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
             renderWindow->draw(m_statTextIsTracing);
             ++lineCount;
         }

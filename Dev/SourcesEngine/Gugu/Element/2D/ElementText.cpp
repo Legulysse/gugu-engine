@@ -266,7 +266,7 @@ void ElementText::RecomputeImpl()
     {
         if (m_size.x > 0 && m_size.y > 0 && m_sfText->getLocalBounds().size.x > 0 && m_sfText->getLocalBounds().size.y > 0)
         {
-            m_sfText->setScale(m_size.x / (m_sfText->getLocalBounds().position.x + m_sfText->getLocalBounds().size.x), m_size.y / (m_sfText->getLocalBounds().position.y + m_sfText->getLocalBounds().size.y));
+            m_sfText->setScale(Vector2f(m_size.x / (m_sfText->getLocalBounds().position.x + m_sfText->getLocalBounds().size.x), m_size.y / (m_sfText->getLocalBounds().position.y + m_sfText->getLocalBounds().size.y)));
         }
     }
     else if (m_resizeRule == ETextResizeRule::FitSize)

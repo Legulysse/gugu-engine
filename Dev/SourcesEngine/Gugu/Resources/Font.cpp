@@ -51,7 +51,7 @@ bool Font::LoadFromFile()
     Unload();
 
     m_sfFont = new sf::Font;
-    if (!m_sfFont->loadFromFile(GetFileInfo().GetFileSystemPath()))
+    if (!m_sfFont->openFromFile(GetFileInfo().GetFileSystemPath()))
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Font not found : {0}", GetFileInfo().GetFilePath_utf8()));
         return false;

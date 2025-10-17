@@ -29,7 +29,9 @@ ElementText::ElementText()
     , m_isMultiline(false)
     , m_skipRecomputeOnResize(false)
 {
-    m_sfText = new sf::Text;
+    static const sf::Font defaultEmptyFont;
+
+    m_sfText = new sf::Text(defaultEmptyFont);
 
     SetFont(GetResources()->GetDefaultFont());
     SetFontSize(20);                    // Duplicate in ElementTextData declaration.
@@ -135,8 +137,7 @@ void ElementText::RecomputeImpl()
         std::string strTextImpl = "";
 
         //std::string strNewText = "";  //Used to build the new StringImpl
-        sf::Text oSFText;               //Temp element to compute string size on screen
-        oSFText.setFont(*m_sfText->getFont());
+        sf::Text oSFText(m_sfText->getFont());  //Temp element to compute string size on screen.
         oSFText.setCharacterSize(m_sfText->getCharacterSize());
         oSFText.setStyle(m_sfText->getStyle());
 

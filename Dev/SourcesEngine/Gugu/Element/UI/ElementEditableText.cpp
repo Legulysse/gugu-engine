@@ -78,7 +78,8 @@ void ElementEditableText::StartEditionImpl()
     
     if (!m_sfTextCursor)
     {
-        m_sfTextCursor = new sf::Text;
+        //TODO: Some fonts may not have the '|' character.
+        m_sfTextCursor = new sf::Text(m_sfText->getFont());
         m_sfTextCursor->setString("|");
     }
 
@@ -237,8 +238,8 @@ void ElementEditableText::RecomputeImpl()
     {
         size_t textSize = m_textValue.getSize();
 
-        //TODO: Some fonts may not have the '|' character
-        m_sfTextCursor->setFont(*m_sfText->getFont());
+        //TODO: Some fonts may not have the '|' character.
+        m_sfTextCursor->setFont(m_sfText->getFont());
         m_sfTextCursor->setCharacterSize(m_sfText->getCharacterSize());
         m_sfTextCursor->setStyle(m_sfText->getStyle());
         m_sfTextCursor->setFillColor(m_sfText->getFillColor());

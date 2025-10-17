@@ -14,6 +14,7 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/Font.h"
 #include "Gugu/System/String.h"
+#include "Gugu/System/Memory.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Debug/Trace.h"
 #include "Gugu/Debug/EngineStats.h"
@@ -26,6 +27,16 @@
 namespace gugu {
 
 StatsDrawer::StatsDrawer()
+    : m_statTextStandaloneFPS(nullptr)
+    , m_statsBackground(nullptr)
+    , m_statTextFPS(nullptr)
+    , m_statTextDrawCalls(nullptr)
+    , m_statTextStepTime(nullptr)
+    , m_statTextUpdateTime(nullptr)
+    , m_statTextRenderTime(nullptr)
+    , m_statTextAnimations(nullptr)
+    , m_statTextParticleSystems(nullptr)
+    , m_statTextIsTracing(nullptr)
 {
     m_curveHeight = 50.f;
 
@@ -84,51 +95,64 @@ StatsDrawer::StatsDrawer()
         m_curveStepCount[i].color = colorCurveStepCount;
     }
 
-    m_statTextStandaloneFPS.setFillColor(colorDefault);
-    m_statTextStandaloneFPS.setCharacterSize(20);
-    m_statTextStandaloneFPS.setFont(*font);
+    Texture* textureBackground = GetResources()->GetCustomTexture("GuguConsoleBackground");
+    m_statsBackground = new sf::Sprite(*textureBackground->GetSFTexture());
 
-    m_statTextFPS.setFillColor(colorDefault);
-    m_statTextFPS.setCharacterSize(fontSize);
-    m_statTextFPS.setFont(*font);
+    m_statTextStandaloneFPS = new sf::Text(*font);
+    m_statTextStandaloneFPS->setFillColor(colorDefault);
+    m_statTextStandaloneFPS->setCharacterSize(20);
 
-    m_statTextStepTime.setFillColor(colorCurveStepTimes);
-    m_statTextStepTime.setCharacterSize(fontSize);
-    m_statTextStepTime.setFont(*font);
+    m_statTextFPS = new sf::Text(*font);
+    m_statTextFPS->setFillColor(colorDefault);
+    m_statTextFPS->setCharacterSize(fontSize);
 
-    m_statTextUpdateTime.setFillColor(colorCurveUpdateTimes);
-    m_statTextUpdateTime.setCharacterSize(fontSize);
-    m_statTextUpdateTime.setFont(*font);
+    m_statTextStepTime = new sf::Text(*font);
+    m_statTextStepTime->setFillColor(colorCurveStepTimes);
+    m_statTextStepTime->setCharacterSize(fontSize);
 
-    m_statTextRenderTime.setFillColor(colorCurveRenderTimes);
-    m_statTextRenderTime.setCharacterSize(fontSize);
-    m_statTextRenderTime.setFont(*font);
+    m_statTextUpdateTime = new sf::Text(*font);
+    m_statTextUpdateTime->setFillColor(colorCurveUpdateTimes);
+    m_statTextUpdateTime->setCharacterSize(fontSize);
 
-    m_statTextDrawCalls.setFillColor(colorCurveDrawCalls);
-    m_statTextDrawCalls.setCharacterSize(fontSize);
-    m_statTextDrawCalls.setFont(*font);
+    m_statTextRenderTime = new sf::Text(*font);
+    m_statTextRenderTime->setFillColor(colorCurveRenderTimes);
+    m_statTextRenderTime->setCharacterSize(fontSize);
 
-    m_statTextAnimations.setFillColor(colorDefault);
-    m_statTextAnimations.setCharacterSize(fontSize);
-    m_statTextAnimations.setFont(*font);
+    m_statTextDrawCalls = new sf::Text(*font);
+    m_statTextDrawCalls->setFillColor(colorCurveDrawCalls);
+    m_statTextDrawCalls->setCharacterSize(fontSize);
 
-    m_statTextParticleSystems.setFillColor(colorDefault);
-    m_statTextParticleSystems.setCharacterSize(fontSize);
-    m_statTextParticleSystems.setFont(*font);
+    m_statTextAnimations = new sf::Text(*font);
+    m_statTextAnimations->setFillColor(colorDefault);
+    m_statTextAnimations->setCharacterSize(fontSize);
 
-    m_statTextIsTracing.setFillColor(colorDefault);
-    m_statTextIsTracing.setCharacterSize(fontSize);
-    m_statTextIsTracing.setString("(Tracing)");
-    m_statTextIsTracing.setFont(*font);
+    m_statTextParticleSystems = new sf::Text(*font);
+    m_statTextParticleSystems->setFillColor(colorDefault);
+    m_statTextParticleSystems->setCharacterSize(fontSize);
 
-    //m_statTextIsInputAllowed.setFillColor(colorDefault);
-    //m_statTextIsInputAllowed.setCharacterSize(fontSize);
-    //m_statTextIsInputAllowed.setString("Input Allowed");
-    //m_statTextIsInputAllowed.setFont(*font);
+    m_statTextIsTracing = new sf::Text(*font);
+    m_statTextIsTracing->setFillColor(colorDefault);
+    m_statTextIsTracing->setCharacterSize(fontSize);
+    m_statTextIsTracing->setString("(Tracing)");
+
+    //m_statTextIsInputAllowed = new sf::Text(*font);
+    //m_statTextIsInputAllowed->setFillColor(colorDefault);
+    //m_statTextIsInputAllowed->setCharacterSize(fontSize);
+    //m_statTextIsInputAllowed->setString("Input Allowed");
 }
 
 StatsDrawer::~StatsDrawer()
 {
+    SafeDelete(m_statTextStandaloneFPS);
+    SafeDelete(m_statsBackground);
+    SafeDelete(m_statTextFPS);
+    SafeDelete(m_statTextDrawCalls);
+    SafeDelete(m_statTextStepTime);
+    SafeDelete(m_statTextUpdateTime);
+    SafeDelete(m_statTextRenderTime);
+    SafeDelete(m_statTextAnimations);
+    SafeDelete(m_statTextParticleSystems);
+    SafeDelete(m_statTextIsTracing);
 }
 
 void StatsDrawer::ComputeStatsSummary(const std::list<float>& statValues, StatsSummary& statsSummary)
@@ -198,9 +222,9 @@ void StatsDrawer::DrawFPS(const sf::Time& loopTime, Window* window)
     float loopTimeMs = static_cast<float>(static_cast<double>(loopTime.asMicroseconds()) / 1000.0);
     int fps = static_cast<int>(1000 / ((loopTimeMs > 0) ? loopTimeMs : 1));
 
-    m_statTextStandaloneFPS.setPosition(Vector2f(2.f, 2.f));
-    m_statTextStandaloneFPS.setString("fps: " + ToString(fps));
-    window->GetSFRenderWindow()->draw(m_statTextStandaloneFPS);
+    m_statTextStandaloneFPS->setPosition(Vector2f(2.f, 2.f));
+    m_statTextStandaloneFPS->setString("fps: " + ToString(fps));
+    window->GetSFRenderWindow()->draw(*m_statTextStandaloneFPS);
 }
 
 void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& renderTime, const sf::Time& loopTime, const EngineStats& engineStats, Window* window)
@@ -258,9 +282,8 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
 
         // Background
         Texture* textureBackground = GetResources()->GetCustomTexture("GuguConsoleBackground");
-        m_statsBackground.setTexture(*textureBackground->GetSFTexture());
-        m_statsBackground.setScale(Vector2f(backgroundSize.x / textureBackground->GetSize().x, backgroundSize.y / textureBackground->GetSize().y));
-        renderWindow->draw(m_statsBackground);
+        m_statsBackground->setScale(Vector2f(backgroundSize.x / textureBackground->GetSize().x, backgroundSize.y / textureBackground->GetSize().y));
+        renderWindow->draw(*m_statsBackground);
 
         // Curves
         DrawHistogram(engineStats.stepTimes, statsSummarySteps, m_curveSteps, positionCurves, renderWindow);
@@ -294,60 +317,60 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
         int lineCount = 0;
 
         // Step Times
-        m_statTextStepTime.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
-        m_statTextStepTime.setString(StringFormat("step: {0} ms,  max: {1} ms", ToStringf(statsSummarySteps.avg, 2), ToStringf(statsSummarySteps.max, 2)));
-        renderWindow->draw(m_statTextStepTime);
+        m_statTextStepTime->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
+        m_statTextStepTime->setString(StringFormat("step: {0} ms,  max: {1} ms", ToStringf(statsSummarySteps.avg, 2), ToStringf(statsSummarySteps.max, 2)));
+        renderWindow->draw(*m_statTextStepTime);
         ++lineCount;
 
         // Update Times
-        m_statTextUpdateTime.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
-        m_statTextUpdateTime.setString(StringFormat("update: {0} ms,  max: {1} ms", ToStringf(statsSummaryUpdates.avg, 2), ToStringf(statsSummaryUpdates.max, 2)));
-        renderWindow->draw(m_statTextUpdateTime);
+        m_statTextUpdateTime->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
+        m_statTextUpdateTime->setString(StringFormat("update: {0} ms,  max: {1} ms", ToStringf(statsSummaryUpdates.avg, 2), ToStringf(statsSummaryUpdates.max, 2)));
+        renderWindow->draw(*m_statTextUpdateTime);
         ++lineCount;
 
         // Render Times
-        m_statTextRenderTime.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
-        m_statTextRenderTime.setString(StringFormat("render: {0} ms,  max: {1} ms", ToStringf(statsSummaryRenders.avg, 2), ToStringf(statsSummaryRenders.max, 2)));
-        renderWindow->draw(m_statTextRenderTime);
+        m_statTextRenderTime->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
+        m_statTextRenderTime->setString(StringFormat("render: {0} ms,  max: {1} ms", ToStringf(statsSummaryRenders.avg, 2), ToStringf(statsSummaryRenders.max, 2)));
+        renderWindow->draw(*m_statTextRenderTime);
         ++lineCount;
 
         // Draw Calls
-        m_statTextDrawCalls.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
-        m_statTextDrawCalls.setString(StringFormat("draw calls: {0}  tris: {1}", frameInfos.statDrawCalls, frameInfos.statTriangles));
-        renderWindow->draw(m_statTextDrawCalls);
+        m_statTextDrawCalls->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
+        m_statTextDrawCalls->setString(StringFormat("draw calls: {0}  tris: {1}", frameInfos.statDrawCalls, frameInfos.statTriangles));
+        renderWindow->draw(*m_statTextDrawCalls);
         ++lineCount;
 
         // Fps
-        m_statTextFPS.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + (textLineOffset) * lineCount));
-        m_statTextFPS.setString(StringFormat("fps: {0}", fps));
-        renderWindow->draw(m_statTextFPS);
+        m_statTextFPS->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + (textLineOffset) * lineCount));
+        m_statTextFPS->setString(StringFormat("fps: {0}", fps));
+        renderWindow->draw(*m_statTextFPS);
         ++lineCount;
 
         // Animation Count
-        m_statTextAnimations.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
-        m_statTextAnimations.setString(StringFormat("animations: {0}", engineStats.animationCount));
-        renderWindow->draw(m_statTextAnimations);
+        m_statTextAnimations->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
+        m_statTextAnimations->setString(StringFormat("animations: {0}", engineStats.animationCount));
+        renderWindow->draw(*m_statTextAnimations);
         ++lineCount;
 
         // Particle System Count
-        m_statTextParticleSystems.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
-        m_statTextParticleSystems.setString(StringFormat("particle systems: {0}", engineStats.particleSystemCount));
-        renderWindow->draw(m_statTextParticleSystems);
+        m_statTextParticleSystems->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
+        m_statTextParticleSystems->setString(StringFormat("particle systems: {0}", engineStats.particleSystemCount));
+        renderWindow->draw(*m_statTextParticleSystems);
         ++lineCount;
 
         //// IsInputAllowed
         //if (window->IsInputAllowed())
         //{
-        //    m_statTextIsInputAllowed.setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
-        //    renderWindow->draw(m_statTextIsInputAllowed);
+        //    m_statTextIsInputAllowed->setPosition(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount);
+        //    renderWindow->draw(*m_statTextIsInputAllowed);
         //    ++lineCount;
         //}
 
         // Is Tracing
         if (engineStats.isTracing)
         {
-            m_statTextIsTracing.setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
-            renderWindow->draw(m_statTextIsTracing);
+            m_statTextIsTracing->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
+            renderWindow->draw(*m_statTextIsTracing);
             ++lineCount;
         }
     }

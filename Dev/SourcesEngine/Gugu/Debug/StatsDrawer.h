@@ -69,18 +69,18 @@ private:
     sf::VertexArray m_curveRenders;
     sf::VertexArray m_curveDrawCalls;
 
-    sf::Text m_statTextStandaloneFPS;
+    sf::Text* m_statTextStandaloneFPS;
 
-    sf::Sprite m_statsBackground;
-    sf::Text m_statTextFPS;
-    sf::Text m_statTextDrawCalls;
-    sf::Text m_statTextStepTime;
-    sf::Text m_statTextUpdateTime;
-    sf::Text m_statTextRenderTime;
-    sf::Text m_statTextAnimations;
-    sf::Text m_statTextParticleSystems;
-    sf::Text m_statTextIsTracing;
-    //sf::Text m_statTextIsInputAllowed;
+    sf::Sprite* m_statsBackground;
+    sf::Text* m_statTextFPS;
+    sf::Text* m_statTextDrawCalls;
+    sf::Text* m_statTextStepTime;
+    sf::Text* m_statTextUpdateTime;
+    sf::Text* m_statTextRenderTime;
+    sf::Text* m_statTextAnimations;
+    sf::Text* m_statTextParticleSystems;
+    sf::Text* m_statTextIsTracing;
+    //sf::Text* m_statTextIsInputAllowed;
 };
 
 }   // namespace gugu

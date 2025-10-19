@@ -31,7 +31,7 @@ public:
     void StartEdition   ();
     void StopEdition    ();
 
-    void ProcessSFEvent(const sf::Event& _oSFEvent);
+    void ProcessSFEvent(const sf::Event& event);
 
     void SetOnValidate(const Callback& callbackOnValidate);
 

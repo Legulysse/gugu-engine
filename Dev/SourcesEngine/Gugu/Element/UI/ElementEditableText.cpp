@@ -117,14 +117,14 @@ void ElementEditableText::OnSFEvent(const InteractionInfos& interactionInfos)
     return ProcessSFEvent(*interactionInfos.rawSFEvent);
 }
 
-void ElementEditableText::ProcessSFEvent(const sf::Event& _oSFEvent)
+void ElementEditableText::ProcessSFEvent(const sf::Event& event)
 {
     if (!m_isEditing)
         return;     // return true;
 
-    if (_oSFEvent.type == sf::Event::KeyPressed)
+    if (const auto keyPressedEvent = event.getIf<sf::Event::KeyPressed>())
     {
-        if (_oSFEvent.key.code == sf::Keyboard::Enter)
+        if (keyPressedEvent->scancode == sf::Keyboard::Scan::Enter)
         {
             if (!m_isMultiline)
             {
@@ -144,7 +144,7 @@ void ElementEditableText::ProcessSFEvent(const sf::Event& _oSFEvent)
                 return;     // return false;
             }
         }
-        else if (_oSFEvent.key.code == sf::Keyboard::Backspace)
+        else if (keyPressedEvent->scancode == sf::Keyboard::Scan::Backspace)
         {
             if (!m_textValue.isEmpty())
             {
@@ -154,11 +154,11 @@ void ElementEditableText::ProcessSFEvent(const sf::Event& _oSFEvent)
             }
         }
     }
-    else if (_oSFEvent.type == sf::Event::TextEntered)
+    else if (const auto textEnteredEvent = event.getIf<sf::Event::TextEntered>())
     {
-        if (std::isprint(_oSFEvent.text.unicode))
+        if (std::isprint(textEnteredEvent->unicode))
         {
-            m_textValue += _oSFEvent.text.unicode;
+            m_textValue += textEnteredEvent->unicode;
             RaiseNeedRecompute();
             return;     // return false;
         }

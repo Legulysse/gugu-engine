@@ -561,7 +561,7 @@ bool Window::ProcessEvents()
         {
             ComputeSize(resizedEvent->size);
         }
-        else if (const auto keyPressedEvent = event->getIf<sf::Event::KeyPressed>(); keyPressedEvent->scancode == sf::Keyboard::Scan::Grave)
+        else if (const auto keyPressedEvent = event->getIf<sf::Event::KeyPressed>(); keyPressedEvent && keyPressedEvent->scancode == sf::Keyboard::Scan::Grave)
         {
             if (!m_consoleNode->IsVisible())
             {

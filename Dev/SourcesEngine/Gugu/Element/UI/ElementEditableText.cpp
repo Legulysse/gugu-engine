@@ -162,64 +162,6 @@ void ElementEditableText::ProcessSFEvent(const sf::Event& event)
             RaiseNeedRecompute();
             return;     // return false;
         }
-#if 0
-        char cNewChar = '\0';
-
-        if (_oSFEvent.key.code >= sf::Keyboard::A && _oSFEvent.key.code <= sf::Keyboard::Z)
-        {
-            cNewChar = (char)('a' + (_oSFEvent.key.code - sf::Keyboard::A));
-
-            if (_oSFEvent.key.shift)
-                cNewChar += 'A' - 'a';
-        }
-        else if (_oSFEvent.key.code >= sf::Keyboard::Num0 && _oSFEvent.key.code <= sf::Keyboard::Num9)
-        {
-            cNewChar = (char)('0' + (_oSFEvent.key.code - sf::Keyboard::Num0));
-        }
-        else if (_oSFEvent.key.code >= sf::Keyboard::Numpad0 && _oSFEvent.key.code <= sf::Keyboard::Numpad9)
-        {
-            cNewChar = (char)('0' + (_oSFEvent.key.code - sf::Keyboard::Numpad0));
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Add)
-        {
-            cNewChar = '+';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Subtract)
-        {
-            cNewChar = '-';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Multiply)
-        {
-            cNewChar = '*';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Divide)
-        {
-            cNewChar = '/';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Period)
-        {
-            cNewChar = '.';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Space)
-        {
-            cNewChar = ' ';
-        }
-        else if (_oSFEvent.key.code == sf::Keyboard::Return && m_isMultiline)
-        {
-            cNewChar = '\n';
-        }
-
-        if (cNewChar != '\0')
-        {
-            std::string strNewChar;
-            strNewChar = cNewChar;
-
-            m_textValue.insert(m_textValue.getSize(), strNewChar);
-            SetText(m_textValue /*, false */);
-
-            return false;
-        }
-#endif
     }
 
     return;     // return true;

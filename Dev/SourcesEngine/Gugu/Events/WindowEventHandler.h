@@ -49,16 +49,16 @@ public:
     void RegisterElementEventHandler(ElementEventHandler* eventHandler, EInteractionType::Type interactionType);
     void UnregisterElementEventHandler(ElementEventHandler* eventHandler);
 
-    void ProcessWindowEvent(const sf::Event& _oSFEvent, const std::vector<const Camera*>& windowCameras);
+    void ProcessWindowEvent(const sf::Event& event, const std::vector<const Camera*>& windowCameras);
 
 private:
 
     bool CheckElementEventHandlerRegistration(ElementEventHandler* eventHandler);
 
     void BeginInteractions();
-    bool ProcessEventListeners(const sf::Event& _oSFEvent);
-    bool ProcessCameraElementInteractions(const sf::Event& _oSFEvent, const Camera* camera);
-    bool ProcessElementInteractions(const sf::Event& _oSFEvent);
+    bool ProcessEventListeners(const sf::Event& event);
+    bool ProcessCameraElementInteractions(const sf::Event& event, const Camera* camera);
+    bool ProcessElementInteractions(const sf::Event& event);
 
 private:
 

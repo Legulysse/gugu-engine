@@ -34,7 +34,6 @@ namespace sf
 {
     class SocketSelector;
     class TcpListener;
-    class Thread;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -103,7 +102,7 @@ private:
     sf::SocketSelector* m_selector;
     sf::TcpListener*    m_listener;
 
-    sf::Thread*         m_receptionThread;
+    std::thread*        m_receptionThread;
     std::mutex          m_mutexReception;
 
     bool                m_isListening;

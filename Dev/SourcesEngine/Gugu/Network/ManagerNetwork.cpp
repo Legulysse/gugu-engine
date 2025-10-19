@@ -126,8 +126,7 @@ void ManagerNetwork::StartReceptionThread()
     if (IsListening())
     {
         if (!m_receptionThread)
-            m_receptionThread = new sf::Thread(&ReceptionThread);
-        m_receptionThread->launch();
+            m_receptionThread = new std::thread(&ReceptionThread);
     }
 
     //Unlock();
@@ -139,7 +138,7 @@ void ManagerNetwork::StopReceptionThread()
 
     if (m_receptionThread)
     {
-        m_receptionThread->wait();
+        m_receptionThread->join();
         SafeDelete(m_receptionThread);
     }
 

@@ -100,36 +100,54 @@ bool ManagerInputs::IsInputEvent(const std::string& _strInputName, const sf::Eve
         const std::vector<sf::Event>& vecBindings = kvp->second.bindings;
         for (size_t i = 0; i < vecBindings.size(); ++i)
         {
-            const sf::Event& oStoredEvent = vecBindings[i];
+            const sf::Event& storedEvent = vecBindings[i];
 
             // Keyboard
-            if (oStoredEvent.type == sf::Event::KeyPressed)
+            if (const auto storedKeyboardEvent = storedEvent.getIf<sf::Event::KeyPressed>())
             {
-                if (_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::KeyReleased)
+                const auto keyPressedEvent = _oSFEvent.getIf<sf::Event::KeyPressed>();
+                const auto keyReleasedEvent = _oSFEvent.getIf<sf::Event::KeyReleased>();
+
+                bool isKey = (keyPressedEvent && storedKeyboardEvent->code == keyPressedEvent->code)
+                    || (keyReleasedEvent && storedKeyboardEvent->code == keyReleasedEvent->code);
+
+                if (isKey
+                    && (storedKeyboardEvent->control == IsControlDown())
+                    && (storedKeyboardEvent->shift == IsShiftDown())
+                    && (storedKeyboardEvent->alt == IsAltDown()))
                 {
-                    if (oStoredEvent.key.code == _oSFEvent.key.code
-                        && (oStoredEvent.key.control == IsControlDown())
-                        && (oStoredEvent.key.shift == IsShiftDown())
-                        && (oStoredEvent.key.alt == IsAltDown()))
-                        return true;
+                    return true;
                 }
             }
             // Mouse
-            else if (oStoredEvent.type == sf::Event::MouseButtonPressed)
+            else if (const auto storedMouseEvent = storedEvent.getIf<sf::Event::MouseButtonPressed>())
             {
-                if (_oSFEvent.type == sf::Event::MouseButtonPressed || _oSFEvent.type == sf::Event::MouseButtonReleased)
+                const auto buttonPressedEvent = _oSFEvent.getIf<sf::Event::MouseButtonPressed>();
+                const auto buttonReleasedEvent = _oSFEvent.getIf<sf::Event::MouseButtonReleased>();
+
+                if ((buttonPressedEvent && storedMouseEvent->button == buttonPressedEvent->button)
+                    || (buttonReleasedEvent && storedMouseEvent->button == buttonReleasedEvent->button))
                 {
-                    if (oStoredEvent.mouseButton.button == _oSFEvent.mouseButton.button)
-                        return true;
+                    return true;
                 }
             }
             // Joystick
-            else if (oStoredEvent.type == sf::Event::JoystickButtonPressed)
+            else if (const auto storedJoystickEvent = storedEvent.getIf<sf::Event::JoystickButtonPressed>())
             {
-                if (_oSFEvent.type == sf::Event::JoystickButtonPressed || _oSFEvent.type == sf::Event::JoystickButtonReleased)
+                const auto buttonPressedEvent = _oSFEvent.getIf<sf::Event::JoystickButtonPressed>();
+                const auto buttonReleasedEvent = _oSFEvent.getIf<sf::Event::JoystickButtonReleased>();
+                
+                if (buttonPressedEvent
+                    && storedJoystickEvent->joystickId == buttonPressedEvent->joystickId
+                    && storedJoystickEvent->button == buttonPressedEvent->button)
                 {
-                    if (oStoredEvent.joystickButton.joystickId == _oSFEvent.joystickButton.joystickId && oStoredEvent.joystickButton.button == _oSFEvent.joystickButton.button)
-                        return true;
+                    return true;
+                }
+                else if (buttonReleasedEvent
+                    && storedJoystickEvent->joystickId == buttonReleasedEvent->joystickId
+                    && storedJoystickEvent->button == buttonReleasedEvent->button)
+                {
+                    return true;
                 }
             }
         }
@@ -151,27 +169,27 @@ bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
         const std::vector<sf::Event>& vecBindings = kvp->second.bindings;
         for (size_t i = 0; i < vecBindings.size(); ++i)
         {
-            const sf::Event& oStoredEvent = vecBindings[i];
+            const sf::Event& storedEvent = vecBindings[i];
 
             // Keyboard
-            if (oStoredEvent.type == sf::Event::KeyPressed)
+            if (const auto storedKeyboardEvent = storedEvent.getIf<sf::Event::KeyPressed>())
             {
-                if (sf::Keyboard::isKeyPressed(oStoredEvent.key.code)
-                    && (oStoredEvent.key.control == IsControlDown())
-                    && (oStoredEvent.key.shift == IsShiftDown())
-                    && (oStoredEvent.key.alt == IsAltDown()))
+                if (sf::Keyboard::isKeyPressed(storedKeyboardEvent->code)
+                    && (storedKeyboardEvent->control == IsControlDown())
+                    && (storedKeyboardEvent->shift == IsShiftDown())
+                    && (storedKeyboardEvent->alt == IsAltDown()))
                     return true;
             }
             // Mouse
-            else if (oStoredEvent.type == sf::Event::MouseButtonPressed)
+            else if (const auto storedMouseEvent = storedEvent.getIf<sf::Event::MouseButtonPressed>())
             {
-                if (sf::Mouse::isButtonPressed(oStoredEvent.mouseButton.button))
+                if (sf::Mouse::isButtonPressed(storedMouseEvent->button))
                     return true;
             }
             // Joystick
-            else if (oStoredEvent.type == sf::Event::JoystickButtonPressed)
+            else if (const auto storedJoystickEvent = storedEvent.getIf<sf::Event::JoystickButtonPressed>())
             {
-                if (sf::Joystick::isButtonPressed(oStoredEvent.joystickButton.joystickId, oStoredEvent.joystickButton.button))
+                if (sf::Joystick::isButtonPressed(storedJoystickEvent->joystickId, storedJoystickEvent->button))
                     return true;
             }
         }
@@ -183,14 +201,18 @@ bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
 bool ManagerInputs::IsInputEventPressed(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
     return IsInputAllowed()
-        && (_oSFEvent.type == sf::Event::KeyPressed || _oSFEvent.type == sf::Event::MouseButtonPressed || _oSFEvent.type == sf::Event::JoystickButtonPressed)
+        && (_oSFEvent.is<sf::Event::KeyPressed>()
+            || _oSFEvent.is<sf::Event::MouseButtonPressed>()
+            || _oSFEvent.is<sf::Event::JoystickButtonPressed>())
         && IsInputEvent(_strInputName, _oSFEvent);
 }
 
 bool ManagerInputs::IsInputEventReleased(const std::string& _strInputName, const sf::Event& _oSFEvent) const
 {
     return IsInputAllowed()
-        && (_oSFEvent.type == sf::Event::KeyReleased || _oSFEvent.type == sf::Event::MouseButtonPressed || _oSFEvent.type == sf::Event::JoystickButtonReleased)
+        && (_oSFEvent.is<sf::Event::KeyReleased>()
+            || _oSFEvent.is<sf::Event::MouseButtonPressed>()
+            || _oSFEvent.is<sf::Event::JoystickButtonReleased>())
         && IsInputEvent(_strInputName, _oSFEvent);
 }
 
@@ -231,22 +253,20 @@ sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key)
 
 sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt)
 {
-    sf::Event event;
-    event.type = sf::Event::KeyPressed;
-    event.key.code = key;
-    event.key.alt = alt;
-    event.key.shift = shift;
-    event.key.control = control;
-    event.key.system = false;
-    return event;
+    sf::Event::KeyPressed keyboardEvent;
+    keyboardEvent.code = key;
+    keyboardEvent.alt = alt;
+    keyboardEvent.shift = shift;
+    keyboardEvent.control = control;
+    keyboardEvent.system = false;
+    return keyboardEvent;
 }
 
 sf::Event ManagerInputs::BuildMouseEvent(sf::Mouse::Button button)
 {
-    sf::Event event;
-    event.type = sf::Event::MouseButtonPressed;
-    event.mouseButton.button = button;
-    return event;
+    sf::Event::MouseButtonPressed mouseEvent;
+    mouseEvent.button = button;
+    return mouseEvent;
 }
 
 sf::Event ManagerInputs::BuildJoystickEvent(EPadButton button, int joystickId)
@@ -256,11 +276,10 @@ sf::Event ManagerInputs::BuildJoystickEvent(EPadButton button, int joystickId)
 
 sf::Event ManagerInputs::BuildJoystickEvent(int button, int joystickId)
 {
-    sf::Event event;
-    event.type = sf::Event::JoystickButtonPressed;
-    event.joystickButton.joystickId = joystickId;
-    event.joystickButton.button = button;
-    return event;
+    sf::Event::JoystickButtonPressed JoystickEvent;
+    JoystickEvent.joystickId = joystickId;
+    JoystickEvent.button = button;
+    return JoystickEvent;
 }
 
 void ManagerInputs::FillListKeyCodes()

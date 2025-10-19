@@ -122,7 +122,7 @@ public:
     bool GetShowBounds() const;
     bool GetShowRuler() const;
 
-    virtual void ComputeSize    (int _iWidth, int _iHeight);
+    virtual void ComputeSize(const Vector2u& size);
 
 private:
 

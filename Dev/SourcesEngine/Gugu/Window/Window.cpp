@@ -211,7 +211,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_showFPS = config.showFPS;
 
     // Finalize
-    ComputeSize(m_sfWindow->getSize().x, m_sfWindow->getSize().y);
+    ComputeSize(m_sfWindow->getSize());
 
     m_windowFocused = m_sfWindow->hasFocus();
 }
@@ -511,9 +511,9 @@ Vector2u Window::GetSize() const
     return m_sfWindow->getSize();
 }
 
-void Window::ComputeSize(int _iWidth, int _iHeight)
+void Window::ComputeSize(const Vector2u& size)
 {
-    Vector2f floatSize = Vector2f((float)_iWidth, (float)_iHeight);
+    Vector2f floatSize = Vector2f(size);
 
     sf::View mainView;
     mainView.setSize(floatSize);
@@ -531,38 +531,37 @@ void Window::ComputeSize(int _iWidth, int _iHeight)
 
 bool Window::ProcessEvents()
 {
-    sf::Event event;
-    while (m_sfWindow->pollEvent(event))
+    while (const std::optional<sf::Event> event = m_sfWindow->pollEvent())
     {
         GUGU_SCOPE_TRACE_MAIN("Window Process Event");
 
         bool propagateEvent = true;
 
-        if (event.type == sf::Event::Closed)
+        if (event->is<sf::Event::Closed>())
         {
             return true;
         }
-        else if (event.type == sf::Event::MouseLeft)
+        else if (event->is<sf::Event::MouseLeft>())
         {
             m_windowHovered = false;
         }
-        else if (event.type == sf::Event::MouseEntered)
+        else if (event->is<sf::Event::MouseEntered>())
         {
             m_windowHovered = true;
         }
-        else if (event.type == sf::Event::LostFocus)
+        else if (event->is<sf::Event::FocusLost>())
         {
             m_windowFocused = false;
         }
-        else if (event.type == sf::Event::GainedFocus)
+        else if (event->is<sf::Event::FocusGained>())
         {
             m_windowFocused = true;
         }
-        else if (event.type == sf::Event::Resized)
+        else if (const auto resizedEvent = event->getIf<sf::Event::Resized>())
         {
-            ComputeSize(event.size.size.x, event.size.size.y);
+            ComputeSize(resizedEvent->size);
         }
-        else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Quote)
+        else if (const auto keyPressedEvent = event->getIf<sf::Event::KeyPressed>(); keyPressedEvent->scancode == sf::Keyboard::Scan::Grave)
         {
             if (!m_consoleNode->IsVisible())
             {
@@ -579,35 +578,40 @@ bool Window::ProcessEvents()
         }
         else if (m_consoleNode->IsVisible())
         {
-            m_consoleTextEntry->ProcessSFEvent(event);
+            m_consoleTextEntry->ProcessSFEvent(*event);
             propagateEvent = false;
         }
 
-        if (m_hostImGui && propagateEvent
-            && !((event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) && event.key.code == sf::Keyboard::Unknown))
+        if (m_hostImGui && propagateEvent)
         {
-            // This will help disabling imgui text entries, but not the mouse events, they are handled in ImGui::SFML::Update.
-            if (!m_consoleNode->IsVisible())
+            const auto keyPressedEvent = event->getIf<sf::Event::KeyPressed>();
+            const auto keyReleasedEvent = event->getIf<sf::Event::KeyReleased>();
+            if (!(keyPressedEvent && keyPressedEvent->scancode == sf::Keyboard::Scan::Unknown)
+                && !(keyReleasedEvent && keyReleasedEvent->scancode == sf::Keyboard::Scan::Unknown))
             {
-                ImGui::SFML::ProcessEvent(*m_sfWindow, event);
+                // This will help disabling imgui text entries, but not the mouse events, they are handled in ImGui::SFML::Update.
+                if (!m_consoleNode->IsVisible())
+                {
+                    ImGui::SFML::ProcessEvent(*m_sfWindow, *event);
+                }
             }
         }
 
         if (m_hostImGui)
         {
             if (ImGui::GetIO().WantCaptureMouse
-                && (event.type == sf::Event::MouseButtonPressed
-                    || event.type == sf::Event::MouseButtonReleased
-                    || event.type == sf::Event::MouseWheelMoved
-                    || event.type == sf::Event::MouseWheelScrolled
-                    || event.type == sf::Event::MouseMoved))
+                && (event->is<sf::Event::MouseButtonPressed>()
+                    || event->is<sf::Event::MouseButtonReleased>()
+                    || event->is<sf::Event::MouseWheelScrolled>()
+                    || event->is<sf::Event::MouseMoved>()
+                    || event->is<sf::Event::MouseMovedRaw>()))
             {
                 propagateEvent = false;
             }
             else if (ImGui::GetIO().WantCaptureKeyboard
-                && (event.type == sf::Event::TextEntered
-                    || event.type == sf::Event::KeyPressed
-                    || event.type == sf::Event::KeyReleased))
+                && (event->is<sf::Event::TextEntered>()
+                    || event->is<sf::Event::KeyPressed>()
+                    || event->is<sf::Event::KeyReleased>()))
             {
                 propagateEvent = false;
             }
@@ -630,7 +634,7 @@ bool Window::ProcessEvents()
                 }
             }
 
-            m_eventHandler->ProcessWindowEvent(event, cameras);
+            m_eventHandler->ProcessWindowEvent(*event, cameras);
         }
     }
 

@@ -201,7 +201,7 @@ void Demo::AppStart()
         SpriteAnimation* animation = GetAnimations()->AddAnimation(sprite);
         animation->ChangeAnimSet("Dinosaur.animset.xml");
         animation->StartAnimation("Walk");
-        animation->AddEventCallback("step", std::bind(&Demo::OnWalkStep, this));
+        animation->SetEventCallback("step", std::bind(&Demo::OnWalkStep, this));
 
         ElementText* details = pivot->AddChild<ElementText>();
         details->SetText("Pivot: BottomCenter\nEvents");

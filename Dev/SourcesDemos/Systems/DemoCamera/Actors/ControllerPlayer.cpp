@@ -36,9 +36,9 @@ void ControllerPlayer::InitController(Character* _pCharacter, int _playerIndex)
     m_character = _pCharacter;
 }
 
-void ControllerPlayer::Step(const DeltaTime& dt)
+void ControllerPlayer::Update(const DeltaTime& dt)
 {
-    SceneActor::Step(dt);
+    SceneActor::Update(dt);
 
     ManagerInputs* inputs = GetInputs();
 

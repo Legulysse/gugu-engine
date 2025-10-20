@@ -100,7 +100,10 @@ void Game::AppStep(const DeltaTime& dt)
 void Game::AppUpdate(const DeltaTime& dt)
 {
     StateMachine::Update(dt);
+}
 
+void Game::AppLateUpdate(const DeltaTime& dt)
+{
     if (m_charactersNode)
     {
         m_charactersNode->SortOnZIndex();  //TODO: Should this be automatic even for Scene nodes ?

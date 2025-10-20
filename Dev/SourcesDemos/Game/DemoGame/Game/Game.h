@@ -43,6 +43,7 @@ public:
 
     virtual void AppStep(const gugu::DeltaTime& dt) override;
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
+    virtual void AppLateUpdate(const gugu::DeltaTime& dt) override;
 
     virtual bool OnSFEvent(const sf::Event& _oSFEvent) override;
     

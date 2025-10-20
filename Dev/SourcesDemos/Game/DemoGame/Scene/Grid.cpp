@@ -22,6 +22,7 @@ using namespace gugu;
 namespace demoproject {
 
 Grid::Grid()
+    :m_pTileMap(nullptr)
 {
 }
 
@@ -42,7 +43,7 @@ void Grid::InitGrid(Scene* scene, int _iWidth, int _iHeight, float _fCellWidth, 
 
     for (int i = 0; i < m_pTileMap->GetTileCount(); ++i)
     {
-        m_pTileMap->UpdateTileTextureCoords(i, GetRandom(100) > 5 ? sf::IntRect(0, 0, 16, 16) : sf::IntRect(16, 0, 16, 16));
+        m_pTileMap->UpdateTileTextureCoords(i, GetRandom(100) > 5 ? sf::IntRect(Vector2i(0, 0), Vector2i(16, 16)) : sf::IntRect(Vector2i(16, 0), Vector2i(16, 16)));
     }
 }
 

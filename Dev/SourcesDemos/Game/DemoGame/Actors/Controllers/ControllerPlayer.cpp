@@ -54,7 +54,7 @@ void ControllerPlayer::HandleSkills(const DeltaTime& dt)
     ManagerInputs* inputs = GetInputs();
 
     //Attack
-    if (inputs->IsButtonDown(sf::Mouse::Left))
+    if (inputs->IsButtonDown(sf::Mouse::Button::Left))
     {
         Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
         Camera* pCamera = GetGameWindow()->GetCamera(0);
@@ -117,9 +117,9 @@ bool ControllerPlayer::OnSFEvent(const sf::Event& _oSFEvent)
     ManagerInputs* inputs = GetInputs();
 
     //Picking
-    if (_oSFEvent.type == sf::Event::KeyPressed)
+    if (const auto buttonPressedEvent = _oSFEvent.getIf<sf::Event::MouseButtonPressed>())
     {
-        if (_oSFEvent.mouseButton.button == sf::Mouse::Left)
+        if (buttonPressedEvent->button == sf::Mouse::Button::Left)
         {
             //Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
             //Camera* pCamera = GetGameWindow()->GetCamera(0);

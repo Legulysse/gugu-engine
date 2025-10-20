@@ -70,18 +70,18 @@ void Game::AppStart()
     inputs->LoadInputFile("Bindings.xml");
     
     //Method 2 : register keys manually
-    inputs->RegisterInput("Player_1_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Z));
-    inputs->RegisterInput("Player_1_Down", inputs->BuildKeyboardEvent(sf::Keyboard::S));
-    inputs->RegisterInput("Player_1_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Q));
-    inputs->RegisterInput("Player_1_Right", inputs->BuildKeyboardEvent(sf::Keyboard::D));
-    inputs->RegisterInput("Player_1_Skill_1", inputs->BuildKeyboardEvent(sf::Keyboard::Num1));
-    inputs->RegisterInput("Player_1_Skill_2", inputs->BuildKeyboardEvent(sf::Keyboard::Num2));
-    inputs->RegisterInput("Player_1_Skill_3", inputs->BuildKeyboardEvent(sf::Keyboard::Num3));
+    inputs->RegisterInput("Player_1_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Z));
+    inputs->RegisterInput("Player_1_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Key::S));
+    inputs->RegisterInput("Player_1_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Q));
+    inputs->RegisterInput("Player_1_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Key::D));
+    inputs->RegisterInput("Player_1_Skill_1", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Num1));
+    inputs->RegisterInput("Player_1_Skill_2", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Num2));
+    inputs->RegisterInput("Player_1_Skill_3", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Num3));
 
-    inputs->RegisterInput("Exit", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
-    inputs->RegisterInput("Screenshot", inputs->BuildKeyboardEvent(sf::Keyboard::F10));
+    inputs->RegisterInput("Exit", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Escape));
+    inputs->RegisterInput("Screenshot", inputs->BuildKeyboardEvent(sf::Keyboard::Key::F10));
 
-    inputs->RegisterInput("ToggleCharacterSheet", inputs->BuildKeyboardEvent(sf::Keyboard::I));
+    inputs->RegisterInput("ToggleCharacterSheet", inputs->BuildKeyboardEvent(sf::Keyboard::Key::I));
 
     // Push the entry-point State.
     PushStateNow(new StateScenario);

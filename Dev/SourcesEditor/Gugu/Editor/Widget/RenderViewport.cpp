@@ -94,7 +94,7 @@ void RenderViewport::ImGuiBegin()
     {
         bool resizeResult = m_renderTexture->resize(m_size);
 
-        sf::View view(Vector2f(0, 0), Vector2f(m_size));
+        sf::View view(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
         m_renderTexture->setView(view);
     }
 

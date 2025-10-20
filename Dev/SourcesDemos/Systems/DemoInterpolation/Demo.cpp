@@ -54,14 +54,12 @@ void Demo::AppStart()
     float lineSize = margin * 2 + (columnStep * (nbCells));
     for (int x = 0; x < nbCells; ++x)
     {
-        //gridVertices->append(BuildVertex2(Vector2f(0.f, margin + x * columnStep)));
-        //gridVertices->append(BuildVertex2(Vector2f(lineSize, margin + x * columnStep)));
-
-        gridVertices->append(BuildVertex2(Vector2f(margin + x * columnStep, 0.f)));
-        gridVertices->append(BuildVertex2(Vector2f(margin + x * columnStep, lineSize)));
-
-        gridVertices->append(BuildVertex2(Vector2f(margin + columnSize + x * columnStep, 0.f)));
-        gridVertices->append(BuildVertex2(Vector2f(margin + columnSize + x * columnStep, lineSize)));
+        AppendLineVertices(*gridVertices
+            , Vector2f(margin + x * columnStep, 0.f)
+            , Vector2f(margin + x * columnStep, lineSize));
+        AppendLineVertices(*gridVertices
+            , Vector2f(margin + columnSize + x * columnStep, 0.f)
+            , Vector2f(margin + columnSize + x * columnStep, lineSize));
     }
 
     ElementSFDrawable* gridElement = m_root->AddChild<ElementSFDrawable>();

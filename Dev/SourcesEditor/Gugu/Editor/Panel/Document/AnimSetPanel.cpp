@@ -88,18 +88,16 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     // Pivot decoration
     sf::VertexArray* pivotDrawable = new sf::VertexArray;
     pivotDrawable->setPrimitiveType(sf::PrimitiveType::Triangles);
-    pivotDrawable->append(BuildVertex2(Vector2f(-1024, -1024)));
-    pivotDrawable->append(BuildVertex2(Vector2f(0, -1024)));
-    pivotDrawable->append(BuildVertex2(Vector2f(0, 0)));
-    pivotDrawable->append(BuildVertex2(Vector2f(0, 0)));
-    pivotDrawable->append(BuildVertex2(Vector2f(-1024, 0)));
-    pivotDrawable->append(BuildVertex2(Vector2f(-1024, -1024)));
-    pivotDrawable->append(BuildVertex2(Vector2f(0, -1024)));
-    pivotDrawable->append(BuildVertex2(Vector2f(1024, -1024)));
-    pivotDrawable->append(BuildVertex2(Vector2f(1024, 0)));
-    pivotDrawable->append(BuildVertex2(Vector2f(1024, 0)));
-    pivotDrawable->append(BuildVertex2(Vector2f(0, 0)));
-    pivotDrawable->append(BuildVertex2(Vector2f(0, -1024)));
+    AppendQuadVertices(*pivotDrawable
+        , Vector2f(-1024, -1024)
+        , Vector2f(0, -1024)
+        , Vector2f(-1024, 0)
+        , Vector2f(0, 0));
+    AppendQuadVertices(*pivotDrawable
+        , Vector2f(0, -1024)
+        , Vector2f(1024, -1024)
+        , Vector2f(0, 0)
+        , Vector2f(1024, 0));
 
     for (size_t i = 0; i < 6; ++i)
     {

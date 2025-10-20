@@ -365,10 +365,8 @@ void ElementWidgetPanel::CreateGizmo()
         sf::Color color = sf::Color(255, 0, 0, 200);
         sf::VertexArray* vertices = new sf::VertexArray(sf::PrimitiveType::Lines);
 
-        vertices->append(BuildVertex2(Vector2f(position.x, -size.y), color));
-        vertices->append(BuildVertex2(Vector2f(position.x, size.y + 1.f), color));
-        vertices->append(BuildVertex2(Vector2f(-size.x, position.y), color));
-        vertices->append(BuildVertex2(Vector2f(size.x + 1.f, position.y), color));
+        AppendLineVertices(*vertices, Vector2f(position.x, -size.y), Vector2f(position.x, size.y + 1.f), color);
+        AppendLineVertices(*vertices, Vector2f(-size.x, position.y), Vector2f(size.x + 1.f, position.y), color);
 
         m_gizmoOrigin = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
         m_gizmoOrigin->SetSFDrawable(vertices);

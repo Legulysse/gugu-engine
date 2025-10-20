@@ -72,12 +72,10 @@ void Demo::AppStart()
 
 void Demo::AppStep(const DeltaTime& dt)
 {
-    StateMachine::Step(dt);
 }
 
 void Demo::AppUpdate(const DeltaTime& dt)
 {
-    StateMachine::Update(dt);
 }
 
 void Demo::CreateScenario()

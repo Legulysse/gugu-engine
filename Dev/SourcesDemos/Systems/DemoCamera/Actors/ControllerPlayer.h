@@ -27,7 +27,7 @@ public:
     
     void InitController(Character* _pCharacter, int _playerIndex);
 
-    virtual void Step(const gugu::DeltaTime& dt) override;
+    virtual void Update(const gugu::DeltaTime& dt) override;
 
 public:
 

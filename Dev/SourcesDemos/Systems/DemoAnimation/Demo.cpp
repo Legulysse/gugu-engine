@@ -252,7 +252,7 @@ void Demo::AppStop()
     SafeDelete(m_root);
 }
 
-void Demo::AppStep(const DeltaTime& dt)
+void Demo::AppUpdate(const DeltaTime& dt)
 {
     float animationColumnB = 800.f;
     float walkOffsetLeft = -100.f;

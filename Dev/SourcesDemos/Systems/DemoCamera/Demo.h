@@ -26,7 +26,7 @@ namespace gugu
 
 namespace demoproject {
 
-class Demo : public gugu::Application, public gugu::StateMachine, public gugu::EventListener
+class Demo : public gugu::Application, public gugu::EventListener
 {
 public:
 

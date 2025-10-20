@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Window/Window.h"
+#include "Gugu/Window/Vertex2.h"
 #include "Gugu/Animation/SpriteAnimation.h"
 #include "Gugu/Animation/ManagerAnimations.h"
 #include "Gugu/Element/2D/ElementSprite.h"
@@ -56,23 +57,23 @@ void Demo::AppStart()
     sf::VertexArray* gridVertices = new sf::VertexArray;
     gridVertices->setPrimitiveType(sf::PrimitiveType::Lines);
 
-    gridVertices->append(sf::Vertex(Vector2f(animationColumnA, 0.f)));
-    gridVertices->append(sf::Vertex(Vector2f(animationColumnA, 1000.f)));
-    gridVertices->append(sf::Vertex(Vector2f(animationColumnB, 0.f)));
-    gridVertices->append(sf::Vertex(Vector2f(animationColumnB, 1000.f)));
+    gridVertices->append(BuildVertex2(Vector2f(animationColumnA, 0.f)));
+    gridVertices->append(BuildVertex2(Vector2f(animationColumnA, 1000.f)));
+    gridVertices->append(BuildVertex2(Vector2f(animationColumnB, 0.f)));
+    gridVertices->append(BuildVertex2(Vector2f(animationColumnB, 1000.f)));
 
     for (int i = 0; i < 4; ++i)
     {
         Vector2f position = Vector2f(animationColumnA, lineTopA + lineOffset * i);
-        gridVertices->append(sf::Vertex(position + Vector2f(-20.f, 0.f)));
-        gridVertices->append(sf::Vertex(position + Vector2f(20.f, 0.f)));
+        gridVertices->append(BuildVertex2(position + Vector2f(-20.f, 0.f)));
+        gridVertices->append(BuildVertex2(position + Vector2f(20.f, 0.f)));
     }
 
     for (int i = 0; i < 4; ++i)
     {
         Vector2f position = Vector2f(animationColumnB, lineTopB + lineOffset * i);
-        gridVertices->append(sf::Vertex(position + Vector2f(-20.f, 0.f)));
-        gridVertices->append(sf::Vertex(position + Vector2f(20.f, 0.f)));
+        gridVertices->append(BuildVertex2(position + Vector2f(-20.f, 0.f)));
+        gridVertices->append(BuildVertex2(position + Vector2f(20.f, 0.f)));
     }
 
     ElementSFDrawable* gridElement = m_root->AddChild<ElementSFDrawable>();

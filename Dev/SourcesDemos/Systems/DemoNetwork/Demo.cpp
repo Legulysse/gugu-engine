@@ -86,7 +86,7 @@ void Demo::OnButtonClick(int _iButtonID)
     }
     else if (_iButtonID == 2)
     {
-        GetNetwork()->ConnectToClient(sf::IpAddress::LocalHost.toString(), GUGU_PORT_DEFAULT + 1);
+        GetNetwork()->ConnectToClient(sf::IpAddress::LocalHost, GUGU_PORT_DEFAULT + 1);
     }
     else if (_iButtonID == 3)
     {
@@ -98,7 +98,7 @@ void Demo::OnButtonClick(int _iButtonID)
     }
     else if (_iButtonID == 5)
     {
-        GetNetwork()->ConnectToClient(sf::IpAddress::LocalHost.toString(), GUGU_PORT_DEFAULT);
+        GetNetwork()->ConnectToClient(sf::IpAddress::LocalHost, GUGU_PORT_DEFAULT);
     }
     else if (_iButtonID == 7)
     {

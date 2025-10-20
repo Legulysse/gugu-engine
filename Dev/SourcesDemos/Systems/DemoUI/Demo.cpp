@@ -35,7 +35,7 @@ void Demo::AppStart()
     
     // Register Inputs
     ManagerInputs* inputs = GetInputs();
-    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
+    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Escape));
 }
 
 void Demo::AppStop()

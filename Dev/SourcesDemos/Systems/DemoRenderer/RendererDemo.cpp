@@ -28,17 +28,16 @@ namespace demoproject {
 
 RendererDemo::RendererDemo()
 {
-    m_renderTarget_Main = new sf::RenderTexture;
-    m_renderTarget_Refraction = new sf::RenderTexture;
+    m_renderTarget_Main = new sf::RenderTexture(Vector2u(400, 300));
+    m_renderTarget_Refraction = new sf::RenderTexture(Vector2u(400, 300));
     m_shader_Final = new sf::Shader;
-    m_fullscreenQuad = new sf::Sprite;
 
-    m_renderTarget_Main->create(400, 300);
+    m_fullscreenQuad = new sf::Sprite(m_renderTarget_Main->getTexture());
+
     m_renderTarget_Main->setSmooth(true);
-    m_renderTarget_Refraction->create(400, 300);
     m_renderTarget_Refraction->setSmooth(true);
     
-    m_shader_Final->loadFromFile(GetResources()->GetResourceFileInfo("RenderRefraction.frag").GetFileSystemPath(), sf::Shader::Fragment);
+    bool loadResult = m_shader_Final->loadFromFile(GetResources()->GetResourceFileInfo("RenderRefraction.frag").GetFileSystemPath(), sf::Shader::Type::Fragment);
 }
 
 RendererDemo::~RendererDemo()
@@ -62,8 +61,9 @@ void RendererDemo::RenderWindow(FrameInfos* frameInfos, Window* window, Camera* 
     Vector2u size = target->getSize();
     if (m_renderTarget_Main->getSize() != size)
     {
-        m_renderTarget_Main->create(size.x, size.y);
-        m_renderTarget_Refraction->create(size.x, size.y);
+        bool mainResizeResult = m_renderTarget_Main->resize(size);
+        bool refractionResizeResult = m_renderTarget_Refraction->resize(size);
+        m_fullscreenQuad->setTextureRect(sf::IntRect(Vector2i(0, 0), Vector2i(size)));
     }
 
     //Main
@@ -91,7 +91,6 @@ void RendererDemo::RenderWindow(FrameInfos* frameInfos, Window* window, Camera* 
     m_shader_Final->setUniform("texture_main", m_renderTarget_Main->getTexture());
     m_shader_Final->setUniform("texture_refractive", m_renderTarget_Refraction->getTexture());
     
-    m_fullscreenQuad->setTexture(m_renderTarget_Main->getTexture());
     target->draw(*m_fullscreenQuad, sf::RenderStates(m_shader_Final));
 
     //Mouse

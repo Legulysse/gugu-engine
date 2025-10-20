@@ -15,6 +15,7 @@
 #include "Gugu/System/Memory.h"
 #include "Gugu/Window/Window.h"
 #include "Gugu/Window/Camera.h"
+#include "Gugu/Window/Vertex2.h"
 #include "Gugu/Scene/ManagerScenes.h"
 #include "Gugu/Scene/Scene.h"
 #include "Gugu/External/ImGuiUtility.h"
@@ -54,10 +55,10 @@ void Demo::AppStart()
     sf::VertexArray* gridVertices = new sf::VertexArray;
     gridVertices->setPrimitiveType(sf::PrimitiveType::Lines);
 
-    gridVertices->append(sf::Vertex(Vector2f(0.f, -10000.f)));
-    gridVertices->append(sf::Vertex(Vector2f(0.f, 10000.f)));
-    gridVertices->append(sf::Vertex(Vector2f(-10000.f, 0.f)));
-    gridVertices->append(sf::Vertex(Vector2f(10000.f, 0.f)));
+    gridVertices->append(BuildVertex2(Vector2f(0.f, -10000.f)));
+    gridVertices->append(BuildVertex2(Vector2f(0.f, 10000.f)));
+    gridVertices->append(BuildVertex2(Vector2f(-10000.f, 0.f)));
+    gridVertices->append(BuildVertex2(Vector2f(10000.f, 0.f)));
 
     ElementSFDrawable* gridElement = sceneRoot->AddChild<ElementSFDrawable>();
     gridElement->SetSFDrawable(gridVertices);
@@ -103,14 +104,14 @@ void Demo::AppStart()
     // Arm
     sf::VertexArray* armShape = new sf::VertexArray;
     armShape->setPrimitiveType(sf::PrimitiveType::Lines);
-    armShape->append(sf::Vertex(Vector2f(0.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(300.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(300.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(300.f, -50.f)));
-    armShape->append(sf::Vertex(Vector2f(0.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(-400.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(-400.f, 0.f)));
-    armShape->append(sf::Vertex(Vector2f(-400.f, 50.f)));
+    armShape->append(BuildVertex2(Vector2f(0.f, 0.f)));
+    armShape->append(BuildVertex2(Vector2f(300.f, 0.f)));
+    armShape->append(BuildVertex2(Vector2f(300.f, 0.f)));
+    armShape->append(BuildVertex2(Vector2f(300.f, -50.f)));
+    armShape->append(BuildVertex2(Vector2f(0.f, 0.f)));
+    armShape->append(BuildVertex2(Vector2f(-400.f, 0.f)));
+    armShape->append(BuildVertex2(Vector2f(-400.f, 0.f)));
+    armShape->append(BuildVertex2(Vector2f(-400.f, 50.f)));
 
     ElementSFDrawable* arm = sceneRoot->AddChild<ElementSFDrawable>();
     arm->SetPosition(0.f, 50.f);

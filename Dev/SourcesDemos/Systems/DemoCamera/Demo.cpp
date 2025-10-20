@@ -54,17 +54,17 @@ void Demo::AppStart()
     inputs->LoadInputFile("Bindings.xml");
     
     //Method 2 : register keys manually
-    inputs->RegisterInput("Player_1_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Z));
-    inputs->RegisterInput("Player_1_Down", inputs->BuildKeyboardEvent(sf::Keyboard::S));
-    inputs->RegisterInput("Player_1_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Q));
-    inputs->RegisterInput("Player_1_Right", inputs->BuildKeyboardEvent(sf::Keyboard::D));
+    inputs->RegisterInput("Player_1_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Z));
+    inputs->RegisterInput("Player_1_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Key::S));
+    inputs->RegisterInput("Player_1_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Q));
+    inputs->RegisterInput("Player_1_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Key::D));
 
-    inputs->RegisterInput("Player_2_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Up));
-    inputs->RegisterInput("Player_2_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Down));
-    inputs->RegisterInput("Player_2_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Left));
-    inputs->RegisterInput("Player_2_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Right));
+    inputs->RegisterInput("Player_2_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Up));
+    inputs->RegisterInput("Player_2_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Down));
+    inputs->RegisterInput("Player_2_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Left));
+    inputs->RegisterInput("Player_2_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Right));
 
-    inputs->RegisterInput("Exit", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
+    inputs->RegisterInput("Exit", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Escape));
 
     // Run demo
     CreateScenario();
@@ -94,12 +94,12 @@ void Demo::CreateScenario()
 
     //Init Scene and Cameras
     Camera* pCameraA = new Camera;     //TODO: Simplify (auto AddCamera)
-    pCameraA->SetViewport(sf::FloatRect(0.f, 0.f, 0.5f, 1.f));
+    pCameraA->SetViewport(sf::FloatRect(Vector2f(0.f, 0.f), Vector2f(0.5f, 1.f)));
     pCameraA->SetCenterOnTarget(true);
     GetGameWindow()->AddCamera(pCameraA);
     
     Camera* pCameraB = new Camera;
-    pCameraB->SetViewport(sf::FloatRect(0.5f, 0.f, 0.5f, 1.f));
+    pCameraB->SetViewport(sf::FloatRect(Vector2f(0.5f, 0.f), Vector2f(0.5f, 1.f)));
     pCameraB->SetCenterOnTarget(true);
     GetGameWindow()->AddCamera(pCameraB);
 
@@ -158,9 +158,9 @@ bool Demo::OnSFEvent(const sf::Event& _oSFEvent)
         return false;
     }
 
-    if (_oSFEvent.type == sf::Event::MouseButtonPressed)
+    if (const auto buttonPressedEvent = _oSFEvent.getIf<sf::Event::MouseButtonPressed>())
     {
-        if (_oSFEvent.mouseButton.button == sf::Mouse::Left)
+        if (buttonPressedEvent->button == sf::Mouse::Button::Left)
         {
             Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
             Camera* pCameraA = GetGameWindow()->GetCamera(0);

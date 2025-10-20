@@ -48,7 +48,7 @@ void Demo::AppStart()
     
     // Register Inputs
     ManagerInputs* inputs = GetInputs();
-    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
+    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Escape));
 
     //Root
     m_root = GetGameWindow()->GetUINode()->AddChild<Element>();
@@ -72,7 +72,7 @@ void Demo::AppStart()
     {
         for (int x = 0; x < m_grid4->GetWidth(); ++x)
         {
-            m_pTileMapA->UpdateTileTextureCoords(x, y, m_grid4->GetWidth(), sf::IntRect(0, 0, 32, 32));
+            m_pTileMapA->UpdateTileTextureCoords(x, y, m_grid4->GetWidth(), sf::IntRect(Vector2i(0, 0), Vector2i(32, 32)));
         }
     }
 
@@ -92,7 +92,7 @@ void Demo::AppStart()
     {
         for (int x = 0; x < m_grid8->GetWidth(); ++x)
         {
-            m_pTileMapB->UpdateTileTextureCoords(x, y, m_grid8->GetWidth(), sf::IntRect(0, 0, 32, 32));
+            m_pTileMapB->UpdateTileTextureCoords(x, y, m_grid8->GetWidth(), sf::IntRect(Vector2i(0, 0), Vector2i(32, 32)));
         }
     }
 
@@ -112,7 +112,7 @@ void Demo::AppStart()
     {
         for (int x = 0; x < m_grid6->GetWidth(); ++x)
         {
-            m_pTileMapC->UpdateTileTextureCoords(x, y, m_grid6->GetWidth(), sf::IntRect(0, 0, 32, 37));
+            m_pTileMapC->UpdateTileTextureCoords(x, y, m_grid6->GetWidth(), sf::IntRect(Vector2i(0, 0), Vector2i(32, 37)));
         }
     }
 
@@ -144,18 +144,18 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid4->GetWidth(); ++x)
         {
-            m_pTileMapA->UpdateTileTextureCoords(x, y, m_grid4->GetWidth(), m_gridData4->IsBlocked(Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
+            m_pTileMapA->UpdateTileTextureCoords(x, y, m_grid4->GetWidth(), m_gridData4->IsBlocked(Vector2i(x, y)) ? sf::IntRect(Vector2i(0, 32), Vector2i(32, 32)) : sf::IntRect(Vector2i(0, 0), Vector2i(32, 32)));
         }
     }
 
-    m_pTileMapA->UpdateTileTextureCoords(m_referenceCoords4.x, m_referenceCoords4.y, m_grid4->GetWidth(), sf::IntRect(32, 32, 32, 32));
+    m_pTileMapA->UpdateTileTextureCoords(m_referenceCoords4.x, m_referenceCoords4.y, m_grid4->GetWidth(), sf::IntRect(Vector2i(32, 32), Vector2i(32, 32)));
 
     std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeA;
     BFSNeighboursByTraversableRange(*m_grid4, *m_gridData4, dummyAgent, m_referenceCoords4, m_neighboursRange, neighboursRangeA);
 
     for (const auto& neighbour : neighboursRangeA)
     {
-        m_pTileMapA->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid4->GetWidth(), sf::IntRect(32, 0, 32, 32));
+        m_pTileMapA->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid4->GetWidth(), sf::IntRect(Vector2i(32, 0), Vector2i(32, 32)));
     }
 
     // Square-8 grid.
@@ -163,18 +163,18 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid8->GetWidth(); ++x)
         {
-            m_pTileMapB->UpdateTileTextureCoords(x, y, m_grid8->GetWidth(), m_gridData8->IsBlocked(Vector2i(x, y)) ? sf::IntRect(0, 32, 32, 32) : sf::IntRect(0, 0, 32, 32));
+            m_pTileMapB->UpdateTileTextureCoords(x, y, m_grid8->GetWidth(), m_gridData8->IsBlocked(Vector2i(x, y)) ? sf::IntRect(Vector2i(0, 32), Vector2i(32, 32)) : sf::IntRect(Vector2i(0, 0), Vector2i(32, 32)));
         }
     }
 
-    m_pTileMapB->UpdateTileTextureCoords(m_referenceCoords8.x, m_referenceCoords8.y, m_grid8->GetWidth(), sf::IntRect(32, 32, 32, 32));
+    m_pTileMapB->UpdateTileTextureCoords(m_referenceCoords8.x, m_referenceCoords8.y, m_grid8->GetWidth(), sf::IntRect(Vector2i(32, 32), Vector2i(32, 32)));
 
     std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeB;
     BFSNeighboursByTraversableRange(*m_grid8, *m_gridData8, dummyAgent, m_referenceCoords8, m_neighboursRange, neighboursRangeB);
 
     for (const auto& neighbour : neighboursRangeB)
     {
-        m_pTileMapB->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid8->GetWidth(), sf::IntRect(32, 0, 32, 32));
+        m_pTileMapB->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid8->GetWidth(), sf::IntRect(Vector2i(32, 0), Vector2i(32, 32)));
     }
 
     // Hex grid.
@@ -182,18 +182,18 @@ void Demo::RefreshGrids()
     {
         for (int x = 0; x < m_grid6->GetWidth(); ++x)
         {
-            m_pTileMapC->UpdateTileTextureCoords(x, y, m_grid6->GetWidth(), m_gridData6->IsBlocked(Vector2i(x, y)) ? sf::IntRect(0, 37, 32, 37) : sf::IntRect(0, 0, 32, 37));
+            m_pTileMapC->UpdateTileTextureCoords(x, y, m_grid6->GetWidth(), m_gridData6->IsBlocked(Vector2i(x, y)) ? sf::IntRect(Vector2i(0, 37), Vector2i(32, 37)) : sf::IntRect(Vector2i(0, 0), Vector2i(32, 37)));
         }
     }
 
-    m_pTileMapC->UpdateTileTextureCoords(m_referenceCoords6.x, m_referenceCoords6.y, m_grid6->GetWidth(), sf::IntRect(32, 37, 32, 37));
+    m_pTileMapC->UpdateTileTextureCoords(m_referenceCoords6.x, m_referenceCoords6.y, m_grid6->GetWidth(), sf::IntRect(Vector2i(32, 37), Vector2i(32, 37)));
 
     std::vector<BFSNeighbourInfos<Vector2i>> neighboursRangeC;
     BFSNeighboursByTraversableRange(*m_grid6, *m_gridData6, dummyAgent, m_referenceCoords6, m_neighboursRange, neighboursRangeC);
 
     for (const auto& neighbour : neighboursRangeC)
     {
-        m_pTileMapC->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid6->GetWidth(), sf::IntRect(32, 0, 32, 37));
+        m_pTileMapC->UpdateTileTextureCoords(neighbour.coords.x, neighbour.coords.y, m_grid6->GetWidth(), sf::IntRect(Vector2i(32, 0), Vector2i(32, 37)));
     }
 }
 
@@ -204,7 +204,7 @@ void Demo::AppUpdateImGui(const DeltaTime& dt)
     // TODO: maybe provide an accessor on the Engine side ?
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        if (GetInputs()->IsButtonDown(sf::Mouse::Right))
+        if (GetInputs()->IsButtonDown(sf::Mouse::Button::Right))
         {
             Vector2f localPickedPositionA = m_pTileMapA->TransformToLocal(GetGameWindow()->GetMousePosition());
             Vector2f localPickedPositionB = m_pTileMapB->TransformToLocal(GetGameWindow()->GetMousePosition());
@@ -227,7 +227,7 @@ void Demo::AppUpdateImGui(const DeltaTime& dt)
                 refresh = true;
             }
         }
-        else if (GetInputs()->IsButtonDown(sf::Mouse::Left))
+        else if (GetInputs()->IsButtonDown(sf::Mouse::Button::Left))
         {
             Vector2f localPickedPositionA = m_pTileMapA->TransformToLocal(GetGameWindow()->GetMousePosition());
             Vector2f localPickedPositionB = m_pTileMapB->TransformToLocal(GetGameWindow()->GetMousePosition());

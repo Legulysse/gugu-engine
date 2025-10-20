@@ -42,11 +42,11 @@ void Demo::AppStart()
 
     // Register Inputs
     ManagerInputs* inputs = GetInputs();
-    inputs->RegisterInput("ToggleImGui", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
-    inputs->RegisterInput("UseMouse", inputs->BuildKeyboardEvent(sf::Keyboard::F2));
-    inputs->RegisterInput("UseSystemMouse", inputs->BuildKeyboardEvent(sf::Keyboard::F3));
-    inputs->RegisterInput("UseNoMouse", inputs->BuildKeyboardEvent(sf::Keyboard::F4));
-    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Escape));
+    inputs->RegisterInput("ToggleImGui", inputs->BuildKeyboardEvent(sf::Keyboard::Key::F1));
+    inputs->RegisterInput("UseMouse", inputs->BuildKeyboardEvent(sf::Keyboard::Key::F2));
+    inputs->RegisterInput("UseSystemMouse", inputs->BuildKeyboardEvent(sf::Keyboard::Key::F3));
+    inputs->RegisterInput("UseNoMouse", inputs->BuildKeyboardEvent(sf::Keyboard::Key::F4));
+    inputs->RegisterInput("CloseGame", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Escape));
 
     // Set Mouse aspect
     GetGameWindow()->SetSystemMouseVisible(false);

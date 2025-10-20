@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Window/Window.h"
+#include "Gugu/Window/Vertex2.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementText.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
@@ -53,14 +54,14 @@ void Demo::AppStart()
     float lineSize = margin * 2 + (columnStep * (nbCells));
     for (int x = 0; x < nbCells; ++x)
     {
-        //gridVertices->append(sf::Vertex(Vector2f(0.f, margin + x * columnStep)));
-        //gridVertices->append(sf::Vertex(Vector2f(lineSize, margin + x * columnStep)));
+        //gridVertices->append(BuildVertex2(Vector2f(0.f, margin + x * columnStep)));
+        //gridVertices->append(BuildVertex2(Vector2f(lineSize, margin + x * columnStep)));
 
-        gridVertices->append(sf::Vertex(Vector2f(margin + x * columnStep, 0.f)));
-        gridVertices->append(sf::Vertex(Vector2f(margin + x * columnStep, lineSize)));
+        gridVertices->append(BuildVertex2(Vector2f(margin + x * columnStep, 0.f)));
+        gridVertices->append(BuildVertex2(Vector2f(margin + x * columnStep, lineSize)));
 
-        gridVertices->append(sf::Vertex(Vector2f(margin + columnSize + x * columnStep, 0.f)));
-        gridVertices->append(sf::Vertex(Vector2f(margin + columnSize + x * columnStep, lineSize)));
+        gridVertices->append(BuildVertex2(Vector2f(margin + columnSize + x * columnStep, 0.f)));
+        gridVertices->append(BuildVertex2(Vector2f(margin + columnSize + x * columnStep, lineSize)));
     }
 
     ElementSFDrawable* gridElement = m_root->AddChild<ElementSFDrawable>();

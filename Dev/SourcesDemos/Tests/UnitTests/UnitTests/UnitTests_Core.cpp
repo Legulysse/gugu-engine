@@ -205,7 +205,7 @@ void RunUnitTests_Core(UnitTestResults* results)
         GUGU_UTEST_CHECK_EQUAL(deltaTimeA.unscaled_micro(), 0);
         GUGU_UTEST_CHECK_EQUAL(deltaTimeA.GetScale(), 1.f);
 
-        DeltaTime deltaTimeB(sf::Time(sf::microseconds(sf::Int64(16000 * 0.1f))), sf::Time(sf::microseconds(16000)), 0.1f);
+        DeltaTime deltaTimeB(sf::Time(sf::microseconds(int64(16000 * 0.1f))), sf::Time(sf::microseconds(16000)), 0.1f);
         GUGU_UTEST_CHECK_FALSE(deltaTimeB.IsZero());
         GUGU_UTEST_CHECK_APPROX_EQUAL(deltaTimeB.s(), 0.0016f, math::Epsilon6);
         GUGU_UTEST_CHECK_APPROX_EQUAL(deltaTimeB.ms(), 1.6f, math::Epsilon6);

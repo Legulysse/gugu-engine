@@ -208,44 +208,44 @@ void RunUnitTests_Xml(UnitTestResults* results)
             pugi::xml_node nodeData = document.child("Data");
             pugi::xml_node nodeNoData = document.child("NoData");
 
-            const sf::IntRect defaultData(30, 40, 300, 400);
+            const sf::IntRect defaultData(Vector2i(30, 40), Vector2i(300, 400));
 
             // Read (no default)
-            GUGU_UTEST_CHECK(xml::ReadRect(nodeData) == sf::IntRect(10, 20, 100, 200));
+            GUGU_UTEST_CHECK(xml::ReadRect(nodeData) == sf::IntRect(Vector2i(10, 20), Vector2i(100, 200)));
             GUGU_UTEST_CHECK(xml::ReadRect(nodeNoData) == sf::IntRect());
 
             // Read (default)
-            GUGU_UTEST_CHECK(xml::ReadRect(nodeData, defaultData) == sf::IntRect(10, 20, 100, 200));
-            GUGU_UTEST_CHECK(xml::ReadRect(nodeNoData, defaultData) == sf::IntRect(30, 40, 300, 400));
+            GUGU_UTEST_CHECK(xml::ReadRect(nodeData, defaultData) == sf::IntRect(Vector2i(10, 20), Vector2i(100, 200)));
+            GUGU_UTEST_CHECK(xml::ReadRect(nodeNoData, defaultData) == sf::IntRect(Vector2i(30, 40), Vector2i(300, 400)));
 
             // Parse (no default)
-            sf::IntRect resultParseData(5, 5, 5, 5);
+            sf::IntRect resultParseData(Vector2i(5, 5), Vector2i(5, 5));
             xml::ParseRect(nodeData, resultParseData);
-            GUGU_UTEST_CHECK(resultParseData == sf::IntRect(10, 20, 100, 200));
+            GUGU_UTEST_CHECK(resultParseData == sf::IntRect(Vector2i(10, 20), Vector2i(100, 200)));
 
-            sf::IntRect resultParseNoData(5, 5, 5, 5);
+            sf::IntRect resultParseNoData(Vector2i(5, 5), Vector2i(5, 5));
             xml::ParseRect(nodeNoData, resultParseNoData);
             GUGU_UTEST_CHECK(resultParseNoData == sf::IntRect());
 
             // Parse (default)
-            sf::IntRect resultParseDataWithDefault(5, 5, 5, 5);
+            sf::IntRect resultParseDataWithDefault(Vector2i(5, 5), Vector2i(5, 5));
             xml::ParseRect(nodeData, resultParseDataWithDefault, defaultData);
-            GUGU_UTEST_CHECK(resultParseDataWithDefault == sf::IntRect(10, 20, 100, 200));
+            GUGU_UTEST_CHECK(resultParseDataWithDefault == sf::IntRect(Vector2i(10, 20), Vector2i(100, 200)));
 
-            sf::IntRect resultParseNoDataWithDefault(5, 5, 5, 5);
+            sf::IntRect resultParseNoDataWithDefault(Vector2i(5, 5), Vector2i(5, 5));
             xml::ParseRect(nodeNoData, resultParseNoDataWithDefault, defaultData);
-            GUGU_UTEST_CHECK(resultParseNoDataWithDefault == sf::IntRect(30, 40, 300, 400));
+            GUGU_UTEST_CHECK(resultParseNoDataWithDefault == sf::IntRect(Vector2i(30, 40), Vector2i(300, 400)));
 
             // TryParse
-            sf::IntRect resultTryParseData(5, 5, 5, 5);
+            sf::IntRect resultTryParseData(Vector2i(5, 5), Vector2i(5, 5));
             if (GUGU_UTEST_CHECK(xml::TryParseRect(nodeData, resultTryParseData)))
             {
-                GUGU_UTEST_CHECK(resultTryParseData == sf::IntRect(10, 20, 100, 200));
+                GUGU_UTEST_CHECK(resultTryParseData == sf::IntRect(Vector2i(10, 20), Vector2i(100, 200)));
             }
 
-            sf::IntRect resultTryParseNoData(5, 5, 5, 5);
+            sf::IntRect resultTryParseNoData(Vector2i(5, 5), Vector2i(5, 5));
             GUGU_UTEST_CHECK(!xml::TryParseRect(nodeNoData, resultTryParseNoData));
-            GUGU_UTEST_CHECK(resultTryParseNoData == sf::IntRect(5, 5, 5, 5));
+            GUGU_UTEST_CHECK(resultTryParseNoData == sf::IntRect(Vector2i(5, 5), Vector2i(5, 5)));
         }
 
         GUGU_UTEST_SUBSECTION("Color");
@@ -322,7 +322,7 @@ void RunUnitTests_Xml(UnitTestResults* results)
         {
             pugi::xml_document document;
             pugi::xml_node node = document.append_child("Data");
-            xml::WriteRect(node, sf::IntRect(10, 20, 100, 200));
+            xml::WriteRect(node, sf::IntRect(Vector2i(10, 20), Vector2i(100, 200)));
 
             GUGU_UTEST_CHECK(xml::SaveDocumentToString(document) == "<Data x=\"10\" y=\"20\" w=\"100\" h=\"200\"/>");
         }

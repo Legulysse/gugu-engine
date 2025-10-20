@@ -22,6 +22,7 @@
 #include "Gugu/System/String.h"
 #include "Gugu/External/ImGuiUtility.h"
 
+#include <SFML/System/String.hpp>
 #include <SFML/Window/Clipboard.hpp>
 
 ////////////////////////////////////////////////////////////////

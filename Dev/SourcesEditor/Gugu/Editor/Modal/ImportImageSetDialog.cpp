@@ -242,8 +242,8 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
             {
                 for (int y = 0; y < height; ++y)
                 {
-                    canTrimHorizontally &= sourceImage->getPixel(horizontalTrim, y) == sf::Color::Transparent;
-                    canTrimHorizontally &= sourceImage->getPixel(width - 1 - horizontalTrim, y) == sf::Color::Transparent;
+                    canTrimHorizontally &= sourceImage->getPixel(Vector2u(horizontalTrim, y)) == sf::Color::Transparent;
+                    canTrimHorizontally &= sourceImage->getPixel(Vector2u(width - 1 - horizontalTrim, y)) == sf::Color::Transparent;
                 }
 
                 if (canTrimHorizontally)
@@ -256,8 +256,8 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    canTrimVertically &= sourceImage->getPixel(x, verticalTrim) == sf::Color::Transparent;
-                    canTrimVertically &= sourceImage->getPixel(x, height - 1 - verticalTrim) == sf::Color::Transparent;
+                    canTrimVertically &= sourceImage->getPixel(Vector2u(x, verticalTrim)) == sf::Color::Transparent;
+                    canTrimVertically &= sourceImage->getPixel(Vector2u(x, height - 1 - verticalTrim)) == sf::Color::Transparent;
                 }
 
                 if (canTrimVertically)
@@ -304,8 +304,7 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
         }
 
         // Prepare target image.
-        targetImage = new sf::Image;
-        targetImage->create(targetImageSize.x, targetImageSize.y, sf::Color::Transparent);
+        targetImage = new sf::Image(targetImageSize, sf::Color::Transparent);
 
         // Fill target image with all subImages.
         int animationIndex = 0;
@@ -327,10 +326,10 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
             Vector2u frameRectOffset = Vector2u(Absolute(Min<int>(0, frameOffsetX)), Absolute(Min<int>(0, frameOffsetY)));
             Vector2u frameRectSize = frameImages[i]->getSize() - Vector2u(frameRectOffset.x * 2, frameRectOffset.y * 2);
             sf::IntRect frameRect = sf::IntRect(Vector2i(frameRectOffset), Vector2i(frameRectSize));
+            Vector2u framePosition = Vector2u(frameIndex * maxFrameSize.x + frameDestOffsetX, animationIndex * maxFrameSize.y + frameDestOffsetY);
 
             targetImage->copy(*frameImages[i],
-                frameIndex * maxFrameSize.x + frameDestOffsetX,
-                animationIndex * maxFrameSize.y + frameDestOffsetY,
+                framePosition,
                 frameRect);
 
             ++frameIndex;

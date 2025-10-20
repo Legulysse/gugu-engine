@@ -15,6 +15,7 @@
 #include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
 #include "Gugu/Resources/ElementWidget.h"
+#include "Gugu/Window/Vertex2.h"
 #include "Gugu/System/Memory.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/String.h"
@@ -346,12 +347,12 @@ void ElementWidgetPanel::CreateGizmo()
         sf::Color color = sf::Color(0, 0, 255, 40);
         sf::VertexArray* vertices = new sf::VertexArray(sf::PrimitiveType::Triangles);
 
-        vertices->append(sf::Vertex(Vector2::Zero_f, color));
-        vertices->append(sf::Vertex(Vector2::Zero_f, color));
-        vertices->append(sf::Vertex(Vector2::Zero_f, color));
-        vertices->append(sf::Vertex(Vector2::Zero_f, color));
-        vertices->append(sf::Vertex(Vector2::Zero_f, color));
-        vertices->append(sf::Vertex(Vector2::Zero_f, color));
+        vertices->append(BuildVertex2(Vector2::Zero_f, color));
+        vertices->append(BuildVertex2(Vector2::Zero_f, color));
+        vertices->append(BuildVertex2(Vector2::Zero_f, color));
+        vertices->append(BuildVertex2(Vector2::Zero_f, color));
+        vertices->append(BuildVertex2(Vector2::Zero_f, color));
+        vertices->append(BuildVertex2(Vector2::Zero_f, color));
 
         m_gizmoBounds = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
         m_gizmoBounds->SetSFDrawable(vertices);
@@ -364,10 +365,10 @@ void ElementWidgetPanel::CreateGizmo()
         sf::Color color = sf::Color(255, 0, 0, 200);
         sf::VertexArray* vertices = new sf::VertexArray(sf::PrimitiveType::Lines);
 
-        vertices->append(sf::Vertex(Vector2f(position.x, -size.y), color));
-        vertices->append(sf::Vertex(Vector2f(position.x, size.y + 1.f), color));
-        vertices->append(sf::Vertex(Vector2f(-size.x, position.y), color));
-        vertices->append(sf::Vertex(Vector2f(size.x + 1.f, position.y), color));
+        vertices->append(BuildVertex2(Vector2f(position.x, -size.y), color));
+        vertices->append(BuildVertex2(Vector2f(position.x, size.y + 1.f), color));
+        vertices->append(BuildVertex2(Vector2f(-size.x, position.y), color));
+        vertices->append(BuildVertex2(Vector2f(size.x + 1.f, position.y), color));
 
         m_gizmoOrigin = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
         m_gizmoOrigin->SetSFDrawable(vertices);

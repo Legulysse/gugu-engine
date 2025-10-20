@@ -9,6 +9,7 @@
 
 #include "Gugu/Editor/Editor.h"
 
+#include <SFML/System/String.hpp>
 #include <SFML/Window/Clipboard.hpp>
 
 ////////////////////////////////////////////////////////////////

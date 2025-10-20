@@ -89,13 +89,12 @@ void RenderViewport::ImGuiBegin()
     ImGui::SetCursorScreenPos(canvas_p0);
 
     // Reset render target.
-    m_renderTexture->setActive(true);
+    bool activeResult = m_renderTexture->setActive(true);
     if (m_renderTexture->getSize() != m_size)
     {
-        m_renderTexture->create(m_size.x, m_size.y);
+        bool resizeResult = m_renderTexture->resize(m_size);
 
-        sf::View view;
-        view.reset(sf::FloatRect(Vector2f(0, 0), Vector2f(m_size)));
+        sf::View view(Vector2f(0, 0), Vector2f(m_size));
         m_renderTexture->setView(view);
     }
 

@@ -96,11 +96,11 @@ void Editor::Init(const EditorConfig& editorConfig)
 
     // Register Inputs.
     ManagerInputs* inputs = GetInputs();
-    inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::F1));
-    inputs->RegisterInput("SaveDocument", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, false, false));
-    inputs->RegisterInput("SaveAllDocuments", inputs->BuildKeyboardEvent(sf::Keyboard::S, true, true, false));
-    inputs->RegisterInput("Undo", inputs->BuildKeyboardEvent(sf::Keyboard::Z, true, false, false));
-    inputs->RegisterInput("Redo", inputs->BuildKeyboardEvent(sf::Keyboard::Y, true, false, false));
+    inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::Key::F1));
+    inputs->RegisterInput("SaveDocument", inputs->BuildKeyboardEvent(sf::Keyboard::Key::S, true, false, false));
+    inputs->RegisterInput("SaveAllDocuments", inputs->BuildKeyboardEvent(sf::Keyboard::Key::S, true, true, false));
+    inputs->RegisterInput("Undo", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Z, true, false, false));
+    inputs->RegisterInput("Redo", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Y, true, false, false));
 
     // Load user settings.
     LoadUserSettings();

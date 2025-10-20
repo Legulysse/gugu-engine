@@ -128,8 +128,8 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         std::string name = m_imageSet->GetSubImage(m_selectedIndex)->GetName();
         sf::IntRect rect = m_imageSet->GetSubImage(m_selectedIndex)->GetRect();
 
-        int position[2] = { rect.left, rect.top };
-        int size[2] = { rect.width, rect.height };
+        int position[2] = { rect.position.x, rect.position.y };
+        int size[2] = { rect.size.x, rect.size.y };
 
         if (ImGui::InputText("Name", &name, ImGuiInputTextFlags_EnterReturnsTrue))
         {
@@ -139,13 +139,13 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
 
         if (ImGui::InputInt2("Position", position))
         {
-            m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(position[0], position[1], size[0], size[1]));
+            m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(Vector2i(position[0], position[1]), Vector2i(size[0], size[1])));
             RaiseDirty();
         }
 
         if (ImGui::InputInt2("Size", size))
         {
-            m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(position[0], position[1], size[0], size[1]));
+            m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(Vector2i(position[0], position[1]), Vector2i(size[0], size[1])));
             RaiseDirty();
         }
     }
@@ -252,16 +252,16 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
                 ImGui::Text(name.c_str());
 
                 ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::Text("%d", rect.left);
+                ImGui::Text("%d", rect.position.x);
 
                 ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::Text("%d", rect.top);
+                ImGui::Text("%d", rect.position.y);
 
                 ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::Text("%d", rect.width);
+                ImGui::Text("%d", rect.size.x);
 
                 ImGui::TableSetColumnIndex(columnIndex++);
-                ImGui::Text("%d", rect.height);
+                ImGui::Text("%d", rect.size.y);
 
                 ImGui::PopID();
             }
@@ -382,8 +382,8 @@ void ImageSetPanel::UpdateGizmo()
         SubImage* subImage = m_imageSet->GetSubImage(m_selectedIndex);
 
         sf::IntRect rectBefore = subImage->GetRect();
-        m_gizmoCenter->SetPosition((float)rectBefore.left, (float)rectBefore.top);
-        m_gizmoCenter->SetSize((float)rectBefore.width, (float)rectBefore.height);
+        m_gizmoCenter->SetPosition(Vector2f(rectBefore.position));
+        m_gizmoCenter->SetSize(Vector2f(rectBefore.size));
 
         // Test the selected gizmo drag&drop.
         if (!m_isDraggingGizmo && is_hovered && is_active && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
@@ -580,7 +580,7 @@ void ImageSetPanel::GenerateSubImagesFromCount(int columnCount, int rowCount)
 
                 gugu::SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat(m_frameNameTemplate, formatParams));
 
-                sf::IntRect rect = sf::IntRect(x * width, y * height, width, height);
+                sf::IntRect rect = sf::IntRect(Vector2i(x * width, y * height), Vector2i(width, height));
                 newSubImage->SetRect(rect);
             }
         }
@@ -614,7 +614,7 @@ void ImageSetPanel::GenerateSubImagesFromSize(const Vector2i& itemSize, const Ve
 
                 gugu::SubImage* newSubImage = m_imageSet->AddSubImage(StringFormat(m_frameNameTemplate, formatParams));
 
-                sf::IntRect rect = sf::IntRect(left, top, width, height);
+                sf::IntRect rect = sf::IntRect(Vector2i(left, top), Vector2i(width, height));
                 newSubImage->SetRect(rect);
 
                 ++x;

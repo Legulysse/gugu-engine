@@ -20,6 +20,7 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Element/2D/ElementSprite.h"
 #include "Gugu/Element/2D/ElementSFDrawable.h"
+#include "Gugu/Window/Vertex2.h"
 #include "Gugu/System/Memory.h"
 #include "Gugu/System/String.h"
 #include "Gugu/System/Platform.h"
@@ -87,18 +88,18 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     // Pivot decoration
     sf::VertexArray* pivotDrawable = new sf::VertexArray;
     pivotDrawable->setPrimitiveType(sf::PrimitiveType::Triangles);
-    pivotDrawable->append(sf::Vertex(Vector2f(-1024, -1024)));
-    pivotDrawable->append(sf::Vertex(Vector2f(0, -1024)));
-    pivotDrawable->append(sf::Vertex(Vector2f(0, 0)));
-    pivotDrawable->append(sf::Vertex(Vector2f(0, 0)));
-    pivotDrawable->append(sf::Vertex(Vector2f(-1024, 0)));
-    pivotDrawable->append(sf::Vertex(Vector2f(-1024, -1024)));
-    pivotDrawable->append(sf::Vertex(Vector2f(0, -1024)));
-    pivotDrawable->append(sf::Vertex(Vector2f(1024, -1024)));
-    pivotDrawable->append(sf::Vertex(Vector2f(1024, 0)));
-    pivotDrawable->append(sf::Vertex(Vector2f(1024, 0)));
-    pivotDrawable->append(sf::Vertex(Vector2f(0, 0)));
-    pivotDrawable->append(sf::Vertex(Vector2f(0, -1024)));
+    pivotDrawable->append(BuildVertex2(Vector2f(-1024, -1024)));
+    pivotDrawable->append(BuildVertex2(Vector2f(0, -1024)));
+    pivotDrawable->append(BuildVertex2(Vector2f(0, 0)));
+    pivotDrawable->append(BuildVertex2(Vector2f(0, 0)));
+    pivotDrawable->append(BuildVertex2(Vector2f(-1024, 0)));
+    pivotDrawable->append(BuildVertex2(Vector2f(-1024, -1024)));
+    pivotDrawable->append(BuildVertex2(Vector2f(0, -1024)));
+    pivotDrawable->append(BuildVertex2(Vector2f(1024, -1024)));
+    pivotDrawable->append(BuildVertex2(Vector2f(1024, 0)));
+    pivotDrawable->append(BuildVertex2(Vector2f(1024, 0)));
+    pivotDrawable->append(BuildVertex2(Vector2f(0, 0)));
+    pivotDrawable->append(BuildVertex2(Vector2f(0, -1024)));
 
     for (size_t i = 0; i < 6; ++i)
     {

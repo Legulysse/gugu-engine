@@ -9,7 +9,7 @@
 #include <list>
 #include <thread>
 
-#define DEMO_USE_AUDIO true
+#define DEMO_USE_AUDIO false
 
 ////////////////////////////////////////////////////////////////
 // File Implementation

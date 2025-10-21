@@ -43,12 +43,17 @@ int main(int argc, char* argv[])
 
     //----------------------------------------------
 
-    size_t logErrorsCount = 0;
-    const auto logDelegate = [&logErrorsCount](const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)
+    size_t errorLogCount = 0;
+    size_t warningLogCount = 0;
+    const auto logDelegate = [&](const std::string& timestamp, ELog::Type level, ELogEngine::Type category, const std::string& text)
     {
-        if (level == ELog::Error || level == ELog::Warning)
+        if (level == ELog::Error)
         {
-            logErrorsCount += 1;
+            errorLogCount += 1;
+        }
+        else if (level == ELog::Warning)
+        {
+            warningLogCount += 1;
         }
     };
 
@@ -74,7 +79,8 @@ int main(int argc, char* argv[])
     // Finalize Tests.
     GUGU_UTEST_INIT("Finalize", "UnitTests_Finalize.log", &results);
     GUGU_UTEST_SECTION("Check Log Errors");
-    GUGU_UTEST_CHECK(logErrorsCount == 0);
+    GUGU_UTEST_CHECK_EQUAL(errorLogCount, results.GetExpectedErrorCount());
+    GUGU_UTEST_CHECK_EQUAL(warningLogCount, results.GetExpectedWarningCount());
     GUGU_UTEST_FINALIZE();
 
     results.PrintResults();

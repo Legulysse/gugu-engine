@@ -18,8 +18,14 @@ class UnitTestResults
 public:
 
     UnitTestResults(const std::string& logPathFile);
+
     void AddTestResults(const std::string& testHeader, size_t testCount, size_t successCount);
     void PrintResults();
+
+    void AddExpectedErrorCount(size_t count);
+    void AddExpectedWarningCount(size_t count);
+    size_t GetExpectedErrorCount() const;
+    size_t GetExpectedWarningCount() const;
 
 private:
 
@@ -27,6 +33,8 @@ private:
 
     size_t m_testCount = 0;
     size_t m_successCount = 0;
+    size_t m_expectedErrorCount = 0;
+    size_t m_expectedWarningCount = 0;
 };
 
 class UnitTestHandler
@@ -39,6 +47,9 @@ public:
 
     void BeginSection(const std::string& title);
     void BeginSubSection(const std::string& title);
+
+    void AddExpectedErrorCount(size_t count);
+    void AddExpectedWarningCount(size_t count);
 
     bool RunTestCheck(bool result, const std::string& expression, const std::string& file, size_t line);
     bool SilentRunTestCheck(bool result, const std::string& expression, const std::string& file, size_t line);
@@ -78,6 +89,12 @@ private:
 
 #define GUGU_UTEST_SUBSECTION(NAME)                             \
     unitTestHandler.BeginSubSection(NAME)
+
+#define GUGU_UTEST_ADD_EXPECTED_ERROR_COUNT(COUNT)            \
+    unitTestHandler.AddExpectedErrorCount(COUNT)
+
+#define GUGU_UTEST_ADD_EXPECTED_WARNING_COUNT(COUNT)            \
+    unitTestHandler.AddExpectedWarningCount(COUNT)
 
 #define GUGU_UTEST_CHECK(EXPRESSION)                            \
     unitTestHandler.RunTestCheck((bool)(EXPRESSION),            \

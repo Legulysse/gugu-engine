@@ -104,16 +104,7 @@ bool Texture::LoadFromFile()
     m_sfTexture = new sf::Texture;
     if (!m_sfTexture->loadFromFile(GetFileInfo().GetFileSystemPath()))
     {
-        //Use a purple square
-        sf::Image oSFImage(Vector2u(200, 200), sf::Color(255, 0, 255));
-
-        bool loadResult = m_sfTexture->loadFromImage(oSFImage);
-
-        m_sfTexture->setSmooth(GetResources()->IsDefaultTextureSmooth());
-        m_sfTexture->setRepeated(false);
-
-        //TODO: Return true ? Curently it will discard the Resource I think
-        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Texture not found : {0}", GetFileInfo().GetFilePath_utf8()));
+        GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Texture file could not be loaded : {0}", GetFileInfo().GetFilePath_utf8()));
         return false;
     }
 

@@ -22,9 +22,9 @@ namespace gugu {
 
 using Vertex2 = sf::Vertex;
 
-Vertex2 BuildVertex2(const Vector2f& position);
-Vertex2 BuildVertex2(const Vector2f& position, const sf::Color& color);
-Vertex2 BuildVertex2(const Vector2f& position, const sf::Color& color, const Vector2f& texCoords);
+Vertex2 BuildVertex(const Vector2f& position);
+Vertex2 BuildVertex(const Vector2f& position, const sf::Color& color);
+Vertex2 BuildVertex(const Vector2f& position, const sf::Color& color, const Vector2f& texCoords);
 
 // Append 2 vertices to a given array, forming a line.
 void AppendLineVertices(sf::VertexArray& array, const Vector2f& a, const Vector2f& b);

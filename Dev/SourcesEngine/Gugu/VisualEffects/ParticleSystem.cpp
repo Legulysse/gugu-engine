@@ -144,7 +144,7 @@ void ParticleSystem::Start()
 
     // Reset all particles.
     std::fill(m_dataLifetime.begin(), m_dataLifetime.end(), 0.f);
-    std::fill(m_dataVertices.begin(), m_dataVertices.end(), BuildVertex2(Vector2f(), sf::Color::Transparent, Vector2f()));
+    std::fill(m_dataVertices.begin(), m_dataVertices.end(), BuildVertex(Vector2f(), sf::Color::Transparent, Vector2f()));
 
     m_running = true;
     m_paused = false;

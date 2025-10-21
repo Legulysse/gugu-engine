@@ -347,12 +347,12 @@ void ElementWidgetPanel::CreateGizmo()
         sf::Color color = sf::Color(0, 0, 255, 40);
         sf::VertexArray* vertices = new sf::VertexArray(sf::PrimitiveType::Triangles);
 
-        vertices->append(BuildVertex2(Vector2::Zero_f, color));
-        vertices->append(BuildVertex2(Vector2::Zero_f, color));
-        vertices->append(BuildVertex2(Vector2::Zero_f, color));
-        vertices->append(BuildVertex2(Vector2::Zero_f, color));
-        vertices->append(BuildVertex2(Vector2::Zero_f, color));
-        vertices->append(BuildVertex2(Vector2::Zero_f, color));
+        vertices->append(BuildVertex(Vector2::Zero_f, color));
+        vertices->append(BuildVertex(Vector2::Zero_f, color));
+        vertices->append(BuildVertex(Vector2::Zero_f, color));
+        vertices->append(BuildVertex(Vector2::Zero_f, color));
+        vertices->append(BuildVertex(Vector2::Zero_f, color));
+        vertices->append(BuildVertex(Vector2::Zero_f, color));
 
         m_gizmoBounds = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
         m_gizmoBounds->SetSFDrawable(vertices);

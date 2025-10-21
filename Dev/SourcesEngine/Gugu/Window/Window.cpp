@@ -444,22 +444,22 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
                 m_ruler = sf::VertexArray(sf::PrimitiveType::Lines, 4 + graduations * 8);
 
                 size_t v = 0;
-                m_ruler[v++] = BuildVertex2(Vector2f(position.x, -size.y), rulerColor);
-                m_ruler[v++] = BuildVertex2(Vector2f(position.x, size.y + 1.f), rulerColor);
-                m_ruler[v++] = BuildVertex2(Vector2f(-size.x, position.y), rulerColor);
-                m_ruler[v++] = BuildVertex2(Vector2f(size.x + 1.f, position.y), rulerColor);
+                m_ruler[v++] = BuildVertex(Vector2f(position.x, -size.y), rulerColor);
+                m_ruler[v++] = BuildVertex(Vector2f(position.x, size.y + 1.f), rulerColor);
+                m_ruler[v++] = BuildVertex(Vector2f(-size.x, position.y), rulerColor);
+                m_ruler[v++] = BuildVertex(Vector2f(size.x + 1.f, position.y), rulerColor);
 
                 for (int i = 0; i < graduations; ++i)
                 {
                     float offset = graduationSize * (i + 1);
-                    m_ruler[v++] = BuildVertex2(Vector2f(position.x + offset, position.y - 10.f), rulerColor);
-                    m_ruler[v++] = BuildVertex2(Vector2f(position.x + offset, position.y + 11.f), rulerColor);
-                    m_ruler[v++] = BuildVertex2(Vector2f(position.x - offset, position.y - 10.f), rulerColor);
-                    m_ruler[v++] = BuildVertex2(Vector2f(position.x - offset, position.y + 11.f), rulerColor);
-                    m_ruler[v++] = BuildVertex2(Vector2f(position.x - 10.f, position.y + offset), rulerColor);
-                    m_ruler[v++] = BuildVertex2(Vector2f(position.x + 11.f, position.y + offset), rulerColor);
-                    m_ruler[v++] = BuildVertex2(Vector2f(position.x - 10.f, position.y - offset), rulerColor);
-                    m_ruler[v++] = BuildVertex2(Vector2f(position.x + 11.f, position.y - offset), rulerColor);
+                    m_ruler[v++] = BuildVertex(Vector2f(position.x + offset, position.y - 10.f), rulerColor);
+                    m_ruler[v++] = BuildVertex(Vector2f(position.x + offset, position.y + 11.f), rulerColor);
+                    m_ruler[v++] = BuildVertex(Vector2f(position.x - offset, position.y - 10.f), rulerColor);
+                    m_ruler[v++] = BuildVertex(Vector2f(position.x - offset, position.y + 11.f), rulerColor);
+                    m_ruler[v++] = BuildVertex(Vector2f(position.x - 10.f, position.y + offset), rulerColor);
+                    m_ruler[v++] = BuildVertex(Vector2f(position.x + 11.f, position.y + offset), rulerColor);
+                    m_ruler[v++] = BuildVertex(Vector2f(position.x - 10.f, position.y - offset), rulerColor);
+                    m_ruler[v++] = BuildVertex(Vector2f(position.x + 11.f, position.y - offset), rulerColor);
                 }
             }
 

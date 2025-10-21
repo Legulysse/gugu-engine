@@ -300,12 +300,12 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
             Vector2f pointOffsetBorderRight = Vector2f(1.f + curveWidth, pointOffset + 1.f);
 
             m_borders.resize(6);
-            m_borders[0] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight) + pointOffsetBorderLeft, colorBorders);
-            m_borders[1] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight) + pointOffsetBorderRight, colorBorders);
-            m_borders[2] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f)) + pointOffsetBorderLeft, colorBorders);
-            m_borders[3] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f)) + pointOffsetBorderRight, colorBorders);
-            m_borders[4] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f) * 2) + pointOffsetBorderLeft, colorBorders);
-            m_borders[5] = BuildVertex2(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f) * 2) + pointOffsetBorderRight, colorBorders);
+            m_borders[0] = BuildVertex(positionCurves + Vector2f(0.f, curveHeight) + pointOffsetBorderLeft, colorBorders);
+            m_borders[1] = BuildVertex(positionCurves + Vector2f(0.f, curveHeight) + pointOffsetBorderRight, colorBorders);
+            m_borders[2] = BuildVertex(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f)) + pointOffsetBorderLeft, colorBorders);
+            m_borders[3] = BuildVertex(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f)) + pointOffsetBorderRight, colorBorders);
+            m_borders[4] = BuildVertex(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f) * 2) + pointOffsetBorderLeft, colorBorders);
+            m_borders[5] = BuildVertex(positionCurves + Vector2f(0.f, curveHeight + (curveHeight + 10.f) * 2) + pointOffsetBorderRight, colorBorders);
         }
 
         renderWindow->draw(m_borders);

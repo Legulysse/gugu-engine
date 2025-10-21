@@ -37,6 +37,26 @@ void UnitTestResults::AddTestResults(const std::string& testHeader, size_t testC
     m_successCount += successCount;
 }
 
+void UnitTestResults::AddExpectedErrorCount(size_t count)
+{
+    m_expectedErrorCount += count;
+}
+
+void UnitTestResults::AddExpectedWarningCount(size_t count)
+{
+    m_expectedWarningCount += count;
+}
+
+size_t UnitTestResults::GetExpectedErrorCount() const
+{
+    return m_expectedErrorCount;
+}
+
+size_t UnitTestResults::GetExpectedWarningCount() const
+{
+    return m_expectedWarningCount;
+}
+
 void UnitTestResults::PrintResults()
 {
     m_logger.Print("");
@@ -132,6 +152,22 @@ void UnitTestHandler::BeginSubSection(const std::string& title)
 
     m_runningSubSection = true;
     m_pendingSubSectionTitle = title;
+}
+
+void UnitTestHandler::AddExpectedErrorCount(size_t count)
+{
+    if (m_testResults)
+    {
+        m_testResults->AddExpectedErrorCount(count);
+    }
+}
+
+void UnitTestHandler::AddExpectedWarningCount(size_t count)
+{
+    if (m_testResults)
+    {
+        m_testResults->AddExpectedWarningCount(count);
+    }
 }
 
 bool UnitTestHandler::RunTestCheck(bool result, const std::string& expression, const std::string& file, size_t line)

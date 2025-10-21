@@ -10,6 +10,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/System/Platform.h"
+#include "Gugu/System/Memory.h"
 
 using namespace gugu;
 
@@ -28,6 +29,31 @@ void RunUnitTests_Resources(UnitTestResults* results)
     {
         GUGU_UTEST_SILENT_CHECK(DirectoryExists("Assets/TestResources"));
 
+        GUGU_UTEST_SUBSECTION("Error Checks");
+        {
+            FileInfo emptyFileInfo;
+            std::string invalidResourceId = "INVALID_ID";
+
+            GUGU_UTEST_ADD_EXPECTED_WARNING_COUNT(10);
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetTexture(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetFont(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetAudioClip(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetAudioMixerGroup(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetSoundCue(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetImageSet(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetAnimSet(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetParticleEffect(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetDatasheet(invalidResourceId));
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetElementWidget(invalidResourceId));
+
+            ImageSet* tempImageSetResource = new ImageSet;
+
+            GUGU_UTEST_ADD_EXPECTED_ERROR_COUNT(1);
+            GUGU_UTEST_CHECK_FALSE(GetResources()->AddResource(tempImageSetResource, emptyFileInfo));
+
+            SafeDelete(tempImageSetResource);
+        }
+
         GUGU_UTEST_SUBSECTION("Existing Resources");
         {
             GUGU_UTEST_CHECK_TRUE(FileExists("Assets/TestResources/TextureResource.png"));
@@ -43,16 +69,18 @@ void RunUnitTests_Resources(UnitTestResults* results)
             std::string tempImageSetResourcePath = "Assets/TestResources/TempImageSetResource.imageset.xml";
             FileInfo tempImageSetResourceFileInfo = FileInfo::FromString_utf8(tempImageSetResourcePath);
 
+            GUGU_UTEST_ADD_EXPECTED_WARNING_COUNT(1);
             GUGU_UTEST_CHECK_FALSE(FileExists(tempImageSetResourcePath));
             GUGU_UTEST_CHECK_FALSE(GetResources()->HasResource(tempImageSetResourceId));
             GUGU_UTEST_CHECK_FALSE(GetResources()->IsResourceLoaded(tempImageSetResourceId));
-            //GUGU_UTEST_CHECK_NULL(GetResources()->GetImageSet(tempImageSetResourceId));     // TODO: mechanism to check+absorb expected error logs.
+            GUGU_UTEST_CHECK_NULL(GetResources()->GetImageSet(tempImageSetResourceId));
             GUGU_UTEST_CHECK_FALSE(GetResources()->IsResourceLoaded(tempImageSetResourceId));
 
             ImageSet* tempImageSetResource = new ImageSet;
             GUGU_UTEST_CHECK_TRUE(GetResources()->AddResource(tempImageSetResource, tempImageSetResourceFileInfo));
 
             // Added resource is registered and already loaded.
+            GUGU_UTEST_CHECK_FALSE(FileExists(tempImageSetResourcePath));
             GUGU_UTEST_CHECK_TRUE(GetResources()->HasResource(tempImageSetResourceId));
             GUGU_UTEST_CHECK_TRUE(GetResources()->IsResourceLoaded(tempImageSetResourceId));     // Resources added during runtime should be already loaded.
             GUGU_UTEST_CHECK_NOT_NULL(GetResources()->GetImageSet(tempImageSetResourceId));

@@ -199,8 +199,9 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
 
             if (ExecuteCommand(imageMagickPath, arguments))
             {
+                // TODO: skip image if failed ? add placeholder ?
                 sf::Image* frameImage = new sf::Image;
-                frameImage->loadFromFile(targetResizedFile.GetFileSystemPath());
+                bool loadFrameImageResult = frameImage->loadFromFile(targetResizedFile.GetFileSystemPath());
                 frameImages.push_back(frameImage);
 
                 ++frameCount;
@@ -328,7 +329,8 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
             sf::IntRect frameRect = sf::IntRect(Vector2i(frameRectOffset), Vector2i(frameRectSize));
             Vector2u framePosition = Vector2u(frameIndex * maxFrameSize.x + frameDestOffsetX, animationIndex * maxFrameSize.y + frameDestOffsetY);
 
-            targetImage->copy(*frameImages[i],
+            // TODO: skip image if failed ? add placeholder ?
+            bool copyTargetImageResult = targetImage->copy(*frameImages[i],
                 framePosition,
                 frameRect);
 
@@ -341,7 +343,7 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
         }
 
         // Save to file.
-        targetImage->saveToFile(targetPackingFile.GetFileSystemPath());
+        bool saveTargetImageResult = targetImage->saveToFile(targetPackingFile.GetFileSystemPath());
 
         // Release data.
         ClearStdVector(frameImages);

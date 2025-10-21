@@ -502,6 +502,7 @@ bool WindowEventHandler::ProcessCameraElementInteractions(const sf::Event& event
                 if (elementEventHandler->IsInteractionRegisteredAndEnabled(EInteractionType::Scroll)
                     && camera->IsMouseOverElement(mouseCoords, pElement, localPickedCoords))
                 {
+                    // TODO: handle float scroll for high-precision mice ? (I need to test what happens with this kind of hardware).
                     InteractionInfos interactionInfos;
                     interactionInfos.scrollDelta = (int)std::round(mouseWheelScrolledEvent->delta);
                     interactionInfos.localPickingPosition = localPickedCoords;

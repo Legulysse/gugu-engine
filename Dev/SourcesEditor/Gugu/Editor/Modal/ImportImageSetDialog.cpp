@@ -124,6 +124,10 @@ void ImportImageSetDialog::ImportImageSet(const std::string& resizeFilter)
     // - We want a final texture size aligned on a power of 2 (not necessarily squared).
     // - ImageMagick has been setup in a predefined directory.
     // - We always apply an unsharp pass after the resize.
+    //
+    // TODO:
+    // - Nothing prevents the user from replacing the original textures with the resized textures.
+    // - Flip option.
 
     // Save settings.
     GetEditor()->GetUserSettings().importImageSetSourceDirectoryPath = m_sourceDirectory;

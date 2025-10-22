@@ -4,7 +4,13 @@
 #include "Gugu/Common.h"
 #include "Gugu/Misc/Grid/SquareGrid.h"
 
+////////////////////////////////////////////////////////////////
+// Includes
+
+#include "Gugu/Math/MathUtility.h"
+
 #include <array>
+#include <assert.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -46,11 +52,29 @@ Vector2f SquareGrid::GetCellCenter(const Vector2i& coords) const
 
 bool SquareGrid::PickCoords(const Vector2f& position, Vector2i& pickedCoords) const
 {
-    if (position.x < 0 || position.x >= m_cellWidth * m_width || position.y < 0 || position.y >= m_cellHeight * m_height)
-        return false;
+    if (m_width <= 0 || m_height <= 0 || m_cellWidth <= 0.f || m_cellHeight <= 0.f)
+    {
+        assert(false);  // Invalid cell dimensions.
 
-    pickedCoords.x = (int)(position.x / m_cellWidth);
-    pickedCoords.y = (int)(position.y / m_cellHeight);
+        pickedCoords = Vector2::Zero_i;
+        return false;
+    }
+
+    pickedCoords.x = RoundFloorInt(position.x / m_cellWidth);
+    pickedCoords.y = RoundFloorInt(position.y / m_cellHeight);
+
+    return (pickedCoords.x >= 0 && pickedCoords.x < m_width
+        && pickedCoords.y >= 0 && pickedCoords.y < m_height);
+}
+
+bool SquareGrid::PickCoordsClamped(const Vector2f& position, Vector2i& pickedCoords) const
+{
+    if (!PickCoords(position, pickedCoords))
+    {
+        pickedCoords.x = Clamp(pickedCoords.x, 0, m_width - 1);
+        pickedCoords.y = Clamp(pickedCoords.y, 0, m_height - 1);
+        return false;
+    }
 
     return true;
 }

@@ -255,6 +255,9 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     // Frame edition
     if (m_currentFrame)
     {
+        // Ensure we dont mix properties edition when changing the active item while editing a value.
+        ImGui::PushID(m_currentFrame);
+
         ImGui::BeginDisabled(m_animSet->GetImageSet() == nullptr);
 
         SubImage* frameSubImage = !m_animSet->GetImageSet() ? nullptr : m_currentFrame->GetSubImage();
@@ -290,6 +293,8 @@ void AnimSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
         }
 
         // TODO: Events.
+
+        ImGui::PopID();
     }
     else
     {

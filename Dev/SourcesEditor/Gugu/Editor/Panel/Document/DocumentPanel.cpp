@@ -48,13 +48,16 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
     m_visible = false;
     m_focused = false;
 
+    // Ensure we dont mix properties edition when changing the active document while editing a value.
+    // This line is redundant with the following ImGui::Begin, but adds consistency with the similar calls in UpdateProperties and UpdateHierarchy.
+    ImGui::PushID(m_title.c_str());
+
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_HorizontalScrollbar;
     if (m_dirty)
     {
         flags |= ImGuiWindowFlags_UnsavedDocument;
     }
 
-    // TODO: do I need to push some id on the id stack, to avoid potential collisions ?
     bool isOpen = true;
     if (ImGui::Begin(m_title.c_str(), &isOpen, flags))
     {
@@ -81,17 +84,29 @@ void DocumentPanel::UpdatePanel(const DeltaTime& dt)
 
     ImGui::End();
 
+    ImGui::PopID();
+
     m_closing |= !isOpen;
 }
 
 void DocumentPanel::UpdateProperties(const DeltaTime& dt)
 {
+    // Ensure we dont mix properties edition when changing the active document while editing a value.
+    ImGui::PushID(m_title.c_str());
+
     UpdatePropertiesImpl(dt);
+
+    ImGui::PopID();
 }
 
 void DocumentPanel::UpdateHierarchy(const DeltaTime& dt)
 {
+    // Ensure we dont mix properties edition when changing the active document while editing a value.
+    ImGui::PushID(m_title.c_str());
+
     UpdateHierarchyImpl(dt);
+
+    ImGui::PopID();
 }
 
 bool DocumentPanel::Save()

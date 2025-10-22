@@ -571,7 +571,7 @@ void Editor::Update(const DeltaTime& dt)
     {
         DocumentPanel* document = m_documentPanels[i];
 
-        ImGui::SetNextWindowDockID(dockspace_id, resetDocuments ? ImGuiCond_Always  : ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowDockID(dockspace_id, resetDocuments ? ImGuiCond_Always : ImGuiCond_FirstUseEver);
         document->UpdatePanel(dt);
 
         if (document->IsFocused())

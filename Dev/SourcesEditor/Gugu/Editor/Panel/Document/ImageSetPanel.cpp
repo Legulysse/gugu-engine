@@ -125,6 +125,9 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     // Selected SubImage edition.
     if (m_selectedIndex >= 0)
     {
+        // Ensure we dont mix properties edition when changing the active item while editing a value.
+        ImGui::PushID(m_selectedIndex);
+
         std::string name = m_imageSet->GetSubImage(m_selectedIndex)->GetName();
         sf::IntRect rect = m_imageSet->GetSubImage(m_selectedIndex)->GetRect();
 
@@ -148,6 +151,8 @@ void ImageSetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             m_imageSet->GetSubImage(m_selectedIndex)->SetRect(sf::IntRect(Vector2i(position[0], position[1]), Vector2i(size[0], size[1])));
             RaiseDirty();
         }
+
+        ImGui::PopID();
     }
     else
     {

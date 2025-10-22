@@ -10,6 +10,7 @@
 #include "Gugu/Math/MathUtility.h"
 
 #include <array>
+#include <assert.h>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -66,6 +67,14 @@ Vector2f HexGrid::GetCellCenter(const Vector2i& coords) const
 
 bool HexGrid::PickCoords(const Vector2f& position, Vector2i& pickedCoords) const
 {
+	if (m_width <= 0 || m_height <= 0 || m_cellWidth <= 0.f || m_cellHeight <= 0.f)
+	{
+		assert(false);  // Invalid cell dimensions.
+
+		pickedCoords = Vector2::Zero_i;
+		return false;
+	}
+
 	// Picking formula based on Sam Hocevar sample :
 	// https://gamedev.stackexchange.com/questions/20742/how-can-i-implement-hexagonal-tilemap-picking-in-xna
 
@@ -94,11 +103,22 @@ bool HexGrid::PickCoords(const Vector2f& position, Vector2i& pickedCoords) const
 	pickedY += right;
 
 	// Convert result to my own coordinates system.
-	pickedCoords.x = (pickedX - (pickedX & 1)) / 2;
-	pickedCoords.y = pickedY;
+	pickedCoords = Vector2i((pickedX - (pickedX & 1)) / 2, pickedY);
 
 	return (pickedCoords.x >= 0 && pickedCoords.x < m_width
 		&& pickedCoords.y >= 0 && pickedCoords.y < m_height);
+}
+
+bool HexGrid::PickCoordsClamped(const Vector2f& position, Vector2i& pickedCoords) const
+{
+	if (!PickCoords(position, pickedCoords))
+	{
+		pickedCoords.x = Clamp(pickedCoords.x, 0, m_width - 1);
+		pickedCoords.y = Clamp(pickedCoords.y, 0, m_height - 1);
+		return false;
+	}
+
+	return true;
 }
 
 void HexGrid::GetNeighbours(const Vector2i& coords, std::vector<Vector2i>& neighbours) const

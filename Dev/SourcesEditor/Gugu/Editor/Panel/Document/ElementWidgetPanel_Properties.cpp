@@ -30,6 +30,9 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     if (!m_selectedElementData)
         return;
 
+    // Ensure we dont mix properties edition when changing the active element while editing a value.
+    ImGui::PushID(m_selectedElementData);
+
     ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen;
     Element* element = m_selectedElement;
     bool needRebuildHierarchy = false;
@@ -618,6 +621,8 @@ void ElementWidgetPanel::UpdatePropertiesImpl(const DeltaTime& dt)
             RaiseDirty();
         }
     }
+
+    ImGui::PopID();
 
     if (needRebuildHierarchy)
     {

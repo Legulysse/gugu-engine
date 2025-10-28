@@ -279,6 +279,13 @@ function ProjectLibSFML(BuildCfg)
         files {
             DirSfmlHeaders.."**.hpp",
             DirSfmlHeaders.."**.inl",
+            -- Include externals headers for easy access in solution.
+            DirSfmlExternals.."headers/glad/include/**.h",
+            DirSfmlExternals.."headers/mingw/**.h",
+            DirSfmlExternals.."headers/miniaudio/**.h",
+            DirSfmlExternals.."headers/minimp3/**.h",
+            DirSfmlExternals.."headers/stb_image/**.h",
+            DirSfmlExternals.."headers/vulkan/**.h",
         }
         
         files {

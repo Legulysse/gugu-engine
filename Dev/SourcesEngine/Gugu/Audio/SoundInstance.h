@@ -47,6 +47,8 @@ public:
     void Reset();
 
     void SetAudioClip(AudioClip* audioClip);
+    AudioClip* GetAudioClip() const;
+
     void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
     void SetVolume(float volume);
     void SetPitch(float pitch);
@@ -57,6 +59,7 @@ public:
 
 protected:
 
+    AudioClip* m_audioClip;
     AudioMixerGroupInstance* m_mixerGroupInstance;
     sf::Sound* m_sfSound;
     float m_volume;

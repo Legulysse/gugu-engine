@@ -32,7 +32,8 @@ SoundParameters::SoundParameters()
 
 
 SoundInstance::SoundInstance()
-    : m_mixerGroupInstance(nullptr)
+    : m_audioClip(nullptr)
+    , m_mixerGroupInstance(nullptr)
     , m_sfSound(nullptr)
     , m_volume(1.f)
 {
@@ -54,6 +55,8 @@ void SoundInstance::Reset()
     m_sfSound->setVolume(100.f);
     m_sfSound->setPitch(1.f);
 
+
+    m_audioClip = nullptr;
     m_volume = 1.f;
 }
 
@@ -67,8 +70,14 @@ void SoundInstance::SetAudioClip(AudioClip* audioClip)
         if (soundBuffer)
         {
             m_sfSound->setBuffer(*soundBuffer);
+            m_audioClip = audioClip;
         }
     }
+}
+
+AudioClip* SoundInstance::GetAudioClip() const
+{
+    return m_audioClip;
 }
 
 void SoundInstance::SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance)

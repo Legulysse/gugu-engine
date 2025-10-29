@@ -8,11 +8,13 @@
 // Includes
 
 #include "Gugu/Engine.h"
+#include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Audio/AudioMixerGroupInstance.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/SoundCue.h"
 #include "Gugu/Resources/AudioMixerGroup.h"
 #include "Gugu/System/Memory.h"
+#include "Gugu/System/Container.h"
 #include "Gugu/Math/MathUtility.h"
 #include "Gugu/Math/Random.h"
 #include "Gugu/Debug/Logger.h"
@@ -20,6 +22,14 @@
 #include <SFML/Audio/Listener.hpp>
 
 #include <assert.h>
+
+////////////////////////////////////////////////////////////////
+// Macros
+
+#define GUGU_AUDIO_RESTRICTION_BY_COOLDOWN true
+#define GUGU_AUDIO_RESTRICTION_COOLDOWN_VALUE 0.05f
+#define GUGU_AUDIO_RESTRICTION_BY_INSTANCES true
+#define GUGU_AUDIO_RESTRICTION_INSTANCE_COUNT 8
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -60,6 +70,8 @@ void ManagerAudio::Init(const EngineConfig& config)
 
 void ManagerAudio::Release()
 {
+    m_audioClipCooldowns.clear();
+
     m_musicLayers.clear();
     m_musicInstances.clear();
     m_soundInstances.clear();
@@ -67,6 +79,19 @@ void ManagerAudio::Release()
 
 void ManagerAudio::Update(const DeltaTime& dt)
 {
+    // Update clip cooldowns.
+    auto it = m_audioClipCooldowns.begin();
+    while (it != m_audioClipCooldowns.end())
+    {
+        it->second -= dt.s();
+
+        if (it->second <= 0.f)
+            it = m_audioClipCooldowns.erase(it);
+        else
+            ++it;
+    }
+
+    // Update layers (fades).
     for (size_t i = 0; i < m_musicLayers.size(); ++i)
     {
         m_musicLayers[i].Update(dt);
@@ -157,6 +182,7 @@ bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
     if (!soundCue)
         return false;
 
+    // TODO: I could check with running instances if I should pick an AudioClip that is not currently being played.
     SoundParameters parameters;
     if (!soundCue->GetRandomSound(parameters))
         return false;
@@ -188,8 +214,31 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
         mixerGroupInstance = GetMixerGroupInstance(GetResources()->GetAudioMixerGroup(parameters.mixerGroupId));
     }
 
-    if (audioClip)
+    if (audioClip && !StdMapContainsKey(m_audioClipCooldowns, audioClip))
     {
+#if GUGU_AUDIO_RESTRICTION_BY_INSTANCES
+        // Upper count limit.
+        int count = 0;
+        for (auto& soundInstance : m_soundInstances)
+        {
+            if (soundInstance.GetAudioClip() == audioClip)
+            {
+                ++count;
+            }
+        }
+
+        // TODO: Pop oldest instead of arbitrary order.
+        int removeCount = count - (GUGU_AUDIO_RESTRICTION_INSTANCE_COUNT - 1);
+        for (auto& soundInstance : m_soundInstances)
+        {
+            if (soundInstance.GetAudioClip() == audioClip && removeCount > 0)
+            {
+                soundInstance.Reset();
+                --removeCount;
+            }
+        }
+#endif
+
         SoundInstance* soundInstance = &m_soundInstances[m_soundIndex];
         soundInstance->Reset();
         soundInstance->SetAudioClip(audioClip);
@@ -206,6 +255,12 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
 
         soundInstance->Play();
 
+#if GUGU_AUDIO_RESTRICTION_BY_COOLDOWN
+        // Add cooldown on the clip to limit superposition.
+        m_audioClipCooldowns.insert(std::make_pair(audioClip, GUGU_AUDIO_RESTRICTION_COOLDOWN_VALUE));
+#endif
+
+        // Handle rotation on available instance entries.
         ++m_soundIndex;
         if (m_soundIndex == m_soundInstances.size())
             m_soundIndex = 0;

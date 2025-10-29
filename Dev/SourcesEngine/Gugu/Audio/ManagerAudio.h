@@ -17,6 +17,7 @@ namespace gugu
 {
     struct EngineConfig;
     class SoundCue;
+    class AudioClip;
     class AudioMixerGroup;
     class AudioMixerGroupInstance;
 }
@@ -70,6 +71,7 @@ private:
     std::vector<MusicLayer> m_musicLayers;
 
     size_t m_soundIndex;
+    std::map<AudioClip*, float> m_audioClipCooldowns;
 
     bool m_listenerMuted;
     float m_listenerVolume;

@@ -44,6 +44,8 @@ public:
     void SetListenerVolume(float volume);     // Volume range [0, 1]
     float GetListenerVolume() const;
 
+    void SetListenerPosition(const Vector2f& position);
+
     void SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup);
     AudioMixerGroupInstance* GetMixerGroupInstance(const std::string& mixerGroupId) const;
     AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;

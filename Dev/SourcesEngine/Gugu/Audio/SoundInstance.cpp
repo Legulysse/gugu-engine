@@ -27,6 +27,8 @@ SoundParameters::SoundParameters()
     , volume(1.f)
     , pitchLowerOffset(0.f)
     , pitchUpperOffset(0.f)
+    , spatialized(false)
+    , position(Vector2::Zero_f)
 {
 }
 
@@ -54,7 +56,8 @@ void SoundInstance::Reset()
     m_sfSound->stop();
     m_sfSound->setVolume(100.f);
     m_sfSound->setPitch(1.f);
-
+    m_sfSound->setSpatializationEnabled(false);
+    m_sfSound->setPosition(sf::Vector3f(0, 0, 0));
 
     m_audioClip = nullptr;
     m_volume = 1.f;
@@ -95,6 +98,28 @@ void SoundInstance::SetVolume(float volume)
 void SoundInstance::SetPitch(float pitch)
 {
     m_sfSound->setPitch(pitch);
+}
+
+void SoundInstance::SetSpatialization(bool enabled, float minDistance, float attenuation)
+{
+    // Attenuation formula for spatialization.
+    // 
+    // https://www.sfml-dev.org/tutorials/3.0/audio/spatialization/#audio-sources
+    // 
+    // MinDistance   is the sound's minimum distance, set with setMinDistance
+    // Attenuation   is the sound's attenuation, set with setAttenuation
+    // Distance      is the distance between the sound and the listener
+    // Volume factor is the calculated factor, in range[0 .. 1], that will be applied to the sound's volume
+    // Volume factor = MinDistance / (MinDistance + Attenuation * (max(Distance, MinDistance) - MinDistance))
+
+    m_sfSound->setSpatializationEnabled(enabled);
+    m_sfSound->setMinDistance(minDistance);
+    m_sfSound->setAttenuation(attenuation);
+}
+
+void SoundInstance::SetPosition(const Vector2f& position)
+{
+    m_sfSound->setPosition(sf::Vector3f(position.x, 0.f, position.y));
 }
 
 void SoundInstance::RecomputeMixedVolume()

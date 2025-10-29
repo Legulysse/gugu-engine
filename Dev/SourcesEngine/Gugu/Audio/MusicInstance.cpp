@@ -49,11 +49,14 @@ void MusicInstance::SetAudioClip(AudioClip* audioClip, bool loop)
     if (audioClip)
     {
         m_audioClip = audioClip;
-        m_sfMusic = m_audioClip->OpenSFMusicStream();
 
+        m_sfMusic = m_audioClip->OpenSFMusicStream();
         if (m_sfMusic)
         {
             m_sfMusic->setLooping(loop);
+            m_sfMusic->setSpatializationEnabled(false);
+            m_sfMusic->setPosition(sf::Vector3f(0, 0, 0));
+
             RecomputeMixedVolume();
         }
         else

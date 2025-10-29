@@ -31,6 +31,9 @@
 #define GUGU_AUDIO_RESTRICTION_BY_INSTANCES true
 #define GUGU_AUDIO_RESTRICTION_INSTANCE_COUNT 8
 
+#define GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE 200.f
+#define GUGU_AUDIO_SPATIALIZATION_ATTENUATION 0.5f
+
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
@@ -120,6 +123,11 @@ void ManagerAudio::SetListenerVolume(float volume)
 float ManagerAudio::GetListenerVolume() const
 {
     return m_listenerVolume;
+}
+
+void ManagerAudio::SetListenerPosition(const Vector2f& position)
+{
+    sf::Listener::setPosition(sf::Vector3f(position.x, 0.f, position.y));
 }
 
 void ManagerAudio::SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup)
@@ -251,6 +259,12 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
             float pitchLowerOffset = Absolute(parameters.pitchLowerOffset) * -1.f;
             float pitchUpperOffset = Absolute(parameters.pitchUpperOffset);
             soundInstance->SetPitch(1.f + GetRandomf(pitchLowerOffset, pitchUpperOffset));
+        }
+
+        if (parameters.spatialized)
+        {
+            soundInstance->SetSpatialization(true, GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE, GUGU_AUDIO_SPATIALIZATION_ATTENUATION);
+            soundInstance->SetPosition(parameters.position);
         }
 
         soundInstance->Play();

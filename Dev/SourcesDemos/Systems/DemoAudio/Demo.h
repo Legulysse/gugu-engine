@@ -31,13 +31,21 @@ public:
     virtual void AppStart() override;
     virtual void AppStop() override;
 
+    virtual void AppUpdate(const gugu::DeltaTime& dt) override;
+
 protected:
 
     enum EButton
     {
         Exit,
         SoundBubbles01,
+        SoundBubbles01Double,
+        SoundBubbles01Multiple,
+        SoundBubbles01Fire,
         SoundCueBubblesFive,
+        SoundCueBubblesFiveDouble,
+        SoundCueBubblesFiveMultiple,
+        SoundCueBubblesFiveFire,
         SoundCueBubblesPitch,
         TrackColors,
         TrackAbyss,
@@ -64,6 +72,8 @@ protected:
 protected:
 
     gugu::Element* m_root;
+    int m_fireClipCount;
+    int m_fireSoundCueCount;
 };
 
 }   //namespace demoproject

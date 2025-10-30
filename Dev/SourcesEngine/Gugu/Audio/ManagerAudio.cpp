@@ -180,12 +180,12 @@ void ManagerAudio::RecomputeAllMixedVolumes()
     }
 }
 
-bool ManagerAudio::PlaySoundCue(const std::string& soundCueId)
+bool ManagerAudio::PlaySoundCue(const std::string& soundCueId, const Vector2f& position)
 {
-    return PlaySoundCue(GetResources()->GetSoundCue(soundCueId));
+    return PlaySoundCue(GetResources()->GetSoundCue(soundCueId), position);
 }
 
-bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
+bool ManagerAudio::PlaySoundCue(SoundCue* soundCue, const Vector2f& position)
 {
     if (!soundCue)
         return false;
@@ -194,6 +194,8 @@ bool ManagerAudio::PlaySoundCue(SoundCue* soundCue)
     SoundParameters parameters;
     if (!soundCue->GetRandomSound(parameters))
         return false;
+
+    parameters.position = position;
 
     return PlaySound(parameters);
 }

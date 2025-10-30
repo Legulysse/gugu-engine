@@ -51,8 +51,8 @@ public:
     AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
     void RecomputeAllMixedVolumes();
 
-    bool PlaySoundCue(const std::string& soundCueId);
-    bool PlaySoundCue(SoundCue* soundCue);
+    bool PlaySoundCue(const std::string& soundCueId, const Vector2f& position = Vector2::Zero_f);
+    bool PlaySoundCue(SoundCue* soundCue, const Vector2f& position = Vector2::Zero_f);
     bool PlaySound(const std::string& audioClipId, float volume = 1.f);         // Volume range [0, 1]
     bool PlaySound(const SoundParameters& parameters);
 

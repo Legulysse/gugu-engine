@@ -45,6 +45,9 @@ public:
     void SetVolumeAttenuation(float volumeAttenuation);
     float GetVolumeAttenuation() const;
 
+    void SetSpatialized(bool spatialized);
+    bool IsSpatialized() const;
+
     size_t GetSoundCount() const;
     bool GetClip(size_t index, ClipEntry& clipEntry) const;
 
@@ -68,6 +71,7 @@ protected:
     std::vector<ClipEntry> m_audioClips;
     AudioMixerGroup* m_mixerGroup;
     float m_volumeAttenuation;
+    bool m_spatialized;
 
     // Runtime data.
     std::vector<SoundParameters> m_soundParameters;

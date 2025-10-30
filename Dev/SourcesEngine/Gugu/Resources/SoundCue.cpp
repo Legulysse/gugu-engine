@@ -22,6 +22,7 @@ namespace gugu {
 SoundCue::SoundCue()
     : m_mixerGroup(nullptr)
     , m_volumeAttenuation(1.f)
+    , m_spatialized(false)
 {
 }
 
@@ -52,6 +53,18 @@ void SoundCue::SetVolumeAttenuation(float volumeAttenuation)
 float SoundCue::GetVolumeAttenuation() const
 {
     return m_volumeAttenuation;
+}
+
+void SoundCue::SetSpatialized(bool spatialized)
+{
+    m_spatialized = spatialized;
+
+    RecomputeRuntimeSoundParameters();
+}
+
+bool SoundCue::IsSpatialized() const
+{
+    return m_spatialized;
 }
 
 size_t SoundCue::GetSoundCount() const
@@ -87,6 +100,7 @@ void SoundCue::RecomputeRuntimeSoundParameters()
             parameters.volume = clip.volume * m_volumeAttenuation;
             parameters.pitchLowerOffset = clip.pitchLowerOffset;
             parameters.pitchUpperOffset = clip.pitchUpperOffset;
+            parameters.spatialized = m_spatialized;
             m_soundParameters.push_back(parameters);
         }
     }
@@ -160,6 +174,7 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
 
     m_mixerGroup = GetResources()->GetAudioMixerGroup(rootNode.child("MixerGroup").attribute("source").as_string());
     m_volumeAttenuation = rootNode.child("VolumeAttenuation").attribute("value").as_float(m_volumeAttenuation);
+    m_spatialized = rootNode.child("Spatialized").attribute("value").as_bool(m_spatialized);
 
     for (pugi::xml_node clipNode = rootNode.child("Clips").child("Clip"); clipNode; clipNode = clipNode.next_sibling("Clip"))
     {
@@ -187,6 +202,7 @@ bool SoundCue::SaveToXml(pugi::xml_document& document) const
 
     rootNode.append_child("MixerGroup").append_attribute("source").set_value((!m_mixerGroup) ? "" : m_mixerGroup->GetID().c_str());
     rootNode.append_child("VolumeAttenuation").append_attribute("value").set_value(m_volumeAttenuation);
+    rootNode.append_child("Spatialized").append_attribute("value").set_value(m_spatialized);
 
     if (!m_audioClips.empty())
     {

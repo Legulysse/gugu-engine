@@ -26,7 +26,9 @@ using namespace gugu;
 namespace demoproject {
 
 Demo::Demo()
-: m_root(nullptr)
+    : m_root(nullptr)
+    , m_fireClipCount(0)
+    , m_fireSoundCueCount(0)
 {
 }
 
@@ -52,21 +54,63 @@ void Demo::AppStart()
 
     button = m_root->AddChild<ElementButton>();
     button->LoadFromWidget("Button_01.widget.xml");
-    button->SetText("Bubbles 01");
+    button->SetText("AudioClip");
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles01));
     button->SetPosition(posX, posY);
 
     posY += gapY;
     button = m_root->AddChild<ElementButton>();
     button->LoadFromWidget("Button_01.widget.xml");
-    button->SetText("Bubbles (Five)");
+    button->SetText("AudioClip (x2)");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles01Double));
+    button->SetPosition(posX, posY);
+
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("AudioClip (x10)");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles01Multiple));
+    button->SetPosition(posX, posY);
+
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("AudioClip (fire)");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundBubbles01Fire));
+    button->SetPosition(posX, posY);
+
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("SoundCue");
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesFive));
     button->SetPosition(posX, posY);
 
     posY += gapY;
     button = m_root->AddChild<ElementButton>();
     button->LoadFromWidget("Button_01.widget.xml");
-    button->SetText("Bubbles (Pitch)");
+    button->SetText("SoundCue (x2)");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesFiveDouble));
+    button->SetPosition(posX, posY);
+
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("SoundCue (x10)");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesFiveMultiple));
+    button->SetPosition(posX, posY);
+
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("SoundCue (fire)");
+    button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesFiveFire));
+    button->SetPosition(posX, posY);
+
+    posY += gapY;
+    button = m_root->AddChild<ElementButton>();
+    button->LoadFromWidget("Button_01.widget.xml");
+    button->SetText("SoundCue (Pitch)");
     button->SetOnMouseReleased(std::bind(&Demo::OnButtonClick, this, (int)EButton::SoundCueBubblesPitch));
     button->SetPosition(posX, posY);
 
@@ -223,6 +267,30 @@ void Demo::AppStop()
     SafeDelete(m_root);
 }
 
+void Demo::AppUpdate(const DeltaTime& dt)
+{
+    if (m_fireClipCount > 0)
+    {
+        m_fireClipCount -= 1;
+
+        //for (size_t i = 0; i < 4; ++i)
+        {
+            SoundParameters parameters;
+            parameters.audioClipId = "Bulle_01.ogg";
+            parameters.mixerGroupId = "Gameplay.audiomixergroup.xml";
+            parameters.volume = 0.5f;
+            GetAudio()->PlaySound(parameters);
+        }
+    }
+
+    if (m_fireSoundCueCount)
+    {
+        m_fireSoundCueCount -= 1;
+
+        GetAudio()->PlaySoundCue("Bubbles_Five.soundcue.xml");
+    }
+}
+
 void Demo::OnButtonClick(int buttonId)
 {
     if (buttonId == EButton::SoundBubbles01)
@@ -233,9 +301,53 @@ void Demo::OnButtonClick(int buttonId)
         parameters.volume = 0.5f;
         GetAudio()->PlaySound(parameters);
     }
+    else if (buttonId == EButton::SoundBubbles01Double)
+    {
+        for (size_t i = 0; i < 2; ++i)
+        {
+            SoundParameters parameters;
+            parameters.audioClipId = "Bulle_01.ogg";
+            parameters.mixerGroupId = "Gameplay.audiomixergroup.xml";
+            parameters.volume = 0.5f;
+            GetAudio()->PlaySound(parameters);
+        }
+    }
+    else if (buttonId == EButton::SoundBubbles01Multiple)
+    {
+        for (size_t i = 0; i < 10; ++i)
+        {
+            SoundParameters parameters;
+            parameters.audioClipId = "Bulle_01.ogg";
+            parameters.mixerGroupId = "Gameplay.audiomixergroup.xml";
+            parameters.volume = 0.5f;
+            GetAudio()->PlaySound(parameters);
+        }
+    }
+    else if (buttonId == EButton::SoundBubbles01Fire)
+    {
+        m_fireClipCount = 10;
+    }
     else if (buttonId == EButton::SoundCueBubblesFive)
     {
         GetAudio()->PlaySoundCue("Bubbles_Five.soundcue.xml");
+    }
+    else if (buttonId == EButton::SoundCueBubblesFiveDouble)
+    {
+        for (size_t i = 0; i < 2; ++i)
+        {
+            GetAudio()->PlaySoundCue("Bubbles_Five.soundcue.xml");
+        }
+    }
+    else if (buttonId == EButton::SoundCueBubblesFiveMultiple)
+    {
+        for (size_t i = 0; i < 10; ++i)
+        {
+            GetAudio()->PlaySoundCue("Bubbles_Five.soundcue.xml");
+        }
+    }
+    else if (buttonId == EButton::SoundCueBubblesFiveFire)
+    {
+        m_fireSoundCueCount = 10;
     }
     else if (buttonId == EButton::SoundCueBubblesPitch)
     {

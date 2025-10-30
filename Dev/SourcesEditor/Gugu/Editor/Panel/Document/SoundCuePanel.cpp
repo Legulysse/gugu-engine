@@ -59,6 +59,15 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
 
     ImGui::Spacing();
 
+    bool spatialized = m_soundCue->IsSpatialized();
+    if (ImGui::Checkbox("Spatialized", &spatialized))
+    {
+        m_soundCue->SetSpatialized(spatialized);
+        updated |= true;
+    }
+
+    ImGui::Spacing();
+
     // Note: NoSavedSettings is already applied on the whole document panel, but I keep it here to match property tables.
     ImGuiTableFlags tableFlags = ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY;
     if (ImGui::BeginTable("_SOUNDS_TABLE", 5, tableFlags))

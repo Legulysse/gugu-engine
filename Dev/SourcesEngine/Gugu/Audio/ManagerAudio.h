@@ -17,6 +17,7 @@ namespace gugu
 {
     struct EngineConfig;
     class SoundCue;
+    class AudioClip;
     class AudioMixerGroup;
     class AudioMixerGroupInstance;
 }
@@ -43,13 +44,15 @@ public:
     void SetListenerVolume(float volume);     // Volume range [0, 1]
     float GetListenerVolume() const;
 
+    void SetListenerPosition(const Vector2f& position);
+
     void SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup);
     AudioMixerGroupInstance* GetMixerGroupInstance(const std::string& mixerGroupId) const;
     AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
     void RecomputeAllMixedVolumes();
 
-    bool PlaySoundCue(const std::string& soundCueId);
-    bool PlaySoundCue(SoundCue* soundCue);
+    bool PlaySoundCue(const std::string& soundCueId, const Vector2f& position = Vector2::Zero_f);
+    bool PlaySoundCue(SoundCue* soundCue, const Vector2f& position = Vector2::Zero_f);
     bool PlaySound(const std::string& audioClipId, float volume = 1.f);         // Volume range [0, 1]
     bool PlaySound(const SoundParameters& parameters);
 
@@ -70,6 +73,7 @@ private:
     std::vector<MusicLayer> m_musicLayers;
 
     size_t m_soundIndex;
+    std::map<AudioClip*, float> m_audioClipCooldowns;
 
     bool m_listenerMuted;
     float m_listenerVolume;

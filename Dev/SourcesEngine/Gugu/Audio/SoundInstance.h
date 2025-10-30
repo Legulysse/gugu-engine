@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Math/Vector2.h"
+
 #include <string>
 
 ////////////////////////////////////////////////////////////////
@@ -33,6 +35,8 @@ struct SoundParameters
     float volume;
     float pitchLowerOffset;
     float pitchUpperOffset;
+    bool spatialized;
+    gugu::Vector2f position;
 
     SoundParameters();
 };
@@ -47,9 +51,14 @@ public:
     void Reset();
 
     void SetAudioClip(AudioClip* audioClip);
+    AudioClip* GetAudioClip() const;
+
     void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
     void SetVolume(float volume);
     void SetPitch(float pitch);
+
+    void SetSpatialization(bool enabled, float minDistance, float attenuation);
+    void SetPosition(const gugu::Vector2f& position);
 
     void RecomputeMixedVolume();
 
@@ -57,6 +66,7 @@ public:
 
 protected:
 
+    AudioClip* m_audioClip;
     AudioMixerGroupInstance* m_mixerGroupInstance;
     sf::Sound* m_sfSound;
     float m_volume;

@@ -29,11 +29,13 @@ ElementSFDrawable::~ElementSFDrawable()
     SafeDelete(m_sfDrawable);
 }
 
-void ElementSFDrawable::SetSFDrawable(sf::Drawable* _pSFDrawable)
+void ElementSFDrawable::SetSFDrawable(sf::Drawable* _pSFDrawable, const sf::FloatRect& bounds)
 {
     SafeDelete(m_sfDrawable);
 
+    // Note: If bounds have a size of zero, the drawable will always get culled (intersection test will fail).
     m_sfDrawable = _pSFDrawable;
+    m_bounds = bounds;
 }
 
 sf::Drawable* ElementSFDrawable::GetSFDrawable() const
@@ -56,8 +58,8 @@ void ElementSFDrawable::OnSizeChanged()
 
 void ElementSFDrawable::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    // TODO: handle culling (need bounds).
-    if (m_sfDrawable)
+    sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(m_bounds);
+    if (m_sfDrawable && _kRenderPass.rectViewport.findIntersection(kGlobalTransformed))
     {
         _kRenderPass.target->draw(*m_sfDrawable, _kTransformSelf);
 

@@ -30,8 +30,8 @@ public:
     ElementSFDrawable();
     virtual ~ElementSFDrawable();
 
-    void            SetSFDrawable   (sf::Drawable* _pSFDrawable);
-    sf::Drawable*   GetSFDrawable   () const;
+    void SetSFDrawable(sf::Drawable* _pSFDrawable, const sf::FloatRect& bounds = sf::FloatRect(Vector2f(0.f, 0.f), Vector2f(1.f, 1.f)));
+    sf::Drawable* GetSFDrawable() const;
 
     void SetCallbackOnSizeChanged(const DelegateElementSizeChanged& callbackOnSizeChanged);
 
@@ -43,6 +43,7 @@ private:
 protected:
 
     sf::Drawable* m_sfDrawable;
+    sf::FloatRect m_bounds;
     DelegateElementSizeChanged m_callbackOnSizeChanged;
 };
 

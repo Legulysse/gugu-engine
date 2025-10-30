@@ -1,8 +1,10 @@
 # Project History
 
 ## Version 0.9 &nbsp; _(??/??/????)_ &nbsp; [Update ??/??/????]
+- Bascule du moteur depuis SFML 2 vers SFML 3.
+- Mise à jour SFML 3.0.2.
 - Mise à jour ImGui 1.91.6 (docking).
-- Mise à jour ImGui-SFML 2.6.1.
+- Mise à jour ImGui-SFML 3.0.
 
 ## Version 0.8.1 &nbsp; _(03/12/2024)_
 - Remplacement des configurations de build "Debug" et "Release" par les configurations "DevDebug", DevRelease" et "ProdMaster".

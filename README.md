@@ -18,10 +18,10 @@ Contributors : Panda, Diccy, Amitsouko
 
 | Name | Version | Usage |
 |---|---|---|
-| [SFML](https://github.com/SFML/SFML) |  2.6.2 | Engine |
+| [SFML](https://github.com/SFML/SFML) |  3.0.2 | Engine |
 | [PugiXml](https://github.com/zeux/pugixml) | 1.14 | Engine |
 | [Dear ImGui](https://github.com/ocornut/imgui) | 1.91.6-docking | Editor |
-| [ImGui-SFML](https://github.com/SFML/imgui-sfml) | 2.6.1 | ImGui integration |
+| [ImGui-SFML](https://github.com/SFML/imgui-sfml) | 3.0 | ImGui integration |
 | [Premake](https://github.com/premake/premake-core) | 5.0.0-beta3 | Build scripts |
 | [Python](https://www.python.org/) | 3.x | Build and utility scripts |
 

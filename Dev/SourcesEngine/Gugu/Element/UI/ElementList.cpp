@@ -175,7 +175,10 @@ void ElementList::SetItemSelected(ElementListItem* _pNewItem, bool selected)
 {
     if (m_allowSelection && _pNewItem && _pNewItem->IsSelected() != selected)
     {
-        _pNewItem->SetSelected(selected);
+        // Note: I prefer to deselect before select for a few reasons :
+        // - GetSelectedIndex may return an incoherent result if we select an item at index 2 while index 0 is still selected.
+        // - Deselect behaviour will allow some clean to happen before select is propagated.
+        // TODO: Having callbacks global to the whole list in addition to single items would be better.
 
         if (!m_multipleSelection && selected)
         {
@@ -188,6 +191,8 @@ void ElementList::SetItemSelected(ElementListItem* _pNewItem, bool selected)
                 }
             }
         }
+
+        _pNewItem->SetSelected(selected);
     }
 }
 
@@ -201,22 +206,7 @@ void ElementList::ToggleItemSelected(size_t _iIndex)
 
 void ElementList::ToggleItemSelected(ElementListItem* _pNewItem)
 {
-    if (m_allowSelection)
-    {
-        _pNewItem->SetSelected(!_pNewItem->IsSelected());
-
-        if (!m_multipleSelection && _pNewItem->IsSelected())
-        {
-            for (size_t i = 0; i < m_items.size(); ++i)
-            {
-                ElementListItem* pItem = m_items[i];
-                if (pItem != _pNewItem)
-                {
-                    pItem->SetSelected(false);
-                }
-            }
-        }
-    }
+    SetItemSelected(_pNewItem, !_pNewItem->IsSelected());
 }
 
 size_t ElementList::GetSelectedIndex() const

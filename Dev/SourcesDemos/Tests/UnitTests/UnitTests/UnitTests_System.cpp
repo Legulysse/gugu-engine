@@ -764,11 +764,16 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK_EQUAL(*containerC[3], 4);
 
                 StdVectorDeleteAndRemoveIf(containerC, [](int* item) { return item != nullptr && *item == 1; });
+                GUGU_UTEST_CHECK_EQUAL(containerC.size(), 3);
+                GUGU_UTEST_CHECK_EQUAL(*containerC[0], 2);
+                GUGU_UTEST_CHECK_EQUAL(containerC[1], nullptr);
+                GUGU_UTEST_CHECK_EQUAL(*containerC[2], 4);
+
+                StdVectorDeleteAndRemoveAt(containerC, 2);
                 GUGU_UTEST_CHECK_EQUAL(containerC.size(), 2);
                 GUGU_UTEST_CHECK_EQUAL(*containerC[0], 2);
-                GUGU_UTEST_CHECK_EQUAL(*containerC[1], 4);
+                GUGU_UTEST_CHECK_EQUAL(containerC[1], nullptr);
 
-                SafeDelete(containerC[1]);
                 StdVectorRemoveIfNull(containerC);
                 GUGU_UTEST_CHECK_EQUAL(containerC.size(), 1);
                 GUGU_UTEST_CHECK_EQUAL(*containerC[0], 2);

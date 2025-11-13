@@ -69,8 +69,10 @@ void StdVectorRemoveIfNull(std::vector<T>& container);
 template<typename T, typename P>
 void StdVectorDeleteIf(std::vector<T>& container, const P& predicate);
 
-// Apply the delete operation on entries targeted by the predicate, then remove all null entries.
-// Warning: This implies that existing null entries will also be removed.
+template<typename T>
+void StdVectorDeleteAndRemoveAt(std::vector<T>& container, size_t index);
+
+// Apply the delete and remove operation on entries targeted by the predicate.
 template<typename T, typename P>
 void StdVectorDeleteAndRemoveIf(std::vector<T>& container, const P& predicate);
 

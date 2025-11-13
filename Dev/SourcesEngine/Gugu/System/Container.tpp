@@ -133,11 +133,29 @@ void StdVectorDeleteIf(std::vector<T>& container, const P& predicate)
     }
 }
 
+template<typename T>
+void StdVectorDeleteAndRemoveAt(std::vector<T>& container, size_t index)
+{
+    SafeDelete(container[index]);
+    container.erase(container.begin() + index);
+}
+
 template<typename T, typename P>
 void StdVectorDeleteAndRemoveIf(std::vector<T>& container, const P& predicate)
 {
-    StdVectorDeleteIf(container, predicate);
-    StdVectorRemoveIfNull(container);
+    auto it = container.begin();
+    while (it != container.end())
+    {
+        if (predicate(*it))
+        {
+            SafeDelete(*it);
+            it = container.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }
 
 template<typename T>

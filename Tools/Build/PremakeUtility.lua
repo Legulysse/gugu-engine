@@ -269,7 +269,7 @@ function ProjectLibSFML(BuildCfg)
         defines { "STBI_FAILURE_USERMSG" }                              -- Add preprocessor symbols (Graphics module)
         defines { "SFML_IS_BIG_ENDIAN=0" }                              -- Detect the endianness as required by Ogg (big endian seems to be used only on systems I wont need)
         defines { "FT2_BUILD_LIBRARY" }                                 -- Freetype setup
-        defines { "OV_EXCLUDE_STATIC_CALLBACKS" }                       -- Vorbis setup
+        defines { "OV_EXCLUDE_STATIC_CALLBACKS" }                       -- Vorbis setup (avoid unused symbol warnings from static callbacks).
         defines { "FLAC__NO_DLL" }                                      -- Flac setup
         
         -- Projects dependencies

@@ -536,8 +536,6 @@ function ProjectLibVorbis(BuildCfg)
         IncludeDependencyLibDefinition(BuildCfg, "Vorbis")
         uuid "58404700-9603-47C1-B0B3-243553F43883"
         
-        defines { "OV_EXCLUDE_STATIC_CALLBACKS" }                       -- Vorbis setup
-        
         -- Files
         files {
             DirSfmlDependencies.."Vorbis/include/**",

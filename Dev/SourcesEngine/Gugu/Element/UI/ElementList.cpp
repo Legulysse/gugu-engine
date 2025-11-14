@@ -70,7 +70,7 @@ void ElementList::SetImageSet(const std::string& _strImageSetPath)
     m_scrollButtonBottom->SetSubImage(_strImageSetPath, "ButtonBottom");
 
     RecomputeScrollBar();
-    RecomputeItems();
+    RecomputeItems();   // This may change m_currentIndexTop.
 }
 
 void ElementList::AddItem(ElementListItem* item)
@@ -82,7 +82,7 @@ void ElementList::AddItem(ElementListItem* item)
     item->OnListResized(kListSize);
 
     // TODO: I should avoid calling this for every Add/Remove and use a delayed refresh.
-    RecomputeItems();
+    RecomputeItems();   // This may change m_currentIndexTop.
 }
 
 void ElementList::RemoveItem(size_t index)
@@ -95,7 +95,7 @@ void ElementList::RemoveItem(size_t index)
     item->SetParent(nullptr);
 
     ClampCurrentIndex();
-    RecomputeItems();
+    RecomputeItems();   // This may change m_currentIndexTop.
 }
 
 void ElementList::RemoveItem(ElementListItem* item)
@@ -107,7 +107,7 @@ void ElementList::RemoveItem(ElementListItem* item)
     item->SetParent(nullptr);
 
     ClampCurrentIndex();
-    RecomputeItems();
+    RecomputeItems();   // This may change m_currentIndexTop.
 }
 
 void ElementList::DeleteItem(size_t index)
@@ -120,7 +120,7 @@ void ElementList::DeleteItem(size_t index)
     SafeDelete(item);
 
     ClampCurrentIndex();
-    RecomputeItems();
+    RecomputeItems();   // This may change m_currentIndexTop.
 }
 
 void ElementList::DeleteItem(ElementListItem* item)
@@ -132,7 +132,7 @@ void ElementList::DeleteItem(ElementListItem* item)
     SafeDelete(item);
 
     ClampCurrentIndex();
-    RecomputeItems();
+    RecomputeItems();   // This may change m_currentIndexTop.
 }
 
 void ElementList::DeleteAllItems()
@@ -140,7 +140,7 @@ void ElementList::DeleteAllItems()
     ClearStdVector(m_items);
 
     ClampCurrentIndex();
-    RecomputeItems();
+    RecomputeItems();   // This may change m_currentIndexTop.
 }
 
 void ElementList::GetItems(std::vector<ElementListItem*>& _vecItems) const
@@ -307,7 +307,7 @@ void ElementList::OnSliderDragMoved(const InteractionInfos& interactionInfos)
     else
     {
         //TODO: Maybe disable the drag interaction when items list is empty
-        RecomputeItems();
+        RecomputeItems();   // This may change m_currentIndexTop.
     }
 }
 
@@ -316,7 +316,24 @@ void ElementList::ClampCurrentIndex()
     m_currentIndexTop = m_items.size() == 0 ? 0 : Clamp<size_t>(m_currentIndexTop, 0, m_items.size() - 1);
 }
 
-int ElementList::ScrollItems(int _iDelta)
+void ElementList::ScrollToItem(size_t index)
+{
+    if (m_items.empty() || m_displayedItemCount == 0 || index >= m_items.size())
+        return;
+
+    if (index < m_currentIndexTop)
+    {
+        m_currentIndexTop = index;
+        RecomputeItems();   // This may change m_currentIndexTop.
+    }
+    else if (index >= m_currentIndexTop + m_displayedItemCount)
+    {
+        m_currentIndexTop = index - (m_displayedItemCount - 1);
+        RecomputeItems();   // This may change m_currentIndexTop.
+    }
+}
+
+int ElementList::ScrollItems(int delta)
 {
     int iComputedDelta = 0;
 
@@ -328,16 +345,16 @@ int ElementList::ScrollItems(int _iDelta)
     {
         size_t iOldIndexTop = m_currentIndexTop;
 
-        if (_iDelta < 0)
+        if (delta < 0)
         {
-            m_currentIndexTop = m_currentIndexTop - Min(m_currentIndexTop, (size_t)Absolute(_iDelta));
+            m_currentIndexTop = m_currentIndexTop - Min(m_currentIndexTop, (size_t)Absolute(delta));
         }
         else
         {
-            m_currentIndexTop = m_currentIndexTop + Min(m_items.size() - m_currentIndexTop, (size_t)_iDelta);
+            m_currentIndexTop = m_currentIndexTop + Min(m_items.size() - m_currentIndexTop, (size_t)delta);
         }
 
-        RecomputeItems();   //This may change m_iCurrentIndexTop
+        RecomputeItems();   // This may change m_currentIndexTop.
 
         iComputedDelta = (int)m_currentIndexTop - (int)iOldIndexTop;
     }
@@ -447,7 +464,7 @@ void ElementList::OnSizeChanged()
         m_items[i]->OnListResized(kListSize);
     }
 
-    RecomputeItems();
+    RecomputeItems();   // This may change m_currentIndexTop.
 }
 
 void ElementList::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
@@ -466,7 +483,7 @@ void ElementList::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTr
 
     if (updatedItemSize)
     {
-        RecomputeItems();
+        RecomputeItems();   // This may change m_currentIndexTop.
     }
 
     // Render visible items.

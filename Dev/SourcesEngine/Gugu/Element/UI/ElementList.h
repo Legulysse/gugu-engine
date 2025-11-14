@@ -53,6 +53,9 @@ public:
     void                GetSelectedItems    (std::vector<ElementListItem*>& _vecItems) const;
     void                GetSelectedElements (std::vector<Element*>& _vecElements) const;
 
+    void ScrollToItem(size_t index);
+    int ScrollItems(int delta);
+
 protected:
 
     void OnMousePressed(const InteractionInfos& interactionInfos);
@@ -63,7 +66,6 @@ protected:
     virtual void OnSizeChanged() override;
 
     void    ClampCurrentIndex();
-    int     ScrollItems(int _iDelta);
 
     void    RecomputeScrollBar();
     void    RecomputeItems();

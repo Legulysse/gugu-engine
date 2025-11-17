@@ -86,7 +86,7 @@ void ManagerAudio::Update(const DeltaTime& dt)
     auto it = m_audioClipCooldowns.begin();
     while (it != m_audioClipCooldowns.end())
     {
-        it->second -= dt.s();
+        it->second -= dt.unscaled_s();
 
         if (it->second <= 0.f)
             it = m_audioClipCooldowns.erase(it);

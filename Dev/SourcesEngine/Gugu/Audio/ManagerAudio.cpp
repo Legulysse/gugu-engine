@@ -253,14 +253,25 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
         soundInstance->Reset();
         soundInstance->SetAudioClip(audioClip);
         soundInstance->SetMixerGroupInstance(mixerGroupInstance);   // Note: I currently allow a null group instance.
-        soundInstance->SetVolume(parameters.volume);
-
-        if (parameters.pitchLowerOffset != 0 || parameters.pitchUpperOffset != 0)
+        
+        if (parameters.volumeRandomRange != Vector2::Zero_f)
         {
-            // TODO: sanitize parameters when loading the soundcue.
-            float pitchLowerOffset = Absolute(parameters.pitchLowerOffset) * -1.f;
-            float pitchUpperOffset = Absolute(parameters.pitchUpperOffset);
-            soundInstance->SetPitch(1.f + GetRandomf(pitchLowerOffset, pitchUpperOffset));
+            assert(parameters.volumeRandomRange.x <= 0.f && parameters.volumeRandomRange.y >= 0.f);
+
+            float volume = parameters.volume * (1.f + GetRandomf(parameters.volumeRandomRange.x, parameters.volumeRandomRange.y));
+            soundInstance->SetVolume(volume);
+        }
+        else
+        {
+            soundInstance->SetVolume(parameters.volume);
+        }
+
+        if (parameters.pitchRandomRange != Vector2::Zero_f)
+        {
+            assert(parameters.pitchRandomRange.x <= 0.f && parameters.pitchRandomRange.y >= 0.f);
+
+            float pitch = 1.f + GetRandomf(parameters.pitchRandomRange.x, parameters.pitchRandomRange.y);
+            soundInstance->SetPitch(pitch);
         }
 
         if (parameters.spatialized)

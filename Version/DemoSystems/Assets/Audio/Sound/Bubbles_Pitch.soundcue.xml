@@ -2,7 +2,9 @@
 <SoundCue serializationVersion="1">
 	<MixerGroup source="Gameplay.audiomixergroup.xml" />
 	<VolumeAttenuation value="1" />
+	<PitchRandomRange x="-0.200000003" y="0.800000012" />
+	<Spatialized value="false" />
 	<Clips>
-		<Clip source="Bulle_01.ogg" volume="1" pitchLowerOffset="0.200000003" pitchUpperOffset="0.800000012" />
+		<Clip source="Bulle_01.ogg" volume="1" />
 	</Clips>
 </SoundCue>

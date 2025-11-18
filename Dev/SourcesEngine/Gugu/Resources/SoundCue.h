@@ -30,8 +30,6 @@ public:
         AudioClip* audioClip = nullptr;
         std::string audioClipId;
         float volume = 1.f;
-        float pitchLowerOffset = 0.f;
-        float pitchUpperOffset = 0.f;
     };
 
 public:
@@ -44,6 +42,12 @@ public:
 
     void SetVolumeAttenuation(float volumeAttenuation);
     float GetVolumeAttenuation() const;
+
+    void SetVolumeRandomRange(const Vector2f& volumeRandomRange);
+    const Vector2f& GetVolumeRandomRange() const;
+
+    void SetPitchRandomRange(const Vector2f& pitchRandomRange);
+    const Vector2f& GetPitchRandomRange() const;
 
     void SetSpatialized(bool spatialized);
     bool IsSpatialized() const;
@@ -71,6 +75,8 @@ protected:
     std::vector<ClipEntry> m_audioClips;
     AudioMixerGroup* m_mixerGroup;
     float m_volumeAttenuation;
+    Vector2f m_volumeRandomRange;
+    Vector2f m_pitchRandomRange;
     bool m_spatialized;
 
     // Runtime data.

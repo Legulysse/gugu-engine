@@ -39,6 +39,18 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
         GetAudio()->PlaySoundCue(m_soundCue);
     }
 
+    ImGui::SameLine();
+    if (ImGui::Button("Play (no random offsets)"))
+    {
+        SoundParameters parameters;
+        if (m_soundCue->GetRandomSound(parameters))
+        {
+            parameters.volumeRandomRange = Vector2::Zero_f;
+            parameters.pitchRandomRange = Vector2::Zero_f;
+            GetAudio()->PlaySound(parameters);
+        }
+    }
+
     ImGui::Spacing();
 
     std::string mixerGroupID = m_soundCue->GetMixerGroup() == nullptr ? "" : m_soundCue->GetMixerGroup()->GetID();
@@ -59,6 +71,52 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
 
     ImGui::Spacing();
 
+    {
+        const char* tooltipValue = "Range used to compute a random multiplier on volume : volume x (1 + random(min, max))";
+        const float sliderSize = 200;
+
+        Vector2f range = m_soundCue->GetVolumeRandomRange();
+        ImGui::PushItemWidth(sliderSize);
+        bool updatedRange = ImGui::SliderFloat("##_VOLUME_RANDOM_RANGE_X", &range.x, -1.f, 0.f);
+        ImGui::SetItemTooltip(tooltipValue);
+        ImGui::PopItemWidth();
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemInnerSpacing.x);
+        ImGui::SameLine();
+        ImGui::PushItemWidth(sliderSize);
+        updatedRange |= ImGui::SliderFloat("Volume Random Range##_VOLUME_RANDOM_RANGE_Y", &range.y, 0.f, 1.f);
+        ImGui::SetItemTooltip(tooltipValue);
+        ImGui::PopItemWidth();
+        if (updatedRange)
+        {
+            m_soundCue->SetVolumeRandomRange(range);
+            updated |= true;
+        }
+    }
+
+    {
+        const char* tooltipValue = "Range used to compute a random multiplier on pitch : pitch x (1 + random(min, max))";
+        const float sliderSize = 200;
+
+        Vector2f range = m_soundCue->GetPitchRandomRange();
+        ImGui::PushItemWidth(sliderSize);
+        bool updatedRange = ImGui::SliderFloat("##_PITCH_RANDOM_RANGE_X", &range.x, -1.f, 0.f);
+        ImGui::SetItemTooltip(tooltipValue);
+        ImGui::PopItemWidth();
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemInnerSpacing.x);
+        ImGui::SameLine();
+        ImGui::PushItemWidth(sliderSize);
+        updatedRange |= ImGui::SliderFloat("Pitch Random Range##_PITCH_RANDOM_RANGE_Y", &range.y, 0.f, 1.f);
+        ImGui::SetItemTooltip(tooltipValue);
+        ImGui::PopItemWidth();
+        if (updatedRange)
+        {
+            m_soundCue->SetPitchRandomRange(range);
+            updated |= true;
+        }
+    }
+
+    ImGui::Spacing();
+
     bool spatialized = m_soundCue->IsSpatialized();
     if (ImGui::Checkbox("Spatialized", &spatialized))
     {
@@ -70,14 +128,12 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
 
     // Note: NoSavedSettings is already applied on the whole document panel, but I keep it here to match property tables.
     ImGuiTableFlags tableFlags = ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY;
-    if (ImGui::BeginTable("_SOUNDS_TABLE", 5, tableFlags))
+    if (ImGui::BeginTable("_SOUNDS_TABLE", 3, tableFlags))
     {
         ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
         ImGui::TableSetupColumn("#", columnFlags, 30.f);
         ImGui::TableSetupColumn("audio clip", columnFlags, 200.f);
         ImGui::TableSetupColumn("volume", columnFlags, 70.f);
-        ImGui::TableSetupColumn("pitch offset-", columnFlags, 0.f);
-        ImGui::TableSetupColumn("pitch offset+", columnFlags, 0.f);
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();
 
@@ -110,12 +166,6 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
 
             ImGui::TableSetColumnIndex(columnIndex++);
             ImGui::Text("%.03f", clip.volume);
-
-            ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%.03f", clip.pitchLowerOffset);
-
-            ImGui::TableSetColumnIndex(columnIndex++);
-            ImGui::Text("%.03f", clip.pitchUpperOffset);
 
             ImGui::PopID();
         }

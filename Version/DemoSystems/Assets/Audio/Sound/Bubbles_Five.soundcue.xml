@@ -2,6 +2,7 @@
 <SoundCue serializationVersion="1">
 	<MixerGroup source="Gameplay.audiomixergroup.xml" />
 	<VolumeAttenuation value="1" />
+	<Spatialized value="false" />
 	<Clips>
 		<Clip source="Bulle_01.ogg" volume="1" />
 		<Clip source="Bulle_02.ogg" volume="0.800000012" />

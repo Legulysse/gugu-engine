@@ -33,10 +33,10 @@ struct SoundParameters
     AudioMixerGroupInstance* mixerGroupInstance;
     std::string mixerGroupId;
     float volume;
-    float pitchLowerOffset;
-    float pitchUpperOffset;
+    Vector2f volumeRandomRange;
+    Vector2f pitchRandomRange;
     bool spatialized;
-    gugu::Vector2f position;
+    Vector2f position;
 
     SoundParameters();
 };
@@ -58,7 +58,7 @@ public:
     void SetPitch(float pitch);
 
     void SetSpatialization(bool enabled, float minDistance, float attenuation);
-    void SetPosition(const gugu::Vector2f& position);
+    void SetPosition(const Vector2f& position);
 
     void RecomputeMixedVolume();
 

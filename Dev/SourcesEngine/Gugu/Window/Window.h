@@ -80,9 +80,13 @@ public:
 
     Vector2u    GetSize     () const;
 
-    void            SetSystemMouseVisible   (bool _bIsVisible);
-    void            SetMouseVisible         (bool _bIsVisible);
-    void            SetMouseTexture         (const std::string& _strTexture);
+    void SetSystemMouseVisible(bool visible);
+    bool IsSystemMouseVisible() const;
+
+    void SetMouseVisible(bool visible);
+    bool IsMouseVisible() const;
+
+    void SetMouseTexture(const std::string& textureId);
 
     Vector2i    GetMousePixelCoords     () const;   //Exact mouse position
     Vector2f    GetMousePosition        () const;   //GetMouseCoords() converted to float

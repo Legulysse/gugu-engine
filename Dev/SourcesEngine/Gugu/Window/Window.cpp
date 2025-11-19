@@ -686,19 +686,29 @@ Element* Window::GetMouseNode() const
     return m_mouseNode;
 }
 
-void Window::SetSystemMouseVisible(bool _bIsVisible)
+void Window::SetSystemMouseVisible(bool visible)
 {
-    m_systemMouseVisible = _bIsVisible;
+    m_systemMouseVisible = visible;
 }
 
-void Window::SetMouseVisible(bool _bIsVisible)
+bool Window::IsSystemMouseVisible() const
 {
-    m_mouseVisible = _bIsVisible;
+    return m_systemMouseVisible;
 }
 
-void Window::SetMouseTexture(const std::string& _strFile)
+void Window::SetMouseVisible(bool visible)
 {
-    m_mouseNode->SetTexture(_strFile);
+    m_mouseVisible = visible;
+}
+
+bool Window::IsMouseVisible() const
+{
+    return m_mouseVisible;
+}
+
+void Window::SetMouseTexture(const std::string& textureId)
+{
+    m_mouseNode->SetTexture(textureId);
 }
 
 Vector2i Window::GetMousePixelCoords() const

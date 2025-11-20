@@ -112,7 +112,7 @@ void MusicInstance::RecomputeMixedVolume()
 
 void MusicInstance::Play()
 {
-    if (m_sfMusic && m_sfMusic->getStatus() != sf::Sound::Status::Playing)
+    if (m_sfMusic && m_sfMusic->getStatus() != sf::SoundSource::Status::Playing)
     {
         m_sfMusic->play();
     }
@@ -120,7 +120,7 @@ void MusicInstance::Play()
 
 void MusicInstance::Pause()
 {
-    if (m_sfMusic && m_sfMusic->getStatus() == sf::Sound::Status::Playing)
+    if (m_sfMusic && m_sfMusic->getStatus() == sf::SoundSource::Status::Playing)
     {
         m_sfMusic->pause();
     }
@@ -128,7 +128,7 @@ void MusicInstance::Pause()
 
 void MusicInstance::Stop()
 {
-    if (m_sfMusic && m_sfMusic->getStatus() != sf::Sound::Status::Stopped)
+    if (m_sfMusic && m_sfMusic->getStatus() != sf::SoundSource::Status::Stopped)
     {
         m_sfMusic->stop();
     }
@@ -156,14 +156,14 @@ void MusicInstance::SetPlayOffset(const sf::Time& offset)
 
 bool MusicInstance::IsPaused() const
 {
-    return m_sfMusic ? m_sfMusic->getStatus() == sf::Sound::Status::Paused : false;
+    return m_sfMusic ? m_sfMusic->getStatus() == sf::SoundSource::Status::Paused : false;
 }
 
 bool MusicInstance::IsFinished() const
 {
     if (m_sfMusic)
     {
-        return m_sfMusic->getStatus() == sf::Sound::Status::Stopped;   //TODO: handle a flag like "explicit stop" to be able to differenciate manual stop and ending stop
+        return m_sfMusic->getStatus() == sf::SoundSource::Status::Stopped;   //TODO: handle a flag like "explicit stop" to be able to differenciate manual stop and ending stop
     }
 
     return true;

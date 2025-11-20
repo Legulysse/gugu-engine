@@ -16,6 +16,7 @@
 namespace gugu
 {
     struct EngineConfig;
+    struct EngineStats;
     class SoundCue;
     class AudioClip;
     class AudioMixerGroup;
@@ -37,7 +38,7 @@ public:
     void Init(const EngineConfig& config);
     void Release();
     
-    void Update(const DeltaTime& dt);
+    void Update(const DeltaTime& dt, EngineStats& stats);
 
     void SetListenerMuted(bool muted);
     bool IsListenerMuted() const;

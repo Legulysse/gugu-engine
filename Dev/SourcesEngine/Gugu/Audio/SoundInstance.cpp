@@ -63,6 +63,26 @@ void SoundInstance::Reset()
     m_volume = 1.f;
 }
 
+bool SoundInstance::UpdateStatus()
+{
+    if (m_audioClip == nullptr)
+        return false;
+
+    if (m_sfSound->getStatus() == sf::SoundSource::Status::Stopped)
+    {
+        Reset();
+        return false;
+    }
+
+    // Return true if IsActive.
+    return true;
+}
+
+bool SoundInstance::IsActive() const
+{
+    return m_audioClip != nullptr;
+}
+
 void SoundInstance::SetAudioClip(AudioClip* audioClip)
 {
     Reset();

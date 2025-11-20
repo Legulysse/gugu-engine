@@ -22,6 +22,7 @@ struct EngineStats
     std::list<int> stepCount;
     int animationCount = 0;
     int particleSystemCount = 0;
+    int soundInstanceCount = 0;
     bool isTracing = false;
 };
 

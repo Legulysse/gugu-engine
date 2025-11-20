@@ -80,8 +80,10 @@ void ManagerAudio::Release()
     m_soundInstances.clear();
 }
 
-void ManagerAudio::Update(const DeltaTime& dt)
+void ManagerAudio::Update(const DeltaTime& dt, EngineStats& stats)
 {
+    stats.soundInstanceCount = 0;
+
     // Update clip cooldowns.
     auto it = m_audioClipCooldowns.begin();
     while (it != m_audioClipCooldowns.end())
@@ -92,6 +94,15 @@ void ManagerAudio::Update(const DeltaTime& dt)
             it = m_audioClipCooldowns.erase(it);
         else
             ++it;
+    }
+
+    // Update sound instances (reset if not active).
+    for (size_t i = 0; i < m_soundInstances.size(); ++i)
+    {
+        if (m_soundInstances[i].UpdateStatus())
+        {
+            ++stats.soundInstanceCount;
+        }
     }
 
     // Update layers (fades).

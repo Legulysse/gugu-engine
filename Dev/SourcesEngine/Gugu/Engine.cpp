@@ -452,7 +452,7 @@ void Engine::RunSingleLoop(const sf::Time& loopTime)
         m_managerScenes->Update(dt_update);
         m_managerAnimations->Update(dt_update, m_stats);
         m_managerVisualEffects->Update(dt_update, m_stats);
-        m_managerAudio->Update(dt_update);
+        m_managerAudio->Update(dt_update, m_stats);
 
         if (m_application)
             m_application->AppLateUpdate(dt_update);

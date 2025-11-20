@@ -49,6 +49,8 @@ public:
     ~SoundInstance();
 
     void Reset();
+    bool UpdateStatus();
+    bool IsActive() const;
 
     void SetAudioClip(AudioClip* audioClip);
     AudioClip* GetAudioClip() const;

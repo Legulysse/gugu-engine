@@ -36,6 +36,7 @@ StatsDrawer::StatsDrawer()
     , m_statTextRenderTime(nullptr)
     , m_statTextAnimations(nullptr)
     , m_statTextParticleSystems(nullptr)
+    , m_statTextSoundInstancess(nullptr)
     , m_statTextIsTracing(nullptr)
 {
     m_curveHeight = 50.f;
@@ -130,6 +131,10 @@ StatsDrawer::StatsDrawer()
     m_statTextParticleSystems->setFillColor(colorDefault);
     m_statTextParticleSystems->setCharacterSize(fontSize);
 
+    m_statTextSoundInstancess = new sf::Text(*font);
+    m_statTextSoundInstancess->setFillColor(colorDefault);
+    m_statTextSoundInstancess->setCharacterSize(fontSize);
+
     m_statTextIsTracing = new sf::Text(*font);
     m_statTextIsTracing->setFillColor(colorDefault);
     m_statTextIsTracing->setCharacterSize(fontSize);
@@ -152,6 +157,7 @@ StatsDrawer::~StatsDrawer()
     SafeDelete(m_statTextRenderTime);
     SafeDelete(m_statTextAnimations);
     SafeDelete(m_statTextParticleSystems);
+    SafeDelete(m_statTextSoundInstancess);
     SafeDelete(m_statTextIsTracing);
 }
 
@@ -269,7 +275,7 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
         //ComputeStatsSummary(engineStats.stepCount, statsSummaryStepCount);
     }
 
-    float textLineOffset = 22.f;
+    float textLineOffset = 21.f;
     float pointOffset = 0.5f;
     float curveHeight = m_curveHeight;
     float curveWidth = engineStats.maxStatCount * 2.f - 1;
@@ -356,6 +362,12 @@ void StatsDrawer::DrawStats(const FrameInfos& frameInfos, const sf::Time& render
         m_statTextParticleSystems->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
         m_statTextParticleSystems->setString(StringFormat("particle systems: {0}", engineStats.particleSystemCount));
         renderWindow->draw(*m_statTextParticleSystems);
+        ++lineCount;
+
+        // Sound Instance Count
+        m_statTextSoundInstancess->setPosition(Vector2f(positionTextLines.x, positionTextLines.y + textLineOffset * lineCount));
+        m_statTextSoundInstancess->setString(StringFormat("sound instances: {0}", engineStats.soundInstanceCount));
+        renderWindow->draw(*m_statTextSoundInstancess);
         ++lineCount;
 
         //// IsInputAllowed

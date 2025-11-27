@@ -32,6 +32,7 @@ namespace math
 
     const float Epsilon3 = 0.001f;
     const float Epsilon6 = 0.000001f;
+    const float Epsilonf = std::numeric_limits<float>::epsilon();
 }
 
 //----------------------------------------------

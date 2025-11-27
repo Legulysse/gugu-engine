@@ -312,7 +312,7 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
     }
 
     // Reset texture.
-    if (m_imageSet)
+    if (m_imageSet) // We already checked that m_imageSet->GetSubImageCount() > 0.
     {
         SubImage* subImage = m_imageSet->GetSubImage(GetRandom(m_imageSet->GetSubImageCount()));
 

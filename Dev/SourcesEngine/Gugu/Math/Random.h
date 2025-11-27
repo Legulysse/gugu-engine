@@ -13,22 +13,24 @@
 namespace gugu {
 
 // Reset the seed used by GetRand().
+// TODO: Rename as ResetRandomSeed ?
 void ResetRandSeed();
 
-// Return a random value in range [0, 1[.    // TODO: Thread safety ?
+// Return a random value in range [0, 1].
 float GetRandf();
 
-// Return a random size_t value in range [0, max[.
-size_t GetRandom(size_t _iMax);
+// Return a random size_t value in range [0, size - 1] (Should not be used with size == 0).
+// TODO: Rename as GetRandomIndex ?
+size_t GetRandom(size_t size);
 
-// Return a random float value in range [0, max[.
-float GetRandomf(float _fMax);
+// Return a random float value in range [0, max].
+float GetRandomf(float max);
 
 // Return a random int value in range [min, max].
-int GetRandom(int _iMin, int _iMax);
+int GetRandom(int min, int max);
 
-// Return a random float value in range [min, max[.
-float GetRandomf(float _fMin, float _fMax);
+// Return a random float value in range [min, max].
+float GetRandomf(float min, float max);
 
 // Return a random point inside a circle, defined by its center and radius.
 Vector2f GetRandomPointInCircle(const Vector2f& center, float radius);

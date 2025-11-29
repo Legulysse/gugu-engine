@@ -73,6 +73,9 @@ public:
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
     const std::vector<ElementSpriteGroupItem*>& GetItems() const;
 
+    void UpdateItemsColor(const sf::Color& color);
+    void UpdateItemsColorAlpha(uint8 alpha);    // 0 = transparent, 255 = opaque.
+
 protected:
 
     virtual void RecomputeImpl() override;

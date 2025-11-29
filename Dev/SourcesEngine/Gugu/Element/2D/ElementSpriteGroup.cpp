@@ -284,6 +284,22 @@ const std::vector<ElementSpriteGroupItem*>& ElementSpriteGroup::GetItems() const
     return m_items;
 }
 
+void ElementSpriteGroup::UpdateItemsColor(const sf::Color& color)
+{
+    for (const auto& item : m_items)
+    {
+        item->SetColor(color);
+    }
+}
+
+void ElementSpriteGroup::UpdateItemsColorAlpha(uint8 alpha)
+{
+    for (const auto& item : m_items)
+    {
+        item->SetColorAlpha(alpha);
+    }
+}
+
 bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)
 {
     if (!Element::LoadFromDataImpl(context))

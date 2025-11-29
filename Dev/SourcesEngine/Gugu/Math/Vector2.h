@@ -22,9 +22,9 @@ using Vector2f = sf::Vector2f;
 
 namespace Vector2
 {
-    const Vector2i Zero_i = Vector2i();
-    const Vector2u Zero_u = Vector2u();
-    const Vector2f Zero_f = Vector2f();
+    inline constexpr Vector2i Zero_i = Vector2i();
+    inline constexpr Vector2u Zero_u = Vector2u();
+    inline constexpr Vector2f Zero_f = Vector2f();
 }
 
 std::string ToString(const Vector2f& value);

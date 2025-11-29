@@ -13,8 +13,8 @@ namespace gugu {
 // Constants.
 namespace system
 {
-	const char PathSeparator = '/';
-	const char ExtensionSeparator = '.';
+	inline constexpr char PathSeparator = '/';
+	inline constexpr char ExtensionSeparator = '.';
 }
 
 // Convert all '\\' to '/', strip all "/xxx/.." parts, strip leading and trailing '/' if needed.

@@ -17,10 +17,10 @@ public:
     float relative;
     float absolute;
 
-    UDim();
-    UDim(const UDim& right);
-    UDim(float rel);
-    UDim(float rel, float abs);
+    constexpr UDim() : relative(0.f), absolute(0.f) {}
+    constexpr UDim(const UDim& right) : relative(right.relative), absolute(right.absolute) {}
+    constexpr UDim(float rel) : relative(rel), absolute(0.f) {}
+    constexpr UDim(float rel, float abs) : relative(rel), absolute(abs) {}
 
     UDim& operator+=(float abs);
     const UDim operator+(float abs) const;
@@ -39,12 +39,12 @@ public:
     Vector2f relative;
     Vector2f absolute;
 
-    UDim2();
-    UDim2(const UDim2& right);
-    UDim2(float xRel, float yRel);
-    UDim2(const Vector2f& rel);
-    UDim2(const Vector2f& rel, const Vector2f& abs);
-    
+    constexpr UDim2() : relative(Vector2::Zero_f), absolute(Vector2::Zero_f) {}
+    constexpr UDim2(const UDim2 & right) : relative(right.relative), absolute(right.absolute) {}
+    constexpr UDim2(float xRel, float yRel) : relative(xRel, yRel), absolute(Vector2::Zero_f) {}
+    constexpr UDim2(const Vector2f & rel) : relative(rel), absolute(Vector2::Zero_f) {}
+    constexpr UDim2(const Vector2f & rel, const Vector2f & abs) : relative(rel), absolute(abs) {}
+
     bool operator==(const UDim2& right) const;
 
     UDim2& operator+=(const Vector2f& abs);
@@ -77,5 +77,27 @@ public:
 };
 
 std::string ToString(UDim2 value);
+
+inline constexpr UDim UDim::ZERO = UDim(0.f);
+inline constexpr UDim UDim::HALF = UDim(0.5f);
+inline constexpr UDim UDim::FULL = UDim(1.f);
+
+inline constexpr UDim2 UDim2::ZERO = UDim2(0.f, 0.f);
+
+inline constexpr UDim2 UDim2::POSITION_TOP_LEFT = UDim2(0.f, 0.f);
+inline constexpr UDim2 UDim2::POSITION_TOP_CENTER = UDim2(0.5f, 0.f);
+inline constexpr UDim2 UDim2::POSITION_TOP_RIGHT = UDim2(1.f, 0.f);
+inline constexpr UDim2 UDim2::POSITION_CENTER_LEFT = UDim2(0.f, 0.5f);
+inline constexpr UDim2 UDim2::POSITION_CENTER = UDim2(0.5f, 0.5f);
+inline constexpr UDim2 UDim2::POSITION_CENTER_RIGHT = UDim2(1.f, 0.5f);
+inline constexpr UDim2 UDim2::POSITION_BOTTOM_LEFT = UDim2(0.f, 1.f);
+inline constexpr UDim2 UDim2::POSITION_BOTTOM_CENTER = UDim2(0.5f, 1.f);
+inline constexpr UDim2 UDim2::POSITION_BOTTOM_RIGHT = UDim2(1.f, 1.f);
+
+inline constexpr UDim2 UDim2::SIZE_ZERO = UDim2(0.f, 0.f);
+inline constexpr UDim2 UDim2::SIZE_SQUARE_QUARTER = UDim2(0.5f, 0.5f);
+inline constexpr UDim2 UDim2::SIZE_HORIZONTAL_HALF = UDim2(1.f, 0.5f);
+inline constexpr UDim2 UDim2::SIZE_VERTICAL_HALF = UDim2(0.5f, 1.f);
+inline constexpr UDim2 UDim2::SIZE_FULL = UDim2(1.f, 1.f);
 
 }   // namespace gugu

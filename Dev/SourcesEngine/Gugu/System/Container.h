@@ -20,7 +20,7 @@ namespace gugu {
 // Constants.
 namespace system
 {
-	const size_t InvalidIndex = (size_t)-1;
+	inline constexpr size_t InvalidIndex = (size_t)-1;
 }
 
 template<typename T>

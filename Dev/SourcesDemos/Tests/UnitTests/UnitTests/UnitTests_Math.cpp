@@ -596,6 +596,35 @@ void RunUnitTests_Math(UnitTestResults* results)
 
     GUGU_UTEST_SECTION("UDim");
     {
+        UDim a;
+        UDim b(0.5f);
+        UDim c(0.5f, 20.f);
+        UDim d(c);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(a.GetComputedDimension(100.f), 0.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(b.GetComputedDimension(100.f), 50.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(c.GetComputedDimension(100.f), 70.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(d.GetComputedDimension(100.f), 70.f, math::Epsilon6);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(UDim::ZERO.GetComputedDimension(100.f), 0.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(UDim::HALF.GetComputedDimension(100.f), 50.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(UDim::FULL.GetComputedDimension(100.f), 100.f, math::Epsilon6);
+    }
+
+    GUGU_UTEST_SECTION("UDim2");
+    {
+        UDim2 a;
+        UDim2 b(0.5f, 0.8f);
+        UDim2 c(Vector2f(0.5f, 0.8f));
+        UDim2 d(Vector2f(0.5f, 0.8f), Vector2f(20.f, 15.f));
+        UDim2 e(d);
+
+        GUGU_UTEST_CHECK_APPROX_EQUAL(a.GetComputedDimension(Vector2f(100.f, 100.f)), Vector2f(0.f, 0.f), math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(b.GetComputedDimension(Vector2f(100.f, 100.f)), Vector2f(50.f, 80.f), math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(c.GetComputedDimension(Vector2f(100.f, 100.f)), Vector2f(50.f, 80.f), math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(d.GetComputedDimension(Vector2f(100.f, 100.f)), Vector2f(70.f, 95.f), math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(e.GetComputedDimension(Vector2f(100.f, 100.f)), Vector2f(70.f, 95.f), math::Epsilon6);
+
         GUGU_UTEST_CHECK_EQUAL(ToString(UDim2::POSITION_CENTER + Vector2f(10.f, 20.f)), "(rel=(0.5, 0.5), abs=(10, 20))");
 
         GUGU_UTEST_CHECK(UDim2::POSITION_CENTER + Vector2f(10.f, 20.f) == UDim2(Vector2f(0.5f, 0.5f), Vector2f(10.f, 20.f)));

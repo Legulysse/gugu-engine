@@ -33,14 +33,14 @@ float GetRandf()
 #if 1
 	// There is a bug with real distribution in some implementations that may occasionally provide the max value, instead of keeping a [min, max[ range.
 	// In this case, we dont care, its a desirable result.
-	static const std::uniform_real_distribution<float> distribution(0.f, 1.f);
+	static std::uniform_real_distribution<float> distribution(0.f, 1.f);
 	return distribution(impl::generator);
 
 	// Note: On platforms without the bug, if we really want [0, 1], this alternative call could be used :
 	// std::uniform_real_distribution<float> dis(0.f, std::nextafter(1.f, std::numeric_limits<RealType>::max()))
 #else
 	// This version could be used for a proper [0, 1[ range on platforms where the rounding bug occurs.
-	static const std::uniform_real_distribution<float> distribution(0.f, 1.f);
+	static std::uniform_real_distribution<float> distribution(0.f, 1.f);
 	float result = distribution(impl::generator);
 	if (result == 1.f)
 	{
@@ -66,6 +66,7 @@ size_t GetRandom(size_t size)
 float GetRandomf(float max)
 {
 	// uniform_real_distribution with max < min is undefined behaviour.
+	// I prefer to let the calling code multiply the result by -1 than to handle a parameter switch for a negative max for cases where we want a negative random, or to use the (float min, float max) variant.
 	assert(max >= 0.f);
 
 	// There is a bug with real distribution in some implementations that may occasionally provide the max value, instead of keeping a [min, max[ range.

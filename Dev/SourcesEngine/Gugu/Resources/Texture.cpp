@@ -105,6 +105,7 @@ bool Texture::LoadFromFile()
     if (!m_sfTexture->loadFromFile(GetFileInfo().GetFileSystemPath()))
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("Texture file could not be loaded : {0}", GetFileInfo().GetFilePath_utf8()));
+        assert(false);
         return false;
     }
 

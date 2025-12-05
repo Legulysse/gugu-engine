@@ -40,6 +40,7 @@ sf::SoundBuffer* AudioClip::GetOrLoadSFSoundBuffer()
         if (!m_sfSoundBuffer->loadFromFile(GetFileInfo().GetFileSystemPath()))
         {
             GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("AudioClip buffer file could not be loaded : {0}", GetFileInfo().GetFilePath_utf8()));
+            assert(false);
             return nullptr;
         }
 
@@ -59,6 +60,7 @@ sf::Music* AudioClip::OpenSFMusicStream()
     if (!musicStream->openFromFile(GetFileInfo().GetFileSystemPath()))
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("AudioClip stream file could not be loaded : {0}", GetFileInfo().GetFilePath_utf8()));
+        assert(false);
         return nullptr;
     }
 

@@ -25,6 +25,7 @@ ElementList::ElementList()
     , m_scrollButtonBottom(nullptr)
     , m_currentIndexTop(0)
     , m_displayedItemCount(0)
+    , m_itemSpacing(0.f)
     , m_allowSelection(true)
     , m_multipleSelection(false)
 {
@@ -71,6 +72,17 @@ void ElementList::SetImageSet(const std::string& _strImageSetPath)
 
     RecomputeScrollBar();
     RecomputeItems();   // This may change m_currentIndexTop.
+}
+
+void ElementList::SetItemSpacing(float spacing)
+{
+    m_itemSpacing = spacing;
+    RecomputeItems();   // This may change m_currentIndexTop.
+}
+
+float ElementList::GetItemSpacing() const
+{
+    return m_itemSpacing;
 }
 
 void ElementList::AddItem(ElementListItem* item)
@@ -374,8 +386,8 @@ void ElementList::RecomputeScrollBar()
 
 void ElementList::RecomputeItems()
 {
-    Element* pElement = nullptr;
-    float fSizeItems = 0.f;
+    Element* item = nullptr;
+    float cumulativeItemSize = 0.f;
 
     m_displayedItemCount = 0;
 
@@ -388,10 +400,11 @@ void ElementList::RecomputeItems()
         //Compute the number of items displayable from current top
         for (size_t i = m_currentIndexTop; i < m_items.size(); ++i)
         {
-            pElement = m_items[i];
-            fSizeItems += pElement->GetSize().y;
+            item = m_items[i];
+            cumulativeItemSize += item->GetSize().y;
+            cumulativeItemSize += i == m_currentIndexTop ? 0 : m_itemSpacing;
 
-            if (fSizeItems > GetSize().y)
+            if (cumulativeItemSize > GetSize().y)
                 break;
 
             ++m_displayedItemCount;
@@ -405,10 +418,11 @@ void ElementList::RecomputeItems()
             {
                 --i;
 
-                pElement = m_items[i];
-                fSizeItems += pElement->GetSize().y;
+                item = m_items[i];
+                cumulativeItemSize += item->GetSize().y;
+                cumulativeItemSize += m_itemSpacing;
 
-                if (fSizeItems > GetSize().y)
+                if (cumulativeItemSize > GetSize().y)
                     break;
 
                 m_currentIndexTop = i;
@@ -428,11 +442,11 @@ void ElementList::RecomputeItems()
 
         for (size_t i = m_currentIndexTop; i < m_currentIndexTop + m_displayedItemCount; ++i)
         {
-            pElement = m_items[i];
+            item = m_items[i];
 
-            pElement->SetVisible(true);
-            pElement->SetPosition(x, y);
-            y += pElement->GetSize().y;
+            item->SetVisible(true);
+            item->SetPosition(x, y);
+            y += item->GetSize().y + m_itemSpacing;
         }
     }
 
@@ -441,10 +455,10 @@ void ElementList::RecomputeItems()
 
     if (m_displayedItemCount < m_items.size())
     {
-        float fItemSize = (GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y) / m_items.size();
+        float itemSize = (GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y) / m_items.size();
 
-        m_scrollSlider->SetSizeY(m_displayedItemCount * fItemSize);
-        m_scrollSlider->SetPosition(m_scrollSlider->GetPosition().x, m_scrollButtonTop->GetSize().y + Clamp(m_currentIndexTop * fItemSize, 0.f, GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y - m_scrollSlider->GetSize().y));
+        m_scrollSlider->SetSizeY(m_displayedItemCount * itemSize);
+        m_scrollSlider->SetPosition(m_scrollSlider->GetPosition().x, m_scrollButtonTop->GetSize().y + Clamp(m_currentIndexTop * itemSize, 0.f, GetSize().y - m_scrollButtonTop->GetSize().y - m_scrollButtonBottom->GetSize().y - m_scrollSlider->GetSize().y));
     }
     else
     {

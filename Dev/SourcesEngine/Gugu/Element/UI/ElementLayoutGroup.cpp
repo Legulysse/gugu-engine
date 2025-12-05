@@ -132,13 +132,13 @@ void ElementLayoutGroup::SetItemSpacing(float spacing)
 
 void ElementLayoutGroup::SetItemSpacing(Vector2f spacing)
 {
-    m_spacing = spacing;
+    m_itemSpacing = spacing;
     RaiseNeedRecompute();
 }
 
 Vector2f ElementLayoutGroup::GetItemSpacing() const
 {
-    return m_spacing;
+    return m_itemSpacing;
 }
 
 void ElementLayoutGroup::RecomputeImpl()
@@ -228,10 +228,10 @@ void ElementLayoutGroup::RecomputeImpl()
 
                 switch (wrapDirection)
                 {
-                    case ELayoutDirection::LeftToRight: referencePosition += Vector2f(currentGroupSize.x + m_spacing.x, 0.f); break;
-                    case ELayoutDirection::RightToLeft: referencePosition -= Vector2f(currentGroupSize.x + m_spacing.x, 0.f); break;
-                    case ELayoutDirection::TopToBottom: referencePosition += Vector2f(0.f, currentGroupSize.y + m_spacing.y); break;
-                    case ELayoutDirection::BottomToTop: referencePosition -= Vector2f(0.f, currentGroupSize.y + m_spacing.y); break;
+                    case ELayoutDirection::LeftToRight: referencePosition += Vector2f(currentGroupSize.x + m_itemSpacing.x, 0.f); break;
+                    case ELayoutDirection::RightToLeft: referencePosition -= Vector2f(currentGroupSize.x + m_itemSpacing.x, 0.f); break;
+                    case ELayoutDirection::TopToBottom: referencePosition += Vector2f(0.f, currentGroupSize.y + m_itemSpacing.y); break;
+                    case ELayoutDirection::BottomToTop: referencePosition -= Vector2f(0.f, currentGroupSize.y + m_itemSpacing.y); break;
                 }
 
                 currentGroupMinPosition = referencePosition;
@@ -271,10 +271,10 @@ void ElementLayoutGroup::RecomputeImpl()
 
         switch (mainDirection)
         {
-            case ELayoutDirection::LeftToRight: referencePosition += Vector2f(m_spacing.x + itemSize.x, 0.f); break;
-            case ELayoutDirection::RightToLeft: referencePosition -= Vector2f(m_spacing.x + itemSize.x, 0.f); break;
-            case ELayoutDirection::TopToBottom: referencePosition += Vector2f(0.f, m_spacing.y + itemSize.y); break;
-            case ELayoutDirection::BottomToTop: referencePosition -= Vector2f(0.f, m_spacing.y + itemSize.y); break;
+            case ELayoutDirection::LeftToRight: referencePosition += Vector2f(m_itemSpacing.x + itemSize.x, 0.f); break;
+            case ELayoutDirection::RightToLeft: referencePosition -= Vector2f(m_itemSpacing.x + itemSize.x, 0.f); break;
+            case ELayoutDirection::TopToBottom: referencePosition += Vector2f(0.f, m_itemSpacing.y + itemSize.y); break;
+            case ELayoutDirection::BottomToTop: referencePosition -= Vector2f(0.f, m_itemSpacing.y + itemSize.y); break;
         }
     }
 

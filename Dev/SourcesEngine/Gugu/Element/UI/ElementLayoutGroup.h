@@ -76,7 +76,7 @@ protected:
     ELayoutDirection::Type m_wrapDirection;
     ELayoutBehaviour::Type m_mainDirectionBehaviour;
     ELayoutBehaviour::Type m_wrapDirectionBehaviour;
-    Vector2f m_spacing;
+    Vector2f m_itemSpacing;
 };
 
 }   // namespace gugu

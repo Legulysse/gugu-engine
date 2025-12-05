@@ -27,7 +27,10 @@ public:
     virtual ~ElementList();
 
     void SetImageSet        (const std::string& _strImageSetPath);
-    
+
+    void SetItemSpacing(float spacing);
+    float GetItemSpacing() const;
+
     void AddItem            (ElementListItem* item);
     void RemoveItem         (size_t index);
     void RemoveItem         (ElementListItem* item);
@@ -81,6 +84,7 @@ protected:
     size_t m_currentIndexTop;
     size_t m_displayedItemCount;
 
+    float m_itemSpacing;
     bool m_allowSelection;
     bool m_multipleSelection;
 };

@@ -3,9 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include "Gugu/Math/Vector2.h"
-
-#include <string>
+#include "Gugu/Audio/AudioUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -25,21 +23,6 @@ namespace sf
 // File Declarations
 
 namespace gugu {
-
-struct SoundParameters
-{
-    AudioClip* audioClip;
-    std::string audioClipId;
-    AudioMixerGroupInstance* mixerGroupInstance;
-    std::string mixerGroupId;
-    float volume;
-    Vector2f volumeRandomRange;
-    Vector2f pitchRandomRange;
-    bool spatialized;
-    Vector2f position;
-
-    SoundParameters();
-};
 
 class SoundInstance
 {

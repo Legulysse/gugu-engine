@@ -124,6 +124,41 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
         updated |= true;
     }
 
+    // Spatialization parameters
+    SpatializationParameters spatializationParameters = m_soundCue->GetSpatializationParameters();
+
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Override Parameters", &spatializationParameters.override))
+    {
+        m_soundCue->SetSpatializationParameters(spatializationParameters);
+        updated |= true;
+    }
+
+    if (spatializationParameters.override)
+    {
+        if (ImGui::InputFloat("Attenuation", &spatializationParameters.attenuation))
+        {
+            m_soundCue->SetSpatializationParameters(spatializationParameters);
+            updated |= true;
+        }
+
+        if (ImGui::InputFloat("Min Distance", &spatializationParameters.minDistance))
+        {
+            m_soundCue->SetSpatializationParameters(spatializationParameters);
+            updated |= true;
+        }
+    }
+    else
+    {
+        // Display default MixerGroup values.
+        ImGui::BeginDisabled(true);
+        float attenuation = 0.5f;
+        float minDistance = 200.f;
+        ImGui::InputFloat("Attenuation", &attenuation);
+        ImGui::InputFloat("Min Distance", &minDistance);
+        ImGui::EndDisabled();
+    }
+
     ImGui::Spacing();
 
     // Note: NoSavedSettings is already applied on the whole document panel, but I keep it here to match property tables.

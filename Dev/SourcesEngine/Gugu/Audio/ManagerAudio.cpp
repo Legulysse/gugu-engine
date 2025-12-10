@@ -287,7 +287,9 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
 
         if (parameters.spatialized)
         {
-            soundInstance->SetSpatialization(true, GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE, GUGU_AUDIO_SPATIALIZATION_ATTENUATION);
+            float minDistance = parameters.spatializationParameters.override ? parameters.spatializationParameters.minDistance : GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE;
+            float attenuation = parameters.spatializationParameters.override ? parameters.spatializationParameters.attenuation : GUGU_AUDIO_SPATIALIZATION_ATTENUATION;
+            soundInstance->SetSpatialization(true, minDistance, attenuation);
             soundInstance->SetPosition(parameters.position);
         }
 

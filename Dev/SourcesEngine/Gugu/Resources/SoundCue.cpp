@@ -88,6 +88,17 @@ bool SoundCue::IsSpatialized() const
     return m_spatialized;
 }
 
+void SoundCue::SetSpatializationParameters(const SpatializationParameters& parameters)
+{
+    m_spatializationParameters = parameters;
+    RecomputeRuntimeSoundParameters();
+}
+
+const SpatializationParameters& SoundCue::GetSpatializationParameters() const
+{
+    return m_spatializationParameters;
+}
+
 size_t SoundCue::GetSoundCount() const
 {
     return m_audioClips.size();
@@ -122,6 +133,7 @@ void SoundCue::RecomputeRuntimeSoundParameters()
             parameters.volumeRandomRange = m_volumeRandomRange;
             parameters.pitchRandomRange = m_pitchRandomRange;
             parameters.spatialized = m_spatialized;
+            parameters.spatializationParameters = m_spatializationParameters;
             m_soundParameters.push_back(parameters);
         }
     }
@@ -199,6 +211,13 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
     m_pitchRandomRange = xml::ReadVector2f(rootNode.child("PitchRandomRange"), m_pitchRandomRange);
     m_spatialized = rootNode.child("Spatialized").attribute("value").as_bool(m_spatialized);
 
+    if (pugi::xml_node spatializationNode = rootNode.child("SpatializationParameters"))
+    {
+        m_spatializationParameters.override = spatializationNode.child("Override").attribute("value").as_bool(m_spatializationParameters.override);
+        m_spatializationParameters.attenuation = spatializationNode.child("Attenuation").attribute("value").as_float(m_spatializationParameters.attenuation);
+        m_spatializationParameters.minDistance = spatializationNode.child("MinDistance").attribute("value").as_float(m_spatializationParameters.minDistance);
+    }
+
     for (pugi::xml_node clipNode = rootNode.child("Clips").child("Clip"); clipNode; clipNode = clipNode.next_sibling("Clip"))
     {
         AudioClip* audioClip = GetResources()->GetAudioClip(clipNode.attribute("source").as_string());
@@ -234,6 +253,14 @@ bool SoundCue::SaveToXml(pugi::xml_document& document) const
     }
 
     rootNode.append_child("Spatialized").append_attribute("value").set_value(m_spatialized);
+
+    if (m_spatializationParameters.override)
+    {
+        pugi::xml_node spatializationNode = rootNode.append_child("SpatializationParameters");
+        spatializationNode.append_child("Override").append_attribute("value").set_value(m_spatializationParameters.override);
+        spatializationNode.append_child("Attenuation").append_attribute("value").set_value(m_spatializationParameters.attenuation);
+        spatializationNode.append_child("MinDistance").append_attribute("value").set_value(m_spatializationParameters.minDistance);
+    }
 
     if (!m_audioClips.empty())
     {

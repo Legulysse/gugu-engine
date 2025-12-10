@@ -4,7 +4,7 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
-#include "Gugu/Audio/SoundInstance.h"
+#include "Gugu/Audio/AudioUtility.h"
 
 #include <SFML/Audio/SoundBuffer.hpp>
 
@@ -13,6 +13,7 @@
 
 namespace gugu
 {
+    class AudioClip;
     class AudioMixerGroup;
 }
 
@@ -52,6 +53,9 @@ public:
     void SetSpatialized(bool spatialized);
     bool IsSpatialized() const;
 
+    void SetSpatializationParameters(const SpatializationParameters& parameters);
+    const SpatializationParameters& GetSpatializationParameters() const;
+
     size_t GetSoundCount() const;
     bool GetClip(size_t index, ClipEntry& clipEntry) const;
 
@@ -78,6 +82,7 @@ protected:
     Vector2f m_volumeRandomRange;
     Vector2f m_pitchRandomRange;
     bool m_spatialized;
+    SpatializationParameters m_spatializationParameters;
 
     // Runtime data.
     std::vector<SoundParameters> m_soundParameters;

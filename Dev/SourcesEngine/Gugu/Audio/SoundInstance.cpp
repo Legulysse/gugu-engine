@@ -18,20 +18,6 @@
 // File Implementation
 
 namespace gugu {
-    
-SoundParameters::SoundParameters()
-    : audioClip(nullptr)
-    , audioClipId("")
-    , mixerGroupInstance(nullptr)
-    , mixerGroupId("")
-    , volume(1.f)
-    , volumeRandomRange(Vector2::Zero_f)
-    , pitchRandomRange(Vector2::Zero_f)
-    , spatialized(false)
-    , position(Vector2::Zero_f)
-{
-}
-
 
 SoundInstance::SoundInstance()
     : m_audioClip(nullptr)

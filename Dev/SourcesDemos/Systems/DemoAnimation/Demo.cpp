@@ -81,7 +81,7 @@ void Demo::AppStart()
     }
 
     ElementSFDrawable* gridElement = m_root->AddChild<ElementSFDrawable>();
-    gridElement->SetSFDrawable(gridVertices);
+    gridElement->SetSFDrawable(gridVertices, gridVertices->getBounds());
 
     // Test Animation Idle (no origin set).
     {

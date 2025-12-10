@@ -63,7 +63,7 @@ void Demo::AppStart()
         , Vector2f(10000.f, 0.f));
 
     ElementSFDrawable* gridElement = sceneRoot->AddChild<ElementSFDrawable>();
-    gridElement->SetSFDrawable(gridVertices);
+    gridElement->SetSFDrawable(gridVertices, gridVertices->getBounds());
 
     // Prepare Scene Particles
     for (size_t i = 0; i < 10; ++i)
@@ -122,7 +122,7 @@ void Demo::AppStart()
     ElementSFDrawable* arm = sceneRoot->AddChild<ElementSFDrawable>();
     arm->SetPosition(0.f, 50.f);
     arm->SetOrigin(50.f, 0.f);
-    arm->SetSFDrawable(armShape);
+    arm->SetSFDrawable(armShape, armShape->getBounds());
     m_moveArm = arm;
 
     // Arm Particle

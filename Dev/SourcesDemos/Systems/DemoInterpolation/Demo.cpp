@@ -63,7 +63,7 @@ void Demo::AppStart()
     }
 
     ElementSFDrawable* gridElement = m_root->AddChild<ElementSFDrawable>();
-    gridElement->SetSFDrawable(gridVertices);
+    gridElement->SetSFDrawable(gridVertices, gridVertices->getBounds());
 
     // Titles
     float positionX = 5.f;
@@ -142,7 +142,7 @@ void Demo::AppStart()
         shape->setFillColor(sf::Color::Black);
 
         ElementSFDrawable* point = m_root->AddChild<ElementSFDrawable>();
-        point->SetSFDrawable(shape);
+        point->SetSFDrawable(shape, shape->getGlobalBounds());
         point->SetOrigin(5.f, 5.f);
 
         points.push_back(point);

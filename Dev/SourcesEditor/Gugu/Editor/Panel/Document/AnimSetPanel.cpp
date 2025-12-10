@@ -78,6 +78,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     ground->SetSFDrawable(groundDrawable);
     ground->SetCallbackOnSizeChanged([&ground, &groundDrawable](ElementSFDrawable*) {
         groundDrawable->setSize(ground->GetSize());
+        ground->SetBounds(groundDrawable->getGlobalBounds());
     });
     ground->SetSize(2048, 2048);
     ground->SetUnifiedOrigin(UDim2::POSITION_TOP_CENTER);
@@ -110,7 +111,7 @@ AnimSetPanel::AnimSetPanel(AnimSet* resource)
     }
 
     ElementSFDrawable* pivotLines = pivot->AddChild<ElementSFDrawable>();
-    pivotLines->SetSFDrawable(pivotDrawable);
+    pivotLines->SetSFDrawable(pivotDrawable, pivotDrawable->getBounds());
     pivotLines->SetVisible(m_showPivot);
 
     m_pivot = pivotLines;

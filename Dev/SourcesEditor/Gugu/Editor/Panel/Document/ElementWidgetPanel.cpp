@@ -355,7 +355,7 @@ void ElementWidgetPanel::CreateGizmo()
         vertices->append(BuildVertex(Vector2::Zero_f, color));
 
         m_gizmoBounds = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
-        m_gizmoBounds->SetSFDrawable(vertices);
+        m_gizmoBounds->SetSFDrawable(vertices);     // Bounds will be updated in the Gizmo Update.
     }
 
     // Origin
@@ -369,7 +369,7 @@ void ElementWidgetPanel::CreateGizmo()
         AppendLineVertices(*vertices, Vector2f(-size.x, position.y), Vector2f(size.x + 1.f, position.y), color);
 
         m_gizmoOrigin = m_renderViewport->GetRoot()->AddChild<ElementSFDrawable>();
-        m_gizmoOrigin->SetSFDrawable(vertices);
+        m_gizmoOrigin->SetSFDrawable(vertices, vertices->getBounds());
     }
 }
 
@@ -405,6 +405,7 @@ void ElementWidgetPanel::UpdateGizmo()
 
         m_gizmoBounds->SetVisible(true);
         m_gizmoBounds->SetPosition(topLeft);
+        m_gizmoBounds->SetBounds(vertices->getBounds());
     }
     else
     {

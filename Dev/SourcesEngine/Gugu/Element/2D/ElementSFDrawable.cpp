@@ -33,7 +33,6 @@ void ElementSFDrawable::SetSFDrawable(sf::Drawable* _pSFDrawable, const sf::Floa
 {
     SafeDelete(m_sfDrawable);
 
-    // Note: If bounds have a size of zero, the drawable will always get culled (intersection test will fail).
     m_sfDrawable = _pSFDrawable;
     m_bounds = bounds;
 }
@@ -41,6 +40,17 @@ void ElementSFDrawable::SetSFDrawable(sf::Drawable* _pSFDrawable, const sf::Floa
 sf::Drawable* ElementSFDrawable::GetSFDrawable() const
 {
     return m_sfDrawable;
+}
+
+void ElementSFDrawable::SetBounds(const sf::FloatRect& bounds)
+{
+    // Note: If bounds have a size of zero, the drawable will always get culled (intersection test will fail).
+    m_bounds = bounds;
+}
+
+const sf::FloatRect& ElementSFDrawable::GetBounds() const
+{
+    return m_bounds;
 }
 
 void ElementSFDrawable::SetCallbackOnSizeChanged(const DelegateElementSizeChanged& callbackOnSizeChanged)

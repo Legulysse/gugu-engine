@@ -33,6 +33,9 @@ public:
     void SetSFDrawable(sf::Drawable* _pSFDrawable, const sf::FloatRect& bounds = sf::FloatRect(Vector2f(0.f, 0.f), Vector2f(1.f, 1.f)));
     sf::Drawable* GetSFDrawable() const;
 
+    void SetBounds(const sf::FloatRect& bounds);
+    const sf::FloatRect& GetBounds() const;
+
     void SetCallbackOnSizeChanged(const DelegateElementSizeChanged& callbackOnSizeChanged);
 
 private:

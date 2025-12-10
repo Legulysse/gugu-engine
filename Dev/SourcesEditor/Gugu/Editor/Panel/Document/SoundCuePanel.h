@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Editor/Panel/Document/DocumentPanel.h"
+#include "Gugu/Math/Vector2.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -33,6 +34,7 @@ protected:
 private:
 
     SoundCue* m_soundCue;
+    Vector2f m_playPosition;
 };
 
 }   //namespace gugu

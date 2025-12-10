@@ -36,7 +36,7 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
 
     if (ImGui::Button("Play"))
     {
-        GetAudio()->PlaySoundCue(m_soundCue);
+        GetAudio()->PlaySoundCue(m_soundCue, m_playPosition);
     }
 
     ImGui::SameLine();
@@ -47,9 +47,14 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
         {
             parameters.volumeRandomRange = Vector2::Zero_f;
             parameters.pitchRandomRange = Vector2::Zero_f;
+            parameters.position = m_playPosition;
             GetAudio()->PlaySound(parameters);
         }
     }
+
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(200.f);
+    ImGui::InputFloat2("Play Position", &m_playPosition);
 
     ImGui::Spacing();
 

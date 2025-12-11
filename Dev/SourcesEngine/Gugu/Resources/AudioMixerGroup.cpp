@@ -91,6 +91,7 @@ void AudioMixerGroup::OnDependencyRemoved(const Resource* removedDependency)
 void AudioMixerGroup::Unload()
 {
     m_volumeAttenuation = 1.f;
+    m_spatializationParameters = SpatializationParameters();
     m_childMixerGroups.clear();
 }
 

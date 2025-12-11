@@ -193,6 +193,11 @@ void SoundCue::Unload()
 {
     m_audioClips.clear();
     m_mixerGroup = nullptr;
+    m_volumeAttenuation = 1.f;
+    m_volumeRandomRange = Vector2::Zero_f;
+    m_pitchRandomRange = Vector2::Zero_f;
+    m_spatialized = false;
+    m_spatializationParameters = SpatializationParameters();
 
     m_soundParameters.clear();
 }

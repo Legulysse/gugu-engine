@@ -1,3 +1,4 @@
-<AudioMixerGroup>
-    <VolumeAttenuation value="1" />
+<?xml version="1.0"?>
+<AudioMixerGroup serializationVersion="1">
+	<VolumeAttenuation value="1" />
 </AudioMixerGroup>

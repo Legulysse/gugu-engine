@@ -1,8 +1,9 @@
-<AudioMixerGroup>
-    <VolumeAttenuation value="1" />
-    <ChildMixerGroups>
-        <ChildMixerGroup source="Music.audiomixergroup.xml" />
-        <ChildMixerGroup source="UI.audiomixergroup.xml" />
-        <ChildMixerGroup source="Gameplay.audiomixergroup.xml" />
-    </ChildMixerGroups>
+<?xml version="1.0"?>
+<AudioMixerGroup serializationVersion="1">
+	<VolumeAttenuation value="1" />
+	<ChildMixerGroups>
+		<ChildMixerGroup source="Music.audiomixergroup.xml" />
+		<ChildMixerGroup source="UI.audiomixergroup.xml" />
+		<ChildMixerGroup source="Gameplay.audiomixergroup.xml" />
+	</ChildMixerGroups>
 </AudioMixerGroup>

@@ -70,6 +70,14 @@ float AudioMixerGroupInstance::ComputeMixedVolume(float volume) const
     return volume;
 }
 
+bool AudioMixerGroupInstance::GetSpatializationParameters(SpatializationParameters& parameters) const
+{
+    if (m_mixerGroup->GetSpatializationParameters(parameters))
+        return true;
+
+    return m_parentMixerGroupInstance && m_parentMixerGroupInstance->GetSpatializationParameters(parameters);
+}
+
 void AudioMixerGroupInstance::LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance, std::map<AudioMixerGroup*, AudioMixerGroupInstance*>& registeredMixerGroupInstances)
 {
     m_parentMixerGroupInstance = parentMixerGroupInstance;

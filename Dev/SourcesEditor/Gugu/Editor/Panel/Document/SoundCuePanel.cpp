@@ -135,33 +135,30 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
     ImGui::SameLine();
     if (ImGui::Checkbox("Override Parameters", &spatializationParameters.override))
     {
+        if (spatializationParameters.override)
+        {
+            // Set default value when toggling to true.
+            spatializationParameters.minDistance = GetAudio()->GetDefaultSpatializationParameters().minDistance;
+            spatializationParameters.attenuation = GetAudio()->GetDefaultSpatializationParameters().attenuation;
+        }
+
         m_soundCue->SetSpatializationParameters(spatializationParameters);
         updated |= true;
     }
 
     if (spatializationParameters.override)
     {
-        if (ImGui::InputFloat("Attenuation", &spatializationParameters.attenuation))
-        {
-            m_soundCue->SetSpatializationParameters(spatializationParameters);
-            updated |= true;
-        }
-
         if (ImGui::InputFloat("Min Distance", &spatializationParameters.minDistance))
         {
             m_soundCue->SetSpatializationParameters(spatializationParameters);
             updated |= true;
         }
-    }
-    else
-    {
-        // Display default MixerGroup values.
-        ImGui::BeginDisabled(true);
-        float attenuation = 0.5f;
-        float minDistance = 200.f;
-        ImGui::InputFloat("Attenuation", &attenuation);
-        ImGui::InputFloat("Min Distance", &minDistance);
-        ImGui::EndDisabled();
+
+        if (ImGui::InputFloat("Attenuation", &spatializationParameters.attenuation))
+        {
+            m_soundCue->SetSpatializationParameters(spatializationParameters);
+            updated |= true;
+        }
     }
 
     ImGui::Spacing();

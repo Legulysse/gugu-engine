@@ -23,6 +23,7 @@
 #include "Gugu/Editor/Panel/Document/ImageSetPanel.h"
 #include "Gugu/Editor/Panel/Document/ParticleEffectPanel.h"
 #include "Gugu/Editor/Panel/Document/TexturePanel.h"
+#include "Gugu/Editor/Panel/Document/AudioMixerGroupPanel.h"
 #include "Gugu/Editor/Panel/Document/SoundCuePanel.h"
 #include "Gugu/Editor/Panel/Document/ElementWidgetPanel.h"
 #include "Gugu/Editor/Parser/DatasheetParser.h"
@@ -654,6 +655,10 @@ bool Editor::OpenDocument(const std::string& resourceID)
     else if (resourceType == EResourceType::Texture)
     {
         newDocument = new TexturePanel(GetResources()->GetTexture(resourceID));
+    }
+    else if (resourceType == EResourceType::AudioMixerGroup)
+    {
+        newDocument = new AudioMixerGroupPanel(GetResources()->GetAudioMixerGroup(resourceID));
     }
     else if (resourceType == EResourceType::SoundCue)
     {

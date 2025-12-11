@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/Audio/AudioUtility.h"
 
 #include <vector>
 
@@ -19,7 +20,12 @@ public:
     AudioMixerGroup();
     virtual ~AudioMixerGroup();
 
+    void SetVolumeAttenuation(float volumeAttenuation);
     float GetVolumeAttenuation() const;
+
+    void SetSpatializationParameters(const SpatializationParameters& parameters);
+    const SpatializationParameters& GetSpatializationParameters() const;
+    bool GetSpatializationParameters(SpatializationParameters& parameters) const;
 
     const std::vector<AudioMixerGroup*>& GetChildMixerGroups() const;
 
@@ -37,6 +43,7 @@ protected:
 protected:
 
     float m_volumeAttenuation;
+    SpatializationParameters m_spatializationParameters;
     std::vector<AudioMixerGroup*> m_childMixerGroups;
 };
 

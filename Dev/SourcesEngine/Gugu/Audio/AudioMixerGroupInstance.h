@@ -3,6 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Audio/AudioUtility.h"
+
 #include <vector>
 #include <map>
 
@@ -33,6 +35,7 @@ public:
     bool IsMuted() const;
 
     float ComputeMixedVolume(float volume) const;
+    bool GetSpatializationParameters(SpatializationParameters& parameters) const;
 
     void LoadMixerGroupHierarchy(AudioMixerGroupInstance* parentMixerGroupInstance, std::map<AudioMixerGroup*, AudioMixerGroupInstance*>& registeredMixerGroupInstances);
 

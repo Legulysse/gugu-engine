@@ -106,7 +106,7 @@ void SoundInstance::SetPitch(float pitch)
     m_sfSound->setPitch(pitch);
 }
 
-void SoundInstance::SetSpatialization(bool enabled, float minDistance, float attenuation)
+void SoundInstance::SetSpatialization(bool enabled, const SpatializationParameters& spatializationParameters)
 {
     // Attenuation formula for spatialization.
     // 
@@ -119,8 +119,8 @@ void SoundInstance::SetSpatialization(bool enabled, float minDistance, float att
     // Volume factor = MinDistance / (MinDistance + Attenuation * (max(Distance, MinDistance) - MinDistance))
 
     m_sfSound->setSpatializationEnabled(enabled);
-    m_sfSound->setMinDistance(minDistance);
-    m_sfSound->setAttenuation(attenuation);
+    m_sfSound->setMinDistance(spatializationParameters.minDistance);
+    m_sfSound->setAttenuation(spatializationParameters.attenuation);
 }
 
 void SoundInstance::SetPosition(const Vector2f& position)

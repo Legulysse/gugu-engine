@@ -47,6 +47,8 @@ public:
 
     void SetListenerPosition(const Vector2f& position);
 
+    const SpatializationParameters& GetDefaultSpatializationParameters() const;
+
     void SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup);
     AudioMixerGroupInstance* GetMixerGroupInstance(const std::string& mixerGroupId) const;
     AudioMixerGroupInstance* GetMixerGroupInstance(AudioMixerGroup* mixerGroup) const;
@@ -78,6 +80,7 @@ private:
 
     bool m_listenerMuted;
     float m_listenerVolume;
+    SpatializationParameters m_spatializationParameters;
 };
 
 

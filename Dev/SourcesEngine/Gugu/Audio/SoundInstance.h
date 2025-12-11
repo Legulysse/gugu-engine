@@ -42,7 +42,7 @@ public:
     void SetVolume(float volume);
     void SetPitch(float pitch);
 
-    void SetSpatialization(bool enabled, float minDistance, float attenuation);
+    void SetSpatialization(bool enabled, const SpatializationParameters& spatializationParameters);
     void SetPosition(const Vector2f& position);
 
     void RecomputeMixedVolume();

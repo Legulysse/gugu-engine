@@ -45,6 +45,8 @@ ManagerAudio::ManagerAudio()
     , m_listenerMuted(false)
     , m_listenerVolume(1.f)
 {
+    m_spatializationParameters.minDistance = GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE;
+    m_spatializationParameters.attenuation = GUGU_AUDIO_SPATIALIZATION_ATTENUATION;
 }
 
 ManagerAudio::~ManagerAudio()
@@ -139,6 +141,11 @@ float ManagerAudio::GetListenerVolume() const
 void ManagerAudio::SetListenerPosition(const Vector2f& position)
 {
     sf::Listener::setPosition(sf::Vector3f(position.x, 0.f, position.y));
+}
+
+const SpatializationParameters& ManagerAudio::GetDefaultSpatializationParameters() const
+{
+    return m_spatializationParameters;
 }
 
 void ManagerAudio::SetRootAudioMixerGroup(AudioMixerGroup* rootMixerGroup)
@@ -287,9 +294,18 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
 
         if (parameters.spatialized)
         {
-            float minDistance = parameters.spatializationParameters.override ? parameters.spatializationParameters.minDistance : GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE;
-            float attenuation = parameters.spatializationParameters.override ? parameters.spatializationParameters.attenuation : GUGU_AUDIO_SPATIALIZATION_ATTENUATION;
-            soundInstance->SetSpatialization(true, minDistance, attenuation);
+            SpatializationParameters spatializationParameters = m_spatializationParameters;
+
+            if (parameters.spatializationParameters.override)
+            {
+                spatializationParameters = parameters.spatializationParameters;
+            }
+            else if (mixerGroupInstance)
+            {
+                mixerGroupInstance->GetSpatializationParameters(spatializationParameters);
+            }
+
+            soundInstance->SetSpatialization(true, spatializationParameters);
             soundInstance->SetPosition(parameters.position);
         }
 

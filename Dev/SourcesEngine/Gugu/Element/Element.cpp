@@ -149,11 +149,16 @@ Element* Element::GetParent() const
     return m_parent;
 }
 
-Element* Element::GetTopParent() const
+Element* Element::GetTopAncestor() const
 {
     if (m_parent)
-        return m_parent->GetTopParent();
+        return m_parent->GetTopAncestor();
     return const_cast<Element*>(this);
+}
+
+bool Element::HasAncestor(Element* ancestor) const
+{
+    return (ancestor == this) || (m_parent != nullptr && (m_parent == ancestor || m_parent->HasAncestor(ancestor)));
 }
 
 size_t Element::GetChildCount() const

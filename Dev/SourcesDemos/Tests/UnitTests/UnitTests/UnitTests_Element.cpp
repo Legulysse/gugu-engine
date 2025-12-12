@@ -148,6 +148,30 @@ void RunUnitTests_Element(UnitTestResults* results)
 
     //----------------------------------------------
 
+    GUGU_UTEST_SECTION("Hierarchy");
+    {
+        Element* root = new Element;
+        Element* elementA = root->AddChild<Element>();
+        Element* elementB = elementA->AddChild<Element>();
+
+        GUGU_UTEST_CHECK_EQUAL(elementB->GetTopAncestor(), root);
+        GUGU_UTEST_CHECK_TRUE(elementB->HasAncestor(root));
+        GUGU_UTEST_CHECK_TRUE(elementB->HasAncestor(elementA));
+        GUGU_UTEST_CHECK_TRUE(elementB->HasAncestor(elementB));
+        GUGU_UTEST_CHECK_EQUAL(elementA->GetTopAncestor(), root);
+        GUGU_UTEST_CHECK_TRUE(elementA->HasAncestor(root));
+        GUGU_UTEST_CHECK_TRUE(elementA->HasAncestor(elementA));
+        GUGU_UTEST_CHECK_FALSE(elementA->HasAncestor(elementB));
+        GUGU_UTEST_CHECK_EQUAL(root->GetTopAncestor(), root);
+        GUGU_UTEST_CHECK_TRUE(root->HasAncestor(root));
+        GUGU_UTEST_CHECK_FALSE(root->HasAncestor(elementA));
+        GUGU_UTEST_CHECK_FALSE(root->HasAncestor(elementB));
+
+        SafeDelete(root);
+    }
+
+    //----------------------------------------------
+
     GUGU_UTEST_SECTION("Unified Dimensions");
     {
         GUGU_UTEST_SUBSECTION("Origin");

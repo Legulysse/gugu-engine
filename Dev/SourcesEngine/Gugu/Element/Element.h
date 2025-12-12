@@ -59,7 +59,8 @@ public:
     void SetParent(Element* parent);
 
     Element* GetParent() const;
-    Element* GetTopParent() const;
+    Element* GetTopAncestor() const;
+    bool HasAncestor(Element* ancestor) const;
 
     size_t GetChildCount() const;
     const std::vector<Element*>& GetChildren() const;

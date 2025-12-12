@@ -23,6 +23,8 @@ namespace gugu {
     
 ElementListItem::ElementListItem()
     : m_elementImpl(nullptr)
+    , m_selectedStateComponent(nullptr)
+    , m_unselectedStateComponent(nullptr)
     , m_isSelected(false)
     , m_callbackOnSelected(nullptr)
     , m_callbackOnDeselected(nullptr)
@@ -45,9 +47,30 @@ void ElementListItem::OnParentChanged()
 void ElementListItem::SetElement(Element* _pElement)
 {
     SafeDelete(m_elementImpl);
+    m_selectedStateComponent = nullptr;
+    m_unselectedStateComponent = nullptr;
 
     _pElement->SetParent(this);
     m_elementImpl = _pElement;
+}
+
+void ElementListItem::SetElement(Element* element, Element* selectedStateComponent, Element* unselectedStateComponent)
+{
+    // Notes:
+    // - This is an initial quick implementation for internal states.
+    // - Future iterations should deprecate this method in favor of a dedicated LoadFromWidget() method.
+    assert(selectedStateComponent != nullptr);
+    assert(unselectedStateComponent != nullptr);
+    assert(selectedStateComponent->HasAncestor(element));
+    assert(unselectedStateComponent->HasAncestor(element));
+
+    SetElement(element);
+
+    m_selectedStateComponent = selectedStateComponent;
+    m_unselectedStateComponent = unselectedStateComponent;
+
+    m_selectedStateComponent->SetVisible(m_isSelected);
+    m_unselectedStateComponent->SetVisible(!m_isSelected);
 }
 
 Element* ElementListItem::GetElement() const
@@ -62,6 +85,11 @@ void ElementListItem::SetSelected(bool _bIsSelected)
 
     m_isSelected = _bIsSelected;
     
+    if (m_selectedStateComponent)
+        m_selectedStateComponent->SetVisible(m_isSelected);
+    if (m_unselectedStateComponent)
+        m_unselectedStateComponent->SetVisible(!m_isSelected);
+
     if (m_isSelected && m_callbackOnSelected)
         m_callbackOnSelected();
 
@@ -107,9 +135,12 @@ void ElementListItem::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& 
 {
     if (m_isSelected)
     {
-        sf::RectangleShape kBackground = sf::RectangleShape(m_size);
-        kBackground.setFillColor(sf::Color::Blue);
-        _kRenderPass.target->draw(kBackground, _kTransformSelf);
+        if (!m_selectedStateComponent)
+        {
+            sf::RectangleShape kBackground = sf::RectangleShape(m_size);
+            kBackground.setFillColor(sf::Color::Blue);
+            _kRenderPass.target->draw(kBackground, _kTransformSelf);
+        }
 
         // Stats
         if (_kRenderPass.frameInfos)

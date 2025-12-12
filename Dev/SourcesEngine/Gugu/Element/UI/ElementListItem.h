@@ -26,7 +26,8 @@ public:
     ElementListItem();
     virtual ~ElementListItem();
 
-    void SetElement(Element* _pElement);
+    void SetElement(Element* element);
+    void SetElement(Element* element, Element* selectedStateComponent, Element* unselectedStateComponent);
     Element* GetElement() const;
 
     void SetSelected(bool _bIsSelected);
@@ -48,6 +49,8 @@ private:
 protected:
 
     Element* m_elementImpl;
+    Element* m_selectedStateComponent;
+    Element* m_unselectedStateComponent;
     bool m_isSelected;
 
     Callback m_callbackOnSelected;

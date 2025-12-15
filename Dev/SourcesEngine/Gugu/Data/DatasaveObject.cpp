@@ -38,6 +38,9 @@ bool DatasaveObject::LoadFromFile(const std::string& path)
     context.currentNode = &rootNode;
     ParseMembers(context);
 
+    // Note:
+    // This method could return a struct with some infos like serialization and binding versions.
+    // It would allow the calling site to get those infos without the need of storing them on every DatasaveObject.
     return true;
 }
 

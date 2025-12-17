@@ -342,6 +342,7 @@ bool ElementText::LoadFromDataImpl(ElementDataContext& context)
     SetColor(textData->color);
     SetOutlineColor(textData->outlineColor);
     SetOutlineThickness(textData->outlineThickness);
+    SetResizeRule(textData->resizeRule);
     SetMultiline(textData->multiline);
     SetText(textData->text);
 

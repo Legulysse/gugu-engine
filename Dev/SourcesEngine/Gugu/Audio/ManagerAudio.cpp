@@ -59,6 +59,10 @@ void ManagerAudio::Init(const EngineConfig& config)
 {
     GetLogEngine()->Print(ELog::Info, ELogEngine::Audio, "Init Manager Audio...");
 
+    // Notes:
+    // - Instantiating sf::Sound objects may generate some constant noise in headphones.
+    // - Allowing zero sources would make it possible for the engine to keep audio disconnected and silent.
+    // - Another approach would be to only instantiate those on demand (need some refactor).
     m_soundInstances.resize(Max(12, config.maxSoundSourceCount));
     m_musicInstances.resize(Max(4, config.maxMusicSourceCount));
     m_musicLayers.resize(Max(2, (int)m_musicInstances.size() / 2));

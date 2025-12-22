@@ -153,6 +153,7 @@ bool DatasheetParser::ParseBinding(const std::string& pathDatasheetBinding)
                 classDefinition->dataMembers.push_back(dataDefinition);
 
                 dataDefinition->name = nodeClassData.attribute("name").value();
+                dataDefinition->isLocalized = nodeClassData.attribute("localized").as_bool(false);
 
                 std::string parseType = nodeClassData.attribute("type").value();
                 pugi::xml_attribute attributeDefaultValue = nodeClassData.attribute("default");

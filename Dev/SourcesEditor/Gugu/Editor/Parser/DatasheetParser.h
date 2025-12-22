@@ -57,6 +57,7 @@ public:
         bool isArray = false;
         ClassDefinition* objectDefinition = nullptr;    // TODO: rename as classDefinition.
         EnumDefinition* enumDefinition = nullptr;
+        bool isLocalized = false;
 
         bool defaultValue_bool = false;
         int defaultValue_int = 0;

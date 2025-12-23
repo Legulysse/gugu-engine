@@ -742,7 +742,7 @@ bool Window::Screenshot() const
         sf::Image captureImage = captureTexture.copyToImage();
 
         std::thread saveThread([captureImage]() {
-            bool saveResult = captureImage.saveToFile(CombinePaths(GetResources()->GetPathScreenshots(), StringFormat("Screenshot_{0}.png", GetTimestamp())));
+            bool saveResult = captureImage.saveToFile(CombinePaths(GetResources()->GetPathScreenshots(), StringFormat("Screenshot_{0}.png", GetLocalTimestampAsString(timeformat::Filename))));
         });
         saveThread.detach();
 

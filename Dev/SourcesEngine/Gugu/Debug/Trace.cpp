@@ -35,7 +35,7 @@ void TraceGroup::Stop()
     m_isActive = false;
 
     std::ofstream kFile;
-    kFile.open(StringFormat("Trace_{0}.json", GetTimestamp()), std::ios::out | std::ios::trunc);
+    kFile.open(StringFormat("Trace_{0}.json", GetLocalTimestampAsString(timeformat::Filename)), std::ios::out | std::ios::trunc);
 
     if (kFile)
     {

@@ -156,7 +156,7 @@ void LoggerEngine::Print(ELog::Type level, ELogEngine::Type category, const std:
     std::lock_guard lock(m_mutex);
 
     // Timestamp
-    std::string timestamp = GetTimestampAsString();
+    std::string timestamp = GetLocalTimestampAsString(timeformat::LogEntry);
 
     if (m_useTimestamp)
     {

@@ -14,6 +14,7 @@
 #include "Gugu/System/UUID.h"
 #include "Gugu/System/Hash.h"
 #include "Gugu/System/Memory.h"
+#include "Gugu/System/Time.h"
 
 using namespace gugu;
 
@@ -1175,6 +1176,41 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_TRUE(HasAnyFlag(flags, Flag_C));
             GUGU_UTEST_CHECK_FALSE(HasAnyFlag(flags, Flag_D));
         }
+    }
+
+    //----------------------------------------------
+
+    GUGU_UTEST_SECTION("Time");
+    {
+        float seconds = GetElapsedSeconds();
+
+        auto timeUtcMilliseconds = GetUtcTimestampAsMilliseconds();
+        auto timeUtcNumeric = GetUtcTimestampAsNumeric();
+
+        auto logEntryUtc = GetUtcTimestampAsString(timeformat::LogEntry);
+        auto logEntryLocal = GetLocalTimestampAsString(timeformat::LogEntry);
+
+        auto filenameUtc = GetUtcTimestampAsString(timeformat::Filename);
+        auto filenameLocal = GetLocalTimestampAsString(timeformat::Filename);
+
+        bool validCharsFilenameUtc = true;
+        for (size_t i = 0; i < filenameUtc.size(); ++i)
+        {
+            validCharsFilenameUtc &= (filenameUtc[i] >= '0' && filenameUtc[i] <= '9')
+                || filenameUtc[i] == '-'
+                || filenameUtc[i] == '_';
+        }
+
+        bool validCharsFilenameLocal = true;
+        for (size_t i = 0; i < filenameLocal.size(); ++i)
+        {
+            validCharsFilenameLocal &= (filenameLocal[i] >= '0' && filenameLocal[i] <= '9')
+                || filenameLocal[i] == '-'
+                || filenameLocal[i] == '_';
+        }
+
+        GUGU_UTEST_CHECK_TRUE(validCharsFilenameUtc);
+        GUGU_UTEST_CHECK_TRUE(validCharsFilenameLocal);
     }
 
     //----------------------------------------------

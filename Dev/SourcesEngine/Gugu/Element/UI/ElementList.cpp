@@ -376,7 +376,7 @@ int ElementList::ScrollItems(int delta)
 
 void ElementList::RecomputeScrollBar()
 {
-    //TODO : UDim
+    //TODO: UDim
     m_scrollButtonTop->SetPosition(GetSize().x - m_scrollButtonTop->GetSize().x, 0.f);
     m_scrollButtonBottom->SetPosition(GetSize().x - m_scrollButtonBottom->GetSize().x, GetSize().y - m_scrollButtonBottom->GetSize().y);
     m_scrollSlider->SetPosition(GetSize().x - m_scrollSlider->GetSize().x, m_scrollSlider->GetPosition().y);

@@ -10,18 +10,18 @@
 
 namespace gugu {
 
-class ExportLocalizationDialog : public BaseModalDialog
+class ImportLocalizationDialog : public BaseModalDialog
 {
 public:
 
-    ExportLocalizationDialog();
-    virtual ~ExportLocalizationDialog();
+    ImportLocalizationDialog();
+    virtual ~ImportLocalizationDialog();
 
 protected:
 
     virtual void UpdateModalImpl(const DeltaTime& dt) override;
 
-    void ExportLocalization();
+    void ImportLocalization();
 
 protected:
 

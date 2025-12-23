@@ -16,6 +16,7 @@
 #include "Gugu/Editor/Modal/OpenProjectDialog.h"
 #include "Gugu/Editor/Modal/ImportImageSetDialog.h"
 #include "Gugu/Editor/Modal/ExportLocalizationDialog.h"
+#include "Gugu/Editor/Modal/ImportLocalizationDialog.h"
 #include "Gugu/Editor/Panel/AssetsExplorerPanel.h"
 #include "Gugu/Editor/Panel/OutputLogPanel.h"
 #include "Gugu/Editor/Panel/DependenciesPanel.h"
@@ -377,6 +378,7 @@ void Editor::Update(const DeltaTime& dt)
 
             if (ImGui::MenuItem("Import Localization"))
             {
+                GetEditor()->OpenModalDialog(new ImportLocalizationDialog());
             }
 
             ImGui::EndMenu();

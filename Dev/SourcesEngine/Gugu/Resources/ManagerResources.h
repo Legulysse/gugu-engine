@@ -33,6 +33,7 @@ namespace gugu
     class DataObject;
     class DatasheetObject;
     class ElementWidget;
+    class LocalizationTable;
     struct DataEnumInfos;
     struct EngineConfig;
 }
@@ -95,6 +96,7 @@ public:
     ParticleEffect* GetParticleEffect(const std::string& resourceId);
     Datasheet* GetDatasheet(const std::string& resourceId);
     ElementWidget* GetElementWidget(const std::string& resourceId);
+    LocalizationTable* GetLocalizationTable(const std::string& resourceId);
 
     template<typename T>
     const T* GetDatasheetObject(const std::string& resourceId)

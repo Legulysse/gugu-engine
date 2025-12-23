@@ -26,6 +26,7 @@ namespace EResourceType
         ParticleEffect,
         Datasheet,
         ElementWidget,
+        LocalizationTable,
 
         Custom,
     };

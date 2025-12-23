@@ -21,6 +21,7 @@
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/Datasheet.h"
 #include "Gugu/Resources/ElementWidget.h"
+#include "Gugu/Resources/LocalizationTable.h"
 #include "Gugu/Data/DataBindingUtility.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Path.h"
@@ -225,6 +226,10 @@ EResourceType::Type ManagerResources::GetResourceType(const FileInfo& fileInfo) 
     {
         return EResourceType::ElementWidget;
     }
+    else if (fileInfo.HasExtension("localization.xml") || fileInfo.HasExtension("localization"))
+    {
+        return EResourceType::LocalizationTable;
+    }
     else
     {
         return EResourceType::Unknown;
@@ -285,6 +290,11 @@ const DatasheetObject* ManagerResources::GetDatasheetRootObject(const std::strin
 ElementWidget* ManagerResources::GetElementWidget(const std::string& resourceId)
 {
     return dynamic_cast<ElementWidget*>(GetResource(resourceId, EResourceType::ElementWidget));
+}
+
+LocalizationTable* ManagerResources::GetLocalizationTable(const std::string& resourceId)
+{
+    return dynamic_cast<LocalizationTable*>(GetResource(resourceId, EResourceType::LocalizationTable));
 }
 
 Resource* ManagerResources::GetResource(const std::string& resourceId, EResourceType::Type explicitType)

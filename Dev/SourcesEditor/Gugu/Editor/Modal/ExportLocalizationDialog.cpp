@@ -116,6 +116,7 @@ void GatherDatasheetTexts(const FileInfo& fileInfo, CsvWriter& writer)
                 if (!memberDefinition->isArray)
                 {
                     std::string value = dataNode.attribute("value").value();
+                    std::string timestamp = dataNode.attribute("timestamp").value();
 
                     std::string filename = ToString(fileInfo.GetFileName_utf8());
 
@@ -123,11 +124,16 @@ void GatherDatasheetTexts(const FileInfo& fileInfo, CsvWriter& writer)
                     writer.WriteField(filename);            // File.
                     writer.WriteField(uuid.ToString());     // Object.
                     writer.WriteField(name);                // Property.
-                    writer.WriteField("0000");              // Timestamp.
+                    writer.WriteField(timestamp);           // Timestamp.
                     writer.WriteField(value);               // Workstring.
                     writer.WriteField("");                  // TODO: Project-defined list of locales.
                     writer.WriteField("");                  // TODO: Project-defined list of locales.
                     writer.EndLine();
+                }
+                else
+                {
+                    // TODO: Handle array of localized properties.
+                    // - I will need to solve array items inheritance before handling this, to have a proper way to reference array items.
                 }
             }
         }
@@ -190,6 +196,9 @@ void ExportLocalizationDialog::UpdateModalImpl(const DeltaTime& dt)
 
 void ExportLocalizationDialog::ExportLocalization()
 {
+    // Notes:
+    // - When opening the csv file with LibreOffice, be careful to enforce "" fields as string, and avoid auto-detecting numbers (timestamps may be altered if treated as numbers).
+
     // Save settings.
     //GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath = m_targetDirectory;
     //GetEditor()->SaveUserSettings();

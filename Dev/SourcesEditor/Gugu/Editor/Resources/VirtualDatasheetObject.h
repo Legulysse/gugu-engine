@@ -41,7 +41,11 @@ public:
 
         std::string name;
         DatasheetParser::DataMemberDefinition* dataMemberDefinition = nullptr;
+        int64 localizationTimestamp = 0;
 
+        // TODO: I should probably see if I can move this union-like block into a separate struct.
+        // - This would make it way cleaner when dealing with array properties.
+        // - Step 2 could be that non-array properties are actually an array of size 1, to remove all places with a if(isarray) split.
         bool value_bool = false;
         int value_int = 0;
         float value_float = 0.f;
@@ -89,7 +93,7 @@ protected:
     void OnDependencyRemoved(const Resource* removedDependency, std::vector<VirtualDatasheetObject::DataValue*>& dataValues);
 
     void ParseDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue);
-    void SaveDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::DataMemberDefinition::Type memberType) const;
+    void SaveDataValue(pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, const VirtualDatasheetObject::DataValue* dataValue) const;
 
 public:
 

@@ -286,6 +286,11 @@ void VirtualDatasheetObject::GatherInstanceUuidsRecursively(std::set<UUID>& inst
 
 void VirtualDatasheetObject::ParseDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
 {
+    // Parse localization timestamp.
+    pugi::xml_attribute attributeTimestamp = nodeData.attribute("timestamp");
+    dataValue->localizationTimestamp = attributeTimestamp.as_llong(0);
+
+    // Parse value depending on type.
     pugi::xml_attribute attributeValue = nodeData.attribute("value");
 
     if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::Bool)
@@ -448,14 +453,14 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, const std:
 
             if (!dataValue->dataMemberDefinition->isArray)
             {
-                SaveDataValue(nodeData, dataValue, dataValue->dataMemberDefinition->type);
+                SaveDataValue(nodeData, dataValue->dataMemberDefinition, dataValue);
             }
             else
             {
                 for (const VirtualDatasheetObject::DataValue* childDataValue : dataValue->value_children)
                 {
                     pugi::xml_node nodeChild = nodeData.append_child("Child");
-                    SaveDataValue(nodeChild, childDataValue, dataValue->dataMemberDefinition->type);
+                    SaveDataValue(nodeChild, dataValue->dataMemberDefinition, childDataValue);
                 }
             }
         }
@@ -464,8 +469,20 @@ bool VirtualDatasheetObject::SaveToXml(pugi::xml_node& nodeDatasheet, const std:
     return true;
 }
 
-void VirtualDatasheetObject::SaveDataValue(pugi::xml_node& nodeData, const VirtualDatasheetObject::DataValue* dataValue, DatasheetParser::DataMemberDefinition::Type memberType) const
+void VirtualDatasheetObject::SaveDataValue(pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, const VirtualDatasheetObject::DataValue* dataValue) const
 {
+    // TODO: Handle array of localized properties.
+    // - I will need to solve array items inheritance before handling this, to have a proper way to reference array items.
+    // - For the meantime, I will not serialize timestamps for localized arrays.
+
+    // Save localization timestamp if necessary.
+    if (dataMemberDef->isLocalized && !dataMemberDef->isArray)
+    {
+        nodeData.append_attribute("timestamp") = dataValue->localizationTimestamp;
+    }
+
+    // Save value depending on type.
+    auto memberType = dataMemberDef->type;
     if (memberType == DatasheetParser::DataMemberDefinition::Bool)
     {
         nodeData.append_attribute("value") = dataValue->value_bool;

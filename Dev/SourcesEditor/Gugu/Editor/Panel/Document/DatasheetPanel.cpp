@@ -16,6 +16,7 @@
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/System/String.h"
 #include "Gugu/System/Container.h"
+#include "Gugu/System/Time.h"
 #include "Gugu/Debug/Logger.h"
 #include "Gugu/External/ImGuiUtility.h"
 #include "Gugu/External/PugiXmlUtility.h"
@@ -460,6 +461,11 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
         if (ImGui::InputText("##_VALUE", &dummy))
         {
             InstanciateDataObjectAndValueIfNeeded(dataObject, dataValue, dataMemberDefinition);
+
+            if (dataMemberDefinition->isLocalized)
+            {
+                dataValue->localizationTimestamp = GetUtcTimestampAsNumeric();
+            }
 
             dataValue->value_string = dummy;
             RaiseDirty();

@@ -16,6 +16,7 @@
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/Resources/ParticleEffect.h"
 #include "Gugu/Resources/ElementWidget.h"
+#include "Gugu/Resources/LocalizationTable.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Memory.h"
 #include "Gugu/External/ImGuiUtility.h"
@@ -40,12 +41,17 @@ NewResourceDialog::NewResourceDialog(const std::string& resourcePath, EResourceT
         { EResourceType::ImageSet, "imageset.xml" },
         { EResourceType::ParticleEffect, "particle.xml" },
         { EResourceType::ElementWidget, "widget.xml" },
+        { EResourceType::LocalizationTable, "localization.xml" },
     };
 
     auto itExtension = resourceExtensions.find(m_resourceType);
     if (itExtension != resourceExtensions.end())
     {
         m_resourceExtension = itExtension->second;
+    }
+    else
+    {
+        assert(false);  // unhandled resource type.
     }
 }
 
@@ -131,6 +137,10 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
         else if (m_resourceType == EResourceType::ElementWidget)
         {
             newResource = new ElementWidget;
+        }
+        else if (m_resourceType == EResourceType::LocalizationTable)
+        {
+            newResource = new LocalizationTable;
         }
         else if (m_resourceType == EResourceType::Datasheet)
         {

@@ -485,6 +485,12 @@ void AssetsExplorerPanel::HandleDirectoryContextMenu(TreeNode* node, bool* colla
                 GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::ElementWidget));
             }
 
+            ImGui::Separator();
+            if (ImGui::MenuItem("LocalizationTable"))
+            {
+                GetEditor()->OpenModalDialog(new NewResourceDialog(node->path, EResourceType::LocalizationTable));
+            }
+
             ImGui::EndMenu();
         }
 

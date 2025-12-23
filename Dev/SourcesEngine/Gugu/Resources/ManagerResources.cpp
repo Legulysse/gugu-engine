@@ -391,6 +391,10 @@ Resource* ManagerResources::LoadResource(ResourceInfo* resourceInfo, EResourceTy
     {
         resource = new ElementWidget;
     }
+    else if (explicitType == EResourceType::LocalizationTable)
+    {
+        resource = new LocalizationTable;
+    }
     else
     {
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource failed, unknown resource extension : {0}", fileInfo.GetFilePath_utf8()));

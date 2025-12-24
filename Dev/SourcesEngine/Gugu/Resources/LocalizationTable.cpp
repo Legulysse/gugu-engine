@@ -111,6 +111,29 @@ bool LocalizationTable::LoadFromXml(const pugi::xml_document& document)
     if (!rootNode)
         return false;
 
+    for (pugi::xml_node languageNode = rootNode.child("LanguageTable"); languageNode; languageNode = languageNode.next_sibling("LanguageTable"))
+    {
+        std::string languageCode = languageNode.attribute("code").as_string();
+        if (languageCode.empty())
+            continue;
+
+        auto kvpLanguageInsert = m_languageTables.insert(std::make_pair(languageCode, LocalizationLanguageTable()));
+        auto itLanguage = kvpLanguageInsert.first;
+
+        for (pugi::xml_node entryNode = languageNode.child("Entry"); entryNode; entryNode = entryNode.next_sibling("Entry"))
+        {
+            std::string key = entryNode.attribute("key").as_string();
+            if (key.empty())
+                continue;
+
+            LocalizationTextEntry entry;
+            entry.timestamp = entryNode.attribute("timestamp").as_llong();
+            entry.text = entryNode.attribute("text").as_string();
+
+            itLanguage->second.entries.insert(std::make_pair(key, entry));
+        }
+    }
+
     return true;
 }
 
@@ -118,6 +141,20 @@ bool LocalizationTable::SaveToXml(pugi::xml_document& document) const
 {
     pugi::xml_node rootNode = document.append_child("LocalizationTable");
     rootNode.append_attribute("serializationVersion") = 1;
+
+    for (const auto& kvpLanguage : m_languageTables)
+    {
+        pugi::xml_node languageNode = rootNode.append_child("LanguageTable");
+        languageNode.append_attribute("code").set_value(kvpLanguage.first.c_str());
+
+        for (const auto& kvpEntry : kvpLanguage.second.entries)
+        {
+            pugi::xml_node entryNode = languageNode.append_child("Entry");
+            entryNode.append_attribute("key").set_value(kvpEntry.first.c_str());
+            entryNode.append_attribute("timestamp").set_value(kvpEntry.second.timestamp);
+            entryNode.append_attribute("text").set_value(kvpEntry.second.text.c_str());
+        }
+    }
 
     return true;
 }

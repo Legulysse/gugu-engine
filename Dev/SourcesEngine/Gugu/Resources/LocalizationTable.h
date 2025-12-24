@@ -17,8 +17,8 @@ using LocalizationKey = std::string;
 
 struct LocalizationTextEntry
 {
+    int64 timestamp = 0;
     std::string text;
-    int64 timestamp;
 };
 
 struct LocalizationLanguageTable

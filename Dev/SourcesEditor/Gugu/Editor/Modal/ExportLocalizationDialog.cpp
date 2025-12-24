@@ -34,9 +34,9 @@ class CsvWriter
 {
 public:
 
-    void OpenFile(const std::string& path)
+    void OpenFile(const FileInfo& path)
     {
-        m_filePath = FileInfo::FromString_utf8(path);
+        m_filePath = path;
         m_firstLineField = true;
     }
 
@@ -156,7 +156,7 @@ void GatherDatasheetTexts(const FileInfo& fileInfo, CsvWriter& writer)
     }
 }
 
-}
+}   // namespace impl
 
 ExportLocalizationDialog::ExportLocalizationDialog()
     : BaseModalDialog("Export Localization")
@@ -208,7 +208,7 @@ void ExportLocalizationDialog::ExportLocalization()
 
     // Prepare writer.
     impl::CsvWriter writer;
-    writer.OpenFile(CombinePaths(m_targetDirectory, "TestLoca.csv"));
+    writer.OpenFile(FileInfo::FromString_utf8(CombinePaths(m_targetDirectory, "TestLoca.csv")));
 
     // Write debug entry to help external text editor undestrand we want utf8 instead of ansi.
     writer.WriteField("(Data block with some utf8 chars : éàùç)");

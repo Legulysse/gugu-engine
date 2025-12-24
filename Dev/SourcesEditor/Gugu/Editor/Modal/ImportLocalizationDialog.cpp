@@ -66,10 +66,32 @@ void ImportLocalizationDialog::UpdateModalImpl(const DeltaTime& dt)
 
 void ImportLocalizationDialog::ImportLocalization()
 {
+    // TODO:
+    // [Importer]
+    // - Select target table.
+    // - Select source csv.
+    // - Parse csv and transfer data into the table.
+    // - Store data in table.
+    // - Save/Load table data.
+    // [Runtime]
+    // - Fill datasheet strings with their translation.
+    // - Do I need a special LocalizedString type to store an ID and be able to query localization ?
+    //   - This could allow for texts reloads without reparsing the datasheets.
+    // [Game]
+    // - Handle remaining localization sources.
+    //   - UI widgets.
+    //   - Hard coded texts.
+
     // Save settings.
     //GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath = m_targetDirectory;
     //GetEditor()->SaveUserSettings();
 
+    // Get target localization table.
+    auto targetLocalizationTable = GetResources()->GetLocalizationTable("Default.localization.xml");
+
+    assert(targetLocalizationTable != nullptr);
+
+    // Finalize.
     GetLogEngine()->Print(ELog::Info, ELogEngine::Editor, StringFormat("Import Localization finished."));
 }
 

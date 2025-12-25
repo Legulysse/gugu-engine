@@ -199,21 +199,21 @@ void RunUnitTests_Core(UnitTestResults* results)
     GUGU_UTEST_SECTION("DeltaTime");
     {
         GUGU_UTEST_CHECK_TRUE(DeltaTime::Zero.IsZero());
-        GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.s(), 0);
-        GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.ms(), 0);
+        GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.s(), 0.f);
+        GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.ms(), 0.f);
         GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.micro(), 0);
-        GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.unscaled_s(), 0);
-        GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.unscaled_ms(), 0);
+        GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.unscaled_s(), 0.f);
+        GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.unscaled_ms(), 0.f);
         GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.unscaled_micro(), 0);
         GUGU_UTEST_CHECK_EQUAL(DeltaTime::Zero.GetScale(), 1.f);
 
         DeltaTime deltaTimeA(sf::Time(), sf::Time(), 1.f);
         GUGU_UTEST_CHECK_TRUE(deltaTimeA.IsZero());
-        GUGU_UTEST_CHECK_EQUAL(deltaTimeA.s(), 0);
-        GUGU_UTEST_CHECK_EQUAL(deltaTimeA.ms(), 0);
+        GUGU_UTEST_CHECK_EQUAL(deltaTimeA.s(), 0.f);
+        GUGU_UTEST_CHECK_EQUAL(deltaTimeA.ms(), 0.f);
         GUGU_UTEST_CHECK_EQUAL(deltaTimeA.micro(), 0);
-        GUGU_UTEST_CHECK_EQUAL(deltaTimeA.unscaled_s(), 0);
-        GUGU_UTEST_CHECK_EQUAL(deltaTimeA.unscaled_ms(), 0);
+        GUGU_UTEST_CHECK_EQUAL(deltaTimeA.unscaled_s(), 0.f);
+        GUGU_UTEST_CHECK_EQUAL(deltaTimeA.unscaled_ms(), 0.f);
         GUGU_UTEST_CHECK_EQUAL(deltaTimeA.unscaled_micro(), 0);
         GUGU_UTEST_CHECK_EQUAL(deltaTimeA.GetScale(), 1.f);
 

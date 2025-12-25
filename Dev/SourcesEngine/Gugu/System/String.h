@@ -18,16 +18,22 @@ namespace gugu {
 bool StringEquals(std::string_view left, std::string_view right);
 
 template<typename T>
-std::string ToString(const T& _tValue);
-template<typename T>
-std::string ToStringf(const T& _tValue, int precision);
-std::string ToString(int _iValue);
-std::string ToString(const char* _strValue);
+std::string ToString(const T& value);
+std::string ToString(int value);
+std::string ToString(const char* value);
 
 template<typename T>
-bool FromString(const std::string& _strValue, T& _tValue);
+std::string ToStringf(const T& value, int precision);
+
 template<typename T>
-T FromString(const std::string& _strValue);
+bool TryFromString(const std::string& value, T& result);
+template<>
+bool TryFromString<bool>(const std::string& value, bool& result);
+
+template<typename T>
+T FromString(const std::string& value, const T& defaultValue);
+template<>
+bool FromString<bool>(const std::string& value, const bool& defaultValue);
 
 std::string StdStringReplace(const std::string& _strValue, const std::string& _strFrom, const std::string& _strTo);
 std::string StdStringReplace(const std::string& value, const char& from, const char& to);

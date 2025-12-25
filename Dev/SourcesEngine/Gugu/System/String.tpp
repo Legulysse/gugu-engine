@@ -6,50 +6,52 @@
 namespace gugu {
 
 template<typename T>
-std::string ToString(const T& _tValue)
+std::string ToString(const T& value)
 {
-    // Note: floats are better displayed this way than with std::to_string.
-    // Note: pointer types seem to be displayed by default as uppercase hex with fixed length.
+    // Notes: 
+    // - floats are better displayed this way than with std::to_string.
+    // - c++20 std::format could help improve/replace this utility function.
+    // - pointer types seem to be displayed by default as uppercase hex with fixed length (which I prefer).
     std::ostringstream os;
 
     if constexpr (Constexpr_IsEnumClass<T>)
     {
         // Specialization for enum-class types.
-        os << (uint64)std::underlying_type_t<T>(_tValue);
+        os << (uint64)std::underlying_type_t<T>(value);
     }
     else
     {
-        os << _tValue;
+        os << value;
     }
 
     return os.str();
 }
 
 template<typename T>
-std::string ToStringf(const T& _tValue, int precision)
+std::string ToStringf(const T& value, int precision)
 {
-    // Note: floats are better displayed this way than with std::to_string.
+    // Notes: 
+    // - floats are better displayed this way than with std::to_string.
+    // - c++20 std::format could help improve/replace this utility function.
     std::ostringstream os;
     os.precision(precision);
-    os << std::fixed;
-    os << _tValue;
+    os << std::fixed << value;
     return os.str();
 }
 
 template<typename T>
-bool FromString(const std::string& _strValue, T& _tValue)
+bool TryFromString(const std::string& value, T& result)
 {
-    std::istringstream iss( _strValue );
-    return (iss >> _tValue) ? true : false;
+    std::istringstream iss(value);
+    return (iss >> result) ? true : false;
 }
 
 template<typename T>
-T FromString(const std::string& _strValue)
+T FromString(const std::string& value, const T& defaultValue)
 {
-    std::istringstream iss( _strValue );
-    T tValue;
-    iss >> tValue;  // std::boolalpha could be used
-    return tValue;
+    std::istringstream iss(value);
+    T result;
+    return (iss >> result) ? result : defaultValue;
 }
 
 template<typename T1>

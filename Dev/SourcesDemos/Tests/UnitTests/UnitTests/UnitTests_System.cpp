@@ -332,8 +332,6 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(ToString(42), "42");
             GUGU_UTEST_CHECK_EQUAL(ToString(42.5f), "42.5");
             GUGU_UTEST_CHECK_EQUAL(ToString(42.5), "42.5");
-            GUGU_UTEST_CHECK_EQUAL(ToStringf(42.5f, 2), "42.50");
-            GUGU_UTEST_CHECK_EQUAL(ToStringf(42.5, 2), "42.50");
             GUGU_UTEST_CHECK_EQUAL(ToString(true), "1");
             GUGU_UTEST_CHECK_EQUAL(ToString(false), "0");
             GUGU_UTEST_CHECK_EQUAL(ToString("42"), "42");
@@ -346,18 +344,45 @@ void RunUnitTests_System(UnitTestResults* results)
 
             int* fakePtr = (int*)0x00000ff123456789;
             GUGU_UTEST_CHECK_EQUAL(ToString(fakePtr), "00000FF123456789");
+
+            GUGU_UTEST_CHECK_EQUAL(ToStringf(42.5f, 2), "42.50");
+            GUGU_UTEST_CHECK_EQUAL(ToStringf(42.5, 2), "42.50");
         }
 
         GUGU_UTEST_SUBSECTION("FromString");
         {
-            GUGU_UTEST_CHECK_EQUAL(FromString<int>("42"), 42);
-            GUGU_UTEST_CHECK_EQUAL(FromString<float>("42.50"), 42.5f);
-            GUGU_UTEST_CHECK_EQUAL(FromString<double>("42.50"), 42.5);
-            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("1"), true);
-            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("0"), false);
-            GUGU_UTEST_CHECK_NOT_EQUAL(FromString<bool>("true"), true); // Converting from text-based true/false will always return false.
-            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("false"), false);   // Converting from text-based true/false will always return false.
-            GUGU_UTEST_CHECK_EQUAL(FromString<std::string>("42"), "42");
+            GUGU_UTEST_CHECK_EQUAL(FromString<int>("42", 0), 42);
+            GUGU_UTEST_CHECK_EQUAL(FromString<float>("42.50", 0.f), 42.5f);
+            GUGU_UTEST_CHECK_EQUAL(FromString<double>("42.50", 0.0), 42.5);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("1", false), true);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("0", true), false);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("true", false), true);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("false", true), false);
+            GUGU_UTEST_CHECK_EQUAL(FromString<std::string>("42", ""), "42");
+
+            GUGU_UTEST_CHECK_EQUAL(FromString<int>("invalid", 12), 12);
+            GUGU_UTEST_CHECK_EQUAL(FromString<float>("invalid", 12.f), 12.f);
+            GUGU_UTEST_CHECK_EQUAL(FromString<double>("invalid", 12.0), 12.0);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("invalid", true), true);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("invalid", false), false);
+
+            int intResult = 0;
+            float floatResult = 0.f;
+            double doubleResult = 0.0;
+            bool boolResult = false;
+            std::string stringResult = "";
+            GUGU_UTEST_CHECK(TryFromString<int>("42", intResult) && intResult == 42);
+            GUGU_UTEST_CHECK(TryFromString<float>("42.50", floatResult) && floatResult == 42.5f);
+            GUGU_UTEST_CHECK(TryFromString<double>("42.50", doubleResult) && doubleResult == 42.5);
+            GUGU_UTEST_CHECK(TryFromString<bool>("1", boolResult) && boolResult == true);
+            GUGU_UTEST_CHECK(TryFromString<bool>("0", boolResult) && boolResult == false);
+            GUGU_UTEST_CHECK(TryFromString<bool>("true", boolResult) && boolResult == true);
+            GUGU_UTEST_CHECK(TryFromString<bool>("false", boolResult) && boolResult == false);
+            GUGU_UTEST_CHECK(TryFromString<std::string>("42", stringResult) && stringResult == "42");
+
+            GUGU_UTEST_CHECK(!TryFromString<bool>("x", boolResult) && boolResult == false);
+            GUGU_UTEST_CHECK(!TryFromString<bool>("null", boolResult) && boolResult == false);
+            GUGU_UTEST_CHECK(!TryFromString<bool>("", boolResult) && boolResult == false);
         }
 
         GUGU_UTEST_SUBSECTION("Equals");

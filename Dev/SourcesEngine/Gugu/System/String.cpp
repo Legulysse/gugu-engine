@@ -20,14 +20,37 @@ bool StringEquals(std::string_view left, std::string_view right)
     return left == right;
 }
 
-std::string ToString(int _iValue)
+std::string ToString(int value)
 {
-    return std::to_string(_iValue);
+    return std::to_string(value);
 }
 
-std::string ToString(const char* _strValue)
+std::string ToString(const char* value)
 {
-    return std::string(_strValue);
+    return std::string(value);
+}
+
+template<>
+bool TryFromString<bool>(const std::string& value, bool& result)
+{
+    std::istringstream iss(value);
+    if (iss >> result)
+        return true;
+    iss.str(value);
+    iss.clear();
+    return (iss >> std::boolalpha >> result) ? true : false;
+}
+
+template<>
+bool FromString<bool>(const std::string& value, const bool& defaultValue)
+{
+    std::istringstream iss(value);
+    bool result;
+    if (iss >> result)
+        return result;
+    iss.str(value);
+    iss.clear();
+    return (iss >> std::boolalpha >> result) ? result : defaultValue;
 }
 
 std::string StdStringReplace(const std::string& value, const std::string& from, const std::string& to)

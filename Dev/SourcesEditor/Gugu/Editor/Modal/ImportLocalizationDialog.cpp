@@ -263,7 +263,7 @@ void ImportLocalizationDialog::ImportLocalization()
                 LocalizationKey key = StringFormat("{0}/{1}/{2}", reader.GetField("File"), reader.GetField("Object"), reader.GetField("Property"));
                 LocalizationTextEntry entry;
 
-                entry.timestamp = FromString<int64>(reader.GetField("Timestamp"));
+                entry.timestamp = FromString<int64>(reader.GetField("Timestamp"), 0);
                 entry.text = reader.GetField("Workstring");
 
                 targetLocalizationTable->TryRegisterEntry(language, key, entry);

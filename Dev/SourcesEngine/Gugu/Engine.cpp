@@ -647,8 +647,7 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
             {
                 if (!tokens.empty())
                 {
-                    int rulerSize = 100;
-                    FromString(tokens[0], rulerSize);
+                    int rulerSize = FromString(tokens[0], 100);
 
                     m_gameWindow->SetRulerSize(rulerSize);
                     m_gameWindow->SetShowRuler(true);
@@ -664,7 +663,9 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
 #if !defined(GUGU_NO_TRACE)
             m_traceLifetime = 10;
             if (!tokens.empty())
-                FromString(tokens[0], m_traceLifetime);
+            {
+                TryFromString(tokens[0], m_traceLifetime);
+            }
 #endif
         }
         else if (command == "speed")
@@ -673,7 +674,7 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
             if (!tokens.empty() && tokens[0] != "1")
             {
                 float speed = 1.f;
-                if (FromString(tokens[0], speed))
+                if (TryFromString(tokens[0], speed))
                 {
                     SetLoopSpeed(speed);
                     reset = false;
@@ -694,7 +695,7 @@ void Engine::ComputeCommandLine(const std::string& commandLine)
             if (!tokens.empty())
             {
                 int time = 0;
-                if (FromString(tokens[0], time))
+                if (TryFromString(tokens[0], time))
                 {
                     m_injectTime = sf::milliseconds(Max(0, time));
                 }

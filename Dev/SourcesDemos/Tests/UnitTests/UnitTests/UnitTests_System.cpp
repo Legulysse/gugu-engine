@@ -332,8 +332,8 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(ToString(42), "42");
             GUGU_UTEST_CHECK_EQUAL(ToString(42.5f), "42.5");
             GUGU_UTEST_CHECK_EQUAL(ToString(42.5), "42.5");
-            GUGU_UTEST_CHECK_EQUAL(ToString(true), "1");
-            GUGU_UTEST_CHECK_EQUAL(ToString(false), "0");
+            GUGU_UTEST_CHECK_EQUAL(ToString(true), "true");
+            GUGU_UTEST_CHECK_EQUAL(ToString(false), "false");
             GUGU_UTEST_CHECK_EQUAL(ToString("42"), "42");
             GUGU_UTEST_CHECK_EQUAL(ToString(std::string("42")), "42");
             GUGU_UTEST_CHECK_EQUAL(ToString(ETestEnum::Value1), "1");
@@ -365,6 +365,10 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK_EQUAL(FromString<double>("invalid", 12.0), 12.0);
             GUGU_UTEST_CHECK_EQUAL(FromString<bool>("invalid", true), true);
             GUGU_UTEST_CHECK_EQUAL(FromString<bool>("invalid", false), false);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("True", false), false);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("False", true), true);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("TRUE", false), false);
+            GUGU_UTEST_CHECK_EQUAL(FromString<bool>("FALSE", true), true);
 
             int intResult = 0;
             float floatResult = 0.f;
@@ -383,6 +387,10 @@ void RunUnitTests_System(UnitTestResults* results)
             GUGU_UTEST_CHECK(!TryFromString<bool>("x", boolResult) && boolResult == false);
             GUGU_UTEST_CHECK(!TryFromString<bool>("null", boolResult) && boolResult == false);
             GUGU_UTEST_CHECK(!TryFromString<bool>("", boolResult) && boolResult == false);
+            GUGU_UTEST_CHECK(!TryFromString<bool>("True", boolResult) && boolResult == false);
+            GUGU_UTEST_CHECK(!TryFromString<bool>("False", boolResult) && boolResult == false);
+            GUGU_UTEST_CHECK(!TryFromString<bool>("TRUE", boolResult) && boolResult == false);
+            GUGU_UTEST_CHECK(!TryFromString<bool>("FALSE", boolResult) && boolResult == false);
         }
 
         GUGU_UTEST_SUBSECTION("Equals");

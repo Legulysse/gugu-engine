@@ -20,6 +20,14 @@ bool StringEquals(std::string_view left, std::string_view right)
     return left == right;
 }
 
+template<>
+std::string ToString<bool>(const bool& value)
+{
+    static const std::string returnTrue = "true";
+    static const std::string returnFalse = "false";
+    return value ? returnTrue : returnFalse;
+}
+
 std::string ToString(int value)
 {
     return std::to_string(value);
@@ -33,24 +41,37 @@ std::string ToString(const char* value)
 template<>
 bool TryFromString<bool>(const std::string& value, bool& result)
 {
-    std::istringstream iss(value);
-    if (iss >> result)
+    size_t size = value.size();
+    if ((size == 1 && value == "1")
+        || (size == 4 && value == "true"))
+    {
+        result = true;
         return true;
-    iss.str(value);
-    iss.clear();
-    return (iss >> std::boolalpha >> result) ? true : false;
+    }
+    if ((size == 1 && value == "0")
+        || (size == 5 && value == "false"))
+    {
+        result = false;
+        return true;
+    }
+    return false;
 }
 
 template<>
 bool FromString<bool>(const std::string& value, const bool& defaultValue)
 {
-    std::istringstream iss(value);
-    bool result;
-    if (iss >> result)
-        return result;
-    iss.str(value);
-    iss.clear();
-    return (iss >> std::boolalpha >> result) ? result : defaultValue;
+    size_t size = value.size();
+    if ((size == 1 && value == "1")
+        || (size == 4 && value == "true"))
+    {
+        return true;
+    }
+    if ((size == 1 && value == "0")
+        || (size == 5 && value == "false"))
+    {
+        return false;
+    }
+    return defaultValue;
 }
 
 std::string StdStringReplace(const std::string& value, const std::string& from, const std::string& to)

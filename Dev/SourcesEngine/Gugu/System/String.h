@@ -19,6 +19,8 @@ bool StringEquals(std::string_view left, std::string_view right);
 
 template<typename T>
 std::string ToString(const T& value);
+template<>
+std::string ToString<bool>(const bool& value);
 std::string ToString(int value);
 std::string ToString(const char* value);
 

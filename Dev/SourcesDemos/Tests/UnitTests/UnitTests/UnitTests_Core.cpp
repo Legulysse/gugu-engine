@@ -35,16 +35,28 @@ void RunUnitTests_Core(UnitTestResults* results)
 
         GUGU_UTEST_CHECK(true);
         GUGU_UTEST_SILENT_CHECK(true);
-
         GUGU_UTEST_CHECK_TRUE(true);
         GUGU_UTEST_CHECK_FALSE(false);
         GUGU_UTEST_CHECK_NULL(nullptr);
         GUGU_UTEST_CHECK_NOT_NULL(dummyPtr);
-
         GUGU_UTEST_CHECK_EQUAL(10, 10);
         GUGU_UTEST_CHECK_NOT_EQUAL(10, 11);
         GUGU_UTEST_CHECK_APPROX_EQUAL(10.f, 10.f, math::Epsilon6);
         GUGU_UTEST_CHECK_APPROX_NOT_EQUAL(10.f, 11.f, math::Epsilon6);
+
+#if 0
+        // Test that failure cases actually fail.
+        GUGU_UTEST_CHECK(false);
+        GUGU_UTEST_SILENT_CHECK(false);
+        GUGU_UTEST_CHECK_TRUE(false);
+        GUGU_UTEST_CHECK_FALSE(true);
+        GUGU_UTEST_CHECK_NULL(dummyPtr);
+        GUGU_UTEST_CHECK_NOT_NULL(nullptr);
+        GUGU_UTEST_CHECK_EQUAL(10, 11);
+        GUGU_UTEST_CHECK_NOT_EQUAL(10, 10);
+        GUGU_UTEST_CHECK_APPROX_EQUAL(10.f, 11.f, math::Epsilon6);
+        GUGU_UTEST_CHECK_APPROX_NOT_EQUAL(10.f, 10.f, math::Epsilon6);
+#endif
 
         delete dummyPtr;
 

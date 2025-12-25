@@ -53,11 +53,24 @@ public:
 
     bool RunTestCheck(bool result, const std::string& expression, const std::string& file, size_t line);
     bool SilentRunTestCheck(bool result, const std::string& expression, const std::string& file, size_t line);
-    bool RunTestCompare(bool result, const std::string& left, const std::string& right, const std::string& expression, const std::string& file, size_t line);
-
     void RunPerformanceTest(size_t warmupLoops, size_t loops, const std::function<void()>& executionMethod);
+    
+    template<typename T1, typename T2>
+    bool RunTestCompare(const T1& left, const T2& right, bool expectedResult, const std::string& expression, const std::string& file, size_t line)
+    {
+        // Note: Using T on both types requires strict type equality, which can be really annoying for writing tests.
+        return RunTestCompareImpl((left == right) == expectedResult, ToString(left), ToString(right), expression, file, line);
+    }
+
+    template<typename T>
+    bool RunTestCompare(const T& left, const T& right, float epsilon, bool expectedResult, const std::string& expression, const std::string& file, size_t line)
+    {
+        return RunTestCompareImpl(ApproxEqual(left, right, epsilon) == expectedResult, ToString(left), ToString(right), expression, file, line);
+    }
 
 private:
+
+    bool RunTestCompareImpl(bool result, const std::string& left, const std::string& right, const std::string& expression, const std::string& file, size_t line);
 
     void FinalizeSection();
     void FinalizeSubSection();
@@ -90,7 +103,7 @@ private:
 #define GUGU_UTEST_SUBSECTION(NAME)                             \
     unitTestHandler.BeginSubSection(NAME)
 
-#define GUGU_UTEST_ADD_EXPECTED_ERROR_COUNT(COUNT)            \
+#define GUGU_UTEST_ADD_EXPECTED_ERROR_COUNT(COUNT)              \
     unitTestHandler.AddExpectedErrorCount(COUNT)
 
 #define GUGU_UTEST_ADD_EXPECTED_WARNING_COUNT(COUNT)            \
@@ -127,26 +140,22 @@ private:
         __FILE__, __LINE__)
 
 #define GUGU_UTEST_CHECK_EQUAL(LEFT, RIGHT)                     \
-    unitTestHandler.RunTestCompare(LEFT == RIGHT,               \
-        ToString(LEFT), ToString(RIGHT),                        \
+    unitTestHandler.RunTestCompare(LEFT, RIGHT, true,           \
         GUGU_STRINGIZE(LEFT) " == " GUGU_STRINGIZE(RIGHT),      \
         __FILE__, __LINE__)
 
 #define GUGU_UTEST_CHECK_NOT_EQUAL(LEFT, RIGHT)                 \
-    unitTestHandler.RunTestCompare(!(LEFT == RIGHT),            \
-        ToString(LEFT), ToString(RIGHT),                        \
+    unitTestHandler.RunTestCompare(LEFT, RIGHT, false,          \
         GUGU_STRINGIZE(LEFT) " != " GUGU_STRINGIZE(RIGHT),      \
         __FILE__, __LINE__)
 
 #define GUGU_UTEST_CHECK_APPROX_EQUAL(LEFT, RIGHT, EPSILON)             \
-    unitTestHandler.RunTestCompare(ApproxEqual(LEFT, RIGHT, EPSILON),   \
-        ToString(LEFT), ToString(RIGHT),                                \
+    unitTestHandler.RunTestCompare(LEFT, RIGHT, EPSILON, true,          \
         GUGU_STRINGIZE(LEFT) " == " GUGU_STRINGIZE(RIGHT),              \
         __FILE__, __LINE__)
 
 #define GUGU_UTEST_CHECK_APPROX_NOT_EQUAL(LEFT, RIGHT, EPSILON)         \
-    unitTestHandler.RunTestCompare(!ApproxEqual(LEFT, RIGHT, EPSILON),  \
-        ToString(LEFT), ToString(RIGHT),                                \
+    unitTestHandler.RunTestCompare(LEFT, RIGHT, EPSILON, false,         \
         GUGU_STRINGIZE(LEFT) " != " GUGU_STRINGIZE(RIGHT),              \
         __FILE__, __LINE__)
 

@@ -201,7 +201,7 @@ bool UnitTestHandler::SilentRunTestCheck(bool result, const std::string& express
     return result;
 }
 
-bool UnitTestHandler::RunTestCompare(bool result, const std::string& left, const std::string& right, const std::string& expression, const std::string& file, size_t line)
+bool UnitTestHandler::RunTestCompareImpl(bool result, const std::string& left, const std::string& right, const std::string& expression, const std::string& file, size_t line)
 {
     ++m_totalTestCount;
     ++m_subSectionTestCount;

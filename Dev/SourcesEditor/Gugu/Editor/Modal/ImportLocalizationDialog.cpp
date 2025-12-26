@@ -124,7 +124,7 @@ public:
                             fieldEnd = cursor - 1;
                         }
 
-                        ++cursor;
+                        //++cursor; // We are already targeting the field end-delimiter.
                         break;
                     }
                     else
@@ -136,13 +136,13 @@ public:
                 // Store field value.
                 m_currentLineValues.push_back(!hasData ? "" : line.substr(fieldBegin, fieldEnd - fieldBegin + 1));
 
-                // Try to find next field.
+                // Try to find next field (just in case there is spacing between quoted field end and the next delimiter).
                 while (cursor < line.size())
                 {
                     if (line[cursor] == ',')
                     {
                         // Field delimiter found.
-                        ++cursor;
+                        ++cursor;   // We want to target the next field first character.
                         break;
                     }
                     else

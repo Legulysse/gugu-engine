@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Resources/Resource.h"
+#include "Gugu/System/UUID.h"
 
 #include <map>
 
@@ -37,6 +38,8 @@ enum class LocalizationRegisterResult : uint8
     Refused_EmptyText,              // The new entry has an empty text (invalid).
     Refused_Outdated,               // The new entry is older than the current entry (outdated).
 };
+
+LocalizationKey GenerateLocalizationKeyForDatasheetMember(const std::string& datasheetId, const std::string& objectUuid, const std::string& memberName);
 
 class LocalizationTable : public Resource
 {

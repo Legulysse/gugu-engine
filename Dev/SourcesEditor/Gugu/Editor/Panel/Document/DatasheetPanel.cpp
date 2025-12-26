@@ -14,6 +14,7 @@
 #include "Gugu/Editor/Resources/VirtualDatasheetObject.h"
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/LocalizationTable.h"
 #include "Gugu/System/String.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Time.h"
@@ -464,6 +465,13 @@ void DatasheetPanel::DisplayInlineDataMemberValue(DatasheetParser::DataMemberDef
 
             if (dataMemberDefinition->isLocalized)
             {
+                // Generate localization key if necessary.
+                if (dataValue->localizationKey.empty())
+                {
+                    dataValue->localizationKey = GenerateLocalizationKeyForDatasheetMember(m_datasheet->GetID(), dataObject->m_uuid.ToString(), dataMemberDefinition->name);
+                }
+
+                // Update last edit timestamp.
                 dataValue->localizationTimestamp = GetUtcTimestampAsNumeric();
             }
 

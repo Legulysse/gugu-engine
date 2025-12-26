@@ -41,6 +41,7 @@ public:
 
         std::string name;
         DatasheetParser::DataMemberDefinition* dataMemberDefinition = nullptr;
+        std::string localizationKey;
         int64 localizationTimestamp = 0;
 
         // TODO: I should probably see if I can move this union-like block into a separate struct.

@@ -8,12 +8,18 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/System/String.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
 
 namespace gugu {
+
+LocalizationKey GenerateLocalizationKeyForDatasheetMember(const std::string& datasheetId, const std::string& objectUuid, const std::string& memberName)
+{
+    return StringFormat("{0}/{1}/{2}", datasheetId, objectUuid, memberName);
+}
 
 LocalizationTable::LocalizationTable()
 {

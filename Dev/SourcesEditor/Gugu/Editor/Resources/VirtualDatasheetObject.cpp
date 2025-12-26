@@ -286,10 +286,6 @@ void VirtualDatasheetObject::GatherInstanceUuidsRecursively(std::set<UUID>& inst
 
 void VirtualDatasheetObject::ParseDataValue(const pugi::xml_node& nodeData, DatasheetParser::DataMemberDefinition* dataMemberDef, VirtualDatasheetObject::DataValue* dataValue)
 {
-    // Parse localization timestamp.
-    pugi::xml_attribute attributeTimestamp = nodeData.attribute("timestamp");
-    dataValue->localizationTimestamp = attributeTimestamp.as_llong(0);
-
     // Parse value depending on type.
     pugi::xml_attribute attributeValue = nodeData.attribute("value");
 
@@ -360,6 +356,16 @@ void VirtualDatasheetObject::ParseDataValue(const pugi::xml_node& nodeData, Data
             dataValue->value_objectInstanceDefinition = nullptr;
             dataValue->value_objectInstance = nullptr;
             dataValue->value_string = attributeValue.as_string();
+        }
+    }
+
+    // Parse localization data.
+    if (dataMemberDef->isLocalized)
+    {
+        if (pugi::xml_node localizationNode = nodeData.child("Localization"))
+        {
+            dataValue->localizationKey = localizationNode.attribute("key").as_string();
+            dataValue->localizationTimestamp = localizationNode.attribute("timestamp").as_llong(0);
         }
     }
 }
@@ -478,7 +484,9 @@ void VirtualDatasheetObject::SaveDataValue(pugi::xml_node& nodeData, DatasheetPa
     // Save localization timestamp if necessary.
     if (dataMemberDef->isLocalized && !dataMemberDef->isArray)
     {
-        nodeData.append_attribute("timestamp") = dataValue->localizationTimestamp;
+        pugi::xml_node localizationNode = nodeData.append_child("Localization");
+        localizationNode.append_attribute("key") = dataValue->localizationKey.c_str();
+        localizationNode.append_attribute("timestamp") = dataValue->localizationTimestamp;
     }
 
     // Save value depending on type.

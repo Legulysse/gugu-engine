@@ -23,9 +23,7 @@ bool StringEquals(std::string_view left, std::string_view right)
 template<>
 std::string ToString<bool>(const bool& value)
 {
-    static const std::string returnTrue = "true";
-    static const std::string returnFalse = "false";
-    return value ? returnTrue : returnFalse;
+    return value ? "true" : "false";
 }
 
 std::string ToString(int value)

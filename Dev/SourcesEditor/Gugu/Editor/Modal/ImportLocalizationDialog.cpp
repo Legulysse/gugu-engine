@@ -158,6 +158,22 @@ public:
         return false;
     }
 
+    void AddHeaderRedirector(const std::string& alias, const std::string& target)
+    {
+        assert(HasHeader(target));
+
+        size_t index = 0;
+        if (StdMapTryGetValue(m_headerIndex, target, index))
+        {
+            m_headerIndex.insert(std::make_pair(alias, index));
+        }
+    }
+
+    bool HasHeader(const std::string& header) const
+    {
+        return StdMapContainsKey(m_headerIndex, header);
+    }
+
     const std::string& GetField(const std::string& header) const
     {
         size_t index = 0;
@@ -253,20 +269,34 @@ void ImportLocalizationDialog::ImportLocalization()
     if (reader.OpenFile(sourceFile))
     {
         // TODO: Retrieve headers line index.
-        if (reader.ParseHeaders(1))
+        if (reader.ParseHeaders(1)
+            && reader.HasHeader("Key")
+            && reader.HasHeader("Timestamp")
+            && reader.HasHeader("Workstring"))
         {
+            // Register redirectors on top of existing headers.
+            reader.AddHeaderRedirector("en-US", "en-US Text");
+            reader.AddHeaderRedirector("fr-FR", "fr-FR Text");
+
+            // TODO: Retrieve and parse intended languages.
+            std::vector<std::string> languageCodes = { "en-US", "fr-FR" };
+
             while (reader.ParseNextLine())
             {
-                // TODO: Retrieve and parse intended languages.
-                LocalizationLanguageCode language = "en-US";
+                LocalizationKey key = reader.GetField("Key");
+                int64 timestamp = FromString<int64>(reader.GetField("Timestamp"), 0);
 
-                LocalizationKey key = StringFormat("{0}/{1}/{2}", reader.GetField("File"), reader.GetField("Object"), reader.GetField("Property"));
-                LocalizationTextEntry entry;
+                for (const auto& languageCode : languageCodes)
+                {
+                    if (!reader.HasHeader(languageCode))
+                        continue;
 
-                entry.timestamp = FromString<int64>(reader.GetField("Timestamp"), 0);
-                entry.text = reader.GetField("Workstring");
+                    LocalizationTextEntry entry;
+                    entry.timestamp = timestamp;
+                    entry.text = reader.GetField(languageCode);
 
-                targetLocalizationTable->TryRegisterEntry(language, key, entry);
+                    targetLocalizationTable->TryRegisterEntry(languageCode, key, entry);
+                }
             }
         }
 

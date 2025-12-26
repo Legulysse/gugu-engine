@@ -107,7 +107,7 @@ public:
                             fieldEnd = cursor - 1;
                         }
 
-                        ++cursor;
+                        ++cursor;   // We want to target the field end-delimiter (or the position where it should be).
                         break;
                     }
                     else if (!quotedField && line[cursor] == ',')

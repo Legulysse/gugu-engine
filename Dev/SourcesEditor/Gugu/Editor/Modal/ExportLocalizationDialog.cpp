@@ -113,27 +113,28 @@ void GatherDatasheetTexts(const FileInfo& fileInfo, CsvWriter& writer)
                 && memberDefinition->isLocalized
                 && memberDefinition->type == DatasheetParser::DataMemberDefinition::String)
             {
-                if (!memberDefinition->isArray)
+                pugi::xml_node localizationNode = dataNode.child("Localization");
+                if (localizationNode)
                 {
-                    std::string value = dataNode.attribute("value").value();
-                    std::string timestamp = dataNode.attribute("timestamp").value();
+                    if (!memberDefinition->isArray)
+                    {
+                        std::string key = localizationNode.attribute("key").value();
+                        std::string timestamp = localizationNode.attribute("timestamp").value();
+                        std::string value = dataNode.attribute("value").value();
 
-                    std::string filename = ToString(fileInfo.GetFileName_utf8());
-
-                    // Write localization text data.
-                    writer.WriteField(filename);            // File.
-                    writer.WriteField(uuid.ToString());     // Object.
-                    writer.WriteField(name);                // Property.
-                    writer.WriteField(timestamp);           // Timestamp.
-                    writer.WriteField(value);               // Workstring.
-                    writer.WriteField("");                  // TODO: Project-defined list of locales.
-                    writer.WriteField("");                  // TODO: Project-defined list of locales.
-                    writer.EndLine();
-                }
-                else
-                {
-                    // TODO: Handle array of localized properties.
-                    // - I will need to solve array items inheritance before handling this, to have a proper way to reference array items.
+                        // Write localization text data.
+                        writer.WriteField(key);            // Key.
+                        writer.WriteField(timestamp);       // Timestamp.
+                        writer.WriteField(value);           // Workstring.
+                        writer.WriteField("");              // TODO: Project-defined list of locales.
+                        writer.WriteField("");              // TODO: Project-defined list of locales.
+                        writer.EndLine();
+                    }
+                    else
+                    {
+                        // TODO: Handle array of localized properties.
+                        // - I will need to solve array items inheritance before handling this, to have a proper way to reference array items.
+                    }
                 }
             }
         }
@@ -215,9 +216,7 @@ void ExportLocalizationDialog::ExportLocalization()
     writer.EndLine();
 
     // Write headers.
-    writer.WriteField("File");
-    writer.WriteField("Object");
-    writer.WriteField("Property");
+    writer.WriteField("Key");
     writer.WriteField("Timestamp");
     writer.WriteField("Workstring");
     writer.WriteField("en-US Text");    // TODO: Project-defined list of locales.

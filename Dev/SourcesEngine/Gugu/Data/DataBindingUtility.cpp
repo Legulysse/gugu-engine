@@ -364,6 +364,15 @@ void ReadBool(DataParseContext& context, const std::string& name, bool& value)
     }
 }
 
+void ReadLocalizedString(DataParseContext& context, const std::string& name, LocalizedString& value)
+{
+    if (pugi::xml_node node = impl::FindNodeData(context, name))
+    {
+        value.workstring = node.attribute("value").as_string(value.workstring.c_str());
+        value.key = node.child("Localization").attribute("key").as_string(value.key.c_str());
+    }
+}
+
 void ReadStringArray(DataParseContext& context, const std::string& name, std::vector<std::string>& values)
 {
     if (pugi::xml_node node = impl::FindNodeData(context, name))

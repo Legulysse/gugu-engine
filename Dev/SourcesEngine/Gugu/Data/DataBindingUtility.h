@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Data/LocalizedString.h"
 #include "Gugu/Math/Vector2.h"
 #include "Gugu/System/UUID.h"
 
@@ -56,6 +57,8 @@ void ReadInt(DataParseContext& _kContext, const std::string& _strName, int& _iMe
 void ReadFloat(DataParseContext& _kContext, const std::string& _strName, float& _fMember);
 void ReadBool(DataParseContext& _kContext, const std::string& _strName, bool& _bMember);
 
+void ReadLocalizedString(DataParseContext& _kContext, const std::string& _strName, LocalizedString& _strMember);
+
 void ReadStringArray(DataParseContext& _kContext, const std::string& _strName, std::vector<std::string>& _vecMember);
 void ReadIntArray(DataParseContext& _kContext, const std::string& _strName, std::vector<int>& _vecMember);
 void ReadFloatArray(DataParseContext& _kContext, const std::string& _strName, std::vector<float>& _vecMember);
@@ -95,6 +98,7 @@ void WriteEnumArray(DataSaveContext& _kContext, const std::string& _strName, con
 //----------------------------------------------
 // Read Vector2
 
+// TODO: Move with basic types.
 void ReadVector2(DataParseContext& context, const std::string& name, Vector2i& value);
 void ReadVector2(DataParseContext& context, const std::string& name, Vector2f& value);
 
@@ -102,8 +106,9 @@ void ReadVector2Array(DataParseContext& context, const std::string& name, std::v
 void ReadVector2Array(DataParseContext& context, const std::string& name, std::vector<Vector2f>& values);
 
 //----------------------------------------------
-// Write Vector2
+// Write Vector2    
 
+// TODO: Move with basic types.
 void WriteVector2(DataSaveContext& context, const std::string& name, const Vector2i& value);
 void WriteVector2(DataSaveContext& context, const std::string& name, const Vector2f& value);
 

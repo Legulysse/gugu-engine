@@ -119,6 +119,7 @@ class DefinitionMember():
         self.name = ''
         self.code = ''
         self.type = ''
+        self.isLocalized = False
         self.isArray = False
         self.isReference = False
         self.isInstance = False
@@ -132,7 +133,8 @@ class DefinitionMember():
             self.isInstance     = 'instance' in aFlags
             self.type           = aFlags[-1]
             
-    def GetDefaultValue(self, _definitionBinding):
+    def GetDefaultValueImplementation(self, _definitionBinding):
+        strDefaultFullLine = ''
         strDefault = self.default
         
         if not self.isArray:
@@ -144,31 +146,41 @@ class DefinitionMember():
                 elif self.type in _definitionBinding.dictEnums:
                     strDefault = _definitionBinding.dictEnums[self.type].GetDefaultCpp(self.default)
                 else:
-                    if self.type == 'string':
-                        strDefault = '""'
-                    elif self.type == 'int':
-                        strDefault = '0'
-                    elif self.type == 'float':
-                        strDefault = '0.f'
-                    elif self.type == 'bool':
-                        strDefault = 'false'
-                    elif self.type == 'vector2i':
-                        strDefault += 'gugu::Vector2::Zero_i'
-                    elif self.type == 'vector2f':
-                        strDefault += 'gugu::Vector2::Zero_f'
+                    if self.isLocalized:
+                        if self.type == 'string':
+                            strDefaultFullLine = self.code +'.workstring = "";'
+                    else:
+                        if self.type == 'string':
+                            strDefault = '""'
+                        elif self.type == 'int':
+                            strDefault = '0'
+                        elif self.type == 'float':
+                            strDefault = '0.f'
+                        elif self.type == 'bool':
+                            strDefault = 'false'
+                        elif self.type == 'vector2i':
+                            strDefault = 'gugu::Vector2::Zero_i'
+                        elif self.type == 'vector2f':
+                            strDefault = 'gugu::Vector2::Zero_f'
             else:
                 if self.type in _definitionBinding.dictEnums:
                     strDefault = _definitionBinding.dictEnums[self.type].GetDefaultCpp(strDefault)
                 else:
-                    if self.type == 'string':
-                        strDefault = '"'+ strDefault +'"'
-                    elif self.type == 'float':
-                        if '.' in strDefault:
-                            strDefault += 'f'
-                        else:
-                            strDefault += '.f'
-                
-        return strDefault
+                    if self.isLocalized:
+                        if self.type == 'string':
+                            strDefaultFullLine = self.code +'.workstring = "'+ strDefault +'";'
+                    else:
+                        if self.type == 'string':
+                            strDefault = '"'+ strDefault +'"'
+                        elif self.type == 'float':
+                            if '.' in strDefault:
+                                strDefault += 'f'
+                            else:
+                                strDefault += '.f'
+
+        if strDefaultFullLine == '':
+            strDefaultFullLine = self.code +' = '+ strDefault +';'
+        return strDefaultFullLine
         
 class DefinitionClass():
     def __init__(self):
@@ -239,6 +251,9 @@ class DefinitionClass():
                 elif member.type in _definitionBinding.dictEnums:
                     strType = _definitionBinding.dictEnums[member.type].code
                     strType += '::Type'
+                elif member.isLocalized:
+                    if member.type == 'string':
+                        strType = 'gugu::LocalizedString'
                 else:
                     if member.type == 'string':
                         strType = 'std::string'
@@ -294,8 +309,8 @@ class DefinitionClass():
         for member in self.members:
             if member.type != '' and member.name != '' and member.code != '':
                 if not member.isArray:
-                    strDefault = member.GetDefaultValue(_definitionBinding)
-                    _file.write('    '+ member.code +' = '+ strDefault +';\n')
+                    strDefault = member.GetDefaultValueImplementation(_definitionBinding)
+                    _file.write('    '+ strDefault +'\n')
                     
         _file.write('}\n')
         
@@ -364,25 +379,32 @@ class DefinitionClass():
                 else:
                     strMethod = 'gugu::binding::Read'
                     
-                    if member.type == 'string':
-                        strMethod += 'String'
-                    elif member.type == 'int':
-                        strMethod += 'Int'
-                    elif member.type == 'float':
-                        strMethod += 'Float'
-                    elif member.type == 'bool':
-                        strMethod += 'Bool'
-                    elif member.type == 'vector2i':
-                        strMethod += 'Vector2'
-                    elif member.type == 'vector2f':
-                        strMethod += 'Vector2'
+                    if member.isLocalized:
+                        if member.type == 'string':
+                            strMethod += 'LocalizedString'
+                        else:
+                            #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping parsing method declaration.')
+                            continue
                     else:
-                        #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping parsing method declaration.')
-                        continue
-                        
-                    if member.isArray:
-                        strMethod += 'Array'
+                        if member.type == 'string':
+                            strMethod += 'String'
+                        elif member.type == 'int':
+                            strMethod += 'Int'
+                        elif member.type == 'float':
+                            strMethod += 'Float'
+                        elif member.type == 'bool':
+                            strMethod += 'Bool'
+                        elif member.type == 'vector2i':
+                            strMethod += 'Vector2'
+                        elif member.type == 'vector2f':
+                            strMethod += 'Vector2'
+                        else:
+                            #print('Error : Unkown type "'+member.type+'" for member "'+member.name+'", skipping parsing method declaration.')
+                            continue
                             
+                        if member.isArray:
+                            strMethod += 'Array'
+                                
                     _file.write('    '+ strMethod +'(context, "'+member.name +'", '+ member.code +');\n')
                 
         _file.write('}\n')
@@ -691,6 +713,9 @@ def ParseXmlClass(_xmlClass):
         else:
             print('Error : A Class Member has been declared without a type (class '+ newClass.name +').')
             
+        if 'localized' in xmlMember.attributes:
+            newMember.isLocalized = xmlMember.attributes['localized'].value     # TODO: Is there a proper python way to check/convert this to bool ?
+
         if 'default' in xmlMember.attributes:
             newMember.default = xmlMember.attributes['default'].value
             

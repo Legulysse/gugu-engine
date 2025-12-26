@@ -12,6 +12,7 @@
 #include "Gugu/Editor/Resources/VirtualDatasheetObject.h"
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/LocalizationTable.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/String.h"
 #include "Gugu/Debug/Logger.h"
@@ -471,14 +472,19 @@ bool VirtualDatasheet::HandleMigration(const FileInfo& fileInfo)
         return false;
 
     int serializationVersion = document.child("Datasheet").attribute("serializationVersion").as_int();
+
+    // Migrate up to v2.
     if (serializationVersion <= 1)
     {
         Migrate_v1_to_v2(fileInfo, document);
         SortNodes_v2(fileInfo, document);
     }
 
-    document.save_file(fileInfo.GetFileSystemPath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
+    // Check localizations.
+    EnsureLocalizations(fileInfo, document);
 
+    // Finalize.
+    document.save_file(fileInfo.GetFileSystemPath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
     return true;
 }
 
@@ -577,6 +583,51 @@ void SortObjectData_v2(pugi::xml_node objectNode)
     }
 }
 
+void EnsureObjectLocalizations(const std::string& datasheetId, pugi::xml_node objectNode)
+{
+    std::string uuid = objectNode.attribute("uuid").value();
+    std::string objectType = objectNode.attribute("type").value();
+    DatasheetParser::ClassDefinition* instanceClassDefinition = nullptr;
+    if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(objectType, instanceClassDefinition))
+    {
+        return;
+    }
+
+    for (pugi::xml_node nodeData = objectNode.child("Data"); nodeData; nodeData = nodeData.next_sibling("Data"))
+    {
+        std::string name = nodeData.attribute("name").value();
+        DatasheetParser::DataMemberDefinition* dataMemberDef = instanceClassDefinition->GetDataMemberDefinition(name);
+        if (dataMemberDef && dataMemberDef->isLocalized)
+        {
+            if (dataMemberDef->type == DatasheetParser::DataMemberDefinition::String
+                && !dataMemberDef->isArray)
+            {
+                // Ensure Localization node.
+                pugi::xml_node localizationNode = nodeData.child("Localization");
+                if (!localizationNode)
+                {
+                    localizationNode = nodeData.append_child("Localization");
+                }
+
+                // Ensure key attribute is generated.
+                pugi::xml_attribute localizationKey = localizationNode.attribute("key");
+                if (!localizationKey || StringEquals(localizationKey.as_string(), ""))
+                {
+                    std::string key = GenerateLocalizationKeyForDatasheetMember(datasheetId, uuid, dataMemberDef->name);
+                    localizationNode.append_attribute("key").set_value(key.c_str());
+                }
+
+                // Ensure timestamp attribute exists (assume a default value of zero, only allow actual edition to update this value).
+                pugi::xml_attribute localizationTimestamp = localizationNode.attribute("timestamp");
+                if (!localizationTimestamp)
+                {
+                    localizationNode.append_attribute("timestamp").set_value(0);
+                }
+            }
+        }
+    }
+}
+
 }   // namespace impl
 
 bool VirtualDatasheet::Migrate_v1_to_v2(const FileInfo& fileInfo, pugi::xml_document& document)
@@ -658,6 +709,33 @@ bool VirtualDatasheet::SortNodes_v2(const FileInfo& fileInfo, pugi::xml_document
     for (const auto& kvp : objectOverrides)
     {
         datasheetNode.append_move(kvp.second);
+    }
+
+    return true;
+}
+
+bool VirtualDatasheet::EnsureLocalizations(const FileInfo& fileInfo, pugi::xml_document& document)
+{
+    pugi::xml_node datasheetNode = document.child("Datasheet");
+    if (!datasheetNode)
+        return false;
+
+    std::string datasheetId = std::string(fileInfo.GetFileName_utf8());
+
+    // Root
+    pugi::xml_node rootObjectNode = datasheetNode.child("RootObject");
+    impl::EnsureObjectLocalizations(datasheetId, rootObjectNode);
+
+    // Instance objects
+    for (pugi::xml_node nodeObject = datasheetNode.child("Object"); nodeObject; nodeObject = nodeObject.next_sibling("Object"))
+    {
+        impl::EnsureObjectLocalizations(datasheetId, nodeObject);
+    }
+
+    // Object overrides
+    for (pugi::xml_node nodeObject = datasheetNode.child("ObjectOverride"); nodeObject; nodeObject = nodeObject.next_sibling("ObjectOverride"))
+    {
+        impl::EnsureObjectLocalizations(datasheetId, nodeObject);
     }
 
     return true;

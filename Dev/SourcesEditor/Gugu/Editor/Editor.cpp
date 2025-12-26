@@ -882,6 +882,10 @@ EditorClipboard* Editor::GetEditorClipboard() const
 
 void Editor::MigrateResources() const
 {
+    // TODO:
+    // - Since I am altering xml files directly, I should first ensure that all documents are closed and unloaded.
+    // - Alternative : Close project, migrate, Reopen project.
+
     std::vector<const ResourceInfo*> resourceInfos;
     GetResources()->GetAllResourceInfos(resourceInfos);
     for (const auto& resourceInfo : resourceInfos)

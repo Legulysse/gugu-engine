@@ -83,6 +83,21 @@ LocalizationRegisterResult LocalizationTable::TryRegisterEntry(const Localizatio
     }
 }
 
+const LocalizationTextEntry* LocalizationTable::GetEntry(const LocalizationLanguageCode& language, const LocalizationKey& key) const
+{
+    auto itLanguage = m_languageTables.find(language);
+    if (itLanguage != m_languageTables.end())
+    {
+        auto itEntry = itLanguage->second.entries.find(key);
+        if (itEntry != itLanguage->second.entries.end())
+        {
+            return &itEntry->second;
+        }
+    }
+
+    return nullptr;
+}
+
 const std::string& LocalizationTable::GetText(const LocalizationLanguageCode& language, const LocalizationKey& key) const
 {
     auto itLanguage = m_languageTables.find(language);
@@ -95,7 +110,7 @@ const std::string& LocalizationTable::GetText(const LocalizationLanguageCode& la
         }
     }
 
-    static const std::string defaultValue = "LOCA NOT FOUND";
+    static const std::string defaultValue = "";
     return defaultValue;
 }
 

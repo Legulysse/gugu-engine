@@ -203,13 +203,25 @@ ImportLocalizationDialog::ImportLocalizationDialog()
     : BaseModalDialog("Import Localization")
 {
     // Default settings.
-    m_targetDirectory = "../LocalizationExport";
+    m_exportDirectoryPath = "../../LocalizationExport";
+    m_exportFileName = "Localization.csv";
+    m_targetTable = "Default.localization.xml";
 
     // User settings.
-    //if (!GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath.empty())
-    //{
-    //    m_targetDirectory = GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath;
-    //}
+    if (!GetEditor()->GetUserSettings().localizationExportDirectoryPath.empty())
+    {
+        m_exportDirectoryPath = GetEditor()->GetUserSettings().localizationExportDirectoryPath;
+    }
+
+    if (!GetEditor()->GetUserSettings().localizationExportFileName.empty())
+    {
+        m_exportFileName = GetEditor()->GetUserSettings().localizationExportFileName;
+    }
+
+    if (!GetEditor()->GetUserSettings().localizationTargetTable.empty())
+    {
+        m_targetTable = GetEditor()->GetUserSettings().localizationTargetTable;
+    }
 }
 
 ImportLocalizationDialog::~ImportLocalizationDialog()
@@ -219,7 +231,9 @@ ImportLocalizationDialog::~ImportLocalizationDialog()
 void ImportLocalizationDialog::UpdateModalImpl(const DeltaTime& dt)
 {
     ImGui::PushItemWidth(800);
-    ImGui::InputText("Target Directory", &m_targetDirectory);
+    ImGui::InputText("Source Directory", &m_exportDirectoryPath);
+    ImGui::InputText("Source File Name", &m_exportFileName);
+    ImGui::InputText("Target Table", &m_targetTable);
 
     ImGui::Spacing();
     if (ImGui::Button("Cancel"))
@@ -254,16 +268,17 @@ void ImportLocalizationDialog::ImportLocalization()
     //   - Hard coded texts.
 
     // Save settings.
-    //GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath = m_targetDirectory;
-    //GetEditor()->SaveUserSettings();
+    GetEditor()->GetUserSettings().localizationExportDirectoryPath = m_exportDirectoryPath;
+    GetEditor()->GetUserSettings().localizationExportFileName = m_exportFileName;
+    GetEditor()->GetUserSettings().localizationTargetTable = m_targetTable;
+    GetEditor()->SaveUserSettings();
 
     // Get target localization table.
-    auto targetLocalizationTable = GetResources()->GetLocalizationTable("Default.localization.xml");
-
+    auto targetLocalizationTable = GetResources()->GetLocalizationTable(m_targetTable);
     assert(targetLocalizationTable != nullptr);
 
-    // Parse csv file.
-    FileInfo sourceFile = FileInfo::FromString_utf8(CombinePaths(m_targetDirectory, "TestLoca.csv"));
+    // Prepare csv file.
+    FileInfo sourceFile = FileInfo::FromString_utf8(CombinePaths(m_exportDirectoryPath, m_exportFileName));
 
     impl::CsvReader reader;
     if (reader.OpenFile(sourceFile))

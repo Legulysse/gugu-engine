@@ -49,6 +49,7 @@ public:
     virtual ~LocalizationTable();
 
     LocalizationRegisterResult TryRegisterEntry(const LocalizationLanguageCode& language, const LocalizationKey& key, const LocalizationTextEntry& entry);
+    const LocalizationTextEntry* GetEntry(const LocalizationLanguageCode& language, const LocalizationKey& key) const;
     const std::string& GetText(const LocalizationLanguageCode& language, const LocalizationKey& key) const;
 
     virtual EResourceType::Type GetResourceType() const override;

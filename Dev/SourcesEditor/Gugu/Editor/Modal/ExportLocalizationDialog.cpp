@@ -12,6 +12,7 @@
 
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ResourceInfo.h"
+#include "Gugu/Resources/LocalizationTable.h"
 #include "Gugu/System/Container.h"
 #include "Gugu/System/Path.h"
 #include "Gugu/System/Platform.h"
@@ -82,10 +83,10 @@ private:
     bool m_firstLineField;
 };
 
-void GatherDatasheetTexts(const FileInfo& fileInfo, CsvWriter& writer)
+void GatherDatasheetTexts(const LocalizationTable* localizationTable, const std::vector<std::string>& languageCodes, const FileInfo& datasheetFileInfo, CsvWriter& writer)
 {
     pugi::xml_document document;
-    pugi::xml_parse_result loadResult = document.load_file(fileInfo.GetFileSystemPath().c_str());
+    pugi::xml_parse_result loadResult = document.load_file(datasheetFileInfo.GetFileSystemPath().c_str());
     if (!loadResult)
         return;
 
@@ -119,15 +120,30 @@ void GatherDatasheetTexts(const FileInfo& fileInfo, CsvWriter& writer)
                     if (!memberDefinition->isArray)
                     {
                         std::string key = localizationNode.attribute("key").value();
-                        std::string timestamp = localizationNode.attribute("timestamp").value();
+                        std::string timestampStr = localizationNode.attribute("timestamp").value();
                         std::string value = dataNode.attribute("value").value();
+                        int64 timestamp = FromString<int64>(timestampStr, 0);
 
                         // Write localization text data.
-                        writer.WriteField(key);            // Key.
-                        writer.WriteField(timestamp);       // Timestamp.
+                        writer.WriteField(key);             // Key.
+                        writer.WriteField(timestampStr);    // Timestamp.
                         writer.WriteField(value);           // Workstring.
-                        writer.WriteField("");              // TODO: Project-defined list of locales.
-                        writer.WriteField("");              // TODO: Project-defined list of locales.
+                        for (const auto& languageCode : languageCodes)
+                        {
+                            if (auto entry = localizationTable->GetEntry(languageCode, key))
+                            {
+                                if (entry->timestamp < timestamp)
+                                    writer.WriteField("UPDATE");    // Text Status.
+                                else
+                                    writer.WriteField("OK");        // Text Status.
+                                writer.WriteField(entry->text);     // Text.
+                            }
+                            else
+                            {
+                                writer.WriteField("NEW");           // Text Status.
+                                writer.WriteField("");              // Text.
+                            }
+                        }
                         writer.EndLine();
                     }
                     else
@@ -163,13 +179,25 @@ ExportLocalizationDialog::ExportLocalizationDialog()
     : BaseModalDialog("Export Localization")
 {
     // Default settings.
-    m_targetDirectory = "../LocalizationExport";
+    m_exportDirectoryPath = "../../LocalizationExport";
+    m_exportFileName = "Localization.csv";
+    m_targetTable = "Default.localization.xml";
 
     // User settings.
-    //if (!GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath.empty())
-    //{
-    //    m_targetDirectory = GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath;
-    //}
+    if (!GetEditor()->GetUserSettings().localizationExportDirectoryPath.empty())
+    {
+        m_exportDirectoryPath = GetEditor()->GetUserSettings().localizationExportDirectoryPath;
+    }
+
+    if (!GetEditor()->GetUserSettings().localizationExportFileName.empty())
+    {
+        m_exportFileName = GetEditor()->GetUserSettings().localizationExportFileName;
+    }
+
+    if (!GetEditor()->GetUserSettings().localizationTargetTable.empty())
+    {
+        m_targetTable = GetEditor()->GetUserSettings().localizationTargetTable;
+    }
 }
 
 ExportLocalizationDialog::~ExportLocalizationDialog()
@@ -179,7 +207,9 @@ ExportLocalizationDialog::~ExportLocalizationDialog()
 void ExportLocalizationDialog::UpdateModalImpl(const DeltaTime& dt)
 {
     ImGui::PushItemWidth(800);
-    ImGui::InputText("Target Directory", &m_targetDirectory);
+    ImGui::InputText("Export Directory", &m_exportDirectoryPath);
+    ImGui::InputText("Export File Name", &m_exportFileName);
+    ImGui::InputText("Target Table", &m_targetTable);
 
     ImGui::Spacing();
     if (ImGui::Button("Cancel"))
@@ -201,15 +231,26 @@ void ExportLocalizationDialog::ExportLocalization()
     // - When opening the csv file with LibreOffice, be careful to enforce "" fields as string, and avoid auto-detecting numbers (timestamps may be altered if treated as numbers).
 
     // Save settings.
-    //GetEditor()->GetUserSettings().importImageSetTargetDirectoryPath = m_targetDirectory;
-    //GetEditor()->SaveUserSettings();
+    GetEditor()->GetUserSettings().localizationExportDirectoryPath = m_exportDirectoryPath;
+    GetEditor()->GetUserSettings().localizationExportFileName = m_exportFileName;
+    GetEditor()->GetUserSettings().localizationTargetTable = m_targetTable;
+    GetEditor()->SaveUserSettings();
 
     // Setup.
-    EnsureDirectoryExists(m_targetDirectory);
+    EnsureDirectoryExists(m_exportDirectoryPath);
 
-    // Prepare writer.
+    // Get target localization table.
+    auto targetLocalizationTable = GetResources()->GetLocalizationTable(m_targetTable);
+    assert(targetLocalizationTable != nullptr);
+
+    // TODO: Project-defined list of locales.
+    std::vector<std::string> languageCodes = { "en-US", "fr-FR" };
+
+    // Prepare csv writer.
+    FileInfo targetFile = FileInfo::FromString_utf8(CombinePaths(m_exportDirectoryPath, m_exportFileName));
+
     impl::CsvWriter writer;
-    writer.OpenFile(FileInfo::FromString_utf8(CombinePaths(m_targetDirectory, "TestLoca.csv")));
+    writer.OpenFile(targetFile);
 
     // Write debug entry to help external text editor undestrand we want utf8 instead of ansi.
     writer.WriteField("(Data block with some utf8 chars : éàùç)");
@@ -219,8 +260,11 @@ void ExportLocalizationDialog::ExportLocalization()
     writer.WriteField("Key");
     writer.WriteField("Timestamp");
     writer.WriteField("Workstring");
-    writer.WriteField("en-US Text");    // TODO: Project-defined list of locales.
-    writer.WriteField("fr-FR Text");    // TODO: Project-defined list of locales.
+    for (const auto& languageCode : languageCodes)
+    {
+        writer.WriteField(StringFormat("{0} Status", languageCode));
+        writer.WriteField(StringFormat("{0} Text", languageCode));
+    }
     writer.EndLine();
 
     // Gather texts.
@@ -236,7 +280,7 @@ void ExportLocalizationDialog::ExportLocalization()
         if (resourceType == EResourceType::Unknown
             && datasheetParser && datasheetParser->IsDatasheet(resourceInfo->fileInfo))
         {
-            impl::GatherDatasheetTexts(resourceInfo->fileInfo, writer);
+            impl::GatherDatasheetTexts(targetLocalizationTable, languageCodes, resourceInfo->fileInfo, writer);
         }
     }
 

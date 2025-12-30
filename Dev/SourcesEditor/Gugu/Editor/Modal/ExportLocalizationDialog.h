@@ -25,7 +25,9 @@ protected:
 
 protected:
 
-    std::string m_targetDirectory;
+    std::string m_exportDirectoryPath;
+    std::string m_exportFileName;
+    std::string m_targetTable;
 };
 
 }   //namespace gugu

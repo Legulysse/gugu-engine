@@ -27,11 +27,16 @@ bool UserSettings::LoadFromFile(const std::string& pathFile)
         return false;
 
     lastProjectFilePath = rootNode.child("LastProjectFilePath").attribute("value").as_string();
+
     importImageSetSourceDirectoryPath = rootNode.child("ImportImageSetSourceDirectoryPath").attribute("value").as_string();
     importImageSetTargetDirectoryPath = rootNode.child("ImportImageSetTargetDirectoryPath").attribute("value").as_string();
     importImageSetTargetTextureName = rootNode.child("ImportImageSetTargetTextureName").attribute("value").as_string();
     importImageSetResizeScale = rootNode.child("ImportImageSetResizeScale").attribute("value").as_float();
     importImageSetResizeFilter = rootNode.child("ImportImageSetResizeFilter").attribute("value").as_string();
+
+    localizationExportDirectoryPath = rootNode.child("LocalizationExportDirectoryPath").attribute("value").as_string();
+    localizationExportFileName = rootNode.child("LocalizationExportFileName").attribute("value").as_string();
+    localizationTargetTable = rootNode.child("LocalizationTargetTable").attribute("value").as_string();
 
     return true;
 }
@@ -43,11 +48,16 @@ bool UserSettings::SaveToFile(const std::string& pathFile) const
     rootNode.append_attribute("serializationVersion").set_value(1);
 
     rootNode.append_child("LastProjectFilePath").append_attribute("value").set_value(lastProjectFilePath.c_str());
+
     rootNode.append_child("ImportImageSetSourceDirectoryPath").append_attribute("value").set_value(importImageSetSourceDirectoryPath.c_str());
     rootNode.append_child("ImportImageSetTargetDirectoryPath").append_attribute("value").set_value(importImageSetTargetDirectoryPath.c_str());
     rootNode.append_child("ImportImageSetTargetTextureName").append_attribute("value").set_value(importImageSetTargetTextureName.c_str());
     rootNode.append_child("ImportImageSetResizeScale").append_attribute("value").set_value(importImageSetResizeScale);
     rootNode.append_child("ImportImageSetResizeFilter").append_attribute("value").set_value(importImageSetResizeFilter.c_str());
+    
+    rootNode.append_child("LocalizationExportDirectoryPath").append_attribute("value").set_value(localizationExportDirectoryPath.c_str());
+    rootNode.append_child("LocalizationExportFileName").append_attribute("value").set_value(localizationExportFileName.c_str());
+    rootNode.append_child("LocalizationTargetTable").append_attribute("value").set_value(localizationTargetTable.c_str());
 
     return document.save_file(FileInfo::FromString_utf8(pathFile).GetFileSystemPath().c_str(), PUGIXML_TEXT("\t"), pugi::format_default, pugi::encoding_utf8);
 }

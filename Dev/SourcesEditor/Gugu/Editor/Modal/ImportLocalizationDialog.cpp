@@ -251,22 +251,6 @@ void ImportLocalizationDialog::UpdateModalImpl(const DeltaTime& dt)
 
 void ImportLocalizationDialog::ImportLocalization()
 {
-    // TODO:
-    // [Importer]
-    // - Select target table.
-    // - Select source csv.
-    // - [done] Parse csv and transfer data into the table.
-    // - [done] Store data in table.
-    // - [done] Save/Load table data.
-    // [Runtime]
-    // - Fill datasheet strings with their translation.
-    // - Do I need a special LocalizedString type to store an ID and be able to query localization ?
-    //   - This could allow for texts reloads without reparsing the datasheets.
-    // [Game]
-    // - Handle remaining localization sources.
-    //   - UI widgets.
-    //   - Hard coded texts.
-
     // Save settings.
     GetEditor()->GetUserSettings().localizationExportDirectoryPath = m_exportDirectoryPath;
     GetEditor()->GetUserSettings().localizationExportFileName = m_exportFileName;

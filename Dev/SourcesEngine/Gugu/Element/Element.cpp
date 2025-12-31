@@ -754,15 +754,18 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
         RecomputeIfNeeded();
 
         sf::Transform combinedTransform = _kTransformParent * GetTransform();
-        
+
         if ((_kRenderPass.pass & m_renderPass) != GUGU_RENDERPASS_INVALID)
         {
             RenderImpl(_kRenderPass, combinedTransform);
         }
-        
-        for (size_t i = 0; i < m_children.size(); ++i)
+
+        if (!HasImplChildrenRendering())
         {
-            m_children[i]->Render(_kRenderPass, combinedTransform);
+            for (size_t i = 0; i < m_children.size(); ++i)
+            {
+                m_children[i]->Render(_kRenderPass, combinedTransform);
+            }
         }
 
         //Debug Bounds

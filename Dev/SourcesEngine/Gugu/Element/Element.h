@@ -227,6 +227,7 @@ protected:
     // Render
 
     virtual void RecomputeImpl() {}
+    virtual bool HasImplChildrenRendering() const { return false; }
     virtual void RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf) {}
 
     //----------------------------------------------

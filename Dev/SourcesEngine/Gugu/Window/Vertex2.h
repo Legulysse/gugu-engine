@@ -34,7 +34,13 @@ void AppendLineVertices(sf::VertexArray& array, const Vector2f& a, const Vector2
 void AppendTriangleVertices(sf::VertexArray& array, const Vector2f& a, const Vector2f& b, const Vector2f& c);
 
 // Append 6 vertices to a given array, forming a quad (two triangles).
-// This method expects abcd positions to form a "Z" shape.
+void AppendQuadVertices(sf::VertexArray& array);
+
+// Append 6 vertices to a given array, forming a quad (abcd positions should form a "Z" shape).
 void AppendQuadVertices(sf::VertexArray& array, const Vector2f& a, const Vector2f& b, const Vector2f& c, const Vector2f& d);
+
+// Update vertices of the given array/quad (abcd positions should form a "Z" shape).
+void UpdateQuadVertexPositions(sf::VertexArray& array, const Vector2f& a, const Vector2f& b, const Vector2f& c, const Vector2f& d);
+void UpdateQuadVertexTexCoords(sf::VertexArray& array, const Vector2f& a, const Vector2f& b, const Vector2f& c, const Vector2f& d);
 
 }   // namespace gugu

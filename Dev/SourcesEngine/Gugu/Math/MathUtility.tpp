@@ -84,7 +84,7 @@ T Sign(T value)
 {
     if (value > (T)0) return (T)1;
     if (value < (T)0) return (T)-1;
-    return value;
+    return (T)0;
 }
 
 template <typename T>

@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 // Includes
 
 #include "Gugu/Common.h"
@@ -38,9 +38,9 @@ int main(int argc, char* argv[])
     //----------------------------------------------
     
     ElementText* pText = GetGameWindow()->GetUINode()->AddChild<ElementText>();
-    pText->SetFont("mplus-1p-medium.ttf");
+    pText->SetFont("MPLUS1p-Medium.ttf");
     pText->SetText("Hello World !");
-    //pText->SetText(u8"יטאח");  // "れぐーさん"    "יטאח"
+    //pText->SetText("れぐーさん");
     pText->SetUnifiedOrigin(UDim2::POSITION_CENTER);
     pText->SetUnifiedPosition(UDim2::POSITION_CENTER);
     

@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/System/Types.h"
 #include "Gugu/System/TypeTraits.h"
 
 #include <string>

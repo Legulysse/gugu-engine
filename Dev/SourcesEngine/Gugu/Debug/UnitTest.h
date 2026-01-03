@@ -6,6 +6,7 @@
 #include "Gugu/Common.h"
 #include "Gugu/System/String.h"
 #include "Gugu/Math/MathUtility.h"
+#include "Gugu/Math/Vector2.h"
 #include "Gugu/Debug/Logger.h"
 
 ////////////////////////////////////////////////////////////////

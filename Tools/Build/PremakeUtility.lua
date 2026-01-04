@@ -658,7 +658,7 @@ function IncludeDefaultSolutionDefinition(BuildCfg, DirSolution)
 
     configurations { "DevDebug", "DevRelease", "ProdMaster" } 	-- "Debug", "Release", "Master" (Visual sorts configurations alphabetically)
     platforms { "x64" }  	-- "x86", "x64"
-    cppdialect "c++17"   	-- "c++14", "c++17", "c++20"
+    cppdialect "c++20"   	-- "c++14", "c++17", "c++20"
     cdialect "c11"   	    -- "c99", "c11", "c17"
     
 end
@@ -682,7 +682,7 @@ function IncludeDefaultAppDefinition(BuildCfg, TargetName, DirSources, DirVersio
     defines { "UNICODE", "_UNICODE" }
     defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
     buildoptions { "/utf-8" }           -- Consider source code files to be utf8 instead of current code page.
-    --buildoptions { "/Zc:char8_t-" }     -- Disable char8_t (This may help when migrating to c++20) (windows only, should be -fno-char8_t on gcc)
+    buildoptions { "/Zc:char8_t-" }     -- Disable char8_t (This may help when migrating to c++20) (windows only, should be -fno-char8_t on gcc)
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"
@@ -749,7 +749,7 @@ function IncludeDefaultLibDefinition(BuildCfg, TargetName)
     defines { "UNICODE", "_UNICODE" }
     defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
     buildoptions { "/utf-8" }           -- Consider source code files to be utf8 instead of current code page.
-    --buildoptions { "/Zc:char8_t-" }     -- Disable char8_t (This may help when migrating to c++20) (windows only, should be -fno-char8_t on gcc)
+    buildoptions { "/Zc:char8_t-" }     -- Disable char8_t (This may help when migrating to c++20) (windows only, should be -fno-char8_t on gcc)
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"
@@ -802,7 +802,7 @@ function IncludeDependencyLibDefinition(BuildCfg, TargetName)
     defines { "UNICODE", "_UNICODE" }
     defines { "_WINSOCK_DEPRECATED_NO_WARNINGS" }                   -- disable winsock deprecation warnings
     buildoptions { "/utf-8" }           -- Consider source code files to be utf8 instead of current code page.
-    --buildoptions { "/Zc:char8_t-" }     -- Disable char8_t (This may help when migrating to c++20) (windows only, should be -fno-char8_t on gcc)
+    buildoptions { "/Zc:char8_t-" }     -- Disable char8_t (This may help when migrating to c++20) (windows only, should be -fno-char8_t on gcc)
     flags { "MultiProcessorCompile" }   -- /MP
     systemversion "latest"
     characterset "Unicode"

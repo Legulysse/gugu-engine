@@ -117,15 +117,21 @@ struct CustomPromise
     CustomCoroutine get_return_object() { return { CustomCoroutine::from_promise(*this) }; }
     std::suspend_always initial_suspend() noexcept { return {}; }
     std::suspend_always final_suspend() noexcept { return {}; }
-    std::suspend_always yield_value(nullptr_t x) { return {}; }
-    //std::suspend_always yield_value(CustomCoroutine x) { return {}; }
+    //std::suspend_always yield_value(nullptr_t x) { return {}; }
+    std::suspend_always yield_value(CustomCoroutine x)
+    {
+        m_lastYield = x;
+        return {};
+    }
     void return_void() {}
     void unhandled_exception() {}
+
+    CustomCoroutine m_lastYield;
 };
 
-#define YIELD_RETURN_NULL co_yield 0
+//#define YIELD_RETURN_NULL co_yield 0
 //#define YIELD_RETURN_NULL co_yield nullptr
-//#define YIELD_RETURN_NULL co_yield {}
+#define YIELD_RETURN_NULL co_yield {}
 
 
 struct CustomSubroutineAwaiter
@@ -138,7 +144,8 @@ public:
     //bool await_resume() noexcept { m_subroutine.resume(); }
     //bool await_resume() noexcept { m_subroutine.resume(); return !m_subroutine.done(); }
     //void await_suspend(std::coroutine_handle<> h) noexcept { }
-    std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept { return m_subroutine; }
+    //std::coroutine_handle<> await_suspend(std::coroutine_handle<> h) noexcept { return m_subroutine; }
+    bool await_suspend(std::coroutine_handle<> h) noexcept { return true; }
 private:
     CustomCoroutine m_subroutine;
 };
@@ -186,7 +193,21 @@ class TaskC
 public:
     void Begin()                { m_coroutine = RunImpl(); }
     bool IsInProgress() const   { return !m_coroutine.done(); }
-    void Progress()             { if (!m_coroutine.done()) m_coroutine.resume(); }
+    void Progress()
+    {
+        if (!m_coroutine.done())
+            m_coroutine.resume();
+        if (m_coroutine.promise().m_lastYield)
+        {
+            auto stackedRoutine = m_coroutine.promise().m_lastYield;
+            m_coroutine.promise().m_lastYield = {};
+            while (!stackedRoutine.done())
+            {
+                stackedRoutine.resume();
+            }
+            stackedRoutine.destroy();
+        }
+    }
     void Finalize()             { m_coroutine.destroy(); }
 protected:
     virtual CustomCoroutine RunImpl() = 0;
@@ -221,6 +242,10 @@ protected:
             YIELD_RETURN_NULL;
         }
         subroutine.destroy();
+
+        // yield subroutine
+        gugu::WriteInIDEConsoleEndline(gugu::StringFormat("Yield subroutine start (A) {0}", m_name));
+        co_yield WaitForTicks(4);
 
         // Wrapped subroutine
         gugu::WriteInIDEConsoleEndline(gugu::StringFormat("Wrapped subroutine start (A) {0}", m_name));

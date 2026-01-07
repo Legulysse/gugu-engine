@@ -57,7 +57,9 @@ public:
 
     void            SetViewport (const sf::FloatRect& _kViewport);
 
-    Vector2f        GetPickedPosition   (const Vector2i& _kMouseCoords) const;
+    Vector2i WorldToScreenPosition(const Vector2f& worldPosition) const;
+    Vector2f ScreenToWorldPosition(const Vector2i& screenPosition) const;
+
     bool            IsMouseOverCamera   (const Vector2i& _kMouseCoords) const;
     bool            IsMouseOverElement  (const Vector2i& _kMouseCoords, Element* _pElement) const;
     bool            IsMouseOverElement  (const Vector2i& _kMouseCoords, Element* _pElement, Vector2f& localPickedCoords) const;

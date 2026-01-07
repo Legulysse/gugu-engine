@@ -172,9 +172,14 @@ void Camera::ComputeViewCenter()
     }
 }
 
-Vector2f Camera::GetPickedPosition(const Vector2i& _kMouseCoords) const
+Vector2i Camera::WorldToScreenPosition(const Vector2f& worldPosition) const
 {
-    return m_window->GetSFRenderWindow()->mapPixelToCoords(_kMouseCoords, m_sfView);
+    return m_window->GetSFRenderWindow()->mapCoordsToPixel(worldPosition, m_sfView);
+}
+
+Vector2f Camera::ScreenToWorldPosition(const Vector2i& screenPosition) const
+{
+    return m_window->GetSFRenderWindow()->mapPixelToCoords(screenPosition, m_sfView);
 }
 
 bool Camera::IsMouseOverCamera(const Vector2i& _kMouseCoords) const
@@ -207,7 +212,7 @@ bool Camera::IsMouseOverElement(const Vector2i& _kMouseCoords, Element* _pElemen
     if (!bSceneNode && !bWindowNode)
         return false;
 
-    return _pElement->IsPicked(GetPickedPosition(_kMouseCoords), localPickedCoords);
+    return _pElement->IsPicked(ScreenToWorldPosition(_kMouseCoords), localPickedCoords);
 }
 
 }   // namespace gugu

@@ -58,7 +58,7 @@ void ControllerPlayer::HandleSkills(const DeltaTime& dt)
     {
         Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
         Camera* pCamera = GetGameWindow()->GetCamera(0);
-        Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
+        Vector2f kPickedPosition = pCamera->ScreenToWorldPosition(kMouseCoords);    //TODO: shortcuts (Camera->GetPickedPosition, Window->GetPickedPosition
         m_character->UseSkillByIndex(0, kPickedPosition, dt);       //TODO: test with varrying world transform
     }
 
@@ -66,7 +66,7 @@ void ControllerPlayer::HandleSkills(const DeltaTime& dt)
     {
         Vector2i kMouseCoords = GetGameWindow()->GetMousePixelCoords();
         Camera* pCamera = GetGameWindow()->GetCamera(0);
-        Vector2f kPickedPosition = pCamera->GetPickedPosition(kMouseCoords);
+        Vector2f kPickedPosition = pCamera->ScreenToWorldPosition(kMouseCoords);
         m_character->UseSkillByIndex(1, kPickedPosition, dt);
     }
 }

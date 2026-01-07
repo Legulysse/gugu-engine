@@ -41,6 +41,10 @@ void State::Update(const DeltaTime& dt)
 {
 }
 
+void State::LateUpdate(const DeltaTime& dt)
+{
+}
+
 void State::SetOwner(StateMachine* _pOwner)
 {
     m_owner = _pOwner;

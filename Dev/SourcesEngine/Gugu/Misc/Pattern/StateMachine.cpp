@@ -237,4 +237,10 @@ void StateMachine::Update(const DeltaTime& dt)
     //}
 }
 
+void StateMachine::LateUpdate(const DeltaTime& dt)
+{
+    if (GetState())
+        GetState()->LateUpdate(dt);
+}
+
 }   // namespace gugu

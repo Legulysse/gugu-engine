@@ -62,7 +62,6 @@ void ManagerNetwork::StartListening(uint16 _uiPort)
     if (!m_logNetwork)
     {
         m_logNetwork = new LoggerEngine();
-        m_logNetwork->SetIDEConsoleOutput(false);
         m_logNetwork->SetFilePath("Network.log");
     }
 

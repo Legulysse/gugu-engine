@@ -188,20 +188,21 @@ bool EnsureDirectoryExists(std::string_view path_utf8)
 
 #if defined(GUGU_OS_WINDOWS)
 
-    std::vector<std::string> vecDirectories;
-    StdStringSplit(path_utf8, system::PathSeparator, vecDirectories);
+    std::vector<std::string> directoryChain;
+    StdStringSplit(path_utf8, system::PathSeparator, directoryChain);
 
-    std::string strCombinedPath = "";
-    for (auto strSubDirectory : vecDirectories)
+    std::string combinedPath = "";
+    for (const auto& directory : directoryChain)
     {
-        strCombinedPath += strSubDirectory;
+        combinedPath = CombinePaths(combinedPath, directory);
 
-        if (!(CreateDirectoryA(strCombinedPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError()))
+        if (CreateDirectoryA(combinedPath.c_str(), NULL) == false)
         {
-            return false;
+            if (GetLastError() != ERROR_ALREADY_EXISTS)
+            {
+                return false;
+            }
         }
-
-        strCombinedPath.push_back(system::PathSeparator);
     }
 
     return true;

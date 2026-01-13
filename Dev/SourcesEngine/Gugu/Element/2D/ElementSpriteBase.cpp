@@ -139,6 +139,17 @@ void ElementSpriteBase::SetColor(const sf::Color& color)
     }
 }
 
+void ElementSpriteBase::SetColorRGB(const sf::Color& color)
+{
+    if (m_color.r != color.r || m_color.g != color.g || m_color.b != color.b)
+    {
+        m_color.r = color.r;
+        m_color.g = color.g;
+        m_color.b = color.b;
+        RaiseDirtyVertices();
+    }
+}
+
 void ElementSpriteBase::SetColorAlpha(uint8 alpha)
 {
     if (m_color.a != alpha)

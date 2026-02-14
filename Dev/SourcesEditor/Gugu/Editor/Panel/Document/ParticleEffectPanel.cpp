@@ -12,6 +12,7 @@
 #include "Gugu/Core/DeltaTime.h"
 #include "Gugu/Resources/ManagerResources.h"
 #include "Gugu/Resources/ParticleEffect.h"
+#include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/VisualEffects/ParticleSystem.h"
 #include "Gugu/VisualEffects/ManagerVisualEffects.h"
@@ -342,6 +343,13 @@ void ParticleEffectPanel::UpdatePropertiesImpl(const DeltaTime& dt)
     ImGui::EndDisabled();
 
     ImGui::Spacing();
+
+    std::string textureID = particleSettings->texture == nullptr ? "" : particleSettings->texture->GetID();
+    if (ImGui::InputText("texture", &textureID, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        particleSettings->texture = (textureID == "") ? nullptr : GetResources()->GetTexture(textureID);
+        updated |= true;
+    }
 
     std::string imageSetID = particleSettings->imageSet == nullptr ? "" : particleSettings->imageSet->GetID();
     if (ImGui::InputText("imageSet", &imageSetID, ImGuiInputTextFlags_EnterReturnsTrue))

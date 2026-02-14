@@ -14,6 +14,7 @@
 
 namespace gugu
 {
+    class Texture;
     class ImageSet;
 }
 
@@ -96,6 +97,7 @@ struct ParticleSystemSettings
     bool updateColorOverLifetime = false;
     sf::Color startColor = sf::Color::White;
     sf::Color endColor = sf::Color::Black;
+    Texture* texture = nullptr;
     ImageSet* imageSet = nullptr;
 };
 

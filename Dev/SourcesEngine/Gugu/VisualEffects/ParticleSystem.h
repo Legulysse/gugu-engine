@@ -73,8 +73,8 @@ private:
     size_t m_maxParticleCount;
     size_t m_verticesPerParticle;
     sf::PrimitiveType m_primitiveType;
-    ImageSet* m_imageSet;
     sf::Texture* m_texture;
+    ImageSet* m_imageSet;
     Element* m_element;
     Vector2f m_emitterPosition;
     float m_emitterRotation;

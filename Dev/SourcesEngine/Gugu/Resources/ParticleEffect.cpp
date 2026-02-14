@@ -8,6 +8,7 @@
 // Includes
 
 #include "Gugu/Resources/ManagerResources.h"
+#include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
@@ -168,8 +169,8 @@ bool ParticleEffect::LoadFromXml(const pugi::xml_document& document)
     xml::ParseColor(nodeParticleEffect.child("StartColor"), m_particleSettings.startColor, m_particleSettings.startColor);
     xml::ParseColor(nodeParticleEffect.child("EndColor"), m_particleSettings.endColor, m_particleSettings.endColor);
 
-    // TODO: Rename as ImageSet + source.
-    m_particleSettings.imageSet = GetResources()->GetImageSet(nodeParticleEffect.child("ImageSetID").attribute("value").as_string());
+    m_particleSettings.texture = GetResources()->GetTexture(nodeParticleEffect.child("Texture").attribute("source").as_string());
+    m_particleSettings.imageSet = GetResources()->GetImageSet(nodeParticleEffect.child("ImageSet").attribute("source").as_string());
 
     // Finalize
     m_particleSettings.particleShape = particleShapeStringToEnum.at(particleShapeValue);
@@ -273,15 +274,17 @@ bool ParticleEffect::SaveToXml(pugi::xml_document& document) const
     xml::WriteColor(nodeParticleEffect.append_child("StartColor"), m_particleSettings.startColor);
     xml::WriteColor(nodeParticleEffect.append_child("EndColor"), m_particleSettings.endColor);
 
+    pugi::xml_node textureNode = nodeParticleEffect.append_child("Texture");
+    pugi::xml_node imageSetNode = nodeParticleEffect.append_child("ImageSet");
+
+    if (m_particleSettings.texture)
+    {
+        textureNode.append_attribute("source").set_value(m_particleSettings.texture->GetID().c_str());
+    }
+
     if (m_particleSettings.imageSet)
     {
-        // TODO: Rename as ImageSet + source.
-        nodeParticleEffect.append_child("ImageSetID").append_attribute("value").set_value(m_particleSettings.imageSet->GetID().c_str());
-    }
-    else
-    {
-        // TODO: Rename as ImageSet + source.
-        nodeParticleEffect.append_child("ImageSetID").append_attribute("value");
+        imageSetNode.append_attribute("source").set_value(m_particleSettings.imageSet->GetID().c_str());
     }
 
     return true;

@@ -19,6 +19,7 @@
 #include "Gugu/Math/MathUtility.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -132,6 +133,10 @@ void ParticleSystem::Init(const ParticleSystemSettings& settings)
     {
         m_imageSet = m_settings.imageSet;
         m_texture = m_imageSet->GetTexture()->GetSFTexture();
+    }
+    else if (m_settings.texture)
+    {
+        m_texture = m_settings.texture->GetSFTexture();
     }
 }
 
@@ -321,6 +326,21 @@ void ParticleSystem::EmitParticle(size_t particleIndex)
         float fTop = (float)subRect.position.y;
         float fRight = fLeft + subRect.size.x;
         float fBottom = fTop + subRect.size.y;
+
+        sf::Vertex* vertices = &m_dataVertices[particleIndex * 6];
+        vertices->texCoords = Vector2f(fLeft, fTop); ++vertices;
+        vertices->texCoords = Vector2f(fRight, fTop); ++vertices;
+        vertices->texCoords = Vector2f(fLeft, fBottom); ++vertices;
+        vertices->texCoords = Vector2f(fRight, fTop); ++vertices;
+        vertices->texCoords = Vector2f(fLeft, fBottom); ++vertices;
+        vertices->texCoords = Vector2f(fRight, fBottom);
+    }
+    else if (m_texture)
+    {
+        float fLeft = 0.f;
+        float fTop = 0.f;
+        float fRight = (float)m_texture->getSize().x;
+        float fBottom = (float)m_texture->getSize().y;
 
         sf::Vertex* vertices = &m_dataVertices[particleIndex * 6];
         vertices->texCoords = Vector2f(fLeft, fTop); ++vertices;

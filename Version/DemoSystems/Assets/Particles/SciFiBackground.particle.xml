@@ -24,5 +24,6 @@
 	<UpdateColorOverLifetime value="true" />
 	<StartColor r="255" g="255" b="255" a="128" />
 	<EndColor r="255" g="255" b="255" a="0" />
-	<ImageSetID value="" />
+	<Texture />
+	<ImageSet />
 </ParticleEffect>

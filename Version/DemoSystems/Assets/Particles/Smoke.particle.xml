@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<ParticleEffect serializationVersion="1">
+	<Loop value="true" />
+	<Duration value="5000" />
+	<UseUnscaledTime value="false" />
+	<MaxParticleCount value="50" />
+	<ParticleShape value="Quad" />
+	<SortBuffer value="true" />
+	<LocalSpace value="false" />
+	<EmitterShape value="Circle" />
+	<EmitterRadius value="20" />
+	<EmitterInnerRadius value="50" />
+	<SpawnPerSecond random="false" min="5" max="10" />
+	<ParticlesPerSpawn random="false" min="1" max="1" />
+	<EmissionBehaviour value="AngleDirection" />
+	<EmissionDirection x="0" y="-1" />
+	<EmissionAngle value="45" />
+	<Lifetime random="true" min="2500" max="3000" />
+	<Velocity random="true" min="75" max="95" />
+	<KeepSizeRatio value="true" />
+	<StartSize random="true" min_x="32" min_y="32" max_x="64" max_y="64" />
+	<UpdateSizeOverLifetime value="true" />
+	<EndSize random="false" min_x="256" min_y="256" max_x="0" max_y="0" />
+	<UpdateColorOverLifetime value="true" />
+	<StartColor r="0" g="0" b="0" a="255" />
+	<EndColor r="0" g="0" b="0" a="0" />
+	<Texture source="smoke_07.png" />
+	<ImageSet />
+</ParticleEffect>

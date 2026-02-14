@@ -1,29 +1,29 @@
 <?xml version="1.0"?>
 <ParticleEffect serializationVersion="1">
 	<Loop value="true" />
-	<Duration value="0" />
+	<Duration value="5000" />
 	<UseUnscaledTime value="false" />
-	<MaxParticleCount value="20000" />
+	<MaxParticleCount value="50" />
 	<ParticleShape value="Quad" />
 	<SortBuffer value="true" />
 	<LocalSpace value="false" />
-	<EmitterShape value="Annulus" />
-	<EmitterRadius value="100" />
-	<EmitterInnerRadius value="100" />
-	<SpawnPerSecond random="false" min="2000" max="10" />
+	<EmitterShape value="Circle" />
+	<EmitterRadius value="50" />
+	<EmitterInnerRadius value="50" />
+	<SpawnPerSecond random="false" min="10" max="10" />
 	<ParticlesPerSpawn random="false" min="1" max="1" />
 	<EmissionBehaviour value="AwayFromCenter" />
 	<EmissionDirection x="0" y="-1" />
 	<EmissionAngle value="90" />
-	<Lifetime random="false" min="8000" max="500" />
-	<Velocity random="true" min="0" max="20" />
+	<Lifetime random="true" min="500" max="2000" />
+	<Velocity random="true" min="40" max="60" />
 	<KeepSizeRatio value="true" />
-	<StartSize random="false" min_x="10" min_y="2" max_x="5" max_y="5" />
-	<UpdateSizeOverLifetime value="true" />
+	<StartSize random="false" min_x="64" min_y="64" max_x="5" max_y="5" />
+	<UpdateSizeOverLifetime value="false" />
 	<EndSize random="false" min_x="0" min_y="0" max_x="0" max_y="0" />
 	<UpdateColorOverLifetime value="true" />
-	<StartColor r="255" g="253" b="101" a="255" />
-	<EndColor r="161" g="0" b="0" a="100" />
-	<Texture />
+	<StartColor r="251" g="0" b="0" a="255" />
+	<EndColor r="255" g="0" b="0" a="0" />
+	<Texture source="star_04.png" />
 	<ImageSet />
 </ParticleEffect>

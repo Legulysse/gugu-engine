@@ -175,35 +175,38 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_mouseNode->SetVisible(false);
 
     //Console Node
-    m_consoleNode = m_rootNode->AddChild<Element>();
-    //m_pConsoleNode->SetExtendViewOnResize(true);
-    //m_pConsoleNode->SetSize((float)config.windowWidth, (float)config.windowHeight);
-    m_consoleNode->SetUnifiedSize(UDim2::SIZE_FULL);
-    m_consoleNode->SetVisible(false);
+    if (config.allowConsole)
+    {
+        m_consoleNode = m_rootNode->AddChild<Element>();
+        //m_pConsoleNode->SetExtendViewOnResize(true);
+        //m_pConsoleNode->SetSize((float)config.windowWidth, (float)config.windowHeight);
+        m_consoleNode->SetUnifiedSize(UDim2::SIZE_FULL);
+        m_consoleNode->SetVisible(false);
 
-    sf::Image consoleImage(Vector2u(8, 8), sf::Color(0, 0, 0, 150));
+        sf::Image consoleImage(Vector2u(8, 8), sf::Color(0, 0, 0, 150));
 
-    Texture* pTextureConsole = GetResources()->GetCustomTexture("GuguConsoleBackground");   //TODO: Prepare custom textures in the manager beforehand
-    sf::Texture* pSFTextureConsole = pTextureConsole->GetSFTexture();
-    bool loadResult = pSFTextureConsole->loadFromImage(consoleImage);
+        Texture* pTextureConsole = GetResources()->GetCustomTexture("GuguConsoleBackground");   //TODO: Prepare custom textures in the manager beforehand
+        sf::Texture* pSFTextureConsole = pTextureConsole->GetSFTexture();
+        bool loadResult = pSFTextureConsole->loadFromImage(consoleImage);
 
-    Font* pFont = GetResources()->GetDebugFont();
+        Font* pFont = GetResources()->GetDebugFont();
 
-    ElementSprite* pConsoleBackground = m_consoleNode->AddChild<ElementSprite>();
-    pConsoleBackground->SetTexture(pTextureConsole);
-    pConsoleBackground->SetUnifiedSize(UDim2(Vector2f(1.f, 0.f), Vector2f(0.f, 200.f)));
+        ElementSprite* pConsoleBackground = m_consoleNode->AddChild<ElementSprite>();
+        pConsoleBackground->SetTexture(pTextureConsole);
+        pConsoleBackground->SetUnifiedSize(UDim2(Vector2f(1.f, 0.f), Vector2f(0.f, 200.f)));
 
-    m_consoleTextEntry = pConsoleBackground->AddChild<ElementEditableText>();
-    m_consoleTextEntry->SetResizeRule(ETextResizeRule::FixedSize);
-    m_consoleTextEntry->SetFont(pFont);
-    m_consoleTextEntry->SetText("");
-    m_consoleTextEntry->SetMultiline(false);
-    //m_pConsoleTextEntry->SetEditable(true);
-    m_consoleTextEntry->SetColor(sf::Color(220, 220, 220));
-    m_consoleTextEntry->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT);
-    m_consoleTextEntry->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
-    m_consoleTextEntry->SetUnifiedSize(UDim2(Vector2f(1.f, 0.f), Vector2f(0.f, 30.f)));
-    m_consoleTextEntry->SetOnValidate(std::bind(&Window::OnConsoleCommandValidated, this));
+        m_consoleTextEntry = pConsoleBackground->AddChild<ElementEditableText>();
+        m_consoleTextEntry->SetResizeRule(ETextResizeRule::FixedSize);
+        m_consoleTextEntry->SetFont(pFont);
+        m_consoleTextEntry->SetText("");
+        m_consoleTextEntry->SetMultiline(false);
+        //m_pConsoleTextEntry->SetEditable(true);
+        m_consoleTextEntry->SetColor(sf::Color(220, 220, 220));
+        m_consoleTextEntry->SetUnifiedPosition(UDim2::POSITION_BOTTOM_LEFT);
+        m_consoleTextEntry->SetUnifiedOrigin(UDim2::POSITION_BOTTOM_LEFT);
+        m_consoleTextEntry->SetUnifiedSize(UDim2(Vector2f(1.f, 0.f), Vector2f(0.f, 30.f)));
+        m_consoleTextEntry->SetOnValidate(std::bind(&Window::OnConsoleCommandValidated, this));
+    }
 
     // Stats
     m_statsDrawer = new StatsDrawer;
@@ -476,6 +479,7 @@ void Window::Render(const sf::Time& loopTime, const EngineStats& engineStats)
             m_statsDrawer->DrawFPS(loopTime, this);
     }
 
+    if (m_consoleNode)
     {
         GUGU_SCOPE_TRACE_MAIN("Console");
 
@@ -499,6 +503,8 @@ void Window::Display()
 
 void Window::OnConsoleCommandValidated()
 {
+    assert(m_consoleNode);
+
     std::string strCommandLine = m_consoleTextEntry->GetText();
     GetEngine()->ComputeCommandLine(strCommandLine);
 
@@ -561,25 +567,29 @@ bool Window::ProcessEvents()
         {
             ComputeSize(resizedEvent->size);
         }
-        else if (const auto keyPressedEvent = event->getIf<sf::Event::KeyPressed>(); keyPressedEvent && keyPressedEvent->scancode == sf::Keyboard::Scan::Grave)
-        {
-            if (!m_consoleNode->IsVisible())
-            {
-                m_consoleNode->SetVisible(true);
-                m_consoleTextEntry->StartEdition();
-            }
-            else
-            {
-                m_consoleTextEntry->StopEdition();
-                m_consoleNode->SetVisible(false);
-            }
 
-            propagateEvent = false;
-        }
-        else if (m_consoleNode->IsVisible())
+        if (m_consoleNode)
         {
-            m_consoleTextEntry->ProcessSFEvent(*event);
-            propagateEvent = false;
+            if (const auto keyPressedEvent = event->getIf<sf::Event::KeyPressed>(); keyPressedEvent && keyPressedEvent->scancode == sf::Keyboard::Scan::Grave)
+            {
+                if (!m_consoleNode->IsVisible())
+                {
+                    m_consoleNode->SetVisible(true);
+                    m_consoleTextEntry->StartEdition();
+                }
+                else
+                {
+                    m_consoleTextEntry->StopEdition();
+                    m_consoleNode->SetVisible(false);
+                }
+
+                propagateEvent = false;
+            }
+            else if (m_consoleNode->IsVisible())
+            {
+                m_consoleTextEntry->ProcessSFEvent(*event);
+                propagateEvent = false;
+            }
         }
 
         if (m_hostImGui && propagateEvent)
@@ -590,7 +600,7 @@ bool Window::ProcessEvents()
                 && !(keyReleasedEvent && keyReleasedEvent->scancode == sf::Keyboard::Scan::Unknown))
             {
                 // This will help disabling imgui text entries, but not the mouse events, they are handled in ImGui::SFML::Update.
-                if (!m_consoleNode->IsVisible())
+                if (!IsConsoleVisible())
                 {
                     ImGui::SFML::ProcessEvent(*m_sfWindow, *event);
                 }
@@ -668,7 +678,7 @@ bool Window::IsHostingImGui() const
 
 bool Window::IsConsoleVisible() const
 {
-    return m_consoleNode->IsVisible();
+    return m_consoleNode && m_consoleNode->IsVisible();
 }
 
 Element* Window::GetRootNode() const

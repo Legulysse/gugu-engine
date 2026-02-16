@@ -59,6 +59,7 @@ struct EngineConfig
     int maxMusicSourceCount;     // Total sources should not exceed 256.
 
     // Debug
+    bool allowConsole;
     bool showStats;
     bool showFPS;
     bool showImGui;
@@ -95,6 +96,7 @@ struct EngineConfig
         maxSoundSourceCount = 240;   // Total tracks should not exceed 256
         maxMusicSourceCount = 16;    // Total tracks should not exceed 256
 
+        allowConsole = true;
         showStats = false;
         showFPS = false;
         showImGui = false;

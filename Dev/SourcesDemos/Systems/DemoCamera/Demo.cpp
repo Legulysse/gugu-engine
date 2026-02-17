@@ -54,17 +54,17 @@ void Demo::AppStart()
     inputs->LoadInputFile("Bindings.xml");
     
     //Method 2 : register keys manually
-    inputs->RegisterInput("Player_1_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Z));
-    inputs->RegisterInput("Player_1_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Key::S));
-    inputs->RegisterInput("Player_1_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Q));
-    inputs->RegisterInput("Player_1_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Key::D));
+    inputs->RegisterInput("Player_1_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::W));
+    inputs->RegisterInput("Player_1_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::A));
+    inputs->RegisterInput("Player_1_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::S));
+    inputs->RegisterInput("Player_1_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::D));
 
-    inputs->RegisterInput("Player_2_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Up));
-    inputs->RegisterInput("Player_2_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Down));
-    inputs->RegisterInput("Player_2_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Left));
-    inputs->RegisterInput("Player_2_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Right));
+    inputs->RegisterInput("Player_2_Up", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::Up));
+    inputs->RegisterInput("Player_2_Left", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::Left));
+    inputs->RegisterInput("Player_2_Down", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::Down));
+    inputs->RegisterInput("Player_2_Right", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::Right));
 
-    inputs->RegisterInput("Exit", inputs->BuildKeyboardEvent(sf::Keyboard::Key::Escape));
+    inputs->RegisterInput("Exit", inputs->BuildKeyboardEvent(sf::Keyboard::Scan::Escape));
 
     // Run demo
     CreateScenario();

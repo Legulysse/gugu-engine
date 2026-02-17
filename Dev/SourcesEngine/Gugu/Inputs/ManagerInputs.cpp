@@ -66,7 +66,9 @@ void ManagerInputs::LoadInputFile(const std::string& _strPath)
     pugi::xml_node oNodeBindings = oDoc.child("Bindings");
     if (!oNodeBindings)
         return;
-    
+
+    // TODO: Maybe the file should store scan codes instead, and let any rebinding UI do the localization ?
+    // - In the meantime, I explicitely use a Key code instead of a Scan code.
     std::string strInputName, strKey;
     sf::Keyboard::Key oKeyCode = sf::Keyboard::Key::Unknown;
 
@@ -82,7 +84,9 @@ void ManagerInputs::LoadInputFile(const std::string& _strPath)
             pugi::xml_attribute oAttributeValue = oNodeKey.attribute("value");
 
             if (oAttributeValue && ReadKeyCode(oAttributeValue.as_string(), oKeyCode))
+            {
                 RegisterInput(oAttributeName.as_string(), BuildKeyboardEvent(oKeyCode));
+            }
         }
     }
 }
@@ -108,8 +112,8 @@ bool ManagerInputs::IsInputEvent(const std::string& _strInputName, const sf::Eve
                 const auto keyPressedEvent = _oSFEvent.getIf<sf::Event::KeyPressed>();
                 const auto keyReleasedEvent = _oSFEvent.getIf<sf::Event::KeyReleased>();
 
-                bool isKey = (keyPressedEvent && storedKeyboardEvent->code == keyPressedEvent->code)
-                    || (keyReleasedEvent && storedKeyboardEvent->code == keyReleasedEvent->code);
+                bool isKey = (keyPressedEvent && storedKeyboardEvent->scancode == keyPressedEvent->scancode)
+                    || (keyReleasedEvent && storedKeyboardEvent->scancode == keyReleasedEvent->scancode);
 
                 if (isKey
                     && (storedKeyboardEvent->control == IsControlDown())
@@ -174,7 +178,7 @@ bool ManagerInputs::IsInputDown(const std::string& _strInputName) const
             // Keyboard
             if (const auto storedKeyboardEvent = storedEvent.getIf<sf::Event::KeyPressed>())
             {
-                if (sf::Keyboard::isKeyPressed(storedKeyboardEvent->code)
+                if (sf::Keyboard::isKeyPressed(storedKeyboardEvent->scancode)
                     && (storedKeyboardEvent->control == IsControlDown())
                     && (storedKeyboardEvent->shift == IsShiftDown())
                     && (storedKeyboardEvent->alt == IsAltDown()))
@@ -219,25 +223,31 @@ bool ManagerInputs::IsInputEventReleased(const std::string& _strInputName, const
 bool ManagerInputs::IsControlDown() const
 {
     return IsInputAllowed()
-        && (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RControl));
+        && (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::RControl));
 }
 
 bool ManagerInputs::IsShiftDown() const
 {
     return IsInputAllowed()
-        && (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RShift));
+        && (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::RShift));
 }
 
 bool ManagerInputs::IsAltDown() const
 {
     return IsInputAllowed()
-        && (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RAlt));
+        && (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::RAlt));
 }
 
 bool ManagerInputs::IsKeyDown(sf::Keyboard::Key _eKey) const
 {
     return IsInputAllowed()
         && sf::Keyboard::isKeyPressed(_eKey);
+}
+
+bool ManagerInputs::IsKeyDown(sf::Keyboard::Scan scancode) const
+{
+    return IsInputAllowed()
+        && sf::Keyboard::isKeyPressed(scancode);
 }
 
 bool ManagerInputs::IsButtonDown(sf::Mouse::Button button) const
@@ -248,13 +258,25 @@ bool ManagerInputs::IsButtonDown(sf::Mouse::Button button) const
 
 sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key)
 {
-    return ManagerInputs::BuildKeyboardEvent(key, false, false, false);
+    sf::Keyboard::Scan scancode = sf::Keyboard::delocalize(key);
+    return ManagerInputs::BuildKeyboardEvent(scancode, false, false, false);
 }
 
 sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt)
 {
+    sf::Keyboard::Scan scancode = sf::Keyboard::delocalize(key);
+    return ManagerInputs::BuildKeyboardEvent(scancode, control, shift, alt);
+}
+
+sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Scan scancode)
+{
+    return ManagerInputs::BuildKeyboardEvent(scancode, false, false, false);
+}
+
+sf::Event ManagerInputs::BuildKeyboardEvent(sf::Keyboard::Scan scancode, bool control, bool shift, bool alt)
+{
     sf::Event::KeyPressed keyboardEvent;
-    keyboardEvent.code = key;
+    keyboardEvent.scancode = scancode;
     keyboardEvent.alt = alt;
     keyboardEvent.shift = shift;
     keyboardEvent.control = control;

@@ -78,11 +78,16 @@ public:
     bool IsShiftDown() const;
     bool IsAltDown() const;
 
-    bool IsKeyDown(sf::Keyboard::Key _eKey) const;
+    bool IsKeyDown(sf::Keyboard::Key _eKey) const;  // TODO: deprecate ?
+    bool IsKeyDown(sf::Keyboard::Scan scancode) const;
     bool IsButtonDown(sf::Mouse::Button button) const;
 
-    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key);
-    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt);
+    // Reference image for scancodes (keyboard AT-101) can be found here :
+    // https://www.w3.org/TR/uievents-code/images/keyboard-101-us.svg
+    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key);  // TODO: deprecate ?
+    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt);  // TODO: deprecate ?
+    static sf::Event BuildKeyboardEvent(sf::Keyboard::Scan scancode);
+    static sf::Event BuildKeyboardEvent(sf::Keyboard::Scan scancode, bool control, bool shift, bool alt);
     static sf::Event BuildMouseEvent(sf::Mouse::Button button);
     static sf::Event BuildJoystickEvent(EPadButton button, int joystickId = 0);
     static sf::Event BuildJoystickEvent(int button, int joystickId = 0);
@@ -96,6 +101,8 @@ private:
 private:
 
     std::map<std::string, InputKeyBindings> m_inputBindings;
+
+    // Note: This map is intended to help user-facing interfaces when dispaying input values.
     std::map<std::string, sf::Keyboard::Key> m_keyCodes;
 };
 

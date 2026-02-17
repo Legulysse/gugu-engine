@@ -98,6 +98,7 @@ void Editor::Init(const EditorConfig& editorConfig)
     }
 
     // Register Inputs.
+    // Note: ctrl+Z is the standard for both qwerty and azerty layouts, so I need to use Keycodes and not Scancodes here.
     ManagerInputs* inputs = GetInputs();
     inputs->RegisterInput("ResetPanels", inputs->BuildKeyboardEvent(sf::Keyboard::Key::F1));
     inputs->RegisterInput("SaveDocument", inputs->BuildKeyboardEvent(sf::Keyboard::Key::S, true, false, false));

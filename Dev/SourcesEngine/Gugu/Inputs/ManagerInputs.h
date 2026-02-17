@@ -64,8 +64,8 @@ public:
     void Init(const EngineConfig& config);
     void Release();
 
-    void RegisterInput(const std::string& _strInputName, const sf::Event& _oSFEvent);                         //Will add a new key to the specified input.
-    bool ModifyInput(const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex = 0);    //Will modify the existing key associated to the given input. Return false if input, with given index, doesn't exists.
+    void RegisterInput(const std::string& _strInputName, const sf::Event& _oSFEvent);                       // Will add a new key to the specified input.
+    bool ModifyInput(const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex = 0);    // Will modify the existing key associated to the given input. Return false if input, with given index, doesn't exists.
 
     void LoadInputFile(const std::string& _strPath);
 
@@ -78,14 +78,14 @@ public:
     bool IsShiftDown() const;
     bool IsAltDown() const;
 
-    bool IsKeyDown(sf::Keyboard::Key _eKey) const;  // TODO: deprecate ?
+    bool IsKeyDown(sf::Keyboard::Key _eKey) const;
     bool IsKeyDown(sf::Keyboard::Scan scancode) const;
     bool IsButtonDown(sf::Mouse::Button button) const;
 
     // Reference image for scancodes (keyboard AT-101) can be found here :
     // https://www.w3.org/TR/uievents-code/images/keyboard-101-us.svg
-    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key);  // TODO: deprecate ?
-    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt);  // TODO: deprecate ?
+    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key);
+    static sf::Event BuildKeyboardEvent(sf::Keyboard::Key key, bool control, bool shift, bool alt);
     static sf::Event BuildKeyboardEvent(sf::Keyboard::Scan scancode);
     static sf::Event BuildKeyboardEvent(sf::Keyboard::Scan scancode, bool control, bool shift, bool alt);
     static sf::Event BuildMouseEvent(sf::Mouse::Button button);

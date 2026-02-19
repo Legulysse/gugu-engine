@@ -56,6 +56,18 @@ bool ManagerInputs::ModifyInput(const std::string& _strInputName, const sf::Even
     return false;
 }
 
+bool ManagerInputs::GetInputKeyBindings(const std::string& inputName, InputKeyBindings& bindings) const
+{
+    auto kvp = m_inputBindings.find(inputName);
+    if (kvp != m_inputBindings.end())
+    {
+        bindings = kvp->second;
+        return true;
+    }
+
+    return false;
+}
+
 void ManagerInputs::LoadInputFile(const std::string& _strPath)
 {
     pugi::xml_document oDoc;
@@ -422,6 +434,20 @@ bool ManagerInputs::ReadKeyCode(const std::string& _strValue, sf::Keyboard::Key&
     {
         _eKey = kvp->second;
         return true;
+    }
+
+    return false;
+}
+
+bool ManagerInputs::GetKeyCodeAsString(sf::Keyboard::Key& keycode, std::string& value) const
+{
+    for (const auto& kvp : m_keyCodes)
+    {
+        if (kvp.second == keycode)
+        {
+            value = kvp.first;
+            return true;
+        }
     }
 
     return false;

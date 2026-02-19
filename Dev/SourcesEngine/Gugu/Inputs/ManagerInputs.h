@@ -66,6 +66,7 @@ public:
 
     void RegisterInput(const std::string& _strInputName, const sf::Event& _oSFEvent);                       // Will add a new key to the specified input.
     bool ModifyInput(const std::string& _strInputName, const sf::Event& _oSFEvent, uint32 _uiIndex = 0);    // Will modify the existing key associated to the given input. Return false if input, with given index, doesn't exists.
+    bool GetInputKeyBindings(const std::string& inputName, InputKeyBindings& bindings) const;
 
     void LoadInputFile(const std::string& _strPath);
 
@@ -91,6 +92,8 @@ public:
     static sf::Event BuildMouseEvent(sf::Mouse::Button button);
     static sf::Event BuildJoystickEvent(EPadButton button, int joystickId = 0);
     static sf::Event BuildJoystickEvent(int button, int joystickId = 0);
+
+    bool GetKeyCodeAsString(sf::Keyboard::Key& keycode, std::string& value) const;
 
 private:
 

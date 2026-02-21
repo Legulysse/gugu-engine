@@ -9,7 +9,7 @@
 
 #include "Gugu/Engine.h"
 #include "Gugu/Resources/ManagerResources.h"
-#include "gugu/Window/Window.h"
+#include "Gugu/Window/Window.h"
 #include "Gugu/External/PugiXmlUtility.h"
 
 ////////////////////////////////////////////////////////////////

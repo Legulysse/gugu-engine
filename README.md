@@ -1,5 +1,6 @@
 # gugu::Engine 0.9.0-dev
 [![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
+![No AI](https://img.shields.io/badge/No%20AI-gray)
 
 ![gugu::Engine Logo Title](./Docs/Logos/Gugu-logo-title.png)
 

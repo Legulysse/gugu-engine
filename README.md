@@ -15,17 +15,6 @@ Contributors : Panda, Diccy, Amitsouko
 - [Features](./Docs/Features.md)  
 - [Console Commands](./Docs/Commands.md)  
 
-## Dependencies
-
-| Name | Version | Usage |
-|---|---|---|
-| [SFML](https://github.com/SFML/SFML) |  3.0.2 | Engine |
-| [PugiXml](https://github.com/zeux/pugixml) | 1.14 | Engine |
-| [Dear ImGui](https://github.com/ocornut/imgui) | 1.91.6-docking | Editor |
-| [ImGui-SFML](https://github.com/SFML/imgui-sfml) | 3.0 | ImGui integration |
-| [Premake](https://github.com/premake/premake-core) | 5.0.0-beta3 | Build scripts |
-| [Python](https://www.python.org/) | 3.x | Build and utility scripts |
-
 ## Quick Overview
 
 ### Setup
@@ -59,3 +48,19 @@ Its sources can be found in /Dev/SourcesEditor and /Dev/SourcesEditorApp.
 The editor allows the edition of gameplay datasheets, imagesets, animsets, and particle effects.  
 
 ![Editor Screenshot](./Docs/Pictures/Editor_02.png)
+
+## Dependencies
+
+| Name | Version | Usage |
+|---|---|---|
+| [SFML](https://github.com/SFML/SFML) |  3.0.2 | Engine |
+| [PugiXml](https://github.com/zeux/pugixml) | 1.14 | Engine |
+| [Dear ImGui](https://github.com/ocornut/imgui) | 1.91.6-docking | Editor |
+| [ImGui-SFML](https://github.com/SFML/imgui-sfml) | 3.0 | ImGui integration |
+| [Premake](https://github.com/premake/premake-core) | 5.0.0-beta3 | Build scripts |
+| [Python](https://www.python.org/) | 3.x | Build and utility scripts |
+
+## Additional notes
+
+Back in 2008-2009, the early stages of this engine were inspired by the CEGUI project : [Crazy Eddie's GUI](https://github.com/cegui/cegui)  
+More specifically, this includes the naming of Element and ImageSet classes, and the concept of UDim (relative coordinate + absolute offset), that I mostly use through my UDim2 class.

@@ -204,6 +204,17 @@ void ParticleSystem::SetEmitterPosition(const Vector2f& position)
     m_emitterPosition = position;
 }
 
+void ParticleSystem::SetEmitterRadius(float radius)
+{
+    // TODO:
+    // - Add a scale variant that would be applied on the original settings value, to avoid computations application-side ?
+    //   - This would probably imply that I need to differentiate the initial settings and the running settings, and store both.
+    //   - This would help to improve future runtime modifiers.
+    // - Variant method with inner radius ?
+    // - Add sanity check between inner and outer radius ? (currently not sanitized on start anyway).
+    m_settings.emitterRadius = radius;
+}
+
 bool ParticleSystem::IsRunning() const
 {
     return m_running;

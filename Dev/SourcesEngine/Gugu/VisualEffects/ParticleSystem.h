@@ -44,7 +44,9 @@ public:
     void Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf);
 
     void AttachToElement(Element* element);
+
     void SetEmitterPosition(const Vector2f& position);
+    void SetEmitterRadius(float radius);
 
     bool IsRunning() const;
     void StopEmitting();

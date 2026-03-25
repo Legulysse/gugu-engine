@@ -215,6 +215,11 @@ void ParticleSystem::SetEmitterRadius(float radius)
     m_settings.emitterRadius = radius;
 }
 
+void ParticleSystem::SetEmitterInnerRadius(float radius)
+{
+    m_settings.emitterInnerRadius = radius;
+}
+
 bool ParticleSystem::IsRunning() const
 {
     return m_running;

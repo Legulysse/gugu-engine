@@ -47,6 +47,7 @@ public:
 
     void SetEmitterPosition(const Vector2f& position);
     void SetEmitterRadius(float radius);
+    void SetEmitterInnerRadius(float radius);
 
     bool IsRunning() const;
     void StopEmitting();

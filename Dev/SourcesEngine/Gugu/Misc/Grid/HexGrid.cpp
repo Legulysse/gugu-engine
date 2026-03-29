@@ -141,8 +141,6 @@ void HexGrid::GetNeighbours(const Vector2i& coords, std::vector<Vector2i>& neigh
 		Vector2i(0, 1),
 	};
 
-    neighbours.reserve(6);
-
     size_t offset = (coords.y % 2 == 0) ? 0 : 6;
     for (size_t i = offset; i < offset + 6; ++i)
     {

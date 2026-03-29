@@ -16,7 +16,8 @@ void BFSNeighboursByCellRange(const TGrid& grid, const TCoords& coordsFrom, int 
 {
     std::queue<TCoords> currentQueue;
     std::queue<TCoords> pendingQueue;
-    std::set<TCoords> explored;
+    static std::set<TCoords> explored;          // Cleared at end of function.
+    static std::vector<TCoords> cellNeighbours; // Cleared at end of function.
 
     pendingQueue.push(coordsFrom);
     explored.insert(coordsFrom);
@@ -35,7 +36,7 @@ void BFSNeighboursByCellRange(const TGrid& grid, const TCoords& coordsFrom, int 
             currentQueue.pop();
 
             // Queue all neighbours for the next iteration.
-            std::vector<TCoords> cellNeighbours;
+            cellNeighbours.clear();
             grid.GetNeighbours(currentCoords, cellNeighbours);
 
             for (const TCoords& neighbour : cellNeighbours)
@@ -53,6 +54,9 @@ void BFSNeighboursByCellRange(const TGrid& grid, const TCoords& coordsFrom, int 
             }
         }
     }
+
+    explored.clear();
+    cellNeighbours.clear();
 }
 
 template<typename TGrid, typename TGridData, typename TAgent, typename TCoords>
@@ -60,7 +64,8 @@ void BFSNeighboursByTraversableRange(const TGrid& grid, const TGridData& gridDat
 {
     std::queue<TCoords> currentQueue;
     std::queue<TCoords> pendingQueue;
-    std::set<TCoords> explored;
+    static std::set<TCoords> explored;          // Cleared at end of function.
+    static std::vector<TCoords> cellNeighbours; // Cleared at end of function.
 
     pendingQueue.push(coordsFrom);
     explored.insert(coordsFrom);
@@ -79,7 +84,7 @@ void BFSNeighboursByTraversableRange(const TGrid& grid, const TGridData& gridDat
             currentQueue.pop();
 
             // Queue all neighbours for the next iteration.
-            std::vector<TCoords> cellNeighbours;
+            cellNeighbours.clear();
             grid.GetNeighbours(currentCoords, cellNeighbours);
 
             for (const TCoords& neighbour : cellNeighbours)
@@ -100,6 +105,9 @@ void BFSNeighboursByTraversableRange(const TGrid& grid, const TGridData& gridDat
             }
         }
     }
+
+    explored.clear();
+    cellNeighbours.clear();
 }
 
 //template<typename TGrid, typename TGridData, typename TCoords, typename TCost>

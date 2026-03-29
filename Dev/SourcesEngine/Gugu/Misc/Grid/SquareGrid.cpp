@@ -104,8 +104,6 @@ void SquareGrid::GetNeighbours(const Vector2i& coords, std::vector<Vector2i>& ne
         Vector2i(-1, 1),
     };
 
-    neighbours.reserve(eightSides ? 8 : 4);
-
     size_t from = eightSides ? 4 : 0;
     size_t to = eightSides ? 12 : 4;
     for (size_t i = from; i < to; ++i)

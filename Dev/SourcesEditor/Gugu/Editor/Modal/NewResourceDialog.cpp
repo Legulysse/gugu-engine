@@ -44,14 +44,28 @@ NewResourceDialog::NewResourceDialog(const std::string& resourcePath, EResourceT
         { EResourceType::LocalizationTable, "localization.xml" },
     };
 
-    auto itExtension = resourceExtensions.find(m_resourceType);
-    if (itExtension != resourceExtensions.end())
+    if (m_resourceType == EResourceType::Datasheet)
     {
-        m_resourceExtension = itExtension->second;
+        DatasheetParser::ClassDefinition* classDefinition = nullptr;
+        if (GetEditor()->GetDatasheetParser()->GetClassDefinition(GetEditor()->GetUserSettings().newResourceDatasheetClassName, classDefinition))
+        {
+            m_datasheetClassName = GetEditor()->GetUserSettings().newResourceDatasheetClassName;
+
+            // TODO: Right now extension and class name match each-other, but it could change so I should use a getter instead.
+            m_resourceExtension = m_datasheetClassName;
+        }
     }
     else
     {
-        assert(false);  // unhandled resource type.
+        auto itExtension = resourceExtensions.find(m_resourceType);
+        if (itExtension != resourceExtensions.end())
+        {
+            m_resourceExtension = itExtension->second;
+        }
+        else
+        {
+            assert(false);  // unhandled resource type.
+        }
     }
 }
 
@@ -79,7 +93,12 @@ void NewResourceDialog::UpdateModalImpl(const DeltaTime& dt)
                 if (ImGui::Selectable(classDefinitions[i]->m_name.c_str(), selected))
                 {
                     m_datasheetClassName = classDefinitions[i]->m_name;
+                    
+                    // TODO: Right now extension and class name match each-other, but it could change so I should use a getter instead.
                     m_resourceExtension = m_datasheetClassName;
+
+                    // Update settings.
+                    GetEditor()->GetUserSettings().newResourceDatasheetClassName = m_datasheetClassName;
                 }
 
                 if (selected)

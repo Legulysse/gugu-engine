@@ -14,6 +14,9 @@ struct UserSettings
 {
     std::string lastProjectFilePath;
 
+    // New resource dialog.
+    std::string newResourceDatasheetClassName;
+
     // Imageset generation.
     std::string importImageSetSourceDirectoryPath;
     std::string importImageSetTargetDirectoryPath;

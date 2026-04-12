@@ -29,12 +29,12 @@ struct LocalizationLanguageTable
 
 enum class LocalizationRegisterResult : uint8
 {
-    Accepted,                       // The new entry has a more recent timestamp than the current entry, or has a new key (new or updated).
+    Accepted,                       // The new entry has a more recent timestamp and a different text than the current entry, or is a new entry (new or updated entry).
 
     Accepted_IdenticalTimestamp,    // The new entry has the same timestamp as the current entry, but a different text (a review could be necessary).
     Accepted_IdenticalText,         // The new entry has the same text as the current entry, but with a more recent timestamp (a review could be necessary).
 
-    Refused_Identical,              // The new entry has the same text and timestamp as the new entry (loca is up to date).
+    Refused_Identical,              // The new entry has the same text and timestamp as the current entry (loca is up to date).
     Refused_EmptyText,              // The new entry has an empty text (invalid).
     Refused_Outdated,               // The new entry is older than the current entry (outdated).
 };

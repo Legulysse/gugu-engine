@@ -39,6 +39,7 @@ int64 GetUtcTimestampAsNumeric()
     // - I should not need milliseconds for my usage of this method (mostly edition timestamps that stay human-readable for debug purposes).
     // - Even so, just in case, I will keep trailing zeroes to keep this formatting compatible with any future format including milliseconds.
     // - 2^63=9223372036854775808 which implies that the year 922337 is the upper limit of this approach.
+    // - Usage of int64 instead of uint64 : negative values allows for usage on dates for ancient events like Antiquity.
 
     // Note : time_t is limited to seconds, and intended for use as a date.
     std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());

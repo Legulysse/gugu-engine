@@ -163,6 +163,10 @@ template <typename TFrom, typename TTo>
 TTo RemapLerp(const TFrom& minA, const TFrom& maxA, const TTo& minB, const TTo& maxB, const TFrom& value);
 
 // Easing methods from https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
+float EaseInSine(float ratio);
+float EaseOutSine(float ratio);
+float EaseInOutSine(float ratio);
+
 float EaseInQuad(float ratio);
 float EaseOutQuad(float ratio);
 float EaseInOutQuad(float ratio);
@@ -178,10 +182,6 @@ float EaseInOutQuart(float ratio);
 float EaseInQuint(float ratio);
 float EaseOutQuint(float ratio);
 float EaseInOutQuint(float ratio);
-
-float EaseInSine(float ratio);
-float EaseOutSine(float ratio);
-float EaseInOutSine(float ratio);
 
 float EaseInExpo(float ratio);
 float EaseOutExpo(float ratio);

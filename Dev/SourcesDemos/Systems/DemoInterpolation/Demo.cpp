@@ -77,6 +77,12 @@ void Demo::AppStart()
 
     positionY += lineOffset;
     title = m_root->AddChild<ElementText>();
+    title->SetText("Sine");
+    title->SetUnifiedOrigin(UDim2::POSITION_CENTER_LEFT);
+    title->SetPosition(positionX, positionY);
+
+    positionY += lineOffset;
+    title = m_root->AddChild<ElementText>();
     title->SetText("Quad");
     title->SetUnifiedOrigin(UDim2::POSITION_CENTER_LEFT);
     title->SetPosition(positionX, positionY);
@@ -96,12 +102,6 @@ void Demo::AppStart()
     positionY += lineOffset;
     title = m_root->AddChild<ElementText>();
     title->SetText("Quint");
-    title->SetUnifiedOrigin(UDim2::POSITION_CENTER_LEFT);
-    title->SetPosition(positionX, positionY);
-
-    positionY += lineOffset;
-    title = m_root->AddChild<ElementText>();
-    title->SetText("Sine");
     title->SetUnifiedOrigin(UDim2::POSITION_CENTER_LEFT);
     title->SetPosition(positionX, positionY);
 
@@ -182,6 +182,11 @@ void Demo::AppUpdate(const DeltaTime& dt)
     points[i++]->SetPosition(Lerp(positionMin, positionMax, linearRatio) + columnStep * 2, positionY);
 
     positionY += lineOffset;
+    points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInSine(linearRatio)), positionY);
+    points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseOutSine(linearRatio)) + columnStep, positionY);
+    points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInOutSine(linearRatio)) + columnStep * 2, positionY);
+
+    positionY += lineOffset;
     points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInQuad(linearRatio)), positionY);
     points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseOutQuad(linearRatio)) + columnStep, positionY);
     points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInOutQuad(linearRatio)) + columnStep * 2, positionY);
@@ -200,11 +205,6 @@ void Demo::AppUpdate(const DeltaTime& dt)
     points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInQuint(linearRatio)), positionY);
     points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseOutQuint(linearRatio)) + columnStep, positionY);
     points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInOutQuint(linearRatio)) + columnStep * 2, positionY);
-
-    positionY += lineOffset;
-    points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInSine(linearRatio)), positionY);
-    points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseOutSine(linearRatio)) + columnStep, positionY);
-    points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInOutSine(linearRatio)) + columnStep * 2, positionY);
 
     positionY += lineOffset;
     points[i++]->SetPosition(Lerp(positionMin, positionMax, EaseInExpo(linearRatio)), positionY);

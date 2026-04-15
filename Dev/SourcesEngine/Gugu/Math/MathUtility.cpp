@@ -142,6 +142,21 @@ namespace impl
     }
 }
 
+float EaseInSine(float ratio)
+{
+    return 1 - std::cos(ratio * math::Pi / 2);
+}
+
+float EaseOutSine(float ratio)
+{
+    return std::sin(ratio * math::Pi / 2);
+}
+
+float EaseInOutSine(float ratio)
+{
+    return -(std::cos(math::Pi * ratio) - 1) / 2;
+}
+
 float EaseInQuad(float ratio)
 {
     return ratio * ratio;
@@ -200,21 +215,6 @@ float EaseOutQuint(float ratio)
 float EaseInOutQuint(float ratio)
 {
     return (ratio < 0.5) ? 16 * ratio * ratio * ratio * ratio * ratio : 1 - std::pow(-2 * ratio + 2, 5.f) / 2;
-}
-
-float EaseInSine(float ratio)
-{
-    return 1 - std::cos(ratio * math::Pi / 2);
-}
-
-float EaseOutSine(float ratio)
-{
-    return std::sin(ratio * math::Pi / 2);
-}
-
-float EaseInOutSine(float ratio)
-{
-    return -(std::cos(math::Pi * ratio) - 1) / 2;
 }
 
 float EaseInExpo(float ratio)

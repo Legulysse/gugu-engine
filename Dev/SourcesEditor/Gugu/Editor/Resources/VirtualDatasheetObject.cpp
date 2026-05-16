@@ -118,7 +118,7 @@ bool VirtualDatasheetObject::LoadFromXml(const pugi::xml_node& nodeDatasheetObje
     m_classDefinition = nullptr;
     if (!GetEditor()->GetDatasheetParser()->GetClassDefinition(attributeType.value(), m_classDefinition))
     {
-        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, "A null ClassDefinition has been provided on VirtualDatasheetObject loading");
+        GetLogEngine()->Print(ELog::Error, ELogEngine::Resources, StringFormat("A null ClassDefinition has been provided on VirtualDatasheetObject loading (name={0})", attributeType.value()));
         return false;
     }
 

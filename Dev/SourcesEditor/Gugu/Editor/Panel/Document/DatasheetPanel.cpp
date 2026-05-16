@@ -763,6 +763,7 @@ void DatasheetPanel::HandleContextMenu(DatasheetParser::DataMemberDefinition* da
 
     // TODO: Handle copy of object overrides.
     // TODO: Ensure the copy will retrieve ALL override and instance data from its parent object.
+    // TODO: Check paste data compatibility with the target entry.
 
     bool canCopy = dataValue && dataValue->value_objectInstance && dataValue->value_objectInstance->m_datasheet == m_datasheet;  // Disable for object overrides.
     bool canPaste = GetEditorClipboard()->contentType == impl::ClipboardContentType_DatasheetObjectData;   // Disable if clipboard type does not match.

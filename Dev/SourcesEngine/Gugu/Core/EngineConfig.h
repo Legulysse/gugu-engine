@@ -55,8 +55,9 @@ struct EngineConfig
 
     // Audio
     std::string rootAudioMixerGroup;
-    int maxSoundSourceCount;     // Total sources should not exceed 256.
-    int maxMusicSourceCount;     // Total sources should not exceed 256.
+    int maxSoundSourceCount;            // Total sources should not exceed 256.
+    int maxMusicSourceCount;            // Total sources should not exceed 256.
+    int audioListenerDistance;          // (Spatialization) Distance between the listener and the "game space".
 
     // Debug
     bool allowConsole;
@@ -95,6 +96,7 @@ struct EngineConfig
         rootAudioMixerGroup = "";
         maxSoundSourceCount = 240;   // Total tracks should not exceed 256
         maxMusicSourceCount = 16;    // Total tracks should not exceed 256
+        audioListenerDistance = 800;
 
         allowConsole = true;
         showStats = false;

@@ -26,13 +26,13 @@
 ////////////////////////////////////////////////////////////////
 // Macros
 
-#define GUGU_AUDIO_RESTRICTION_BY_COOLDOWN true
-#define GUGU_AUDIO_RESTRICTION_COOLDOWN_VALUE 0.05f
-#define GUGU_AUDIO_RESTRICTION_BY_INSTANCES true
-#define GUGU_AUDIO_RESTRICTION_INSTANCE_COUNT 8
+#define GUGU_AUDIO_RESTRICTION_BY_COOLDOWN true                 // Toggle restriction on the replay of a same audioclip (wav) file.
+#define GUGU_AUDIO_RESTRICTION_COOLDOWN_VALUE 0.05f             // Cooldown to restrict the replay of a same audioclip (wav) file.
+#define GUGU_AUDIO_RESTRICTION_BY_INSTANCES true                // Toggle restriction on instances of a same audioclip (wav) file.
+#define GUGU_AUDIO_RESTRICTION_INSTANCE_COUNT 8                 // Max number of instances of a same audioclip (wav) file.
 
-#define GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE 200.f
-#define GUGU_AUDIO_SPATIALIZATION_ATTENUATION 0.5f
+#define GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE 200.f            // Default minimum distance between listener and audio instance to apply attenuation.
+#define GUGU_AUDIO_SPATIALIZATION_ATTENUATION 0.5f              // Default attenuation factor.
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -44,6 +44,7 @@ ManagerAudio::ManagerAudio()
     , m_soundIndex(0)
     , m_listenerMuted(false)
     , m_listenerVolume(1.f)
+    , m_defaultAudioListenerDistance(0.f)
 {
     m_spatializationParameters.minDistance = GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE;
     m_spatializationParameters.attenuation = GUGU_AUDIO_SPATIALIZATION_ATTENUATION;
@@ -73,6 +74,10 @@ void ManagerAudio::Init(const EngineConfig& config)
     }
 
     SetRootAudioMixerGroup(GetResources()->GetAudioMixerGroup(config.rootAudioMixerGroup));
+
+    // Default spatialization settings.
+    m_defaultAudioListenerDistance = (float)config.audioListenerDistance;
+    SetListenerPosition(Vector2::Zero_f);
 
     GetLogEngine()->Print(ELog::Info, ELogEngine::Audio, "Manager Audio Ready");
 }
@@ -144,7 +149,7 @@ float ManagerAudio::GetListenerVolume() const
 
 void ManagerAudio::SetListenerPosition(const Vector2f& position)
 {
-    sf::Listener::setPosition(sf::Vector3f(position.x, 0.f, position.y));
+    sf::Listener::setPosition(sf::Vector3f(position.x, m_defaultAudioListenerDistance, position.y));
 }
 
 const SpatializationParameters& ManagerAudio::GetDefaultSpatializationParameters() const

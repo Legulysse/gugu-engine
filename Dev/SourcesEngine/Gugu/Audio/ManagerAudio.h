@@ -81,6 +81,7 @@ private:
     bool m_listenerMuted;
     float m_listenerVolume;
     SpatializationParameters m_spatializationParameters;
+    float m_defaultAudioListenerDistance;
 };
 
 

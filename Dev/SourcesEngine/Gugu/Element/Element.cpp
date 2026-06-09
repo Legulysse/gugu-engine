@@ -68,6 +68,7 @@ Element::~Element()
 
 void Element::AddChild(Element* child)
 {
+    // TODO: Handle case were parent == this (either dont do anything or move child at the end of the list).
     child->SetParent(this);
     m_children.push_back(child);
 }
@@ -77,6 +78,7 @@ bool Element::InsertChild(Element* child, size_t index)
     if (index < 0 || index > m_children.size())
         return false;
 
+    // TODO: Handle case were parent == this (Only move child at its intended position).
     child->SetParent(this);
     StdVectorInsertAt(m_children, index, child);
     return true;

@@ -66,6 +66,7 @@ bool DatasheetObject::LoadFromFile(const std::string& path, Datasheet* ownerData
         // TODO: Do I need to actually load the parent sheet ?
         // TODO: check same type.
         // TODO: error message if invalid base.
+        // TODO: store ancestors to allow gameplay checks on parent sheets.
         Datasheet* parentSheet = GetResources()->GetDatasheet(pAttributeParent.as_string());
         if (parentSheet)
         {

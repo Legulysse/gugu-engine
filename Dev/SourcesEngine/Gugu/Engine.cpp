@@ -79,7 +79,17 @@ void Engine::Init(const EngineConfig& config)
 
     //-- Init engine log and trace group --//
     m_logEngine = new LoggerEngine();
-    m_logEngine->SetFilePath("Engine.log");
+
+    if (config.allowEngineLog)
+    {
+        m_logEngine->SetFilePath("Engine.log");
+        m_logEngine->SetActive(true);
+    }
+    else
+    {
+        m_logEngine->SetFilePath("");
+        m_logEngine->SetActive(false);
+    }
 
 #if !defined(GUGU_PRODUCTION_BUILD)
     m_logEngine->SetIDEConsoleOutput(true);

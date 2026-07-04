@@ -60,6 +60,7 @@ struct EngineConfig
     int audioListenerDistance;          // (Spatialization) Distance between the listener and the "game space".
 
     // Debug
+    bool allowEngineLog;
     bool allowConsole;
     bool showStats;
     bool showFPS;
@@ -98,6 +99,7 @@ struct EngineConfig
         maxMusicSourceCount = 16;    // Total tracks should not exceed 256
         audioListenerDistance = 800;
 
+        allowEngineLog = true;
         allowConsole = true;
         showStats = false;
         showFPS = false;

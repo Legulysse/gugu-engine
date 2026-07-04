@@ -46,6 +46,9 @@ void Logger::SetFilePath(const std::string& filePath)
 
     if (!m_filePath.empty())
     {
+        // TODO: Should I only delete the existing file instead of truncating/creating it ?
+        // - Print calls will take care of creating the file if needed.
+        // - The current approach disables the ability to set a target name while disabling the log file and enabling it later on.
         std::ofstream file;
         file.open(m_filePath.c_str(), std::ios::out | std::ios::trunc);
 

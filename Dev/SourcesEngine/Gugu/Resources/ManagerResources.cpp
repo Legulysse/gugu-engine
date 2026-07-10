@@ -28,6 +28,7 @@
 #include "Gugu/System/Platform.h"
 #include "Gugu/System/String.h"
 #include "Gugu/Debug/Logger.h"
+#include "Gugu/Debug/Trace.h"
 
 ////////////////////////////////////////////////////////////////
 // File Implementation
@@ -342,6 +343,8 @@ Resource* ManagerResources::LoadResource(ResourceInfo* resourceInfo, EResourceTy
         GetLogEngine()->Print(ELog::Warning, ELogEngine::Resources, StringFormat("LoadResource ignored, resource already loaded : {0}", resourceInfo->resourceID));
         return resourceInfo->resource;
     }
+
+    GUGU_SCOPE_TRACE_MAIN("Load Resource");
 
     FileInfo fileInfo = resourceInfo->fileInfo;
     Resource* resource = nullptr;

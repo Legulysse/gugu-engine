@@ -244,11 +244,23 @@ void SpriteAnimation::SetMoveFromAnimation(bool _bMoveFromAnimation)
 
 void SpriteAnimation::SetFinishedCallback(const Callback& callback)
 {
+    // TODO:
+    // - Multiple Callbacks.
+    // - Callbacks per animation.
     m_finishedCallback = callback;
+}
+
+bool SpriteAnimation::HasFinishedCallback() const
+{
+    // Temporary help for gameplay systems, until I handle those callbacks better.
+    return m_finishedCallback != nullptr;
 }
 
 void SpriteAnimation::SetEventCallback(const std::string& eventName, const Callback& callback)
 {
+    // TODO:
+    // - Multiple Callbacks.
+    // - Callbacks per animation.
     m_events[eventName] = callback;
 }
 

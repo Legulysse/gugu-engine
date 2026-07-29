@@ -67,6 +67,7 @@ public:
 
     // Set a callback for when any animation properly finishes, applied accross all animations.
     void SetFinishedCallback(const Callback& callback);
+    bool HasFinishedCallback() const;
 
     // Set a callback for a named frame event, applied accross all animations.
     void SetEventCallback(const std::string& eventName, const Callback& callback);

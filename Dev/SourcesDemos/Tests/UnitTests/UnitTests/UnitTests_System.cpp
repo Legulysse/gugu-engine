@@ -208,6 +208,8 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("TXT"));
+                GUGU_UTEST_CHECK_FALSE(fileInfo.HasExtension(".txt"));
+                GUGU_UTEST_CHECK_FALSE(fileInfo.HasExtension(".TXT"));
             }
 
             {
@@ -278,8 +280,8 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "world");
                 GUGU_UTEST_CHECK(fileInfo.GetExtension() == "");
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "");
-                GUGU_UTEST_CHECK(!fileInfo.HasExtension("world"));
-                GUGU_UTEST_CHECK(!fileInfo.HasExtension(""));
+                GUGU_UTEST_CHECK_FALSE(fileInfo.HasExtension("world"));
+                GUGU_UTEST_CHECK_FALSE(fileInfo.HasExtension(""));
             }
 
             {
@@ -294,6 +296,33 @@ void RunUnitTests_System(UnitTestResults* results)
                 GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "txt");
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("txt"));
                 GUGU_UTEST_CHECK(fileInfo.HasExtension("TXT"));
+            }
+
+            {
+                const FileInfo fileInfo = FileInfo::FromString_utf8("");
+
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetExtension() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "");
+                GUGU_UTEST_CHECK_FALSE(fileInfo.HasExtension(""));
+            }
+
+            {
+                const FileInfo fileInfo = FileInfo::FromString_utf8(".");
+
+                GUGU_UTEST_CHECK(fileInfo.GetFileSystemPath() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFilePath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetDirectoryPath_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetFileName_utf8() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetPrettyName() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetExtension() == "");
+                GUGU_UTEST_CHECK(fileInfo.GetAllExtensions() == "");
+                GUGU_UTEST_CHECK_FALSE(fileInfo.HasExtension("."));
+                GUGU_UTEST_CHECK_FALSE(fileInfo.HasExtension(""));
             }
         }
         

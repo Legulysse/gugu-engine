@@ -35,6 +35,7 @@ SpriteAnimation::SpriteAnimation()
     m_animLoop = true;
     m_animPause = false;
     m_animSpeed = 1.f;
+    m_useUnscaledTime = false;
 
     m_animIndexCurrent = 0;
     m_animDurationCurrent = 0.f;
@@ -232,6 +233,16 @@ void SpriteAnimation::SetAnimationSpeed(float _fSpeed)
     m_animSpeed = _fSpeed;
 }
 
+void SpriteAnimation::SetUseUnscaledTime(bool useUnscaledTime)
+{
+    m_useUnscaledTime = useUnscaledTime;
+}
+
+bool SpriteAnimation::IsUsingUnscaledTime() const
+{
+    return m_useUnscaledTime;
+}
+
 void SpriteAnimation::SetOriginFromAnimation(bool _bOriginFromAnimation)
 {
     m_originFromAnimation = _bOriginFromAnimation;
@@ -306,7 +317,7 @@ void SpriteAnimation::SetCurrentFrame(AnimationFrame* _pFrame)
 
 void SpriteAnimation::StepAnimation(const DeltaTime& dt)
 {
-    InjectDuration(dt.s() * m_animSpeed);
+    InjectDuration(m_useUnscaledTime ? dt.unscaled_s() * m_animSpeed : dt.s() * m_animSpeed);
 }
 
 void SpriteAnimation::InjectDuration(float seconds)

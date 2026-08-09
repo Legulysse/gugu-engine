@@ -62,6 +62,9 @@ public:
     float   GetAnimationSpeed       () const;
     void    SetAnimationSpeed       (float _fSpeed);
 
+    void SetUseUnscaledTime(bool useUnscaledTime);
+    bool IsUsingUnscaledTime() const;
+
     void    SetOriginFromAnimation  (bool _bOriginFromAnimation);
     void    SetMoveFromAnimation    (bool _bMoveFromAnimation);
 
@@ -100,6 +103,7 @@ protected:
     bool        m_animLoop;
     bool        m_animPause;
     float       m_animSpeed;
+    bool        m_useUnscaledTime;
 
     size_t      m_animIndexCurrent;
     float       m_animDurationCurrent;

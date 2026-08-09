@@ -14,12 +14,21 @@
 
 namespace gugu {
 
+namespace impl
+{
+    // This is a copy from SFML Clock.hpp
+    using elapsed_clock = std::conditional_t<std::chrono::high_resolution_clock::is_steady, std::chrono::high_resolution_clock, std::chrono::steady_clock>;
+}
+
 float GetElapsedSeconds()
 {
     // Notes :
     // - This method is intended as a helper for simple looping animations needing a duration reference.
-    // - steady_clock::now() will probably return elapsed time since the system boot.
-    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch());
+    // - high_resolution_clock seems to be the most suitable here.
+    // - steady_clock::now() will probably return elapsed time since the system boot, but it gives stuttering results on some computers.
+
+    static const std::chrono::time_point epoch = impl::elapsed_clock::now();
+    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(impl::elapsed_clock::now() - epoch);
     return ms.count() * 0.001f;
 }
 

@@ -55,6 +55,9 @@ public:
     void SetPaused(bool paused);
     bool IsPaused() const;
 
+    void SetBlendMode(const sf::BlendMode& blendMode);
+    const sf::BlendMode& GetBlendMode() const;
+
     size_t GetMaxParticleCount() const;
     size_t GetActiveParticleCount() const;
     size_t GetParticleDataSize() const;
@@ -77,6 +80,7 @@ private:
     size_t m_verticesPerParticle;
     sf::PrimitiveType m_primitiveType;
     sf::Texture* m_texture;
+    sf::BlendMode m_blendMode;      // TODO: Move this to ParticleSystemSettings ?
     ImageSet* m_imageSet;
     Element* m_element;
     Vector2f m_emitterPosition;

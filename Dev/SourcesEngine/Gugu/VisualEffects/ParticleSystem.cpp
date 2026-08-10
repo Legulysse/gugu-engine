@@ -240,6 +240,16 @@ bool ParticleSystem::IsPaused() const
     return m_paused;
 }
 
+void ParticleSystem::SetBlendMode(const sf::BlendMode& blendMode)
+{
+    m_blendMode = blendMode;
+}
+
+const sf::BlendMode& ParticleSystem::GetBlendMode() const
+{
+    return m_blendMode;
+}
+
 size_t ParticleSystem::GetMaxParticleCount() const
 {
     return m_maxParticleCount;
@@ -614,6 +624,7 @@ void ParticleSystem::Render(RenderPass& _kRenderPass, const sf::Transform& _kTra
 
     sf::RenderStates states;
     states.texture = m_texture;
+    states.blendMode = m_blendMode;
 
     if (m_settings.localSpace)
     {

@@ -2,6 +2,7 @@
 // Includes
 
 #include "Gugu/Element/2D/ElementSprite.h"
+#include "Gugu/Element/2D/ElementSpriteGroup.h"
 #include "Gugu/Events/ElementEventHandler.h"
 #include "Gugu/Debug/Logger.h"
 
@@ -17,7 +18,7 @@ namespace test {
 class TestSFTransformable
 {
     // Removed virtual
-    // Grouped boolean members
+    // Grouped boolean members (updated in sfml 3)
 
 public:
 
@@ -33,10 +34,48 @@ public:
     mutable bool m_transformNeedUpdate;
 };
 
+struct TestBlendMode
+{
+    // Specify enum class sizes
+    // No need to reorder properties since they all have the same size
+
+    enum class TestFactor : gugu::uint8
+    {
+        // 10 different values.
+        Zero,
+        One,
+        SrcColor,
+        OneMinusSrcColor,
+        DstColor,
+        OneMinusDstColor,
+        SrcAlpha,
+        OneMinusSrcAlpha,
+        DstAlpha,
+        OneMinusDstAlpha,
+    };
+
+    enum class TestEquation : gugu::uint8
+    {
+        // 5 different values.
+        Add,
+        Subtract,
+        ReverseSubtract,
+        Min,
+        Max,
+    };
+
+    TestFactor colorSrcFactor;
+    TestFactor colorDstFactor;
+    TestEquation colorEquation;
+    TestFactor alphaSrcFactor;
+    TestFactor alphaDstFactor;
+    TestEquation alphaEquation;
+};
+
 class TestElement
 {
-    // Grouped boolean members
-    // Used TestTransformable
+    // Group boolean members
+    // Use TestTransformable
 
 public:
 
@@ -44,42 +83,46 @@ public:
 
     gugu::Element* m_pParent;
     std::vector<gugu::Element*> m_listChildren;
-
     TestSFTransformable m_kTransform;
-    gugu::Vector2f        m_kSize;
-
-    int                 m_iRenderPass;
-    gugu::int32               m_iZIndex;
-
+    gugu::Vector2f m_kSize;
+    int m_iRenderPass;
+    gugu::int32 m_iZIndex;
     gugu::ElementEventHandler* m_pInteractions;
-
-    gugu::UDim2       m_oDimOrigin;
-    gugu::UDim2       m_oDimPos;
-    gugu::UDim2       m_oDimSize;
-
-    bool        m_bIsVisible;
-    bool        m_bFlipV;
-    bool        m_bFlipH;
-    bool        m_bDimOrigin;
-    bool        m_bDimPos;
-    bool        m_bDimSize;
+    gugu::UDim2 m_oDimOrigin;
+    gugu::UDim2 m_oDimPos;
+    gugu::UDim2 m_oDimSize;
+    gugu::Element* m_dimSizeReference;
+    bool m_bIsVisible;
+    bool m_needRecompute;
+    bool m_showDebugBounds;
+    bool m_bFlipV;
+    bool m_bFlipH;
+    bool m_bDimOrigin;
+    bool m_bDimPos;
+    bool m_bDimSize;
 };
 
 class TestElementSprite : public TestElement
 {
-    // Removed m_kColor
+    // Inherit TestElement
+    // Use TestBlendMode
 
 public:
 
     virtual ~TestElementSprite() {}
 
-    gugu::Texture* m_pTexture;
+    // SpriteBase
     sf::IntRect m_kSubRect;
-
-    sf::VertexArray m_kVertices;
-
+    sf::Color m_color;
+    bool m_dirtyVertices;
+    bool m_repeatTexture;
     bool m_bFlipTextureX;
     bool m_bFlipTextureY;
+
+    // Sprite
+    gugu::Texture* m_pTexture;
+    TestBlendMode m_blendMode;
+    sf::VertexArray m_kVertices;
 };
 
 class TestBool1
@@ -131,14 +174,17 @@ void RunTestObjectSizes()
 #if 0
 
     Logger log;
-    log.SetConsoleOutput(true, true);
+    log.SetConsoleOutput(true);
+    log.SetIDEConsoleOutput(true);
     //log.SetFile("TestSizes.log");
 
     log.Print(StringFormat("---------------------------------------"));
     log.Print(StringFormat(" bool : {0}", sizeof(bool)));
     log.Print(StringFormat(" int : {0}", sizeof(int)));
+    log.Print(StringFormat(" int64 : {0}", sizeof(gugu::int64)));
     log.Print(StringFormat(" float : {0}", sizeof(float)));
     log.Print(StringFormat(" float[16] : {0} (= sf::Transform)", sizeof(float[16])));
+    log.Print(StringFormat(" void* : {0}", sizeof(void*)));
     log.Print(StringFormat("---------------------------------------"));
     log.Print(StringFormat(" TestBool1 : {0}", sizeof(TestBool1)));
     log.Print(StringFormat(" TestBool4 : {0}", sizeof(TestBool4)));
@@ -153,6 +199,8 @@ void RunTestObjectSizes()
     log.Print(StringFormat(" Vector2f : {0}", sizeof(Vector2f)));
     log.Print(StringFormat(" sf::Transformable : {0}", sizeof(sf::Transformable)));
     log.Print(StringFormat(" sf::Transform : {0}", sizeof(sf::Transform)));
+    log.Print(StringFormat(" sf::BlendMode : {0}", sizeof(sf::BlendMode)));
+    log.Print(StringFormat(" sf::RenderStates : {0}", sizeof(sf::RenderStates)));
     log.Print(StringFormat(" sf::Sprite : {0}", sizeof(sf::Sprite)));
     log.Print(StringFormat(" sf::Color : {0}", sizeof(sf::Color)));
     log.Print(StringFormat(" sf::IntRect : {0}", sizeof(sf::IntRect)));
@@ -161,10 +209,14 @@ void RunTestObjectSizes()
     log.Print(StringFormat(" UDim : {0}", sizeof(UDim)));
     log.Print(StringFormat(" UDim2 : {0}", sizeof(UDim2)));
     log.Print(StringFormat(" Element : {0}", sizeof(Element)));
+    log.Print(StringFormat(" ElementSpriteBase : {0}", sizeof(ElementSpriteBase)));
     log.Print(StringFormat(" ElementSprite : {0}", sizeof(ElementSprite)));
+    log.Print(StringFormat(" ElementSpriteGroup : {0}", sizeof(ElementSpriteGroup)));
+    log.Print(StringFormat(" ElementSpriteGroupItem : {0}", sizeof(ElementSpriteGroupItem)));
     log.Print(StringFormat(" ElementEventHandler : {0}", sizeof(ElementEventHandler)));
     log.Print(StringFormat("---------------------------------------"));
     log.Print(StringFormat(" TestSFTransformable : {0}", sizeof(TestSFTransformable)));
+    log.Print(StringFormat(" TestBlendMode : {0}", sizeof(TestBlendMode)));
     log.Print(StringFormat(" TestElement : {0}", sizeof(TestElement)));
     log.Print(StringFormat(" TestElementSprite : {0}", sizeof(TestElementSprite)));
     log.Print(StringFormat("---------------------------------------"));

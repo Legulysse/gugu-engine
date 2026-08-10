@@ -76,6 +76,9 @@ public:
     void UpdateItemsColor(const sf::Color& color);
     void UpdateItemsColorAlpha(uint8 alpha);    // 0 = transparent, 255 = opaque.
 
+    void SetBlendMode(const sf::BlendMode& blendMode);
+    const sf::BlendMode& GetBlendMode() const;
+
 protected:
 
     virtual void RecomputeImpl() override;
@@ -88,6 +91,7 @@ protected:
 
     ImageSet* m_imageSet;
     Texture* m_texture;
+    sf::BlendMode m_blendMode;
     sf::VertexArray m_vertices;
 
     std::vector<ElementSpriteGroupItem*> m_items;    //TODO: Rename as Components ?

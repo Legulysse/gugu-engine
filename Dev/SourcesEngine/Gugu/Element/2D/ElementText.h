@@ -7,6 +7,7 @@
 
 #include <SFML/System/String.hpp>
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/BlendMode.hpp>
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -59,6 +60,9 @@ public:
     void SetResizeRule  (ETextResizeRule::Type _eResizeRule);
     void SetMultiline   (bool _bIsMultiline);
 
+    void SetBlendMode(const sf::BlendMode& blendMode);
+    const sf::BlendMode& GetBlendMode() const;
+
 protected:
 
     virtual void RecomputeImpl() override;
@@ -72,6 +76,7 @@ protected:
 protected:
 
     Font* m_font;
+    sf::BlendMode m_blendMode;
     sf::String m_textValue;
     ETextResizeRule::Type m_resizeRule;
     bool m_isMultiline;

@@ -34,6 +34,9 @@ public:
 
     Texture* GetTexture() const;
 
+    void SetBlendMode(const sf::BlendMode& blendMode);
+    const sf::BlendMode& GetBlendMode() const;
+
     void BuildFromSquareGrid(SquareGrid* grid);
     void BuildFromHexGrid(HexGrid* grid);
     void BuildFromTileDimensions(size_t width, size_t height, const Vector2f& tileSize);
@@ -55,6 +58,7 @@ protected:
 protected:
 
     Texture* m_texture;
+    sf::BlendMode m_blendMode;
     sf::VertexArray m_vertices;
 };
 

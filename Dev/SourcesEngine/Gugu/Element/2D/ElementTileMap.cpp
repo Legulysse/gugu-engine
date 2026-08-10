@@ -45,6 +45,16 @@ Texture* ElementTileMap::GetTexture() const
     return m_texture;
 }
 
+void ElementTileMap::SetBlendMode(const sf::BlendMode& blendMode)
+{
+    m_blendMode = blendMode;
+}
+
+const sf::BlendMode& ElementTileMap::GetBlendMode() const
+{
+    return m_blendMode;
+}
+
 size_t ElementTileMap::GetTileCount() const
 {
     return m_vertices.getVertexCount() / 6;
@@ -201,6 +211,7 @@ void ElementTileMap::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _
             sf::RenderStates states;
             states.transform = _kTransformSelf;
             states.texture = m_texture->GetSFTexture();
+            states.blendMode = m_blendMode;
             _kRenderPass.target->draw(m_vertices, states);
 
             //Stats

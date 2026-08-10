@@ -6,6 +6,8 @@
 #include "Gugu/Element/Element.h"
 #include "Gugu/System/Callback.h"
 
+#include <SFML/Graphics/BlendMode.hpp>
+
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
 
@@ -36,6 +38,9 @@ public:
     void SetBounds(const sf::FloatRect& bounds);
     const sf::FloatRect& GetBounds() const;
 
+    void SetBlendMode(const sf::BlendMode& blendMode);
+    const sf::BlendMode& GetBlendMode() const;
+
     void SetCallbackOnSizeChanged(const DelegateElementSizeChanged& callbackOnSizeChanged);
 
 private:
@@ -46,6 +51,7 @@ private:
 protected:
 
     sf::Drawable* m_sfDrawable;
+    sf::BlendMode m_blendMode;
     sf::FloatRect m_bounds;
     DelegateElementSizeChanged m_callbackOnSizeChanged;
 };

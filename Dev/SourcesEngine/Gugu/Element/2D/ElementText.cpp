@@ -101,6 +101,16 @@ void ElementText::SetMultiline(bool _bIsMultiline)
     RaiseNeedRecompute();
 }
 
+void ElementText::SetBlendMode(const sf::BlendMode& blendMode)
+{
+    m_blendMode = blendMode;
+}
+
+const sf::BlendMode& ElementText::GetBlendMode() const
+{
+    return m_blendMode;
+}
+
 void ElementText::SetText(const std::string& value /*, bool _bResize */)
 {
     sf::String textValue = sf::String::fromUtf8(value.begin(), value.end());
@@ -293,7 +303,10 @@ void ElementText::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTr
     if (_kRenderPass.rectViewport.findIntersection(kGlobalTransformed))
     {
         {
-            _kRenderPass.target->draw(*m_sfText, _kTransformSelf);
+            sf::RenderStates states;
+            states.transform = _kTransformSelf;
+            states.blendMode = m_blendMode;
+            _kRenderPass.target->draw(*m_sfText, states);
 
             //Stats
             if (_kRenderPass.frameInfos)

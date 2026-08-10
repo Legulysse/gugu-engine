@@ -182,6 +182,7 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
             sf::RenderStates states;
             states.transform = _kTransformSelf;
             states.texture = m_texture->GetSFTexture();
+            states.blendMode = m_blendMode;
             _kRenderPass.target->draw(m_vertices, states);
 
             //Stats
@@ -298,6 +299,16 @@ void ElementSpriteGroup::UpdateItemsColorAlpha(uint8 alpha)
     {
         item->SetColorAlpha(alpha);
     }
+}
+
+void ElementSpriteGroup::SetBlendMode(const sf::BlendMode& blendMode)
+{
+    m_blendMode = blendMode;
+}
+
+const sf::BlendMode& ElementSpriteGroup::GetBlendMode() const
+{
+    return m_blendMode;
 }
 
 bool ElementSpriteGroup::LoadFromDataImpl(ElementDataContext& context)

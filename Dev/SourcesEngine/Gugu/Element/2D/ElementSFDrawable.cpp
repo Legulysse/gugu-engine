@@ -53,6 +53,16 @@ const sf::FloatRect& ElementSFDrawable::GetBounds() const
     return m_bounds;
 }
 
+void ElementSFDrawable::SetBlendMode(const sf::BlendMode& blendMode)
+{
+    m_blendMode = blendMode;
+}
+
+const sf::BlendMode& ElementSFDrawable::GetBlendMode() const
+{
+    return m_blendMode;
+}
+
 void ElementSFDrawable::SetCallbackOnSizeChanged(const DelegateElementSizeChanged& callbackOnSizeChanged)
 {
     m_callbackOnSizeChanged = callbackOnSizeChanged;
@@ -71,7 +81,10 @@ void ElementSFDrawable::RenderImpl(RenderPass& _kRenderPass, const sf::Transform
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(m_bounds);
     if (m_sfDrawable && _kRenderPass.rectViewport.findIntersection(kGlobalTransformed))
     {
-        _kRenderPass.target->draw(*m_sfDrawable, _kTransformSelf);
+        sf::RenderStates states;
+        states.transform = _kTransformSelf;
+        states.blendMode = m_blendMode;
+        _kRenderPass.target->draw(*m_sfDrawable, states);
 
         //Stats
         if (_kRenderPass.frameInfos)

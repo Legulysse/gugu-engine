@@ -36,6 +36,7 @@ public:
     virtual void AppStop() override;
 
     virtual void AppUpdate(const gugu::DeltaTime& dt) override;
+    virtual void AppUpdateImGui(const gugu::DeltaTime& dt) override;
 
 protected:
 
@@ -43,6 +44,10 @@ protected:
 
     RendererDemo* m_renderer;
     gugu::ElementSprite* m_twirl;
+
+    gugu::ElementSprite* m_sprite1;
+    gugu::ElementSprite* m_sprite2;
+    size_t m_blendModeIndex;
 };
 
 }   //namespace demoproject

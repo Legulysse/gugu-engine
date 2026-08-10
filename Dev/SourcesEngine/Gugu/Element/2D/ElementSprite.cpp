@@ -83,6 +83,16 @@ Texture* ElementSprite::GetTexture() const
     return m_texture;
 }
 
+void ElementSprite::SetBlendMode(const sf::BlendMode& blendMode)
+{
+    m_blendMode = blendMode;
+}
+
+const sf::BlendMode& ElementSprite::GetBlendMode() const
+{
+    return m_blendMode;
+}
+
 void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
     if (!m_texture || !m_texture->GetSFTexture())
@@ -103,6 +113,7 @@ void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
         sf::RenderStates states;
         states.transform = _kTransformSelf;
         states.texture = m_texture->GetSFTexture();
+        states.blendMode = m_blendMode;
         _kRenderPass.target->draw(m_vertices, states);
 
         // Stats

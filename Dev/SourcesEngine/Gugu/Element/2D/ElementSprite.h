@@ -32,6 +32,9 @@ public:
 
     Texture* GetTexture() const;
 
+    void SetBlendMode(const sf::BlendMode& blendMode);
+    const sf::BlendMode& GetBlendMode() const;
+
 protected:
 
     void RecomputeVerticesPositionAndTextureCoords();
@@ -44,6 +47,7 @@ protected:
 protected:
 
     Texture* m_texture;
+    sf::BlendMode m_blendMode;
     sf::VertexArray m_vertices;
 };
 

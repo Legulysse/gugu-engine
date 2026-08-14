@@ -152,6 +152,7 @@ void ParticleSystem::Start()
     std::fill(m_dataVertices.begin(), m_dataVertices.end(), BuildVertex(Vector2f(), sf::Color::Transparent, Vector2f()));
 
     m_running = true;
+    m_stopEmitting = false;
     m_paused = false;
     m_currentDuration = 0.f;
     
@@ -181,6 +182,7 @@ void ParticleSystem::Stop()
 
     // When m_running is false, the render is ignored, so we dont need to reset particles data here.
     m_running = false;
+    m_stopEmitting = false;
     m_paused = false;
     m_activeParticleCount = 0;
     m_currentDuration = 0.f;

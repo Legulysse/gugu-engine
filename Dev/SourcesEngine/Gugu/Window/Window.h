@@ -64,8 +64,9 @@ public:
     void        DeleteCamera    (Camera* _pCamera);
     void        DeleteAllCameras();
 
-    Camera*     GetCamera       (size_t _iIndex) const;
-    Camera*     GetMainCamera   () const;
+    size_t GetCameraCount() const;
+    Camera* GetCamera(size_t index) const;
+    Camera* GetMainCamera() const;
     
     void        BindScene       (Scene* scene, Camera* _pCamera);
     void        BindScene       (Scene* scene, Camera* _pCamera, Renderer* _pRenderer);

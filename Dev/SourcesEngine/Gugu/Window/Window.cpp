@@ -278,10 +278,15 @@ void Window::DeleteAllCameras()
     ClearStdVector(m_cameras);
 }
 
-Camera* Window::GetCamera(size_t _iIndex) const
+size_t Window::GetCameraCount() const
 {
-    if (_iIndex >= 0 && _iIndex < m_cameras.size())
-        return m_cameras[_iIndex];
+    return m_cameras.size();
+}
+
+Camera* Window::GetCamera(size_t index) const
+{
+    if (index >= 0 && index < m_cameras.size())
+        return m_cameras[index];
     return nullptr;
 }
 

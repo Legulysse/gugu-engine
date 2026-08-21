@@ -51,14 +51,27 @@ public:
 
     void SetFont(const std::string& _strFontPath);
     void SetFont(Font* _pFont);
+    Font* GetFont() const;
+
     void SetFontSize(uint32 fontSize);      // Default font size is 20.
-    void SetColor(const sf::Color& _oColor);
+    uint32 GetFontSize() const;
+
+    void SetColor(const sf::Color& color);
+    sf::Color GetColor() const;
+
     void SetOutlineColor(const sf::Color& color);
+    sf::Color GetOutlineColor() const;
+
     void SetOutlineThickness(float thickness);
+    float GetOutlineThickness() const;
+
     //TODO: Add accessors for all sf::Text methods (LineSpacing, LetterSpacing, Style, etc)
 
-    void SetResizeRule  (ETextResizeRule::Type _eResizeRule);
-    void SetMultiline   (bool _bIsMultiline);
+    void SetResizeRule(ETextResizeRule::Type resizeRule);
+    ETextResizeRule::Type GetResizeRule() const;
+
+    void SetMultiline(bool isMultiline);
+    bool IsMultiline() const;
 
     void SetBlendMode(const sf::BlendMode& blendMode);
     const sf::BlendMode& GetBlendMode() const;

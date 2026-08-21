@@ -63,6 +63,11 @@ void ElementText::SetFont(Font* _pFont)
     }
 }
 
+Font* ElementText::GetFont() const
+{
+    return m_font;
+}
+
 void ElementText::SetFontSize(uint32 fontSize)
 {
     m_sfText->setCharacterSize(fontSize);
@@ -70,14 +75,29 @@ void ElementText::SetFontSize(uint32 fontSize)
     RaiseNeedRecompute();
 }
 
+uint32 ElementText::GetFontSize() const
+{
+    return m_sfText->getCharacterSize();
+}
+
 void ElementText::SetColor(const sf::Color& color)
 {
     m_sfText->setFillColor(color);
 }
 
+sf::Color ElementText::GetColor() const
+{
+    return m_sfText->getFillColor();
+}
+
 void ElementText::SetOutlineColor(const sf::Color& color)
 {
     m_sfText->setOutlineColor(color);
+}
+
+sf::Color ElementText::GetOutlineColor() const
+{
+    return m_sfText->getOutlineColor();
 }
 
 void ElementText::SetOutlineThickness(float thickness)
@@ -87,18 +107,33 @@ void ElementText::SetOutlineThickness(float thickness)
     RaiseNeedRecompute();
 }
 
-void ElementText::SetResizeRule(ETextResizeRule::Type _eResizeRule)
+float ElementText::GetOutlineThickness() const
 {
-    m_resizeRule = _eResizeRule;
+    return m_sfText->getOutlineThickness();
+}
+
+void ElementText::SetResizeRule(ETextResizeRule::Type resizeRule)
+{
+    m_resizeRule = resizeRule;
     
     RaiseNeedRecompute();
 }
 
-void ElementText::SetMultiline(bool _bIsMultiline)
+ETextResizeRule::Type ElementText::GetResizeRule() const
 {
-    m_isMultiline = _bIsMultiline;
+    return m_resizeRule;
+}
+
+void ElementText::SetMultiline(bool isMultiline)
+{
+    m_isMultiline = isMultiline;
     
     RaiseNeedRecompute();
+}
+
+bool ElementText::IsMultiline() const
+{
+    return m_isMultiline;
 }
 
 void ElementText::SetBlendMode(const sf::BlendMode& blendMode)

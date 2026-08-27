@@ -278,7 +278,7 @@ void Demo::AppUpdate(const DeltaTime& dt)
             SoundParameters parameters;
             parameters.audioClipId = "Bulle_01.ogg";
             parameters.mixerGroupId = "Gameplay.audiomixergroup.xml";
-            parameters.volume = 0.5f;
+            parameters.volume = 1.f;
             GetAudio()->PlaySound(parameters);
         }
     }
@@ -298,7 +298,7 @@ void Demo::OnButtonClick(int buttonId)
         SoundParameters parameters;
         parameters.audioClipId = "Bulle_01.ogg";
         parameters.mixerGroupId = "Gameplay.audiomixergroup.xml";
-        parameters.volume = 0.5f;
+        parameters.volume = 1.f;
         GetAudio()->PlaySound(parameters);
     }
     else if (buttonId == EButton::SoundBubbles01Double)
@@ -308,7 +308,7 @@ void Demo::OnButtonClick(int buttonId)
             SoundParameters parameters;
             parameters.audioClipId = "Bulle_01.ogg";
             parameters.mixerGroupId = "Gameplay.audiomixergroup.xml";
-            parameters.volume = 0.5f;
+            parameters.volume = 1.f;
             GetAudio()->PlaySound(parameters);
         }
     }
@@ -319,7 +319,7 @@ void Demo::OnButtonClick(int buttonId)
             SoundParameters parameters;
             parameters.audioClipId = "Bulle_01.ogg";
             parameters.mixerGroupId = "Gameplay.audiomixergroup.xml";
-            parameters.volume = 0.5f;
+            parameters.volume = 1.f;
             GetAudio()->PlaySound(parameters);
         }
     }
@@ -358,7 +358,7 @@ void Demo::OnButtonClick(int buttonId)
         MusicParameters parameters;
         parameters.audioClipId = "Legulysse_Colors.ogg";
         parameters.mixerGroupId = "Music.audiomixergroup.xml";
-        parameters.volume = 0.5f;
+        parameters.volume = 1.f;
         parameters.fadeOut = 1.f;
         parameters.fadeIn = 2.f;
         parameters.loop = true;
@@ -369,7 +369,7 @@ void Demo::OnButtonClick(int buttonId)
         MusicParameters parameters;
         parameters.audioClipId = "Legulysse_Abyss.ogg";
         parameters.mixerGroupId = "Music.audiomixergroup.xml";
-        parameters.volume = 0.5f;
+        parameters.volume = 1.f;
         parameters.fadeOut = 2.f;
         parameters.fadeIn = 4.f;
         parameters.loop = true;

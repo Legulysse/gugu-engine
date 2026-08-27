@@ -75,9 +75,9 @@ private:
     std::vector<MusicInstance> m_musicInstances;
     std::vector<MusicLayer> m_musicLayers;
 
-    size_t m_soundIndex;
     std::map<AudioClip*, float> m_audioClipCooldowns;
     std::map<SoundCue*, float> m_soundCueCooldowns;
+    uint64 m_elapsedTimeReference;
 
     bool m_listenerMuted;
     float m_listenerVolume;

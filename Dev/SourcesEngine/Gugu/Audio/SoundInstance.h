@@ -4,6 +4,7 @@
 // Includes
 
 #include "Gugu/Audio/AudioUtility.h"
+#include "Gugu/System/Types.h"
 
 ////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -34,6 +35,7 @@ public:
     void Reset();
     bool UpdateStatus();
     bool IsActive() const;
+    uint64 GetStartTimeReference() const;
 
     void SetAudioClip(AudioClip* audioClip);
     AudioClip* GetAudioClip() const;
@@ -47,7 +49,7 @@ public:
 
     void RecomputeMixedVolume();
 
-    void Play();
+    void Play(uint64 startTimeReference);
 
 protected:
 
@@ -55,6 +57,7 @@ protected:
     AudioMixerGroupInstance* m_mixerGroupInstance;
     sf::Sound* m_sfSound;
     float m_volume;
+    uint64 m_startTimeReference;
 };
 
 }   // namespace gugu

@@ -43,7 +43,7 @@ namespace gugu {
 
 ManagerAudio::ManagerAudio()
     : m_rootMixerGroupInstance(nullptr)
-    , m_soundIndex(0)
+    , m_elapsedTimeReference(0)
     , m_listenerMuted(false)
     , m_listenerVolume(1.f)
     , m_defaultAudioListenerDistance(0.f)
@@ -97,6 +97,9 @@ void ManagerAudio::Release()
 void ManagerAudio::Update(const DeltaTime& dt, EngineStats& stats)
 {
     stats.soundInstanceCount = 0;
+
+    // Update elapsed update count (used to track sound instance lifetimes).
+    m_elapsedTimeReference += 1;
 
     // Update audioclip cooldowns.
     auto itAudioClip = m_audioClipCooldowns.begin();
@@ -310,7 +313,37 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
         }
 #endif
 
-        SoundInstance* soundInstance = &m_soundInstances[m_soundIndex];
+        // Find an available instance.
+        size_t soundIndex = 0;
+        size_t bestPopIndex = system::InvalidIndex;
+        uint64 bestPopIndexTimeReference = 0;
+
+        while (soundIndex < m_soundInstances.size()
+            && m_soundInstances[soundIndex].IsActive())
+        {
+            uint64 timeReference = m_soundInstances[soundIndex].GetStartTimeReference();
+
+            // Default : pop oldest.
+            if (bestPopIndex == system::InvalidIndex
+                || timeReference < bestPopIndexTimeReference)
+            {
+                bestPopIndex = soundIndex;
+                bestPopIndexTimeReference = timeReference;
+            }
+
+            ++soundIndex;
+        }
+
+        // If no instance is available, pop the best candidate.
+        if (soundIndex == m_soundInstances.size())
+        {
+            assert(bestPopIndex < m_soundInstances.size());
+            soundIndex = bestPopIndex;
+        }
+
+        assert(soundIndex < m_soundInstances.size());
+
+        SoundInstance* soundInstance = &m_soundInstances[soundIndex];
         soundInstance->Reset();
         soundInstance->SetAudioClip(audioClip);
         soundInstance->SetMixerGroupInstance(mixerGroupInstance);   // Note: I currently allow a null group instance.
@@ -352,18 +385,12 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
             soundInstance->SetPosition(parameters.position);
         }
 
-        soundInstance->Play();
+        soundInstance->Play(m_elapsedTimeReference);
 
 #if GUGU_AUDIO_AUDIOCLIP_RESTRICTION_BY_COOLDOWN
         // Add cooldown on the clip to limit superposition.
         m_audioClipCooldowns.insert(std::make_pair(audioClip, GUGU_AUDIO_AUDIOCLIP_RESTRICTION_COOLDOWN_VALUE));
 #endif
-
-        // Handle rotation on available instance entries.
-        ++m_soundIndex;
-        if (m_soundIndex == m_soundInstances.size())
-            m_soundIndex = 0;
-
         return true;
     }
 

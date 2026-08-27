@@ -101,11 +101,12 @@ float MusicInstance::GetFadeCoeff() const
 
 void MusicInstance::RecomputeMixedVolume()
 {
-    float volume = m_mixerGroupInstance == nullptr ? m_volume : m_mixerGroupInstance->ComputeMixedVolume(m_volume);
-    volume *= m_fadeCoeff;
-
     if (m_sfMusic)
     {
+        float volume = m_mixerGroupInstance == nullptr ? m_volume : m_mixerGroupInstance->ComputeMixedVolume(m_volume);
+        volume *= m_fadeCoeff;
+
+        volume = ComputeVolumeCurve(volume);
         m_sfMusic->setVolume(volume * 100.f);
     }
 }

@@ -131,6 +131,8 @@ void SoundInstance::SetPosition(const Vector2f& position)
 void SoundInstance::RecomputeMixedVolume()
 {
     float volume = m_mixerGroupInstance == nullptr ? m_volume : m_mixerGroupInstance->ComputeMixedVolume(m_volume);
+
+    volume = ComputeVolumeCurve(volume);
     m_sfSound->setVolume(volume * 100.f);
 }
 

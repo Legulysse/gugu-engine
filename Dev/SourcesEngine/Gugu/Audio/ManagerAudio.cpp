@@ -127,7 +127,8 @@ void ManagerAudio::SetListenerMuted(bool muted)
 {
     m_listenerMuted = muted;
 
-    sf::Listener::setGlobalVolume(m_listenerMuted ? 0.f : m_listenerVolume * 100.f);
+    float computedVolume = ComputeVolumeCurve(m_listenerVolume);
+    sf::Listener::setGlobalVolume(m_listenerMuted ? 0.f : computedVolume * 100.f);
 }
 
 bool ManagerAudio::IsListenerMuted() const
@@ -139,7 +140,8 @@ void ManagerAudio::SetListenerVolume(float volume)
 {
     m_listenerVolume = volume;
 
-    sf::Listener::setGlobalVolume(m_listenerMuted ? 0.f : m_listenerVolume * 100.f);
+    float computedVolume = ComputeVolumeCurve(m_listenerVolume);
+    sf::Listener::setGlobalVolume(m_listenerMuted ? 0.f : computedVolume * 100.f);
 }
 
 float ManagerAudio::GetListenerVolume() const

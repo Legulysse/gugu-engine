@@ -42,4 +42,8 @@ struct SoundParameters
     Vector2f position;
 };
 
+// Convert a linear volume value into an exponential volume value.
+// This should be used after computing all volume modifiers, and just before sending the value to the audio subsystem.
+float ComputeVolumeCurve(float volume);
+
 }   // namespace gugu

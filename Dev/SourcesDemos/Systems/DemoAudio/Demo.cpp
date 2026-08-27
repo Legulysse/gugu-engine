@@ -187,7 +187,7 @@ void Demo::AppStart()
 
     slider = m_root->AddChild<ElementSlider>();
     slider->LoadFromWidget("Slider_01.widget.xml");
-    slider->SetValueLimits(0, 200);
+    slider->SetValueLimits(0, 100);
     slider->SetValue(100);
     slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::ListenerVolume, slider));
     slider->SetPosition(posX, posY);
@@ -204,7 +204,7 @@ void Demo::AppStart()
     posY += gapY;
     slider = m_root->AddChild<ElementSlider>();
     slider->LoadFromWidget("Slider_01.widget.xml");
-    slider->SetValueLimits(0, 200);
+    slider->SetValueLimits(0, 100);
     slider->SetValue(100);
     slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::MasterVolume, slider));
     slider->SetPosition(posX, posY);
@@ -219,7 +219,7 @@ void Demo::AppStart()
     posY += gapY;
     slider = m_root->AddChild<ElementSlider>();
     slider->LoadFromWidget("Slider_01.widget.xml");
-    slider->SetValueLimits(0, 200);
+    slider->SetValueLimits(0, 100);
     slider->SetValue(100);
     slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::MusicVolume, slider));
     slider->SetPosition(posX, posY);
@@ -234,7 +234,7 @@ void Demo::AppStart()
     posY += gapY;
     slider = m_root->AddChild<ElementSlider>();
     slider->LoadFromWidget("Slider_01.widget.xml");
-    slider->SetValueLimits(0, 200);
+    slider->SetValueLimits(0, 100);
     slider->SetValue(100);
     slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::UIVolume, slider));
     slider->SetPosition(posX, posY);
@@ -249,7 +249,7 @@ void Demo::AppStart()
     posY += gapY;
     slider = m_root->AddChild<ElementSlider>();
     slider->LoadFromWidget("Slider_01.widget.xml");
-    slider->SetValueLimits(0, 200);
+    slider->SetValueLimits(0, 100);
     slider->SetValue(100);
     slider->SetOnValueChanged(std::bind(&Demo::OnSliderChanged, this, (int)ESlider::GameplayVolume, slider));
     slider->SetPosition(posX, posY);

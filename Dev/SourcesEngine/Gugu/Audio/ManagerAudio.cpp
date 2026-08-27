@@ -26,10 +26,12 @@
 ////////////////////////////////////////////////////////////////
 // Macros
 
-#define GUGU_AUDIO_RESTRICTION_BY_COOLDOWN true                 // Toggle restriction on the replay of a same audioclip (wav) file.
-#define GUGU_AUDIO_RESTRICTION_COOLDOWN_VALUE 0.05f             // Cooldown to restrict the replay of a same audioclip (wav) file.
-#define GUGU_AUDIO_RESTRICTION_BY_INSTANCES true                // Toggle restriction on instances of a same audioclip (wav) file.
-#define GUGU_AUDIO_RESTRICTION_INSTANCE_COUNT 8                 // Max number of instances of a same audioclip (wav) file.
+#define GUGU_AUDIO_SOUNDCUE_RESTRICTION_BY_COOLDOWN true        // Toggle restriction on the replay of a same soundcue file.
+
+#define GUGU_AUDIO_AUDIOCLIP_RESTRICTION_BY_COOLDOWN true       // Toggle restriction on the replay of a same audioclip (wav) file.
+#define GUGU_AUDIO_AUDIOCLIP_RESTRICTION_COOLDOWN_VALUE 0.05f   // Cooldown to restrict the replay of a same audioclip (wav) file.
+#define GUGU_AUDIO_AUDIOCLIP_RESTRICTION_BY_INSTANCES true      // Toggle restriction on instances of a same audioclip (wav) file.
+#define GUGU_AUDIO_AUDIOCLIP_RESTRICTION_INSTANCE_COUNT 8       // Max number of instances of a same audioclip (wav) file.
 
 #define GUGU_AUDIO_SPATIALIZATION_MIN_DISTANCE 200.f            // Default minimum distance between listener and audio instance to apply attenuation.
 #define GUGU_AUDIO_SPATIALIZATION_ATTENUATION 0.5f              // Default attenuation factor.
@@ -85,6 +87,7 @@ void ManagerAudio::Init(const EngineConfig& config)
 void ManagerAudio::Release()
 {
     m_audioClipCooldowns.clear();
+    m_soundCueCooldowns.clear();
 
     m_musicLayers.clear();
     m_musicInstances.clear();
@@ -95,16 +98,28 @@ void ManagerAudio::Update(const DeltaTime& dt, EngineStats& stats)
 {
     stats.soundInstanceCount = 0;
 
-    // Update clip cooldowns.
-    auto it = m_audioClipCooldowns.begin();
-    while (it != m_audioClipCooldowns.end())
+    // Update audioclip cooldowns.
+    auto itAudioClip = m_audioClipCooldowns.begin();
+    while (itAudioClip != m_audioClipCooldowns.end())
     {
-        it->second -= dt.unscaled_s();
+        itAudioClip->second -= dt.unscaled_s(); // Unscaled because it is only here to reduce saturation.
 
-        if (it->second <= 0.f)
-            it = m_audioClipCooldowns.erase(it);
+        if (itAudioClip->second <= 0.f)
+            itAudioClip = m_audioClipCooldowns.erase(itAudioClip);
         else
-            ++it;
+            ++itAudioClip;
+    }
+
+    // Update soundcue cooldowns.
+    auto itSoundCue = m_soundCueCooldowns.begin();
+    while (itSoundCue != m_soundCueCooldowns.end())
+    {
+        itSoundCue->second -= dt.s();           // Scaled to match gameplay timings.
+
+        if (itSoundCue->second <= 0.f)
+            itSoundCue = m_soundCueCooldowns.erase(itSoundCue);
+        else
+            ++itSoundCue;
     }
 
     // Update sound instances (reset if not active).
@@ -216,7 +231,7 @@ bool ManagerAudio::PlaySoundCue(const std::string& soundCueId, const Vector2f& p
 
 bool ManagerAudio::PlaySoundCue(SoundCue* soundCue, const Vector2f& position)
 {
-    if (!soundCue)
+    if (!soundCue || StdMapContainsKey(m_soundCueCooldowns, soundCue))
         return false;
 
     // TODO: I could check with running instances if I should pick an AudioClip that is not currently being played.
@@ -226,7 +241,24 @@ bool ManagerAudio::PlaySoundCue(SoundCue* soundCue, const Vector2f& position)
 
     parameters.position = position;
 
-    return PlaySound(parameters);
+    bool result = PlaySound(parameters);
+
+#if GUGU_AUDIO_SOUNDCUE_RESTRICTION_BY_COOLDOWN
+    if (result && parameters.cooldownRange.x > 0.f)
+    {
+        if (parameters.useRandomCooldown)
+        {
+            float cooldown = GetRandomf(parameters.cooldownRange.x, parameters.cooldownRange.y);
+            m_soundCueCooldowns.insert(std::make_pair(soundCue, cooldown));
+        }
+        else
+        {
+            m_soundCueCooldowns.insert(std::make_pair(soundCue, parameters.cooldownRange.x));
+        }
+    }
+#endif
+
+    return result;
 }
 
 bool ManagerAudio::PlaySound(const std::string& audioClipId, float volume)
@@ -255,7 +287,7 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
 
     if (audioClip && !StdMapContainsKey(m_audioClipCooldowns, audioClip))
     {
-#if GUGU_AUDIO_RESTRICTION_BY_INSTANCES
+#if GUGU_AUDIO_AUDIOCLIP_RESTRICTION_BY_INSTANCES
         // Upper count limit.
         int count = 0;
         for (auto& soundInstance : m_soundInstances)
@@ -267,7 +299,7 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
         }
 
         // TODO: Pop oldest instead of arbitrary order.
-        int removeCount = count - (GUGU_AUDIO_RESTRICTION_INSTANCE_COUNT - 1);
+        int removeCount = count - (GUGU_AUDIO_AUDIOCLIP_RESTRICTION_INSTANCE_COUNT - 1);
         for (auto& soundInstance : m_soundInstances)
         {
             if (soundInstance.GetAudioClip() == audioClip && removeCount > 0)
@@ -322,9 +354,9 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
 
         soundInstance->Play();
 
-#if GUGU_AUDIO_RESTRICTION_BY_COOLDOWN
+#if GUGU_AUDIO_AUDIOCLIP_RESTRICTION_BY_COOLDOWN
         // Add cooldown on the clip to limit superposition.
-        m_audioClipCooldowns.insert(std::make_pair(audioClip, GUGU_AUDIO_RESTRICTION_COOLDOWN_VALUE));
+        m_audioClipCooldowns.insert(std::make_pair(audioClip, GUGU_AUDIO_AUDIOCLIP_RESTRICTION_COOLDOWN_VALUE));
 #endif
 
         // Handle rotation on available instance entries.

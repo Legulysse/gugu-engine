@@ -37,6 +37,8 @@ struct SoundParameters
     float volume = 1.f;
     Vector2f volumeRandomRange;
     Vector2f pitchRandomRange;
+    bool useRandomCooldown = false;
+    Vector2f cooldownRange;
     bool spatialized = false;
     SpatializationParameters spatializationParameters;
     Vector2f position;

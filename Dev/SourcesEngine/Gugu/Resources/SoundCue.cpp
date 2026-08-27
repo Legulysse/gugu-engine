@@ -24,6 +24,8 @@ SoundCue::SoundCue()
     , m_volumeAttenuation(1.f)
     , m_volumeRandomRange(Vector2::Zero_f)
     , m_pitchRandomRange(Vector2::Zero_f)
+    , m_useRandomCooldown(false)
+    , m_cooldownRange(Vector2::Zero_f)
     , m_spatialized(false)
 {
 }
@@ -75,6 +77,28 @@ void SoundCue::SetPitchRandomRange(const Vector2f& pitchRandomRange)
 const Vector2f& SoundCue::GetPitchRandomRange() const
 {
     return m_pitchRandomRange;
+}
+
+void SoundCue::SetUseRandomCooldown(bool useRandomCooldown)
+{
+    m_useRandomCooldown = useRandomCooldown;
+    RecomputeRuntimeSoundParameters();
+}
+
+bool SoundCue::GetUseRandomCooldown() const
+{
+    return m_useRandomCooldown;
+}
+
+void SoundCue::SetCooldownRange(const Vector2f& cooldownRange)
+{
+    m_cooldownRange = cooldownRange;
+    RecomputeRuntimeSoundParameters();
+}
+
+const Vector2f& SoundCue::GetCooldownRange() const
+{
+    return m_cooldownRange;
 }
 
 void SoundCue::SetSpatialized(bool spatialized)
@@ -132,6 +156,8 @@ void SoundCue::RecomputeRuntimeSoundParameters()
             parameters.volume = clip.volume * m_volumeAttenuation;
             parameters.volumeRandomRange = m_volumeRandomRange;
             parameters.pitchRandomRange = m_pitchRandomRange;
+            parameters.useRandomCooldown = m_useRandomCooldown;
+            parameters.cooldownRange = m_cooldownRange;
             parameters.spatialized = m_spatialized;
             parameters.spatializationParameters = m_spatializationParameters;
             m_soundParameters.push_back(parameters);
@@ -196,6 +222,8 @@ void SoundCue::Unload()
     m_volumeAttenuation = 1.f;
     m_volumeRandomRange = Vector2::Zero_f;
     m_pitchRandomRange = Vector2::Zero_f;
+    m_useRandomCooldown = false;
+    m_cooldownRange = Vector2::Zero_f;
     m_spatialized = false;
     m_spatializationParameters = SpatializationParameters();
 
@@ -214,6 +242,8 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
     m_volumeAttenuation = rootNode.child("VolumeAttenuation").attribute("value").as_float(m_volumeAttenuation);
     m_volumeRandomRange = xml::ReadVector2f(rootNode.child("VolumeRandomRange"), m_volumeRandomRange);
     m_pitchRandomRange = xml::ReadVector2f(rootNode.child("PitchRandomRange"), m_pitchRandomRange);
+    m_useRandomCooldown = rootNode.child("UseRandomCooldown").attribute("value").as_bool(m_useRandomCooldown);
+    m_cooldownRange = xml::ReadVector2f(rootNode.child("CooldownRange"), m_cooldownRange);
     m_spatialized = rootNode.child("Spatialized").attribute("value").as_bool(m_spatialized);
 
     if (pugi::xml_node spatializationNode = rootNode.child("SpatializationParameters"))
@@ -257,7 +287,20 @@ bool SoundCue::SaveToXml(pugi::xml_document& document) const
         xml::WriteVector2f(rootNode.append_child("PitchRandomRange"), m_pitchRandomRange);
     }
 
-    rootNode.append_child("Spatialized").append_attribute("value").set_value(m_spatialized);
+    if (m_useRandomCooldown)
+    {
+        rootNode.append_child("UseRandomCooldown").append_attribute("value").set_value(m_useRandomCooldown);
+    }
+
+    if (m_cooldownRange != Vector2::Zero_f)
+    {
+        xml::WriteVector2f(rootNode.append_child("CooldownRange"), m_cooldownRange);
+    }
+
+    if (m_spatialized)
+    {
+        rootNode.append_child("Spatialized").append_attribute("value").set_value(m_spatialized);
+    }
 
     if (m_spatializationParameters.override)
     {

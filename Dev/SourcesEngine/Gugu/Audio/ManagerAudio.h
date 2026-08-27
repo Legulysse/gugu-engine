@@ -77,6 +77,7 @@ private:
 
     size_t m_soundIndex;
     std::map<AudioClip*, float> m_audioClipCooldowns;
+    std::map<SoundCue*, float> m_soundCueCooldowns;
 
     bool m_listenerMuted;
     float m_listenerVolume;

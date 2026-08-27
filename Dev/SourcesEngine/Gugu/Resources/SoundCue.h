@@ -50,6 +50,12 @@ public:
     void SetPitchRandomRange(const Vector2f& pitchRandomRange);
     const Vector2f& GetPitchRandomRange() const;
 
+    void SetUseRandomCooldown(bool useRandomCooldown);
+    bool GetUseRandomCooldown() const;
+
+    void SetCooldownRange(const Vector2f& cooldownRange);
+    const Vector2f& GetCooldownRange() const;
+
     void SetSpatialized(bool spatialized);
     bool IsSpatialized() const;
 
@@ -81,6 +87,8 @@ protected:
     float m_volumeAttenuation;
     Vector2f m_volumeRandomRange;
     Vector2f m_pitchRandomRange;
+    bool m_useRandomCooldown;
+    Vector2f m_cooldownRange;
     bool m_spatialized;
     SpatializationParameters m_spatializationParameters;
 

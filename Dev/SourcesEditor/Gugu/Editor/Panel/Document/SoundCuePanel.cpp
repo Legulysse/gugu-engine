@@ -47,6 +47,7 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
         {
             parameters.volumeRandomRange = Vector2::Zero_f;
             parameters.pitchRandomRange = Vector2::Zero_f;
+            parameters.cooldownRange = Vector2::Zero_f;
             parameters.position = m_playPosition;
             GetAudio()->PlaySound(parameters);
         }
@@ -117,6 +118,39 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
         {
             m_soundCue->SetPitchRandomRange(range);
             updated |= true;
+        }
+    }
+
+    ImGui::Spacing();
+
+    {
+        bool useRandomCooldown = m_soundCue->GetUseRandomCooldown();
+        if (ImGui::Checkbox("Use Random Cooldown", &useRandomCooldown))
+        {
+            m_soundCue->SetUseRandomCooldown(useRandomCooldown);
+            updated |= true;
+        }
+
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(200.f);
+
+        if (m_soundCue->GetUseRandomCooldown())
+        {
+            Vector2f cooldownRange = m_soundCue->GetCooldownRange();
+            if (ImGui::InputFloat2("Cooldown Range##_COOLDOWN_RANGE", &cooldownRange))
+            {
+                m_soundCue->SetCooldownRange(cooldownRange);
+                updated |= true;
+            }
+        }
+        else
+        {
+            float cooldownRange = m_soundCue->GetCooldownRange().x;
+            if (ImGui::InputFloat("Cooldown Range##_COOLDOWN_RANGE_X", &cooldownRange))
+            {
+                m_soundCue->SetCooldownRange(Vector2f(cooldownRange, cooldownRange));
+                updated |= true;
+            }
         }
     }
 

@@ -24,6 +24,7 @@ SoundInstance::SoundInstance()
     , m_mixerGroupInstance(nullptr)
     , m_sfSound(nullptr)
     , m_volume(1.f)
+    , m_priority(0)
     , m_startTimeReference(0)
 {
     // Default empty buffer.
@@ -48,6 +49,7 @@ void SoundInstance::Reset()
 
     m_audioClip = nullptr;
     m_volume = 1.f;
+    m_priority = 0;
     m_startTimeReference = 0;
 }
 
@@ -69,6 +71,11 @@ bool SoundInstance::UpdateStatus()
 bool SoundInstance::IsActive() const
 {
     return m_audioClip != nullptr;
+}
+
+int SoundInstance::GetPriority() const
+{
+    return m_priority;
 }
 
 uint64 SoundInstance::GetStartTimeReference() const
@@ -143,8 +150,9 @@ void SoundInstance::RecomputeMixedVolume()
     m_sfSound->setVolume(volume * 100.f);
 }
 
-void SoundInstance::Play(uint64 startTimeReference)
+void SoundInstance::Play(int priority, uint64 startTimeReference)
 {
+    m_priority = priority;
     m_startTimeReference = startTimeReference;
     m_sfSound->play();
 }

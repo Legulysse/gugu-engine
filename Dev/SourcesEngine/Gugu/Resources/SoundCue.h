@@ -50,6 +50,9 @@ public:
     void SetPitchRandomRange(const Vector2f& pitchRandomRange);
     const Vector2f& GetPitchRandomRange() const;
 
+    void SetPriority(int priority);
+    int GetPriority() const;
+
     void SetUseRandomCooldown(bool useRandomCooldown);
     bool GetUseRandomCooldown() const;
 
@@ -87,6 +90,7 @@ protected:
     float m_volumeAttenuation;
     Vector2f m_volumeRandomRange;
     Vector2f m_pitchRandomRange;
+    int m_priority;
     bool m_useRandomCooldown;
     Vector2f m_cooldownRange;
     bool m_spatialized;

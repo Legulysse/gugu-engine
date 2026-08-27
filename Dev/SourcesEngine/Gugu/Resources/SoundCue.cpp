@@ -24,6 +24,7 @@ SoundCue::SoundCue()
     , m_volumeAttenuation(1.f)
     , m_volumeRandomRange(Vector2::Zero_f)
     , m_pitchRandomRange(Vector2::Zero_f)
+    , m_priority(0)
     , m_useRandomCooldown(false)
     , m_cooldownRange(Vector2::Zero_f)
     , m_spatialized(false)
@@ -77,6 +78,17 @@ void SoundCue::SetPitchRandomRange(const Vector2f& pitchRandomRange)
 const Vector2f& SoundCue::GetPitchRandomRange() const
 {
     return m_pitchRandomRange;
+}
+
+void SoundCue::SetPriority(int priority)
+{
+    m_priority = priority;
+    RecomputeRuntimeSoundParameters();
+}
+
+int SoundCue::GetPriority() const
+{
+    return m_priority;
 }
 
 void SoundCue::SetUseRandomCooldown(bool useRandomCooldown)
@@ -156,6 +168,7 @@ void SoundCue::RecomputeRuntimeSoundParameters()
             parameters.volume = clip.volume * m_volumeAttenuation;
             parameters.volumeRandomRange = m_volumeRandomRange;
             parameters.pitchRandomRange = m_pitchRandomRange;
+            parameters.priority = m_priority;
             parameters.useRandomCooldown = m_useRandomCooldown;
             parameters.cooldownRange = m_cooldownRange;
             parameters.spatialized = m_spatialized;
@@ -242,6 +255,7 @@ bool SoundCue::LoadFromXml(const pugi::xml_document& document)
     m_volumeAttenuation = rootNode.child("VolumeAttenuation").attribute("value").as_float(m_volumeAttenuation);
     m_volumeRandomRange = xml::ReadVector2f(rootNode.child("VolumeRandomRange"), m_volumeRandomRange);
     m_pitchRandomRange = xml::ReadVector2f(rootNode.child("PitchRandomRange"), m_pitchRandomRange);
+    m_priority = rootNode.child("Priority").attribute("value").as_bool(m_priority);
     m_useRandomCooldown = rootNode.child("UseRandomCooldown").attribute("value").as_bool(m_useRandomCooldown);
     m_cooldownRange = xml::ReadVector2f(rootNode.child("CooldownRange"), m_cooldownRange);
     m_spatialized = rootNode.child("Spatialized").attribute("value").as_bool(m_spatialized);
@@ -285,6 +299,11 @@ bool SoundCue::SaveToXml(pugi::xml_document& document) const
     if (m_pitchRandomRange != Vector2::Zero_f)
     {
         xml::WriteVector2f(rootNode.append_child("PitchRandomRange"), m_pitchRandomRange);
+    }
+
+    if (m_priority != 0)
+    {
+        rootNode.append_child("Priority").append_attribute("value").set_value(m_priority);
     }
 
     if (m_useRandomCooldown)

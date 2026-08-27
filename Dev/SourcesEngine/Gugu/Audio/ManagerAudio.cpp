@@ -316,82 +316,93 @@ bool ManagerAudio::PlaySound(const SoundParameters& parameters)
         // Find an available instance.
         size_t soundIndex = 0;
         size_t bestPopIndex = system::InvalidIndex;
+        int bestPopIndexPriority = 0;
         uint64 bestPopIndexTimeReference = 0;
 
         while (soundIndex < m_soundInstances.size()
             && m_soundInstances[soundIndex].IsActive())
         {
+            int priority = m_soundInstances[soundIndex].GetPriority();
             uint64 timeReference = m_soundInstances[soundIndex].GetStartTimeReference();
 
-            // Default : pop oldest.
-            if (bestPopIndex == system::InvalidIndex
-                || timeReference < bestPopIndexTimeReference)
+            // Never pop an instance of higher priority.
+            if (priority <= parameters.priority)
             {
-                bestPopIndex = soundIndex;
-                bestPopIndexTimeReference = timeReference;
+                // Default :
+                // - Prioritize an instance of lower priority than the current choice.
+                // - Prioritize an instance older than the current choice if priority is the same.
+                // - Ignore instances of higher priority than the current choice.
+                if (bestPopIndex == system::InvalidIndex
+                    || priority < bestPopIndexPriority
+                    || (priority == bestPopIndexPriority && timeReference < bestPopIndexTimeReference))
+                {
+                    bestPopIndex = soundIndex;
+                    bestPopIndexPriority = priority;
+                    bestPopIndexTimeReference = timeReference;
+                }
             }
 
             ++soundIndex;
         }
 
-        // If no instance is available, pop the best candidate.
-        if (soundIndex == m_soundInstances.size())
+        // If no instance is available, pop the best candidate available.
+        if (soundIndex == m_soundInstances.size() && bestPopIndex != system::InvalidIndex)
         {
-            assert(bestPopIndex < m_soundInstances.size());
             soundIndex = bestPopIndex;
         }
 
-        assert(soundIndex < m_soundInstances.size());
-
-        SoundInstance* soundInstance = &m_soundInstances[soundIndex];
-        soundInstance->Reset();
-        soundInstance->SetAudioClip(audioClip);
-        soundInstance->SetMixerGroupInstance(mixerGroupInstance);   // Note: I currently allow a null group instance.
-        
-        if (parameters.volumeRandomRange != Vector2::Zero_f)
+        if (soundIndex < m_soundInstances.size())
         {
-            assert(parameters.volumeRandomRange.x <= 0.f && parameters.volumeRandomRange.y >= 0.f);
+            SoundInstance* soundInstance = &m_soundInstances[soundIndex];
+            soundInstance->Reset();
+            soundInstance->SetAudioClip(audioClip);
+            soundInstance->SetMixerGroupInstance(mixerGroupInstance);   // Note: I currently allow a null group instance.
 
-            float volume = parameters.volume * (1.f + GetRandomf(parameters.volumeRandomRange.x, parameters.volumeRandomRange.y));
-            soundInstance->SetVolume(volume);
-        }
-        else
-        {
-            soundInstance->SetVolume(parameters.volume);
-        }
-
-        if (parameters.pitchRandomRange != Vector2::Zero_f)
-        {
-            assert(parameters.pitchRandomRange.x <= 0.f && parameters.pitchRandomRange.y >= 0.f);
-
-            float pitch = 1.f + GetRandomf(parameters.pitchRandomRange.x, parameters.pitchRandomRange.y);
-            soundInstance->SetPitch(pitch);
-        }
-
-        if (parameters.spatialized)
-        {
-            SpatializationParameters spatializationParameters = m_spatializationParameters;
-
-            if (parameters.spatializationParameters.override)
+            if (parameters.volumeRandomRange != Vector2::Zero_f)
             {
-                spatializationParameters = parameters.spatializationParameters;
+                assert(parameters.volumeRandomRange.x <= 0.f && parameters.volumeRandomRange.y >= 0.f);
+
+                float volume = parameters.volume * (1.f + GetRandomf(parameters.volumeRandomRange.x, parameters.volumeRandomRange.y));
+                soundInstance->SetVolume(volume);
             }
-            else if (mixerGroupInstance)
+            else
             {
-                mixerGroupInstance->GetSpatializationParameters(spatializationParameters);
+                soundInstance->SetVolume(parameters.volume);
             }
 
-            soundInstance->SetSpatialization(true, spatializationParameters);
-            soundInstance->SetPosition(parameters.position);
-        }
+            if (parameters.pitchRandomRange != Vector2::Zero_f)
+            {
+                assert(parameters.pitchRandomRange.x <= 0.f && parameters.pitchRandomRange.y >= 0.f);
 
-        soundInstance->Play(m_elapsedTimeReference);
+                float pitch = 1.f + GetRandomf(parameters.pitchRandomRange.x, parameters.pitchRandomRange.y);
+                soundInstance->SetPitch(pitch);
+            }
+
+            if (parameters.spatialized)
+            {
+                SpatializationParameters spatializationParameters = m_spatializationParameters;
+
+                if (parameters.spatializationParameters.override)
+                {
+                    spatializationParameters = parameters.spatializationParameters;
+                }
+                else if (mixerGroupInstance)
+                {
+                    mixerGroupInstance->GetSpatializationParameters(spatializationParameters);
+                }
+
+                soundInstance->SetSpatialization(true, spatializationParameters);
+                soundInstance->SetPosition(parameters.position);
+            }
+
+            soundInstance->Play(parameters.priority, m_elapsedTimeReference);
 
 #if GUGU_AUDIO_AUDIOCLIP_RESTRICTION_BY_COOLDOWN
-        // Add cooldown on the clip to limit superposition.
-        m_audioClipCooldowns.insert(std::make_pair(audioClip, GUGU_AUDIO_AUDIOCLIP_RESTRICTION_COOLDOWN_VALUE));
+            // Add cooldown on the clip to limit superposition.
+            m_audioClipCooldowns.insert(std::make_pair(audioClip, GUGU_AUDIO_AUDIOCLIP_RESTRICTION_COOLDOWN_VALUE));
 #endif
-        return true;
+            return true;
+        }
     }
 
     return false;

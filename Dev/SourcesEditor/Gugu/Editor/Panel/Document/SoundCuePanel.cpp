@@ -123,6 +123,16 @@ void SoundCuePanel::UpdatePanelImpl(const DeltaTime& dt)
 
     ImGui::Spacing();
 
+    ImGui::SetNextItemWidth(200.f);
+    int priority = m_soundCue->GetPriority();
+    if (ImGui::InputInt("Priority", &priority))
+    {
+        m_soundCue->SetPriority(priority);
+        updated |= true;
+    }
+
+    ImGui::Spacing();
+
     {
         bool useRandomCooldown = m_soundCue->GetUseRandomCooldown();
         if (ImGui::Checkbox("Use Random Cooldown", &useRandomCooldown))

@@ -35,6 +35,8 @@ public:
     void Reset();
     bool UpdateStatus();
     bool IsActive() const;
+
+    int GetPriority() const;
     uint64 GetStartTimeReference() const;
 
     void SetAudioClip(AudioClip* audioClip);
@@ -49,7 +51,7 @@ public:
 
     void RecomputeMixedVolume();
 
-    void Play(uint64 startTimeReference);
+    void Play(int priority, uint64 startTimeReference);
 
 protected:
 
@@ -57,6 +59,7 @@ protected:
     AudioMixerGroupInstance* m_mixerGroupInstance;
     sf::Sound* m_sfSound;
     float m_volume;
+    int m_priority;
     uint64 m_startTimeReference;
 };
 

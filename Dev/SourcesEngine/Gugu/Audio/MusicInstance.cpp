@@ -88,6 +88,11 @@ void MusicInstance::SetVolume(float volume)
     RecomputeMixedVolume();
 }
 
+float MusicInstance::GetVolume() const
+{
+    return m_volume;
+}
+
 void MusicInstance::SetFadeCoeff(float fadeCoeff)
 {
     m_fadeCoeff = fadeCoeff;

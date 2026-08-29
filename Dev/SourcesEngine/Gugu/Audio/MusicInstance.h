@@ -39,6 +39,7 @@ public:
 
     void SetMixerGroupInstance(AudioMixerGroupInstance* mixerGroupInstance);
     void SetVolume(float volume);
+    float GetVolume() const;
 
     void SetFadeCoeff(float fadeCoeff);
     float GetFadeCoeff() const;

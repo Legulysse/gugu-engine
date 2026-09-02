@@ -38,6 +38,8 @@ namespace EInteractionEvent
         MouseLeft,
         MousePressed,
         MouseReleased,
+        RightMousePressed,
+        RightMouseReleased,
         MouseSelected,
         MouseDeselected,
         MouseScrolled,

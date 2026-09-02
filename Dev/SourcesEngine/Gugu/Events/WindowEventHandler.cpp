@@ -426,6 +426,36 @@ bool WindowEventHandler::ProcessCameraElementInteractions(const sf::Event& event
                 m_elementMouseSelected = nullptr;
             }
         }
+        else if (mouseButtonPressedEvent->button == sf::Mouse::Button::Right)
+        {
+            for (size_t i = m_mouseClickElementEventHandlers.size(); i-- > 0;)
+            {
+                ElementEventHandler* elementEventHandler = m_mouseClickElementEventHandlers[i];
+                Element* pElement = elementEventHandler->GetElement();
+
+                bool clickEnabled = elementEventHandler->IsInteractionRegisteredAndEnabled(EInteractionType::Click);
+
+                Vector2f localPickedCoords;
+                if (clickEnabled
+                    && camera->IsMouseOverElement(mouseCoords, pElement, localPickedCoords))
+                {
+                    // Click
+                    if (clickEnabled)
+                    {
+                        InteractionInfos interactionInfos;
+                        interactionInfos.localPickingPosition = localPickedCoords;
+                        interactionInfos.camera = camera;
+                        elementEventHandler->FireCallbacks(EInteractionEvent::RightMousePressed, interactionInfos);
+
+                        if (interactionInfos.absorbEvent)
+                        {
+                            propagateEvent = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
     else if (const auto mouseButtonReleasedEvent = event.getIf<sf::Event::MouseButtonReleased>())
     {
@@ -482,6 +512,30 @@ bool WindowEventHandler::ProcessCameraElementInteractions(const sf::Event& event
                             propagateEvent = false;
                             break;
                         }
+                    }
+                }
+            }
+        }
+        else if (mouseButtonReleasedEvent->button == sf::Mouse::Button::Right)
+        {
+            for (size_t i = m_mouseClickElementEventHandlers.size(); i-- > 0;)
+            {
+                ElementEventHandler* elementEventHandler = m_mouseClickElementEventHandlers[i];
+                Element* pElement = elementEventHandler->GetElement();
+
+                Vector2f localPickedCoords;
+                if (elementEventHandler->IsInteractionRegisteredAndEnabled(EInteractionType::Click)
+                    && camera->IsMouseOverElement(mouseCoords, pElement, localPickedCoords))
+                {
+                    InteractionInfos interactionInfos;
+                    interactionInfos.localPickingPosition = localPickedCoords;
+                    interactionInfos.camera = camera;
+                    elementEventHandler->FireCallbacks(EInteractionEvent::RightMouseReleased, interactionInfos);
+
+                    if (interactionInfos.absorbEvent)
+                    {
+                        propagateEvent = false;
+                        break;
                     }
                 }
             }

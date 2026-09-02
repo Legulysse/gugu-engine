@@ -215,6 +215,8 @@ void ElementEventHandler::CheckRegistration(EInteractionEvent::Type event)
         break;
     case EInteractionEvent::MousePressed:
     case EInteractionEvent::MouseReleased:
+    case EInteractionEvent::RightMousePressed:
+    case EInteractionEvent::RightMouseReleased:
         interactionType = EInteractionType::Click;
         break;
     case EInteractionEvent::MouseSelected:

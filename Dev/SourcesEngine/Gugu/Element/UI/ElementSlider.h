@@ -30,6 +30,9 @@ public:
     bool LoadFromWidget(ElementWidget* elementWidget);
 
     void SetValueLimits(int minValue, int maxValue);
+    int GetMinValue() const;
+    int GetMaxValue() const;
+
     void SetValue(int value, bool triggerCallback = true);
     int GetValue() const;
 

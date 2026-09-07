@@ -69,6 +69,16 @@ void ElementSlider::SetValueLimits(int minValue, int maxValue)
     RaiseNeedRecompute();
 }
 
+int ElementSlider::GetMinValue() const
+{
+    return m_minValue;
+}
+
+int ElementSlider::GetMaxValue() const
+{
+    return m_maxValue;
+}
+
 void ElementSlider::SetValue(int value, bool triggerCallback)
 {
     value = Clamp(value, m_minValue, m_maxValue);
@@ -120,7 +130,8 @@ void ElementSlider::OnMousePressed(const InteractionInfos& interactionInfos)
         Vector2f pickedPosition = interactionInfos.localPickingPosition;
 
         float offset = m_cursorComponent->GetSize().x / 2.f;
-        int value = RemapLerp(offset, GetSize().x - offset, m_minValue, m_maxValue, pickedPosition.x);
+        float valuef = RemapLerp(offset, GetSize().x - offset, (float)m_minValue, (float)m_maxValue, pickedPosition.x);
+        int value = RoundNearestInt(valuef);
         SetValue(value);
 
         // Hack to allow drag event to trigger.
@@ -137,7 +148,8 @@ void ElementSlider::OnMouseDragMoved(const InteractionInfos& interactionInfos)
         pickedPosition = m_cursorComponent->TransformToGlobal(pickedPosition, this);
 
         float offset = m_cursorComponent->GetSize().x / 2.f;
-        int value = RemapLerp(offset, GetSize().x - offset, m_minValue, m_maxValue, pickedPosition.x);
+        float valuef = RemapLerp(offset, GetSize().x - offset, (float)m_minValue, (float)m_maxValue, pickedPosition.x);
+        int value = RoundNearestInt(valuef);
         SetValue(value);
 
         RaiseNeedRecompute();

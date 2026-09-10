@@ -61,6 +61,7 @@ struct EngineConfig
 
     // Debug
     bool allowEngineLog;
+    bool allowEngineDebugLog;
     bool allowConsole;
     bool showStats;
     bool showFPS;
@@ -100,6 +101,7 @@ struct EngineConfig
         audioListenerDistance = 800;
 
         allowEngineLog = true;
+        allowEngineDebugLog = true;
         allowConsole = true;
         showStats = false;
         showFPS = false;

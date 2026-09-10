@@ -79,6 +79,7 @@ void Engine::Init(const EngineConfig& config)
 
     //-- Init engine log and trace group --//
     m_logEngine = new LoggerEngine();
+    m_logEngine->SetIgnoreDebugLog(!config.allowEngineDebugLog);
 
     if (config.allowEngineLog)
     {

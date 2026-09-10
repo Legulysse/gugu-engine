@@ -95,6 +95,8 @@ public:
     void Print(ELog::Type level, ELogEngine::Type category, const std::string& text);
     //using Logger::Print;  // Explicitely use Name Hiding on the base Print method.
 
+    void SetIgnoreDebugLog(bool ignoreLog);
+
     void SetUseTimestamp(bool useTimestamp);
     void IncrementFrameNumber();
 
@@ -103,6 +105,7 @@ public:
 
 protected:
 
+    bool m_ignoreDebugLog;
     bool m_useTimestamp;
     int m_frameNumber;
 

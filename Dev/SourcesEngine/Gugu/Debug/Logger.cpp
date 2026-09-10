@@ -140,7 +140,8 @@ void Logger::FlushImpl()
 // LoggerEngine
 
 LoggerEngine::LoggerEngine()
-    : m_useTimestamp(true)
+    : m_ignoreDebugLog(false)
+    , m_useTimestamp(true)
     , m_frameNumber(0)
 {
 }
@@ -152,6 +153,9 @@ LoggerEngine::~LoggerEngine()
 void LoggerEngine::Print(ELog::Type level, ELogEngine::Type category, const std::string& text)
 {
     if (!m_isActive)
+        return;
+
+    if (level == ELog::Debug && m_ignoreDebugLog)
         return;
 
     std::lock_guard lock(m_mutex);
@@ -206,6 +210,11 @@ void LoggerEngine::Print(ELog::Type level, ELogEngine::Type category, const std:
     {
         delegateInfos.delegateLog(timestamp, level, category, text);
     }
+}
+
+void LoggerEngine::SetIgnoreDebugLog(bool ignoreLog)
+{
+    m_ignoreDebugLog = ignoreLog;
 }
 
 void LoggerEngine::SetUseTimestamp(bool useTimestamp)

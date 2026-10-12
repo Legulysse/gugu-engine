@@ -118,10 +118,18 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, EWindowState state,
 
     if (GetResources()->HasResource(config.applicationIcon))
     {
-        sf::Image oImgIcon;
-        if (oImgIcon.loadFromFile(GetResources()->GetResourceFileInfo(config.applicationIcon).GetFileSystemPath()))
+        sf::Image iconImage;
+        if (iconImage.loadFromFile(GetResources()->GetResourceFileInfo(config.applicationIcon).GetFileSystemPath()))
         {
-            m_sfWindow->setIcon(Vector2u(oImgIcon.getSize().x, oImgIcon.getSize().y), oImgIcon.getPixelsPtr());
+            if (iconImage.getSize().x > 0 && iconImage.getSize().y > 0)
+            {
+                // Store icon image.
+                m_iconSize = iconImage.getSize();
+                size_t iconArraySize = 4 * (m_iconSize.x * m_iconSize.y);
+                m_iconPixels.assign(iconImage.getPixelsPtr(), iconImage.getPixelsPtr() + iconArraySize);
+
+                m_sfWindow->setIcon(m_iconSize, m_iconPixels.data());
+            }
         }
     }
 
@@ -136,11 +144,14 @@ void Window::Recreate(EWindowState state, Vector2u size)
 
     CreateImpl(state, size);
 
+    // Restore the window setup.
     m_sfWindow->setVerticalSyncEnabled(m_verticalSync);
     m_sfWindow->setFramerateLimit(m_framerateLimit);
 
-    // TODO: icon.
-    // TODO: maximize ?
+    if (m_iconSize.x > 0 && m_iconSize.y > 0)
+    {
+        m_sfWindow->setIcon(m_iconSize, m_iconPixels.data());
+    }
 
     // Finalize.
     ComputeSize(GetSize());

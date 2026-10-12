@@ -153,9 +153,11 @@ protected:
 
     sf::RenderWindow* m_sfWindow;
     Renderer* m_renderer;
+    bool m_hostImGui;
 
     std::string m_title;
-    bool m_hostImGui;
+    Vector2u m_iconSize;
+    std::vector<uint8> m_iconPixels;
 
     EWindowState m_state;
     bool m_verticalSync;

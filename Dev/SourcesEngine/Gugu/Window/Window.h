@@ -54,10 +54,12 @@ public:
     virtual void Init(sf::RenderWindow* sfWindow, const EngineConfig& config);
     void Recreate(EWindowState state, Vector2u size);
 
+    void Maximize();
+
+    EWindowState GetState() const;
+
     void SetVerticalSync(bool verticalSync);
     void SetFramerateLimit(uint32 framerateLimit);
-
-    void Maximize();
 
     void SetBackgroundColor(const sf::Color& backgroundColor);
     const sf::Color& GetBackgroundColor() const;

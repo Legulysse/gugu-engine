@@ -304,6 +304,11 @@ void Window::Maximize()
 #endif
 }
 
+EWindowState Window::GetState() const
+{
+    return m_state;
+}
+
 void Window::SetVerticalSync(bool verticalSync)
 {
     m_verticalSync = verticalSync;

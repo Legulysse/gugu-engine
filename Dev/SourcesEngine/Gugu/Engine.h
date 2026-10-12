@@ -5,6 +5,8 @@
 
 #include "Gugu/Core/EngineConfig.h"
 #include "Gugu/Misc/Pattern/Singleton.h"
+#include "Gugu/Window/WindowUtility.h"
+#include "Gugu/Math/Vector2.h"
 #include "Gugu/System/Callback.h"
 #include "Gugu/System/Types.h"
 #include "Gugu/Debug/EngineStats.h"
@@ -81,10 +83,12 @@ public:
     void            SetApplication(Application* application);
     Application*    GetApplication() const;
 
-    void            AddWindow       (Window* window);
-    void            RemoveWindow    (Window* window);
-    void            SetGameWindow   (Window* window);
-    Window*         GetGameWindow   () const;
+    bool CreateMainWindow(EWindowState windowState, Vector2u size);
+    void SetGameWindow(Window* window);
+    Window* GetGameWindow() const;
+
+    void AddWindow(Window* window);
+    void RemoveWindow(Window* window);
     
     bool            SetTimer    (const std::string& name, float delayMs, uint32 ticks, bool tickNow, const Callback& callback);
     void            ClearTimer  (const std::string& name);

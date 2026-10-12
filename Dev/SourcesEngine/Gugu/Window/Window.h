@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
+#include "Gugu/Window/WindowUtility.h"
 #include "Gugu/Math/Vector2.h"
 
 #include <SFML/Graphics/Color.hpp>
@@ -49,8 +50,14 @@ public:
     Window();
     virtual ~Window();
 
-    sf::RenderWindow*   Create  (const EngineConfig& config, bool hostImGui);
-    virtual void        Init    (sf::RenderWindow* _pSFWindow, const EngineConfig& config);
+    sf::RenderWindow* Create(const EngineConfig& config, EWindowState state, Vector2u size, bool hostImGui);
+    virtual void Init(sf::RenderWindow* sfWindow, const EngineConfig& config);
+    void Recreate(EWindowState state, Vector2u size);
+
+    void SetVerticalSync(bool verticalSync);
+    void SetFramerateLimit(uint32 framerateLimit);
+
+    void Maximize();
 
     void SetBackgroundColor(const sf::Color& backgroundColor);
     const sf::Color& GetBackgroundColor() const;
@@ -131,6 +138,7 @@ public:
 
 private:
 
+    void CreateImpl(EWindowState state, Vector2u size);
     void OnConsoleCommandValidated();
 
 protected:
@@ -146,7 +154,12 @@ protected:
     sf::RenderWindow* m_sfWindow;
     Renderer* m_renderer;
 
+    std::string m_title;
     bool m_hostImGui;
+
+    EWindowState m_state;
+    bool m_verticalSync;
+    uint32 m_framerateLimit;
 
     Camera* m_mainCamera;
     std::vector<Camera*> m_cameras;

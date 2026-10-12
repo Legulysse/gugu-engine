@@ -3,7 +3,8 @@
 ////////////////////////////////////////////////////////////////
 // Includes
 
-#include <SFML/Graphics/Color.hpp>
+#include "Gugu/Window/WindowUtility.h"
+#include "Gugu/Window/Color.h"
 
 #include <string>
 
@@ -45,13 +46,13 @@ struct EngineConfig
 
     // Graphics
     EGameWindow::Type gameWindow;
+    EWindowState windowState;
     int windowWidth;
     int windowHeight;
-    bool fullscreen;
     bool maximizeWindow;
     bool enableVerticalSync;
     int framerateLimit;
-    sf::Color backgroundColor;
+    Color backgroundColor;
 
     // Audio
     std::string rootAudioMixerGroup;
@@ -87,13 +88,13 @@ struct EngineConfig
         handleResourceDependencies = false;
 
         gameWindow = EGameWindow::Sfml;
+        windowState = EWindowState::Windowed;
         windowWidth = 800;
         windowHeight = 600;
-        fullscreen = false;
         maximizeWindow = false;
         enableVerticalSync = false;
         framerateLimit = 60;
-        backgroundColor = sf::Color(128, 128, 128, 255);
+        backgroundColor = Color(128, 128, 128, 255);
 
         rootAudioMixerGroup = "";
         maxSoundSourceCount = 240;   // Total tracks should not exceed 256

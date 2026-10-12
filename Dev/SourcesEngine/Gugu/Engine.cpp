@@ -133,25 +133,9 @@ void Engine::Init(const EngineConfig& config)
     //-- Init Window --//
     if (m_engineConfig.gameWindow == EGameWindow::Sfml)
     {
-        m_gameWindow = new Window;
-    }
-
-    if (m_gameWindow)
-    {
-        bool hostImGui = true;
-
-        m_gameWindow->Create(m_engineConfig, hostImGui);
-        m_gameWindow->SetRenderer(m_defaultRenderer);
-
-        AddWindow(m_gameWindow);
-
-        if (hostImGui)
-        {
-            // TODO: check result.
-            bool initResult = ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
-
-            m_showImGui = m_engineConfig.showImGui;
-        }
+        EWindowState windowState = m_engineConfig.windowState;
+        Vector2u size = Vector2u(m_engineConfig.windowWidth, m_engineConfig.windowHeight);
+        CreateMainWindow(windowState, size);
     }
 
     //-- Enable the loop to be processed --//
@@ -592,6 +576,42 @@ Application* Engine::GetApplication() const
     return m_application;
 }
 
+bool Engine::CreateMainWindow(EWindowState windowState, Vector2u size)
+{
+    // TODO: forward engine config and/or a window config.
+    // TODO: Delete window if needed.
+    // - Release imgui if needed.
+    assert(m_gameWindow == nullptr);
+
+    bool hostImGui = true;
+
+    m_gameWindow = new Window;
+    m_gameWindow->Create(m_engineConfig, windowState, size, hostImGui);
+    m_gameWindow->SetRenderer(m_defaultRenderer);
+
+    AddWindow(m_gameWindow);
+
+    if (hostImGui)
+    {
+        // TODO: check result.
+        bool initResult = ImGui::SFML::Init(*m_gameWindow->GetSFRenderWindow());
+
+        m_showImGui = m_engineConfig.showImGui;
+    }
+
+    return true;
+}
+
+void Engine::SetGameWindow(Window* window)
+{
+    m_gameWindow = window;
+}
+
+Window* Engine::GetGameWindow() const
+{
+    return m_gameWindow;
+}
+
 void Engine::AddWindow(Window* window)
 {
     if (!window)
@@ -611,16 +631,6 @@ void Engine::RemoveWindow(Window* window)
     auto it = StdVectorFind(m_windows, window);
     if (it != m_windows.end())
         m_windows.erase(it);
-}
-
-void Engine::SetGameWindow(Window* window)
-{
-    m_gameWindow = window;
-}
-
-Window* Engine::GetGameWindow() const
-{
-    return m_gameWindow;
 }
 
 void Engine::ComputeCommandLine(const std::string& commandLine)

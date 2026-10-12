@@ -48,7 +48,10 @@
 namespace gugu {
 
 Window::Window()
-    : m_windowFocused(false)
+    : m_state(EWindowState::Windowed)
+    , m_verticalSync(false)
+    , m_framerateLimit(60)
+    , m_windowFocused(false)
     , m_windowHovered(false)
     , m_usedFocusSafety(false)
 {
@@ -95,39 +98,22 @@ Window::~Window()
     SafeDelete(m_sfWindow);
 }
 
-sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
+sf::RenderWindow* Window::Create(const EngineConfig& config, EWindowState state, Vector2u size, bool hostImGui)
 {
-    m_sfWindow = new sf::RenderWindow;
+    assert(m_sfWindow == nullptr);
+
+    m_title = config.applicationName;
     m_hostImGui = hostImGui;
 
-    //Windows Settings
-    sf::ContextSettings contextSettings;
-    //contextSettings.antiAliasingLevel = 2;  // Request 2 levels of antialiasing
+    m_sfWindow = new sf::RenderWindow;
+    CreateImpl(state, size);
 
-    //Create main window
-    uint32 windowStyle = sf::Style::Default;
-    sf::State windowState = sf::State::Windowed;
-    int windowWidth = config.windowWidth;
-    int windowHeight = config.windowHeight;
+    SetVerticalSync(config.enableVerticalSync);
+    SetFramerateLimit(config.framerateLimit);
 
-    if (config.fullscreen)
+    if (config.maximizeWindow && state == EWindowState::Windowed)
     {
-        // sf::VideoMode::getDesktopMode() gives the current desktop resolution (ignoring potential scaling so its safe to use as-is).
-        // sf::VideoMode::getFullscreenModes() could be used to provide a settings menu with a resolution selection.
-        windowState = sf::State::Fullscreen;
-        windowWidth = sf::VideoMode::getDesktopMode().size.x;
-        windowHeight = sf::VideoMode::getDesktopMode().size.y;
-    }
-
-    m_sfWindow->create(sf::VideoMode(Vector2u(windowWidth, windowHeight)), config.applicationName, windowStyle, windowState, contextSettings);
-    m_sfWindow->setFramerateLimit(config.framerateLimit);
-    m_sfWindow->setVerticalSyncEnabled(config.enableVerticalSync);
-
-    if (config.maximizeWindow && !config.fullscreen)
-    {
-#if defined(GUGU_OS_WINDOWS)
-        ::ShowWindow(m_sfWindow->getNativeHandle(), SW_MAXIMIZE);
-#endif
+        Maximize();
     }
 
     if (GetResources()->HasResource(config.applicationIcon))
@@ -144,15 +130,96 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, bool hostImGui)
     return m_sfWindow;
 }
 
-void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
+void Window::Recreate(EWindowState state, Vector2u size)
 {
-    m_sfWindow = _pSFWindow;
-    m_backgroundColor = config.backgroundColor;
+    assert(m_sfWindow != nullptr);
 
+    CreateImpl(state, size);
+
+    m_sfWindow->setVerticalSyncEnabled(m_verticalSync);
+    m_sfWindow->setFramerateLimit(m_framerateLimit);
+
+    // TODO: icon.
+    // TODO: maximize ?
+
+    // Finalize.
+    ComputeSize(GetSize());
+}
+
+void Window::CreateImpl(EWindowState state, Vector2u size)
+{
+    // Notes :
+    // sf::VideoMode::getDesktopMode() gives the current desktop resolution (ignoring potential scaling so its safe to use as-is).
+    // sf::VideoMode::getFullscreenModes() could be used to provide a settings menu with a resolution selection.
+
+    assert(m_sfWindow != nullptr);
+
+    m_state = state;
+
+    sf::ContextSettings contextSettings;
+    sf::State windowState = sf::State::Windowed;
+    uint32 windowStyle = sf::Style::Default;
+
+    if (state == EWindowState::Windowed)
+    {
+        windowState = sf::State::Windowed;
+        windowStyle = sf::Style::Default;
+
+        // Check a minimum size.
+        size.x = Max<unsigned int>(2, size.x);
+        size.y = Max<unsigned int>(2, size.y);
+    }
+    else if (state == EWindowState::Fullscreen)
+    {
+        windowState = sf::State::Fullscreen;
+        windowStyle = sf::Style::Default;
+
+        assert(!sf::VideoMode::getFullscreenModes().empty());
+        if (!sf::VideoMode::getFullscreenModes().empty())
+        {
+            size = sf::VideoMode::getFullscreenModes().front().size;
+        }
+        else
+        {
+            size = sf::VideoMode::getDesktopMode().size;
+        }
+    }
+    else if (state == EWindowState::WindowedFullscreen)
+    {
+        // TODO: Notes for windowed fullscreen mode.
+        // - When creating a borderless window with the exact screen size, Windows automatically switch to exclusive fullscreen mode.
+        // - To avoid this behaviour, a common hack is to create a window 1 pixel larger.
+        // - The problem with this approach is that I need to handle a proper viewport to match the visible part of the window and ignore the additional 1-pixel space.
+        // - To avoid weird and approximative computations, I could retake my Window class to manually create both a default Window and a RenderTexture, instead of a RenderWindow.
+        //   - This way, I can have the RenderTexture with the proper dimensions, and keep the 1-pixel offset only on the Window.
+
+        windowState = sf::State::Windowed;
+        windowStyle = sf::Style::None;
+
+        size = sf::VideoMode::getDesktopMode().size;
+
+        // HACK to avoid an automatic switch to the regular fullscreen (see notes above).
+        size.y += 1;
+    }
+
+    m_sfWindow->create(sf::VideoMode(size), m_title, windowStyle, windowState, contextSettings);
+
+    // Apply this after every create() just in case.
     m_sfWindow->setKeyRepeatEnabled(false);
     m_sfWindow->resetGLStates();
 
+    // Focus safety (see notes in Update()).
+    m_usedFocusSafety = false;
+    m_windowFocused = m_sfWindow->hasFocus();
+}
+
+void Window::Init(sf::RenderWindow* sfWindow, const EngineConfig& config)
+{
+    m_sfWindow = sfWindow;
+
     //Rendering
+    m_backgroundColor = config.backgroundColor;
+
     m_mainCamera = new Camera;
     m_mainCamera->SetWindow(this);
 
@@ -161,7 +228,7 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
 
     //Root node
     m_rootNode = new Element;
-    m_rootNode->SetSize((float)config.windowWidth, (float)config.windowHeight);
+    m_rootNode->SetSize(Vector2f(GetSize()));
 
     //Gui Node
     m_rootUINode = m_rootNode->AddChild<Element>();
@@ -214,9 +281,28 @@ void Window::Init(sf::RenderWindow* _pSFWindow, const EngineConfig& config)
     m_showFPS = config.showFPS;
 
     // Finalize
-    ComputeSize(m_sfWindow->getSize());
+    ComputeSize(GetSize());
+}
 
-    m_windowFocused = m_sfWindow->hasFocus();
+void Window::Maximize()
+{
+#if defined(GUGU_OS_WINDOWS)
+    ::ShowWindow(m_sfWindow->getNativeHandle(), SW_MAXIMIZE);
+#else
+    assert(false);  // Not implemented.
+#endif
+}
+
+void Window::SetVerticalSync(bool verticalSync)
+{
+    m_verticalSync = verticalSync;
+    m_sfWindow->setVerticalSyncEnabled(m_verticalSync);
+}
+
+void Window::SetFramerateLimit(uint32 framerateLimit)
+{
+    m_framerateLimit = framerateLimit;
+    m_sfWindow->setFramerateLimit(m_framerateLimit);
 }
 
 void Window::SetBackgroundColor(const sf::Color& backgroundColor)
@@ -751,7 +837,7 @@ bool Window::Screenshot() const
 {
     if (EnsureDirectoryExists(GetResources()->GetPathScreenshots()))
     {
-        sf::Texture captureTexture(m_sfWindow->getSize());
+        sf::Texture captureTexture(GetSize());
         captureTexture.update(*m_sfWindow);
 
         sf::Image captureImage = captureTexture.copyToImage();

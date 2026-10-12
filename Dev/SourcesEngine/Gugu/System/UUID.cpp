@@ -40,6 +40,8 @@ UUID UUID::Generate()
             | (uint64)guid.Data4[7];
     }
 
+#else
+    assert(false);  // Not implemented.
 #endif
 
     return uuid;

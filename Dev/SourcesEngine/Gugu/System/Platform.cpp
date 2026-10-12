@@ -39,6 +39,8 @@ void WriteInIDEConsole(const std::string& value)
 {
 #if defined(GUGU_OS_WINDOWS) && defined(GUGU_ENV_VISUAL)
     OutputDebugStringA(value.c_str());
+#else
+    // Not implemented.
 #endif
 }
 
@@ -47,6 +49,8 @@ void WriteInIDEConsoleEndline(const std::string& value)
 #if defined(GUGU_OS_WINDOWS) && defined(GUGU_ENV_VISUAL)
      OutputDebugStringA(value.c_str());
      OutputDebugStringA("\n");
+#else
+    // Not implemented.
 #endif
 }
 
@@ -74,6 +78,8 @@ bool ExecuteCommand(std::string_view executablePath, std::string_view arguments)
     // Note: system() is a blocking call, whereas ShellExecute is not.
     int result = ::system(normalizedCommand.c_str());
     return result == 0;
+#else
+    assert(false);  // Not implemented.
 #endif
 }
 
@@ -84,6 +90,8 @@ void OpenFileExplorer(std::string_view path)
     StdStringReplaceSelf(normalizedPath, system::PathSeparator, '\\');
 
     ShellExecuteA(nullptr, "open", normalizedPath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
+#else
+    assert(false);  // Not implemented.
 #endif
 }
 
@@ -92,6 +100,8 @@ void OpenWebBrowser(std::string_view url)
 #if defined(GUGU_OS_WINDOWS)
     std::string normalizedUrl(url);
     ShellExecuteA(nullptr, "open", normalizedUrl.c_str(), nullptr, nullptr, SW_SHOWNORMAL);   //ShellExecuteA uses normal strings, ShellExecuteW uses wide strings (which needs a L prefix : L"...")
+#else
+    assert(false);  // Not implemented.
 #endif
 }
 
@@ -209,6 +219,7 @@ bool EnsureDirectoryExists(std::string_view path_utf8)
 
 #else
 
+    assert(false);  // Not implemented.
     return false;
 
 #endif

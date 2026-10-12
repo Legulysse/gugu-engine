@@ -35,13 +35,12 @@ public:
     void            SetScene    (Scene* scene);
     Scene*          GetScene    () const;
     
-    void            SetSFView   (const sf::View& _kView);
-    const sf::View& GetSFView   () const;
+    const sf::View& GetSFView() const;
+    Vector2f GetViewSize() const;
 
     void            RecomputeSizeFromWindow();
     void            SetSize     (float _fSizeX, float _fSizeY);
     void            SetSize     (Vector2f _kSize);
-    Vector2f        GetSize     () const;
 
     //TOOD: handle zoom elsewhere, like in renderer ? applied on a rendertarget ?
     void            SetZoom(float zoom);
@@ -55,7 +54,8 @@ public:
     void            SetCenterOnTarget   (bool _bCenterOnTarget);  //true = target is the center of the view (useful for Scenes), false = target is the top-left corner of the view (default, useful for Window UI)
     bool            IsCenterOnTarget    () const;
 
-    void            SetViewport (const sf::FloatRect& _kViewport);
+    void SetViewport(const sf::FloatRect& viewport);
+    const sf::FloatRect& GetViewport() const;
 
     Vector2i WorldToScreenPosition(const Vector2f& worldPosition) const;
     Vector2f ScreenToWorldPosition(const Vector2i& screenPosition) const;
@@ -76,6 +76,7 @@ protected:
     //TODO: store only integer size/position ?
     Vector2f m_targetPosition;
     Vector2f m_size;
+    sf::FloatRect m_viewport;
 	float m_zoomMultiplier;
     bool m_centerOnTarget;
     

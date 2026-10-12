@@ -24,6 +24,7 @@ Camera::Camera()
 {
     m_targetPosition = Vector2f(0.f, 0.f);
     m_size = Vector2f(0.f, 0.f);
+    m_viewport = sf::FloatRect(Vector2f(0.f, 0.f), Vector2f(1.f, 1.f));
     m_zoomMultiplier = 1.f;
     m_centerOnTarget = false;
 
@@ -55,14 +56,14 @@ Scene* Camera::GetScene() const
     return m_scene;
 }
 
-void Camera::SetSFView(const sf::View& _kView)
-{
-    m_sfView = _kView;
-}
-
 const sf::View& Camera::GetSFView() const
 {
     return m_sfView;
+}
+
+Vector2f Camera::GetViewSize() const
+{
+    return m_sfView.getSize();
 }
 
 void Camera::SetSize(float _fSizeX, float _fSizeY)
@@ -72,13 +73,12 @@ void Camera::SetSize(float _fSizeX, float _fSizeY)
 
 void Camera::SetSize(Vector2f _kSize)
 {
+    // Reference size of the space rendered by the camera.
+    // - This implies that if the viewport does not match the size ratio, the render will be deformed.
+    // - Viewport, camera size and rendertarget size need to be in sync for the render to not be deformed.
+    // - This allows specific computations like a fixed rendering size.
     m_size = _kSize;
     ComputeViewSize();
-}
-
-Vector2f Camera::GetSize() const
-{
-    return m_sfView.getSize();
 }
 
 void Camera::SetZoom(float zoom)
@@ -119,10 +119,15 @@ bool Camera::IsCenterOnTarget() const
     return m_centerOnTarget;
 }
 
-void Camera::SetViewport(const sf::FloatRect& _kViewport)
+void Camera::SetViewport(const sf::FloatRect& viewport)
 {
-    m_sfView.setViewport(_kViewport);
+    m_viewport = viewport;
     ComputeViewSize();
+}
+
+const sf::FloatRect& Camera::GetViewport() const
+{
+    return m_viewport;
 }
 
 void Camera::RecomputeSizeFromWindow()
@@ -135,10 +140,10 @@ void Camera::RecomputeSizeFromWindow()
 
 void Camera::ComputeViewSize()
 {
-    const sf::FloatRect& kViewport = m_sfView.getViewport();
-
-    Vector2f adjustedSize(RoundFloor(m_size.x * kViewport.size.x * m_zoomMultiplier), RoundFloor(m_size.y * kViewport.size.y * m_zoomMultiplier));
+    // Adjust view size to match the intended zoom multiplier and the target viewport.
+    Vector2f adjustedSize(RoundFloor(m_size.x * m_viewport.size.x * m_zoomMultiplier), RoundFloor(m_size.y * m_viewport.size.y * m_zoomMultiplier));
     m_sfView.setSize(adjustedSize);
+    m_sfView.setViewport(m_viewport);
 
     ComputeViewCenter();
 }

@@ -140,6 +140,10 @@ sf::RenderWindow* Window::Create(const EngineConfig& config, EWindowState state,
 
 void Window::Recreate(EWindowState state, Vector2u size)
 {
+    // TODO: Maybe I should create/recreate the window at an appropriate step (like next loop).
+    // - Use an assert if Im inside the loop ?
+    // - Also delay the initial creation if not in engine setup ?
+
     assert(m_sfWindow != nullptr);
 
     CreateImpl(state, size);
@@ -151,6 +155,20 @@ void Window::Recreate(EWindowState state, Vector2u size)
     if (m_iconSize.x > 0 && m_iconSize.y > 0)
     {
         m_sfWindow->setIcon(m_iconSize, m_iconPixels.data());
+    }
+
+    if (m_hostImGui)
+    {
+        // TODO: pull request on imgui-sfml for a manuel refresh on cursor state.
+        // Note: ImGui-SFML only refreshes mouse state when a different command is issued from the previous frame.
+        // - Ideally I would want a direct refresh call on ImGui-SFML.
+        // - In the meantime, I manually resync system mouse and imgui mouse requests.
+        //   - This way I am sure that both imgui-sfml and the system mouse want to be hidden.
+        //   - The Update may request visibility to be restored in the next frame.
+        //   - This is mostly used to hide the imgui cursor when changing window state ingame.
+
+        m_sfWindow->setMouseCursorVisible(false);
+        ImGui::SetMouseCursor(ImGuiMouseCursor_None);
     }
 
     // Finalize.
@@ -222,6 +240,9 @@ void Window::CreateImpl(EWindowState state, Vector2u size)
     // Focus safety (see notes in Update()).
     m_usedFocusSafety = false;
     m_windowFocused = m_sfWindow->hasFocus();
+
+    //m_windowHovered = false;
+    //m_wasSystemMouseVisible = true;
 }
 
 void Window::Init(sf::RenderWindow* sfWindow, const EngineConfig& config)

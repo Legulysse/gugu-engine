@@ -96,6 +96,7 @@ StatsDrawer::StatsDrawer()
         m_curveStepCount[i].color = colorCurveStepCount;
     }
 
+    // TODO: This texture will not be properly setup if booting with allowConsole=false.
     Texture* textureBackground = GetResources()->GetCustomTexture("GuguConsoleBackground");
     m_statsBackground = new sf::Sprite(*textureBackground->GetSFTexture());
 

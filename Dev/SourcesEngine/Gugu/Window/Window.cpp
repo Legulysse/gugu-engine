@@ -284,7 +284,7 @@ void Window::Init(sf::RenderWindow* sfWindow, const EngineConfig& config)
 
         sf::Image consoleImage(Vector2u(8, 8), sf::Color(0, 0, 0, 150));
 
-        Texture* pTextureConsole = GetResources()->GetCustomTexture("GuguConsoleBackground");   //TODO: Prepare custom textures in the manager beforehand
+        Texture* pTextureConsole = GetResources()->GetCustomTexture("GuguConsoleBackground");   //TODO: Prepare custom textures in the manager beforehand (if booting without allowConsole, this texture is never setup for the StatsDrawer).
         sf::Texture* pSFTextureConsole = pTextureConsole->GetSFTexture();
         bool loadResult = pSFTextureConsole->loadFromImage(consoleImage);
 

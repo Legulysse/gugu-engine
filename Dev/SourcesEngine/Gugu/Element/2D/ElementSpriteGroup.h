@@ -30,6 +30,8 @@ public:
     ElementSpriteGroupItem();
     virtual ~ElementSpriteGroupItem();
 
+    ElementSpriteGroup* GetParentSpriteGroup() const;
+
     bool HasDirtyVertices() const;
 
     size_t RecomputeVertexCount();
@@ -69,7 +71,8 @@ public:
 
     size_t AddItem(ElementSpriteGroupItem* item);
     size_t InsertItem(ElementSpriteGroupItem* item, size_t index);
-    //void RemoveItem(ElementSpriteGroupItem* item);
+    void RemoveItem(ElementSpriteGroupItem* item);
+    void DeleteItem(ElementSpriteGroupItem* item);
     ElementSpriteGroupItem* GetItem(size_t _iIndex) const;
     const std::vector<ElementSpriteGroupItem*>& GetItems() const;
 
@@ -93,6 +96,7 @@ protected:
     Texture* m_texture;
     sf::BlendMode m_blendMode;
     sf::VertexArray m_vertices;
+    size_t m_forceRecomputeFromIndex;
 
     std::vector<ElementSpriteGroupItem*> m_items;    //TODO: Rename as Components ?
 };

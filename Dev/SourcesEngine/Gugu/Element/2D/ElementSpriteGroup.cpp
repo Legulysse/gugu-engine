@@ -15,6 +15,8 @@
 #include "Gugu/Resources/Texture.h"
 #include "Gugu/Resources/ImageSet.h"
 #include "Gugu/System/Container.h"
+#include "Gugu/System/String.h"
+#include "Gugu/Math/MathUtility.h"
 #include "Gugu/Debug/Logger.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -37,7 +39,7 @@ void ElementSpriteGroupItem::RaiseDirtyVertices()
 {
     ElementSpriteBase::RaiseDirtyVertices();
 
-    if (ElementSpriteGroup* parentSpriteGroup = dynamic_cast<ElementSpriteGroup*>(m_parent))
+    if (ElementSpriteGroup* parentSpriteGroup = GetParentSpriteGroup())
     {
         parentSpriteGroup->RaiseNeedRecompute();
     }
@@ -47,6 +49,7 @@ void ElementSpriteGroupItem::OnParentChanged()
 {
     if (m_parent && dynamic_cast<ElementSpriteGroup*>(m_parent) == nullptr)
     {
+        assert(false);
         GetLogEngine()->Print(ELog::Error, ELogEngine::Element, "A SpriteGroupItem has been attached to an unsupported parent type (should be a SpriteGroup)");
     }
 }
@@ -59,6 +62,12 @@ void ElementSpriteGroupItem::OnTransformChanged()
 void ElementSpriteGroupItem::OnVisibleChanged()
 {
     RaiseDirtyVertices();
+}
+
+ElementSpriteGroup* ElementSpriteGroupItem::GetParentSpriteGroup() const
+{
+    assert(m_parent == nullptr || dynamic_cast<ElementSpriteGroup*>(m_parent) != nullptr);
+    return dynamic_cast<ElementSpriteGroup*>(m_parent);
 }
 
 bool ElementSpriteGroupItem::HasDirtyVertices() const
@@ -101,7 +110,7 @@ bool ElementSpriteGroupItem::LoadFromDataImpl(ElementDataContext& context)
 
     ElementSpriteGroupItemData* spriteGroupItemData = dynamic_cast<ElementSpriteGroupItemData*>(context.data);
 
-    ElementSpriteGroup* parentSpriteGroup = dynamic_cast<ElementSpriteGroup*>(m_parent);
+    ElementSpriteGroup* parentSpriteGroup = GetParentSpriteGroup();
     if (parentSpriteGroup && parentSpriteGroup->GetImageSet())
     {
         SubImage* subImage = parentSpriteGroup->GetImageSet()->GetSubImage(spriteGroupItemData->subImageName);
@@ -115,6 +124,7 @@ bool ElementSpriteGroupItem::LoadFromDataImpl(ElementDataContext& context)
 ElementSpriteGroup::ElementSpriteGroup()
     : m_imageSet(nullptr)
     , m_texture(nullptr)
+    , m_forceRecomputeFromIndex(system::InvalidIndex)
 {
 }
 
@@ -195,17 +205,25 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
             //TODO: special stat category for ElementSpriteGroup
         }
     }
+
+    // TODO: Render items children (currently we only handle the SpriteGroup own children, aside from its items).
 }
 
 void ElementSpriteGroup::RecomputeImpl()
 {
-    size_t indexForceRecompute = system::InvalidIndex;
+    // This index is used to trigger a cascading recompute of every item following the force recompute.
+    // It is needed because vertices may not be in sync with their associated item.
+    // Note: Another option could be to directly move vertices in the array (item delete/hide should be a single memcpy).
+    size_t forceRecomputeIndex = m_forceRecomputeFromIndex;    // system::InvalidIndex;
 
     size_t totalVertexCount = 0;
     for (size_t i = 0; i < m_items.size(); ++i)
     {
         size_t cachedVertexCount = m_items[i]->GetCachedVertexCount();
 
+        // Notes:
+        // - If the cachedVertexCount is different from currentVertexCount, trigger a cascading recompute.
+        // - If the item was visible and is now hidden, cachedVertexCount will be different from currentVertexCount and trigger a cascading recompute.
         size_t currentVertexCount = 0;
         if (m_items[i]->IsVisible())
         {
@@ -213,9 +231,9 @@ void ElementSpriteGroup::RecomputeImpl()
             totalVertexCount += currentVertexCount;
         }
 
-        if (indexForceRecompute == system::InvalidIndex && cachedVertexCount != currentVertexCount)
+        if (cachedVertexCount != currentVertexCount && i < forceRecomputeIndex)
         {
-            indexForceRecompute = i;
+            forceRecomputeIndex = i;
         }
     }
 
@@ -230,7 +248,7 @@ void ElementSpriteGroup::RecomputeImpl()
         {
             if (m_items[i]->IsVisible())
             {
-                if (i >= indexForceRecompute || m_items[i]->HasDirtyVertices())
+                if (i >= forceRecomputeIndex || m_items[i]->HasDirtyVertices())
                 {
                     indexItemVertices += m_items[i]->RecomputeItemVertices(m_vertices, indexItemVertices);
                 }
@@ -241,6 +259,8 @@ void ElementSpriteGroup::RecomputeImpl()
             }
         }
     }
+
+    m_forceRecomputeFromIndex = system::InvalidIndex;
 }
 
 size_t ElementSpriteGroup::AddItem(ElementSpriteGroupItem* item)
@@ -264,14 +284,31 @@ size_t ElementSpriteGroup::InsertItem(ElementSpriteGroupItem* item, size_t index
     return index;
 }
 
-//void ElementSpriteGroup::RemoveItem(ElementSpriteGroupItem* item)
-//{
-//    // TODO: remove item should raise an index to force recomputation from the removed index.
-//    item->SetSpriteGroup(nullptr);
-//    StdVectorRemove(m_items, item);
-//
-//    m_needRecompute = true;
-//}
+void ElementSpriteGroup::RemoveItem(ElementSpriteGroupItem* item)
+{
+    if (item->GetParent() != this)
+        return;
+
+    item->SetParent(nullptr);
+    size_t index = StdVectorIndexOf(m_items, item);
+    StdVectorRemoveAt(m_items, index);
+
+    m_forceRecomputeFromIndex = Min(index, m_forceRecomputeFromIndex);
+    RaiseNeedRecompute();
+}
+
+void ElementSpriteGroup::DeleteItem(ElementSpriteGroupItem* item)
+{
+    if (item->GetParent() != this)
+        return;
+
+    item->SetParent(nullptr);
+    size_t index = StdVectorIndexOf(m_items, item);
+    StdVectorDeleteAndRemoveAt(m_items, index);
+
+    m_forceRecomputeFromIndex = Min(index, m_forceRecomputeFromIndex);
+    RaiseNeedRecompute();
+}
 
 ElementSpriteGroupItem* ElementSpriteGroup::GetItem(size_t _iIndex) const
 {

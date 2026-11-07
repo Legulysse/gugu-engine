@@ -95,9 +95,6 @@ const sf::BlendMode& ElementSprite::GetBlendMode() const
 
 void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    if (!m_texture || !m_texture->GetSFTexture())
-        return;
-
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.findIntersection(kGlobalTransformed))
     {
@@ -112,7 +109,7 @@ void ElementSprite::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _k
         // Draw
         sf::RenderStates states;
         states.transform = _kTransformSelf;
-        states.texture = m_texture->GetSFTexture();
+        states.texture = m_texture ? m_texture->GetSFTexture() : nullptr;
         states.blendMode = m_blendMode;
         _kRenderPass.target->draw(m_vertices, states);
 

@@ -180,10 +180,7 @@ void ElementSpriteGroup::OnSizeChanged()
 
 void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transform& _kTransformSelf)
 {
-    if (!m_texture || !m_texture->GetSFTexture())
-        return;
-
-    //TODO: maybe need a parameter to bypass this check ?
+    // TODO: maybe need a parameter to bypass this check ? or an option for auto-bounds ?
     sf::FloatRect kGlobalTransformed = _kTransformSelf.transformRect(sf::FloatRect(Vector2::Zero_f, m_size));
     if (_kRenderPass.rectViewport.findIntersection(kGlobalTransformed))
     {
@@ -191,22 +188,40 @@ void ElementSpriteGroup::RenderImpl(RenderPass& _kRenderPass, const sf::Transfor
         {
             sf::RenderStates states;
             states.transform = _kTransformSelf;
-            states.texture = m_texture->GetSFTexture();
+            states.texture = m_texture ? m_texture->GetSFTexture() : nullptr;
             states.blendMode = m_blendMode;
             _kRenderPass.target->draw(m_vertices, states);
 
             //Stats
             if (_kRenderPass.frameInfos)
             {
+                // TODO: special stat category for ElementSpriteGroup
                 _kRenderPass.frameInfos->statDrawCalls += 1;
                 _kRenderPass.frameInfos->statTriangles += (int)m_vertices.getVertexCount() / 3;
-            }
 
-            //TODO: special stat category for ElementSpriteGroup
+                // TODO: Render items bounds ?
+            }
         }
     }
 
-    // TODO: Render items children (currently we only handle the SpriteGroup own children, aside from its items).
+    // Render items children if needed (we dont want a full call on the base Render() method here).
+    // TODO: This will NOT get called if the SpriteGroup itself is not rendered because of renderpass check.
+    // - I probably should move the renderpass check inside RenderImpl to fix this dependency and regroup actual rendering checks where rendering happens.
+    for (size_t i = 0; i < m_items.size(); ++i)
+    {
+        // Note: We need the same m_isVisible check as in the Render method.
+        // TODO: Add a dedicated protected method to only check m_isVisible, to use both here and in Element::Render ?
+        if (m_items[i]->GetChildCount() > 0 && m_items[i]->IsVisible())
+        {
+            const sf::Transform combinedTransform = _kTransformSelf * m_items[i]->GetTransform();
+            const auto& children = m_items[i]->GetChildren();
+
+            for (size_t ii = 0; ii < children.size(); ++ii)
+            {
+                children[ii]->Render(_kRenderPass, combinedTransform);
+            }
+        }
+    }
 }
 
 void ElementSpriteGroup::RecomputeImpl()

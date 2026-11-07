@@ -751,12 +751,16 @@ void Element::RecomputeIfNeeded()
 
 void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformParent)
 {
+    // Note: If this test changes, the modification will need to be applied in ElementSpriteGroup::RenderImpl for items children render.
     if (m_isVisible)
     {
         RecomputeIfNeeded();
 
         sf::Transform combinedTransform = _kTransformParent * GetTransform();
 
+        // TODO: Move this check + renderpass property to child classes ?
+        // - It would simplify the handling of children rendering in ElementSpriteGroup and ElementRenderCanvas.
+        // - The future shader/material property would also be better on child classes (alongside blendmode, texture, vertex, etc...).
         if ((_kRenderPass.pass & m_renderPass) != GUGU_RENDERPASS_INVALID)
         {
             RenderImpl(_kRenderPass, combinedTransform);
@@ -774,6 +778,7 @@ void Element::Render(RenderPass& _kRenderPass, const sf::Transform& _kTransformP
         if (_kRenderPass.frameInfos && (m_showDebugBounds || _kRenderPass.frameInfos->showBounds))
         {
             // TODO: Maybe try to render all bounds in a single drawcall ?
+            // TODO: SpriteGroup items ?
             _kRenderPass.frameInfos->defaultBoundsShape.setSize(m_size);
             _kRenderPass.target->draw(_kRenderPass.frameInfos->defaultBoundsShape, combinedTransform);
 
